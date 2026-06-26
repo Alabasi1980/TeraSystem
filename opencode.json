@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "tera",
+  "permission": {
+    "*": "ask",
+    "edit": "ask",
+    "bash": "ask",
+    "webfetch": "ask"
+  },
+  "instructions": [
+    "tera-system/TeraAgent.md",
+    "tera-system/Tera_Project_Preparation_Files.md",
+    "tera-system/TeraSubAgents.md"
+  ]
+}
