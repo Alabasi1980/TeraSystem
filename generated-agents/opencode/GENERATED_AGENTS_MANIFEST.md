@@ -1,0 +1,82 @@
+# GENERATED_AGENTS_MANIFEST.md
+
+## معلومات المانيفست
+
+| البند | القيمة |
+|---|---|
+| المشروع | نظام إدارة الشيكات (Checks Management System) |
+| بيئة العمل | OpenCode |
+| تاريخ التوليد | 26 يونيو 2026 |
+| تم التوليد بواسطة | Tera Agent |
+| المرحلة | التحليل والتصميم الأولي |
+
+---
+
+## العملاء الذين تم توليدهم
+
+### 1. RequirementsScopeAgent
+
+| البند | القيمة |
+|---|---|
+| الملف | `generated-agents/opencode/RequirementsScopeAgent.md` |
+| المعرف | `REQ_SCOPE_AGENT` |
+| الفئة | أساسي |
+| سبب التوليد | ضروري لتحليل المتطلبات، كتابة Project Brief، تحديد النطاق والحدود، وتحديد المستخدمين والصلاحيات |
+| الملفات المسموح بكتابتها | `01_PROJECT_BRIEF.md`, `02_SCOPE_AND_BOUNDARIES.md`, `04_USERS_ROLES_PERMISSIONS.md` |
+
+### 2. BusinessWorkflowAgent
+
+| البند | القيمة |
+|---|---|
+| الملف | `generated-agents/opencode/BusinessWorkflowAgent.md` |
+| المعرف | `BUSINESS_WORKFLOW_AGENT` |
+| الفئة | أساسي |
+| سبب التوليد | ضروري لتوثيق حالات الشيكات ومسارات العمل والانتقالات بين الحالات — وهو جوهر تطبيق الشيكات |
+| الملفات المسموح بكتابتها | `05_BUSINESS_WORKFLOWS.md`, `12_BUSINESS_RULES.md` (عند الطلب) |
+
+### 3. DataDesignAgent
+
+| البند | القيمة |
+|---|---|
+| الملف | `generated-agents/opencode/DataDesignAgent.md` |
+| المعرف | `DATA_DESIGN_AGENT` |
+| الفئة | أساسي |
+| سبب التوليد | ضروري لتحليل الكيانات والعلاقات (شيك، بنك، جهة، حالة) قبل التصميم الفني |
+| الملفات المسموح بكتابتها | `06_DATA_MODEL_PREPARATION.md` |
+
+### 4. UIUXStructureAgent
+
+| البند | القيمة |
+|---|---|
+| الملف | `generated-agents/opencode/UIUXStructureAgent.md` |
+| المعرف | `UI_UX_STRUCTURE_AGENT` |
+| الفئة | أساسي |
+| سبب التوليد | ضروري لتحديد الشاشات المطلوبة وهيكل الواجهة وعلاقتها بالصلاحيات ومسارات العمل |
+| الملفات المسموح بكتابتها | `07_SCREENS_AND_UI_STRUCTURE.md` |
+
+---
+
+## العملاء الذين لم يتم توليدهم — مع السبب
+
+| العميل | سبب عدم التوليد الآن |
+|---|---|
+| `SolutionArchitectureAgent` | مطلوب لاحقًا بعد اكتمال ملفات التحليل — سيتم توليده في مرحلة التصميم الفني |
+| `EngineeringAgent` | مطلوب لاحقًا بعد اعتماد التحليل والتصميم بالكامل — سيتم توليده في مرحلة التنفيذ |
+| `QAAndAcceptanceAgent` | مطلوب لاحقًا بعد اكتمال الملفات — سيتم توليده في مرحلة الاختبار |
+| `DocumentationHandoverAgent` | مطلوب قبل التسليم النهائي فقط |
+| `SecurityAgent` | لا يوجد بيانات حساسة أو صلاحيات معقدة أو متطلبات أمنية متقدمة |
+| `IntegrationAgent` | لا يوجد تكاملات خارجية في النسخة الأولى |
+| `DevOpsDeploymentAgent` | لا يوجد نشر فعلي في هذه المرحلة |
+| `PerformanceAgent` | تطبيق صغير — لا متطلبات أداء خاصة |
+| `ComplianceAgent` | لا متطلبات قانونية أو تنظيمية |
+| `ReportingAnalyticsAgent` | التقارير بسيطة (كشف واحد) — يمكن تغطيتها ضمن UIUX |
+| `MaintenanceMigrationAgent` | لا يوجد نظام قائم أو ترحيل بيانات |
+
+---
+
+## ملاحظات إضافية
+
+- تم توليد العملاء الأربعة في مجلد `generated-agents/opencode/` — صيغة الملفات مناسبة لبيئة OpenCode.
+- يمكن استخدام هذه الملفات كمرجع لتفويض المهام لكل عميل فرعي لاحقًا.
+- العملاء الآخرون (SolutionArchitecture, Engineering, QA) سيتم توليدهم عند الحاجة في مراحل لاحقة بعد موافقة صاحب المشروع.
+- لا يجوز لأي عميل فرعي تعديل الملفات المملوكة لعميل آخر دون توجيه صريح من Tera Agent.
