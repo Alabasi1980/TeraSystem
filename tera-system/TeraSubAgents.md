@@ -33,6 +33,7 @@
 | `TERA_PROJECT_DECISION.md` | يسجل قرار تيرا الافتتاحي لكل مشروع |
 | `TeraSubAgents.md` | يعرّف العملاء الفرعيين الذين يستطيع تيرا استخدامها |
 | `TeraTokenPolicy.md` | يحدد سياسة السياق والتوكنز التي يجب أن يلتزم بها كل عميل |
+| `TeraPreExecutionGate.md` | يحدد بوابة المراجعة الإلزامية قبل تفويض أي مهمة تنفيذية |
 | `project-control/PROJECT_STATE.md` | الذاكرة المختصرة التي يقرأها العملاء عند الحاجة بدل إعادة قراءة كل الملفات |
 
 ---
@@ -866,6 +867,8 @@ Task ID:
 - ...
 معايير القبول:
 - ...
+Pre-Execution Gate Result:
+- PASS / NEEDS_REVISION / BLOCKED
 الحالة المطلوبة عند التسليم:
 Done / Blocked / Needs Clarification / Rework Needed
 ```
@@ -906,6 +909,7 @@ Task ID:
 | `FAILED_ACCEPTANCE` | لم يحقق معايير القبول |
 | `FORMAT_VIOLATION` | لم يلتزم بالتنسيق المطلوب |
 | `UNNECESSARY_COMPLEXITY` | أضاف تعقيدًا غير مطلوب |
+| `FAILED_PRE_EXECUTION_GATE` | المهمة لم تجتز بوابة ما قبل التنفيذ أو لا تحتوي نتيجتها |
 | `NEEDS_HUMAN_DECISION` | يحتاج قرارًا من صاحب المشروع |
 
 ---

@@ -19,7 +19,7 @@
 | اسم المشروع | تطبيق إدارة الشيكات |
 | نوع المشروع | تطبيق ويب مستقل |
 | حجم المشروع | صغير / MVP |
-| المرحلة الحالية | قبل أول تشغيل OpenCode / Readiness Review |
+| المرحلة الحالية | Readiness Review مكتمل — EngineeringAgent مولّد — بانتظار أول TASK-ID تنفيذي |
 | بيئة التشغيل | OpenCode |
 | التقنية المعتمدة | Next.js + TypeScript + PostgreSQL + Prisma |
 | مصدر التفاصيل | `project-preparation/` |
@@ -32,7 +32,10 @@
 |---|---|---|
 | المشروع MVP صغير وليس ERP | `project-preparation/TERA_PROJECT_DECISION.md` | معتمد |
 | التقنية المعتمدة: Next.js, TypeScript, PostgreSQL, Prisma | `project-preparation/08_TECHNICAL_ARCHITECTURE.md` | معتمد |
-| لا يبدأ التنفيذ قبل Readiness Review | `tera-system/TeraAgent.md` | معتمد |
+| جميع ملفات التحضير 00–10 معتمدة من المستخدم | موافقة المستخدم | معتمد |
+| مصدر التصميم: Tera-Decided Design, Clean Admin UI, Light Theme, RTL | `project-preparation/28_UI_UX_GUIDELINES.md` | معتمد |
+| Readiness Review مكتمل — المشروع جاهز للتنفيذ | `tera-system/TeraAgent.md` | مكتمل |
+| EngineeringAgent مولّد في `generated-agents/opencode/EngineeringAgent.md` | أمر المستخدم | مكتمل |
 | لا يتم نقل العملاء الفرعيين إلى `.opencode/agents/` إلا عند الحاجة | `tera-system/TeraAgent.md` | معتمد |
 | `tera-system/` مرجع نظامي read-only أثناء التنفيذ | `.opencode/agents/tera.md` | معتمد |
 
@@ -63,8 +66,13 @@
 | العميل | الحالة | ملاحظة |
 |---|---|---|
 | `Tera Agent` | مفعل داخل `.opencode/agents/tera.md` | Primary Agent |
-| العملاء المولدون داخل `generated-agents/opencode/` | غير مفعلين | لا يتم نقلهم إلا بقرار تيرا |
-| `EngineeringAgent` | غير موجود/غير مفعل | قد يكون مطلوبًا لاحقًا عند بدء التنفيذ |
+| `EngineeringAgent` | مولّد داخل `generated-agents/opencode/EngineeringAgent.md` | غير مفعل في `.opencode/agents/` — يُستخدم في المهام البرمجية عند تفويض Tera |
+| `RequirementsScopeAgent` | مولّد داخل `generated-agents/opencode/` | غير مفعل — للمراجعة والتجهيز فقط |
+| `BusinessWorkflowAgent` | مولّد داخل `generated-agents/opencode/` | غير مفعل — للمراجعة والتجهيز فقط |
+| `DataDesignAgent` | مولّد داخل `generated-agents/opencode/` | غير مفعل — للمراجعة والتجهيز فقط |
+| `UIUXStructureAgent` | مولّد داخل `generated-agents/opencode/` | غير مفعل — للمراجعة والتجهيز فقط |
+| `ProjectControlAgent` | مولّد داخل `generated-agents/opencode/` | غير مفعل — للتحديثات الإدارية لـ `project-control/` |
+| عملاء آخرون | غير مولدين | سيولّدون عند الحاجة في مراحلهم |
 
 ---
 
@@ -77,6 +85,7 @@
 | المهام عالية التكلفة | تحتاج موافقة |
 | وضع العمل قبل التنفيذ | Plan Mode |
 | Build Mode | يحتاج موافقة صريحة |
+| Pre-Execution Gate | إلزامي قبل أي تفويض أو تنفيذ |
 
 ---
 
@@ -84,16 +93,20 @@
 
 | البند | الحالة | الإجراء |
 |---|---|---|
-| لم يتم تنفيذ Readiness Review بعد | Open | تشغيل تيرا في Plan Mode |
-| لم يتم تفعيل أي Sub-Agent فعليًا | Open | تيرا يقرر بعد المراجعة |
-| لم يتم بدء التنفيذ البرمجي | Open | لا يبدأ قبل TASK-ID واعتماد خطة |
+| Readiness Review | مكتمل ✅ | المشروع جاهز للتنفيذ — راجع تقرير المراجعة |
+| EngineeringAgent | مولّد ✅ | جاهز للتفويض بعد اجتياز TASK-ID لبوابة Pre-Execution Gate |
+| لم يتم بدء التنفيذ البرمجي | Open | لا يبدأ قبل TASK-ID معتمدة وصريحة من Tera |
 
 ---
 
 ## 8. آخر ملخص سياق
 
-المنظومة جاهزة مبدئيًا لأول تشغيل داخل OpenCode.  
-الخطوة التالية هي تشغيل Tera في Plan Mode لقراءة `tera-system/` و`project-preparation/` وتنفيذ Readiness Review بدون كتابة كود وبدون نقل العملاء الفرعيين.
+Readiness Review مكتمل ✅ — المشروع جاهز للتنفيز.
+جميع ملفات التحضير (00–10 + 28) معتمدة.
+EngineeringAgent مولّد وجاهز للتفويض.
+أول مهمة مقترحة: TASK-0001 — Scaffold تقني صغير.
+قبل تفويض EngineeringAgent، يجب أن يجتاز TASK-0001 بوابة Pre-Execution Gate.
+النطاق الافتراضي الآمن لأول مهمة Next.js + Prisma: Scaffold Next.js + TypeScript + تثبيت Prisma + إنشاء `.env.example` فقط، بدون Prisma models، بدون db push، بدون migration، وبدون اختبار اتصال فعلي.
 
 ---
 
@@ -101,6 +114,6 @@
 
 | البند | القيمة |
 |---|---|
-| Updated By | Tera System Preparation |
-| Update Reason | إضافة سياسة إدارة التوكنز والذاكرة المختصرة قبل أول تشغيل |
-| Next Step | Tera Readiness Review |
+| Updated By | Tera Agent |
+| Update Reason | Readiness Review مكتمل — EngineeringAgent مولّد — تحديث حالة المشروع |
+| Next Step | إنشاء TASK-0001، تشغيل Pre-Execution Gate، ثم عرض المهمة المصححة للاعتماد قبل التفويض |

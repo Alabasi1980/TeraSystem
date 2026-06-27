@@ -6,9 +6,9 @@
 |---|---|
 | المشروع | نظام إدارة الشيكات (Checks Management System) |
 | بيئة العمل | OpenCode |
-| تاريخ التوليد | 26 يونيو 2026 |
+| تاريخ التوليد | 27 يونيو 2026 |
 | تم التوليد بواسطة | Tera Agent |
-| المرحلة | التحضير مكتمل — التنفيذ بانتظار الاعتماد |
+| المرحلة | التحضير مكتمل — التنفيذ معتمد — EngineeringAgent مولّد |
 
 ---
 
@@ -64,6 +64,16 @@
 | سبب التوليد | مطلوب قبل التنفيذ لضبط المهام، النتائج، المراجعات، المشاكل، الفجوات، والقرارات داخل `project-control/` |
 | الملفات المسموح بكتابتها | `project-control/TASK_REGISTRY.md`, `project-control/PROJECT_ACTIVITY_LOG.md`, `project-control/ISSUES_AND_GAPS.md`, `project-control/DECISIONS_LOG.md`, `project-control/tasks/*.md` |
 
+### 6. EngineeringAgent
+
+| البند | القيمة |
+|---|---|
+| الملف | `generated-agents/opencode/EngineeringAgent.md` |
+| المعرف | `ENGINEERING_AGENT` |
+| الفئة | أساسي |
+| سبب التوليد | تم توليده عند بدء مرحلة التنفيذ البرمجي، لتنفيذ أول مهمة: Scaffold مشروع Next.js + ربط PostgreSQL + إعداد Prisma |
+| الملفات المسموح بكتابتها | ملفات التطبيق حسب التفويض (تحدد في TASK-ID). لا يكتب في `project-preparation/`, `tera-system/`, `project-control/`, `generated-agents/` |
+
 ---
 
 ## العملاء الذين لم يتم توليدهم — مع السبب
@@ -71,7 +81,7 @@
 | العميل | سبب عدم التوليد الآن |
 |---|---|
 | `SolutionArchitectureAgent` | لم يتم توليده؛ ملف `08_TECHNICAL_ARCHITECTURE.md` موجود وتم تثبيت القرار التقني، ولا حاجة لتفعيله الآن |
-| `EngineeringAgent` | يجب توليده أو تفعيله قبل أول مهمة تنفيذ برمجي بعد اعتماد صاحب المشروع |
+| `EngineeringAgent` | ✅ تم توليده — انظر أعلاه |
 | `QAAndAcceptanceAgent` | لم يتم توليده؛ ملف `10_TESTING_AND_ACCEPTANCE.md` موجود، ويتم توليده لاحقًا عند بدء مراجعات الاختبار الفعلية |
 | `DocumentationHandoverAgent` | مطلوب قبل التسليم النهائي فقط |
 | `SecurityAgent` | لا يوجد بيانات حساسة أو صلاحيات معقدة أو متطلبات أمنية متقدمة |

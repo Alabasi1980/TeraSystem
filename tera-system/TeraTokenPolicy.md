@@ -185,7 +185,36 @@ Recommendation:
 
 ---
 
-## 12. PROJECT_STATE.md
+
+## 12. Pre-Execution Gate وسلامة نطاق المهمة
+
+قبل أي مهمة تنفيذية، يجب على Tera تطبيق:
+
+```text
+tera-system/TeraPreExecutionGate.md
+```
+
+الهدف من هذه البوابة هو تقليل التوكنز وتقليل الأخطاء معًا، لأن المهمة الصغيرة الواضحة تحتاج سياقًا أقل وتقل فيها احتمالات التوسع.
+
+قواعد إلزامية:
+
+- لا تفويض قبل نتيجة `Pre-Execution Gate: PASS`.
+- إذا فشلت البوابة، يصحح Tera المهمة ذاتيًا بدل طلب تفاصيل من المستخدم.
+- أي عنصر يمكن تأجيله لا يدخل في المهمة الحالية.
+- أي مهمة تحتوي أكثر من هدف مستقل يجب تقسيمها.
+- لا تستخدم سياقًا أو أوامر أوسع من حدود المهمة.
+
+عناصر تعتبر توسعًا ممنوعًا افتراضيًا ما لم تذكر صراحة:
+
+```text
+UI, API, Auth, Prisma models, migrations, db push, seed data,
+external services, Docker, CI/CD, reusable components,
+service/repository layers, state management, extra documentation.
+```
+
+---
+
+## 13. PROJECT_STATE.md
 
 يجب تحديث:
 
@@ -208,7 +237,7 @@ project-control/PROJECT_STATE.md
 
 ---
 
-## 13. قواعد منع التكرار
+## 14. قواعد منع التكرار
 
 يُمنع على Tera أو أي Sub-Agent:
 
@@ -221,7 +250,7 @@ project-control/PROJECT_STATE.md
 
 ---
 
-## 14. Plan Mode و Build Mode
+## 15. Plan Mode و Build Mode
 
 في OpenCode أو أي بيئة مشابهة:
 
@@ -232,7 +261,7 @@ project-control/PROJECT_STATE.md
 
 ---
 
-## 15. Prompt Caching
+## 16. Prompt Caching
 
 إذا كانت البيئة أو المزود يدعم Prompt Caching:
 
@@ -243,7 +272,7 @@ project-control/PROJECT_STATE.md
 
 ---
 
-## 16. قاعدة الجودة
+## 17. قاعدة الجودة
 
 تقليل التوكنز لا يجوز أن يؤدي إلى:
 
@@ -257,7 +286,7 @@ project-control/PROJECT_STATE.md
 
 ---
 
-## 17. القاعدة النهائية
+## 18. القاعدة النهائية
 
 أفضل سياق هو **أصغر سياق كافٍ** لاتخاذ قرار صحيح أو تنفيذ مهمة صحيحة.
 

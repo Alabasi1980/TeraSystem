@@ -165,3 +165,23 @@ Return the result to Tera Agent when:
 - `GENERATED_AGENTS_MANIFEST.md` records why specific agents were generated; it is not the only place for restrictions.
 
 Any restriction recorded in a manifest and related to a specific agent must also be copied into that agent under `Forbidden Tools / Actions` or `MVP Constraints`.
+
+
+---
+
+## Mandatory Pre-Execution Gate Rule
+
+For implementation agents, Tera must not assign a task unless the task contains:
+
+```text
+Pre-Execution Gate Result: PASS
+```
+
+If the assigned task does not include a PASS result, the agent must return:
+
+```text
+Status: Needs Clarification
+Reason: Missing or failed Pre-Execution Gate
+```
+
+The agent must not expand the task beyond the approved `Allowed Write Targets`, `Acceptance Criteria`, and `Pre-Execution Gate` result.

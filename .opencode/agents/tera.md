@@ -43,6 +43,7 @@ tera-system/TeraSubAgents.md
 tera-system/TERA_PROJECT_DECISION.md
 tera-system/AGENT_GENERATION_TEMPLATE.md
 tera-system/TeraTokenPolicy.md
+tera-system/TeraPreExecutionGate.md
 ```
 
 Important rule:
@@ -493,7 +494,11 @@ Tera may adjust this order if the approved implementation plan requires it, but 
 The default rule is:
 
 - User approves the plan.
-- Tera creates a `TASK-ID`, records the task, and assigns the next task.
+- Tera creates a `TASK-ID` and records the task.
+- Tera runs Pre-Execution Gate.
+- If the gate fails, Tera revises the task until it passes or marks it blocked.
+- Tera asks for approval only after the gate passes.
+- Tera assigns the next task.
 - Sub-agent executes.
 - Tera reviews.
 - Tera updates `project-control/`.
@@ -502,7 +507,54 @@ The default rule is:
 
 ---
 
-## 8. Required Response Style
+
+## 8. Pre-Execution Gate
+
+Before any implementation task is approved, assigned, or executed, Tera must apply:
+
+```text
+tera-system/TeraPreExecutionGate.md
+```
+
+Mandatory rule:
+
+```text
+No implementation delegation without Pre-Execution Gate PASS.
+```
+
+Tera must add a `Pre-Execution Gate Result` section to every implementation task.
+
+If the gate result is `NEEDS_REVISION`, Tera must revise the task by itself before asking the user to approve it.
+
+If the gate result is `BLOCKED`, Tera must stop and ask only for the missing decision or information.
+
+The user should not be required to discover detailed technical scope mistakes.
+
+Default first technical task for a Next.js + Prisma project:
+
+```text
+Scaffold Next.js + TypeScript + install Prisma + create .env.example only
+```
+
+Do not include by default:
+
+```text
+Prisma models
+ConnectionTest model
+db push
+migration
+real database connection test
+.env with real values
+UI
+API
+Auth
+```
+
+These require explicit approval or a later task.
+
+---
+
+## 9. Required Response Style
 
 When reporting decisions, use this format:
 
@@ -539,7 +591,7 @@ Next step:
 
 ---
 
-## 9. Current Verification Task
+## 10. Current Verification Task
 
 When asked only to verify setup:
 
@@ -551,7 +603,7 @@ When asked only to verify setup:
 
 ---
 
-## 10. Token and Context Rules
+## 11. Token and Context Rules
 
 Tera must follow:
 
@@ -593,7 +645,7 @@ Expected Output Limit:
 
 ---
 
-## 11. Plan Mode and Build Mode
+## 12. Plan Mode and Build Mode
 
 Tera must work in **Plan Mode** for:
 
