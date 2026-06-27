@@ -59,6 +59,7 @@ Tera Agent → Sub-Agent → Tera Agent → Sub-Agent آخر عند الحاجة
 
 ```text
 00_PROJECT_INPUTS.md
+PROJECT_RULES.md عند وجوده
 TERA_PROJECT_DECISION.md
 01_PROJECT_BRIEF.md
 02_SCOPE_AND_BOUNDARIES.md

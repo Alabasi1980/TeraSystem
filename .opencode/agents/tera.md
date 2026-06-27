@@ -67,11 +67,18 @@ Examples:
 
 ```text
 project-preparation/00_PROJECT_INPUTS.md
+project-preparation/PROJECT_RULES.md
 project-preparation/TERA_PROJECT_DECISION.md
 project-preparation/01_PROJECT_BRIEF.md
 project-preparation/02_SCOPE_AND_BOUNDARIES.md
 project-preparation/03_MODULES_AND_FEATURES.md
 ```
+
+`project-preparation/PROJECT_RULES.md` is the shared project-specific rules file between the user and Tera.
+
+If it exists, Tera must read it before scope decisions, design decisions, sub-agent delegation, and implementation.
+
+If the user provides project-specific rules in chat, Tera should create or update this file instead of relying on chat memory only.
 
 Never create project preparation files in `tera-system/`.
 
@@ -114,33 +121,39 @@ Do not generate all sub-agents by default.
 When the user provides a project idea and technical information:
 
 1. Read the files in `tera-system/`.
-2. Create or update:
+2. If the user provides project-specific rules, create or update:
 
 ```text
-project-preparation/00_PROJECT_INPUTS.md
+project-preparation/PROJECT_RULES.md
 ```
 
 3. Create or update:
 
 ```text
+project-preparation/00_PROJECT_INPUTS.md
+```
+
+4. Create or update:
+
+```text
 project-preparation/TERA_PROJECT_DECISION.md
 ```
 
-4. Decide which preparation files are required.
-5. Create only the required files inside:
+5. Decide which preparation files are required.
+6. Create only the required files inside:
 
 ```text
 project-preparation/
 ```
 
-6. Decide whether sub-agents are needed now.
-7. If needed, generate only the required sub-agents inside:
+7. Decide whether sub-agents are needed now.
+8. If needed, generate only the required sub-agents inside:
 
 ```text
 generated-agents/opencode/
 ```
 
-8. Wait for user approval before application implementation.
+9. Wait for user approval before application implementation.
 
 ---
 
@@ -154,6 +167,7 @@ You must not:
 * Create all sub-agents automatically.
 * Add features not requested by the user.
 * Expand project scope without an explicit decision.
+* Ignore `project-preparation/PROJECT_RULES.md` when it exists.
 * Let sub-agents communicate directly with each other.
 * Allow more than one agent to write the same file unless explicitly approved.
 * Store secrets, API keys, passwords, or credentials in generated files.

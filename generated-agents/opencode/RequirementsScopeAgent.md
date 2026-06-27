@@ -36,6 +36,7 @@ Default reference files:
 ## Allowed Sources
 
 - Project preparation files approved by Tera.
+- `project-preparation/PROJECT_RULES.md` when it exists.
 - Files explicitly attached in the task.
 - Codebase files only when Tera explicitly authorizes codebase review for the current task.
 - Technical docs only if Tera allows external lookup.
@@ -53,6 +54,7 @@ Default reference files:
 
 - Do not edit files outside the allowed list.
 - Do not change project scope.
+- Do not violate `project-preparation/PROJECT_RULES.md` when it exists.
 - Do not create new features beyond the approved scope.
 - Do not contact or instruct other sub-agents directly.
 - Do not make final approval decisions.

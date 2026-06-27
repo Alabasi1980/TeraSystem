@@ -253,6 +253,7 @@ Reason for Invocation: Project decision approved; scope files must be produced b
 Objective: Produce the approved project brief and scope boundaries without expanding the MVP.
 Reference Files:
 - project-preparation/00_PROJECT_INPUTS.md
+- project-preparation/PROJECT_RULES.md (if exists)
 - project-preparation/TERA_PROJECT_DECISION.md
 Allowed Write Targets:
 - project-preparation/01_PROJECT_BRIEF.md
