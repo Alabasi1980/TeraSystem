@@ -760,6 +760,55 @@ design-source/ عند توفيره من Tera
 
 ---
 
+## 6.8 ProjectControlAgent
+
+| البند | القيمة |
+|---|---|
+| اسم العميل | Project Control Agent |
+| المعرّف | `PROJECT_CONTROL_AGENT` |
+| الفئة | مشروط / إداري |
+| شرط الاستدعاء | بدء التنفيذ الفعلي، الحاجة إلى تتبع مهام، مراجعات، مشاكل، قرارات، أو مشروع يحتاج قابلية تدقيق |
+
+### يقرأ
+
+```text
+project-preparation/PROJECT_RULES.md عند وجوده
+project-preparation/TERA_PROJECT_DECISION.md
+project-preparation/09_IMPLEMENTATION_PLAN.md
+project-control/
+```
+
+### ينتج أو يساهم في
+
+```text
+project-control/TASK_REGISTRY.md
+project-control/PROJECT_ACTIVITY_LOG.md
+project-control/ISSUES_AND_GAPS.md
+project-control/DECISIONS_LOG.md
+project-control/tasks/
+```
+
+### حدوده
+
+- لا يقرر المرحلة التالية.
+- لا يغير نطاق المشروع.
+- لا يعدل كود التطبيق.
+- لا يعدل ملفات التحليل أو التصميم إلا بتفويض صريح من Tera.
+- لا ينشئ عملاء فرعيين.
+- لا يغلق مهمة أو مشكلة دون قرار Tera.
+- لا يعطي مهام للعملاء مباشرة.
+- لا يغير حالة مهمة إلى `Accepted` أو `Closed` إلا بعد مراجعة Tera.
+
+### معايير القبول
+
+- كل مهمة لها `TASK-ID`.
+- كل نتيجة مرتبطة بمهمة.
+- كل مشكلة أو فجوة لها حالة واضحة.
+- كل قرار مهم مسجل في `DECISIONS_LOG.md`.
+- سجل النشاط يوضح آخر نقطة وصل إليها المشروع.
+
+---
+
 # 7. سياسة ملكية الملفات
 
 | الملف | مالك الكتابة الأساسي |
@@ -778,6 +827,8 @@ design-source/ عند توفيره من Tera
 
 الملفات المشروطة يحدد تيرا مالكها حسب طبيعة المشروع.
 
+ملفات `project-control/` يملك تحديثها `PROJECT_CONTROL_AGENT` عند توليده، مع بقاء قرار القبول والإغلاق عند `Tera Agent`.
+
 ---
 
 # 8. حدود التداخل بين العملاء
@@ -789,6 +840,7 @@ design-source/ عند توفيره من Tera
 | Data Design vs Architecture | Data يحدد ماذا نخزن. Architecture تحدد كيف تُبنى الطبقات |
 | QA vs Security | QA يختبر الوظيفة. Security يراجع الحماية |
 | Documentation vs Tera | Documentation يوثق. تيرا يقرر الجاهزية والتسليم |
+| ProjectControl vs Tera | ProjectControl يسجل المهام والقرارات والحالات. تيرا يقرر القبول والإغلاق والخطوة التالية |
 
 ---
 

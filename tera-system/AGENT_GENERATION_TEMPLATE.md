@@ -80,6 +80,7 @@ Default reference files:
 - Codebase files only when Tera explicitly authorizes codebase review for the current task.
 - `project-preparation/28_UI_UX_GUIDELINES.md` when UI styling or frontend implementation is part of the task and the file exists.
 - `design-source/` when Tera explicitly provides it as the approved visual design source.
+- `project-control/` files only when Tera explicitly assigns project-control record work.
 - Technical docs only if Tera allows external lookup.
 - Previous outputs only if they are saved in official project files.
 
@@ -115,6 +116,7 @@ Default reference files:
 - Do not invent UI styling if `project-preparation/28_UI_UX_GUIDELINES.md` or `design-source/` exists.
 - Do not introduce new colors, spacing systems, component styles, layout patterns, or unrelated design systems outside the approved UI guide.
 - Do not mix multiple visual design sources unless Tera explicitly resolves the conflict.
+- Do not change project-control statuses to `Accepted`, `Closed`, `Deferred`, or `Cancelled` unless Tera explicitly decides that status.
 
 ## Allowed Write Targets
 

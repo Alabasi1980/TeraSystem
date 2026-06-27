@@ -54,6 +54,16 @@
 | سبب التوليد | ضروري لتحديد الشاشات المطلوبة وهيكل الواجهة وعلاقتها بالصلاحيات ومسارات العمل |
 | الملفات المسموح بكتابتها | `07_SCREENS_AND_UI_STRUCTURE.md`, `28_UI_UX_GUIDELINES.md` (بتفويض صريح من Tera عند وجود مصدر تصميم أو طلب Style Guide) |
 
+### 5. ProjectControlAgent
+
+| البند | القيمة |
+|---|---|
+| الملف | `generated-agents/opencode/ProjectControlAgent.md` |
+| المعرف | `PROJECT_CONTROL_AGENT` |
+| الفئة | مشروط / إداري |
+| سبب التوليد | مطلوب قبل التنفيذ لضبط المهام، النتائج، المراجعات، المشاكل، الفجوات، والقرارات داخل `project-control/` |
+| الملفات المسموح بكتابتها | `project-control/TASK_REGISTRY.md`, `project-control/PROJECT_ACTIVITY_LOG.md`, `project-control/ISSUES_AND_GAPS.md`, `project-control/DECISIONS_LOG.md`, `project-control/tasks/*.md` |
+
 ---
 
 ## العملاء الذين لم يتم توليدهم — مع السبب
@@ -90,3 +100,4 @@
 - قبل تنفيذ أي واجهة، يجب أن يحسم Tera مصدر التصميم البصري: تصميم افتراضي من Tera، ملفات Style من المستخدم، أو مرجع خارجي مثل `getdesign.md`.
 - عند وجود مصدر تصميم بصري، يحفظ الأصل أو الإشارة إليه داخل `design-source/` وتلخص قواعد التنفيذ في `project-preparation/28_UI_UX_GUIDELINES.md`.
 - `project-preparation/PROJECT_RULES.md` هو ملف القواعد المشتركة الخاصة بالمشروع. إذا وجد، يجب قراءته وتمرير قيوده للعملاء الفرعيين في التفويضات المرتبطة.
+- `ProjectControlAgent` لا يقرر ولا ينفذ ولا يغلق المهام بنفسه؛ دوره توثيق السجلات تحت قرار Tera فقط.

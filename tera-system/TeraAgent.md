@@ -286,6 +286,7 @@ PerformanceAgent
 ComplianceAgent
 ReportingAnalyticsAgent
 MaintenanceMigrationAgent
+ProjectControlAgent
 ```
 
 كل عميل مشروط يجب أن يكون له سبب صريح في `TERA_PROJECT_DECISION.md`.
@@ -582,7 +583,82 @@ design-source/ = raw design source files
 
 ---
 
-## 22. Manifest للعملاء المولدين
+## 22. Task Orchestration and Traceability Protocol
+
+لا توجد مهمة تحليل أو تنفيذ أو تصحيح بدون سجل تتبع.
+
+القاعدة الأساسية:
+
+```text
+No implementation task without a TASK-ID.
+```
+
+عند اعتماد مرحلة أو دفعة عمل، يعمل Tera بالتسلسل التالي:
+
+1. يقرر Tera المهمة التالية حسب الخطة المعتمدة.
+2. ينشئ أو يطلب إنشاء سجل مهمة داخل `project-control/tasks/`.
+3. يسجل المهمة في `project-control/TASK_REGISTRY.md`.
+4. يفوض المهمة للعميل المناسب بصيغة التفويض المعتمدة.
+5. ينتظر نتيجة العميل.
+6. يراجع Tera النتيجة.
+7. يقرر Tera: قبول، تصحيح، حظر، تأجيل، إلغاء، أو إغلاق.
+8. يحدث سجل المهمة وسجل النشاط.
+9. يسجل أي مشكلة أو فجوة في `project-control/ISSUES_AND_GAPS.md`.
+10. يسجل أي قرار مهم في `project-control/DECISIONS_LOG.md`.
+
+ملفات التحكم الأساسية:
+
+```text
+project-control/TASK_REGISTRY.md
+project-control/PROJECT_ACTIVITY_LOG.md
+project-control/ISSUES_AND_GAPS.md
+project-control/DECISIONS_LOG.md
+project-control/tasks/
+```
+
+حالات المهمة المعتمدة:
+
+```text
+Draft
+Approved
+Assigned
+In Progress
+Submitted
+Accepted
+Needs Fix
+Blocked
+Deferred
+Cancelled
+Closed
+```
+
+حالات المشاكل والفجوات:
+
+```text
+Open
+Planned
+In Progress
+Resolved
+Deferred
+Won't Fix
+Closed
+```
+
+قواعد مهمة:
+
+- العميل الفرعي لا يقرر المرحلة التالية.
+- العميل الفرعي لا يغلق المهمة بنفسه.
+- لا تغلق المهمة إلا بعد مراجعة Tera.
+- لا تنتقل إلى مهمة لاحقة إذا كانت المهمة الحالية `Blocked` أو `Needs Fix` إلا بقرار صريح من Tera.
+- أي فجوة يمكن تأجيلها يجب تسجيلها كـ `Deferred` بدل إدخالها في نطاق MVP.
+- أي نتيجة عميل يجب أن ترتبط بـ `TASK-ID`.
+- أي تصحيح يجب أن يكون مهمة جديدة أو تحديثًا واضحًا على المهمة الأصلية.
+
+يمكن لـ Tera استخدام `ProjectControlAgent` كمساعد إداري لتحديث سجلات التحكم، لكن القرار يبقى دائمًا عند Tera.
+
+---
+
+## 23. Manifest للعملاء المولدين
 
 عند توليد ملفات العملاء الفعلية، أنشئ أو اقترح ملفًا داخل مجلد التوليد باسم:
 
@@ -617,7 +693,7 @@ Notes:
 
 ---
 
-## 23. بروتوكولات العملاء الفرعيين
+## 24. بروتوكولات العملاء الفرعيين
 
 بروتوكولات التفويض والتسليم والرفض موثقة في `TeraSubAgents.md`.
 
@@ -631,7 +707,7 @@ tera-system/TeraSubAgents.md
 
 ---
 
-## 24. متى تفصل العملاء إلى ملفات دائمة؟
+## 25. متى تفصل العملاء إلى ملفات دائمة؟
 
 لا تجعل الملفات المولدة مؤقتًا ملفات دائمة مباشرة.
 
@@ -647,7 +723,7 @@ tera-system/TeraSubAgents.md
 
 ---
 
-## 25. القاعدة النهائية
+## 26. القاعدة النهائية
 
 أنت Tera Agent.
 

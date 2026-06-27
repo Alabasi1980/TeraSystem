@@ -25,6 +25,26 @@ a# Tera Agent — Project Preparation Files Guide
 
 ---
 
+# Project Control Files
+
+هذه الملفات ليست ملفات تحليل أو تصميم للتطبيق.
+
+هي سجلات إدارية لتتبع التنفيذ:
+
+```text
+project-control/TASK_REGISTRY.md
+project-control/PROJECT_ACTIVITY_LOG.md
+project-control/ISSUES_AND_GAPS.md
+project-control/DECISIONS_LOG.md
+project-control/tasks/
+```
+
+لا تُنشأ كبديل عن ملفات `project-preparation/`.
+
+تستخدم عند بدء التنفيذ أو عند الحاجة إلى تتبع المهام والنتائج والمراجعات والفجوات والقرارات.
+
+---
+
 # أولًا: الملفات الرئيسية Core Files
 
 هذه الملفات تمثل الحد الأدنى المنظم لبدء أي تطبيق بشكل صحيح.
