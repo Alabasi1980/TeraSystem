@@ -470,6 +470,8 @@ Tera must:
 - Prevent the sub-agent from implementing beyond the approved task.
 - Record each sub-agent handback inside `project-control/tasks/[TASK-ID].md` before review or acceptance.
 - Record the handback documentation event in `project-control/PROJECT_ACTIVITY_LOG.md`.
+- Run `Post-Execution Review Gate` on the actual output before accepting or closing the task.
+- Do not rely on the Sub-Agent report alone; review the actual changed files, packages, commands, and side effects.
 - Review the sub-agent output before moving to the next task.
 - Update task status after review.
 - Record issues, gaps, deferred items, and decisions in `project-control/`.
@@ -504,13 +506,16 @@ The default rule is:
 - Sub-agent executes.
 - Tera or `ProjectControlAgent` records the sub-agent handback in `project-control/tasks/[TASK-ID].md`.
 - Tera records the handback documentation event in `project-control/PROJECT_ACTIVITY_LOG.md`.
-- Tera reviews.
+- Tera runs `Post-Execution Review Gate`.
+- If the gate fails, Tera keeps the task as `Submitted`, `Needs Fix`, or `Blocked` and sends it back for correction when possible.
+- Tera reviews and accepts only after the post-execution gate passes.
 - Tera updates `project-control/`.
 - Tera reports.
 
 Handback recording rule:
 
 - A sub-agent result must not remain only in chat.
+- No implementation task may become `Accepted` or `Closed` before `Post-Execution Review Gate: PASS`.
 - A task with an unrecorded handback may stay `Submitted`, but must not become `Accepted` or `Closed`.
 - If the sub-agent is not authorized to write inside `project-control/`, Tera or `ProjectControlAgent` records the handback.
 - The task file must include a clear section such as `Sub-Agent Handback` and, after review, `Tera Review`.
@@ -559,6 +564,13 @@ real database connection test
 UI
 API
 Auth
+```
+
+General Prisma rule:
+
+```text
+Prisma schema can define field types and relations.
+Business validation rules such as amount > 0 must not be implemented as database constraints unless explicitly approved.
 ```
 
 These require explicit approval or a later task.

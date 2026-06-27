@@ -656,6 +656,13 @@ API
 Auth
 ```
 
+قاعدة Prisma عامة:
+
+```text
+Prisma schema can define field types and relations.
+Business validation rules such as amount > 0 must not be implemented as database constraints unless explicitly approved.
+```
+
 إذا احتاج Tera إلى تجاوز ذلك، يطلب موافقة صريحة من المستخدم قبل التفويض.
 
 ---
@@ -682,10 +689,11 @@ No implementation task without a TASK-ID.
 8. يسجل Tera أو `ProjectControlAgent` تسليم العميل داخل ملف المهمة `project-control/tasks/[TASK-ID].md` في قسم واضح مثل `Sub-Agent Handback`.
 9. يسجل حدث توثيق التسليم في `project-control/PROJECT_ACTIVITY_LOG.md`.
 10. يراجع Tera النتيجة بعد توثيق التسليم، لا قبل ذلك.
-11. يقرر Tera: قبول، تصحيح، حظر، تأجيل، إلغاء، أو إغلاق.
-12. يحدث سجل المهمة وسجل النشاط.
-13. يسجل أي مشكلة أو فجوة في `project-control/ISSUES_AND_GAPS.md`.
-14. يسجل أي قرار مهم في `project-control/DECISIONS_LOG.md`.
+11. ينفذ `Post-Execution Review Gate` على الناتج الفعلي، لا على تقرير العميل فقط.
+12. يقرر Tera: قبول، تصحيح، حظر، تأجيل، إلغاء، أو إغلاق.
+13. يحدث سجل المهمة وسجل النشاط.
+14. يسجل أي مشكلة أو فجوة في `project-control/ISSUES_AND_GAPS.md`.
+15. يسجل أي قرار مهم في `project-control/DECISIONS_LOG.md`.
 
 ملفات التحكم الأساسية:
 
@@ -734,6 +742,9 @@ Closed
 - أي فجوة يمكن تأجيلها يجب تسجيلها كـ `Deferred` بدل إدخالها في نطاق MVP.
 - أي نتيجة عميل يجب أن ترتبط بـ `TASK-ID`.
 - أي تسليم من عميل فرعي يجب أن يوثق داخل `project-control/tasks/[TASK-ID].md` قبل قبول المهمة أو إغلاقها.
+- لا يجوز قبول أي مهمة تنفيذية أو إغلاقها قبل اجتياز `Post-Execution Review Gate`.
+- لا يعتمد Tera على تقرير العميل الفرعي فقط؛ يراجع الملفات الفعلية، والحزم، والأوامر، والآثار الجانبية الناتجة.
+- إذا فشلت البوابة بعد التنفيذ، تبقى المهمة `Submitted` أو تتحول إلى `Needs Fix` أو `Blocked` بحسب الحالة.
 - بقاء تسليم العميل في المحادثة فقط يعتبر مخالفة تتبع، ويجب تصحيحه قبل الانتقال للمهمة التالية.
 - إذا لم يكن العميل مفوضًا بالكتابة في `project-control/`، فإن Tera أو `ProjectControlAgent` مسؤول عن نقل التسليم إلى ملف المهمة فور استلامه.
 - أي تصحيح يجب أن يكون مهمة جديدة أو تحديثًا واضحًا على المهمة الأصلية.

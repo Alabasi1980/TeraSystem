@@ -117,6 +117,7 @@ Default reference files:
 - Do not introduce new colors, spacing systems, component styles, layout patterns, or unrelated design systems outside the approved UI guide.
 - Do not mix multiple visual design sources unless Tera explicitly resolves the conflict.
 - Do not change project-control statuses to `Accepted`, `Closed`, `Deferred`, or `Cancelled` unless Tera explicitly decides that status.
+- Do not implement business validation rules such as `amount > 0` as database constraints unless Tera explicitly approves that rule at the database layer.
 
 ## Allowed Write Targets
 

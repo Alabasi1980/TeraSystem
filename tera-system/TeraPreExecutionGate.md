@@ -1,10 +1,10 @@
 # TeraPreExecutionGate.md
 
-# بوابة ما قبل التنفيذ — Pre-Execution Gate
+# بوابة ما قبل التنفيذ وما بعده — Pre/Post Execution Gates
 
 ## 1. الغرض
 
-هذا الملف يعرّف بوابة تحقق إلزامية قبل أن يعتمد Tera أي مهمة تنفيذية أو يفوضها إلى عميل فرعي.
+هذا الملف يعرّف بوابة تحقق إلزامية قبل التنفيذ، وبوابة مراجعة إلزامية بعد التنفيذ، قبل أن يعتمد Tera أي مهمة تنفيذية أو يفوضها إلى عميل فرعي أو يقبل نتيجتها النهائية.
 
 الهدف هو أن يستطيع Tera قيادة تطبيق صغير أو متوسط حتى عند استخدام نموذج ذكاء متوسط أو ضعيف، وذلك عبر قواعد تشغيل واضحة وقابلة للفحص، بدل الاعتماد على الاستنتاج الحر.
 
@@ -174,6 +174,8 @@ Deferred / Proposed Next Task
   - `datasource db`
   - بدون أي `model`
 - يمنع إنشاء أي `model` داخل `schema.prisma` إلا في مهمة Schema معتمدة.
+- يسمح لـ `Prisma schema` بتعريف أنواع الحقول والعلاقات فقط ضمن النطاق المعتمد.
+- قواعد التحقق التجارية مثل `amount > 0` أو حدود القيم أو شروط المجال لا يجوز تنفيذها كـ database constraints أو `CHECK` constraints أو قيود قاعدة بيانات مشابهة إلا إذا كانت المهمة تنص على ذلك صراحة وتم اعتماد ذلك.
 - يمنع تشغيل:
   - `npx prisma db push`
   - `npx prisma migrate`
@@ -195,6 +197,201 @@ Deferred / Proposed Next Task
 | ممنوع اتصال قاعدة بيانات لكن المعيار يطلب `db push` | `NEEDS_REVISION` |
 
 لا يجوز اعتبار المهمة `PASS` قبل إزالة التعارض.
+
+---
+
+## 6.2 بوابة المراجعة بعد التنفيذ — Post-Execution Review Gate
+
+### الغرض
+
+بعد تسليم أي Sub-Agent لمهمة تنفيذية، يجب على Tera مراجعة الناتج الفعلي قبل قبول المهمة.
+
+القاعدة الأساسية:
+
+```text
+Do not accept an implementation task based on the Sub-Agent report alone.
+```
+
+لا يجوز لـ Tera قبول المهمة اعتمادًا على تقرير العميل الفرعي فقط.
+يجب أن يراجع الملفات الفعلية، والأوامر المنفذة، والآثار الجانبية، والتوافق مع النطاق ومعايير القبول.
+
+### متى تطبق؟
+
+تطبق بعد كل مهمة تنفيذية ينتج عنها واحد أو أكثر من التالي:
+
+- إنشاء ملفات.
+- تعديل ملفات.
+- حذف ملفات.
+- تثبيت حزم.
+- تشغيل أوامر Shell أو CLI.
+- إنشاء مشروع Scaffold.
+- تعديل إعدادات.
+- إنشاء أو تعديل Schema.
+- تنفيذ UI.
+- تنفيذ API.
+- أي تغيير داخل كود التطبيق.
+
+### القاعدة الإلزامية
+
+قبل تغيير حالة أي مهمة إلى:
+
+```text
+Accepted
+Closed
+```
+
+يجب تنفيذ `Post-Execution Review Gate`.
+
+إذا لم تجتز المهمة هذه البوابة، يجب أن تبقى حالتها واحدة من:
+
+```text
+Submitted
+Needs Fix
+Blocked
+```
+
+بحسب نتيجة المراجعة.
+
+### Checklist إلزامي
+
+| # | فحص المراجعة بعد التنفيذ | النتيجة المطلوبة |
+|---|---|---|
+| 1 | هل الملفات التي تغيرت تقع داخل Allowed Write Targets؟ | Yes |
+| 2 | هل تم إنشاء أي ملف خارج النطاق؟ | No |
+| 3 | هل تم حذف أي ملف دون تفويض؟ | No |
+| 4 | هل تم تثبيت أي مكتبة غير مطلوبة صراحة؟ | No |
+| 5 | هل توجد ملفات Auto-generated غير مطابقة للنطاق؟ | No |
+| 6 | هل توجد ملفات توثيق مثل README لم تكن مطلوبة؟ | No |
+| 7 | هل توجد إعدادات CSS أو UI غير مطلوبة؟ | No |
+| 8 | هل تم إدخال Tailwind أو Bootstrap أو مكتبة UI دون موافقة؟ | No |
+| 9 | هل توجد Dark Mode classes أو Theme غير مطابق لـ `28_UI_UX_GUIDELINES.md`؟ | No |
+| 10 | هل تم إنشاء `.env` فعلي بدل `.env.example`؟ | No |
+| 11 | هل يحتوي Prisma schema على models غير مصرح بها؟ | No |
+| 12 | هل تم تحويل قواعد Business Validation إلى database constraints دون موافقة صريحة؟ | No |
+| 13 | هل تم تشغيل `db push` أو `migrate` أو `generate` دون تفويض؟ | No |
+| 14 | هل تم إنشاء API أو Route دون أن تكون المهمة API؟ | No |
+| 15 | هل تم إنشاء Auth أو Roles أو Sessions دون تفويض؟ | No |
+| 16 | هل تم الالتزام بمعايير القبول؟ | Yes |
+| 17 | هل المخرجات قابلة للتشغيل أو الاختبار؟ | Yes |
+| 18 | هل توجد آثار جانبية من أوامر CLI لم تكن متوقعة؟ | No |
+| 19 | هل تم تحديث سجل المهمة والسجلات الإدارية بشكل صحيح؟ | Yes |
+
+### نتائج البوابة
+
+نتيجة `Post-Execution Review Gate` يجب أن تكون واحدة فقط:
+
+```text
+PASS
+NEEDS_FIX
+BLOCKED
+```
+
+- `PASS`: المخرجات مطابقة للنطاق ومعايير القبول، ولا توجد آثار جانبية غير مصرح بها.
+- `NEEDS_FIX`: ظهرت مخالفات قابلة للإصلاح ضمن نفس المهمة.
+- `BLOCKED`: ظهرت مشكلة لا يمكن إصلاحها دون قرار من المستخدم أو تعديل نطاق المهمة.
+
+### قاعدة `NEEDS_FIX`
+
+إذا كانت النتيجة `NEEDS_FIX`، يجب على Tera:
+
+1. ألا يقبل المهمة.
+2. يحدد المخالفات بوضوح.
+3. يطلب من العميل الفرعي إصلاحها.
+4. يحتفظ بنفس `TASK-ID`.
+5. يسجل سبب المشكلة.
+6. يوضح إن كان السبب من تفويض Tera أو من تنفيذ العميل.
+
+### Root Cause Rule
+
+إذا كان سبب المخالفة هو أن تفويض Tera كان غير دقيق، يجب على Tera أن يسجل ذلك بوضوح.
+
+مثال:
+
+```text
+Root Cause: Tera delegation used create-next-app without --no-tailwind, causing Tailwind files to be generated.
+```
+
+ثم يضيف Tera توصية عملية لتجنب تكرار الخطأ في المهام القادمة.
+
+### قاعدة خاصة بمهام Scaffold
+
+أي مهمة Scaffold تستخدم أمرًا مثل:
+
+- `create-next-app`
+- `vite`
+- `create-react-app`
+- أي generator مشابه
+
+يجب بعد التنفيذ مراجعة الملفات والحزم الناتجة فعليًا، وليس الاكتفاء بأن الأمر نجح.
+
+يجب على Tera تصنيف الناتج إلى:
+
+```text
+Allowed boilerplate
+Needs cleanup
+Forbidden
+```
+
+مثال Next.js:
+
+إذا كانت المهمة لا تسمح بـ Tailwind، يجب فحص:
+
+- `package.json`
+- `postcss.config.*`
+- `app/globals.css`
+- `app/page.tsx`
+- `README.md`
+
+ويجب إزالة أو تعديل أي أثر خارج النطاق قبل قبول المهمة.
+
+### قاعدة إزالة الحزم وآثارها
+
+عند منع حزمة أو طلب إزالتها، يجب على Tera ألا يكتفي بفحص `package.json` فقط.
+
+يجب فحص الآثار التالية:
+
+- `package.json`
+- `package-lock.json` / `pnpm-lock.yaml` / `yarn.lock`
+- ملفات الإعدادات
+- `imports`
+- `class names` أو `usages` داخل ملفات المصدر
+- القوالب أو الملفات المولدة
+
+القاعدة الأساسية:
+
+```text
+The task cannot PASS if forbidden package traces remain in lockfiles or source code.
+```
+
+إذا بقي أثر الحزمة الممنوعة في `lockfiles` أو الكود أو القوالب المولدة، فلا يجوز أن تجتاز المهمة `Post-Execution Review Gate` بنتيجة `PASS`.
+
+### قالب يضاف داخل ملف المهمة بعد التسليم
+
+```markdown
+## Post-Execution Review Result
+
+| Check | Result | Notes |
+|---|---|---|
+| Changed files within Allowed Write Targets | PASS / FAIL | ... |
+| No unauthorized files created | PASS / FAIL | ... |
+| No unauthorized files deleted | PASS / FAIL | ... |
+| No unauthorized packages added | PASS / FAIL | ... |
+| No unauthorized UI/CSS/theme changes | PASS / FAIL | ... |
+| No `.env` real secrets created | PASS / FAIL | ... |
+| No unauthorized Prisma models/migrations | PASS / FAIL | ... |
+| No unapproved business validation moved to DB constraints | PASS / FAIL | ... |
+| No unauthorized API/Auth created | PASS / FAIL | ... |
+| Acceptance criteria satisfied | PASS / FAIL | ... |
+| CLI side effects reviewed | PASS / FAIL | ... |
+
+Gate Status: PASS / NEEDS_FIX / BLOCKED
+
+Root Cause if failed:
+- ...
+
+Required Action:
+- ...
+```
 
 ---
 

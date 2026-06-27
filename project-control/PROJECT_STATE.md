@@ -86,6 +86,7 @@
 | وضع العمل قبل التنفيذ | Plan Mode |
 | Build Mode | يحتاج موافقة صريحة |
 | Pre-Execution Gate | إلزامي قبل أي تفويض أو تنفيذ |
+| Post-Execution Review Gate | إلزامي بعد كل مهمة تنفيذية قبل `Accepted` أو `Closed` |
 
 ---
 
@@ -95,7 +96,7 @@
 |---|---|---|
 | Readiness Review | مكتمل ✅ | المشروع جاهز للتنفيذ — راجع تقرير المراجعة |
 | EngineeringAgent | مولّد ✅ | جاهز للتفويض بعد اجتياز TASK-ID لبوابة Pre-Execution Gate |
-| TASK-0001 | Accepted ✅ | Scaffold Next.js + Prisma + .env.example — مكتمل |
+| TASK-0001 | Closed ✅ | Scaffold Next.js + Prisma + .env.example — Post-Execution Gate PASS |
 
 ---
 
@@ -104,8 +105,9 @@
 Readiness Review مكتمل ✅ — المشروع جاهز للتنفيذ.
 جميع ملفات التحضير (00–10 + 28) معتمدة.
 EngineeringAgent مولّد وجاهز للتفويض.
-TASK-0001 (Scaffold Next.js + Prisma + .env.example) — **مكتمل ومقبول** ✅.
-الخطوة التالية: إنشاء TASK-0002 (Prisma Data Models).
+TASK-0001 (Scaffold Next.js + Prisma + .env.example) — **مغلق** ✅ بعد Post-Execution Review Gate PASS.
+قاعدة التنفيذ الحالية: لا تقبل أي مهمة تنفيذية إلا بعد `Pre-Execution Gate: PASS` ثم `Post-Execution Review Gate: PASS`.
+الخطوة التالية: TASK-0002 (Prisma Data Models) — مقترح وبانتظار الاعتماد.
 
 ---
 
@@ -114,5 +116,5 @@ TASK-0001 (Scaffold Next.js + Prisma + .env.example) — **مكتمل ومقبو
 | البند | القيمة |
 |---|---|
 | Updated By | Tera Agent |
-| Update Reason | TASK-0001 مكتمل ومقبول |
-| Next Step | اقتراح TASK-0002 — Prisma Data Models |
+| Update Reason | TASK-0001 مغلق — Post-Execution Review PASS |
+| Next Step | اقتراح TASK-0002 — Prisma Data Models بانتظار الاعتماد |

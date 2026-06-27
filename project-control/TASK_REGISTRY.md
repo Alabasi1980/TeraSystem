@@ -27,5 +27,5 @@ Closed
 | Task ID | Title | Assigned To | Phase | Status | Linked Files | Last Update |
 |---|---|---|---|---|---|---|
 | TASK-0000 | Initialize Project Control Layer | Tera Agent | System Setup | Closed | `project-control/` | 2026-06-27 |
-| TASK-0001 | Scaffold Next.js + TypeScript + Prisma + .env.example | EngineeringAgent | Phase 1 — Technical Foundation | Accepted | `project-control/tasks/TASK-0001.md` | 2026-06-27 |
+| TASK-0001 | Scaffold Next.js + TypeScript + Prisma + .env.example | EngineeringAgent | Phase 1 — Technical Foundation | Closed | `project-control/tasks/TASK-0001.md` | 2026-06-27 |
 

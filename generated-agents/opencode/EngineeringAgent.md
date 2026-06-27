@@ -86,6 +86,7 @@ mode: subagent
 - لا تغيّر حالة أي مهمة في `project-control/` إلى `Accepted` أو `Closed` أو `Deferred` أو `Cancelled`.
 - لا تضيف مكتبات أو حزم غير مطلوبة للمهمة الحالية.
 - لا تنشئ ملفات README أو توثيق إلا بتعليمة صريحة من Tera.
+- لا تنفذ قواعد Business Validation مثل `amount > 0` كقيود قاعدة بيانات أو `CHECK` constraints إلا إذا صرّح Tera بذلك صراحة داخل المهمة.
 
 ## Allowed Write Targets
 
