@@ -37,6 +37,7 @@
 | `TeraSubAgents.md` | يعرّف العملاء الفرعيين الممكن استخدامهم |
 | `AGENT_GENERATION_TEMPLATE.md` | يعرّف قالب توليد العملاء الفعليين وقواعد `MVP Constraints` و`Forbidden Actions` الإلزامية |
 | `TERA_PROJECT_DECISION.md` | يسجل قرارك الافتتاحي للمشروع الحالي |
+| `TERA_USER_GUIDE.md` | يعرّف برومتات تعامل المستخدم مع Tera، ومنها بدء مشروع جديد واستئناف مشروع قائم |
 
 ملف قواعد المشروع الاختياري:
 

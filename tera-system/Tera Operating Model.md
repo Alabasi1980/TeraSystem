@@ -53,6 +53,7 @@ tera-system/TeraSubAgents.md
 tera-system/Tera_Project_Preparation_Files.md
 tera-system/TERA_PROJECT_DECISION.md
 tera-system/AGENT_GENERATION_TEMPLATE.md
+tera-system/TERA_USER_GUIDE.md
 ```
 
 قاعدة مهمة:
@@ -231,6 +232,23 @@ project-preparation/28_UI_UX_GUIDELINES.md
 * معايير القبول.
 * قواعد التفعيل.
 * قواعد المزامنة مع Manifest.
+
+---
+
+### 4.6 `TERA_USER_GUIDE.md`
+
+هذا هو دليل تعامل المستخدم مع Tera.
+
+يحتوي على:
+
+* برومت بدء مشروع جديد.
+* برومت استئناف مشروع قائم.
+* برومت اعتماد المراحل.
+* برومت حسم التصميم.
+* برومت بدء التنفيذ المنضبط.
+* أمثلة لإيقاف التضخيم أو التصحيح عند الانحراف.
+
+يجب أن يبقى اسم هذا الملف باللغة الإنجليزية لتجنب مشاكل قراءة المسارات في OpenCode أو السكربتات.
 
 ---
 
