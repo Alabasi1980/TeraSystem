@@ -25,8 +25,8 @@ For any new session in this project:
 | Size | Small MVP |
 | Runtime | OpenCode |
 | Approved Tech | Next.js + TypeScript + PostgreSQL + Prisma |
-| Current Phase | Phase 3 complete ✅ (Auth + Security Review); ready for Phase 4 (Checks Screen) |
-| Next Task | `TASK-0006` — Checks Management Screen (Phase 4) |
+| Current Phase | Phase 3 complete ✅ (Auth + Security Review); Phase 4 prep complete ✅ |
+| Next Task | `TASK-0007` — SEC fixes + Banks Screen (S03) |
 | Current Lead Agent | `Tera Agent` |
 | Expected Execution Agent | `EngineeringAgent` |
 
@@ -37,8 +37,10 @@ For any new session in this project:
 - `TASK-0003` — Local database creation + first Prisma migration
 - `TASK-0004` — Authentication + Roles (login, JWT, middleware, seed)
 - `TASK-0005` — SecurityAgent independent security review of TASK-0004 (PASS ✅, Closed)
-- `ISSUE-0004` — SEC-001 (User Enumeration) planned fix within TASK-0006
-- `ISSUE-0005` — SEC-002 (Logout cookie flags) planned fix within TASK-0006
+- `TASK-0006` — Preparation: workflow-rules.md + screen-spec-s03.md
+- `TASK-0006` — Preparation: workflow-rules.md + screen-spec-s03.md (Closed ✅)
+- `ISSUE-0004` — SEC-001 (User Enumeration) planned fix within TASK-0007
+- `ISSUE-0005` — SEC-002 (Logout cookie flags) planned fix within TASK-0007
 
 ## Active Rules You Must Not Miss
 
@@ -76,7 +78,7 @@ For any new session in this project:
 
 ## Read Next Only If Needed
 
-- Current task details: `project-control/tasks/TASK-0005.md` (Security Review) or next task `project-control/tasks/TASK-0006.md`
+- Current task details: `project-control/tasks/TASK-0006.md` (Preparation) or next task `project-control/tasks/TASK-0007.md`
 - Compact official project memory: `project-control/PROJECT_STATE.md`
 - Active rules: `project-preparation/PROJECT_RULES.md`
 - Plan details: `project-preparation/09_IMPLEMENTATION_PLAN.md`

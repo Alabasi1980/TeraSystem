@@ -120,6 +120,7 @@
 | TASK-0003 | Closed ✅ | إنشاء قاعدة البيانات checks_management + أول Migration عبر `prisma migrate dev` (PostgreSQL 18 + Prisma 7.8.0) |
 | TASK-0004 | Closed ✅ | إعداد المصادقة والصلاحيات — Login + JWT + Middleware + Seed (Admin/User roles) |
 | TASK-0005 | Closed ✅ | المراجعة الأمنية المستقلة لـ TASK-0004 — SecurityAgent: PASS ✅. لا Blocker. |
+| TASK-0006 | Closed ✅ | تحضير مواصفات التنفيذ — workflow-rules.md + screen-spec-s03.md. جاهز لـ TASK-0007. |
 | ISSUE-0003 (Secret Exposure) | Resolved ✅ | تم تنظيف التسرب في prisma.config.ts + تحديث قواعد المنظومة — راجع ISSUES_AND_GAPS.md |
 | DEC-0004 (Secret Handling Rules) | Active ✅ | قواعد إلزامية جديدة للأسرار في Pre-Execution Gate و Post-Execution Review Gate و handbacks |
 
@@ -145,5 +146,5 @@ TASK-0004 (Auth + Roles) — **مغلق** ✅.
 | البند | القيمة |
 |---|---|
 | Updated By | Tera Agent / Project Owner |
-| Update Reason | TASK-0005 (Security Review) complete. SecurityAgent reviewed 21 files, found 4 findings (1 Low, 3 Info), no blockers. PASS ✅. | |
-| Next Step | إصلاح SEC-001 (توحيد رسالة الخطأ) و SEC-002 (خصائص Cookie في logout action) ضمن TASK-0006 (Phase 4 — شاشة إدارة الشيكات) |
+| Update Reason | TASK-0006 (Preparation) complete. workflow-rules.md and screen-spec-s03.md ready. | |
+| Next Step | TASK-0007 — SEC fixes (001+002) + شاشة إدارة البنوك (S03) — EngineeringAgent |
