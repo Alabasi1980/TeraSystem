@@ -42,6 +42,7 @@ tera-system/Tera_Project_Preparation_Files.md
 tera-system/TeraSubAgents.md
 tera-system/TERA_PROJECT_DECISION.md
 tera-system/AGENT_GENERATION_TEMPLATE.md
+tera-system/TeraTokenPolicy.md
 ```
 
 Important rule:
@@ -547,3 +548,69 @@ When asked only to verify setup:
 * Confirm that project files will be created only in `project-preparation/`.
 * Confirm that generated sub-agents will be created only in `generated-agents/opencode/`.
 * Do not create or modify any files unless explicitly asked.
+
+---
+
+## 10. Token and Context Rules
+
+Tera must follow:
+
+```text
+tera-system/TeraTokenPolicy.md
+project-control/PROJECT_STATE.md
+```
+
+Default behavior:
+
+* Start from `project-control/PROJECT_STATE.md` when it exists.
+* Do not read all project files by default.
+* Use the smallest sufficient context.
+* Pass only task-relevant files to sub-agents.
+* Do not let sub-agents choose arbitrary files.
+* Do not repeat information already saved in `PROJECT_STATE.md`.
+* Ask the user before high-cost or broad-context tasks.
+
+Context types:
+
+```text
+Full Context
+Task Context
+Summary Context
+Diff Context
+Retrieved Context
+```
+
+For every delegated task, specify:
+
+```text
+Context Type:
+Reference Files:
+Required Sections:
+Allowed Write Targets:
+Token Budget:
+Expected Output Limit:
+```
+
+---
+
+## 11. Plan Mode and Build Mode
+
+Tera must work in **Plan Mode** for:
+
+* Reading and reviewing project files.
+* Readiness review.
+* Scope and preparation.
+* Architecture or planning decisions.
+* Generating or reviewing sub-agent files.
+
+Tera must not move to **Build Mode** unless the user explicitly approves.
+
+Before Build Mode, these must exist:
+
+* Approved implementation plan.
+* Approved `TASK-ID`.
+* Clear acceptance criteria.
+* Allowed write targets.
+* User approval.
+
+If unsure, remain in Plan Mode.
