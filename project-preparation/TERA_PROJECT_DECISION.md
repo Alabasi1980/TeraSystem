@@ -63,7 +63,7 @@
 | `25_CHANGE_REQUESTS.md` | لا يوجد نطاق ثابت بعد، التغييرات جزء من التأسيس |
 | `26_RISKS_AND_ASSUMPTIONS.md` | يمكن توثيق المخاطر داخل ملفات أخرى |
 | `27_DECISIONS_LOG.md` | لا حاجة له كملف تحضيري مستقل في مشروع صغير؛ قرارات التشغيل والتنفيذ تسجل في `project-control/DECISIONS_LOG.md` |
-| `28_UI_UX_GUIDELINES.md` | التصميم إداري بسيط — يمكن توثيقه في ملف الشاشات |
+| `28_UI_UX_GUIDELINES.md` | تم إنشاؤه لاحقًا كدليل الستايل المعتمد قبل التنفيذ |
 | `29_SAMPLE_DATA_AND_SEEDING.md` | مفيد لاحقًا ولكن ليس ضروريًا في مرحلة التحضير |
 | `30_USER_MANUAL_DRAFT.md` | لاحقًا بعد اكتمال التطبيق |
 | `31_MAINTENANCE_AND_SUPPORT.md` | لا صيانة محددة بعد |
@@ -170,19 +170,20 @@
 - حجم المشروع: صغير
 - مستوى التوثيق: أساسي (11 ملفًا تحضيريًا رئيسيًا)
 
-الملفات التي سيتم إنشاؤها (حسب الموافقة):
+حالة ملفات التحضير:
   00_PROJECT_INPUTS.md ✅ (تم)
   TERA_PROJECT_DECISION.md ✅ (تم)
-  01_PROJECT_BRIEF.md
-  02_SCOPE_AND_BOUNDARIES.md
-  03_MODULES_AND_FEATURES.md
-  04_USERS_ROLES_PERMISSIONS.md
-  05_BUSINESS_WORKFLOWS.md
-  06_DATA_MODEL_PREPARATION.md
-  07_SCREENS_AND_UI_STRUCTURE.md
-  08_TECHNICAL_ARCHITECTURE.md
-  09_IMPLEMENTATION_PLAN.md
-  10_TESTING_AND_ACCEPTANCE.md
+  01_PROJECT_BRIEF.md ✅ (تم)
+  02_SCOPE_AND_BOUNDARIES.md ✅ (تم)
+  03_MODULES_AND_FEATURES.md ✅ (تم)
+  04_USERS_ROLES_PERMISSIONS.md ✅ (تم)
+  05_BUSINESS_WORKFLOWS.md ✅ (تم)
+  06_DATA_MODEL_PREPARATION.md ✅ (تم)
+  07_SCREENS_AND_UI_STRUCTURE.md ✅ (تم)
+  08_TECHNICAL_ARCHITECTURE.md ✅ (تم)
+  09_IMPLEMENTATION_PLAN.md ✅ (تم)
+  10_TESTING_AND_ACCEPTANCE.md ✅ (تم)
+  28_UI_UX_GUIDELINES.md ✅ (تم)
   11_DELIVERY_AND_HANDOVER.md
   (12_BUSINESS_RULES.md اختياري — يُدمج مع 05 أو يُنشأ عند الحاجة)
 
@@ -199,9 +200,9 @@
   PerformanceAgent, ComplianceAgent, ReportingAnalyticsAgent,
   MaintenanceMigrationAgent, DocumentationHandoverAgent
 
-توليد العملاء الفرعيين الفعليين:
-  لا — سيتم توليدهم بعد الموافقة على هذا القرار
-  وعند الحاجة الفعلية لكل عميل في مرحلته.
+تفعيل العملاء الفرعيين الفعليين:
+  العملاء التحليلية المولدة موجودة في `generated-agents/opencode/` لكنها غير مفعلة داخل `.opencode/agents/`.
+  قبل التنفيذ يجب توليد أو تفعيل `EngineeringAgent` فقط، وتفعيل `ProjectControlAgent` عند الحاجة لتحديث سجلات `project-control/`.
 
 سبب القرار:
   - المشروع صغير ومحدود النطاق (MVP).
@@ -210,17 +211,38 @@
   - باقي الملفات والعملاء غير مبررين حاليًا.
 
 الخطوة التالية:
-  ⏸ انتظار موافقة صاحب المشروع على القرار قبل بدء إنشاء الملفات وتوليد العملاء.
+  ⏸ انتظار موافقة صاحب المشروع على التنفيذ.
+  بعد الموافقة: توليد `EngineeringAgent` وإنشاء `TASK-0001` داخل `project-control/tasks/`.
 ```
 
 ---
 
 **تاريخ القرار:** 26 يونيو 2026  
 **صادر عن:** Tera Agent  
-**الحالة:** ⏳ بانتظار الاعتماد
+**الحالة:** Preparation Phase: Completed / Implementation Phase: Pending Approval
 ---
 
-## 11. بروتوكول ما بعد الاعتماد
+## 11. حالة المزامنة الحالية قبل التنفيذ
+
+```text
+Preparation Phase: Completed
+Implementation Phase: Pending Approval
+
+Preparation files completed.
+Implementation plan created.
+Testing acceptance created.
+UI guidelines created.
+
+Next Action:
+- Generate EngineeringAgent.
+- Activate ProjectControlAgent if task/control record updates are needed.
+- Create TASK-0001 inside project-control/tasks/.
+- Copy only the required active agent(s) into .opencode/agents/ when execution starts.
+```
+
+---
+
+## 12. بروتوكول ما بعد الاعتماد
 
 عند موافقة صاحب المشروع على القرار، لا يبدأ التنفيذ البرمجي مباشرة.
 

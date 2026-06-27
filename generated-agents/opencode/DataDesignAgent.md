@@ -19,7 +19,7 @@ mode: subagent
 
 ## When Tera Should Use This Agent
 
-- بعد وضوح الموديولات والعمليات (بعد اعتماد `03_MODULES_AND_FEATURES.md` و `05_BUSINESS_WORKFLOWS.md`).
+- بعد وضوح الموديولات والعمليات (بعد اعتماد `project-preparation/03_MODULES_AND_FEATURES.md` و `project-preparation/05_BUSINESS_WORKFLOWS.md`).
 - عندما يكون للتطبيق بيانات مترابطة (شيك ← بنك ← جهة ← حالة).
 - قبل التصميم الفني النهائي لقاعدة البيانات.
 
@@ -28,11 +28,11 @@ mode: subagent
 The agent must read only the files listed by Tera in the task.
 
 Default reference files:
-- `01_PROJECT_BRIEF.md`
-- `02_SCOPE_AND_BOUNDARIES.md`
-- `03_MODULES_AND_FEATURES.md`
-- `04_USERS_ROLES_PERMISSIONS.md`
-- `05_BUSINESS_WORKFLOWS.md`
+- `project-preparation/01_PROJECT_BRIEF.md`
+- `project-preparation/02_SCOPE_AND_BOUNDARIES.md`
+- `project-preparation/03_MODULES_AND_FEATURES.md`
+- `project-preparation/04_USERS_ROLES_PERMISSIONS.md`
+- `project-preparation/05_BUSINESS_WORKFLOWS.md`
 
 ## Allowed Sources
 
@@ -83,7 +83,7 @@ Default reference files:
 
 ## Expected Outputs
 
-- `06_DATA_MODEL_PREPARATION.md`: تصور أولي لنموذج البيانات يتضمن:
+- `project-preparation/06_DATA_MODEL_PREPARATION.md`: تصور أولي لنموذج البيانات يتضمن:
   - قائمة الكيانات الأساسية (مثل: شيك، بنك، جهة طرف، حالة شيك، مستخدم).
   - الحقول الرئيسية لكل كيان مع نوع البيانات المتوقع.
   - العلاقات بين الكيانات (One-to-Many, Many-to-Many).

@@ -19,7 +19,7 @@ mode: subagent
 
 ## When Tera Should Use This Agent
 
-- بعد اعتماد `01_PROJECT_BRIEF.md` وتثبيت `02_SCOPE_AND_BOUNDARIES.md`.
+- بعد اعتماد `project-preparation/01_PROJECT_BRIEF.md` وتثبيت `project-preparation/02_SCOPE_AND_BOUNDARIES.md`.
 - عندما يحتوي التطبيق على دورات عمل أو موافقات أو حالات متعددة (مثل الشيكات: مسجل، مستلم، مصرف، مرتجع، ملغي).
 - عند الحاجة لتوثيق قواعد العمل (Business Rules) المرتبطة بالحالات.
 
@@ -28,9 +28,9 @@ mode: subagent
 The agent must read only the files listed by Tera in the task.
 
 Default reference files:
-- `01_PROJECT_BRIEF.md`
-- `02_SCOPE_AND_BOUNDARIES.md`
-- `04_USERS_ROLES_PERMISSIONS.md`
+- `project-preparation/01_PROJECT_BRIEF.md`
+- `project-preparation/02_SCOPE_AND_BOUNDARIES.md`
+- `project-preparation/04_USERS_ROLES_PERMISSIONS.md`
 
 ## Allowed Sources
 
@@ -82,14 +82,14 @@ Default reference files:
 
 ## Expected Outputs
 
-- `05_BUSINESS_WORKFLOWS.md`: مسارات العمل الكاملة لكل عملية رئيسية تتضمن:
+- `project-preparation/05_BUSINESS_WORKFLOWS.md`: مسارات العمل الكاملة لكل عملية رئيسية تتضمن:
   - دورة الحياة الكاملة للشيك (من التسليم إلى الإغلاق).
   - جميع الحالات الممكنة لكل كيان.
   - الانتقالات المسموحة بين الحالات.
   - من ينفذ كل خطوة (الدور).
   - شروط الانتقال (متى ينتقل الشيك من حالة إلى أخرى).
   - حالات الرفض أو الإلغاء والاستثناءات.
-- `12_BUSINESS_RULES.md` (عند الطلب): قواعد العمل التي تتحكم في سلوك التطبيق (شروط السماح/المنع، قواعد التعديل والحذف، قواعد تغيير الحالة).
+- `project-preparation/12_BUSINESS_RULES.md` (عند الطلب): قواعد العمل التي تتحكم في سلوك التطبيق (شروط السماح/المنع، قواعد التعديل والحذف، قواعد تغيير الحالة).
 
 ## Output Format
 

@@ -8,7 +8,7 @@
 | بيئة العمل | OpenCode |
 | تاريخ التوليد | 26 يونيو 2026 |
 | تم التوليد بواسطة | Tera Agent |
-| المرحلة | التحليل والتصميم الأولي |
+| المرحلة | التحضير مكتمل — التنفيذ بانتظار الاعتماد |
 
 ---
 
@@ -22,7 +22,7 @@
 | المعرف | `REQ_SCOPE_AGENT` |
 | الفئة | أساسي |
 | سبب التوليد | ضروري لتحليل المتطلبات، كتابة Project Brief، تحديد النطاق والحدود، وتحديد المستخدمين والصلاحيات |
-| الملفات المسموح بكتابتها | `01_PROJECT_BRIEF.md`, `02_SCOPE_AND_BOUNDARIES.md`, `04_USERS_ROLES_PERMISSIONS.md` |
+| الملفات المسموح بكتابتها | `project-preparation/01_PROJECT_BRIEF.md`, `project-preparation/02_SCOPE_AND_BOUNDARIES.md`, `project-preparation/04_USERS_ROLES_PERMISSIONS.md` |
 
 ### 2. BusinessWorkflowAgent
 
@@ -32,7 +32,7 @@
 | المعرف | `BUSINESS_WORKFLOW_AGENT` |
 | الفئة | أساسي |
 | سبب التوليد | ضروري لتوثيق حالات الشيكات ومسارات العمل والانتقالات بين الحالات — وهو جوهر تطبيق الشيكات |
-| الملفات المسموح بكتابتها | `05_BUSINESS_WORKFLOWS.md`, `12_BUSINESS_RULES.md` (عند الطلب) |
+| الملفات المسموح بكتابتها | `project-preparation/05_BUSINESS_WORKFLOWS.md`, `project-preparation/12_BUSINESS_RULES.md` (عند الطلب) |
 
 ### 3. DataDesignAgent
 
@@ -42,7 +42,7 @@
 | المعرف | `DATA_DESIGN_AGENT` |
 | الفئة | أساسي |
 | سبب التوليد | ضروري لتحليل الكيانات والعلاقات (شيك، بنك، جهة، حالة) قبل التصميم الفني |
-| الملفات المسموح بكتابتها | `06_DATA_MODEL_PREPARATION.md` |
+| الملفات المسموح بكتابتها | `project-preparation/06_DATA_MODEL_PREPARATION.md` |
 
 ### 4. UIUXStructureAgent
 
@@ -52,7 +52,7 @@
 | المعرف | `UI_UX_STRUCTURE_AGENT` |
 | الفئة | أساسي |
 | سبب التوليد | ضروري لتحديد الشاشات المطلوبة وهيكل الواجهة وعلاقتها بالصلاحيات ومسارات العمل |
-| الملفات المسموح بكتابتها | `07_SCREENS_AND_UI_STRUCTURE.md`, `28_UI_UX_GUIDELINES.md` (بتفويض صريح من Tera عند وجود مصدر تصميم أو طلب Style Guide) |
+| الملفات المسموح بكتابتها | `project-preparation/07_SCREENS_AND_UI_STRUCTURE.md`, `project-preparation/28_UI_UX_GUIDELINES.md` (بتفويض صريح من Tera عند وجود مصدر تصميم أو طلب Style Guide) |
 
 ### 5. ProjectControlAgent
 
@@ -70,9 +70,9 @@
 
 | العميل | سبب عدم التوليد الآن |
 |---|---|
-| `SolutionArchitectureAgent` | مطلوب لاحقًا بعد اكتمال ملفات التحليل — سيتم توليده في مرحلة التصميم الفني |
-| `EngineeringAgent` | مطلوب لاحقًا بعد اعتماد التحليل والتصميم بالكامل — سيتم توليده في مرحلة التنفيذ |
-| `QAAndAcceptanceAgent` | مطلوب لاحقًا بعد اكتمال الملفات — سيتم توليده في مرحلة الاختبار |
+| `SolutionArchitectureAgent` | لم يتم توليده؛ ملف `08_TECHNICAL_ARCHITECTURE.md` موجود وتم تثبيت القرار التقني، ولا حاجة لتفعيله الآن |
+| `EngineeringAgent` | يجب توليده أو تفعيله قبل أول مهمة تنفيذ برمجي بعد اعتماد صاحب المشروع |
+| `QAAndAcceptanceAgent` | لم يتم توليده؛ ملف `10_TESTING_AND_ACCEPTANCE.md` موجود، ويتم توليده لاحقًا عند بدء مراجعات الاختبار الفعلية |
 | `DocumentationHandoverAgent` | مطلوب قبل التسليم النهائي فقط |
 | `SecurityAgent` | لا يوجد بيانات حساسة أو صلاحيات معقدة أو متطلبات أمنية متقدمة |
 | `IntegrationAgent` | لا يوجد تكاملات خارجية في النسخة الأولى |
@@ -86,16 +86,17 @@
 
 ## ملاحظات إضافية
 
-- تم توليد العملاء الأربعة في مجلد `generated-agents/opencode/` — صيغة الملفات مناسبة لبيئة OpenCode.
+- تم توليد العملاء التحليلية و`ProjectControlAgent` في مجلد `generated-agents/opencode/` — صيغة الملفات مناسبة لبيئة OpenCode.
 - العملاء الحاليون داخل `generated-agents/opencode/` هم **عملاء مولدون للمراجعة والتجهيز فقط**، وليسوا عملاء OpenCode فعّالين بعد.
 - لا يصبح هؤلاء العملاء فعّالين داخل OpenCode إلا بعد مراجعتهم واعتمادهم ثم نسخهم إلى `.opencode/agents/`.
 - لا يتم نقل أي عميل إلى `.opencode/agents/` إلا عند وجود حاجة فعلية لاستخدامه.
 - يمكن استخدام هذه الملفات كمرجع لتفويض المهام لكل عميل فرعي لاحقًا، لكنها لا تعمل كعملاء نشطين من هذا المجلد.
-- العملاء الآخرون (SolutionArchitecture, Engineering, QA) سيتم توليدهم عند الحاجة في مراحل لاحقة بعد موافقة صاحب المشروع.
+- قبل التنفيذ البرمجي يجب توليد أو تفعيل `EngineeringAgent` فقط، مع تفعيل `ProjectControlAgent` عند الحاجة لتحديث سجلات `project-control/`.
+- العملاء الآخرون مثل `QAAndAcceptanceAgent` و`DocumentationHandoverAgent` يؤجلون إلى مراحلهم الفعلية.
 - لا يجوز لأي عميل فرعي تعديل الملفات المملوكة لعميل آخر دون توجيه صريح من Tera Agent.
 - قبل نقل أي عميل إلى `.opencode/agents/` يجب تضييق `Allowed Sources` و `Allowed Write Targets` حسب المرحلة والمهمة.
 - عملاء التحليل لا يقرأون كود التطبيق إلا بتصريح صريح من Tera Agent.
-- يجب ألا ينشئ `BusinessWorkflowAgent` الملف `12_BUSINESS_RULES.md` إلا إذا وافق Tera صراحة على إنشاء هذا الملف.
+- يجب ألا ينشئ `BusinessWorkflowAgent` الملف `project-preparation/12_BUSINESS_RULES.md` إلا إذا وافق Tera صراحة على إنشاء هذا الملف.
 - ✅ قواعد `MVP Constraints` مضمّنة في كل عميل مولد عبر `AGENT_GENERATION_TEMPLATE.md`.
 - قبل تنفيذ أي واجهة، يجب أن يحسم Tera مصدر التصميم البصري: تصميم افتراضي من Tera، ملفات Style من المستخدم، أو مرجع خارجي مثل `getdesign.md`.
 - عند وجود مصدر تصميم بصري، يحفظ الأصل أو الإشارة إليه داخل `design-source/` وتلخص قواعد التنفيذ في `project-preparation/28_UI_UX_GUIDELINES.md`.

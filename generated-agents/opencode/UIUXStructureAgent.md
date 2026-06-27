@@ -15,7 +15,7 @@ mode: subagent
 
 ## Purpose
 
-تحديد هيكل الشاشات المطلوبة للتطبيق، التنقل بينها، محتوى كل شاشة وظيفيًا (الحقول، الأزرار، الجداول، الفلاتر)، وعلاقة الشاشات بمسارات العمل والصلاحيات. كما ينبه Tera إلى الحاجة لإنشاء `28_UI_UX_GUIDELINES.md` إذا وُجدت متطلبات تصميم بصري، CSS، قالب، ألوان، أو مرجع تصميم.
+تحديد هيكل الشاشات المطلوبة للتطبيق، التنقل بينها، محتوى كل شاشة وظيفيًا (الحقول، الأزرار، الجداول، الفلاتر)، وعلاقة الشاشات بمسارات العمل والصلاحيات. كما ينبه Tera إلى الحاجة لإنشاء `project-preparation/28_UI_UX_GUIDELINES.md` إذا وُجدت متطلبات تصميم بصري، CSS، قالب، ألوان، أو مرجع تصميم.
 
 ## When Tera Should Use This Agent
 
@@ -30,13 +30,13 @@ mode: subagent
 The agent must read only the files listed by Tera in the task.
 
 Default reference files:
-- `01_PROJECT_BRIEF.md`
-- `02_SCOPE_AND_BOUNDARIES.md`
-- `03_MODULES_AND_FEATURES.md`
-- `04_USERS_ROLES_PERMISSIONS.md`
-- `05_BUSINESS_WORKFLOWS.md`
-- `06_DATA_MODEL_PREPARATION.md` (when available)
-- `28_UI_UX_GUIDELINES.md` (when available)
+- `project-preparation/01_PROJECT_BRIEF.md`
+- `project-preparation/02_SCOPE_AND_BOUNDARIES.md`
+- `project-preparation/03_MODULES_AND_FEATURES.md`
+- `project-preparation/04_USERS_ROLES_PERMISSIONS.md`
+- `project-preparation/05_BUSINESS_WORKFLOWS.md`
+- `project-preparation/06_DATA_MODEL_PREPARATION.md` (when available)
+- `project-preparation/28_UI_UX_GUIDELINES.md` (when available)
 - `design-source/` (only when Tera explicitly provides it)
 
 ## Allowed Sources
@@ -76,7 +76,7 @@ Default reference files:
 - Do not change business workflows or rules.
 - Do not create separate screens when one approved screen can serve the MVP workflow clearly.
 - Do not invent final visual style when Tera has not approved the UI design source.
-- Do not introduce colors, typography, spacing, or component rules that conflict with `28_UI_UX_GUIDELINES.md` or `design-source/`.
+- Do not introduce colors, typography, spacing, or component rules that conflict with `project-preparation/28_UI_UX_GUIDELINES.md` or `design-source/`.
 
 
 ## MVP Constraints
@@ -94,14 +94,14 @@ Default reference files:
 
 ## Expected Outputs
 
-- `07_SCREENS_AND_UI_STRUCTURE.md`: هيكل واجهة التطبيق الكامل يتضمن:
+- `project-preparation/07_SCREENS_AND_UI_STRUCTURE.md`: هيكل واجهة التطبيق الكامل يتضمن:
   - قائمة جميع الشاشات المطلوبة مع اسم ووظيفة كل شاشة.
   - خريطة تنقل بسيطة بين الشاشات.
   - لكل شاشة: الحقول الأساسية، الأزرار والإجراءات، الفلاتر، الجداول.
   - حالات خاصة: شاشة فارغة (لا توجد بيانات)، رسائل التأكيد، رسائل الخطأ.
   - علاقة كل شاشة بدور المستخدم (من يراها ومن لا يراها).
   - ملاحظات تجربة المستخدم (ترتيب الحقول، التنقل السريع، وضوح المعلومات).
-- `28_UI_UX_GUIDELINES.md` (عند طلب Tera): قواعد التصميم البصري ومصدر الستايل المعتمد، وتشمل الألوان، الخطوط، RTL/LTR، الأزرار، الجداول، النماذج، الرسائل، وما هو ممنوع بصريًا.
+- `project-preparation/28_UI_UX_GUIDELINES.md` (عند طلب Tera): قواعد التصميم البصري ومصدر الستايل المعتمد، وتشمل الألوان، الخطوط، RTL/LTR، الأزرار، الجداول، النماذج، الرسائل، وما هو ممنوع بصريًا.
 
 ## Output Format
 

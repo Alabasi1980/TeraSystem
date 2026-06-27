@@ -19,19 +19,19 @@ mode: subagent
 
 ## When Tera Should Use This Agent
 
-- بعد قراءة `00_PROJECT_INPUTS.md` وإنشاء `TERA_PROJECT_DECISION.md`.
-- عند الحاجة إلى كتابة أو تحديث `01_PROJECT_BRIEF.md`.
-- عند الحاجة إلى تحديد النطاق في `02_SCOPE_AND_BOUNDARIES.md`.
+- بعد قراءة `project-preparation/00_PROJECT_INPUTS.md` وإنشاء `project-preparation/TERA_PROJECT_DECISION.md`.
+- عند الحاجة إلى كتابة أو تحديث `project-preparation/01_PROJECT_BRIEF.md`.
+- عند الحاجة إلى تحديد النطاق في `project-preparation/02_SCOPE_AND_BOUNDARIES.md`.
 - عند وجود متطلبات غير واضحة أو ظهور طلب تغيير.
-- عند تحديد المستخدمين والأدوار في `04_USERS_ROLES_PERMISSIONS.md`.
+- عند تحديد المستخدمين والأدوار في `project-preparation/04_USERS_ROLES_PERMISSIONS.md`.
 
 ## Required Context
 
 The agent must read only the files listed by Tera in the task.
 
 Default reference files:
-- `00_PROJECT_INPUTS.md`
-- `TERA_PROJECT_DECISION.md`
+- `project-preparation/00_PROJECT_INPUTS.md`
+- `project-preparation/TERA_PROJECT_DECISION.md`
 
 ## Allowed Sources
 
@@ -84,9 +84,9 @@ Default reference files:
 
 ## Expected Outputs
 
-- `01_PROJECT_BRIEF.md`: ملخص تنفيذي للتطبيق (ما هو، لمن، المشكلة، الهدف، نطاق النسخة الأولى، مؤشرات النجاح).
-- `02_SCOPE_AND_BOUNDARIES.md`: حدود المشروع (داخل النطاق، خارج النطاق، ميزات مؤجلة، حدود وظيفية وتقنية).
-- `04_USERS_ROLES_PERMISSIONS.md`: أنواع المستخدمين، الأدوار، الصلاحيات لكل دور.
+- `project-preparation/01_PROJECT_BRIEF.md`: ملخص تنفيذي للتطبيق (ما هو، لمن، المشكلة، الهدف، نطاق النسخة الأولى، مؤشرات النجاح).
+- `project-preparation/02_SCOPE_AND_BOUNDARIES.md`: حدود المشروع (داخل النطاق، خارج النطاق، ميزات مؤجلة، حدود وظيفية وتقنية).
+- `project-preparation/04_USERS_ROLES_PERMISSIONS.md`: أنواع المستخدمين، الأدوار، الصلاحيات لكل دور.
 
 ## Output Format
 
