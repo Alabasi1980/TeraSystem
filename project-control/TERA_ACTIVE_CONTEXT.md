@@ -26,7 +26,7 @@ For any new session in this project:
 | Runtime | OpenCode |
 | Approved Tech | Next.js + TypeScript + PostgreSQL + Prisma |
 | Current Phase | Phase 4 complete - Parties + Main Page built |
-| Next Task | شاشة الشيكات (S02) أو شاشة المستخدمين (S05) — حسب الأولوية |
+| Next Task | Fix ISSUE-0006 server-side validation before Checks S02 |
 | Current Lead Agent | `Tera Agent` |
 | Expected Execution Agents | `EngineeringAgent` + `FrontendAgent` |
 
@@ -41,6 +41,7 @@ For any new session in this project:
 - `TASK-0007` - SEC-001 + SEC-002 fixes + Banks Screen S03
 - `TASK-0008` - Parties Screen S04 — actions.ts + page.tsx
 - `TASK-0009` - Main Navigation Hub — page.tsx + layout.tsx + actions.ts
+- `TASK-0010` - Periodic Quality Review — QualityReviewCoordinatorAgent report
 
 ## Recent System Changes
 
@@ -49,6 +50,7 @@ For any new session in this project:
 - `2026-06-27`: Minimal support layer added: `ProjectControlAgent` + `ExecutionPreparationAgent`
 - `2026-06-27`: TASK-0008 (Parties S04) + TASK-0009 (Main Nav Hub) completed. requireAdmin() extended to Parties. Root page replaced with RTL navigation hub.
 - `2026-06-28`: `QualityReviewCoordinatorAgent` added and activated for periodic cross-domain quality reviews before larger phases, before release, or when quality debt signals appear.
+- `2026-06-28`: Tera role refined as `Primary Project Orchestrator / Decision Owner` with explicit helper-agent trigger rules and anti-over-delegation rules.
 
 ## Active Rules You Must Not Miss
 
@@ -67,6 +69,9 @@ For any new session in this project:
 - `ExecutionPreparationAgent` may prepare task packages, but only Tera decides scope, timing, delegation, acceptance, or closure.
 - `ProjectControlAgent` may manage control records and traceability checks, but only Tera decides final status changes.
 - `QualityReviewCoordinatorAgent` may coordinate review scope and consolidate specialist findings, but only Tera decides what becomes a task, issue, deferred item, or accepted recommendation.
+- Tera must explicitly decide whether `SecurityAgent` is needed for `Auth`, `JWT`, `Cookies`, `Middleware/Proxy`, `API Routes`, `Server Actions`, `Permissions`, `Role checks`, `Data Mutations`, `Secrets`, or `Config`.
+- Do not route every small task through a long helper-agent chain unless there is a clear trigger.
+- Local temp logs such as `.codex-dev-*.log` / `.codex-dev-*.err` are cleanup-required if they appear in Git.
 - Project-control IDs must stay unique and sequential.
 - Use only the smallest relevant context for the current task.
 
@@ -80,7 +85,9 @@ For any new session in this project:
 - `DEC-0011` - `requireAdmin()` pattern is active for future Server Actions.
 - `DEC-0012` - Tera now uses a minimal support layer: `ProjectControlAgent` for control records and `ExecutionPreparationAgent` for task-package preparation.
 - `DEC-0013` - `QualityReviewCoordinatorAgent` is active for periodic cross-domain quality reviews; it coordinates findings only and does not replace specialist reviewers.
+- `DEC-0014` - Tera is fixed as `Primary Project Orchestrator / Decision Owner`; helper agents are trigger-based, over-delegation is disallowed, and temp dev logs are cleanup-required before new work.
 - `SUB_AGENT_STATUS.md` is the lightweight manager review for sub-agent usage, load, quality, and update need.
+- `ISSUE-0006` - Planned: add server-side validation to Banks/Parties actions before Checks S02.
 - `ISSUE-0003` - Secret exposure incident from TASK-0003 was resolved; do not reintroduce secrets into docs or config fallbacks.
 
 ## Available Sub-Agents
@@ -107,7 +114,7 @@ Activation note:
 
 ## Read Next Only If Needed
 
-- Current task details: `project-control/tasks/TASK-0008.md`
+- Latest implementation details: `project-control/tasks/TASK-0009.md`
 - Compact official project memory: `project-control/PROJECT_STATE.md`
 - Sub-agent health snapshot: `project-control/SUB_AGENT_STATUS.md`
 - Active rules: `project-preparation/PROJECT_RULES.md`

@@ -23,6 +23,12 @@ Maintain project-control records under Tera direction only. It records tasks, ha
 - Recording sub-agent handbacks inside `project-control/tasks/[TASK-ID].md`.
 - Updating `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, `ISSUES_AND_GAPS.md`, `DECISIONS_LOG.md`, `TERA_ACTIVE_CONTEXT.md`.
 - Updating `SUB_AGENT_STATUS.md` when Tera explicitly asks for an agent-status refresh.
+- When a task added or closed an issue.
+- When a task added a decision.
+- When a task changed `PROJECT_STATE.md` or `TERA_ACTIVE_CONTEXT.md`.
+- When more than one agent worked on the same task.
+- When several `project-control/` files were changed.
+- When ID sequencing or task-status consistency must be checked.
 - Independent traceability review after implementation.
 - Converting deferred findings from `SecurityAgent` or `QAAndAcceptanceAgent` into formal tracked issues when Tera decides.
 

@@ -426,7 +426,7 @@ Root Cause: Tera delegation used create-next-app without --no-tailwind, causing 
 بعد كل مهمة تنفيذية، يجب على Tera أن يقرر صراحةً هل تحتاج المهمة مراجعة مستقلة إضافية قبل القبول النهائي:
 
 - `ProjectControlAgent` عندما تكون الحاجة إلى مراجعة السجلات، الاتساق، التسلسل، أو اكتمال التوثيق.
-- `SecurityAgent` عندما تشمل المهمة `Auth`, `Secrets`, `Permissions`, `Middleware`, `Config`, أو أي سلوك أمني مشابه.
+- `SecurityAgent` عندما تشمل المهمة `Auth`, `JWT`, `Cookies`, `Middleware`, `Proxy`, `API Routes`, `Server Actions`, `Permissions`, `Role checks`, `Data Mutations`, `Secrets`, `Config`, أو أي سلوك أمني مشابه.
 - `QAAndAcceptanceAgent` عندما تشمل المهمة `UI`, `Workflow`, أو `Acceptance Criteria` تحتاج تحققًا وظيفيًا مستقلًا.
 
 إذا قرر Tera أن المراجعة المستقلة غير مطلوبة، يجب أن يذكر السبب داخل نتيجة المراجعة بعد التنفيذ.
@@ -482,6 +482,25 @@ The task cannot PASS if forbidden package traces remain in lockfiles or source c
 ```
 
 إذا بقي أثر الحزمة الممنوعة في `lockfiles` أو الكود أو القوالب المولدة، فلا يجوز أن تجتاز المهمة `Post-Execution Review Gate` بنتيجة `PASS`.
+
+### Local Temp Files Hygiene Rule
+
+أي ملفات تشغيل محلية أو مؤقتة ناتجة عن dev server أو Codex أو التشغيل المحلي لا يجب أن تدخل Git.
+
+أمثلة:
+
+- `.codex-dev-*.log`
+- `.codex-dev-*.err`
+- local temp run logs
+- logs تحتوي مسارات محلية أو IP أو تفاصيل dev server
+
+إذا اكتشف Tera أن مثل هذه الملفات دخلت commit أو ظهرت كملفات متتبعة داخل Git، فيجب تصنيف الحالة:
+
+```text
+Cleanup required
+```
+
+ويجب تنظيفها وإضافة ignore مناسب قبل الانتقال إلى مهمة جديدة.
 
 ### قالب يضاف داخل ملف المهمة بعد التسليم
 

@@ -36,4 +36,4 @@ Closed
 | TASK-0007 | SEC fixes + شاشة إدارة البنوك (S03) | EngineeringAgent | Phase 4 — Banks Screen | Closed | `project-control/tasks/TASK-0007.md` | 2026-06-27 |
 | TASK-0008 | شاشة إدارة الجهات (Parties Screen S04) | EngineeringAgent + FrontendAgent | Phase 4 — Parties Screen | Closed | `project-control/tasks/TASK-0008.md` | 2026-06-27 |
 | TASK-0009 | الصفحة الرئيسية Navigation Hub | FrontendAgent | Phase 4 — Main Page | Closed | `project-control/tasks/TASK-0009.md` | 2026-06-27 |
-
+| TASK-0010 | Periodic Quality Review after TASK-0009 | QualityReviewCoordinatorAgent | Phase 4 — Quality Review | Closed | `project-control/tasks/TASK-0010.md` | 2026-06-28 |

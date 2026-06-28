@@ -22,6 +22,13 @@ Prepare execution task packages under Tera direction. This agent turns Tera deci
 - Drafting or refining `project-control/tasks/[TASK-ID].md` before delegation
 - Clarifying scope, out-of-scope, references, write targets, acceptance criteria, risks, or suggested reviewers
 - Splitting a task package for Backend/Frontend or other approved sub-agent combinations
+- When the task is multi-agent
+- When the task touches more than 3 files
+- When the task includes Backend + Frontend
+- When the task carries security or architecture risk
+- When the task is likely to drift in scope
+- When narrow `Allowed Write Targets` or detailed `Acceptance Criteria` are needed
+- Before a main screen, a central workflow, or another large implementation step
 
 ## Required Context
 
@@ -46,6 +53,7 @@ Only when explicitly assigned by Tera:
 - No updates to registry/log/state/issue/decision files.
 - No direct delegation to other agents.
 - No real secrets; use `[REDACTED]`.
+- No converting itself into a mandatory step for every small task.
 
 ## Output Format
 

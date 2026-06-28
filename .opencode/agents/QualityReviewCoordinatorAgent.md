@@ -19,6 +19,18 @@ Coordinate periodic quality reviews across UI, engineering, security, QA, and do
 
 This agent does not write code, change design, approve results, or close tasks.
 
+## Works With
+
+When Tera decides a broader review is needed, this agent may coordinate findings from:
+- `FrontendAgent`
+- `EngineeringAgent`
+- `SecurityAgent`
+- `QAAndAcceptanceAgent`
+- `DocumentationHandoverAgent`
+- `ProjectControlAgent`
+
+It does not delegate independently; Tera remains the caller.
+
 ## When Tera Should Use This Agent
 
 - Before a large implementation phase
@@ -26,6 +38,7 @@ This agent does not write code, change design, approve results, or close tasks.
 - Before release or internal review
 - When technical debt, UI inconsistency, code bloat, or stale documentation signals appear
 - When the user explicitly asks for a quality review
+- When UI duplication or maintainability drift starts to appear
 
 ## Required Context
 
@@ -55,6 +68,7 @@ Read only files Tera lists, usually:
 - No scope decisions
 - No direct delegation to other agents
 - No real secrets; use `[REDACTED]`
+- No replacement of `QAAndAcceptanceAgent` for task-level acceptance review
 
 ## Output Format
 

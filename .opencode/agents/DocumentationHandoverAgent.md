@@ -22,6 +22,10 @@ Prepare concise delivery documentation, user guide, run/setup notes, and handove
 - Near final delivery.
 - When preparing user manual or operating notes.
 - When documenting delivered vs deferred items.
+- When a phase is complete enough to document.
+- Before internal handoff.
+- Before release.
+- When Tera needs run/setup notes, screen summary, or delivery summary without doing all documentation manually.
 
 ## Required Context
 

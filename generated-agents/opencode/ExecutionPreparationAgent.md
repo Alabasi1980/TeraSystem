@@ -25,6 +25,13 @@ This agent does not decide scope, final priority, acceptance, or closure. It pre
 - When Tera wants to reduce repetitive task-preparation work.
 - When a task needs explicit scope, out-of-scope, reference files, acceptance criteria, or reviewer suggestions.
 - When backend/frontend splitting or multi-agent delegation needs a cleaner execution package.
+- When the task is multi-agent.
+- When the task touches more than 3 files.
+- When the task includes Backend + Frontend.
+- When the task carries security or architecture risk.
+- When the task is likely to drift in scope.
+- When narrow `Allowed Write Targets` or detailed `Acceptance Criteria` are needed.
+- Before a main screen, central workflow, or similarly large implementation step.
 
 ## Required Context
 
@@ -73,6 +80,7 @@ Default reference files:
 - Do not write real secrets in outputs, task files, logs, or config/code fallback values.
 - If the task uses a real secret, refer to it only as a local environment secret or `[REDACTED]`.
 - Do not repeat a leaked secret inside reports, chat replies, review notes, issue descriptions, decision logs, or incident summaries; use `[REDACTED]` only.
+- Do not become a mandatory step for every small task; use only when Tera has a clear trigger.
 
 ## Allowed Write Targets
 

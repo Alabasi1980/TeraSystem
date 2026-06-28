@@ -565,6 +565,7 @@ The default rule is:
 - Tera creates a `TASK-ID` and records the task.
 - Tera may ask `ExecutionPreparationAgent` to draft the task package first.
 - Tera may ask `QualityReviewCoordinatorAgent` to prepare and consolidate a periodic quality review before a deep implementation phase, after several implementation tasks, before release, or when debt/inconsistency signals appear.
+- Tera may ask `DocumentationHandoverAgent` to prepare delivery or handover documentation when a phase is complete enough to document or before internal/release handoff.
 - Tera runs Pre-Execution Gate.
 - If the gate fails, Tera revises the task until it passes or marks it blocked.
 - Tera asks for approval only after the gate passes.
@@ -575,6 +576,7 @@ The default rule is:
 - Tera runs `Post-Execution Review Gate`.
 - Tera checks whether independent review is required from `ProjectControlAgent`, `SecurityAgent`, or `QAAndAcceptanceAgent`.
 - Outside the single-task acceptance cycle, Tera decides whether the project needs a periodic cross-domain quality review coordinated by `QualityReviewCoordinatorAgent`.
+- Tera must explicitly decide whether `SecurityAgent` is needed for work that touches `Auth`, `JWT`, `Cookies`, `Middleware/Proxy`, `API Routes`, `Server Actions`, `Permissions`, `Role checks`, `Data Mutations`, `Secrets`, or `Config`.
 - If the gate fails, Tera keeps the task as `Submitted`, `Needs Fix`, or `Blocked` and sends it back for correction when possible.
 - Tera reviews and accepts only after the post-execution gate passes.
 - Tera updates `project-control/`.
@@ -596,9 +598,18 @@ Handback recording rule:
 - `ProjectControlAgent` may manage control records and review traceability, but only Tera decides final status changes.
 - `QualityReviewCoordinatorAgent` may coordinate review scope and consolidate findings, but only Tera decides what becomes a task, issue, deferred item, or accepted recommendation.
 - `QAAndAcceptanceAgent` is not a replacement for periodic quality review coordination; it remains focused on task/screen/workflow acceptance checks.
+- `DocumentationHandoverAgent` may prepare handover/user/run documentation, but only Tera decides when the phase is ready for delivery or release-facing docs.
+- Tera is the `Primary Project Orchestrator / Decision Owner`, not the default writer of every package, log, review, and final document.
+- Use `ExecutionPreparationAgent` when the task is multi-agent, exceeds 3 files, includes Backend + Frontend, carries security/architecture risk, is scope-drift prone, or needs narrow write targets and detailed acceptance criteria.
+- Use `ProjectControlAgent` when issues/decisions/control-file updates/ID checks/status-consistency checks are part of the cycle, especially if multiple agents participated.
+- Use `QualityReviewCoordinatorAgent` after 3-5 implementation tasks, after a phase, before release, or when debt/duplication/quality-drift signals appear.
+- Use `DocumentationHandoverAgent` when a phase is handoff-ready or when Tera needs delivery/run/user documentation without doing all final documentation work manually.
 - Tera maintains `project-control/SUB_AGENT_STATUS.md` as a lightweight manager-only review of sub-agent usage, load, quality, and update need.
 - `ProjectControlAgent` may help update `SUB_AGENT_STATUS.md`, but only Tera evaluates and decides.
 - Do not make strong sub-agent judgments from one isolated incident unless the issue is clearly structural.
+- Do not route every small task through a long helper-agent chain unless there is a clear justification.
+- Helper agents are used by trigger, not by habit.
+- If a task is small, direct, low-risk, and traceable without extra overhead, Tera may manage it directly.
 
 ---
 

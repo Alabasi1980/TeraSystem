@@ -27,6 +27,12 @@ This agent is an administrative support agent. It does not decide scope, impleme
 - When a gap, issue, risk, or deferred item appears during work.
 - When an important project decision must be recorded.
 - When Tera needs a concise project status summary from the control logs.
+- When a task added or closed an issue.
+- When a task added a decision.
+- When a task changed `PROJECT_STATE.md` or `TERA_ACTIVE_CONTEXT.md`.
+- When more than one agent worked on the same task.
+- When several `project-control/` files changed in one cycle.
+- When ID sequencing or task-status consistency must be checked.
 - When Tera needs an independent post-execution review of logs, IDs, control-file consistency, or traceability.
 - When deferred findings from `SecurityAgent` or `QAAndAcceptanceAgent` must be converted into formal issues or tracked follow-ups.
 
@@ -44,6 +50,7 @@ Default reference files:
 - `project-control/ISSUES_AND_GAPS.md`
 - `project-control/DECISIONS_LOG.md`
 - `project-control/TERA_ACTIVE_CONTEXT.md` (when it exists)
+- `project-control/SUB_AGENT_STATUS.md` (when Tera requests an agent-status review)
 
 ## Allowed Sources
 
@@ -96,6 +103,7 @@ Default reference files:
 - `project-control/ISSUES_AND_GAPS.md`
 - `project-control/DECISIONS_LOG.md`
 - `project-control/TERA_ACTIVE_CONTEXT.md`
+- `project-control/SUB_AGENT_STATUS.md`
 - `project-control/tasks/*.md`
 
 ## Expected Outputs

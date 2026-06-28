@@ -40,6 +40,7 @@
 | دورة العملاء الفرعيين الموحدة: `Generated Draft` ثم `Activated` ثم `Inactive` عند الحاجة | `tera-system/TeraAgent.md` / `.opencode/agents/tera.md` | معتمد |
 | تقليل حمل Tera عبر `ProjectControlAgent` و`ExecutionPreparationAgent` فقط | `tera-system/TeraAgent.md` / `tera-system/TeraSubAgents.md` | معتمد |
 | `QualityReviewCoordinatorAgent` مفعّل للمراجعات الدورية متعددة المجالات دون أن يحل محل مراجعات القبول أو القرار النهائي | `tera-system/TeraAgent.md` / `tera-system/TeraSubAgents.md` | معتمد |
+| Tera مثبت كـ `Primary Project Orchestrator / Decision Owner` والعملاء المساندون يعملون وفق Trigger Rules لا وفق سلسلة إلزامية ثابتة | `tera-system/TeraAgent.md` / `.opencode/agents/tera.md` | معتمد |
 | `tera-system/` مرجع نظامي read-only أثناء التنفيذ | `.opencode/agents/tera.md` | معتمد |
 
 ---
@@ -133,6 +134,8 @@
 | TASK-0007 | Closed ✅ | SEC fixes (001+002) + شاشة إدارة البنوك S03 |
 | TASK-0008 | Closed ✅ | شاشة إدارة الجهات S04 — Parties module (actions.ts + page.tsx) |
 | TASK-0009 | Closed ✅ | الصفحة الرئيسية Navigation Hub — بطاقات تنقل للبنوك والجهات + قيد الإنشاء للشيكات والمستخدمين |
+| TASK-0010 | Closed ✅ | مراجعة جودة دورية خفيفة بعد TASK-0009 — QualityReviewCoordinatorAgent |
+| ISSUE-0006 | Planned | Server-side validation missing in Banks/Parties actions — يجب إصلاحه قبل Checks S02 |
 | ISSUE-0003 | Resolved ✅ | Secret exposure cleaned |
 | ISSUE-0004 | Resolved ✅ | SEC-001 User Enumeration — fixed in TASK-0007 |
 | ISSUE-0005 | Resolved ✅ | SEC-002 Logout cookie — fixed in TASK-0007 |
@@ -169,4 +172,4 @@ TASK-0009 (Main Page) — **مغلق** ✅.
 |---|---|---|
 | Updated By | Tera Agent / Project Owner |
 | Update Reason | TASK-0008 + TASK-0009 closed ✅. Parties screen (S04) and Main Navigation Hub completed. Build PASS. |
-| Next Step | شاشة الشيكات (S02) — الوحدة الرئيسية للتطبيق، أو شاشة المستخدمين (S05) — حسب الأولوية |
+| Next Step | إصلاح ISSUE-0006 أولًا، ثم شاشة الشيكات (S02) أو شاشة المستخدمين (S05) حسب الأولوية |

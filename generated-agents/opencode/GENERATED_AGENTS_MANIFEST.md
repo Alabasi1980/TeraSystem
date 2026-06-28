@@ -204,6 +204,7 @@
 - كل تسليم من عميل فرعي يجب أن يوثق داخل `project-control/tasks/[TASK-ID].md` قبل تحويل المهمة إلى `Accepted` أو `Closed`.
 - إذا لم يكن العميل الفرعي مفوضًا بالكتابة داخل `project-control/`، فيجب على Tera أو `ProjectControlAgent` تسجيل التسليم فور استلامه.
 - `QualityReviewCoordinatorAgent` لا يستبدل `QAAndAcceptanceAgent`; الأول للمراجعة الدورية متعددة المجالات، والثاني لمراجعة قبول مهمة/شاشة/Workflow محدد.
+- `DocumentationHandoverAgent` يستخدم عند اكتمال مرحلة قابلة للتوثيق أو قبل handoff/release، حتى لا يحمل Tera كامل أعمال التوثيق بنفسه.
 
 ### Unified Activation Policy
 
@@ -217,4 +218,6 @@
 - After copying a newly activated sub-agent into `.opencode/agents/`, Tera must ask the user to restart the current environment so the activation becomes effective.
 - The current minimal support layer around Tera is limited to `ProjectControlAgent` and `ExecutionPreparationAgent`.
 - `QualityReviewCoordinatorAgent` is an optional review-coordination layer, not a planning layer and not a replacement for specialist review agents.
+- Tera is the `Primary Project Orchestrator / Decision Owner`; helper agents reduce operational load but do not inherit final authority.
+- Do not over-delegate small tasks through long helper-agent chains without a clear trigger.
 - `PlanningCoordinatorAgent` remains deferred for larger phases or larger projects.
