@@ -41,3 +41,4 @@ Closed
 | TASK-0012 | شاشة إدارة الشيكات (Checks Screen S02) — Backend + Frontend + Nav | EngineeringAgent + FrontendAgent | Phase 4 — Checks Screen | Accepted | `project-control/tasks/TASK-0012.md` | 2026-06-28 |
 | TASK-0013 | Fix ISSUE-0007: NaN amount bypass in check validation | EngineeringAgent | Phase 4 — Validation Fix | Closed | `project-control/tasks/TASK-0013.md` | 2026-06-28 |
 | TASK-0014 | Fix ISSUE-0008: Invalid date crash in check actions | EngineeringAgent | Phase 4 — Validation Fix | Closed | `project-control/tasks/TASK-0014.md` | 2026-06-28 |
+| TASK-0015 | شاشة إدارة المستخدمين (Users Screen S05) | EngineeringAgent + FrontendAgent | Phase 4 — Users Screen | Accepted | `project-control/tasks/TASK-0015.md` | 2026-06-28 |

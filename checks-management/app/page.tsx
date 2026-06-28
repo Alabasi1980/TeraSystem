@@ -278,7 +278,8 @@ export default function HomePage() {
           <NavCard
             title="المستخدمين"
             description="إدارة المستخدمين والصلاحيات"
-            active={false}
+            href="/users"
+            active={true}
           />
         </div>
       </div>

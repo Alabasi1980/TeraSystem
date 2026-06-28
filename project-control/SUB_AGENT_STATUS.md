@@ -40,8 +40,8 @@ Later tasks may refine the status, but this file starts from the first stable mu
 
 | Agent | Status | Usage | Load | Quality | Last Used | Current Decision | Notes |
 |---|---|---|---|---|---|---|---|
-| `EngineeringAgent` | Active | High | Medium | Good | `TASK-0012` | Keep as primary execution specialist | نفذ TASK-0001 إلى TASK-0004 ثم TASK-0007 وشارك في TASK-0008 وأنجز TASK-0011. نفذ Sub-Task 1 من TASK-0012 — 9 Server Actions في `app/checks/actions.ts` (483 سطرًا). Build PASS. |
-| `FrontendAgent` | Active | High | Medium | Good | `TASK-0012` | Keep as primary UI execution specialist | استخدم فعليًا في TASK-0008 وTASK-0009 وTASK-0012 (Sub-Tasks 2+3). نفذ `app/checks/page.tsx` (64530 بايت، full Checks UI مع summary bar, filters, table, badges, modals, print, جميع الحالات) وفعّل كارت الشيكات في الصفحة الرئيسية. الأداء جيد. |
+| `EngineeringAgent` | Active | High | Medium | Good | `TASK-0015` | Keep as primary execution specialist | نفذ TASK-0001 إلى TASK-0004 ثم TASK-0007 وشارك في TASK-0008 وأنجز TASK-0011 وتصليحات TASK-0013 وTASK-0014. نفذ Sub-Task 1 من TASK-0012 (9 Server Actions في `app/checks/actions.ts`, 483 سطرًا). ثم نفذ Sub-Task 1 من TASK-0015 (`app/users/actions.ts`, 245 lines, 5 Server Actions مع requireAdmin, hashing). Build PASS في جميع المهام. |
+| `FrontendAgent` | Active | High | Medium | Good | `TASK-0015` | Keep as primary UI execution specialist | استخدم فعليًا في TASK-0008 وTASK-0009 وTASK-0012 (Sub-Tasks 2+3) وTASK-0015 (Sub-Tasks 2+3). نفذ `app/users/page.tsx` (837 سطرًا، full Users UI مع جدول، مودال، تفعيل/تعطيل) وفعّل كارت المستخدمين في الصفحة الرئيسية. الأداء جيد. |
 | `ProjectControlAgent` | Underused | Low | Low | Good | `TASK-0011` | Increase usage in larger execution batches | استخدم في TASK-0011 لتحديث سجلات `project-control` وإغلاق ISSUE-0006 تحت توجيه Tera. |
 | `ExecutionPreparationAgent` | Idle | None | None | Not Evaluated | None | Keep ready for large or multi-agent tasks | مفعّل لكن لم يدخل دورة تنفيذ فعلية بعد. |
 | `QualityReviewCoordinatorAgent` | Conditional | Low | Low | Good | `TASK-0010` | Keep for periodic reviews after phases or quality-drift signals | استخدم فعليًا في TASK-0010 وقدم مراجعة مفيدة بدون تعديل ملفات أو تضخيم نطاق. |
@@ -59,10 +59,11 @@ Later tasks may refine the status, but this file starts from the first stable mu
 - Keep `EngineeringAgent` and `FrontendAgent` as the primary execution pair.
 - Increase actual use of `ProjectControlAgent` in larger execution batches.
 - Keep `SecurityAgent` as a conditional specialist, not a default reviewer.
-- Keep `QAAndAcceptanceAgent` ready for the checks screen and workflow-heavy phases.
+- Keep `QAAndAcceptanceAgent` ready for workflow-heavy phases and UI acceptance.
 - Keep idle agents available without forcing activation or unnecessary work.
-- `ISSUE-0006` fix completed in `TASK-0011`; prepare Checks S02 task package with `ExecutionPreparationAgent` before implementation.
-- `TASK-0012` (Checks Screen S02) completed and submitted ✅ awaiting user acceptance.
-- `ISSUE-0007` (NaN amount bypass) and `ISSUE-0008` (invalid date crash) registered from SecurityAgent TASK-0012 review — fix planning pending Tera decision.
-- `QAAndAcceptanceAgent` successfully used for first time — review PASS with 3 minor notes.
-- Keep UI component/style extraction deferred until after S02 or S05 unless duplication causes bugs.
+- `TASK-0012` (Checks Screen S02) accepted ✅ — full checks management with status workflow.
+- `TASK-0013` (ISSUE-0007 NaN fix) + `TASK-0014` (ISSUE-0008 date fix) closed ✅ — both validation gaps resolved.
+- `TASK-0015` (Users Screen S05) accepted ✅ — final MVP screen with admin CRUD, activation/deactivation, self-protection.
+- **MVP complete ✅. Ready for handover documentation or Phase 2 planning.**
+- `QAAndAcceptanceAgent` successfully used — review PASS with 3 minor notes.
+- Keep UI component/style extraction deferred until after handover or Phase 2.

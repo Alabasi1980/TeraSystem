@@ -25,8 +25,8 @@ For any new session in this project:
 | Size | Small MVP |
 | Runtime | OpenCode |
 | Approved Tech | Next.js + TypeScript + PostgreSQL + Prisma |
-| Current Phase | Phase 4 — Checks Screen S02 complete; TASK-0012 submitted |
-| Next Task | Fix ISSUE-0007 (NaN amount validation), then continue with S05 (Users) or roadmap review |
+| Current Phase | **MVP Complete ✅ — all 5 screens done** (Banks S03, Parties S04, Checks S02, Users S05, Nav Hub) |
+| Next Task | Handover documentation or roadmap review |
 | Current Lead Agent | `Tera Agent` |
 | Expected Execution Agents | `EngineeringAgent` + `FrontendAgent` |
 
@@ -44,6 +44,9 @@ For any new session in this project:
 - `TASK-0010` - Periodic Quality Review — QualityReviewCoordinatorAgent report
 - `TASK-0011` - ISSUE-0006 fix — server-side validation/normalization in Banks/Parties actions
 - `TASK-0012` - Checks Screen S02 — actions.ts (9 Server Actions) + page.tsx (full UI) + nav activation
+- `TASK-0013` - ISSUE-0007 fix — NaN amount validation guard in check actions
+- `TASK-0014` - ISSUE-0008 fix — invalid date crash in check actions
+- `TASK-0015` - Users Screen S05 — actions.ts + page.tsx + nav activation **✅ FINAL MVP SCREEN**
 
 ## Recent System Changes
 
@@ -55,6 +58,8 @@ For any new session in this project:
 - `2026-06-28`: Tera role refined as `Primary Project Orchestrator / Decision Owner` with explicit helper-agent trigger rules and anti-over-delegation rules.
 - `2026-06-28`: TASK-0011 closed. ISSUE-0006 resolved; `npm run build` PASS. SecurityAgent and QAAndAcceptanceAgent not required for this backend-only validation fix per Tera decision.
 - `2026-06-28`: TASK-0012 (Checks Screen S02) completed. 3 sub-tasks: EngineeringAgent (actions.ts), FrontendAgent (page.tsx + nav). Build PASS. SecurityAgent review found ISSUE-0007 (NaN bypass) and ISSUE-0008 (date crash). QAAndAcceptanceAgent review PASS with minor notes. TASK-0012 submitted, awaiting user acceptance.
+- `2026-06-28`: TASK-0013 (ISSUE-0007 NaN fix) + TASK-0014 (ISSUE-0008 date fix) closed. Both fixes were simple validation guards in `app/checks/actions.ts` with no side effects. ISSUE-0007 → Resolved, ISSUE-0008 → Resolved.
+- `2026-06-28`: TASK-0015 (Users Screen S05) accepted — **last MVP screen**. EngineeringAgent + FrontendAgent completed all 3 sub-tasks. Users CRUD with activation/deactivation, self-protection, password hashing. Build PASS. **MVP COMPLETE ✅**
 
 ## Active Rules You Must Not Miss
 
@@ -92,6 +97,9 @@ For any new session in this project:
 - `DEC-0014` - Tera is fixed as `Primary Project Orchestrator / Decision Owner`; helper agents are trigger-based, over-delegation is disallowed, and temp dev logs are cleanup-required before new work.
 - `SUB_AGENT_STATUS.md` is the lightweight manager review for sub-agent usage, load, quality, and update need.
 - `ISSUE-0006` - Resolved in TASK-0011: server-side validation/normalization added to Banks/Parties actions before Checks S02.
+- `ISSUE-0007` - Resolved in TASK-0013: NaN amount bypass fixed — `isNaN()` guard added to check validation.
+- `ISSUE-0008` - Resolved in TASK-0014: invalid date crash fixed — explicit `Date` parsing with validation.
+- `TASK-0015` - Accepted ✅: Users Screen S05 completed — final MVP screen.
 - `ISSUE-0003` - Secret exposure incident from TASK-0003 was resolved; do not reintroduce secrets into docs or config fallbacks.
 
 ## Available Sub-Agents
@@ -118,7 +126,7 @@ Activation note:
 
 ## Read Next Only If Needed
 
-- Latest implementation details: `project-control/tasks/TASK-0011.md`
+- Latest implementation details: `project-control/tasks/TASK-0015.md`
 - Compact official project memory: `project-control/PROJECT_STATE.md`
 - Sub-agent health snapshot: `project-control/SUB_AGENT_STATUS.md`
 - Active rules: `project-preparation/PROJECT_RULES.md`

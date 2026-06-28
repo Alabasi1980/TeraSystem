@@ -19,7 +19,7 @@
 | اسم المشروع | تطبيق إدارة الشيكات |
 | نوع المشروع | تطبيق ويب مستقل |
 | حجم المشروع | صغير / MVP |
-| المرحلة الحالية | Phase 4 — TASK-0012 completed ✅ (Checks Screen S02). Post-Execution Gate PASS. SecurityAgent review: 2 findings (ISSUE-0007, ISSUE-0008). QAAndAcceptanceAgent review: PASS with 3 minor notes. Next: fix ISSUE-0007 (NaN amount validation), then continue with S05 (Users) or roadmap review. |
+| المرحلة الحالية | **MVP Complete ✅ — all 5 screens built and accepted** (Banks S03, Parties S04, Checks S02, Users S05, Nav Hub). All issues resolved. Build PASS on all routes. |
 | بيئة التشغيل | OpenCode |
 | التقنية المعتمدة | Next.js + TypeScript + PostgreSQL + Prisma |
 | مصدر التفاصيل | `project-preparation/` |
@@ -125,49 +125,47 @@
 |---|---|---|
 | Readiness Review | مكتمل ✅ | المشروع جاهز للتنفيذ — راجع تقرير المراجعة |
 | EngineeringAgent | مولّد ✅ | جاهز للتفويض بعد اجتياز TASK-ID لبوابة Pre-Execution Gate |
-| TASK-0001 | Closed ✅ | Scaffold Next.js + Prisma + .env.example |
-| TASK-0002 | Closed ✅ | Prisma Data Models — 4 models + prisma.config.ts |
-| TASK-0003 | Closed ✅ | إنشاء قاعدة البيانات checks_management + أول Migration عبر `prisma migrate dev` (PostgreSQL 18 + Prisma 7.8.0) |
-| TASK-0004 | Closed ✅ | إعداد المصادقة والصلاحيات — Login + JWT + Middleware + Seed (Admin/User roles) |
-| TASK-0005 | Closed ✅ | المراجعة الأمنية المستقلة لـ TASK-0004 — SecurityAgent: PASS ✅. لا Blocker. |
-| TASK-0006 | Closed ✅ | تحضير مواصفات التنفيذ — workflow-rules.md + screen-spec-s03.md |
-| TASK-0007 | Closed ✅ | SEC fixes (001+002) + شاشة إدارة البنوك S03 |
-| TASK-0008 | Closed ✅ | شاشة إدارة الجهات S04 — Parties module (actions.ts + page.tsx) |
-| TASK-0009 | Closed ✅ | الصفحة الرئيسية Navigation Hub — بطاقات تنقل للبنوك والجهات + قيد الإنشاء للشيكات والمستخدمين |
-| TASK-0010 | Closed ✅ | مراجعة جودة دورية خفيفة بعد TASK-0009 — QualityReviewCoordinatorAgent |
-| TASK-0011 | Closed ✅ | إصلاح ISSUE-0006 — server-side validation/normalization في Banks/Parties Server Actions. Build PASS. |
-| TASK-0012 | Submitted ⏳ | شاشة إدارة الشيكات S02 — Backend (actions.ts) + Frontend (page.tsx) + Nav activation. Build PASS. Sub-Task 1 ✅ Sub-Task 2 ✅ Sub-Task 3 ✅. Post-Execution Gate PASS. SecurityAgent review completed. QAAndAcceptanceAgent review completed. Awaiting user acceptance. |
-| ISSUE-0006 | Resolved ✅ | Server-side validation gap fixed in TASK-0011 before Checks S02 |
+| TASK-0001 — TASK-0011 | Closed ✅ | جميع مهام التأسيس والتحضير والأساس التقني مكتملة |
+| TASK-0012 | **Accepted ✅** | شاشة إدارة الشيكات S02 — Backend (actions.ts) + Frontend (page.tsx) + Nav activation. Build PASS. Post-Execution Gate PASS. SecurityAgent review completed. QAAndAcceptanceAgent review completed. **Accepted.** |
+| TASK-0013 | Closed ✅ | Fix ISSUE-0007: NaN amount bypass — `isNaN()` guard added to check validation. Build PASS. |
+| TASK-0014 | Closed ✅ | Fix ISSUE-0008: Invalid date crash — explicit date validation with Arabic error messages. Build PASS. |
+| TASK-0015 | **Accepted ✅** | شاشة إدارة المستخدمين S05 (Users Screen) — آخر شاشات MVP. EngineeringAgent (Server Actions, 245 lines) + FrontendAgent (page.tsx, 837 lines) + Nav activation. Build PASS. |
 | ISSUE-0003 | Resolved ✅ | Secret exposure cleaned |
 | ISSUE-0004 | Resolved ✅ | SEC-001 User Enumeration — fixed in TASK-0007 |
 | ISSUE-0005 | Resolved ✅ | SEC-002 Logout cookie — fixed in TASK-0007 |
-| TASK-0006 | Closed ✅ | تحضير مواصفات التنفيذ — workflow-rules.md + screen-spec-s03.md. جاهز لـ TASK-0007. |
-| TASK-0007 | Closed ✅ | SEC fixes (001+002) + شاشة إدارة البنوك S03. Build PASS. |
-| ISSUE-0004 (SEC-001) | Resolved ✅ | تم إصلاحه — رسالة خطأ موحدة |
-| ISSUE-0005 (SEC-002) | Resolved ✅ | تم إصلاحه — خصائص Cookie للـ Logout |
-| ISSUE-0003 (Secret Exposure) | Resolved ✅ | تم تنظيف التسرب في prisma.config.ts + تحديث قواعد المنظومة — راجع ISSUES_AND_GAPS.md |
+| ISSUE-0006 | Resolved ✅ | Server-side validation gap fixed in TASK-0011 before Checks S02 |
+| ISSUE-0007 | **Resolved ✅** | NaN amount bypass (Medium) — fixed in TASK-0013 |
+| ISSUE-0008 | **Resolved ✅** | Invalid date crash (Low) — fixed in TASK-0014 |
 | DEC-0004 (Secret Handling Rules) | Active ✅ | قواعد إلزامية جديدة للأسرار في Pre-Execution Gate و Post-Execution Review Gate و handbacks |
-| DEC-0011 (requireAdmin Defense in Depth) | Active ✅ | `requireAdmin()` مضافة في `lib/auth.ts`. جميع Banks و Parties Server Actions تتحقق من صلاحية ADMIN قبل التنفيذ. النمط سيطبق على Users و Checks عند بنائها. |
+| DEC-0011 (requireAdmin Defense in Depth) | Active ✅ | `requireAdmin()` مضافة في `lib/auth.ts`. جميع Server Actions تتحقق من صلاحية ADMIN قبل التنفيذ. |
 
 ---
 
 ## 9. آخر ملخص سياق
 
-TASK-0012 مكتمل ✅ — شاشة إدارة الشيكات S02 (Backend + Frontend + Nav) تم بناؤها بالكامل.
-Build verification: `npm run build` PASS ✅.
-Post-Execution Review Gate: PASS ✅.
-SecurityAgent راجع الكود ووجد findingين: ISSUE-0007 (NaN amount bypass — Medium) وISSUE-0008 (invalid date crash — Low).
-QAAndAcceptanceAgent راجع الشاشة وأقر PASS مع 3 ملاحظات بسيطة غير مانعة.
-TASK-0012 في حالة Submitted بانتظار قبول المستخدم.
-الخطوة التالية: إصلاح ISSUE-0007 (NaN amount validation) أولاً، ثم تقييم هل ننتقل إلى S05 (Users) أو نجري مراجعة خريطة الطريق.
-**إلزامية:** قبل أي TASK جديدة، يجب مراجعة PROJECT_STATE.md و PROJECT_RULES.md.
+**MVP Complete ✅ — جميع شاشات MVP الخمس مكتملة ومعتمدة.**
+
+1. **Banks S03** (TASK-0007) — CRUD for banks ✅
+2. **Parties S04** (TASK-0008) — CRUD for parties ✅
+3. **Navigation Hub** (TASK-0009) — Main page with 4 nav cards ✅
+4. **Checks S02** (TASK-0012) — Full checks management with create, edit, print, status workflow, filters ✅
+5. **Users S05** (TASK-0015) — Admin CRUD for users with activation/deactivation, self-protection ✅
+
+All issues resolved:
+- ISSUE-0006: Server-side validation fixed in TASK-0011 ✅
+- ISSUE-0007: NaN amount bypass fixed in TASK-0013 ✅
+- ISSUE-0008: Invalid date crash fixed in TASK-0014 ✅
+
+Build verification: `npm run build` PASS on all routes ✅.
+**All 15 tasks completed. 0 open issues. 0 blockers.**
+**المرحلة التالية:** توثيق التسليم (DocumentationHandoverAgent) أو مراجعة خريطة الطريق للمرحلة الثانية.
 
 ---
 
 ## 10. آخر تحديث
 
 | البند | القيمة |
-|---|---|---|
+|---|---|
 | Updated By | ProjectControlAgent under Tera direction |
-| Update Reason | TASK-0012 completed ✅. Post-Execution Gate PASS. SecurityAgent review findings registered (ISSUE-0007, ISSUE-0008). QAAndAcceptanceAgent review PASS. TASK-0012 submitted, awaiting user acceptance. |
-| Next Step | Fix ISSUE-0007 (NaN amount validation), then continue with S05 (Users) or roadmap review. |
+| Update Reason | MVP complete ✅. All 5 screens built and accepted. TASK-0013 (ISSUE-0007 fix), TASK-0014 (ISSUE-0008 fix), TASK-0015 (Users S05) all closed/accepted. All issues resolved. Build PASS on all routes. |
+| Next Step | Ready for handover documentation or roadmap review. |
