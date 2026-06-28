@@ -19,7 +19,7 @@
 | اسم المشروع | تطبيق إدارة الشيكات |
 | نوع المشروع | تطبيق ويب مستقل |
 | حجم المشروع | صغير / MVP |
-| المرحلة الحالية | **MVP Complete ✅ — all 5 screens built and accepted** (Banks S03, Parties S04, Checks S02, Users S05, Nav Hub). All issues resolved. Build PASS on all routes. |
+| المرحلة الحالية | **MVP Complete ✅ — all 5 screens built and accepted** (Banks S03, Parties S04, Checks S02, Users S05, Nav Hub). All issues resolved. Build PASS on all routes. System-maintenance sync complete, including roadmap tracking and plan-compliance review readiness. |
 | بيئة التشغيل | OpenCode |
 | التقنية المعتمدة | Next.js + TypeScript + PostgreSQL + Prisma |
 | مصدر التفاصيل | `project-preparation/` |
@@ -40,7 +40,11 @@
 | دورة العملاء الفرعيين الموحدة: `Generated Draft` ثم `Activated` ثم `Inactive` عند الحاجة | `tera-system/TeraAgent.md` / `.opencode/agents/tera.md` | معتمد |
 | تقليل حمل Tera عبر `ProjectControlAgent` و`ExecutionPreparationAgent` فقط | `tera-system/TeraAgent.md` / `tera-system/TeraSubAgents.md` | معتمد |
 | `QualityReviewCoordinatorAgent` مفعّل للمراجعات الدورية متعددة المجالات دون أن يحل محل مراجعات القبول أو القرار النهائي | `tera-system/TeraAgent.md` / `tera-system/TeraSubAgents.md` | معتمد |
+| `PROJECT_MASTER_PLAN.md` و`PROJECT_DETAILED_EXECUTION_PLAN.md` معتمدان كملفي roadmap tracking رسميين | `project-control/PROJECT_MASTER_PLAN.md` / `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md` | معتمد |
+| `PlanComplianceReviewAgent` مفعّل لمراجعة توافق التنفيذ مع الخطة دون أن يحل محل ProjectControl أو QA أو Quality Review | `tera-system/TeraAgent.md` / `tera-system/TeraSubAgents.md` | معتمد |
 | Tera مثبت كـ `Primary Project Orchestrator / Decision Owner` والعملاء المساندون يعملون وفق Trigger Rules لا وفق سلسلة إلزامية ثابتة | `tera-system/TeraAgent.md` / `.opencode/agents/tera.md` | معتمد |
+| تمت إضافة `Orchestration Decision Matrix` و`Security Sensitivity Levels` و`Handoff Readiness Gate` مع قاعدة `Smallest Sufficient Orchestration` والتحقق من active/generated agent sync | `tera-system/TeraAgent.md` / `tera-system/TeraPreExecutionGate.md` / `.opencode/agents/tera.md` | معتمد |
+| تمت إضافة `Model Capability Gate` قبل `Pre-Execution Gate` لتقييم ملاءمة المودل الحالي وتحديد هل يكفي، يكفي مع safeguards، يحتاج escalation، أو يحتاج تقسيم المهمة | `tera-system/TeraAgent.md` / `tera-system/TeraPreExecutionGate.md` / `.opencode/agents/tera.md` | معتمد |
 | `tera-system/` مرجع نظامي read-only أثناء التنفيذ | `.opencode/agents/tera.md` | معتمد |
 
 ---
@@ -79,6 +83,7 @@
 | `ProjectControlAgent` | مفعل داخل `.opencode/agents/ProjectControlAgent.md` | جاهز للتحديثات الإدارية لـ `project-control/` |
 | `ExecutionPreparationAgent` | مفعل داخل `.opencode/agents/ExecutionPreparationAgent.md` | جديد - يجهز Task Package قبل تفويض التنفيذ، دون قرار أو تنفيذ كود |
 | `QualityReviewCoordinatorAgent` | مفعل داخل `.opencode/agents/QualityReviewCoordinatorAgent.md` | جديد - ينسق مراجعات جودة دورية متعددة المجالات ويرفع تقريرًا موحدًا إلى Tera دون تنفيذ أو اعتماد |
+| `PlanComplianceReviewAgent` | مفعل داخل `.opencode/agents/PlanComplianceReviewAgent.md` | جديد - يراجع توافق التنفيذ مع `PROJECT_MASTER_PLAN.md` و`PROJECT_DETAILED_EXECUTION_PLAN.md` ويرفع تقريرًا إلى Tera فقط |
 | `SecurityAgent` | مفعل داخل `.opencode/agents/SecurityAgent.md` | **مفعّل** — أنجز TASK-0005 (Security Review) بنجاح ✅ |
 | `QAAndAcceptanceAgent` | مفعل داخل `.opencode/agents/QAAndAcceptanceAgent.md` | جاهز للمراجعة المستقلة بعد المهام التنفيذية، خاصة شاشة الشيكات S02 |
 | `DocumentationHandoverAgent` | مفعل داخل `.opencode/agents/DocumentationHandoverAgent.md` | جاهز للتسليم والتوثيق النهائي |
@@ -157,8 +162,8 @@ All issues resolved:
 - ISSUE-0008: Invalid date crash fixed in TASK-0014 ✅
 
 Build verification: `npm run build` PASS on all routes ✅.
-**All 15 tasks completed. 0 open issues. 0 blockers.**
-**المرحلة التالية:** توثيق التسليم (DocumentationHandoverAgent) أو مراجعة خريطة الطريق للمرحلة الثانية.
+**All 18 tracked tasks completed. 0 open issues. 0 blockers.**
+**المرحلة التالية:** توثيق التسليم (DocumentationHandoverAgent) أو تشغيل `PlanComplianceReviewAgent` لمراجعة توافق الـ MVP مع الخطة قبل الانتقال إلى Phase 2.
 
 ---
 
@@ -167,5 +172,5 @@ Build verification: `npm run build` PASS on all routes ✅.
 | البند | القيمة |
 |---|---|
 | Updated By | ProjectControlAgent under Tera direction |
-| Update Reason | MVP complete ✅. All 5 screens built and accepted. TASK-0013 (ISSUE-0007 fix), TASK-0014 (ISSUE-0008 fix), TASK-0015 (Users S05) all closed/accepted. All issues resolved. Build PASS on all routes. |
-| Next Step | Ready for handover documentation or roadmap review. |
+| Update Reason | MVP complete ✅ and Tera system-maintenance upgrades completed. Lifecycle ordering, Decision Matrix, Security Sensitivity, Handoff Readiness, active/generated verification, Model Capability Gate, roadmap tracking, and plan-compliance review rules are now aligned across the runtime and system references. |
+| Next Step | Ready for handover documentation or plan-compliance review before Phase 2 roadmap decisions. |

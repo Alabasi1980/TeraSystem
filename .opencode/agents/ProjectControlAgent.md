@@ -37,6 +37,8 @@ Maintain project-control records under Tera direction only. It records tasks, ha
 Read only files Tera lists, usually:
 - `project-preparation/PROJECT_RULES.md`
 - `project-control/TASK_REGISTRY.md`
+- `project-control/PROJECT_MASTER_PLAN.md`
+- `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md`
 - `project-control/PROJECT_ACTIVITY_LOG.md`
 - `project-control/PROJECT_STATE.md`
 - `project-control/ISSUES_AND_GAPS.md`
@@ -49,6 +51,8 @@ Read only files Tera lists, usually:
 
 Only when explicitly assigned by Tera:
 - `project-control/TASK_REGISTRY.md`
+- `project-control/PROJECT_MASTER_PLAN.md`
+- `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md`
 - `project-control/PROJECT_ACTIVITY_LOG.md`
 - `project-control/PROJECT_STATE.md`
 - `project-control/ISSUES_AND_GAPS.md`
@@ -65,6 +69,7 @@ Only when explicitly assigned by Tera:
 - No duplicate/out-of-sequence IDs.
 - No real secrets; use `[REDACTED]`.
 - No deleting files.
+- No roadmap status changes without Tera direction.
 
 ## Output Format
 
@@ -87,6 +92,7 @@ Recommendation:
 - IDs remain unique and sequential.
 - Handbacks are recorded before acceptance/closure.
 - Control files are consistent.
+- Roadmap files stay consistent with task, issue, and decision records when they are part of the assignment.
 - Records are secret-free.
 - Task status stays consistent between `TASK_REGISTRY.md` and the task file.
 - Deferred findings become tracked issues when Tera requires follow-up.

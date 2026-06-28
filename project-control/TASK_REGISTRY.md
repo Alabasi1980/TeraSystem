@@ -42,3 +42,6 @@ Closed
 | TASK-0013 | Fix ISSUE-0007: NaN amount bypass in check validation | EngineeringAgent | Phase 4 — Validation Fix | Closed | `project-control/tasks/TASK-0013.md` | 2026-06-28 |
 | TASK-0014 | Fix ISSUE-0008: Invalid date crash in check actions | EngineeringAgent | Phase 4 — Validation Fix | Closed | `project-control/tasks/TASK-0014.md` | 2026-06-28 |
 | TASK-0015 | شاشة إدارة المستخدمين (Users Screen S05) | EngineeringAgent + FrontendAgent | Phase 4 — Users Screen | Accepted | `project-control/tasks/TASK-0015.md` | 2026-06-28 |
+| TASK-0016 | Tera System Maintenance Upgrade — orchestration lifecycle, security sensitivity, and handoff readiness | Tera Agent | System Maintenance | Closed | `project-control/tasks/TASK-0016.md` | 2026-06-28 |
+| TASK-0017 | Tera System Maintenance Upgrade — Model Capability Gate | Tera Agent | System Maintenance | Closed | `project-control/tasks/TASK-0017.md` | 2026-06-28 |
+| TASK-0018 | Tera System Maintenance Upgrade — roadmap tracking and PlanComplianceReviewAgent | Tera Agent | System Maintenance | Closed | `project-control/tasks/TASK-0018.md` | 2026-06-28 |

@@ -162,6 +162,19 @@
 
 ---
 
+### 14. PlanComplianceReviewAgent
+
+| البند | القيمة |
+|---|---|
+| الملف | `generated-agents/opencode/PlanComplianceReviewAgent.md` |
+| المعرّف | `PLAN_COMPLIANCE_REVIEW_AGENT` |
+| الفئة | مشروط / مراجعة توافق الخطة |
+| سبب التوليد | مطلوب لإضافة طبقة رسمية لمراجعة توافق التنفيذ مع `PROJECT_MASTER_PLAN.md` و`PROJECT_DETAILED_EXECUTION_PLAN.md` واكتشاف البنود المنفذة، المؤجلة، الملغاة، الخارجة عن النطاق، أو التي تحتاج إصلاحًا قبل اعتماد مرحلة أو MVP. |
+| الملفات المسموح بكتابتها | لا يكتب افتراضيًا داخل المشروع؛ يسلّم Plan Compliance Report إلى Tera، ويقوم Tera أو `ProjectControlAgent` بتوثيقه عند الحاجة |
+| الحالة الحالية | مفعّل داخل `.opencode/agents/PlanComplianceReviewAgent.md` |
+
+---
+
 ## العملاء الذين لم يتم توليدهم — مع السبب
 
 | العميل | سبب عدم التوليد الآن |
@@ -174,10 +187,10 @@
 | `SolutionArchitectureAgent` | ملف `08_TECHNICAL_ARCHITECTURE.md` موجود والقرارات التقنية مستقرة. لا حاجة لتفعيله الآن. |
 
 ✅ **جميع العملاء التاليين تم توليدهم مسبقًا:**  
-`RequirementsScopeAgent`, `BusinessWorkflowAgent`, `DataDesignAgent`, `UIUXStructureAgent`, `ProjectControlAgent`, `EngineeringAgent`, `SecurityAgent` (مفعّل), `QAAndAcceptanceAgent`, `DocumentationHandoverAgent`, `ReportingAnalyticsAgent`, `FrontendAgent`, `ExecutionPreparationAgent`, `QualityReviewCoordinatorAgent`
+`RequirementsScopeAgent`, `BusinessWorkflowAgent`, `DataDesignAgent`, `UIUXStructureAgent`, `ProjectControlAgent`, `EngineeringAgent`, `SecurityAgent` (مفعّل), `QAAndAcceptanceAgent`, `DocumentationHandoverAgent`, `ReportingAnalyticsAgent`, `FrontendAgent`, `ExecutionPreparationAgent`, `QualityReviewCoordinatorAgent`, `PlanComplianceReviewAgent`
 
 ✅ **العملاء المثبتون فعليًا داخل `.opencode/agents/` بعد DEC-0009:**  
-`tera`, `EngineeringAgent`, `FrontendAgent`, `ProjectControlAgent`, `ExecutionPreparationAgent`, `QualityReviewCoordinatorAgent`, `SecurityAgent`, `QAAndAcceptanceAgent`, `BusinessWorkflowAgent`, `UIUXStructureAgent`, `ReportingAnalyticsAgent`, `DocumentationHandoverAgent`
+`tera`, `EngineeringAgent`, `FrontendAgent`, `ProjectControlAgent`, `ExecutionPreparationAgent`, `QualityReviewCoordinatorAgent`, `PlanComplianceReviewAgent`, `SecurityAgent`, `QAAndAcceptanceAgent`, `BusinessWorkflowAgent`, `UIUXStructureAgent`, `ReportingAnalyticsAgent`, `DocumentationHandoverAgent`
 
 ⏸️ **مولدون لكن غير مثبتين حاليًا:**  
 `RequirementsScopeAgent`, `DataDesignAgent` — لا توجد حاجة نشطة الآن لتغيير النطاق أو إعادة تصميم البيانات.
@@ -204,7 +217,12 @@
 - كل تسليم من عميل فرعي يجب أن يوثق داخل `project-control/tasks/[TASK-ID].md` قبل تحويل المهمة إلى `Accepted` أو `Closed`.
 - إذا لم يكن العميل الفرعي مفوضًا بالكتابة داخل `project-control/`، فيجب على Tera أو `ProjectControlAgent` تسجيل التسليم فور استلامه.
 - `QualityReviewCoordinatorAgent` لا يستبدل `QAAndAcceptanceAgent`; الأول للمراجعة الدورية متعددة المجالات، والثاني لمراجعة قبول مهمة/شاشة/Workflow محدد.
+- `PlanComplianceReviewAgent` لا يستبدل `ProjectControlAgent` ولا `QAAndAcceptanceAgent` ولا `QualityReviewCoordinatorAgent`; دوره مراجعة توافق التنفيذ مع الخطة والـ roadmap فقط.
 - `DocumentationHandoverAgent` يستخدم عند اكتمال مرحلة قابلة للتوثيق أو قبل handoff/release، حتى لا يحمل Tera كامل أعمال التوثيق بنفسه.
+- `DocumentationHandoverAgent` لا يستخدم للتسليمات الداخلية العادية بين المهام؛ `Handoff Readiness Gate` يخص جاهزية المرحلة أو Release أو حزمة توثيق/تسليم.
+- قبل تعديل أي ملف داخل `.opencode/agents/` يجب التحقق أن النسخة النشطة موجودة فعليًا؛ وإذا كان الملف موجودًا فقط داخل `generated-agents/opencode/` فلا يتم تفعيل Agent جديد لمجرد المزامنة.
+- العملاء الفرعيون لا ينشئون ولا يفعّلون ولا يعدّلون ولا يفوّضون Agents آخرين إلا إذا كلفهم Tera صراحةً بذلك ضمن مهمة نظامية.
+- `Security Sensitivity Levels` تحدد قبل التفويض، بينما `Independent Review Decision` تؤكد بعد التنفيذ؛ لا يغني أحدهما عن الآخر.
 
 ### Unified Activation Policy
 
@@ -218,6 +236,8 @@
 - After copying a newly activated sub-agent into `.opencode/agents/`, Tera must ask the user to restart the current environment so the activation becomes effective.
 - The current minimal support layer around Tera is limited to `ProjectControlAgent` and `ExecutionPreparationAgent`.
 - `QualityReviewCoordinatorAgent` is an optional review-coordination layer, not a planning layer and not a replacement for specialist review agents.
+- `PlanComplianceReviewAgent` is an optional roadmap-compliance review layer and does not replace project-control, QA, or quality review roles.
 - Tera is the `Primary Project Orchestrator / Decision Owner`; helper agents reduce operational load but do not inherit final authority.
 - Do not over-delegate small tasks through long helper-agent chains without a clear trigger.
+- Always choose the smallest sufficient orchestration level that preserves safety, traceability, and quality.
 - `PlanningCoordinatorAgent` remains deferred for larger phases or larger projects.

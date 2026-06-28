@@ -36,6 +36,8 @@ Read only files Tera lists, usually:
 - `project-preparation/PROJECT_RULES.md`
 - `project-preparation/TERA_PROJECT_DECISION.md`
 - `project-preparation/09_IMPLEMENTATION_PLAN.md`
+- `project-control/PROJECT_MASTER_PLAN.md`
+- `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md`
 - `project-control/PROJECT_STATE.md`
 - `project-control/TERA_ACTIVE_CONTEXT.md`
 - `project-control/tasks/[TASK-ID].md`
@@ -51,6 +53,7 @@ Only when explicitly assigned by Tera:
 - No scope decisions.
 - No task acceptance/closure decisions.
 - No updates to registry/log/state/issue/decision files.
+- No roadmap-status updates unless Tera explicitly assigns a documentation-only update.
 - No direct delegation to other agents.
 - No real secrets; use `[REDACTED]`.
 - No converting itself into a mandatory step for every small task.

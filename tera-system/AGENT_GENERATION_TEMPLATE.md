@@ -108,6 +108,7 @@ Default reference files:
 - Do not violate `project-preparation/PROJECT_RULES.md` when it exists.
 - Do not create new features.
 - Do not contact or instruct other sub-agents directly.
+- Do not create, activate, modify, or delegate to other sub-agents unless Tera explicitly assigns that as part of a system-level task.
 - Do not make final approval decisions.
 - Do not store secrets or credentials.
 - Do not write real secrets in outputs, handbacks, task files, logs, command transcripts, or config/code fallback values.
@@ -120,6 +121,7 @@ Default reference files:
 - Do not introduce new colors, spacing systems, component styles, layout patterns, or unrelated design systems outside the approved UI guide.
 - Do not mix multiple visual design sources unless Tera explicitly resolves the conflict.
 - Do not change project-control statuses to `Accepted`, `Closed`, `Deferred`, or `Cancelled` unless Tera explicitly decides that status.
+- Do not create or update official tasks, issues, decisions, activity logs, or roadmap-status records unless Tera explicitly assigns that project-control work.
 - Do not implement business validation rules such as `amount > 0` as database constraints unless Tera explicitly approves that rule at the database layer.
 
 ## Allowed Write Targets

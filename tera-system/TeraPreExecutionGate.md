@@ -41,6 +41,70 @@ Smallest Safe Executable Unit
 
 ---
 
+## 3.1 Orchestration Decision Matrix Prerequisite
+
+Before running the `Pre-Execution Gate`, Tera must apply the Orchestration Decision Matrix defined in `tera-system/TeraAgent.md`.
+
+This pre-task step determines:
+
+- the smallest sufficient orchestration level
+- whether helper agents are needed
+- the expected review surfaces
+- the initial security sensitivity
+- whether handoff readiness is relevant at all
+- whether the task maps cleanly to `PROJECT_MASTER_PLAN.md` and `PROJECT_DETAILED_EXECUTION_PLAN.md` when those files exist
+
+Important clarification:
+
+- `Security Sensitivity Levels` are determined during task preparation before delegation.
+- `Independent Review Decision` is confirmed again after execution inside `Post-Execution Review Gate`.
+- One does not replace the other.
+
+## 3.2 Model Capability Gate Prerequisite
+
+Before running the `Pre-Execution Gate`, Tera must also apply `Model Capability Gate`.
+
+Purpose:
+
+- decide whether the current model is suitable for the planned task
+- decide whether safeguards are enough
+- decide whether a stronger model should be recommended or required
+- decide whether the task should be split before execution
+
+`Model Capability Gate` comes after orchestration planning and task-package preparation, and before `Pre-Execution Gate`.
+
+It does not replace:
+
+- `ExecutionPreparationAgent`
+- `SecurityAgent`
+- `QAAndAcceptanceAgent`
+- `ProjectControlAgent`
+- `Post-Execution Review Gate`
+
+It informs whether the current model is sufficient for the planned work and what extra safeguards are needed.
+
+If the outcome is:
+
+- `Current model sufficient`
+- `Current model acceptable with safeguards`
+
+then `Pre-Execution Gate` may continue.
+
+If the outcome is:
+
+- `Stronger model recommended`
+
+Tera may continue only with documented safeguards or pause to ask the user when the risk is meaningful.
+
+If the outcome is:
+
+- `Stronger model required`
+- `Split task before execution`
+
+Tera must not proceed as a normal implementation delegation until that decision is resolved.
+
+---
+
 ## 4. مخرجات البوابة
 
 كل مهمة تنفيذية يجب أن تحتوي على قسم واضح باسم:
@@ -71,7 +135,7 @@ BLOCKED
 
 | # | سؤال التحقق | النتيجة المطلوبة |
 |---|---|---|
-| 1 | هل المهمة مرتبطة مباشرة بمرحلة معتمدة في خطة التنفيذ؟ | Yes |
+| 1 | هل المهمة مرتبطة مباشرة بمرحلة أو بند معتمد في خطة التنفيذ، وفي `PROJECT_MASTER_PLAN.md` / `PROJECT_DETAILED_EXECUTION_PLAN.md` إن وُجدا؟ | Yes |
 | 2 | هل المهمة أصغر وحدة تنفيذية ممكنة؟ | Yes |
 | 3 | هل تحتوي المهمة على هدف واحد فقط؟ | Yes |
 | 4 | هل يوجد أي عنصر يمكن تأجيله دون كسر المهمة؟ | No |

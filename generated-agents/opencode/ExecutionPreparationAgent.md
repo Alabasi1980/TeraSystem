@@ -41,6 +41,8 @@ Default reference files:
 - `project-preparation/PROJECT_RULES.md` (when it exists)
 - `project-preparation/TERA_PROJECT_DECISION.md`
 - `project-preparation/09_IMPLEMENTATION_PLAN.md` (when it exists)
+- `project-control/PROJECT_MASTER_PLAN.md` (when it exists)
+- `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md` (when it exists)
 - `project-control/PROJECT_STATE.md`
 - `project-control/TERA_ACTIVE_CONTEXT.md` (when it exists)
 - `project-control/tasks/[TASK-ID].md` (when it exists)
@@ -74,6 +76,7 @@ Default reference files:
 - Do not decide what the next task should be instead of Tera.
 - Do not approve, reject, accept, close, defer, or cancel tasks.
 - Do not update `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, `ISSUES_AND_GAPS.md`, or `DECISIONS_LOG.md`.
+- Do not update roadmap phase or sub-phase statuses unless Tera explicitly assigns a documentation-only update.
 - Do not execute code changes.
 - Do not assign tasks directly to other agents.
 - Do not store secrets or credentials.

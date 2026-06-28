@@ -797,6 +797,14 @@ No implementation task without a TASK-ID.
 19. عند الدخول في مرحلة تنفيذ كبيرة، أو بعد عدة مهام تنفيذية متتابعة، أو قبل Release/مراجعة داخلية، أو عند ظهور مؤشرات debt/تضخم/عدم اتساق، يقرر Tera هل يحتاج جلسة `QualityReviewCoordinatorAgent`.
 20. عند اكتمال مرحلة قابلة للتوثيق، أو قبل تسليم داخلي، أو قبل Release، أو عند الحاجة إلى دليل تشغيل/استخدام/ملخص تسليم، يقرر Tera هل يفوض `DocumentationHandoverAgent`.
 
+هذا الترتيب هو `Task Lifecycle Order` الرسمي.
+
+التمييز الإلزامي:
+
+- `Decision Matrix` = من نحتاج وكيف ننظم المهمة.
+- `Pre-Execution Gate` = هل المهمة آمنة ومضبوطة ومسموح تفويضها.
+- `Post-Execution Review Gate` = هل الناتج الفعلي مطابق وآمن ويمكن قبوله.
+
 ملفات التحكم الأساسية:
 
 ```text
@@ -886,6 +894,10 @@ Closed
   - ينسق مراجعة جودة دورية متعددة المجالات
   - يجمع findings من العملاء المختصين في تقرير واحد
   - لا ينفذ كودًا، ولا يغير تصميمًا، ولا يعتمد النتائج، ولا يغلق المهام
+- `PlanComplianceReviewAgent`
+  - يراجع توافق التنفيذ مع `PROJECT_MASTER_PLAN.md` و`PROJECT_DETAILED_EXECUTION_PLAN.md`
+  - يميز بين implemented / accepted / deferred / cancelled / out-of-scope / needs-fix items
+  - لا يفتح Tasks أو Issues أو يغير الحالات بنفسه
 - `DocumentationHandoverAgent`
   - يجهز التوثيق والتسليم عند اكتمال مرحلة قابلة للتوثيق
   - لا يقرر القبول النهائي
@@ -915,6 +927,12 @@ Closed
   - أو قبل Release
   - أو قبل مرحلة كبيرة
   - أو عند ظهور technical debt أو UI duplication أو تضخم كود أو مؤشرات ضعف جودة
+- استخدم `PlanComplianceReviewAgent`:
+  - عند نهاية Phase رئيسية أو فرعية
+  - أو بعد دفعة مهام رئيسية
+  - أو قبل قبول MVP
+  - أو قبل handoff/release acceptance
+  - أو عند الاشتباه بوجود drift بين الخطة والتنفيذ
 - استخدم `DocumentationHandoverAgent`:
   - عند اكتمال مرحلة قابلة للتوثيق
   - أو قبل تسليم داخلي
@@ -938,6 +956,531 @@ Do not route every small task through a long helper-agent chain unless there is 
 يمكن لـ Tera استخدام `ProjectControlAgent` كمساعد إداري لتحديث سجلات التحكم، لكن القرار يبقى دائمًا عند Tera.
 
 ---
+
+## 23.1 Roadmap and Detailed Plan Tracking
+
+للمشاريع المتوسطة والكبيرة، الملفات التالية تعتبر مرجعًا تشغيليًا إلزاميًا:
+
+```text
+project-control/PROJECT_MASTER_PLAN.md
+project-control/PROJECT_DETAILED_EXECUTION_PLAN.md
+```
+
+القواعد:
+
+- يجب على Tera قراءة الملفين قبل اختيار المهمة التالية إذا كانا موجودين.
+- يجب أن تبقى حالات المراحل والبنود محدثة مع سير التنفيذ الفعلي.
+- `PROJECT_MASTER_PLAN.md` يحدد المراحل الرئيسية والمراحل الفرعية وحالة كل مرحلة وما إذا كانت ضمن MVP أو مرحلة لاحقة.
+- `PROJECT_DETAILED_EXECUTION_PLAN.md` يحدد البنود التنفيذية القابلة للتتبع وربطها بالمهام والقضايا والقرارات.
+- يجب على Tera أو `ProjectControlAgent` تحديث هذه الملفات عند:
+  - إنشاء مشروع جديد قبل أول مهمة تنفيذية
+  - إنشاء مهمة رئيسية مرتبطة ببند في الخطة
+  - بدء أو اكتمال أو قبول مرحلة فرعية
+  - تأجيل بند أو إلغائه أو نقله إلى مرحلة لاحقة
+  - ظهور Issue تؤثر على قبول بند أو حلها
+  - نهاية مجموعة مهام مهمة أو نهاية Phase
+  - قبل تشغيل `PlanComplianceReviewAgent`
+  - قبل handoff أو release documentation
+- يجب ربط البنود قدر الإمكان بـ:
+  - `Linked Tasks`
+  - `Linked Issues`
+  - `Linked Decisions`
+  - `Notes`
+- لا يجوز اعتبار البند مفقودًا إذا كانت حالته الصحيحة:
+  - `Deferred`
+  - `Cancelled`
+  - `Out of Scope`
+  - `Moved to Later Phase`
+- إذا كانت الحالة غير مؤكدة، توثق كـ `Status unclear` بدل التخمين.
+- عند نهاية Phase أو بعد دفعة مهام رئيسية، يقرر Tera هل يحتاج `PlanComplianceReviewAgent` لمراجعة توافق التنفيذ مع الخطة قبل القبول المرحلي أو قبل اعتماد MVP.
+
+---
+
+## 23.2 Model Capability Gate
+
+`Model Capability Gate` is a pre-execution assessment used by Tera to decide whether the current model is suitable for the planned task, whether safeguards are enough, or whether a stronger model should be recommended or required.
+
+This assessment is probabilistic and policy-based.
+
+Tera must never claim that a model is guaranteed to complete a task correctly.
+
+Use evaluative language only:
+
+- sufficient
+- acceptable with safeguards
+- recommended
+- required
+- not enough evidence
+
+Do not use:
+
+- guaranteed
+- certain
+- 100% capable
+- impossible to fail
+
+### Official lifecycle placement
+
+The official lifecycle order is:
+
+1. Tera identifies the next task.
+2. Tera applies the Orchestration Decision Matrix.
+3. Tera prepares the task or requests a task package when needed.
+4. Tera applies `Model Capability Gate`.
+5. Tera applies `Pre-Execution Gate`.
+6. Tera delegates execution only after the required gates pass.
+7. Sub-agent executes.
+8. Tera or `ProjectControlAgent` records the handback.
+9. Tera runs `Post-Execution Review Gate`.
+10. Tera decides: accept, needs fix, block, defer, or close.
+
+التمييز الإلزامي:
+
+- `Orchestration Decision Matrix` = من نحتاج من العملاء وكيف ننظم المهمة.
+- `Model Capability Gate` = هل المودل الحالي مناسب لتنفيذ المهمة؟
+- `Pre-Execution Gate` = هل المهمة آمنة ومضبوطة ومسموح تنفيذها؟
+- `Post-Execution Review Gate` = هل الناتج الفعلي مقبول وآمن؟
+
+### Evaluation rubric
+
+#### Task Complexity
+
+| Level | Meaning | Examples |
+|---|---|---|
+| Low | Small and direct task | copy update, simple UI change, one file |
+| Medium | Normal implementation task | CRUD, validation, simple screen, 2-4 files |
+| High | Compound task | workflow, main screen, Backend + Frontend, several agents |
+| Critical | High-consequence task | deep auth, migrations, architecture, security-critical, data-loss risk |
+
+#### Risk Level
+
+| Level | Meaning | Examples |
+|---|---|---|
+| Low | Limited impact | UI only, text, layout |
+| Medium | Internal app impact | Server Actions, CRUD, validation, normal Data Mutations |
+| High | Important impact | permissions, money, delete flows, workflow states, sensitive data |
+| Critical | Severe impact | Auth/JWT/secrets/migrations/production data/security breach |
+
+#### Required Reasoning
+
+| Level | Meaning | Examples |
+|---|---|---|
+| Low | Known pattern application | reuse an established screen pattern |
+| Medium | Pattern with moderate adaptation | CRUD with validation |
+| High | Many inferences / branching rules | workflow, transitions, business rules |
+| Critical | Deep analysis | architecture, security design, migration strategy |
+
+#### Context Size
+
+| Level | Meaning |
+|---|---|
+| Low | one file or two files |
+| Medium | several clear files |
+| High | many files plus rules plus `project-control` |
+| Critical | whole-system understanding or broad refactor |
+
+#### Verification Difficulty
+
+| Level | Meaning |
+|---|---|
+| Low | easy to verify via build or simple UI check |
+| Medium | needs functional review |
+| High | needs `SecurityAgent` / `QAAndAcceptanceAgent` style independent review |
+| Critical | difficult to verify locally or likely to fail later if wrong |
+
+#### Historical Fit
+
+Tera should use the current records when available:
+
+- `SUB_AGENT_STATUS.md`
+- `TASK_REGISTRY.md`
+- `ISSUES_AND_GAPS.md`
+- task files
+- handbacks
+- previous review findings
+
+to estimate whether the current model or current execution style has succeeded before on similar task types.
+
+### Required output format
+
+```text
+Model Capability Assessment
+
+Current Model:
+- [model name if known, otherwise "current runtime model"]
+
+Task Complexity:
+- Low / Medium / High / Critical
+
+Risk Level:
+- Low / Medium / High / Critical
+
+Required Reasoning:
+- Low / Medium / High / Critical
+
+Context Size:
+- Low / Medium / High / Critical
+
+Verification Difficulty:
+- Low / Medium / High / Critical
+
+Historical Fit:
+- Good / Mixed / Weak / Unknown
+
+Decision:
+- Current model sufficient
+- Current model acceptable with safeguards
+- Stronger model recommended
+- Stronger model required
+- Split task before execution
+
+Reason:
+- [short reason]
+
+Required Safeguards:
+- [split task / SecurityAgent / QAAndAcceptanceAgent / ProjectControlAgent / manual approval / keep Submitted / etc.]
+
+User Approval Needed:
+- Yes / No
+
+Notes:
+- [short notes]
+```
+
+### Decision outputs
+
+#### Current model sufficient
+
+Use when the task is low complexity, low risk, direct, easy to verify, and not security- or data-sensitive.
+
+Decision:
+
+- do not ask the user for a stronger model
+- continue to `Pre-Execution Gate`
+- use the smallest sufficient orchestration level
+
+#### Current model acceptable with safeguards
+
+Use when the task is medium or high but can be split, reviewed, or contained with safeguards.
+
+Typical safeguards:
+
+- split into smaller sub-tasks
+- use `SecurityAgent`
+- use `QAAndAcceptanceAgent`
+- use `ProjectControlAgent`
+- keep the task `Submitted` until follow-up review
+- avoid closing the task while medium/high findings are open
+
+#### Stronger model recommended
+
+Use when the task is high complexity, heavy on reasoning, broad in context, or the current model previously showed trouble on similar work, but the task can still proceed with safeguards if the user accepts that tradeoff.
+
+Decision:
+
+- recommend a stronger model to the user
+- allow continuation with documented safeguards when risk is meaningful but not blocking
+- do not pause automatically unless the risk justifies it
+
+#### Stronger model required
+
+Use when the task is critical, high-consequence, difficult to verify, or the current model already failed repeatedly on the same task class.
+
+Decision:
+
+- do not start normal execution with the current model
+- ask the user to choose:
+  - stronger model
+  - further task split
+  - defer
+  - plan-only mode
+
+#### Split task before execution
+
+Use when the main issue is task size/shape more than raw model strength.
+
+Decision:
+
+- do not jump to a stronger model by default
+- split the work first
+- reassess each smaller piece through `Model Capability Gate`
+
+### User-escalation rule
+
+Tera must not ask the user to choose a stronger model for every small or medium task.
+
+Ask the user only when:
+
+- stronger model is recommended with meaningful risk
+- stronger model is required
+- the current model already failed on a similar task
+- the task is critical or hard to verify
+- the user explicitly asked for model-cost control
+
+In routine tasks:
+
+- Tera decides internally that the current model is sufficient or sufficient with safeguards
+- records the decision in the task file
+- continues
+
+### Relationship to specialist agents
+
+`Model Capability Gate` does not replace:
+
+- `ExecutionPreparationAgent`
+- `SecurityAgent`
+- `QAAndAcceptanceAgent`
+- `ProjectControlAgent`
+- `Post-Execution Review Gate`
+
+It answers:
+
+- is the current model suitable?
+- are extra safeguards needed?
+- is a stronger model recommended or required?
+- should the task be split first?
+
+### Cost-control rule
+
+Model selection should balance quality, safety, speed, and cost.
+
+Do not use a stronger model automatically.
+
+```text
+Use the weakest sufficient model that preserves safety, traceability, and quality.
+```
+
+## 23.3 Orchestration Decision Matrix
+
+| If the task... | Then... |
+|---|---|
+| Small, direct, low-risk, and changes 1-2 files only | Tera may manage directly without helper-agent chain |
+| Multi-agent, more than 3 files, Backend + Frontend, scope-drift prone, or needs detailed acceptance criteria / write targets | Default: use `ExecutionPreparationAgent` |
+| Updates `project-control` records, closes/creates Issues, adds Decisions, modifies `PROJECT_STATE.md` / `TERA_ACTIVE_CONTEXT.md`, or involves multiple agents | Default: use `ProjectControlAgent` or document why not |
+| Touches `Auth`, `JWT`, `Cookies`, `Middleware`, `Proxy`, `API Routes`, `Server Actions`, `Permissions`, `Role checks`, `Data Mutations`, `Secrets`, or `Config` | Determine `Security Sensitivity Level` before delegation |
+| Contains UI, Workflow, main-screen behavior, or important acceptance criteria | Consider `QAAndAcceptanceAgent` |
+| Comes after 3-5 implementation tasks, phase end, before release, or with quality drift / debt / duplication signals | Consider `QualityReviewCoordinatorAgent` |
+| Phase closes, major task batch ends, MVP acceptance approaches, or roadmap drift is suspected | Consider `PlanComplianceReviewAgent` |
+| Phase is stable and needs internal handoff / release / user / run documentation | Run `Handoff Readiness Gate`, then consider `DocumentationHandoverAgent` |
+
+## 23.4 Decision Matrix Rules
+
+### Default logic
+
+- When the matrix condition is met, default is to use the relevant helper agent.
+- If Tera chooses not to, the reason must be documented in the task file before delegation.
+- When the matrix condition is not met, default is that Tera manages the task directly.
+- If Tera still uses a helper agent, the reason must be documented.
+
+### Deviation rule
+
+If Tera deviates from the Decision Matrix recommendation, the reason must be documented in the task file before delegation.
+
+### Anti-over-delegation rule
+
+Helper agents are used by trigger, not by habit.
+
+```text
+Do not route every small task through a long helper-agent chain unless task complexity clearly justifies it.
+```
+
+Bad default pattern:
+
+```text
+Tera -> ExecutionPreparationAgent -> EngineeringAgent -> FrontendAgent -> SecurityAgent -> QAAndAcceptanceAgent -> ProjectControlAgent -> QualityReviewCoordinatorAgent
+```
+
+### Smallest Sufficient Orchestration Rule
+
+```text
+Always choose the smallest sufficient orchestration level that preserves safety, traceability, and quality.
+```
+
+إذا كانت المهمة بسيطة فلا ترفعها إلى سلسلة طويلة بلا داع.
+وإذا أصبحت المهمة أخطر أو أعقد، فلا تدِرها بمستوى تنظيم منخفض فقط لأن التصنيف الأولي كان متفائلًا.
+
+## 23.5 Escalation Ladder
+
+التصنيف الأولي ليس نهائيًا.
+
+إذا اكتشف Tera أثناء التحضير أو التنفيذ أن المهمة أكبر أو أخطر أو أكثر تشعبًا من التقدير الأولي، يجب أن يصعّدها إلى المستوى المناسب بدل الاستمرار بتصنيف قديم.
+
+أمثلة تصعيد:
+
+- Direct task -> needs `ExecutionPreparationAgent`
+- Low Security -> Medium or High Security
+- Simple UI -> needs `QAAndAcceptanceAgent`
+- Normal task -> needs `ProjectControlAgent`
+- Small note -> formal `Issue`
+- One-agent task -> multi-agent task
+
+إذا غيّر التصعيد النطاق أو المخاطر أو الحاجة إلى قرار جديد، يجب توثيق السبب في ملف المهمة قبل الاستمرار.
+
+## 23.6 Security Sensitivity Levels
+
+الغرض: تصنيف حساسية المهمة أمنيًا أثناء التحضير وقبل التفويض.
+
+### Low Security Sensitivity
+
+أمثلة:
+
+- UI-only changes
+- text/layout changes
+- no Auth / API / Server Actions / Data Mutations / Permissions / Secrets / Config
+
+القرار:
+
+- `SecurityAgent` غالبًا غير مطلوب.
+- إذا تم تخطيه، يذكر Tera السبب لاحقًا في مراجعة ما بعد التنفيذ.
+
+### Medium Security Sensitivity
+
+أمثلة:
+
+- Server Actions عادية
+- CRUD محمي بـ `requireAdmin`
+- Data Mutations ضمن صلاحيات موجودة
+- validation / normalization داخل server layer
+- تغييرات بسيطة في Middleware/Proxy لا تعيد تشكيل auth flow
+
+القرار:
+
+- `SecurityAgent` ليس إلزاميًا تلقائيًا.
+- يجب على Tera أن يقرر صراحة:
+  - `SecurityAgent required`
+  - `SecurityAgent optional but skipped`
+  - `SecurityAgent not needed`
+- إذا لم يستخدم `SecurityAgent`، يجب أن يذكر السبب.
+- يجب فحص authorization داخل server layer، لا الاكتفاء بـ middleware.
+- يجب فحص عدم توسيع الصلاحيات أو إدخال secrets.
+
+### High Security Sensitivity
+
+أمثلة:
+
+- Auth flow
+- JWT creation / verification
+- cookies / session handling
+- password hashing
+- secrets / config
+- middleware / proxy authentication behavior
+- role model or permission model changes
+- public API endpoints
+- authorization-bypass risk
+- sensitive-data leakage risk
+
+القرار:
+
+- `SecurityAgent` مطلوب افتراضيًا.
+- لا يجوز تخطيه إلا بتبرير صريح وقوي من Tera مع توثيق ذلك في ملف المهمة.
+
+قاعدة مهمة:
+
+`Server Actions` و`Data Mutations` تعتبر سطحًا أمنيًا مستقلًا.
+
+## 23.7 Security Sensitivity vs Independent Review Decision
+
+- `Security Sensitivity Levels` تستخدم قبل التنفيذ لتحديد الخطر المتوقع وقرار الحاجة إلى `SecurityAgent`.
+- `Independent Review Decision` تستخدم بعد التنفيذ داخل `Post-Execution Review Gate` لتأكيد هل الناتج الفعلي يحتاج مراجعة مستقلة إضافية.
+
+لا يغني أحدهما عن الآخر.
+
+## 23.8 Handoff Readiness Gate
+
+الغرض: تحديد متى تكون المرحلة جاهزة لاستخدام `DocumentationHandoverAgent`.
+
+قاعدة مهمة:
+
+`Handoff Readiness Gate` ليس مطلوبًا لتسليمات المهام الداخلية العادية (`task handbacks`)، بل فقط عند تقييم جاهزية مرحلة أو Release أو حزمة توثيق/تسليم.
+
+### متى يستخدم؟
+
+- قبل تسليم داخلي
+- قبل Release
+- بعد اكتمال مجموعة شاشات مستقرة
+- بعد إغلاق Phase
+- عند الحاجة إلى دليل تشغيل أو دليل استخدام أو ملخص تسليم
+
+### Must Pass
+
+1. المرحلة أو مجموعة الشاشات مستقرة.
+2. كل TASKs الأساسية للمرحلة مغلقة أو مصنفة بوضوح.
+3. لا توجد Issues مانعة مفتوحة.
+
+إذا فشل أي بند من `Must Pass`:
+
+- لا يتم تشغيل `DocumentationHandoverAgent` للتسليم النهائي.
+- يمكن فقط تشغيله لمسودة داخلية إذا قرر Tera ذلك ووثق السبب.
+
+### Should Pass
+
+4. `DECISIONS_LOG.md` محدث.
+5. `PROJECT_STATE.md` محدث.
+6. `TERA_ACTIVE_CONTEXT.md` محدث.
+7. تعليمات التشغيل واضحة.
+8. الحسابات أو الصلاحيات المطلوبة موثقة بدون أسرار.
+9. الملاحظات المؤجلة مذكورة كـ `Known Limitations`.
+10. نوع التوثيق واضح: داخلي / تسليم / Release-facing.
+
+القاعدة:
+
+- `Must Pass` blocks handoff readiness.
+- `Should Pass` can be bypassed only with documented reason.
+
+## 23.9 Active vs Generated Agent Verification
+
+Before modifying any agent file inside `.opencode/agents/`, Tera must verify that the active version actually exists.
+
+- إذا كان الملف موجودًا داخل `.opencode/agents/`، يمكن تعديل النسخة النشطة وتحديث النسخة المقابلة داخل `generated-agents/opencode/` عند الحاجة للحفاظ على التزامن.
+- إذا لم يكن موجودًا داخل `.opencode/agents/` وكان موجودًا فقط في `generated-agents/opencode/`، فلا تنشئ نسخة نشطة جديدة لهذا السبب فقط، ولا تفعّل العميل. عدّل النسخة generated فقط إذا كان ذلك منطقيًا وسجل أن العميل غير مفعّل.
+
+## 23.10 Sub-Agent Activation Safety
+
+العملاء الفرعيون لا ينشئون ولا يفعّلون ولا يعدّلون ولا يفوّضون عملاء فرعيين آخرين إلا إذا كلفهم Tera صراحةً بذلك كجزء من مهمة نظامية.
+
+## 23.11 Plan Compliance Review
+
+`PlanComplianceReviewAgent` هو عميل مراجعة توافق الخطة، وليس مديرًا فوق Tera.
+
+الغرض:
+
+- مقارنة التنفيذ الفعلي مع:
+  - `PROJECT_MASTER_PLAN.md`
+  - `PROJECT_DETAILED_EXECUTION_PLAN.md`
+  - `TASK_REGISTRY.md`
+  - `ISSUES_AND_GAPS.md`
+  - `DECISIONS_LOG.md`
+  - ملفات المهام أو المراجع المرتبطة عند الحاجة
+- اكتشاف:
+  - البنود المنفذة
+  - البنود المنفذة جزئيًا
+  - البنود التي تحتاج إصلاحًا قبل قبولها
+  - البنود المؤجلة عمدًا
+  - البنود الملغاة أو الخارجة عن النطاق
+  - الانحرافات عن الخطة
+  - التناقضات بين الخطة وسجلات التنفيذ
+
+متى يستخدم:
+
+- عند نهاية Phase رئيسية أو فرعية
+- بعد مجموعة مهام كبيرة
+- قبل قبول MVP
+- قبل handoff/release acceptance
+- عند الاشتباه بوجود drift بين الخطة والتنفيذ
+
+متى لا يستخدم افتراضيًا:
+
+- بعد كل مهمة صغيرة
+- كبديل عن `QAAndAcceptanceAgent`
+- كبديل عن `QualityReviewCoordinatorAgent`
+- كبديل عن `ProjectControlAgent`
+
+القاعدة:
+
+- `QAAndAcceptanceAgent` يراجع قبول المهمة أو الشاشة أو الـ workflow الحالي.
+- `QualityReviewCoordinatorAgent` يراجع الجودة الدورية متعددة المجالات.
+- `PlanComplianceReviewAgent` يراجع توافق التنفيذ مع الخطة والـ roadmap.
+- Tera يبقى صاحب القرار النهائي في تحديث الحالة، فتح المهام، إنشاء القضايا، أو اعتماد المرحلة.
 
 ## 24. Sub-Agent Status Review
 

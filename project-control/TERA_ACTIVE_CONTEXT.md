@@ -25,7 +25,7 @@ For any new session in this project:
 | Size | Small MVP |
 | Runtime | OpenCode |
 | Approved Tech | Next.js + TypeScript + PostgreSQL + Prisma |
-| Current Phase | **MVP Complete ✅ — all 5 screens done** (Banks S03, Parties S04, Checks S02, Users S05, Nav Hub) |
+| Current Phase | **MVP Complete ✅ — all 5 screens done** (Banks S03, Parties S04, Checks S02, Users S05, Nav Hub) + system-maintenance sync complete + model-capability gate active |
 | Next Task | Handover documentation or roadmap review |
 | Current Lead Agent | `Tera Agent` |
 | Expected Execution Agents | `EngineeringAgent` + `FrontendAgent` |
@@ -47,6 +47,9 @@ For any new session in this project:
 - `TASK-0013` - ISSUE-0007 fix — NaN amount validation guard in check actions
 - `TASK-0014` - ISSUE-0008 fix — invalid date crash in check actions
 - `TASK-0015` - Users Screen S05 — actions.ts + page.tsx + nav activation **✅ FINAL MVP SCREEN**
+- `TASK-0016` - Tera System Maintenance Upgrade — lifecycle, decision matrix, security sensitivity, handoff readiness
+- `TASK-0017` - Tera System Maintenance Upgrade — Model Capability Gate and pre-execution model suitability rules
+- `TASK-0018` - Tera System Maintenance Upgrade — roadmap tracking and PlanComplianceReviewAgent
 
 ## Recent System Changes
 
@@ -56,6 +59,9 @@ For any new session in this project:
 - `2026-06-27`: TASK-0008 (Parties S04) + TASK-0009 (Main Nav Hub) completed. requireAdmin() extended to Parties. Root page replaced with RTL navigation hub.
 - `2026-06-28`: `QualityReviewCoordinatorAgent` added and activated for periodic cross-domain quality reviews before larger phases, before release, or when quality debt signals appear.
 - `2026-06-28`: Tera role refined as `Primary Project Orchestrator / Decision Owner` with explicit helper-agent trigger rules and anti-over-delegation rules.
+- `2026-06-28`: Tera system maintenance synced lifecycle ordering, decision-matrix discipline, escalation ladder, security sensitivity levels, handoff readiness gate, and active/generated agent verification rules.
+- `2026-06-28`: `Model Capability Gate` added. Before execution, Tera now assesses whether the current model is sufficient, sufficient with safeguards, requires escalation, or should be replaced/split for safer execution.
+- `2026-06-28`: `PROJECT_MASTER_PLAN.md` and `PROJECT_DETAILED_EXECUTION_PLAN.md` added as mandatory roadmap-tracking files for medium/large projects. `PlanComplianceReviewAgent` activated for roadmap-compliance reviews after phases, major task batches, or before MVP acceptance.
 - `2026-06-28`: TASK-0011 closed. ISSUE-0006 resolved; `npm run build` PASS. SecurityAgent and QAAndAcceptanceAgent not required for this backend-only validation fix per Tera decision.
 - `2026-06-28`: TASK-0012 (Checks Screen S02) completed. 3 sub-tasks: EngineeringAgent (actions.ts), FrontendAgent (page.tsx + nav). Build PASS. SecurityAgent review found ISSUE-0007 (NaN bypass) and ISSUE-0008 (date crash). QAAndAcceptanceAgent review PASS with minor notes. TASK-0012 submitted, awaiting user acceptance.
 - `2026-06-28`: TASK-0013 (ISSUE-0007 NaN fix) + TASK-0014 (ISSUE-0008 date fix) closed. Both fixes were simple validation guards in `app/checks/actions.ts` with no side effects. ISSUE-0007 → Resolved, ISSUE-0008 → Resolved.
@@ -78,8 +84,20 @@ For any new session in this project:
 - `ExecutionPreparationAgent` may prepare task packages, but only Tera decides scope, timing, delegation, acceptance, or closure.
 - `ProjectControlAgent` may manage control records and traceability checks, but only Tera decides final status changes.
 - `QualityReviewCoordinatorAgent` may coordinate review scope and consolidate specialist findings, but only Tera decides what becomes a task, issue, deferred item, or accepted recommendation.
+- `PlanComplianceReviewAgent` may review roadmap compliance and flag drift or contradictions, but only Tera decides phase status, corrective tasks, or acceptance.
+- Apply the Orchestration Decision Matrix before `Pre-Execution Gate`.
+- `Security Sensitivity Levels` are decided before delegation; `Independent Review Decision` is confirmed after execution.
+- `Model Capability Gate` is active: after orchestration planning and before `Pre-Execution Gate`, Tera assesses whether the current model is sufficient, acceptable with safeguards, needs escalation, or whether the task should be split first.
+- `Handoff Readiness Gate` is only for phase/release/documentation handoff readiness, not normal internal task handbacks.
+- `PROJECT_MASTER_PLAN.md` and `PROJECT_DETAILED_EXECUTION_PLAN.md` are mandatory roadmap-tracking files when they exist; read them before selecting the next major task and keep their statuses updated.
+- Do not treat `Deferred`, `Cancelled`, `Out of Scope`, or `Moved to Later Phase` roadmap items as missing work.
 - Tera must explicitly decide whether `SecurityAgent` is needed for `Auth`, `JWT`, `Cookies`, `Middleware/Proxy`, `API Routes`, `Server Actions`, `Permissions`, `Role checks`, `Data Mutations`, `Secrets`, or `Config`.
+- Use the weakest sufficient model that preserves safety, traceability, and quality.
+- Do not ask the user about stronger models for every small task; escalate only when risk, prior failure, criticality, verification difficulty, or explicit cost-control preference justifies it.
 - Do not route every small task through a long helper-agent chain unless there is a clear trigger.
+- Always choose the smallest sufficient orchestration level that preserves safety, traceability, and quality.
+- Before modifying any file inside `.opencode/agents/`, verify the active version actually exists.
+- Sub-agents must not create, activate, modify, or delegate to other sub-agents unless Tera explicitly assigns that in a system-level task.
 - Local temp logs such as `.codex-dev-*.log` / `.codex-dev-*.err` are cleanup-required if they appear in Git.
 - Project-control IDs must stay unique and sequential.
 - Use only the smallest relevant context for the current task.
@@ -95,6 +113,9 @@ For any new session in this project:
 - `DEC-0012` - Tera now uses a minimal support layer: `ProjectControlAgent` for control records and `ExecutionPreparationAgent` for task-package preparation.
 - `DEC-0013` - `QualityReviewCoordinatorAgent` is active for periodic cross-domain quality reviews; it coordinates findings only and does not replace specialist reviewers.
 - `DEC-0014` - Tera is fixed as `Primary Project Orchestrator / Decision Owner`; helper agents are trigger-based, over-delegation is disallowed, and temp dev logs are cleanup-required before new work.
+- `DEC-0015` - Orchestration Decision Matrix, Security Sensitivity Levels, Handoff Readiness Gate, and escalation/verification rules are now active.
+- `DEC-0016` - `Model Capability Gate` is now active before `Pre-Execution Gate` for pre-execution model suitability assessment.
+- `DEC-0017` - Mandatory roadmap tracking via `PROJECT_MASTER_PLAN.md` + `PROJECT_DETAILED_EXECUTION_PLAN.md`, plus `PlanComplianceReviewAgent` for roadmap-compliance review.
 - `SUB_AGENT_STATUS.md` is the lightweight manager review for sub-agent usage, load, quality, and update need.
 - `ISSUE-0006` - Resolved in TASK-0011: server-side validation/normalization added to Banks/Parties actions before Checks S02.
 - `ISSUE-0007` - Resolved in TASK-0013: NaN amount bypass fixed — `isNaN()` guard added to check validation.
@@ -111,6 +132,7 @@ For any new session in this project:
 | `ProjectControlAgent` | Updating task/log/decision/issue records under Tera direction |
 | `ExecutionPreparationAgent` | Preparing task packages before Tera review, gating, and delegation |
 | `QualityReviewCoordinatorAgent` | Coordinating periodic quality reviews across UI, engineering, security, QA, and documentation |
+| `PlanComplianceReviewAgent` | Reviewing execution progress against the approved master and detailed plans |
 | `SecurityAgent` | Independent follow-up review for Auth, Secrets, Permissions, Middleware, and Config tasks |
 | `QAAndAcceptanceAgent` | Independent follow-up review for UI, Workflow, and acceptance checks |
 | `BusinessWorkflowAgent` | Workflow review only when business process changes |
@@ -122,15 +144,18 @@ Activation note:
 - The list above shows the currently active agents only.
 - Tera may activate additional agents later if a real need appears.
 - `QualityReviewCoordinatorAgent` is available now, but no review session should start until Tera or the user explicitly requests one.
+- `PlanComplianceReviewAgent` is available now, but should be used for phase/MVP roadmap compliance review, not after every small task.
 - `PlanningCoordinatorAgent` remains deferred for larger phases or larger projects.
 
 ## Read Next Only If Needed
 
-- Latest implementation details: `project-control/tasks/TASK-0015.md`
+- Latest implementation details: `project-control/tasks/TASK-0017.md`
 - Compact official project memory: `project-control/PROJECT_STATE.md`
 - Sub-agent health snapshot: `project-control/SUB_AGENT_STATUS.md`
 - Active rules: `project-preparation/PROJECT_RULES.md`
 - Plan details: `project-preparation/09_IMPLEMENTATION_PLAN.md`
+- Roadmap overview: `project-control/PROJECT_MASTER_PLAN.md`
+- Roadmap details: `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md`
 - UI structure: `project-preparation/07_SCREENS_AND_UI_STRUCTURE.md`
 - UI style guide: `project-preparation/28_UI_UX_GUIDELINES.md`
 - System execution rules: `tera-system/TeraPreExecutionGate.md`

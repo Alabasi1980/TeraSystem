@@ -44,6 +44,8 @@ Default reference files:
 - `project-preparation/PROJECT_RULES.md` (when it exists)
 - `project-preparation/TERA_PROJECT_DECISION.md`
 - `project-preparation/09_IMPLEMENTATION_PLAN.md` (when it exists)
+- `project-control/PROJECT_MASTER_PLAN.md` (when it exists)
+- `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md` (when it exists)
 - `project-control/TASK_REGISTRY.md`
 - `project-control/PROJECT_ACTIVITY_LOG.md`
 - `project-control/PROJECT_STATE.md`
@@ -93,11 +95,14 @@ Default reference files:
 - Do not record real secrets, raw passwords, tokens, or live connection strings in any `project-control/` file; use `[REDACTED]`.
 - Do not repeat leaked secret values in issue descriptions, activity logs, task files, decision notes, or incident summaries; use `[REDACTED]` only.
 - Do not create duplicate or out-of-sequence `TASK-ID`, `LOG-ID`, `ISSUE-ID`, or `DEC-ID`.
+- Do not change roadmap phase or sub-phase status unless Tera explicitly assigns that update.
 - Do not delete files unless explicitly allowed.
 
 ## Allowed Write Targets
 
 - `project-control/TASK_REGISTRY.md`
+- `project-control/PROJECT_MASTER_PLAN.md`
+- `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md`
 - `project-control/PROJECT_ACTIVITY_LOG.md`
 - `project-control/PROJECT_STATE.md`
 - `project-control/ISSUES_AND_GAPS.md`
@@ -143,6 +148,7 @@ Recommendation:
 - Every issue or gap is linked to a task when possible.
 - Decisions are recorded with reason and impact.
 - Control record IDs remain unique and sequential.
+- Roadmap files remain consistent with task, issue, and decision records when the assignment includes roadmap maintenance.
 - Any sensitive value is redacted before recording.
 - Reviews may include records written by Tera itself; those records are not exempt from traceability or secret checks.
 - `TASK-ID`, `LOG-ID`, `ISSUE-ID`, and `DEC-ID` sequencing is checked before new records are written.
