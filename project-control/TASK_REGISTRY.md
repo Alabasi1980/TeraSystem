@@ -38,4 +38,6 @@ Closed
 | TASK-0009 | الصفحة الرئيسية Navigation Hub | FrontendAgent | Phase 4 — Main Page | Closed | `project-control/tasks/TASK-0009.md` | 2026-06-27 |
 | TASK-0010 | Periodic Quality Review after TASK-0009 | QualityReviewCoordinatorAgent | Phase 4 — Quality Review | Closed | `project-control/tasks/TASK-0010.md` | 2026-06-28 |
 | TASK-0011 | Fix ISSUE-0006: Server-side validation for Banks/Parties actions | EngineeringAgent | Phase 4 — Validation Fix | Closed | `project-control/tasks/TASK-0011.md` | 2026-06-28 |
-| TASK-0012 | شاشة إدارة الشيكات (Checks Screen S02) — Backend + Frontend + Nav | EngineeringAgent + FrontendAgent | Phase 4 — Checks Screen | Submitted | `project-control/tasks/TASK-0012.md` | 2026-06-28 |
+| TASK-0012 | شاشة إدارة الشيكات (Checks Screen S02) — Backend + Frontend + Nav | EngineeringAgent + FrontendAgent | Phase 4 — Checks Screen | Accepted | `project-control/tasks/TASK-0012.md` | 2026-06-28 |
+| TASK-0013 | Fix ISSUE-0007: NaN amount bypass in check validation | EngineeringAgent | Phase 4 — Validation Fix | Closed | `project-control/tasks/TASK-0013.md` | 2026-06-28 |
+| TASK-0014 | Fix ISSUE-0008: Invalid date crash in check actions | EngineeringAgent | Phase 4 — Validation Fix | Closed | `project-control/tasks/TASK-0014.md` | 2026-06-28 |

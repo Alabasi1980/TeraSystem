@@ -106,12 +106,30 @@ function validateCheckData(
   if (!checkNumber) return { error: 'رقم الشيك مطلوب' }
   if (checkNumber.length > 50)
     return { error: 'رقم الشيك يجب ألا يتجاوز 50 حرف' }
-  if (amount <= 0) return { error: 'المبلغ يجب أن يكون أكبر من 0' }
+  if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
+    return { error: 'المبلغ يجب أن يكون أكبر من 0' }
+  }
   if (notes.length > 500)
     return { error: 'الملاحظات يجب ألا تتجاوز 500 حرف' }
 
+  // Validate dates
+  if (!data.issueDate) return { error: 'تاريخ الإصدار مطلوب' }
+  if (!data.dueDate) return { error: 'تاريخ الاستحقاق مطلوب' }
+
+  const parsedIssueDate = new Date(data.issueDate)
+  const parsedDueDate = new Date(data.dueDate)
+
+  if (isNaN(parsedIssueDate.getTime())) {
+    return { error: 'تاريخ الإصدار غير صحيح' }
+  }
+  if (isNaN(parsedDueDate.getTime())) {
+    return { error: 'تاريخ الاستحقاق غير صحيح' }
+  }
+
   // Compare date-only values
-  if (dueDateStr(data.dueDate) < dueDateStr(data.issueDate)) {
+  const issueStr = parsedIssueDate.toISOString().split('T')[0]
+  const dueStr = parsedDueDate.toISOString().split('T')[0]
+  if (dueStr < issueStr) {
     return { error: 'تاريخ الاستحقاق يجب أن يكون أكبر من أو يساوي تاريخ الإصدار' }
   }
 
@@ -121,14 +139,10 @@ function validateCheckData(
     partyId: data.partyId,
     checkNumber,
     amount,
-    issueDate: dueDateStr(data.issueDate),
-    dueDate: dueDateStr(data.dueDate),
+    issueDate: issueStr,
+    dueDate: dueStr,
     notes: notes || null,
   }
-}
-
-function dueDateStr(date: string): string {
-  return new Date(date).toISOString().split('T')[0]
 }
 
 // Valid transitions: Map<current status, allowed next statuses>
