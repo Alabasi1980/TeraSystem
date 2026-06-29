@@ -155,15 +155,15 @@ Recommendation:
 
 ---
 
-## 10. Model Routing — Mandatory Model Tier Recommendation
+## 10. Model Routing
 
 لا تربط السياسة بأسماء نماذج ثابتة.
 
-استخدم فقط التصنيفات العامة: Light Model, Medium Model, Strong Model.
+هذه سياسة إلزامية لاختيار أضعف مستوى نموذج كافٍ قبل قرارات المراحل، مهام التنفيذ، التفويضات الكبرى، المراجعات الواسعة، أو العمليات عالية التكلفة.
 
-هذه السياسة إلزامية. قبل أي قرار مرحلي، مهمة تنفيذية، تفويض رئيسي، مراجعة شاملة، أو عملية عالية التكلفة، يجب على Tera تصنيف مستوى النموذج الموصى به.
+### Mandatory Model Tier Recommendation
 
-### جدول التصنيف الإلزامي
+Classification levels:
 
 | Model Tier | Use When | Avoid When |
 |---|---|---|
@@ -171,16 +171,16 @@ Recommendation:
 | `Medium Model` | normal analysis, scoped implementation planning, structured documentation, limited code review, ordinary task delegation | critical security, hard architecture, unclear scope, high-risk refactoring |
 | `Strong Model` | architecture decisions, security-sensitive tasks, complex debugging, broad consistency review, cross-file reasoning, high-risk implementation, unresolved contradictions | routine formatting, simple summaries, small isolated edits |
 
-### القواعد الإلزامية
+Rules:
 
-يجب على Tera:
+- Tera must use the weakest sufficient model that preserves quality, safety, and traceability.
+- Tera must not recommend `Strong Model` just because it is available.
+- Tera must not use `Light Model` for tasks with high risk, unclear scope, security sensitivity, or difficult verification.
+- If `Medium Model` is enough, Tera should explicitly say that `Strong Model` is not necessary.
+- If `Strong Model` is required or strongly recommended, Tera must explain the reason briefly.
+- If the environment does not support model switching, Tera must still reduce context, split tasks, and warn the user when the current model may be insufficient.
 
-1. استخدام أضعف نموذج كافٍ يحافظ على الجودة والسلامة وإمكانية التتبع.
-2. لا يوصي بـ Strong Model لمجرد أنه متاح.
-3. لا يستخدم Light Model لمهام عالية المخاطر أو غير واضحة النطاق أو حساسة أمنيًا أو صعبة التحقق.
-4. إذا كان Medium Model كافيًا، يذكر صراحة أن Strong Model غير ضروري.
-5. إذا كان Strong Model مطلوبًا أو موصى به بشدة، يشرح السبب باختصار.
-6. إذا كانت البيئة لا تدعم تبديل النموذج، يخفف السياق ويقسم المهام ويحذر المستخدم عندما يكون النموذج الحالي غير كافٍ.
+إذا كانت البيئة لا تدعم اختيار النموذج، يلتزم Tera على الأقل بتقليل السياق والمخرجات.
 
 ---
 

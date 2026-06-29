@@ -63,15 +63,15 @@ Required Reasoning: [Low/Medium/High/Critical]
 Context Size: [Low/Medium/High/Critical]
 Verification Difficulty: [Low/Medium/High/Critical]
 Historical Fit: [Good/Mixed/Weak/Unknown]
+Recommended Model Tier: [Light/Medium/Strong]
+Minimum Acceptable Model Tier: [Light/Medium/Strong]
+Cost-Saving Option: [use weaker model / split task / reduce context / shorten output / not recommended]
+User-Facing Recommendation Required: [Yes/No]
 Decision: [sufficient / acceptable with safeguards / stronger recommended / stronger required / split]
 Reason: [short reason]
 Required Safeguards: [list]
 User Approval Needed: Yes / No
 Notes: [short notes]
-Recommended Model Tier: Light / Medium / Strong
-Minimum Acceptable Model Tier: Light / Medium / Strong
-Cost-Saving Option: use weaker model / split task / reduce context / shorten output / not recommended
-User-Facing Recommendation Required: Yes / No
 ```
 
 Rules:

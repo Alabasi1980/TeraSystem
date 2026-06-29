@@ -98,26 +98,26 @@
 | وضع التشغيل الافتراضي | Plan Mode |
 | هل يسمح بـ Build Mode الآن؟ | لا / نعم مع سبب |
 
-### Model Tier Plan
-
-| المرحلة / نوع العمل | Recommended Model Tier | Minimum Acceptable Tier | User Approval Needed? | السبب |
-|---|---|---|---|---|
-| Discovery / Intake | Medium | Light | No | استكشاف أولي، لا مخاطر |
-| Scope / Requirements | Medium | Medium | No | يحتاج دقة متوسطة |
-| Technical Architecture | Strong | Medium | Yes if high risk | قرارات معمارية حساسة |
-| UI Structure | Medium | Light | No | هيكلة واجهات، مخاطر منخفضة |
-| Data Model | Strong | Medium | Yes if complex | تأثير على قاعدة البيانات |
-| Implementation Task | Medium | Medium | Depends | حسب التعقيد والمخاطر |
-| Security-Sensitive Task | Strong | Strong | Yes | أمن وحماية البيانات |
-| Simple Formatting / Documentation cleanup | Light | Light | No | مهام بسيطة، تكلفة منخفضة |
-| Broad Review / Consistency Review | Strong | Medium | Yes if broad | مراجعة شاملة عبر ملفات |
-
-هذا الدليل هو دليل تحكم بالتكلفة، وليس قفلًا دائمًا. كل TASK-ID يجب أن يطبق تقييم Model Capability Assessment الخاص به عندما يتغير الخطر أو التعقيد أو السياق أو صعوبة التحقق.
-
 ### ملاحظات سياسة السياق
 
 - ...
 - ...
+
+### Model Tier Plan
+
+| المرحلة / نوع العمل | Recommended Model Tier | Minimum Acceptable Tier | User Approval Needed? | السبب |
+|---|---|---|---|---|
+| Discovery / Intake | Medium | Light | No | جمع وفهم أولي يمكن تقليل تكلفته عند وضوح المدخلات. |
+| Scope / Requirements | Medium | Medium | No | يحتاج اتساقًا وتحليل حدود المشروع. |
+| Technical Architecture | Strong | Medium | Yes if high risk | قرارات معمارية قد تؤثر على التنفيذ طويلًا. |
+| UI Structure | Medium | Light | No | غالبًا نطاقه محدود ويمكن تقسيمه. |
+| Data Model | Strong | Medium | Yes if complex | يؤثر على العلاقات، القيود، والهجرة المستقبلية. |
+| Implementation Task | Medium | Medium | Depends | التنفيذ العادي يحتاج توازنًا بين الدقة والتكلفة. |
+| Security-Sensitive Task | Strong | Strong | Yes | لا يسمح بمستوى ضعيف في المصادقة، الصلاحيات، أو البيانات الحساسة. |
+| Simple Formatting / Documentation cleanup | Light | Light | No | لا يحتاج استدلالًا عميقًا أو سياقًا واسعًا. |
+| Broad Review / Consistency Review | Strong | Medium | Yes if broad | يحتاج ربطًا واسعًا بين الملفات والقرارات. |
+
+This plan is a cost-control guide, not a permanent lock. Each TASK-ID must still run its own Model Capability Assessment when risk, complexity, context, or verification difficulty changes.
 
 
 ---
