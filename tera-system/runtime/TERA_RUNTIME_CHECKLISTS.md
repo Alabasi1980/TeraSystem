@@ -103,7 +103,31 @@ For MVP projects, report:
 
 ---
 
-## 5. UI Design Source Protocol
+## 5. MVP Definition Classification Checklist
+
+Use after discovery information is collected, before finalizing the MVP scope in `project-inputs/01_APPLICATION_IDEA.md`.
+
+**Golden rule: User-selected features during discovery are not automatically MVP.**
+
+Checklist:
+
+- [ ] All candidate features have been collected from discovery.
+- [ ] Each feature has been classified by: necessity, dependency, risk, cost, implementation size.
+- [ ] Each feature is assigned to exactly one tier: Core MVP / Extended MVP / Phase 2 / Phase 3 / Later / Out of Scope.
+- [ ] Core MVP features form the smallest version that delivers the primary workflow end-to-end.
+- [ ] Core MVP is small enough to build in a reasonable timeframe (days to weeks).
+- [ ] Extended MVP features are clearly non-blocking — the app works without them.
+- [ ] Phase 2+ features depend on Core MVP being stable first.
+- [ ] Later/Enterprise features are deferred unless explicitly approved for current scope.
+- [ ] Out-of-scope items are documented to prevent future scope creep.
+- [ ] The classification is visible in the Application Understanding Summary for user review.
+- [ ] The user has approved or reclassified — Tera's default is not automatic MVP inclusion.
+
+Reference: `tera-system/MVP_DEFINITION_PROTOCOL.md`
+
+---
+
+## 6. UI Design Source Protocol
 
 Tera must not allow random or inconsistent UI styling.
 
@@ -142,7 +166,7 @@ No UI implementation before UI design source is decided.
 
 ---
 
-## 6. Security Sensitivity Levels
+## 7. Security Sensitivity Levels
 
 Decide security sensitivity before delegation.
 
@@ -158,7 +182,7 @@ Rules:
 
 ---
 
-## 7. Pre-Execution Gate Checklist
+## 8. Pre-Execution Gate Checklist
 
 Before any implementation task is approved, assigned, or executed, apply:
 
@@ -196,7 +220,7 @@ They must never be written into task files, logs, handbacks, or config/code fall
 
 ---
 
-## 8. Task Prioritization Matrix
+## 9. Task Prioritization Matrix
 
 When multiple tasks are ready and the user has not specified an order, Tera chooses the next task using this priority order.
 
@@ -220,7 +244,7 @@ Ordering rules:
 
 ---
 
-## 9. PROJECT_STATE.md Minimum Content
+## 10. PROJECT_STATE.md Minimum Content
 
 `project-control/PROJECT_STATE.md` is the compact project memory.
 
@@ -241,7 +265,7 @@ Rules:
 
 ---
 
-## 10. Domain Intelligence Trigger Checklist
+## 11. Domain Intelligence Trigger Checklist
 
 Tera may trigger Domain Intelligence when one or more conditions exist:
 
@@ -264,7 +288,7 @@ Do not trigger Domain Intelligence for:
 
 ---
 
-## 11. Source Reliability Checklist
+## 12. Source Reliability Checklist
 
 Source tiers:
 
@@ -284,7 +308,7 @@ Rules:
 
 ---
 
-## 12. Reference-System Safety Checklist
+## 13. Reference-System Safety Checklist
 
 SAP, Oracle, Odoo, Dynamics, and similar systems may be used as reference sources, not mandatory blueprints.
 
@@ -310,7 +334,7 @@ Enterprise-grade features default to `Later` unless explicitly approved.
 
 ---
 
-## 13. Domain Anti-Bloat Checklist
+## 14. Domain Anti-Bloat Checklist
 
 Before accepting any domain recommendation, ask:
 
@@ -330,7 +354,7 @@ Include now / Recommended / Defer / Out of Scope / Needs User Decision
 
 ---
 
-## 14. Application Discovery Questions Checklist
+## 15. Application Discovery Questions Checklist
 
 Ask in short batches. Do not ask all questions at once.
 
@@ -353,7 +377,7 @@ Smart domain questions may be asked after the app is sufficiently understood, no
 
 ---
 
-## 15. Discovery Documentation Checklist
+## 16. Discovery Documentation Checklist
 
 Before leaving Application Discovery, confirm:
 
@@ -378,7 +402,7 @@ If materially important application information remains only in chat, discovery 
 
 ---
 
-## 16. Suggestion Timing Checklist
+## 17. Suggestion Timing Checklist
 
 Before Tera proposes significant improvements, confirm:
 
@@ -392,7 +416,7 @@ Do not propose major scope expansions before sufficient understanding.
 
 ---
 
-## 17. Post-Research Review Checklist
+## 18. Post-Research Review Checklist
 
 After Domain Intelligence or external research:
 
@@ -407,15 +431,17 @@ Research findings cannot become approved scope without user/Tera decision.
 
 ---
 
-## 18. Phased Roadmap Readiness Checklist
+## 19. Phased Roadmap Readiness Checklist
 
 Before execution planning, confirm:
 
-- Phase 1 / MVP is clear and small enough.
-- Later phases are separated from MVP.
-- Enterprise or complex features are deferred unless explicitly approved.
-- Out-of-scope items are listed where relevant.
-- User decisions are captured.
-- The user approved the phased roadmap.
+- [ ] Feature classification (`MVP_DEFINITION_PROTOCOL.md`) has been completed before MVP scope was set.
+- [ ] Phase 1 / MVP is clear and small enough.
+- [ ] Core MVP and Extended MVP are distinguished (if Extended MVP features exist).
+- [ ] Later phases are separated from MVP.
+- [ ] Enterprise or complex features are deferred unless explicitly approved.
+- [ ] Out-of-scope items are listed where relevant.
+- [ ] User decisions are captured.
+- [ ] The user approved the phased roadmap.
 
 No execution planning before phased roadmap approval.

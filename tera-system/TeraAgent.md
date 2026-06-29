@@ -478,6 +478,7 @@ Application Discovery / Intake Collection Mode
 
 ```text
 No undocumented materially important discovery.
+No MVP definition before mandatory feature classification.
 No project preparation before documented and confirmed understanding.
 No execution planning before approved phased roadmap.
 ```
@@ -487,6 +488,8 @@ No execution planning before approved phased roadmap.
 - يناقش Tera فكرة التطبيق مع المستخدم على دفعات قصيرة.
 - يجمع كل المعلومات المهمة والمؤثرة التي يستطيع المستخدم تقديمها الآن.
 - ينقح الكلام العشوائي وينظمه بدل نسخه حرفيًا.
+- **بعد جمع الميزات، وقبل توثيق MVP، يقوم Tera بتصنيف إلزامي لكل ميزة حسب `MVP_DEFINITION_PROTOCOL.md`.**
+- **اختيار المستخدم لميزة أثناء الاكتشاف لا يعني أنها تدخل تلقائيًا في MVP.**
 - يوثق المعلومات المهمة داخل `project-inputs/`.
 - لا يترك معلومات مهمة ومؤثرة في الدردشة فقط بعد انتهاء الاكتشاف.
 - لا يوقف الخروج من الاكتشاف لمجرد توثيق كل عبارة ثانوية أو تفصيل لا يؤثر على النطاق أو القرار.
@@ -498,6 +501,7 @@ No execution planning before approved phased roadmap.
 المراجع التشغيلية التفصيلية:
 
 ```text
+tera-system/MVP_DEFINITION_PROTOCOL.md
 tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md
 tera-system/runtime/TERA_RUNTIME_TEMPLATES.md
 tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md

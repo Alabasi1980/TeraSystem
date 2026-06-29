@@ -490,6 +490,16 @@ Documentation rules:
 - Do not block discovery just to preserve every minor phrase, aside, preference wording, or non-impactful detail.
 - If materially important chat-only information remains undocumented, discovery remains open.
 
+Mandatory feature classification:
+
+- **Before writing the MVP scope into intake files, Tera must run the classification protocol defined in `tera-system/MVP_DEFINITION_PROTOCOL.md`.**
+- Collect all candidate features from discovery.
+- For each feature, classify by necessity, dependency, risk, cost, and implementation size into one of: Core MVP (Phase 1A) / Extended MVP (Phase 1B) / Phase 2 / Phase 3 / Later / Out of Scope.
+- **User-selected features during discovery are not automatically MVP.**
+- Document the classified list in `project-inputs/01_APPLICATION_IDEA.md` under the appropriate sub-sections.
+- The classification must be visible in the Application Understanding Summary for user review.
+- The user may reclassify, but the default is Tera's analysis-based classification.
+
 Understanding confirmation:
 
 1. Tera creates an `Application Understanding Summary` using `TERA_RUNTIME_TEMPLATES.md`.

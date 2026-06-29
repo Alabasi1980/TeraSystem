@@ -251,9 +251,15 @@ Problem solved:
 Target users:
 Primary goals:
 Main workflows:
-MVP scope:
-Later scope:
-Out of scope:
+
+--- Classified Scope (per MVP_DEFINITION_PROTOCOL) ---
+Core MVP (Phase 1A): [features essential for primary workflow]
+Extended MVP (Phase 1B): [important additions, non-blocking]
+Phase 2: [depends on Core MVP stability]
+Phase 3: [advanced capabilities, lower urgency]
+Later / Enterprise: [deferred complex features]
+Out of scope: [explicitly excluded]
+
 User preferences:
 Technical context:
 Domain assumptions:
@@ -261,6 +267,7 @@ Open questions:
 Documented files:
 Tera readiness: Ready / Partially Ready / Not Ready
 User confirmation needed: Yes / No
+Feature classification status: Completed / Pending
 ```
 
 ---
@@ -313,7 +320,10 @@ Use before execution planning.
 Phased Application Roadmap
 
 Phase 1 / MVP:
-- ...
+  Core (Phase 1A):
+  - ...
+  Extended (Phase 1B):
+  - ...
 
 Phase 2:
 - ...
@@ -360,11 +370,12 @@ Project Readiness Summary
 
 Application understanding:
 Confirmed by user: Yes / No
+Feature classification completed: Yes / No
 Project inputs documented: Yes / No
 Materially important chat-only information remaining: Yes / No
 Domain Intelligence status: Completed / Not Needed / Deferred
 Research-based improvements reviewed: Yes / No / Not Needed
-Approved MVP scope:
+Approved MVP scope (Core + Extended):
 Approved later phases:
 Out-of-scope items:
 Open questions:
