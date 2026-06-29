@@ -71,11 +71,13 @@ The agent must read only the files listed by Tera in the task.
 
 Default reference files:
 - ...
+- Active Technology Profile file when the task depends on stack-specific rules.
 
 ## Allowed Sources
 
 - Project preparation files approved by Tera.
 - `project-preparation/PROJECT_RULES.md` when it exists.
+- Active Technology Profile file explicitly assigned by Tera when stack-specific execution rules are needed.
 - Files explicitly attached in the task.
 - Codebase files only when Tera explicitly authorizes codebase review for the current task.
 - `project-preparation/28_UI_UX_GUIDELINES.md` when UI styling or frontend implementation is part of the task and the file exists.
@@ -118,6 +120,7 @@ Default reference files:
 - Do not read application code unless Tera explicitly authorizes codebase review for the current task.
 - Do not treat notes in `GENERATED_AGENTS_MANIFEST.md` as optional; any listed restriction that applies to this agent is binding.
 - Do not invent UI styling if `project-preparation/28_UI_UX_GUIDELINES.md` or `design-source/` exists.
+- Do not assume stack-specific scaffold, ORM, migration, or database rules unless Tera explicitly provides the active Technology Profile.
 - Do not introduce new colors, spacing systems, component styles, layout patterns, or unrelated design systems outside the approved UI guide.
 - Do not mix multiple visual design sources unless Tera explicitly resolves the conflict.
 - Do not change project-control statuses to `Accepted`, `Closed`, `Deferred`, or `Cancelled` unless Tera explicitly decides that status.

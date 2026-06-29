@@ -103,6 +103,27 @@ If the outcome is:
 
 Tera must not proceed as a normal implementation delegation until that decision is resolved.
 
+## 3.3 Technology Profile Gate
+
+Before evaluating any implementation task, Tera must determine the active Technology Profile.
+
+Profile sources:
+
+1. `project-control/PROJECT_STATE.md`
+2. `project-preparation/08_TECHNICAL_ARCHITECTURE.md`
+3. Ask the user only if the technology is still unclear
+
+Rules:
+
+- Do not apply technology rules unless they belong to the active profile.
+- Do not borrow rules from an inactive profile.
+- `Pre-Execution Gate` = General Gate + Active Technology Profile additions.
+- Technology-specific examples and command restrictions belong in:
+
+```text
+tera-system/profiles/
+```
+
 ---
 
 ## 4. مخرجات البوابة
@@ -142,8 +163,8 @@ BLOCKED
 | 5 | هل تضيف المهمة شاشة أو UI دون أن تكون مهمة UI؟ | No |
 | 6 | هل تضيف المهمة API أو Route دون طلب صريح؟ | No |
 | 7 | هل تضيف Auth أو Roles أو Sessions دون طلب صريح؟ | No |
-| 8 | هل تضيف Prisma models أو جداول دون أن تكون مهمة Data Schema؟ | No |
-| 9 | هل تنفذ migration أو `db push` دون أن تكون مهمة قاعدة بيانات معتمدة؟ | No |
+| 8 | هل تضيف Database models / entities / schema objects دون أن تكون مهمة Data Schema معتمدة؟ | No |
+| 9 | هل تنفذ database migration / apply commands دون أن تكون مهمة قاعدة بيانات معتمدة؟ | No |
 | 10 | هل تنشئ `.env` فعليًا خارج مهمة محلية معتمدة أو دون خطة Secret Handling واضحة؟ | No |
 | 11 | هل ستظهر أي secrets حقيقية في ملف مهمة أو سجل أو handback أو ملف config/code؟ | No |
 | 12 | هل تضيف مكتبات غير مطلوبة مباشرة للمهمة؟ | No |
@@ -172,9 +193,9 @@ Dashboard
 API Routes
 Authentication
 Authorization
-Prisma Data Models
-Migrations
-db push
+Database Models / Entities / Schema Objects
+Database Migrations
+Database Apply Commands
 Seed Data
 External Services
 Docker
@@ -213,10 +234,10 @@ Deferred / Proposed Next Task
 
 | نوع الأثر | أمثلة | القرار |
 |---|---|---|
-| إنشاء ملفات | `.env`, `schema.prisma`, config files | يسمح فقط إذا كانت ضمن Allowed Write Targets |
+| إنشاء ملفات | `.env`, ORM schema/configuration files, config files | يسمح فقط إذا كانت ضمن Allowed Write Targets |
 | تعديل ملفات | `package.json`, lock file, config | يسمح فقط إذا كان مذكورًا في المهمة |
-| توليد كود | Prisma Client, generated files | ممنوع إلا إذا كانت المهمة مخصصة لذلك |
-| تشغيل قاعدة بيانات | `db push`, `migrate`, seed | ممنوع إلا في مهمة قاعدة بيانات معتمدة |
+| توليد كود | ORM-generated files, framework-generated files | ممنوع إلا إذا كانت المهمة مخصصة لذلك |
+| تشغيل قاعدة بيانات | apply commands, migrations, seed | ممنوع إلا في مهمة قاعدة بيانات معتمدة |
 | الاتصال بخدمة خارجية | package registry, DB, API | يحتاج موافقة إذا كان مؤثرًا |
 | حذف أو استبدال ملفات | cleanup, overwrite | يحتاج تصريح واضح |
 
@@ -228,25 +249,32 @@ Deferred / Proposed Next Task
 4. فشل البوابة بنتيجة `NEEDS_REVISION` وتصحيح المهمة ذاتيًا.
 5. طلب موافقة صريحة من المستخدم إذا كان تجاوز النطاق ضروريًا.
 
-### قاعدة Prisma الخاصة
+### Technology Profile Rule
 
-عند استخدام Prisma، تطبق القواعد التالية:
+Technology-specific ORM, scaffold, and database command rules must be loaded from the active Technology Profile only.
 
-- لا تستخدم `npx prisma init` إذا كانت المهمة تمنع إنشاء `.env`، إلا إذا كانت المهمة تتضمن صراحة معالجة هذا الأثر الجانبي.
-- إذا كان الهدف هو إنشاء `.env.example` فقط، فالخيار الآمن هو إنشاء `prisma/schema.prisma` يدويًا بدل الاعتماد على أمر ينشئ `.env`.
-- يسمح بإنشاء ملف `prisma/schema.prisma` الأساسي فقط إذا كان يحتوي على:
-  - `generator client`
-  - `datasource db`
-  - بدون أي `model`
-- يمنع إنشاء أي `model` داخل `schema.prisma` إلا في مهمة Schema معتمدة.
-- يسمح لـ `Prisma schema` بتعريف أنواع الحقول والعلاقات فقط ضمن النطاق المعتمد.
-- قواعد التحقق التجارية مثل `amount > 0` أو حدود القيم أو شروط المجال لا يجوز تنفيذها كـ database constraints أو `CHECK` constraints أو قيود قاعدة بيانات مشابهة إلا إذا كانت المهمة تنص على ذلك صراحة وتم اعتماد ذلك.
-- يمنع تشغيل:
-  - `npx prisma db push`
-  - `npx prisma migrate`
-  - `npx prisma generate`
-  - اختبار اتصال قاعدة البيانات
-  إلا إذا كانت المهمة مخصصة لذلك ومعتمدة صراحة.
+Examples:
+
+- ORM/framework init commands
+- ORM schema/configuration files
+- database models / entities
+- migration commands
+- database apply commands
+- generation commands
+- stack-specific first-task limits
+
+General rule:
+
+```text
+Do not place stack-specific execution logic in the generic gate when it belongs to a Technology Profile.
+```
+
+Database-layer validation rule:
+
+```text
+Schema definitions may define field types and relations.
+Business validation rules such as amount > 0 must not be implemented as database constraints unless explicitly approved.
+```
 
 ### Secret Handling and Redaction Rule
 
@@ -316,9 +344,9 @@ Any real secret outside approved local environment files = gate failure.
 | التعارض | الحكم الصحيح |
 |---|---|
 | ممنوع إنشاء `.env` لكن الأمر المقترح ينشئ `.env` | `NEEDS_REVISION` |
-| ممنوع Schema لكن Allowed Write Targets تسمح بـ `schema.prisma` دون توضيح | تصحيح الصياغة إلى: ملف Schema أساسي بدون Models |
-| ممنوع توليد كود لكن الأمر يشغل `prisma generate` | `NEEDS_REVISION` |
-| ممنوع اتصال قاعدة بيانات لكن المعيار يطلب `db push` | `NEEDS_REVISION` |
+| ممنوع Schema لكن Allowed Write Targets تسمح بملف ORM schema دون توضيح | تصحيح الصياغة إلى: ملف schema/config أساسي فقط |
+| ممنوع توليد كود لكن الأمر يشغل ORM/framework generation command | `NEEDS_REVISION` |
+| ممنوع اتصال قاعدة بيانات لكن المعيار يطلب database apply command | `NEEDS_REVISION` |
 
 لا يجوز اعتبار المهمة `PASS` قبل إزالة التعارض.
 
@@ -393,9 +421,9 @@ Blocked
 | 11 | هل ظهرت أي secrets حقيقية داخل ملفات المهمة أو السجلات أو handback؟ | No |
 | 12 | هل ظهرت أي secrets حقيقية داخل code/config أو fallback values؟ | No |
 | 13 | هل تم توثيق الأوامر وقيم الاتصال بصيغة redacted فقط؟ | Yes |
-| 14 | هل يحتوي Prisma schema على models غير مصرح بها؟ | No |
+| 14 | هل يحتوي ORM schema أو تعريف الكيانات على models / entities غير مصرح بها؟ | No |
 | 15 | هل تم تحويل قواعد Business Validation إلى database constraints دون موافقة صريحة؟ | No |
-| 16 | هل تم تشغيل `db push` أو `migrate` أو `generate` دون تفويض؟ | No |
+| 16 | هل تم تشغيل database apply / migration / generation commands دون تفويض؟ | No |
 | 17 | هل تم إنشاء API أو Route دون أن تكون المهمة API؟ | No |
 | 18 | هل تم إنشاء Auth أو Roles أو Sessions دون تفويض؟ | No |
 | 19 | هل تم الالتزام بمعايير القبول؟ | Yes |
@@ -480,7 +508,7 @@ Reverted
 مثال:
 
 ```text
-Root Cause: Tera delegation used create-next-app without --no-tailwind, causing Tailwind files to be generated.
+Root Cause: Tera delegation used a framework scaffold command without the required restrictive flags, causing forbidden default files to be generated.
 ```
 
 ثم يضيف Tera توصية عملية لتجنب تكرار الخطأ في المهام القادمة.
@@ -499,7 +527,7 @@ Root Cause: Tera delegation used create-next-app without --no-tailwind, causing 
 
 أي مهمة Scaffold تستخدم أمرًا مثل:
 
-- `create-next-app`
+- framework scaffold command
 - `vite`
 - `create-react-app`
 - أي generator مشابه
@@ -514,17 +542,7 @@ Needs cleanup
 Forbidden
 ```
 
-مثال Next.js:
-
-إذا كانت المهمة لا تسمح بـ Tailwind، يجب فحص:
-
-- `package.json`
-- `postcss.config.*`
-- `app/globals.css`
-- `app/page.tsx`
-- `README.md`
-
-ويجب إزالة أو تعديل أي أثر خارج النطاق قبل قبول المهمة.
+أمثلة الفحص التفصيلية الخاصة بكل stack يجب أن تأتي من الـ Technology Profile النشط.
 
 ### قاعدة إزالة الحزم وآثارها
 
@@ -580,7 +598,7 @@ Cleanup required
 | No unauthorized UI/CSS/theme changes | PASS / FAIL | ... |
 | No real secrets outside approved local environment files | PASS / FAIL | ... |
 | Secrets redacted in docs/logs/config references | PASS / FAIL | ... |
-| No unauthorized Prisma models/migrations | PASS / FAIL | ... |
+| No unauthorized ORM models/entities/migrations | PASS / FAIL | ... |
 | No unapproved business validation moved to DB constraints | PASS / FAIL | ... |
 | No unauthorized API/Auth created | PASS / FAIL | ... |
 | Acceptance criteria satisfied | PASS / FAIL | ... |
@@ -617,7 +635,7 @@ Deviation Classification:
 1. Scaffold المشروع.
 2. إعداد ORM أو أدوات التطوير.
 3. إنشاء Schema.
-4. تشغيل Migration أو db push.
+4. تشغيل migration أو database apply commands.
 5. تنفيذ UI.
 6. تنفيذ Auth.
 
@@ -625,8 +643,8 @@ Deviation Classification:
 
 ```text
 TASK-0001 = Scaffold only
-TASK-0002 = Prisma schema
-TASK-0003 = Migration / db push
+TASK-0002 = ORM schema / entities
+TASK-0003 = Migration / database apply
 TASK-0004 = أول شاشة أو موديول
 ```
 
@@ -636,49 +654,11 @@ TASK-0004 = أول شاشة أو موديول
 
 ## 8. قاعدة TASK-0001 الافتراضية
 
-إذا كانت أول مهمة تنفيذية لمشروع Next.js + Prisma، فالنطاق الآمن الافتراضي هو:
+قواعد أول مهمة تنفيذية، وحدود scaffold وORM وقاعدة البيانات، يجب أن تأتي من الـ Technology Profile النشط.
 
 ```text
-Scaffold Next.js + TypeScript + تثبيت Prisma + إنشاء prisma/schema.prisma الأساسي + إنشاء .env.example فقط
-```
-
-النطاق المسموح افتراضيًا:
-
-```text
-- إنشاء مشروع Next.js + TypeScript.
-- تثبيت الحزم الضرورية فقط.
-- إنشاء ملف prisma/schema.prisma الأساسي يدويًا إن لزم.
-- إنشاء .env.example فقط.
-- عدم إنشاء .env.
-```
-
-صيغة `schema.prisma` المسموحة في TASK-0001:
-
-```prisma
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
-
-الممنوع افتراضيًا في TASK-0001:
-
-```text
-لا Prisma models
-لا ConnectionTest model
-لا db push
-لا migration
-لا prisma generate
-لا اختبار اتصال فعلي بقاعدة البيانات
-لا UI
-لا API
-لا Auth
-لا .env بقيم فعلية
-لا استخدام أوامر CLI ينتج عنها .env دون معالجة صريحة
+Use active Technology Profile:
+tera-system/profiles/[active-profile].md
 ```
 
 إذا كانت هناك حاجة لتجاوز هذا النطاق، يجب على Tera طلب موافقة المستخدم صراحة وشرح السبب.

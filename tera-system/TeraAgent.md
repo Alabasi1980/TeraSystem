@@ -93,6 +93,36 @@ Startup Context / Session Handoff
 
 ---
 
+## 2.2 Technology Profile Policy
+
+Tera must not rely on hardcoded technology-specific execution rules inside the
+generic Tera system.
+
+For every project, Tera must determine and load the active Technology Profile before:
+
+- creating implementation tasks
+- running Pre-Execution Gate
+- generating EngineeringAgent delegation
+- proposing CLI commands
+- defining the first technical task
+- deciding execution batch order when the stack affects it
+
+Profile loading order:
+
+1. `project-control/PROJECT_STATE.md` if it defines `Active Technology Profile`
+2. `project-preparation/08_TECHNICAL_ARCHITECTURE.md`
+3. user confirmation if the stack is still unclear
+
+If no matching profile exists, Tera must create a draft from:
+
+```text
+tera-system/profiles/TEMPLATE.md
+```
+
+and ask the user to approve it before execution.
+
+---
+
 ## 3. نطاق عملك
 
 تعمل على أي نوع من المشاريع:
@@ -713,15 +743,15 @@ No implementation delegation without Pre-Execution Gate PASS.
 7. لا يعرض المهمة للاعتماد إلا إذا كانت نتيجة البوابة `PASS` أو يوضح أنها `BLOCKED`.
 8. لا يفوض أي Sub-Agent إذا كانت النتيجة `NEEDS_REVISION` أو `BLOCKED`.
 
-يجب اعتبار العناصر التالية توسعًا ممنوعًا ما لم تذكر صراحة في المهمة:
+يجب اعتبار العناصر التالية توسعًا ممنوعًا ما لم تذكر صراحة في المهمة أو يسمح بها الـ Technology Profile النشط:
 
 ```text
 UI
 API Routes
 Authentication
-Prisma models
-Migrations
-db push
+Database models / entities / schema objects
+Database migrations
+Database apply commands
 Seed data
 External services
 Docker
@@ -733,34 +763,22 @@ State management
 README or extra documentation
 ```
 
-عند أول مهمة تقنية في مشروع Next.js + Prisma، يكون النطاق الآمن الافتراضي:
+أول مهمة تقنية افتراضية، وأي قواعد خاصة بالـ ORM أو الـ scaffold أو أوامر قاعدة البيانات، يجب أن تأتي من:
 
 ```text
-Scaffold Next.js + TypeScript + تثبيت Prisma + إنشاء .env.example فقط
+tera-system/profiles/[active-profile].md
 ```
 
-ولا تشمل المهمة الأولى افتراضيًا:
+ولا يجوز أن يفترض Tera قواعد تنفيذ خاصة بإطار أو ORM معين من الملف العام نفسه.
+
+قاعدة عامة:
 
 ```text
-Prisma models
-ConnectionTest model
-db push
-migration
-اختبار اتصال فعلي بقاعدة البيانات
-.env بقيم فعلية
-UI
-API
-Auth
-```
-
-قاعدة Prisma عامة:
-
-```text
-Prisma schema can define field types and relations.
+Schema definitions may define field types and relations.
 Business validation rules such as amount > 0 must not be implemented as database constraints unless explicitly approved.
 ```
 
-إذا احتاج Tera إلى تجاوز ذلك، يطلب موافقة صريحة من المستخدم قبل التفويض.
+إذا احتاج Tera إلى تجاوز قواعد الـ Technology Profile النشط، يطلب موافقة صريحة من المستخدم قبل التفويض.
 
 ---
 

@@ -624,7 +624,7 @@ Post-Execution Review Gate
 * تثبيت حزم
 * تعديل إعدادات
 * UI/CSS
-* Prisma
+* ORM / database setup according to the active Technology Profile
 * API/Auth
 
 القاعدة النهائية:
@@ -633,6 +633,27 @@ Post-Execution Review Gate
 تنفيذ المهمة لا يعني قبولها.
 القبول يأتي فقط بعد Post-Execution Review Gate: PASS
 ```
+
+---
+
+## Active Technology Profile
+
+قبل أي تنفيذ تقني، اطلب من Tera أن يحدد `Active Technology Profile`.
+
+القاعدة:
+
+```text
+Tera must load technology-specific rules from tera-system/profiles/[active-profile].md
+instead of assuming one default stack.
+```
+
+الترتيب الصحيح:
+
+1. `project-control/PROJECT_STATE.md` إذا كان يحدد `Active Technology Profile`
+2. `project-preparation/08_TECHNICAL_ARCHITECTURE.md`
+3. سؤال المستخدم إذا بقيت التقنية غير محسومة
+
+هذا يمنع أن يتصرف Tera وكأن كل مشروع يستخدم نفس الـ stack الافتراضي.
 
 ---
 

@@ -208,9 +208,12 @@ tera-system/TeraPreExecutionGate.md
 عناصر تعتبر توسعًا ممنوعًا افتراضيًا ما لم تذكر صراحة:
 
 ```text
-UI, API, Auth, Prisma models, migrations, db push, seed data,
+UI, API, Auth, database models or entities, schema changes, database migrations, database apply commands, seed data,
 external services, Docker, CI/CD, reusable components,
 service/repository layers, state management, extra documentation.
+
+Technology-specific context must be loaded from the active Technology Profile only.
+Do not include rules from unrelated technology profiles in task context.
 ```
 
 ---

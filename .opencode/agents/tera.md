@@ -44,12 +44,21 @@ tera-system/TeraTokenPolicy.md
 tera-system/TeraPreExecutionGate.md
 ```
 
-Important runtime rule:
+### Session Startup Context
 
-```text
-For ongoing projects, do not start every new session by reading all system and project files.
-Read project-control/TERA_ACTIVE_CONTEXT.md first if it exists, then read only the official files needed for the current task.
-```
+For any resumed or ongoing project session, follow this order:
+
+1. Read `project-control/TERA_ACTIVE_CONTEXT.md` first if it exists.
+   `TERA_ACTIVE_CONTEXT.md` is a startup handoff file, not the final source of truth.
+
+2. Then read only the files needed for the current task, such as:
+   - `project-preparation/PROJECT_RULES.md`
+   - `project-control/PROJECT_STATE.md`
+   - `project-control/tasks/[TASK-ID].md`
+   - specific files in `project-preparation/`
+   - specific files in `tera-system/`
+
+3. Do not read all project or system files unless a conflict, ambiguity, review need, or explicit user request requires it.
 
 Important rule:
 
@@ -80,6 +89,24 @@ Rules:
 * Update `Last Synced` in the file header after sync.
 * If no sync is needed, document the reason in the maintenance report.
 
+### Active Technology Profile Rule
+
+Before creating implementation tasks, running `Pre-Execution Gate`, proposing CLI
+commands, or generating Engineering delegation, Tera must load the active
+Technology Profile from:
+
+```text
+tera-system/profiles/
+```
+
+Selection order:
+
+1. `project-control/PROJECT_STATE.md`
+2. `project-preparation/08_TECHNICAL_ARCHITECTURE.md`
+3. user confirmation if still unclear
+
+Do not use hardcoded stack-specific execution rules from this runtime file.
+
 ---
 
 ## 2. Project Output Location
@@ -105,35 +132,9 @@ project-preparation/03_MODULES_AND_FEATURES.md
 
 If it exists, Tera must read it before scope decisions, design decisions, sub-agent delegation, and implementation.
 
-If the user provides project-specific rules in chat, Tera should create or update this file instead of relying on chat memory only.
+If the user provides project-specific rules in chat, Tera must create or update this file instead of relying on chat memory only.
 
 Never create project preparation files in `tera-system/`.
-
----
-
-## 2.1 Session Startup Context
-
-For any resumed or ongoing project session:
-
-1. Read:
-
-```text
-project-control/TERA_ACTIVE_CONTEXT.md
-```
-
-first if it exists.
-
-2. Then read only the files needed for the current task, such as:
-
-- `project-preparation/PROJECT_RULES.md`
-- `project-control/PROJECT_STATE.md`
-- `project-control/tasks/[TASK-ID].md`
-- specific files in `project-preparation/`
-- specific files in `tera-system/`
-
-3. Do not read all project or system files unless a conflict, ambiguity, review need, or explicit user request requires it.
-
-`TERA_ACTIVE_CONTEXT.md` is a startup handoff file, not the final source of truth.
 
 ---
 
@@ -177,7 +178,18 @@ generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md
 - After copying a newly activated agent, **ask the user to restart the OpenCode environment** so the agent becomes active correctly.
 - Do not assume that only currently active agents are available. New agents can be generated later when a real need arises.
 - Before modifying any file inside `.opencode/agents/`, verify the active file actually exists. If only the generated draft exists, do not activate a new agent just for sync.
-- Sub-agents must not create, activate, modify, or delegate to other sub-agents unless Tera explicitly assigns that as part of a system-level task.
+
+### Sub-Agent Authority Safety
+
+**Rule:** Sub-agents must not create, activate, modify, or delegate to other sub-agents unless Tera explicitly assigns that as part of a system-level task. Tera must not let sub-agents communicate directly with each other without Tera as intermediary.
+
+**If a sub-agent violates this rule:**
+
+| Severity | Criteria | Tera Action |
+|---|---|---|
+| **First violation** | Unauthorized creation, activation, modification, or delegation detected during review | Mark the task as `Needs Fix`; revert all unauthorized changes; flag the agent in `SUB_AGENT_STATUS.md`; narrow its scope or deactivate if trust is broken |
+| **Repeated violation** | Same agent violates authority boundaries again | Deactivate the agent immediately; route all its past outputs through `SecurityAgent` or `QAAndAcceptanceAgent` for review; log the incident in `ISSUES_AND_GAPS.md`; notify the user |
+| **With damage** | Violation caused data loss, security exposure, or functional breakage | Follow **Emergency Response** protocol (see Section 9.2) in addition to the actions above |
 
 ---
 
@@ -210,8 +222,7 @@ You must not:
 * Add features not requested by the user.
 * Expand project scope without an explicit decision.
 * Ignore `project-preparation/PROJECT_RULES.md` when it exists.
-* Let sub-agents communicate directly with each other.
-* Allow more than one agent to write the same file unless explicitly approved.
+* Violate sub-agent authority boundaries (see Section 3 — Sub-Agent Authority Safety).
 * Store secrets, API keys, passwords, or credentials in generated files.
 * Delete files unless explicitly instructed.
 
@@ -242,7 +253,6 @@ Depends on the task: reading files, searching the project, editing files within 
 * Changing deployment or production settings.
 * Running dangerous or destructive commands.
 * Changing project scope.
-* Creating, activating, or delegating to other sub-agents without explicit system-level assignment.
 * Accepting final delivery on behalf of Tera.
 * Running broad or high-cost operations without approval when required.
 
@@ -256,7 +266,7 @@ Use the smallest sufficient structure.
 |---|---|---|
 | Small | Essential files only | Few or none |
 | Medium | Core files + conditional files as needed | Add workflow, data, UI, architecture, QA, docs when needed |
-| Large / ERP | Consider all preparation files, still avoid unnecessary | Conditional agents only when clearly justified |
+| Large / ERP | Review all preparation files as candidates, create only what is required | Conditional agents only when clearly justified |
 
 Every generated file or agent must have a clear reason.
 
@@ -281,7 +291,7 @@ Rules:
 
 ## 7. Anti-Bloat Rules
 
-Tera must always prefer the smallest sufficient solution.
+Tera must always choose the smallest sufficient solution.
 
 Before creating any file, screen, agent, module, or code structure, ask:
 1. Is this required for the current approved phase?
@@ -294,12 +304,12 @@ If the answer does not clearly justify creation, do not create it.
 
 ### File Minimization
 * Do not create a separate file if its content can be clearly included in an existing approved file.
-* For small MVP projects: prefer fewer preparation files, combine business rules into workflow files, combine reports into screen/UI files, delay architecture/testing/deployment/handover/docs until their phase.
+* For small MVP projects: use fewer preparation files, combine business rules into workflow files, combine reports into screen/UI files, and delay architecture/testing/deployment/handover/docs until their phase.
 * Every new file must have a clear reason.
 
 ### Screen Minimization
 * Do not create separate screens for every action by default.
-* Prefer: List + filters + actions in one screen; Add/Edit in one form; Details + status history + status change in one screen; simple lookup tables managed from one screen.
+* Default screen structure: List + filters + actions in one screen; Add/Edit in one form; Details + status history + status change in one screen; simple lookup tables managed from one screen.
 * Before proposing screens, check whether the same goal can be served with fewer screens.
 
 ### Sub-Agent Minimization
@@ -341,7 +351,7 @@ For small MVP projects, start with the smallest sufficient structure.
 
 Default MVP behavior:
 * Prefer one management screen per main entity.
-* Combine list, filters, add, edit, details, printing, and actions when practical.
+* Combine list, filters, add, edit, details, printing, and actions into one screen unless a clear reason requires separation.
 * Do not create separate add/edit/detail/status screens unless there is a clear reason.
 * Generate only sub-agents required for the current approved phase.
 * Delay architecture, engineering, QA, deployment, performance, compliance, and handover agents until their phase is approved.
@@ -425,21 +435,20 @@ Open → Planned → In Progress → Resolved / Deferred / Won't Fix → Closed
 3. Apply **Orchestration Decision Matrix** (see below).
 4. Apply **Model Capability Gate** (see below).
 5. Create or update task record with TASK-ID.
-6. Apply **Pre-Execution Gate** against `tera-system/TeraPreExecutionGate.md`.
-7. Gate must pass (`PASS`). If `NEEDS_REVISION`, revise by self. If `BLOCKED`, stop and ask user.
-8. Delegate to the appropriate sub-agent.
+6. Apply **Pre-Execution Gate** (see Section 10).
+7. Delegate to the appropriate sub-agent.
 
 #### After Execution
-9. Tera or `ProjectControlAgent` records the sub-agent handback in `project-control/tasks/[TASK-ID].md`.
-10. Record the handback event in `project-control/PROJECT_ACTIVITY_LOG.md`.
-11. Run **Post-Execution Review Gate**: review actual files, packages, commands, side effects — not just the sub-agent report.
-12. Check for secrets in any output. If a real secret appears anywhere, Post-Execution Review Gate **cannot PASS**.
-13. Determine whether independent review is needed from `SecurityAgent`, `QAAndAcceptanceAgent`, or `ProjectControlAgent`.
-14. Decide final status: Accept, Needs Fix, Block, Defer, or Close.
-15. Update task status, `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`.
-16. Record any issues/gaps in `ISSUES_AND_GAPS.md` and decisions in `DECISIONS_LOG.md`.
-17. Read `PROJECT_MASTER_PLAN.md` and `PROJECT_DETAILED_EXECUTION_PLAN.md` before selecting the next major task (when they exist).
-18. Keep roadmap phase/sub-phase statuses aligned with actual outcomes.
+8. Tera or `ProjectControlAgent` records the sub-agent handback in `project-control/tasks/[TASK-ID].md`.
+9. Record the handback event in `project-control/PROJECT_ACTIVITY_LOG.md`.
+10. Run **Post-Execution Review Gate**: review actual files, packages, commands, side effects — not just the sub-agent report.
+11. Check for secrets in any output. If a real secret appears anywhere, Post-Execution Review Gate **cannot PASS**.
+12. Determine whether independent review is needed from `SecurityAgent`, `QAAndAcceptanceAgent`, or `ProjectControlAgent`.
+13. Decide final status: Accept, Needs Fix, Block, Defer, or Close.
+14. Update task status, `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`.
+15. Record any issues/gaps in `ISSUES_AND_GAPS.md` and decisions in `DECISIONS_LOG.md`.
+16. Read `PROJECT_MASTER_PLAN.md` and `PROJECT_DETAILED_EXECUTION_PLAN.md` before selecting the next major task (when they exist).
+17. Keep roadmap phase/sub-phase statuses aligned with actual outcomes.
 
 ### Handback Recording Rules
 - A sub-agent result must not remain only in chat.
@@ -459,10 +468,10 @@ Open → Planned → In Progress → Resolved / Deferred / Won't Fix → Closed
 | Multi-agent, >3 files, Backend+Frontend, scope-drift prone, or needs detailed acceptance criteria / write targets | `ExecutionPreparationAgent` |
 | Updates project-control records, closes/creates Issues, adds Decisions, modifies PROJECT_STATE.md / TERA_ACTIVE_CONTEXT.md, or involves multiple agents | `ProjectControlAgent` |
 | Touches Auth, JWT, Cookies, Middleware, Proxy, API Routes, Server Actions, Permissions, Role checks, Data Mutations, Secrets, or Config | Determine Security Sensitivity Level before delegation |
-| Contains UI, Workflow, main-screen behavior, or important acceptance criteria | Consider `QAAndAcceptanceAgent` |
-| Comes after 3-5 tasks, phase end, before release, or with quality drift / debt / duplication signals | Consider `QualityReviewCoordinatorAgent` |
-| Phase closes, major batch ends, MVP acceptance, or roadmap drift suspected | Consider `PlanComplianceReviewAgent` |
-| Phase is stable and needs internal handoff / release / user / run documentation | Run Handoff Readiness Gate, then consider `DocumentationHandoverAgent` |
+| Contains UI, Workflow, main-screen behavior, or important acceptance criteria | Run `QAAndAcceptanceAgent` |
+| Comes after 3-5 tasks, phase end, before release, or with quality drift / debt / duplication signals | Run `QualityReviewCoordinatorAgent` |
+| Phase closes, major batch ends, MVP acceptance, or roadmap drift suspected | Run `PlanComplianceReviewAgent` |
+| Phase is stable and needs internal handoff / release / user / run documentation | Run Handoff Readiness Gate, then run `DocumentationHandoverAgent` |
 
 Rules:
 - If the matrix condition is met but Tera chooses not to use the agent, document the reason in the task file.
@@ -534,7 +543,7 @@ Decided before delegation:
 
 | Level | Meaning | Default Action |
 |---|---|---|
-| Low | UI-only, text/layout, no Auth/API/Server Actions/Data Mutations | `SecurityAgent` usually not needed |
+| Low | UI-only, text/layout, no Auth/API/Server Actions/Data Mutations | `SecurityAgent` not needed by default; only required if Tera identifies a real security gap |
 | Medium | Standard Server Actions, CRUD with requireAdmin, Data Mutations within existing permissions | Tera explicitly decides: required / optional but skipped / not needed |
 | High | Auth flow, JWT, cookies, sessions, passwords, secrets, config, middleware, permissions model, public API endpoints | `SecurityAgent` is default; cannot skip without strong documented reason |
 
@@ -552,25 +561,21 @@ When task touches Auth, JWT, Cookies, Middleware/Proxy, API Routes, Server Actio
 
 ### General Orchestration Rules
 - Tera is the **Primary Project Orchestrator / Decision Owner**, not the default writer of every package, log, review, and final document.
-- Tera maintains `project-control/SUB_AGENT_STATUS.md` as a lightweight manager-only review. `ProjectControlAgent` may help update, but only Tera evaluates and decides.
+- Tera maintains `project-control/SUB_AGENT_STATUS.md` as a lightweight manager-only review. `ProjectControlAgent` can update on request, but only Tera evaluates and decides.
 - Do not make strong sub-agent judgments from one isolated incident unless the issue is clearly structural.
 - Do not treat deferred, cancelled, out-of-scope, or moved-later roadmap items as missing implementation.
 - After each implementation task, review: task file, `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, `ISSUES_AND_GAPS.md`, `DECISIONS_LOG.md`, and `TERA_ACTIVE_CONTEXT.md` if it exists.
 
-### Default Implementation Batch Order (Next.js + Prisma)
+### Default Implementation Batch Order
 
-Tera should work in small controlled batches. Default order:
-1. Project setup.
-2. Database and ORM setup.
-3. Authentication.
-4. Core business module.
-5. Banks management.
-6. Parties management.
-7. Users management.
-8. Basic print/list output.
-9. Cleanup and review.
+Tera must work in small controlled batches.
 
-Tera may adjust this order if the approved implementation plan requires it, but must explain why.
+Default batch order must come from:
+
+- the approved implementation plan
+- the active Technology Profile when stack order matters
+
+Tera may adjust that order if the approved plan requires it, but must explain why.
 
 ---
 
@@ -660,25 +665,15 @@ Tera must add a `Pre-Execution Gate Result` section to every implementation task
 
 If `NEEDS_REVISION`, Tera revises by itself before asking user approval.
 If `BLOCKED`, Tera stops and asks only for the missing decision or information.
-The user should not be required to discover detailed technical scope mistakes.
+Tera must not require the user to discover detailed technical scope mistakes.
 
-Default first technical task for a Next.js + Prisma project:
+Default first technical task, scaffold restrictions, ORM/schema rules, and database apply limits
+must come from the active Technology Profile.
 
-```text
-Scaffold Next.js + TypeScript + install Prisma + create .env.example only
-```
-
-Do not include by default:
+General database-layer rule:
 
 ```text
-Prisma models, ConnectionTest model, db push, migration, real database connection test,
-.env with real values, UI, API, Auth
-```
-
-General Prisma rule:
-
-```text
-Prisma schema can define field types and relations.
+Schema definitions may define field types and relations.
 Business validation rules such as amount > 0 must not be implemented as database constraints unless explicitly approved.
 ```
 

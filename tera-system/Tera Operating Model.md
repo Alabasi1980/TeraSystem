@@ -54,6 +54,7 @@ tera-system/Tera_Project_Preparation_Files.md
 tera-system/TERA_PROJECT_DECISION.md
 tera-system/AGENT_GENERATION_TEMPLATE.md
 tera-system/TERA_USER_GUIDE.md
+tera-system/profiles/
 ```
 
 قاعدة مهمة:
@@ -61,6 +62,14 @@ tera-system/TERA_USER_GUIDE.md
 ```text
 tera-system للقراءة كمرجع، ولا يتم تعديله أثناء تنفيذ مشروع عادي.
 ```
+
+ويشمل ذلك مجلد:
+
+```text
+tera-system/profiles/
+```
+
+والذي يحتوي قواعد التنفيذ الخاصة بكل Stack بشكل منفصل عن ملفات Tera العامة.
 
 ---
 
@@ -159,6 +168,38 @@ project-preparation/28_UI_UX_GUIDELINES.md
 * يمنع التضخيم.
 * يدير المراحل.
 * يرجع إلى الملفات المختصة بدل تكرار القواعد.
+* يحدد `Active Technology Profile` قبل أي تنفيذ تقني.
+
+---
+
+### 4.1.1 `tera-system/profiles/`
+
+هذا المجلد يحتوي `Technology Profiles`.
+
+فكرته:
+
+* Tera نفسه يبقى Generic Orchestrator.
+* القواعد التقنية الخاصة لا توضع داخل ملفات Tera العامة.
+* كل مشروع يحمّل Profile نشط حسب معمارية المشروع.
+
+أمثلة:
+
+```text
+tera-system/profiles/nextjs-prisma.md
+tera-system/profiles/dotnet-blazor-ef.md
+```
+
+ترتيب تحديد الـ Profile:
+
+1. `project-control/PROJECT_STATE.md` إذا كان موجودًا ويحدد `Active Technology Profile`
+2. `project-preparation/08_TECHNICAL_ARCHITECTURE.md`
+3. سؤال المستخدم إذا كانت التقنية غير محسومة
+
+القاعدة:
+
+```text
+لا يجوز أن يفترض Tera أو أي Agent فرعي أن كل مشروع يستخدم نفس Stack.
+```
 
 ---
 
@@ -320,6 +361,7 @@ TERA_PROJECT_DECISION.md
 * ما سيتم استخدامه.
 * ما سيتم تأجيله.
 * كيف سيتم منع التضخيم في التنفيذ.
+* ما هو `Active Technology Profile` المقابل إن وجد.
 
 ---
 
@@ -375,17 +417,20 @@ EngineeringAgent
 
 لكن لا يطلب منه بناء التطبيق كاملًا.
 
+وقبل أول مهمة تنفيذية، يجب على Tera:
+
+1. تحديد `Active Technology Profile`
+2. تحميل قواعده من `tera-system/profiles/`
+3. تشغيل `Pre-Execution Gate` العام + إضافات الـ Profile النشط
+
 بل يقسم تيرا التنفيذ إلى دفعات صغيرة:
 
 1. Project setup.
-2. Database and ORM.
-3. Authentication.
+2. Stack-specific foundation according to the active profile.
+3. Authentication if approved and required.
 4. Core business module.
-5. Banks.
-6. Parties.
-7. Users.
-8. Print/list.
-9. Review.
+5. Remaining approved modules in small batches.
+6. Review and cleanup.
 
 كل دفعة تعرض على المستخدم قبل التنفيذ.
 
