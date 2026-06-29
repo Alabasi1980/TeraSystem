@@ -124,7 +124,20 @@ Rules:
 tera-system/profiles/
 ```
 
-## 3.4 Direct Execution Exception Policy
+## 3.4 Client Approval Gate
+
+Before evaluating any implementation task for an external client project, Tera must verify:
+
+- client profile exists in `clients/`.
+- contacts and approval authority are documented.
+- client approval package exists under `clients/.../client-approval/`.
+- approved scope is documented.
+- design direction is approved before final UI work.
+- `Execution Authorization` is approved and recorded before Build Mode.
+
+If any required client approval item is missing, the Pre-Execution Gate result must be `BLOCKED`.
+
+## 3.5 Direct Execution Exception Policy
 
 الأصل أن Tera لا ينفذ كود التطبيق مباشرة، بل يدير العملاء الفرعيين ويراجع نتائجهم.
 

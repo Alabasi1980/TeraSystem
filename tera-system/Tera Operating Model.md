@@ -15,6 +15,7 @@
 * اختيار الملفات التحضيرية المطلوبة.
 * منع تضخيم الملفات والشاشات والكود.
 * توليد عملاء فرعيين عند الحاجة فقط.
+* إدارة ملفات العملاء وحزم الاعتماد للمشاريع الخارجية.
 * إدارة مراحل التنفيذ على دفعات صغيرة.
 * مراجعة النتائج قبل الانتقال للمرحلة التالية.
 
@@ -34,6 +35,7 @@
 4. **كل عميل فرعي له دور واضح وحدود واضحة.**
 5. **كل تنفيذ يتم على دفعات صغيرة قابلة للمراجعة.**
 6. **تيرا هو صاحب القرار والمنسق النهائي، وليس العميل المنفذ.**
+7. **في مشاريع العملاء الخارجيين: لا تنفيذ قبل حزمة اعتماد عميل موثقة ومعتمدة.**
 
 ---
 
@@ -54,6 +56,10 @@ tera-system/Tera_Project_Preparation_Files.md
 tera-system/TERA_PROJECT_DECISION.md
 tera-system/AGENT_GENERATION_TEMPLATE.md
 tera-system/TERA_USER_GUIDE.md
+tera-system/TeraPolicyMap.md
+tera-system/TeraArchitectureMap.md
+tera-system/TeraSystemMaintenanceChecklist.md
+tera-system/TeraScenarioStressTests.md
 tera-system/profiles/
 ```
 
@@ -150,6 +156,43 @@ project-preparation/28_UI_UX_GUIDELINES.md
 ```
 
 بل يكون مصدرًا خامًا يتم تلخيصه وتحويله إلى قواعد تنفيذية داخل ملف 28.
+
+---
+
+### 3.6 مجلد `clients/`
+
+هذا مجلد مستقل لإدارة العملاء الخارجيين وتطبيقاتهم.
+
+يستخدم لتخزين:
+
+* بيانات العميل.
+* جهات التواصل وصلاحيات الاعتماد.
+* حزمة اعتماد العميل.
+* مرفقات العميل ومراجع التصميم.
+* ملخصات التواصل.
+* ملفات التسليم النهائية.
+
+البنية الافتراضية:
+
+```text
+clients/
+  CLIENT-[client-name-or-id]/
+    CLIENT_PROFILE.md
+    CONTACTS.md
+    applications/
+      APP-[app-name-or-id]/
+        client-approval/
+        client-assets/
+        client-communications/
+        delivery/
+```
+
+قاعدة مهمة:
+
+```text
+No Client Approval Package = No Implementation
+No Approved Scope = No Build Mode
+```
 
 ---
 
@@ -556,9 +599,10 @@ generated-agents/opencode/
 * يوجد قالب توليد العملاء.
 * يوجد بروتوكول ما بعد الاعتماد.
 * يوجد بروتوكول التصميم.
+* توجد سياسة إدارة العميل وحزمة اعتماد العميل.
 * توجد آلية تفعيل العملاء.
 * التنفيذ يتم على دفعات صغيرة.
-* لا يبدأ الكود بدون موافقة واضحة.
+* لا يبدأ الكود بدون موافقة واضحة، وفي مشاريع العملاء الخارجيين لا يبدأ قبل اعتماد حزمة العميل.
 
 ---
 
@@ -572,6 +616,7 @@ generated-agents/opencode/
 * نطاق.
 * تخطيط.
 * تصميم.
+* اعتماد عميل.
 * اختبار.
 * تنفيذ تدريجي.
 * مراجعة.

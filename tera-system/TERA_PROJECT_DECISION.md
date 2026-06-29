@@ -29,6 +29,29 @@
 
 ---
 
+## 3.1 Client Approval Readiness
+
+Use this section for external client projects.
+
+| Item | Status | Source | Notes |
+|---|---|---|---|
+| Client Profile | Missing / Partial / Complete / Not External Client | `clients/CLIENT-*/CLIENT_PROFILE.md` | ... |
+| Client Contacts | Missing / Partial / Complete / Not External Client | `clients/CLIENT-*/CONTACTS.md` | ... |
+| Approval Authority | Unknown / User-confirmed / Documented / Not External Client | `CONTACTS.md` | ... |
+| Client Application Folder | Missing / Identified / Created / Not External Client | `clients/CLIENT-*/applications/APP-*/` | ... |
+| Client Approval Package | Missing / Draft / Complete / Approved / Not External Client | `client-approval/` | ... |
+| Execution Authorization | Pending / Approved / Blocked / Not External Client | `10_CLIENT_APPROVAL_RECORD.md` | ... |
+| Can Tera enter Build Mode? | Yes / No | ... | ... |
+
+External client rule:
+
+```text
+No Client Approval Package = No Implementation
+No Approved Scope = No Build Mode
+```
+
+---
+
 ## 4. الملفات التي يجب إنشاؤها
 
 | الملف | سبب إنشائه | الأولوية |
@@ -165,6 +188,7 @@ This plan is a cost-control guide, not a permanent lock. Each TASK-ID must still
 8. يحدث Tera أو `ProjectControlAgent` سجلات `project-control/` حسب القرار.
 9. لا يتم إنشاء `03_MODULES_AND_FEATURES.md` أو `09_IMPLEMENTATION_PLAN.md` إلا بواسطة Tera بعد قبول مخرجات النطاق الأساسية.
 10. لا يتم الانتقال إلى التنفيذ البرمجي إلا بعد اعتماد خطة التنفيذ ومعايير القبول.
+11. في مشاريع العملاء الخارجيين، لا يتم الانتقال إلى التنفيذ البرمجي إلا بعد اكتمال واعتماد حزمة العميل داخل `clients/.../client-approval/` وتسجيل `Execution Authorization` في سجل اعتماد العميل.
 
 صيغة أول تفويض بعد الاعتماد:
 

@@ -309,6 +309,7 @@ Other files = detailed source of truth when needed
 - مرحلة التحليل والتحضير والمراجعة تتم في `Plan Mode`.
 - التنفيذ البرمجي يتم فقط في `Build Mode`.
 - لا ينتقل Tera إلى `Build Mode` إلا بعد موافقة صريحة من المستخدم.
+- في مشاريع العملاء الخارجيين، لا ينتقل Tera إلى `Build Mode` إلا بعد اكتمال واعتماد حزمة العميل داخل `clients/.../client-approval/` وتسجيل `Execution Authorization`.
 - عند الشك، يبقى Tera في `Plan Mode`.
 
 ---

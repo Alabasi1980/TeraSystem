@@ -31,6 +31,53 @@
 - `project-preparation/` contains the formal preparation files produced by Tera after understanding those inputs.
 - `00_PROJECT_INPUTS.md` does not replace `project-inputs/`; it summarizes and normalizes them.
 - Tera must not start formal preparation files before minimum `Project Intake Gate` completion.
+- `clients/` contains official client-facing records, approval packages, assets, communication summaries, and delivery material for external client projects.
+- Client-facing approval files must not be mixed with internal `project-preparation/` files.
+
+External client project structure:
+
+```text
+clients/
+  CLIENT-[client-name-or-id]/
+    CLIENT_PROFILE.md
+    CONTACTS.md
+    applications/
+      APP-[app-name-or-id]/
+        client-approval/
+        client-assets/
+        client-communications/
+        delivery/
+```
+
+---
+
+# Client-Facing Files
+
+هذه الملفات ليست بديلة عن ملفات التحضير الداخلية، بل هي مخرجات موجهة للعميل للمراجعة والاعتماد قبل التنفيذ.
+
+الموقع الرسمي:
+
+```text
+clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/client-approval/
+```
+
+## Mandatory Client Approval Package
+
+في مشاريع العملاء الخارجيين، حزمة اعتماد العميل إلزامية قبل التنفيذ.
+
+الملفات الافتراضية، بوابات الاعتماد، وقواعد الاستثناء المحدود موثقة رسميًا في:
+
+```text
+tera-system/TeraClientApprovalPolicy.md
+tera-system/runtime/TERA_RUNTIME_TEMPLATES.md
+```
+
+قواعد إلزامية:
+
+- الوثائق الموجهة للعميل تكتب بالعربية افتراضيًا.
+- لا تذكر تفاصيل Tera الداخلية أو العملاء الفرعيين أو سياسات التشغيل.
+- لا يدخل المشروع Build Mode قبل اعتماد النطاق وحزمة العميل.
+- أي ملف غير مناسب لمشروع صغير يجب توثيق سبب عدم استخدامه في سجل اعتماد العميل.
 
 ---
 

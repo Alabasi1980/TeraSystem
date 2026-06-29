@@ -392,3 +392,321 @@ Risks:
 Next step:
 User approval required: Yes / No
 ```
+
+---
+
+## 18. Client Question Set
+
+Use when Majed needs questions to forward to the client.
+
+```text
+Client Question Set
+
+Purpose:
+Questions to send to the client:
+1. ...
+2. ...
+3. ...
+
+Why these questions matter:
+Expected next step after answers:
+```
+
+---
+
+## 19. Client Profile Template
+
+```text
+# Client Profile
+
+Client name:
+Client type: Individual / Company / Organization / Unknown
+Business domain:
+Default client-facing language: Arabic
+Technical familiarity: Low / Medium / High / Unknown
+Decision style:
+Communication notes:
+Project sensitivity: Low / Medium / High / Critical
+Preferred approval method:
+General notes:
+```
+
+---
+
+## 20. Client Contacts Template
+
+```text
+# Client Contacts
+
+| Name | Role | Decision Authority | Phone | Email | Preferred Channel | Approval Authority | Notes |
+|---|---|---|---|---|---|---|---|
+|  |  | Decision maker / Reviewer / Technical / Finance / Other |  |  |  | Yes / No / Unknown |  |
+```
+
+---
+
+## 21. Client Approval Package Checklist
+
+```text
+Client Approval Package Checklist
+
+Client:
+Application:
+Package path:
+
+Required files:
+- 01_CLIENT_PROJECT_BRIEF.md: Present / Missing / Not applicable with reason
+- 02_CLIENT_PROPOSAL.md: Present / Missing / Not applicable with reason
+- 03_SCOPE_OF_WORK.md: Present / Missing / Not applicable with reason
+- 04_FEATURE_SCOPE_MATRIX.md: Present / Missing / Not applicable with reason
+- 05_USER_FLOWS.md: Present / Missing / Not applicable with reason
+- 06_SCREEN_MAP.md: Present / Missing / Not applicable with reason
+- 07_DESIGN_DIRECTION.md: Present / Missing / Not applicable with reason
+- 08_PROTOTYPE_PLAN.md: Present / Missing / Not applicable with reason
+- 09_ACCEPTANCE_CRITERIA.md: Present / Missing / Not applicable with reason
+- 10_CLIENT_APPROVAL_RECORD.md: Present / Missing
+- 11_CHANGE_CONTROL.md: Present / Missing
+
+Approval gates:
+- Idea Approval: Approved / Pending / Needs Revision
+- Scope Approval: Approved / Pending / Needs Revision
+- Flow Approval: Approved / Pending / Needs Revision
+- Screen Approval: Approved / Pending / Needs Revision
+- Design Direction Approval: Approved / Pending / Needs Revision
+- Prototype Approval: Approved / Pending / Not Applicable / Needs Revision
+- Execution Authorization: Approved / Pending / Blocked
+
+Build Mode allowed: Yes / No
+Reason:
+```
+
+---
+
+## 22. Client Approval Record
+
+```text
+# Client Approval Record
+
+Client:
+Application:
+Approval date:
+Approving contact:
+Approval authority: Confirmed / Unknown / User-confirmed
+
+Approved documents:
+- ...
+
+Approval gates:
+| Gate | Status | Notes |
+|---|---|---|
+| Idea Approval |  |  |
+| Scope Approval |  |  |
+| Flow Approval |  |  |
+| Screen Approval |  |  |
+| Design Direction Approval |  |  |
+| Prototype Approval |  |  |
+| Execution Authorization |  |  |
+
+Pending decisions:
+Rejected or deferred items:
+Execution authorization status: Approved / Pending / Blocked
+```
+
+---
+
+## 23. Client Change Request Record
+
+```text
+Change Request
+
+Change ID:
+Date:
+Requester:
+Request summary:
+Affected approved file or gate:
+Classification: Clarification / Minor Adjustment / Enhancement / New Scope / Phase 2 / Rejected
+Scope impact:
+Design impact:
+Technical impact:
+Time/cost impact if known:
+Decision: Approve / Defer / Reject / Needs Client Decision
+Approval authority:
+Related task or issue:
+```
+
+---
+
+## 24. Client Decision Needed
+
+```text
+Client Decision Needed
+
+Decision topic:
+Why it matters:
+Options:
+1. ...
+2. ...
+3. ...
+
+Tera recommendation:
+Impact if delayed:
+Can implementation continue without this decision? Yes / No
+```
+
+---
+
+## 25. Client Approval File Outlines
+
+Use these outlines when creating files under `clients/.../client-approval/`. Client-facing content is Arabic by default.
+
+### 25.1 `01_CLIENT_PROJECT_BRIEF.md`
+
+```text
+# ملخص فكرة المشروع
+
+اسم العميل:
+اسم التطبيق:
+وصف مختصر للمشروع:
+المشكلة التي يحلها:
+المستخدمون المستهدفون:
+الأهداف الرئيسية:
+القيمة المتوقعة للعميل:
+حدود النسخة الأولى:
+ملاحظات أو قرارات معلقة:
+حالة الاعتماد:
+```
+
+### 25.2 `02_CLIENT_PROPOSAL.md`
+
+```text
+# عرض مشروع
+
+مقدمة:
+فهمنا لاحتياج العميل:
+نطاق العمل المقترح:
+المخرجات المتوقعة:
+مراحل العمل:
+ما هو خارج النطاق:
+الافتراضات:
+المتطلبات من العميل:
+آلية الاعتماد والتغييرات:
+حالة الاعتماد:
+```
+
+### 25.3 `03_SCOPE_OF_WORK.md`
+
+```text
+# نطاق العمل
+
+داخل النطاق:
+- ...
+
+خارج النطاق:
+- ...
+
+مؤجل لمرحلة لاحقة:
+- ...
+
+قيود مهمة:
+افتراضات:
+قرارات معلقة:
+حالة الاعتماد:
+```
+
+### 25.4 `04_FEATURE_SCOPE_MATRIX.md`
+
+```text
+# مصفوفة نطاق الميزات
+
+| الميزة | التصنيف | الأولوية | الملاحظات |
+|---|---|---|---|
+|  | داخل النطاق / مؤجل / خارج النطاق / يحتاج قرار | عالية / متوسطة / منخفضة |  |
+
+حالة الاعتماد:
+```
+
+### 25.5 `05_USER_FLOWS.md`
+
+```text
+# مسارات الاستخدام
+
+## المسار الأول: [الاسم]
+
+المستخدم:
+الهدف:
+الخطوات:
+1. ...
+
+الحالات البديلة:
+النتيجة المتوقعة:
+
+حالة الاعتماد:
+```
+
+### 25.6 `06_SCREEN_MAP.md`
+
+```text
+# خريطة الشاشات
+
+| الشاشة | الغرض | المستخدمون | ملاحظات |
+|---|---|---|---|
+|  |  |  |  |
+
+شاشات غير مطلوبة في النسخة الأولى:
+حالة الاعتماد:
+```
+
+### 25.7 `07_DESIGN_DIRECTION.md`
+
+```text
+# التوجه البصري
+
+اللغة والأسلوب العام:
+الألوان أو الهوية:
+مراجع تعجب العميل:
+مراجع لا تعجب العميل:
+انطباع التصميم المطلوب: رسمي / حديث / بسيط / فاخر / شبابي / آخر
+قيود التصميم:
+ما لا يجب استخدامه:
+حالة الاعتماد:
+```
+
+### 25.8 `08_PROTOTYPE_PLAN.md`
+
+```text
+# خطة البروتوتايب
+
+هل البروتوتايب مطلوب؟ نعم / لا
+سبب القرار:
+الشاشات أو التدفقات التي يجب تمثيلها:
+مستوى التفصيل: منخفض / متوسط / عالي
+الأداة المقترحة إن وجدت:
+معايير قبول البروتوتايب:
+حالة الاعتماد:
+```
+
+### 25.9 `09_ACCEPTANCE_CRITERIA.md`
+
+```text
+# معايير القبول
+
+| الميزة أو الشاشة | معيار القبول | طريقة التحقق | الحالة |
+|---|---|---|---|
+|  |  |  | مقبول / يحتاج تعديل / معلق |
+
+معايير قبول عامة:
+معايير لا تعتبر ضمن التسليم الحالي:
+حالة الاعتماد:
+```
+
+### 25.10 `11_CHANGE_CONTROL.md`
+
+```text
+# سجل طلبات التغيير
+
+| Change ID | التاريخ | مقدم الطلب | الملخص | التصنيف | القرار | حالة الاعتماد |
+|---|---|---|---|---|---|---|
+| CHG-001 |  |  |  | Clarification / Minor Adjustment / Enhancement / New Scope / Phase 2 / Rejected |  |  |
+
+ملاحظات عامة:
+```

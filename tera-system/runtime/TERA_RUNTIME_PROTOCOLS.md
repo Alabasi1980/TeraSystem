@@ -22,6 +22,7 @@ Sync `.opencode/agents/tera.md` when the system reference changes rules about:
 - Model Capability Gate or Security Sensitivity Levels.
 - Roadmap tracking or PlanComplianceReviewAgent.
 - Delegation format, handback protocol, or Tera authority.
+- Policy map, architecture map, maintenance checklist, or source-of-truth rules.
 
 Rules:
 - Do not copy the full system reference.
@@ -583,3 +584,86 @@ Forbidden actions:
 - Do not ask large question dumps.
 - Do not run open-ended domain research before initial understanding unless the user explicitly asks for reference-based discovery.
 - Do not move to execution planning before phased roadmap approval.
+
+---
+
+## 10. Client Approval Workflow Protocol
+
+Use this protocol for every external client project.
+
+Authority references:
+
+- `tera-system/TeraClientEngagementPolicy.md`
+- `tera-system/TeraClientApprovalPolicy.md`
+- `tera-system/TeraClientChangeControlPolicy.md`
+- `tera-system/TeraClientFacingContentPolicy.md`
+
+Workspace rule:
+
+```text
+clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/
+```
+
+Required stages:
+
+1. Register or update the client folder.
+2. Create or update `CLIENT_PROFILE.md`.
+3. Create or update `CONTACTS.md`.
+4. Identify the application folder under `applications/`.
+5. Collect client discovery answers through Majed.
+6. Produce the mandatory client approval package under `client-approval/`.
+7. Review the package for client-facing clarity and scope control.
+8. Ask Majed to confirm what was approved by the client.
+9. Record approval status in `10_CLIENT_APPROVAL_RECORD.md`.
+10. Allow Build Mode only after Execution Authorization is approved and recorded.
+
+Mandatory approval gates:
+
+| Gate | Requirement |
+|---|---|
+| Idea Approval | The client confirms the idea is understood. |
+| Scope Approval | The client confirms in-scope, out-of-scope, and deferred items. |
+| Flow Approval | The client confirms the main flows. |
+| Screen Approval | The client confirms screen list and purpose. |
+| Design Direction Approval | The client confirms style, tone, references, and constraints. |
+| Prototype Approval | The client confirms the prototype or the reason no prototype is needed. |
+| Execution Authorization | The client authorizes implementation to start. |
+
+Client question rules:
+
+- Ask short question sets that Majed can forward to the client.
+- Separate confirmed facts from suggestions.
+- Do not ask for every possible detail at once.
+- Ask first for approval authority, scope, flows, screen expectations, and visual direction.
+- If the client is non-technical, use business language rather than technical terms.
+
+Client-facing document rules:
+
+- Default language is Arabic.
+- Do not mention Tera internals, sub-agents, runtime files, token policy, or orchestration mechanics.
+- Include assumptions, exclusions, pending decisions, and approval status.
+- Do not promise unconfirmed timelines, costs, third-party integrations, or platform capabilities.
+
+Implementation restrictions:
+
+- Do not create implementation tasks for client work before the client approval package is complete and Execution Authorization is approved.
+- Do not build final UI before design direction is approved.
+- Do not expand scope unless a change record exists and is approved.
+- Internal technical spikes require explicit user authorization, must remain non-deliverable research, must not modify final application code, and must not become client deliverable scope without approval.
+
+Change handling:
+
+1. Record the request in `client-approval/11_CHANGE_CONTROL.md`.
+2. Classify it as Clarification, Minor Adjustment, Enhancement, New Scope, Phase 2, or Rejected.
+3. If it affects execution, also record the related decision or issue in `project-control/`.
+4. Do not implement `Enhancement` or `New Scope` without documented approval.
+
+Exit criteria before Build Mode:
+
+- Client profile exists.
+- Contacts exist.
+- Approval authority is documented or explicitly confirmed by the user.
+- Client approval package exists.
+- Scope, flows, screen map, design direction, acceptance criteria, and execution authorization are approved and recorded.
+- Only truly non-applicable package files, such as prototype notes for a no-prototype project, may be marked `Not applicable with reason`; approval gates required for execution must not be waived.
+- Pending decisions are documented and do not block the next phase.

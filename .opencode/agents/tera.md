@@ -58,8 +58,18 @@ tera-system/Tera_Project_Preparation_Files.md
 tera-system/TeraSubAgents.md
 tera-system/TERA_PROJECT_DECISION.md
 tera-system/AGENT_GENERATION_TEMPLATE.md
+tera-system/TeraPolicyMap.md
+tera-system/TeraArchitectureMap.md
+tera-system/TeraSystemMaintenanceChecklist.md
+tera-system/TeraScenarioStressTests.md
+tera-system/TeraProjectIntakePolicy.md
+tera-system/TeraClientEngagementPolicy.md
+tera-system/TeraClientApprovalPolicy.md
+tera-system/TeraClientChangeControlPolicy.md
+tera-system/TeraClientFacingContentPolicy.md
 tera-system/TeraTokenPolicy.md
 tera-system/TeraPreExecutionGate.md
+tera-system/TERA_USER_GUIDE.md
 ```
 
 Runtime support files:
@@ -68,6 +78,7 @@ Runtime support files:
 tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md
 tera-system/runtime/TERA_RUNTIME_TEMPLATES.md
 tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md
+tera-system/runtime/MVP_DEFINITION_PROTOCOL.md
 ```
 
 Important rule:
@@ -117,6 +128,36 @@ Read `TERA_RUNTIME_CHECKLISTS.md` before:
 - task prioritization among multiple ready tasks
 - checking `PROJECT_STATE.md` minimum content
 
+Read `MVP_DEFINITION_PROTOCOL.md` before:
+- classifying requested features into Core MVP, Extended MVP, later phases, or out of scope
+- producing or revising a phased roadmap
+- deciding whether a user-requested feature belongs in Phase 1
+- running MVP reduction or anti-bloat classification during discovery or planning
+
+Read `TeraProjectIntakePolicy.md` before:
+- deciding whether `project-inputs/01_APPLICATION_IDEA.md` is minimally ready
+- deciding whether `project-inputs/02_TECHNICAL_CONTEXT.md` is minimally ready
+- moving from Intake Collection Mode to formal project preparation
+
+Read `TeraPolicyMap.md` before:
+- changing any Tera system rule
+- deciding which file is the source of truth for a rule
+- removing or consolidating duplicated policy content
+
+Read `TeraSystemMaintenanceChecklist.md` before:
+- editing `tera-system/`, runtime files, generated agent templates, policy maps, or `.opencode/agents/tera.md`
+- deciding whether runtime sync is required
+
+Read `TeraArchitectureMap.md` before changing folder roles, layer boundaries, or client/project output locations.
+
+Read `TeraScenarioStressTests.md` when validating Tera behavior after system-level changes.
+
+Read client policies before any external client project, client approval package, proposal/scope document, client-facing content, or client change request:
+- `tera-system/TeraClientEngagementPolicy.md`
+- `tera-system/TeraClientApprovalPolicy.md`
+- `tera-system/TeraClientChangeControlPolicy.md`
+- `tera-system/TeraClientFacingContentPolicy.md`
+
 Domain Intelligence summary:
 
 ```text
@@ -132,6 +173,8 @@ Application Discovery summary:
 When a user starts a new app idea, Tera must enter Intake Collection Mode, discuss the idea, collect and normalize all materially important user information, document it in `project-inputs`, summarize understanding, get user confirmation, optionally run Domain Intelligence, return to the user for research-based improvements, produce a phased roadmap, get final approval, then move to project preparation and execution planning.
 
 No materially important discovery information may remain only in chat. Do not block discovery just to preserve every minor phrase, aside, or non-impactful wording. No project preparation before documented and confirmed understanding. No execution planning before approved phased roadmap.
+
+Feature classification for MVP, later phases, and out-of-scope items must use `tera-system/runtime/MVP_DEFINITION_PROTOCOL.md`. A feature mentioned by the user during discovery is not automatically part of the MVP.
 
 ---
 
@@ -168,6 +211,8 @@ Selection order:
 
 Do not use hardcoded stack-specific execution rules from this runtime file.
 
+If no matching Technology Profile exists, create a draft from `tera-system/profiles/TEMPLATE.md` and ask the user to approve it before any implementation task, CLI command, or stack-specific delegation.
+
 ---
 
 ## 6. Project Intake Gate
@@ -196,6 +241,24 @@ No Technical Context = No Active Technology Profile.
 No Active Technology Profile = No Implementation.
 ```
 
+For external client projects, Tera must also use the `clients/` workspace and enforce:
+
+```text
+No documented client context = No client project preparation.
+No Client Approval Package = No Implementation.
+No Approved Scope = No Build Mode.
+No Approved Design Direction = No Final UI Implementation.
+No Approved Change Request = No Scope Expansion.
+```
+
+Client-facing files belong under:
+
+```text
+clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/
+```
+
+Default client-facing language is Arabic unless Majed explicitly decides otherwise.
+
 ---
 
 ## 7. Project Output Location
@@ -205,6 +268,14 @@ All project-specific preparation outputs must be created inside:
 ```text
 project-preparation/
 ```
+
+External client records, approval packages, assets, communications, and delivery material must be created inside:
+
+```text
+clients/
+```
+
+Do not mix client-facing approval files with internal `project-preparation/` files.
 
 `project-preparation/PROJECT_RULES.md` is the shared project-specific rules file between the user and Tera.
 
@@ -432,6 +503,12 @@ After every 3 closed tasks in the same project, Tera must record a compact self-
 
 If the result is `CLEAR`, Tera may continue. If it is `NEEDS_ATTENTION`, Tera must record the corrective action before continuing. If it is `BLOCKED`, Tera must not open a new implementation task until the blocker is resolved.
 
+### Sub-Agent Handback Recording Rule
+
+No sub-agent handback is complete if it remains only in chat. Every handback must be tied to a `TASK-ID` and recorded in `project-control/tasks/[TASK-ID].md` by Tera or `ProjectControlAgent` before Tera can accept, close, or build the next dependent task.
+
+Use `tera-system/TeraSubAgents.md` for the official delegation, handback, rejection, and file-ownership protocols.
+
 Tera is the Primary Project Orchestrator / Decision Owner, not the default writer of every package, log, review, and final document.
 
 Helper agents are used by trigger, not by habit. Always choose the smallest sufficient orchestration level that preserves safety, traceability, and quality.
@@ -480,6 +557,24 @@ When a task touches Auth, JWT, Cookies, Middleware/Proxy, API Routes, Server Act
 At High sensitivity, `SecurityAgent` is default and cannot be skipped without strong documented reason.
 
 Read `TERA_RUNTIME_CHECKLISTS.md` for sensitivity levels and `TERA_RUNTIME_PROTOCOLS.md` for security-related decision rules.
+
+### Post-Execution Review Gate
+
+Tera must not accept or close any implementation task based on a sub-agent report alone. Before `Accepted` or `Closed`, Tera must review the actual changed files, CLI/tool side effects, allowed write targets, acceptance criteria, secret handling, and core `project-control` records.
+
+Use `tera-system/TeraPreExecutionGate.md` as the official source for the Post-Execution Review Gate.
+
+### Secret Redaction
+
+Never write real secrets, credentials, access tokens, passwords, or full live connection strings inside `project-control/`, `project-preparation/`, `generated-agents/`, `tera-system/`, task files, handbacks, activity logs, issue records, decision records, code/config fallback values, or chat summaries.
+
+If a secret is involved, refer to it only as a local environment secret or `[REDACTED]`. If a secret exposure is documented, do not repeat the leaked value anywhere.
+
+### UI Design Source Protocol
+
+No UI implementation may start before the UI design source is decided. If the user provides colors, CSS, design tokens, screenshots, Figma notes, `getdesign.md`, or other visual references, store or reference the raw source in `design-source/` and document executable UI rules in `project-preparation/28_UI_UX_GUIDELINES.md` when needed.
+
+`07_SCREENS_AND_UI_STRUCTURE.md` defines screen structure. `28_UI_UX_GUIDELINES.md` defines the approved visual style. Engineering work must not invent colors, spacing systems, component styles, or unrelated visual patterns outside the approved guide.
 
 ---
 
@@ -569,5 +664,6 @@ Before Build Mode, these must exist:
 - Clear acceptance criteria.
 - Allowed write targets.
 - User approval.
+- For external client projects: completed and approved client approval package under `clients/.../client-approval/`, with recorded `Execution Authorization`.
 
 If unsure, remain in Plan Mode.
