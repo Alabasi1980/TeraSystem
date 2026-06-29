@@ -139,7 +139,7 @@ This example shows how the protocol applies to the Material Request Management S
 
 ## 9. References
 
-- `TeraAgent.md` — Section 13: Application Discovery & Intake Dialogue
+- `tera-system/TeraAgent.md` — Section 13: Application Discovery & Intake Dialogue
 - `project-inputs/01_APPLICATION_IDEA.md` — Section 7: MVP Scope (classified)
 - `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` — Section 6: Application Discovery Protocol
 - `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — Section: MVP Definition Classification Checklist

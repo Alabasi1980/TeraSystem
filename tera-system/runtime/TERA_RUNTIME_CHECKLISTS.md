@@ -123,7 +123,7 @@ Checklist:
 - [ ] The classification is visible in the Application Understanding Summary for user review.
 - [ ] The user has approved or reclassified — Tera's default is not automatic MVP inclusion.
 
-Reference: `tera-system/MVP_DEFINITION_PROTOCOL.md`
+Reference: `tera-system/runtime/MVP_DEFINITION_PROTOCOL.md`
 
 ---
 
@@ -435,7 +435,7 @@ Research findings cannot become approved scope without user/Tera decision.
 
 Before execution planning, confirm:
 
-- [ ] Feature classification (`MVP_DEFINITION_PROTOCOL.md`) has been completed before MVP scope was set.
+- [ ] Feature classification (`tera-system/runtime/MVP_DEFINITION_PROTOCOL.md`) has been completed before MVP scope was set.
 - [ ] Phase 1 / MVP is clear and small enough.
 - [ ] Core MVP and Extended MVP are distinguished (if Extended MVP features exist).
 - [ ] Later phases are separated from MVP.

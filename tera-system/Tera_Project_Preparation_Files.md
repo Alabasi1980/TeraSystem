@@ -1,4 +1,4 @@
-a# Tera Agent — Project Preparation Files Guide
+# Tera Agent — Project Preparation Files Guide
 
 ## الهدف من هذا الملف
 

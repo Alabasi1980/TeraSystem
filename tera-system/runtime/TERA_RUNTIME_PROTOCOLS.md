@@ -492,7 +492,7 @@ Documentation rules:
 
 Mandatory feature classification:
 
-- **Before writing the MVP scope into intake files, Tera must run the classification protocol defined in `tera-system/MVP_DEFINITION_PROTOCOL.md`.**
+- **Before writing the MVP scope into intake files, Tera must run the classification protocol defined in `tera-system/runtime/MVP_DEFINITION_PROTOCOL.md`.**
 - Collect all candidate features from discovery.
 - For each feature, classify by necessity, dependency, risk, cost, and implementation size into one of: Core MVP (Phase 1A) / Extended MVP (Phase 1B) / Phase 2 / Phase 3 / Later / Out of Scope.
 - **User-selected features during discovery are not automatically MVP.**
