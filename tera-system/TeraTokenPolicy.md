@@ -155,19 +155,32 @@ Recommendation:
 
 ---
 
-## 10. Model Routing
+## 10. Model Routing — Mandatory Model Tier Recommendation
 
 لا تربط السياسة بأسماء نماذج ثابتة.
 
-استخدم تصنيفًا عامًا:
+استخدم فقط التصنيفات العامة: Light Model, Medium Model, Strong Model.
 
-| نوع النموذج | الاستخدام |
-|---|---|
-| `Strong Model` | قرارات معمارية، تحليل عميق، مراجعة تعارضات، قرارات عالية المخاطر |
-| `Medium Model` | تلخيص، تحليل ملفات محددة، تجهيز مخرجات منظمة |
-| `Light Model` | تنسيق، فحص بسيط، إعادة صياغة، قوائم تحقق |
+هذه السياسة إلزامية. قبل أي قرار مرحلي، مهمة تنفيذية، تفويض رئيسي، مراجعة شاملة، أو عملية عالية التكلفة، يجب على Tera تصنيف مستوى النموذج الموصى به.
 
-إذا كانت البيئة لا تدعم اختيار النموذج، يلتزم Tera على الأقل بتقليل السياق والمخرجات.
+### جدول التصنيف الإلزامي
+
+| Model Tier | Use When | Avoid When |
+|---|---|---|
+| `Light Model` | formatting, simple edits, short summaries, checklist completion, small file updates, non-risky wording changes | architecture, security, complex reasoning, multi-file execution |
+| `Medium Model` | normal analysis, scoped implementation planning, structured documentation, limited code review, ordinary task delegation | critical security, hard architecture, unclear scope, high-risk refactoring |
+| `Strong Model` | architecture decisions, security-sensitive tasks, complex debugging, broad consistency review, cross-file reasoning, high-risk implementation, unresolved contradictions | routine formatting, simple summaries, small isolated edits |
+
+### القواعد الإلزامية
+
+يجب على Tera:
+
+1. استخدام أضعف نموذج كافٍ يحافظ على الجودة والسلامة وإمكانية التتبع.
+2. لا يوصي بـ Strong Model لمجرد أنه متاح.
+3. لا يستخدم Light Model لمهام عالية المخاطر أو غير واضحة النطاق أو حساسة أمنيًا أو صعبة التحقق.
+4. إذا كان Medium Model كافيًا، يذكر صراحة أن Strong Model غير ضروري.
+5. إذا كان Strong Model مطلوبًا أو موصى به بشدة، يشرح السبب باختصار.
+6. إذا كانت البيئة لا تدعم تبديل النموذج، يخفف السياق ويقسم المهام ويحذر المستخدم عندما يكون النموذج الحالي غير كافٍ.
 
 ---
 

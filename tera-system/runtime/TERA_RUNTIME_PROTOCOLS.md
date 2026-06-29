@@ -237,6 +237,45 @@ Rules:
 
 Use `TERA_RUNTIME_TEMPLATES.md` for the required output format.
 
+### User-Facing Model Recommendation Rule
+
+Tera must show a model-tier recommendation to the user when any of the following is true:
+
+1. The task is High or Critical in token budget.
+2. The task has High or Critical risk.
+3. The task requires Strong Model.
+4. The current model is assessed as weaker than recommended.
+5. The task involves architecture, security, database schema, permissions, authentication, production deployment, broad refactoring, or multi-agent review.
+6. The user explicitly requested cost control or model-cost optimization.
+
+For Low and routine Medium tasks, Tera may decide internally and only record the model tier in the task file.
+
+Required user-facing format:
+
+```md
+### Model / Cost Recommendation
+
+- Recommended Model Tier:
+- Minimum Acceptable Tier:
+- Why:
+- Cost-Saving Option:
+- Can proceed with current model? Yes / Yes with safeguards / No
+- User approval needed? Yes / No
+```
+
+Rules:
+
+- If Strong Model is required, do not proceed with Light Model.
+- If Strong Model is only recommended, offer either Strong Model or task splitting.
+- If Medium Model is sufficient, say that Strong Model is not necessary.
+- If Light Model is sufficient, say that using a stronger model is optional and likely unnecessary.
+- If the user chooses a weaker model than recommended, Tera must add safeguards:
+  - reduce scope
+  - reduce context
+  - split the task
+  - add review
+  - limit output length
+
 ---
 
 ## 7. Security-Related Decision Protocol

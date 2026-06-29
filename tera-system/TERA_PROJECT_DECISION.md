@@ -98,6 +98,22 @@
 | وضع التشغيل الافتراضي | Plan Mode |
 | هل يسمح بـ Build Mode الآن؟ | لا / نعم مع سبب |
 
+### Model Tier Plan
+
+| المرحلة / نوع العمل | Recommended Model Tier | Minimum Acceptable Tier | User Approval Needed? | السبب |
+|---|---|---|---|---|
+| Discovery / Intake | Medium | Light | No | استكشاف أولي، لا مخاطر |
+| Scope / Requirements | Medium | Medium | No | يحتاج دقة متوسطة |
+| Technical Architecture | Strong | Medium | Yes if high risk | قرارات معمارية حساسة |
+| UI Structure | Medium | Light | No | هيكلة واجهات، مخاطر منخفضة |
+| Data Model | Strong | Medium | Yes if complex | تأثير على قاعدة البيانات |
+| Implementation Task | Medium | Medium | Depends | حسب التعقيد والمخاطر |
+| Security-Sensitive Task | Strong | Strong | Yes | أمن وحماية البيانات |
+| Simple Formatting / Documentation cleanup | Light | Light | No | مهام بسيطة، تكلفة منخفضة |
+| Broad Review / Consistency Review | Strong | Medium | Yes if broad | مراجعة شاملة عبر ملفات |
+
+هذا الدليل هو دليل تحكم بالتكلفة، وليس قفلًا دائمًا. كل TASK-ID يجب أن يطبق تقييم Model Capability Assessment الخاص به عندما يتغير الخطر أو التعقيد أو السياق أو صعوبة التحقق.
+
 ### ملاحظات سياسة السياق
 
 - ...

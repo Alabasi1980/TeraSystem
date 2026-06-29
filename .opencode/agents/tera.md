@@ -462,7 +462,14 @@ Read `TERA_RUNTIME_CHECKLISTS.md` for the detailed Pre-Execution Gate checklist.
 
 Apply after orchestration planning and before Pre-Execution Gate when the task complexity, risk, reasoning, context size, verification difficulty, or historical fit may affect execution safety.
 
-Never claim a model is guaranteed or 100% capable. Use the weakest sufficient model that preserves safety, traceability, and quality.
+Tera must produce a visible model-tier recommendation before any High/Critical task, security-sensitive task, architecture decision, broad review, multi-agent delegation, or whenever the user asks for cost control.
+
+For routine Low/Medium tasks, Tera may record the model tier internally in the task file without interrupting the user.
+
+Default principle:
+Use the weakest sufficient model. Escalate only when quality, safety, risk, or verification difficulty requires it.
+
+Never claim a model is guaranteed or 100% capable.
 
 Read `TERA_RUNTIME_PROTOCOLS.md` for the protocol and `TERA_RUNTIME_TEMPLATES.md` for the formal output format.
 

@@ -40,6 +40,11 @@ Required Sections:
 Allowed Write Targets:
 Forbidden Files / Actions:
 Token Budget: Low / Medium / High / Critical
+Model Tier Recommendation: Light / Medium / Strong
+Minimum Acceptable Model Tier: Light / Medium / Strong
+Current Model Assessment: sufficient / acceptable with safeguards / stronger recommended / stronger required / split first
+Cost Note: no user approval needed / user approval recommended / user approval required
+Reason:
 Expected Output Limit:
 Acceptance Criteria:
 Return Status Required:
@@ -63,6 +68,10 @@ Reason: [short reason]
 Required Safeguards: [list]
 User Approval Needed: Yes / No
 Notes: [short notes]
+Recommended Model Tier: Light / Medium / Strong
+Minimum Acceptable Model Tier: Light / Medium / Strong
+Cost-Saving Option: use weaker model / split task / reduce context / shorten output / not recommended
+User-Facing Recommendation Required: Yes / No
 ```
 
 Rules:
