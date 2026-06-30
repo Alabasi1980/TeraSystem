@@ -16,6 +16,14 @@
 
 ## Activity Log
 
+## [2026-06-30 18:30] - SYSTEM_FIX: Intake closure and template governance
+
+- Related Task: N/A
+- Actor: User + Tera 3
+- Summary: User provided Tera 2 analysis of four operational gaps: system template copying ambiguity, missing explicit Phase 1 activity logging checklist, stale `PROJECT_STATE.md` / `TERA_ACTIVE_CONTEXT.md` risk, and intake files remaining `Partial` when Phase 1 closes.
+- Decision / Result: Updated Tera core, active OpenCode runtime, runtime checklist, and system issues register. New rules prevent copying unchanged `*_TEMPLATE.*` files into application workspaces, require phase-transition control-record updates, and require intake status completion or a documented exception before leaving discovery.
+- Next Action: Future Tera sessions must apply these gates during Phase 1 and before every phase transition.
+
 ## [2026-06-30 14:15] - GIT_REMOTE_CURRENT_VERSION_ADOPTION
 
 - Related Task: N/A
@@ -382,3 +390,11 @@
 - Actor: Tera Agent (per Majed request)
 - Summary: Created project-control/GIT_REMOTE.md to store the client repository remote URL. Updated .opencode/agents/tera.md Git protocol to reference GIT_REMOTE.md. Updated opencode.json instruction. The file is user-editable — user can update the URL manually or ask Tera to do it.
 - Decision / Result: Clear separation: GIT_REMOTE.md holds the URL, Tera reads it before push, user updates it per project. Each client project has its own remote URL stored explicitly.
+
+## [2026-06-30] - Git Push
+
+- Related Task: N/A
+- Actor: Tera Agent (per user request)
+- Summary: Git add, commit, and push to origin/master. Changes: modified .opencode/agents/tera.md, tera-system/TeraAgent.md, tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html; deleted 16 old workshop templates; added tera-workshop/tera-document-print.css. Commit: 49ba90b.
+- Decision / Result: Push successful to https://github.com/Alabasi1980/TeraSystem
+- Next Action: None

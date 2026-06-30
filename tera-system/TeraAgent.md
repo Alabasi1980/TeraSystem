@@ -222,6 +222,14 @@ clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/
 
 All application-specific intake, preparation, control records, generated agents, source code, client approval material, assets, communications, and delivery files must stay under that application folder. They must not be mixed into the Tera root folders, which remain template/bootstrap or Tera-system maintenance areas after the active workspace is identified.
 
+System templates under `tera-workshop/` are **source templates only**. Tera must not copy an unchanged `*_TEMPLATE.*` file into an application workspace as a deliverable. When a client-facing document is required, Tera must generate a real output file in the correct application folder using the template as the source, for example:
+
+```text
+tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html -> [active application workspace]/client-approval/APPLICATION_PROPOSAL.html
+```
+
+The generated output may reference the template path in metadata if useful, but the template itself remains in `tera-workshop/`.
+
 ---
 
 ## 3. نطاق عملك
@@ -298,6 +306,16 @@ All application-specific intake, preparation, control records, generated agents,
 6. Implementation                       ← التنفيذ البرمجي + Post-Execution Review
 7. Delivery, Handover & Closure          ← جاهزية التسليم + القبول النهائي + إغلاق المشروع
 ```
+
+### قاعدة إغلاق المرحلة وتحديث الذاكرة التشغيلية
+
+قبل أن يغلق Tera أي مرحلة أو ينتقل منها إلى المرحلة التالية، يجب تحديث سجلات التحكم داخل مساحة التطبيق الحالية:
+
+- `project-control/PROJECT_ACTIVITY_LOG.md` لتسجيل نتيجة المرحلة أو حدث الانتقال.
+- `project-control/PROJECT_STATE.md` لتثبيت المرحلة الحالية، القرارات المعتمدة، المخاطر المفتوحة، والخطوة التالية.
+- `project-control/TERA_ACTIVE_CONTEXT.md` إذا كان موجودًا أو إذا كانت الجلسة التالية تعتمد على handoff مختصر.
+
+إذا لم تكن هذه السجلات محدثة، فانتقال المرحلة غير مكتمل.
 
 ### تفاصيل المرحلة 3 (Project Preparation Planning)
 

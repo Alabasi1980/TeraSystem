@@ -13,11 +13,16 @@ If this file conflicts with `.opencode/agents/tera.md`, the active runtime file 
 When the user provides a project idea and technical information:
 
 ### Phase 1: Project Intake & Client Discovery
-1. Read the required system references in `tera-system/`.
-2. Check `project-inputs/01_APPLICATION_IDEA.md` and `project-inputs/02_TECHNICAL_CONTEXT.md`.
-3. If intake is incomplete, enter `Client Discovery Mode` and complete intake first.
-4. If the user provides project-specific rules, create or update `project-preparation/PROJECT_RULES.md`.
-5. If the project has UI, collect design preferences and sources: colors, screenshots, Figma, CSS, reference sites, RTL/LTR, brand notes.
+1. Identify or create the isolated application workspace under `clients/CLIENT-*/applications/APP-*/`.
+2. Read the required system references in `tera-system/`.
+3. Check `[active application workspace]/project-inputs/01_APPLICATION_IDEA.md` and `[active application workspace]/project-inputs/02_TECHNICAL_CONTEXT.md`.
+4. If intake is incomplete, enter `Client Discovery Mode` and complete intake first.
+5. If the user provides project-specific rules, create or update `[active application workspace]/project-preparation/PROJECT_RULES.md`.
+6. If the project has UI, collect design preferences and sources: colors, screenshots, Figma, CSS, reference sites, RTL/LTR, brand notes.
+7. Before leaving Phase 1, verify both intake files have an intake status of `Complete` or a documented Tera-approved exception explaining what remains undecided and why it does not block formal preparation.
+8. For external/client-facing work, generate `client-approval/APPLICATION_PROPOSAL.html` from `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html`; do not copy the template file itself into the application workspace.
+9. Record Phase 1 creation/completion, intake file updates, proposal generation, assumptions, and remaining gaps in `project-control/PROJECT_ACTIVITY_LOG.md`.
+10. Update `project-control/PROJECT_STATE.md` and `project-control/TERA_ACTIVE_CONTEXT.md` when present or needed for handoff.
 
 ### Phase 2: Project Decision Formation
 1. Create or update `project-preparation/00_PROJECT_INPUTS.md` as a normalized summary derived from `project-inputs/`.
@@ -445,7 +450,7 @@ Must contain at minimum:
 
 Rules:
 - It is a context gateway, not a replacement for detailed files.
-- Update it after closing a significant task, accepting a phase, registering a significant issue/decision, changing the roadmap, running `PlanComplianceReviewAgent`, or performing phase compaction/summary.
+- Update it before leaving any project phase, after closing a significant task, accepting a phase, registering a significant issue/decision, changing the roadmap, running `PlanComplianceReviewAgent`, or performing phase compaction/summary.
 
 ---
 
@@ -594,6 +599,9 @@ Before leaving Application Discovery, confirm:
 - Assumptions are documented.
 - Open questions are documented.
 - Materially important chat-only information has been normalized into official `project-inputs` files.
+- `01_APPLICATION_IDEA.md` and `02_TECHNICAL_CONTEXT.md` are marked `Complete`, or any exception is explicitly documented with status, blocker, owner, and reason it does not block formal preparation.
+- `PROJECT_ACTIVITY_LOG.md` records discovery completion and all material intake/proposal updates.
+- `PROJECT_STATE.md` records the current phase result and next recommended step.
 
 Materially important means information that affects scope, MVP/later phasing, users, workflows, permissions, data, integrations, technical context, constraints, risks, assumptions, open questions, or acceptance.
 
