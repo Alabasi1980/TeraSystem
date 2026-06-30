@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teranoo - Software Services Agreement - [AGREEMENT_ID]</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3f5f8;
+      --paper: #ffffff;
+      --ink: #16202b;
+      --muted: #5f6b7a;
+      --line: #d8dee6;
+      --soft: #eef2f6;
+      --brand: #0f2742;
+      --brand-2: #16385d;
+      --accent: #b8923f;
+      --accent-soft: #f4ecda;
+      --accent-line: rgba(184, 146, 63, 0.30);
+      --ok: #1f7a4d;
+      --warn: #a86417;
+      --defer: #6a7280;
+      --shadow: 0 16px 48px rgba(14, 28, 45, 0.10);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --page-width: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Tajawal", system-ui, sans-serif;
+      line-height: 1.8;
+    }
+
+    body { padding: 32px; }
+
+    .agreement-shell {
+      max-width: var(--page-width);
+      margin: 0 auto;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(15, 39, 66, 0.08);
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(15, 39, 66, 0.97), rgba(10, 28, 48, 0.97)),
+        radial-gradient(circle at top left, rgba(184, 146, 63, 0.18), transparent 40%);
+      color: #ffffff;
+      padding: 34px 42px 30px;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), #d7bc7b, var(--accent));
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 82px;
+      height: 82px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      backdrop-filter: blur(4px);
+      flex-shrink: 0;
+    }
+
+    .brand-mark img {
+      width: 72%;
+      height: 72%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-copy p {
+      margin: 4px 0 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 14px;
+    }
+
+    .doc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .doc-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(184, 146, 63, 0.18);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+      gap: 28px;
+      align-items: end;
+    }
+
+    .hero-main .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #d7bc7b;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .hero-main .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .hero-main h2 {
+      margin: 0;
+      font-size: 38px;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+
+    .hero-main p {
+      margin: 16px 0 0;
+      max-width: 760px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 16px;
+    }
+
+    .hero-meta {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      padding: 18px;
+      backdrop-filter: blur(4px);
+    }
+
+    .meta-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 18px;
+    }
+
+    .meta-item { min-width: 0; }
+
+    .meta-item .label {
+      display: block;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.62);
+      margin-bottom: 4px;
+    }
+
+    .meta-item .value {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      word-break: break-word;
+    }
+
+    .content {
+      padding: 36px 42px 42px;
+    }
+
+    /* ─── Quranic verse ─── */
+    .verse-box {
+      text-align: center;
+      padding: 28px 20px;
+      background: linear-gradient(180deg, var(--accent-soft), #ffffff);
+      border: 1px solid var(--accent-line);
+      border-radius: var(--radius);
+      margin-bottom: 28px;
+    }
+
+    .verse-box .verse-text {
+      font-family: "Amiri", "Traditional Arabic", serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--brand);
+      line-height: 2;
+      margin-bottom: 8px;
+    }
+
+    .verse-box .verse-ref {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .verse-box .verse-sep {
+      width: 60px;
+      height: 2px;
+      background: var(--accent);
+      margin: 12px auto;
+    }
+
+    /* ─── Section ─── */
+    .section {
+      margin-bottom: 28px;
+    }
+
+    .section:last-child { margin-bottom: 0; }
+
+    .section-title {
+      margin: 0 0 12px;
+      color: var(--brand);
+      font-size: 20px;
+      font-weight: 800;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .section-title .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--brand);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      margin-left: 10px;
+    }
+
+    .section-card {
+      background: linear-gradient(180deg, #ffffff, #fbfcfd);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+    }
+
+    .section-card p {
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    .section-card p:last-child { margin-bottom: 0; }
+
+    .section-card ul {
+      margin: 8px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .section-card ul li {
+      padding: 5px 18px 5px 0;
+      position: relative;
+      font-size: 15px;
+    }
+
+    .section-card ul li::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 13px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .section-card .clause-label {
+      font-weight: 700;
+      color: var(--brand);
+    }
+
+    /* ─── Tables ─── */
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 10px;
+      border-style: hidden;
+      box-shadow: 0 0 0 1px var(--line);
+      margin-bottom: 16px;
+    }
+
+    .info-table:last-child { margin-bottom: 0; }
+
+    .info-table th {
+      background: var(--brand);
+      color: #ffffff;
+      padding: 10px 14px;
+      text-align: right;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .info-table td {
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .info-table tr:nth-child(even) td {
+      background: var(--soft);
+    }
+
+    /* ─── Signature ─── */
+    .approval-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .signature-card {
+      min-height: 160px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #fbfcfd);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .signature-card h4 {
+      margin: 0 0 2px;
+      font-size: 15px;
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .signature-card .role {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .signature-card .sig-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      font-size: 14px;
+    }
+
+    .signature-card .sig-row .sig-line {
+      display: inline-block;
+      width: 160px;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .sig-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 10px 0;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .approval-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-top,
+      .footer {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .meta-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 16px; }
+      .hero, .content { padding: 24px 20px; }
+      .verse-box .verse-text { font-size: 22px; }
+      .brand { align-items: start; }
+      .brand-mark { width: 68px; height: 68px; }
+      .hero-main h2 { font-size: 28px; }
+      .section-title { font-size: 17px; }
+    }
+
+    @page {
+      size: A4;
+      margin: 16mm;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+        font-size: 12pt;
+      }
+
+      .agreement-shell {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+      }
+
+      .section { page-break-inside: avoid; }
+
+      .section-card ul li,
+      .section-card p {
+        font-size: 12pt;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="agreement-shell" role="document" aria-label="اتفاقية تقديم خدمات برمجية - [AGREEMENT_ID]">
+
+    <!-- ═══ Hero ═══ -->
+    <section class="hero" id="agreement-header">
+      <div class="hero-top">
+        <div class="brand">
+          <div class="brand-mark">
+            <img src="teranoo-logo.png" alt="شعار Teranoo" />
+          </div>
+          <div class="brand-copy">
+            <h1>Teranoo</h1>
+            <p>اتفاقية تقديم خدمات برمجية — Software Services Agreement</p>
+          </div>
+        </div>
+        <div class="doc-badge">Agreement</div>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-main">
+          <span class="eyebrow">اتفاقية ملزمة بين الطرفين</span>
+          <h2>[AGREEMENT_TITLE]</h2>
+          <p>
+            اتفاقية تقديم خدمات برمجية وفقاً للشروط والأحكام الواردة في هذه الوثيقة،
+            والمستندات المرجعية المرتبطة بها.
+          </p>
+        </div>
+
+        <aside class="hero-meta" aria-label="بيانات الاتفاقية">
+          <div class="meta-list">
+            <div class="meta-item">
+              <span class="label">رقم الاتفاقية</span>
+              <span class="value">[AGREEMENT_ID]</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">تاريخ الاتفاقية</span>
+              <span class="value">[AGREEMENT_DATE]</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">مرجع عرض السعر</span>
+              <span class="value">[PROPOSAL_REF]</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">مرجع نطاق العمل</span>
+              <span class="value">[SOW_REF]</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ═══ Content ═══ -->
+    <div class="content">
+
+      <!-- ─── Quranic Verse ─── -->
+      <div class="verse-box">
+        <div class="verse-text">بسم الله الرحمن الرحيم</div>
+        <div class="verse-sep"></div>
+        <div class="verse-text">﴿ يَا أَيُّهَا الَّذِينَ آمَنُوا أَوْفُوا بِالْعُقُودِ ﴾</div>
+        <div class="verse-ref">سورة المائدة، الآية 1</div>
+      </div>
+
+      <!-- ─── Preamble ─── -->
+      <section class="section">
+        <p style="font-size:15px; margin:0 0 24px;">
+          حررت هذه الاتفاقية بتاريخ [AGREEMENT_DATE] بين كل من الطرفين المذكورين أدناه،
+          وذلك وفقًا للبيانات والشروط والأحكام الواردة فيها.
+        </p>
+      </section>
+
+      <!-- ─── Section 1: Parties ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">1</span> أطراف الاتفاقية</h3>
+
+        <div class="section-card" style="margin-bottom:14px;">
+          <p style="font-weight:800;color:var(--brand);margin-bottom:10px;">الطرف الأول: مقدم الخدمة</p>
+          <table class="info-table">
+            <thead>
+              <tr><th style="width:200px;">البيان</th><th>التفاصيل</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>الطرف الأول</td><td>[PROVIDER_NAME]</td></tr>
+              <tr><td>الرقم الوطني / رقم السجل التجاري</td><td>[PROVIDER_NATIONAL_ID]</td></tr>
+              <tr><td>العنوان</td><td>[PROVIDER_ADDRESS]</td></tr>
+              <tr><td>الهاتف / البريد الإلكتروني</td><td>[PROVIDER_CONTACT]</td></tr>
+              <tr><td>ويمثله</td><td>[PROVIDER_REPRESENTATIVE]</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:14px;color:var(--muted);margin:0;">ويشار إليه لاحقًا في هذه الاتفاقية باسم <strong>"مقدم الخدمة"</strong></p>
+        </div>
+
+        <div class="section-card">
+          <p style="font-weight:800;color:var(--brand);margin-bottom:10px;">الطرف الثاني: العميل</p>
+          <table class="info-table">
+            <thead>
+              <tr><th style="width:200px;">البيان</th><th>التفاصيل</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>الطرف الثاني</td><td>[CLIENT_NAME]</td></tr>
+              <tr><td>الرقم الوطني / رقم السجل التجاري</td><td>[CLIENT_NATIONAL_ID]</td></tr>
+              <tr><td>العنوان</td><td>[CLIENT_ADDRESS]</td></tr>
+              <tr><td>الهاتف / البريد الإلكتروني</td><td>[CLIENT_CONTACT]</td></tr>
+              <tr><td>ويمثله</td><td>[CLIENT_REPRESENTATIVE]</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:14px;color:var(--muted);margin:0;">ويشار إليه لاحقًا في هذه الاتفاقية باسم <strong>"العميل"</strong></p>
+        </div>
+
+        <p style="font-size:14px;color:var(--muted);margin-top:12px;">
+          ويشار إلى الطرفين مجتمعين باسم <strong>"الطرفين"</strong>، ولكل منهما منفردًا باسم <strong>"الطرف"</strong>.
+        </p>
+      </section>
+
+      <!-- ─── Section 2: Subject ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">2</span> موضوع الاتفاقية</h3>
+        <div class="section-card">
+          <p>
+            يتعهد مقدم الخدمة بتقديم خدمات تحليل أو تصميم أو تطوير أو دعم برمجي للعميل
+            وفقًا لعرض السعر و/أو نطاق العمل المعتمد بين الطرفين، وذلك بالشروط والأحكام
+            الواردة في هذه الاتفاقية.
+          </p>
+        </div>
+      </section>
+
+      <!-- ─── Section 3: Reference Documents ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">3</span> المستندات المرجعية</h3>
+        <div class="section-card">
+          <p>تعتبر المستندات التالية جزءًا من الاتفاقية:</p>
+          <ul>
+            <li>عرض السعر المعتمد رقم: [PROPOSAL_REF]</li>
+            <li>نطاق العمل SOW رقم/تاريخ: [SOW_REF]</li>
+            <li>أي ملاحق أو طلبات تغيير معتمدة خطيًا لاحقًا.</li>
+          </ul>
+          <p style="margin-top:12px;">
+            في حال وجود تعارض، يتم الرجوع أولًا إلى نطاق العمل الأحدث المعتمد خطيًا،
+            ثم عرض السعر، ثم هذه الاتفاقية، ما لم يتفق الطرفان خلاف ذلك.
+          </p>
+        </div>
+      </section>
+
+      <!-- ─── Section 4: Scope ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">4</span> نطاق الخدمات</h3>
+        <div class="section-card">
+          <p>
+            يقتصر التزام مقدم الخدمة على البنود والمخرجات المذكورة صراحة في نطاق العمل
+            أو عرض السعر المعتمد.
+          </p>
+        </div>
+      </section>
+
+      <!-- ─── Section 5: Out of Scope ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">5</span> خارج النطاق</h3>
+        <div class="section-card">
+          <p>لا تشمل الاتفاقية ما يلي إلا إذا ذكر صراحة:</p>
+          <ul>
+            <li>دعم مفتوح أو غير محدد.</li>
+            <li>تعديلات غير محدودة.</li>
+            <li>إدخال أو تنظيف بيانات واسع.</li>
+            <li>تطبيقات جوال.</li>
+            <li>تكاملات خارجية غير مذكورة.</li>
+            <li>استضافة وتشغيل 24/7.</li>
+            <li>تدريب غير محدد.</li>
+            <li>أي متطلبات تظهر بعد اعتماد نطاق العمل.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 6: Provider Obligations ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">6</span> التزامات مقدم الخدمة</h3>
+        <div class="section-card">
+          <p>يلتزم مقدم الخدمة بـ:</p>
+          <ul>
+            <li>تنفيذ الخدمات المتفق عليها ضمن الحدود المهنية الممكنة.</li>
+            <li>إبلاغ العميل بالمخاطر أو العوائق الجوهرية عند ظهورها.</li>
+            <li>المحافظة على سرية معلومات العميل.</li>
+            <li>تسليم المخرجات المتفق عليها وفق النطاق والدفعات المعتمدة.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 7: Client Obligations ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">7</span> التزامات العميل</h3>
+        <div class="section-card">
+          <p>يلتزم العميل بـ:</p>
+          <ul>
+            <li>تزويد المعلومات والملفات والصلاحيات المطلوبة في الوقت المناسب.</li>
+            <li>تحديد شخص مسؤول للاعتماد والتواصل.</li>
+            <li>مراجعة المخرجات خلال مدة معقولة.</li>
+            <li>دفع الدفعات في مواعيدها.</li>
+            <li>عدم طلب أعمال خارج النطاق دون اعتماد تكلفة ومدة إضافية.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 8: Financial Terms ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">8</span> المقابل المالي والدفعات</h3>
+        <div class="section-card">
+          <ul>
+            <li>تحدد قيمة الخدمات وطريقة الدفع حسب عرض السعر المعتمد.</li>
+            <li>لا يبدأ العمل قبل استلام الدفعة المقدمة.</li>
+            <li>يحق لمقدم الخدمة إيقاف العمل مؤقتًا عند تأخر أي دفعة مستحقة.</li>
+            <li>لا يتم تسليم النسخة النهائية أو السورس أو الوصول الكامل إلا بعد تسوية الدفعات المستحقة، ما لم يتفق الطرفان خطيًا على خلاف ذلك.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 9: Change Requests ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">9</span> التعديلات وطلبات التغيير</h3>
+        <div class="section-card">
+          <ul>
+            <li>أي طلب جديد أو تعديل جوهري بعد اعتماد النطاق يعتبر طلب تغيير مستقلًا.</li>
+            <li>يتم تنفيذ طلبات التغيير فقط بعد الاتفاق على أثرها المالي والزمني واعتمادها خطيًا.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 10: Delivery & Acceptance ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">10</span> التسليم والقبول</h3>
+        <div class="section-card">
+          <ul>
+            <li>يتم التسليم وفق المخرجات المحددة في نطاق العمل.</li>
+            <li>على العميل مراجعة المخرجات خلال مدة يتم الاتفاق عليها.</li>
+            <li>إذا لم يرسل العميل ملاحظات جوهرية ضمن المدة المتفق عليها، يجوز اعتبار المخرجات مقبولة مبدئيًا.</li>
+            <li>الملاحظات الواقعة ضمن النطاق تعالج ضمن الاتفاق، أما الإضافات فتعتبر طلب تغيير.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 11: Warranty & Support ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">11</span> الضمان والدعم</h3>
+        <div class="section-card">
+          <p>يغطي الضمان أخطاء التنفيذ التي تخالف النطاق المعتمد فقط.</p>
+          <p>لا يشمل الضمان:</p>
+          <ul>
+            <li>طلبات جديدة.</li>
+            <li>تغيير المتطلبات.</li>
+            <li>أخطاء استخدام العميل.</li>
+            <li>مشاكل الاستضافة أو الشبكة أو الأجهزة التي لا يديرها مقدم الخدمة.</li>
+            <li>أعطال أطراف ثالثة.</li>
+          </ul>
+          <p style="margin-top:10px;">
+            الدعم والصيانة بعد التسليم لا يدخلان ضمن الاتفاقية إلا إذا نص عليهما صراحة.
+          </p>
+        </div>
+      </section>
+
+      <!-- ─── Section 12: IP & Source Code ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">12</span> الملكية الفكرية والسورس</h3>
+        <div class="section-card">
+          <ul>
+            <li>يتم تحديد ملكية السورس وحق الاستخدام في عرض السعر أو نطاق العمل.</li>
+            <li>ما لم ينص الاتفاق خلاف ذلك، يحتفظ مقدم الخدمة بحق استخدام المعرفة العامة، القوالب، المكونات العامة، والخبرات غير الخاصة بالعميل.</li>
+            <li>لا تنتقل أي ملكية أو صلاحيات نهائية قبل سداد المستحقات المتفق عليها.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 13: Confidentiality ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">13</span> السرية وحماية البيانات</h3>
+        <div class="section-card">
+          <ul>
+            <li>يلتزم الطرفان بالحفاظ على سرية المعلومات الفنية والتجارية والمالية التي يتم تبادلها.</li>
+            <li>لا يجوز استخدام معلومات الطرف الآخر إلا لغرض تنفيذ الاتفاقية.</li>
+            <li>يستمر الالتزام بالسرية بعد انتهاء الاتفاقية.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 14: Liability ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">14</span> حدود المسؤولية</h3>
+        <div class="section-card">
+          <ul>
+            <li>لا يتحمل مقدم الخدمة أي خسائر غير مباشرة أو أرباح فائتة أو أضرار ناتجة عن استخدام غير صحيح أو قرارات تشغيلية اتخذها العميل.</li>
+            <li>تكون مسؤولية مقدم الخدمة، إن وجدت، محدودة بالقيمة المدفوعة فعليًا عن الجزء محل النزاع، ما لم يخالف ذلك القانون الواجب التطبيق.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 15: Suspension & Termination ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">15</span> الإيقاف والإنهاء</h3>
+        <div class="section-card">
+          <p>يحق لمقدم الخدمة إيقاف العمل مؤقتًا عند:</p>
+          <ul>
+            <li>تأخر الدفعات.</li>
+            <li>عدم تزويد المعلومات المطلوبة.</li>
+            <li>تغيير جوهري في النطاق دون اعتماد.</li>
+            <li>تعذر التواصل أو الاعتماد من طرف العميل.</li>
+          </ul>
+          <p style="margin-top:10px;">
+            يجوز لأي طرف إنهاء الاتفاقية بإشعار خطي، مع تسوية الأعمال المنجزة والمبالغ
+            المستحقة حتى تاريخ الإنهاء.
+          </p>
+        </div>
+      </section>
+
+      <!-- ─── Section 16: Governing Law ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">16</span> القانون والاختصاص</h3>
+        <div class="section-card">
+          <p>
+            تخضع هذه الاتفاقية لقوانين المملكة الأردنية الهاشمية، وتكون المحاكم الأردنية
+            المختصة هي صاحبة الاختصاص، ما لم يتفق الطرفان خطيًا على خلاف ذلك.
+          </p>
+        </div>
+      </section>
+
+      <!-- ─── Section 17: General ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">17</span> أحكام عامة</h3>
+        <div class="section-card">
+          <ul>
+            <li>لا يجوز تعديل هذه الاتفاقية إلا بموافقة خطية من الطرفين.</li>
+            <li>عناوين البنود وضعت للتنظيم ولا تؤثر على تفسير الاتفاقية.</li>
+            <li>إذا أصبح أي بند غير نافذ، تبقى باقي البنود نافذة بقدر ما يسمح به القانون.</li>
+            <li>المراسلات الخطية أو البريد الإلكتروني أو وسائل التواصل المعتمدة بين الطرفين يمكن استخدامها لإثبات الاعتمادات حسب ما يتفق عليه الطرفان.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── Section 18: Signatures ─── -->
+      <section class="section">
+        <h3 class="section-title"><span class="num">18</span> التوقيع</h3>
+        <p style="font-size:14px;color:var(--muted);margin:0 0 16px;">
+          بتوقيع الطرفين على هذه الاتفاقية، يعتبر العقد ملزماً ونافذاً من تاريخه.
+        </p>
+        <div class="approval-grid">
+          <div class="signature-card">
+            <div>
+              <h4>[PROVIDER_REPRESENTATIVE]</h4>
+              <div class="role">الطرف الأول: مقدم الخدمة — [PROVIDER_NAME]</div>
+              <div class="sig-divider"></div>
+              <div class="sig-row">
+                <span>الاسم:</span>
+                <span class="sig-line">[PROVIDER_REPRESENTATIVE]</span>
+              </div>
+              <div class="sig-row">
+                <span>الصفة:</span>
+                <span class="sig-line">[PROVIDER_TITLE]</span>
+              </div>
+              <div class="sig-row">
+                <span>التوقيع:</span>
+                <span class="sig-line">&nbsp;</span>
+              </div>
+              <div class="sig-row">
+                <span>التاريخ:</span>
+                <span class="sig-line">[AGREEMENT_DATE]</span>
+              </div>
+            </div>
+          </div>
+          <div class="signature-card">
+            <div>
+              <h4>[CLIENT_REPRESENTATIVE]</h4>
+              <div class="role">الطرف الثاني: العميل — [CLIENT_NAME]</div>
+              <div class="sig-divider"></div>
+              <div class="sig-row">
+                <span>الاسم:</span>
+                <span class="sig-line">[CLIENT_REPRESENTATIVE]</span>
+              </div>
+              <div class="sig-row">
+                <span>الصفة:</span>
+                <span class="sig-line">[CLIENT_TITLE]</span>
+              </div>
+              <div class="sig-row">
+                <span>التوقيع:</span>
+                <span class="sig-line">&nbsp;</span>
+              </div>
+              <div class="sig-row">
+                <span>التاريخ:</span>
+                <span class="sig-line">[AGREEMENT_DATE]</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Footer ═══ -->
+      <footer class="footer">
+        <span>[AGREEMENT_ID] — الإصدار [VERSION]</span>
+        <span>© [YEAR] Teranoo. جميع الحقوق محفوظة.</span>
+      </footer>
+
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teranoo - Gap Analysis - [PROJECT_NAME]</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f3f5f8; --paper:#fff; --ink:#16202b; --muted:#5f6b7a; --line:#d8dee6; --soft:#eef2f6; --brand:#0f2742; --accent:#b8923f; --accent-soft:#f4ecda; --accent-line:rgba(184,146,63,0.30); --ok:#1f7a4d; --warn:#a86417; --danger:#b33a3a; --shadow:0 16px 48px rgba(14,28,45,0.10); --radius:16px; --radius-sm:10px; --page-width:980px; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:"Tajawal",system-ui,sans-serif; line-height:1.75; }
+    body { padding:24px; }
+    .shell { max-width:var(--page-width); margin:0 auto; background:var(--paper); box-shadow:var(--shadow); border-radius:22px; overflow:hidden; border:1px solid rgba(15,39,66,0.08); }
+    .hero { background:linear-gradient(135deg,rgba(15,39,66,0.97),rgba(10,28,48,0.97)),radial-gradient(circle at top left,rgba(184,146,63,0.18),transparent 40%); color:#fff; padding:28px 36px 24px; position:relative; }
+    .hero::after { content:""; position:absolute; inset-inline:0; bottom:0; height:4px; background:linear-gradient(90deg,var(--accent),#d7bc7b,var(--accent)); }
+    .hero-inner { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+    .hero h2 { margin:0; font-size:24px; font-weight:800; }
+    .hero p { margin:4px 0 0; color:rgba(255,255,255,0.78); font-size:13px; }
+    .doc-badge { display:inline-flex; align-items:center; gap:8px; padding:7px 12px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.16); font-size:11px; font-weight:700; white-space:nowrap; flex-shrink:0; }
+    .doc-badge::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 4px rgba(184,146,63,0.18); }
+    .content { padding:24px 36px 28px; }
+    .section { margin-bottom:22px; }
+    .section:last-child { margin-bottom:0; }
+    .section-title { margin:0 0 10px; color:var(--brand); font-size:17px; font-weight:800; display:flex; align-items:center; gap:8px; }
+    .section-title .badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:5px; background:var(--soft); color:var(--muted); }
+    .section-card { background:linear-gradient(180deg,#fff,#fbfcfd); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; }
+    .section-card p { margin:0 0 8px; font-size:14px; }
+    .section-card p:last-child { margin-bottom:0; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .gtbl { width:100%; border-collapse:collapse; overflow:hidden; border-radius:8px; border-style:hidden; box-shadow:0 0 0 1px var(--line); }
+    .gtbl th { background:var(--brand); color:#fff; padding:9px 10px; text-align:right; font-weight:700; font-size:12px; }
+    .gtbl td { padding:9px 10px; border-top:1px solid var(--line); background:#fff; vertical-align:top; font-size:13px; }
+    .gtbl tr:nth-child(even) td { background:var(--soft); }
+    .pill { display:inline-flex; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:800; color:#fff; }
+    .pill-hi { background:var(--danger); }
+    .pill-med { background:var(--warn); }
+    .pill-lo { background:var(--ok); }
+    .pill-info { background:#6a7280; }
+    .info-box { border:1px solid var(--accent-line); background:var(--accent-soft); border-radius:var(--radius-sm); padding:12px 16px; font-size:13px; }
+    .info-box h4 { margin:0 0 4px; font-size:13px; font-weight:800; color:var(--brand); }
+    .info-box p { margin:0; }
+    .footer { display:flex; justify-content:space-between; gap:12px; margin-top:18px; padding-top:12px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    @media (max-width:640px) { .hero-inner,.grid-2 { flex-direction:column; grid-template-columns:1fr; } body { padding:12px; } .hero,.content { padding:16px; } }
+    @page { size:A4; margin:14mm; }
+    @media print { body { background:#fff; padding:0; } .shell { box-shadow:none; border:none; border-radius:0; } }
+  </style>
+</head>
+<body>
+  <main class="shell" role="document">
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <h2>تحليل الفجوة</h2>
+          <p>[PROJECT_NAME] — Gap Analysis</p>
+        </div>
+        <div class="doc-badge">[GAP_ID]</div>
+      </div>
+    </section>
+    <div class="content">
+
+      <!-- Scope -->
+      <section class="section">
+        <h3 class="section-title">نطاق التحليل <span class="badge">Scope</span></h3>
+        <div class="section-card">
+          <p>[GAP_SCOPE — ما هو نطاق تحليل الفجوة؟ أي عمليات أو أنظمة يتم تحليلها؟]</p>
+        </div>
+      </section>
+
+      <!-- Current State vs Desired State -->
+      <section class="section">
+        <h3 class="section-title">الوضع الحالي مقابل الوضع المستهدف <span class="badge">As-Is / To-Be</span></h3>
+        <table class="gtbl">
+          <thead><tr><th style="width:40px;">#</th><th>المجال</th><th>الوضع الحالي (As-Is)</th><th>الوضع المستهدف (To-Be)</th><th>الفجوة</th><th>الأولوية</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>[AREA_1]</td><td>[CURRENT_1]</td><td>[TARGET_1]</td><td>[GAP_DESC_1]</td><td><span class="pill pill-hi">عالية</span></td></tr>
+            <tr><td>2</td><td>[AREA_2]</td><td>[CURRENT_2]</td><td>[TARGET_2]</td><td>[GAP_DESC_2]</td><td><span class="pill pill-med">متوسطة</span></td></tr>
+            <tr><td>3</td><td>[AREA_3]</td><td>[CURRENT_3]</td><td>[TARGET_3]</td><td>[GAP_DESC_3]</td><td><span class="pill pill-lo">منخفضة</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Summary -->
+      <section class="section">
+        <h3 class="section-title">ملخص الفجوات <span class="badge">Summary</span></h3>
+        <div class="grid-2">
+          <div class="section-card">
+            <p style="font-weight:800;color:var(--brand);">الفجوات الحرجة</p>
+            <ul style="margin:6px 0 0;padding:0;list-style:none;">
+              <li style="padding:4px 14px 4px 0;position:relative;font-size:13px;"><span style="position:absolute;right:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--danger);"></span>[CRITICAL_GAP_1]</li>
+              <li style="padding:4px 14px 4px 0;position:relative;font-size:13px;"><span style="position:absolute;right:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--danger);"></span>[CRITICAL_GAP_2]</li>
+            </ul>
+          </div>
+          <div class="section-card">
+            <p style="font-weight:800;color:var(--brand);">التوصيات</p>
+            <ul style="margin:6px 0 0;padding:0;list-style:none;">
+              <li style="padding:4px 14px 4px 0;position:relative;font-size:13px;"><span style="position:absolute;right:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--ok);"></span>[RECOMMENDATION_1]</li>
+              <li style="padding:4px 14px 4px 0;position:relative;font-size:13px;"><span style="position:absolute;right:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--ok);"></span>[RECOMMENDATION_2]</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>[GAP_ID] — [PROJECT_NAME]</span>
+        <span>© [YEAR] Teranoo</span>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>

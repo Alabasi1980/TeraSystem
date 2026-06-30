@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teranoo - Completion Certificate - [PROJECT_NAME]</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3f5f8; --paper: #fff; --ink: #16202b; --muted: #5f6b7a;
+      --line: #d8dee6; --soft: #eef2f6; --brand: #0f2742; --accent: #b8923f;
+      --accent-soft: #f4ecda; --accent-line: rgba(184,146,63,0.30);
+      --shadow: 0 16px 48px rgba(14,28,45,0.10);
+      --radius: 16px; --radius-sm: 10px; --page-width: 880px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: "Tajawal", system-ui, sans-serif; line-height: 1.75; }
+    body { padding: 32px; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .shell { max-width: var(--page-width); width: 100%; margin: 0 auto; background: var(--paper); box-shadow: var(--shadow); border-radius: 22px; overflow: hidden; border: 2px solid var(--accent); position: relative; }
+    /* Decorative border */
+    .shell::before { content: ""; position: absolute; inset: 6px; border: 1px solid var(--accent-line); border-radius: 18px; pointer-events: none; }
+    .hero { background: linear-gradient(135deg, rgba(15,39,66,0.97), rgba(10,28,48,0.97)), radial-gradient(circle at center, rgba(184,146,63,0.15), transparent 60%); color: #fff; padding: 40px 42px 32px; text-align: center; position: relative; }
+    .hero::after { content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, var(--accent), #d7bc7b, var(--accent)); }
+    .hero .seal { width: 80px; height: 80px; margin: 0 auto 16px; border-radius: 50%; background: rgba(255,255,255,0.10); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; }
+    .hero .seal img { width: 70%; height: 70%; object-fit: contain; display: block; }
+    .hero h1 { margin: 0; font-size: 16px; font-weight: 700; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+    .hero h2 { margin: 10px 0 0; font-size: 36px; font-weight: 800; line-height: 1.3; }
+    .hero .cert-subtitle { color: rgba(255,255,255,0.78); font-size: 16px; margin-top: 8px; }
+    .content { padding: 40px 42px 42px; position: relative; }
+    .cert-body { text-align: center; max-width: 680px; margin: 0 auto; }
+    .cert-body .bismillah { font-family: "Amiri", "Traditional Arabic", serif; font-size: 28px; color: var(--brand); margin-bottom: 20px; }
+    .cert-body .statement { font-size: 18px; line-height: 2; margin-bottom: 24px; }
+    .cert-body .statement strong { color: var(--brand); }
+    .cert-details { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 500px; margin: 0 auto 28px; text-align: right; }
+    .cert-details .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+    .cert-details .row .lbl { color: var(--muted); }
+    .cert-details .row .val { font-weight: 700; color: var(--brand); }
+    .cert-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); }
+    .cert-footer .sig { text-align: center; }
+    .cert-footer .sig .name { font-weight: 800; color: var(--brand); font-size: 15px; }
+    .cert-footer .sig .title { color: var(--muted); font-size: 13px; }
+    .cert-footer .sig .line { width: 200px; height: 1px; background: var(--ink); margin: 16px auto 4px; }
+    .cert-footer .sig .line-label { font-size: 11px; color: var(--muted); }
+    .stamp-area { text-align: center; margin-top: 24px; }
+    .stamp-area .stamp { display: inline-block; border: 2px solid var(--accent); border-radius: 50%; width: 100px; height: 100px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: var(--accent); text-align: center; line-height: 1.4; transform: rotate(-12deg); opacity: 0.7; }
+    .footer { text-align: center; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+    @media (max-width:640px) {
+      body { padding: 16px; }
+      .hero { padding: 28px 20px; }
+      .hero h2 { font-size: 26px; }
+      .content { padding: 24px 20px; }
+      .cert-details { grid-template-columns: 1fr; }
+      .cert-footer { grid-template-columns: 1fr; }
+    }
+    @page { size: A4; margin: 16mm; }
+    @media print {
+      body { background: #fff; padding: 0; display: block; }
+      .shell { box-shadow: none; border: 2px solid var(--accent); border-radius: 16px; }
+      .shell::before { inset: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell" role="document" aria-label="شهادة إنجاز - [PROJECT_NAME]">
+    <section class="hero">
+      <div class="seal"><img src="teranoo-logo.png" alt="شعار Teranoo" /></div>
+      <h1>Teranoo</h1>
+      <h2>شهادة إنجاز</h2>
+      <div class="cert-subtitle">Completion Certificate</div>
+    </section>
+    <div class="content">
+      <div class="cert-body">
+        <div class="bismillah">بسم الله الرحمن الرحيم</div>
+        <div class="statement">
+          يشهد <strong>Teranoo</strong> بأنه تم إنجاز وتنفيذ وتسليم المشروع الموضح أدناه
+          وفقاً للاتفاقية ونطاق العمل المعتمدين بين الطرفين، وقد تم تسليم المخرجات كاملة
+          واعتمادها من قبل العميل.
+        </div>
+        <div class="cert-details">
+          <div class="row"><span class="lbl">اسم المشروع</span><span class="val">[PROJECT_NAME]</span></div>
+          <div class="row"><span class="lbl">رقم الاتفاقية</span><span class="val">[AGREEMENT_REF]</span></div>
+          <div class="row"><span class="lbl">العميل</span><span class="val">[CLIENT_NAME]</span></div>
+          <div class="row"><span class="lbl">تاريخ الإنجاز</span><span class="val">[COMPLETION_DATE]</span></div>
+          <div class="row"><span class="lbl">مرجع التسليم</span><span class="val">[HANDOVER_REF]</span></div>
+          <div class="row"><span class="lbl">رقم الشهادة</span><span class="val">[CERT_ID]</span></div>
+        </div>
+      </div>
+
+      <div class="cert-footer">
+        <div class="sig">
+          <div class="name">[PROVIDER_SIGNATORY]</div>
+          <div class="title">مقدم الخدمة — [PROVIDER_NAME]</div>
+          <div class="line"></div>
+          <div class="line-label">التوقيع</div>
+        </div>
+        <div class="sig">
+          <div class="name">[CLIENT_SIGNATORY]</div>
+          <div class="title">العميل — [CLIENT_NAME]</div>
+          <div class="line"></div>
+          <div class="line-label">التوقيع</div>
+        </div>
+      </div>
+
+      <div class="stamp-area">
+        <div class="stamp">تم<br />الإنجاز</div>
+      </div>
+
+      <footer class="footer">
+        <span>[CERT_ID] — [COMPLETION_DATE]</span>
+        <span>© [YEAR] Teranoo. جميع الحقوق محفوظة.</span>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>

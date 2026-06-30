@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teranoo - User Persona Matrix - [PROJECT_NAME]</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3f5f8; --paper: #fff; --ink: #16202b; --muted: #5f6b7a;
+      --line: #d8dee6; --soft: #eef2f6; --brand: #0f2742; --accent: #b8923f;
+      --accent-soft: #f4ecda; --accent-line: rgba(184,146,63,0.30);
+      --shadow: 0 16px 48px rgba(14,28,45,0.10);
+      --radius: 16px; --radius-sm: 10px; --page-width: 1120px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: "Tajawal", system-ui, sans-serif; line-height: 1.75; }
+    body { padding: 24px; }
+    .shell { max-width: var(--page-width); margin: 0 auto; background: var(--paper); box-shadow: var(--shadow); border-radius: 22px; overflow: hidden; border: 1px solid rgba(15,39,66,0.08); }
+    .hero { background: linear-gradient(135deg, rgba(15,39,66,0.97), rgba(10,28,48,0.97)), radial-gradient(circle at top left, rgba(184,146,63,0.18), transparent 40%); color: #fff; padding: 24px 36px 20px; position: relative; }
+    .hero::after { content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, var(--accent), #d7bc7b, var(--accent)); }
+    .hero-inner { display: flex; justify-content: space-between; align-items: center; }
+    .hero h2 { margin: 0; font-size: 24px; font-weight: 800; }
+    .hero p { margin: 4px 0 0; color: rgba(255,255,255,0.78); font-size: 13px; }
+    .doc-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+    .doc-badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(184,146,63,0.18); }
+    .content { padding: 24px 36px 28px; }
+    .section { margin-bottom: 20px; }
+    .section:last-child { margin-bottom: 0; }
+    .section-title { margin: 0 0 10px; color: var(--brand); font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .section-title .badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 5px; background: var(--soft); color: var(--muted); }
+    /* Persona Card */
+    .persona-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+    .persona-card { border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; background: #fff; }
+    .persona-header { background: var(--brand); color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .persona-header .name { font-size: 16px; font-weight: 800; }
+    .persona-header .role-label { font-size: 11px; background: rgba(255,255,255,0.15); padding: 2px 10px; border-radius: 999px; }
+    .persona-body { padding: 14px 16px; }
+    .persona-row { display: flex; padding: 5px 0; font-size: 13px; border-bottom: 1px solid var(--soft); }
+    .persona-row:last-child { border-bottom: none; }
+    .persona-row .pl { width: 110px; flex-shrink: 0; font-weight: 700; color: var(--muted); }
+    .persona-row .pv { flex: 1; color: var(--ink); }
+    .persona-row .pv ul { margin: 4px 0 0; padding: 0; list-style: none; }
+    .persona-row .pv ul li { padding: 2px 12px 2px 0; position: relative; font-size: 13px; }
+    .persona-row .pv ul li::before { content: ""; position: absolute; right: 0; top: 9px; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+    .pill { display: inline-flex; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 800; color: #fff; }
+    .pill-admin { background: #b33a3a; }
+    .pill-manager { background: #a86417; }
+    .pill-staff { background: #1f7a4d; }
+    .pill-client { background: #2b6c8f; }
+    .pill-guest { background: #6a7280; }
+    /* Summary Table */
+    .stbl { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 8px; border-style: hidden; box-shadow: 0 0 0 1px var(--line); }
+    .stbl th { background: var(--brand); color: #fff; padding: 8px 10px; text-align: right; font-weight: 700; font-size: 12px; }
+    .stbl td { padding: 8px 10px; border-top: 1px solid var(--line); background: #fff; vertical-align: top; font-size: 13px; }
+    .stbl tr:nth-child(even) td { background: var(--soft); }
+    .footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    @media (max-width:760px) { .persona-grid { grid-template-columns: 1fr; } body { padding: 12px; } .hero, .content { padding: 16px; } }
+    @page { size: A4; margin: 14mm; }
+    @media print { body { background: #fff; padding: 0; } .shell { box-shadow: none; border: none; border-radius: 0; } .persona-card { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <main class="shell" role="document" aria-label="مصفوفة شخصيات المستخدمين - [PROJECT_NAME]">
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <h2>مصفوفة شخصيات المستخدمين</h2>
+          <p>[PROJECT_NAME] — User Persona Matrix</p>
+        </div>
+        <div class="doc-badge">[PERSONA_ID]</div>
+      </div>
+    </section>
+    <div class="content">
+
+      <!-- Summary Table -->
+      <section class="section">
+        <h3 class="section-title">ملخص الأدوار <span class="badge">Roles Overview</span></h3>
+        <table class="stbl">
+          <thead><tr><th style="width:40px;">#</th><th>الدور</th><th>الوصف</th><th>العدد التقريبي</th><th>مستوى الصلاحية</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>[ROLE_1]</td><td>[ROLE_1_DESC]</td><td>[ROLE_1_COUNT]</td><td><span class="pill pill-admin">[ROLE_1_LEVEL]</span></td></tr>
+            <tr><td>2</td><td>[ROLE_2]</td><td>[ROLE_2_DESC]</td><td>[ROLE_2_COUNT]</td><td><span class="pill pill-manager">[ROLE_2_LEVEL]</span></td></tr>
+            <tr><td>3</td><td>[ROLE_3]</td><td>[ROLE_3_DESC]</td><td>[ROLE_3_COUNT]</td><td><span class="pill pill-staff">[ROLE_3_LEVEL]</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Persona Cards -->
+      <section class="section">
+        <h3 class="section-title">بطاقات الشخصيات <span class="badge">Personas</span></h3>
+        <div class="persona-grid">
+
+          <!-- Persona 1 -->
+          <div class="persona-card">
+            <div class="persona-header">
+              <span class="name">[PERSONA_1_NAME]</span>
+              <span class="role-label">[PERSONA_1_LABEL]</span>
+            </div>
+            <div class="persona-body">
+              <div class="persona-row"><span class="pl">الوصف</span><span class="pv">[PERSONA_1_DESC]</span></div>
+              <div class="persona-row"><span class="pl">الأهداف</span><span class="pv"><ul><li>[PERSONA_1_GOAL_1]</li><li>[PERSONA_1_GOAL_2]</li></ul></span></div>
+              <div class="persona-row"><span class="pl">التحديات</span><span class="pv"><ul><li>[PERSONA_1_PAIN_1]</li><li>[PERSONA_1_PAIN_2]</li></ul></span></div>
+              <div class="persona-row"><span class="pl">الصلاحيات</span><span class="pv"><span class="pill pill-admin">[PERSONA_1_PERM]</span></span></div>
+              <div class="persona-row"><span class="pl">الأجهزة</span><span class="pv">[PERSONA_1_DEVICES]</span></div>
+              <div class="persona-row"><span class="pl">الميزات المطلوبة</span><span class="pv"><ul><li>[PERSONA_1_FEATURE_1]</li><li>[PERSONA_1_FEATURE_2]</li></ul></span></div>
+            </div>
+          </div>
+
+          <!-- Persona 2 -->
+          <div class="persona-card">
+            <div class="persona-header">
+              <span class="name">[PERSONA_2_NAME]</span>
+              <span class="role-label">[PERSONA_2_LABEL]</span>
+            </div>
+            <div class="persona-body">
+              <div class="persona-row"><span class="pl">الوصف</span><span class="pv">[PERSONA_2_DESC]</span></div>
+              <div class="persona-row"><span class="pl">الأهداف</span><span class="pv"><ul><li>[PERSONA_2_GOAL_1]</li><li>[PERSONA_2_GOAL_2]</li></ul></span></div>
+              <div class="persona-row"><span class="pl">التحديات</span><span class="pv"><ul><li>[PERSONA_2_PAIN_1]</li><li>[PERSONA_2_PAIN_2]</li></ul></span></div>
+              <div class="persona-row"><span class="pl">الصلاحيات</span><span class="pv"><span class="pill pill-manager">[PERSONA_2_PERM]</span></span></div>
+              <div class="persona-row"><span class="pl">الأجهزة</span><span class="pv">[PERSONA_2_DEVICES]</span></div>
+              <div class="persona-row"><span class="pl">الميزات المطلوبة</span><span class="pv"><ul><li>[PERSONA_2_FEATURE_1]</li><li>[PERSONA_2_FEATURE_2]</li></ul></span></div>
+            </div>
+          </div>
+
+          <!-- Persona 3 -->
+          <div class="persona-card">
+            <div class="persona-header">
+              <span class="name">[PERSONA_3_NAME]</span>
+              <span class="role-label">[PERSONA_3_LABEL]</span>
+            </div>
+            <div class="persona-body">
+              <div class="persona-row"><span class="pl">الوصف</span><span class="pv">[PERSONA_3_DESC]</span></div>
+              <div class="persona-row"><span class="pl">الأهداف</span><span class="pv"><ul><li>[PERSONA_3_GOAL_1]</li><li>[PERSONA_3_GOAL_2]</li></ul></span></div>
+              <div class="persona-row"><span class="pl">التحديات</span><span class="pv"><ul><li>[PERSONA_3_PAIN_1]</li><li>[PERSONA_3_PAIN_2]</li></ul></span></div>
+              <div class="persona-row"><span class="pl">الصلاحيات</span><span class="pv"><span class="pill pill-staff">[PERSONA_3_PERM]</span></span></div>
+              <div class="persona-row"><span class="pl">الأجهزة</span><span class="pv">[PERSONA_3_DEVICES]</span></div>
+              <div class="persona-row"><span class="pl">الميزات المطلوبة</span><span class="pv"><ul><li>[PERSONA_3_FEATURE_1]</li><li>[PERSONA_3_FEATURE_2]</li></ul></span></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>[PERSONA_ID] — [PROJECT_NAME]</span>
+        <span>© [YEAR] Teranoo. جميع الحقوق محفوظة.</span>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>
