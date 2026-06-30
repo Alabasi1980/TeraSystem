@@ -189,6 +189,7 @@ Open -> Planned -> In Progress -> Resolved / Deferred / Won't Fix -> Closed
 
 Before delegation:
 
+0. **Verify `IMPLEMENTATION_AGENT_STRATEGY.md` exists and is approved.** If not — do not delegate. Return to Phase 5 to create and approve the strategy first.
 1. Read `project-control/PROJECT_STATE.md`.
 2. Select the next task from the approved implementation plan.
 3. Apply Orchestration Decision Matrix.

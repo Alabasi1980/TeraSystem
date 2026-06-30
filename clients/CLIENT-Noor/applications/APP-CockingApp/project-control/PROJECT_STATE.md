@@ -25,7 +25,7 @@
 | **3 — Preparation Planning** | ✅ Complete | 2026-06-30 | `PREPARATION_PLAN.md` v2 approved by Majed. All 22 preparation files created across 7 batches |
 | **4 — Agent Delegation Planning** | ✅ Complete | 2026-06-30 | `AGENT_DELEGATION_PLAN.md` — no sub-agents needed for preparation |
 | **5 — Execution Planning** | ✅ Complete | 2026-06-30 | `PROJECT_MASTER_PLAN.md`, `PROJECT_DETAILED_EXECUTION_PLAN.md`, `EXECUTION_BATCH_PLAN.md` |
-| **6 — Implementation** | ⬜ Not Started | — | Requires Build Mode approval |
+| **6 — Implementation** | 🟡 Build Mode Approved / Pending Agent Restart | 2026-06-30 | EngineeringAgent activated; OpenCode restart required before delegation |
 | **7 — Delivery, Handover & Closure** | ⬜ Not Started | — | |
 
 ---
@@ -74,6 +74,13 @@
 | `PROJECT_STATE.md` | ✅ Active | This file |
 | `PROJECT_ACTIVITY_LOG.md` | ✅ Active | Activity log |
 | `TERA_ACTIVE_CONTEXT.md` | ✅ Active | Session handoff |
+
+### generated-agents / opencode
+| File | Status | Notes |
+|------|--------|-------|
+| `generated-agents/opencode/cockingapp-engineering.md` | ✅ Generated | Phase 6 implementation agent draft |
+| `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md` | ✅ Generated | Activation/deferral rationale |
+| `.opencode/agents/cockingapp-engineering.md` | ✅ Activated | Requires OpenCode restart |
 
 ### client-approval/
 | File | Status | Notes |
@@ -129,9 +136,11 @@
 | 1 | ~~Preparation files (Batches 1–7)~~ ✅ | Phase 3 Complete |
 | 2 | ~~Agent Delegation Plan~~ ✅ | Phase 4 Complete |
 | 3 | ~~Execution Plan (Master + Detailed + Batch)~~ ✅ | Phase 5 Complete |
-| 4 | **⏳ Request Build Mode approval** | 🟡 Pending |
-| 5 | Start Implementation (B1–B15) | 🔜 Phase 6 |
-| 6 | Delivery, Handover & Closure | 📅 Phase 7 |
+| 4 | ~~Request Build Mode approval~~ ✅ | Approved |
+| 5 | **Restart OpenCode to load EngineeringAgent** | 🟡 Required |
+| 6 | Create and gate `TASK-COD-001` | 🔜 After restart |
+| 7 | Start Implementation (B1–B15) | 🔜 Phase 6 |
+| 8 | Delivery, Handover & Closure | 📅 Phase 7 |
 
 ---
 
@@ -141,3 +150,4 @@
 |---------|------|--------|---------|
 | v1 | 2026-06-30 | Tera | Initial state — Phases 1–4 complete |
 | v2 | 2026-06-30 | Tera | Phase 3 execution complete — 22 preparation files created across 7 batches |
+| v3 | 2026-06-30 | Tera | Build Mode approved; CockingApp EngineeringAgent generated and activated; restart required |

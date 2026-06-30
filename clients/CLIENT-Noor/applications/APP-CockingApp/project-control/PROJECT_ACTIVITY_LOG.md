@@ -178,6 +178,16 @@
 
 ---
 
+### [2026-06-30 15:25] — BUILD_MODE_APPROVED_AND_ENGINEERING_AGENT_ACTIVATED
+
+- Related Task: TASK-COD-001
+- Actor: User + Tera Agent
+- Summary: User explicitly approved Build Mode for Phase 6. Tera reviewed Pre-Execution Gate, runtime checklist, activation matrix, permission model, sub-agent protocols, and confirmed direct application-code execution by Tera is not allowed for scaffold work.
+- Decision / Result: Generated and activated `COCKINGAPP_ENGINEERING_AGENT` for Phase 6 implementation only. Active file: `.opencode/agents/cockingapp-engineering.md`. Generated draft and manifest saved under `generated-agents/opencode/`.
+- Next Action: User must restart OpenCode so the newly activated EngineeringAgent becomes available; then Tera can create `TASK-COD-001`, run Pre-Execution Gate, and delegate B1.
+
+---
+
 ## Log Format
 
 ```md

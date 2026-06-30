@@ -95,10 +95,24 @@ When the user provides a project idea and technical information:
     - Add Target Version, Release Type, Version Scope, and Release Notes requirement.
     - Run **Pre-Execution Gate** (checklist from `TeraPreExecutionGate.md`, including Design Governance items for UI tasks).
     - Record `Pre-Execution Gate Result: PASS` in the task file.
-    - For UI tasks, include UI Source / UI Rules / UI Acceptance / Design Gap Handling and link `UI_ACCEPTANCE_GATE.md`.
-7. Present to user: Master Plan + Detailed Plan + Batch Plan + first TASK-IDs.
-8. Wait for user approval before moving to Phase 6.
-9. **No coding. No UI without Design Source Decision. No TASK-ID without Pre-Execution Gate PASS.**
+     - For UI tasks, include UI Source / UI Rules / UI Acceptance / Design Gap Handling and link `UI_ACCEPTANCE_GATE.md`.
+6.5 **Create `IMPLEMENTATION_AGENT_STRATEGY.md`** (مطلب إلزامي قبل الانتقال إلى Phase 6):
+    - أنشئ الملف في `project-control/IMPLEMENTATION_AGENT_STRATEGY.md`.
+    - أجب عن جميع الأسئلة الإلزامية:
+      - **Agent: من نحتاج الآن؟** — أي عميل تنفيذي مطلوب للـ Batch الحالي.
+      - **Agent: من نؤجل؟** — أي عميل سنحتاجه في Batches لاحقة.
+      - **Who writes: من ينفذ؟** — لكل TASK-ID في الدفعة.
+      - **Who reviews: من يراجع؟** — لكل TASK-ID، هل يحتاج مراجعة مستقلة أم Tera يراجعه.
+      - **Activation plan: متى يُفعّل كل عميل وبأي صلاحيات؟**
+      - **Exceptions: هل يوجد استثناء للتنفيذ المباشر؟** — إذا كان Tera سينفذ كوداً مباشرة، وثق السبب.
+    - سجّل القرار في `PROJECT_ACTIVITY_LOG.md`.
+7. Present to user: Master Plan + Detailed Plan + Batch Plan + **IMPLEMENTATION_AGENT_STRATEGY.md** + first TASK-IDs.
+8. Wait for user approval before moving to Phase 6:
+    - [ ] Master Plan approved.
+    - [ ] Detailed Plan approved.
+    - [ ] Batch Plan approved.
+    - [ ] **IMPLEMENTATION_AGENT_STRATEGY.md approved.**
+9. **No coding. No UI without Design Source Decision. No TASK-ID without Pre-Execution Gate PASS. No Phase 6 without approved Implementation Agent Strategy.**
 
 ### Phase 6: Implementation
 
@@ -106,6 +120,7 @@ When the user provides a project idea and technical information:
 1. Select one approved `TASK-COD-XXX` from the approved `EXECUTION_BATCH_PLAN.md`.
 2. Confirm:
    - [ ] Build Mode approved by user.
+   - [ ] **IMPLEMENTATION_AGENT_STRATEGY.md** approved.
    - [ ] Task status is `Approved` or `Assigned`.
    - [ ] Responsible agent is active and appropriate.
     - [ ] Active Technology Profile is loaded.
