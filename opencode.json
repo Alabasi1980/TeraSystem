@@ -2,10 +2,22 @@
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "tera",
   "permission": {
-    "*": "ask",
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
     "edit": "ask",
+    "write": "ask",
     "bash": "ask",
-    "webfetch": "ask"
+    "webfetch": "ask",
+    "todowrite": "allow",
+    "question": "allow"
   },
-  "instructions": []
+  "instructions": [
+    "Default mode is Plan Mode. No file creation, modification, shell execution, or implementation without explicit user approval.",
+    "At session start or resume, read project-control/TERA_ACTIVE_CONTEXT.md if it exists, then project-control/PROJECT_STATE.md if needed.",
+    "For new projects, enter Client Discovery Mode before project preparation.",
+    "For existing projects, report current phase, last action, next step, and blockers before proposing work.",
+    "Use the active Technology Profile before implementation planning or execution.",
+    "Full orchestration rules are defined in .opencode/agents/tera.md and tera-system/."
+  ]
 }

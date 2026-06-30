@@ -16,6 +16,14 @@
 
 ## Activity Log
 
+## [2026-06-30] - SYSTEM_IMPROVE: opencode.json optimization + 5 new slash commands
+
+- Related Task: N/A (System Maintenance)
+- Actor: Tera Agent (per Majed review)
+- Summary: Optimized `opencode.json` — updated permissions (read/glob/grep/todowrite/question = allow, edit/write/bash/webfetch = ask), added 6 compact instructions (Plan Mode default, read active context on resume, Client Discovery for new projects, report state first, use Technology Profile, refer to tera.md). Created 5 new commands in `.opencode/commands/`: `tera-new-project.md` (Client Discovery entry), `tera-plan.md` (Plan Mode enforcement), `tera-request-build.md` (Build Mode request/review), `tera-review.md` (Post-Execution Review), `tera-help.md` (command reference). Improved `tera-resume.md` to also read PROJECT_ACTIVITY_LOG.md. Added Section 17 (Quick Commands) and renumbered to Section 19 in `.opencode/agents/tera.md`. Total: 10 commands in `.opencode/commands/`.
+- Decision / Result: `opencode.json` is now a light operational layer. All logic stays in `.opencode/agents/tera.md` and `tera-system/`. Commands are individual files, not JSON duplicates.
+- Next Action: Test the new commands on a real project session.
+
 ## [2026-06-30] - SYSTEM_FIX: Design Governance expert refinements
 
 - Related Task: N/A (System Maintenance)

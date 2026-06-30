@@ -8,7 +8,8 @@ description: استئناف المشروع من آخر نقطة توقف
 
 1. اقرأ `project-control/TERA_ACTIVE_CONTEXT.md` أولاً إذا كان موجوداً.
 2. اقرأ `project-control/PROJECT_STATE.md`.
-3. اقرأ آخر سجل في `project-control/TASK_REGISTRY.md`.
+3. اقرأ آخر 3 سجلات في `project-control/PROJECT_ACTIVITY_LOG.md`.
+4. اقرأ `project-control/TASK_REGISTRY.md` (نظرة سريعة على آخر المهام).
 
 لا تقرأ ملفات أخرى إلا إذا وجدت غموضاً أو تعارضاً يستوجب ذلك.
 
