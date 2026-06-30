@@ -6,20 +6,20 @@
 | **Application** | APP-CockingApp |
 | **Client** | CLIENT-Noor |
 | **Session Date** | 2026-06-30 |
-| **Last Phase** | Phase 3 & 4 Complete — All 22 preparation files created |
-| **Next Phase** | Phase 5 — Execution Planning |
+| **Last Phase** | Phase 5 Complete — Execution Planning ready |
+| **Next Phase** | Phase 6 — Implementation (requires Build Mode approval) |
 | **User** | Majed (Owner) |
-| **Status** | ✅ Ready for preparation file creation |
+| **Status** | ⏳ Waiting for explicit Build Mode approval |
 
 ---
 
 ## 1. Current State
 
-- **Phases 1–4**: ✅ Complete
+- **Phases 1–5**: ✅ Complete
 - **Phase 3 Execution**: ✅ Complete — All 22 preparation files created across 7 batches
-- **Approved Plan**: `PREPARATION_PLAN.md` v2 — executed as planned
-- **Delegation**: `AGENT_DELEGATION_PLAN.md` — No sub-agents needed
-- **Next**: Phase 5 — Execution Planning
+- **Phase 4 Delegation**: ✅ Complete — No sub-agents needed for preparation
+- **Phase 5 Execution Planning**: ✅ Complete — Master, detailed, and batch plans created
+- **Next**: Phase 6 — Implementation, pending explicit Build Mode approval
 
 ---
 
@@ -51,14 +51,23 @@
 | 6 — Operations | 13_REPORTS, 22_DEPLOYMENT, 18_IMPORT_EXPORT | ✅ |
 | 7 — Plans & Delivery | 09_IMPL_PLAN, 10_TESTING, 11_DELIVERY, 35_ROADMAP | ✅ |
 
-## 4. Next Action
+## 4. Phase 5 Files Created ✅
 
-**Move to Phase 5 — Execution Planning**
+| File | Status | Purpose |
+|------|--------|---------|
+| `PROJECT_MASTER_PLAN.md` | ✅ Created | الخطة الرئيسية، milestones، و 18 TASK-ID |
+| `PROJECT_DETAILED_EXECUTION_PLAN.md` | ✅ Created | تفاصيل كل TASK-ID والملفات المستهدفة ومعايير القبول |
+| `EXECUTION_BATCH_PLAN.md` | ✅ Created | تقسيم التنفيذ إلى 15 دفعة قابلة للمراجعة |
 
-Create:
-1. `PROJECT_MASTER_PLAN.md` — خطة التنفيذ الرئيسية مع里程碑ات
-2. `PROJECT_DETAILED_EXECUTION_PLAN.md` — تفاصيل تنفيذ TASK-IDs
-3. `EXECUTION_BATCH_PLAN.md` — تقسيم الـ 18 TASK-ID إلى batches قابلة للتنفيذ
+## 4.1 Next Action
+
+**Request explicit Build Mode approval**
+
+If approved, start Phase 6 with:
+1. `TASK-COD-001` task file creation
+2. Pre-Execution Gate for TASK-COD-001
+3. Scaffold Next.js + TypeScript + Prisma basic setup only
+4. Post-Execution Review Gate
 
 ---
 
@@ -67,6 +76,8 @@ Create:
 - All files in Arabic (RTL)
 - Design system: Claude (cream #faf9f5 / coral #cc785c / dark navy #181715)
 - Tech: Next.js App Router + TypeScript + Prisma + PostgreSQL
-- MVP: 18 TASK-IDs (~24h) — Core 1A (12 tasks) + Extended 1B (6 tasks)
-- Phase 5 requires: `PROJECT_MASTER_PLAN.md` + `PROJECT_DETAILED_EXECUTION_PLAN.md` + `EXECUTION_BATCH_PLAN.md`
+- MVP: 18 TASK-IDs — Core 1A (12 tasks) + Extended 1B (6 tasks)
+- Phase 5 is complete
 - Build Mode approval required before Phase 6
+- First implementation batch: B1 / `TASK-COD-001` only
+- `nextjs-prisma` profile rule: first task must not add Prisma models, migrations, db push, UI, API, or Auth
