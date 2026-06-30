@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teranoo - Application Proposal - CockingApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #eef1f5;
+      --paper: #ffffff;
+      --cream: #faf8f3;
+      --ink: #18222e;
+      --muted: #5c6677;
+      --line: #dfe3e9;
+      --soft: #eef2f6;
+      --brand: #0d2238;
+      --brand-2: #173b5e;
+      --accent: #a9802f;
+      --accent-deep: #8a6a26;
+      --accent-soft: #f3ead2;
+      --suggestion: #1a6b8a;
+      --suggestion-soft: #d6edf5;
+      --ok: #1f7a4d;
+      --warn: #a86417;
+      --defer: #6a7280;
+      --shadow: 0 20px 46px rgba(13, 34, 56, 0.12);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --page-width: 1040px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Tajawal", system-ui, sans-serif;
+      line-height: 1.75;
+    }
+
+    body { padding: 32px; }
+
+    .proposal-shell {
+      max-width: var(--page-width);
+      margin: 0 auto;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(15, 39, 66, 0.08);
+    }
+
+    .letterhead-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      background: linear-gradient(120deg, var(--brand), var(--brand-2));
+      color: #ffffff;
+      padding: 16px 34px;
+      position: relative;
+    }
+
+    .letterhead-bar::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), #e3cd92 50%, var(--accent));
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .brand-mark img {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .brand-copy p {
+      margin: 1px 0 0;
+      color: rgba(255, 255, 255, 0.66);
+      font-size: 10.5px;
+    }
+
+    .proposal-badge {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1px;
+      padding: 7px 16px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(227, 205, 146, 0.35);
+      white-space: nowrap;
+    }
+
+    .proposal-badge .ar {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #f0e2bb;
+    }
+
+    .proposal-badge .en {
+      font-family: "Inter", "Tajawal", sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .doc-meta {
+      background: var(--cream);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ref-strip {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      padding: 0 34px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ref-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 11px 18px;
+      border-inline-start: 1px solid var(--line);
+    }
+
+    .ref-item:first-child {
+      border-inline-start: 0;
+      padding-inline-start: 0;
+    }
+
+    .ref-item .ref-label {
+      font-size: 11.5px;
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .ref-item .ref-value {
+      font-family: "Inter", "Tajawal", sans-serif;
+      font-variant-numeric: tabular-nums;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand);
+      word-break: break-word;
+    }
+
+    .ref-client { flex: 1 1 auto; min-width: 0; }
+
+    .ref-client .ref-value { font-family: "Tajawal", sans-serif; }
+
+    .ref-status {
+      margin-inline-start: auto;
+      border-inline-start: 0;
+      align-items: center;
+      padding-inline-end: 0;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 13px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(169, 128, 47, 0.35);
+      color: var(--accent-deep);
+      font-size: 11.5px;
+      font-weight: 800;
+    }
+
+    .status-chip::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .subject-block { padding: 20px 34px 24px; }
+
+    .subject-block .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-deep);
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .subject-block .kicker::before {
+      content: "";
+      width: 14px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .subject-block h2 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--brand);
+    }
+
+    .subject-rule {
+      width: 64px;
+      height: 4px;
+      margin: 12px 0 0;
+      border-radius: 2px;
+      background: var(--brand);
+      position: relative;
+    }
+
+    .subject-rule::after {
+      content: "";
+      position: absolute;
+      top: 7px;
+      inset-inline-start: 0;
+      width: 34px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--accent);
+    }
+
+    .subject-block p {
+      margin: 16px 0 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .content { padding: 32px 34px 38px; }
+
+    .section { margin-bottom: 32px; }
+    .section:last-child { margin-bottom: 0; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: var(--brand);
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .section-kicker {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .section-card {
+      background: linear-gradient(180deg, #ffffff, #fbfcfd);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .lead { font-size: 16px; color: var(--ink); margin: 0; }
+    .muted { color: var(--muted); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--soft);
+      border: 1px solid rgba(15, 39, 66, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 18px;
+      min-height: 100%;
+    }
+
+    .panel h3 {
+      margin: 0 0 10px;
+      color: var(--brand);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .panel p, .panel li, .timeline-body p, .assumption-table td, .assumption-table th {
+      font-size: 14px;
+    }
+
+    .panel ul, .feature-list, .notes-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .feature-list li {
+      padding: 12px 14px;
+      background: #ffffff;
+      border: 1px solid rgba(15, 39, 66, 0.08);
+      border-radius: 10px;
+      display: flex;
+      align-items: start;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .feature-list li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 8px;
+      flex-shrink: 0;
+      background: var(--accent);
+    }
+
+    .feature-list.out li::before { background: #c46b6b; }
+
+    .feature-list.suggest li {
+      border-inline-start: 3px solid var(--suggestion);
+    }
+
+    .feature-list.suggest li::before { background: var(--suggestion); }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-inline-start: 8px;
+    }
+
+    .badge-now { background: #d4edda; color: #155724; }
+    .badge-later { background: #fff3cd; color: #856404; }
+    .badge-future { background: #d6edf5; color: #1a6b8a; }
+
+    .info-card {
+      padding: 16px 18px;
+      background: #ffffff;
+      border: 1px solid rgba(15, 39, 66, 0.08);
+      border-radius: 12px;
+    }
+
+    .info-card h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--brand);
+    }
+
+    .info-card p { font-size: 14px; margin: 0; }
+
+    .timeline { display: grid; gap: 14px; }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .timeline-step {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: var(--brand);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .timeline-body {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px 16px;
+      background: #ffffff;
+    }
+
+    .timeline-body h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      color: var(--brand);
+    }
+
+    .timeline-body p { margin: 0; color: var(--muted); }
+
+    .assumption-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 14px;
+      border-style: hidden;
+      box-shadow: 0 0 0 1px var(--line);
+    }
+
+    .assumption-table th {
+      background: var(--brand);
+      color: #ffffff;
+      padding: 12px 14px;
+      text-align: right;
+      font-weight: 700;
+    }
+
+    .assumption-table td {
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+      vertical-align: top;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 90px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .status-confirmed { background: var(--ok); }
+    .status-pending { background: var(--warn); }
+    .status-deferred { background: var(--defer); }
+
+    .approval-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .signature-card {
+      min-height: 148px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #fbfcfd);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .signature-card h4 {
+      margin: 0;
+      font-size: 15px;
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .signature-card .role {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .signature-line {
+      height: 1px;
+      background: rgba(22, 32, 43, 0.18);
+      margin: 18px 0 8px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .grid-2, .grid-3, .approval-grid { grid-template-columns: 1fr; }
+      .footer { flex-direction: column; align-items: start; }
+      .ref-strip { flex-wrap: wrap; row-gap: 6px; }
+      .ref-status { margin-inline-start: 0; border-inline-start: 1px solid var(--line); padding-inline-start: 18px; }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 16px; }
+      .content { padding: 24px 20px; }
+      .letterhead-bar, .ref-strip, .subject-block { padding-inline: 20px; }
+      .letterhead-bar { flex-wrap: wrap; row-gap: 10px; }
+      .ref-strip { flex-direction: column; }
+      .ref-item { border-inline-start: 0; padding-inline-start: 0; border-top: 1px solid var(--line); }
+      .ref-item:first-child { border-top: 0; }
+      .ref-status { border-top: 1px solid var(--line); padding-top: 10px; }
+      .subject-block h2 { font-size: 22px; }
+      .section-title { font-size: 19px; }
+    }
+  </style>
+  <link rel="stylesheet" href="../../../../tera-workshop/tera-document-print.css" media="print" />
+</head>
+<body>
+  <main class="proposal-shell" role="document" aria-label="عرض تقديمي لتطبيق CockingApp">
+    <section class="letterhead-bar" id="proposal-header">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="../../../../tera-workshop/teranoo-logo.png" alt="شعار Teranoo" />
+        </div>
+        <div class="brand-copy">
+          <h1>Teranoo</h1>
+          <p>تنفيذ وتطوير تطبيقات مؤسسية</p>
+        </div>
+      </div>
+      <div class="proposal-badge">
+        <span class="ar">نموذج عرض تطبيق</span>
+        <span class="en">Application Proposal</span>
+      </div>
+    </section>
+
+    <section class="doc-meta" aria-label="بيانات العرض">
+      <div class="ref-strip">
+        <div class="ref-item">
+          <span class="ref-label">الرقم</span>
+          <span class="ref-value">TFS-C01-NOOR-001</span>
+        </div>
+        <div class="ref-item">
+          <span class="ref-label">التاريخ</span>
+          <span class="ref-value">30 يونيو 2026</span>
+        </div>
+        <div class="ref-item ref-client">
+          <span class="ref-label">إلى السادة</span>
+          <span class="ref-value">نور (عميل)</span>
+        </div>
+        <div class="ref-item ref-status">
+          <span class="status-chip">معتمد ✅</span>
+        </div>
+      </div>
+
+      <div class="subject-block">
+        <span class="kicker">الموضوع</span>
+        <h2>عرض تنفيذ وتطوير تطبيق CockingApp</h2>
+        <div class="subject-rule"></div>
+        <p>
+          يوضح هذا العرض الفهم التنفيذي لتطبيق الوصفات المقترح، النطاق المتوقع للنسخة الأولى،
+          المتطلبات الأساسية، الاقتراحات التطويرية المبنية على أبحاث السوق، ومراحل التنفيذ المقترحة.
+        </p>
+      </div>
+    </section>
+
+    <div class="content">
+      <section class="section" id="executive-summary">
+        <div class="section-head">
+          <h3 class="section-title">الملخص التنفيذي</h3>
+          <span class="section-kicker">Executive Summary</span>
+        </div>
+        <div class="section-card">
+          <p class="lead">
+            <strong>CockingApp</strong> هو تطبيق ويب متكامل لإدارة وعرض وصفات الطبخ، 
+            يجمع بين <strong>لوحة تحكم (Dashboard)</strong> قوية للنظام (Admin) 
+            و<strong>واجهة عرض</strong> أنيقة للزوار. يتميز بنظام <strong>مكونات منفصل</strong> 
+            (Ingredient Management) يتيح تعريف المكونات ككيانات مستقلة وربطها بالوصفات — بدلاً من الكتابة الحرة التقليدية، 
+            مما يتيح تنظيمًا احترافيًا وإعادة استخدام المكونات بذكاء. 
+            يدعم التطبيق الصور، فيديوهات YouTube، التعليقات العامة، وتحميل PDF للوصفات.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="understanding">
+        <div class="section-head">
+          <h3 class="section-title">فهم المشروع والحل المقترح</h3>
+          <span class="section-kicker">Problem / Solution</span>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>المشكلة الحالية</h3>
+            <ul class="notes-list">
+              <li class="muted" style="padding-bottom:8px;">• الحاجة إلى تنظيم الوصفات بشكل احترافي في مكان واحد</li>
+              <li class="muted" style="padding-bottom:8px;">• مشكلة الكتابة الحرة للمقادير تؤدي إلى صعوبة التنظيم والتكرار وعدم الاتساق</li>
+              <li class="muted" style="padding-bottom:8px;">• عدم وجود قناة موحدة لعرض الوصفات مع الصور والفيديو والتفاعل مع الجمهور</li>
+              <li class="muted">• صعوبة مشاركة الوصفات وتحميلها بتنسيق منظم (PDF)</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>الحل المقترح</h3>
+            <ul class="notes-list">
+              <li class="muted" style="padding-bottom:8px;">• نظام <strong>مكونات منفصل</strong> — تعريف المكونات وإعادة استخدامها عبر الوصفات</li>
+              <li class="muted" style="padding-bottom:8px;">• لوحة تحكم كاملة لإدارة المحتوى (وصفات، تصنيفات، مكونات، تعليقات)</li>
+              <li class="muted" style="padding-bottom:8px;">• واجهة عرض عامة أنيقة مع دعم الصور والفيديو والتعليقات وتحميل PDF</li>
+              <li class="muted">• تصميم عصري (Claude Design System) مع تجربة مستخدم سلسة</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="users-roles">
+        <div class="section-head">
+          <h3 class="section-title">المستخدمون والأدوار</h3>
+          <span class="section-kicker">Users / Roles</span>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>المستخدمون المستهدفون</h3>
+            <p class="muted">
+              <strong>Admin (نور):</strong> مدير المحتوى الأساسي — يدخل لوحة التحكم، يدير التصنيفات، 
+              المكونات، الوصفات، الصور، الفيديو، والتعليقات.<br/><br/>
+              <strong>زوار عام:</strong> جمهور التطبيق — يتصفحون الوصفات حسب التصنيفات، 
+              يشاهدون التفاصيل والصور والفيديو، يعلقون، ويحملون PDF بدون تسجيل دخول.
+            </p>
+          </div>
+          <div class="panel">
+            <h3>الأدوار والصلاحيات</h3>
+            <p class="muted">
+              <strong>Admin:</strong> صلاحية كاملة — إدارة التصنيفات، المكونات، الوصفات، 
+              الصور والفيديو، التعليقات (موافقة/حذف)، وإعدادات النظام.<br/><br/>
+              <strong>زوار:</strong> تصفح عام، بحث، تعليق (بدون حساب)، تحميل PDF، حفظ مفضلة (محلي).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="scope">
+        <div class="section-head">
+          <h3 class="section-title">نطاق العمل — النسخة الأولى</h3>
+          <span class="section-kicker">Phase 1 Scope</span>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>النطاق الأساسي — مرحلة 1A</h3>
+            <ul class="feature-list" id="feature-list">
+              <li>لوحة تحكم Admin — Dashboard رئيسي مع إحصائيات</li>
+              <li>إدارة التصنيفات (إضافة / تعديل / حذف / ترتيب)</li>
+              <li>إدارة المكونات ككيانات منفصلة مع وحدات قياس (كوب، ملعقة، غرام، كغم، مل، حبة)</li>
+              <li>إدارة الوصفات — إنشاء/تعديل مع ربط المكونات بالكميات</li>
+              <li>رفع الصور لكل وصفة (معرض صور)</li>
+              <li>إضافة روابط فيديو YouTube لكل وصفة</li>
+              <li>إضافة خطوات التحضير (نصوص منسقة)</li>
+              <li>عرض عام للوصفات — صفحة رئيسية، تصنيفات، بحث</li>
+              <li>صفحة وصفة مفصلة (مقادير، خطوات، صور، فيديو، تعليقات)</li>
+              <li>تحميل PDF لكل وصفة</li>
+              <li>نظام التعليقات العامة (بدون حساب)</li>
+              <li>إدارة التعليقات من لوحة التحكم (موافقة/حذف)</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>خارج النطاق الحالي</h3>
+            <ul class="feature-list out" id="out-of-scope-list">
+              <li>تطبيق جوال (Native Mobile App)</li>
+              <li>تكامل مع أجهزة المطبخ الذكية</li>
+              <li>متجر إلكتروني لبيع المنتجات أو المكونات</li>
+              <li>نظام اشتراكات مدفوعة</li>
+              <li>استيراد فيديوهات من TikTok / Instagram مباشرة</li>
+              <li>نظام أدوار متعدد (Admin فقط حاليًا)</li>
+              <li>الذكاء الاصطناعي لتوليد الوصفات (AI Recipe Generation)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="suggestions">
+        <div class="section-head">
+          <h3 class="section-title">مقترحات تحسينية — مبنية على أبحاث السوق</h3>
+          <span class="section-kicker">Market Research Suggestions</span>
+        </div>
+        <div class="section-card">
+          <p class="muted" style="margin-bottom: 16px;">
+            بناءً على تحليل أفضل تطبيقات الوصفات العالمية والعربية لعام 2025-2026 
+            (مثل Samsung Food, Cookpad, Paprika, Mealime, Yummly, SideChef، وسمسم، وأطيب طبخة)، 
+            نقترح الميزات التطويرية التالية:
+          </p>
+          <div class="grid-2">
+            <div class="panel">
+              <h3>موصى به — ضمن النسخة الأولى <span class="badge badge-now">مباشر</span></h3>
+              <ul class="feature-list suggest" style="gap:8px;">
+                <li>
+                  <strong>قائمة مشتريات ذكية</strong> — تحويل مكونات الوصفات إلى لائحة تسوق منظمة حسب الأقسام 
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: Samsung Food, Cookpad, سمسم)</span>
+                </li>
+                <li>
+                  <strong>مقياس الوصفات الديناميكي (Recipe Scaling)</strong> — تغيير عدد الأشخاص والمقادير تتغير تلقائياً
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: Paprika, Mealime)</span>
+                </li>
+                <li>
+                  <strong>وقت التحضير والطهي + بحث بالوقت</strong> — عرض وقت التحضير والطهي لكل وصفة مع فلترة حسب الوقت
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: كل التطبيقات الرائدة)</span>
+                </li>
+                <li>
+                  <strong>مفضلة / حفظ الوصفات</strong> — للزوار حفظ الوصفات المفضلة محلياً بدون حساب
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: Paprika, Cookpad)</span>
+                </li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3>المرحلة الثانية <span class="badge badge-later">لاحقاً</span></h3>
+              <ul class="feature-list suggest" style="gap:8px;">
+                <li>
+                  <strong>معلومات غذائية</strong> — حساب السعرات والمغذيات (بروتين، كارب، دهون) لكل حصة
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: Samsung Food, EatThisMuch)</span>
+                </li>
+                <li>
+                  <strong>خطة وجبات أسبوعية</strong> — جدولة الوجبات للأسبوع مع إشعارات
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: Mealime, سمسم)</span>
+                </li>
+                <li>
+                  <strong>الطبخ بدون إنترنت (Offline)</strong> — مشاهدة الوصفات المحفوظة بدون نت
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: Paprika — ميزة قوية جداً)</span>
+                </li>
+                <li>
+                  <strong>بحث بالمكونات المتوفرة</strong> — أدخل مكوناتك والتطبيق يقترح وصفات مناسبة
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: SuperCook, Yummly, Cookpad)</span>
+                </li>
+                <li>
+                  <strong>نظام تقييم ونجوم</strong> — تقييم الزوار للوصفات بجانب التعليقات
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: Cookpad)</span>
+                </li>
+                <li>
+                  <strong>تقليل هدر الطعام</strong> — اقتراح وصفات بناءً على المكونات الموجودة حالياً
+                  <br/><span class="muted" style="font-size:12px;">(مصدر: Crumb, EatThisMuch)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top:16px;">
+            <div class="panel">
+              <h3>مراحل متقدمة <span class="badge badge-future">مستقبلاً</span></h3>
+              <ul class="feature-list suggest" style="gap:8px;">
+                <li>اقتراح وصفات بالذكاء الاصطناعي — "ماذا أطبخ اليوم؟" بناءً على المكونات المتاحة</li>
+                <li>بدائل المكونات الذكية — "استبدال البيض" يعطي بدائل مناسبة</li>
+                <li>ميزانية التسوق — تتبع مصروفات المشتريات واقتراح بدائل أقل تكلفة</li>
+                <li>لائحة مشتريات متعاونة — مشاركة قائمة التسوق مع العائلة في الوقت الفعلي</li>
+                <li>تطبيق جوال / PWA — تجربة أفضل على الجوال</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3>مقترحات للمناقشة</h3>
+              <p class="muted">
+                • <strong>التحكم الصوتي</strong> — أوامر صوتية أثناء الطبخ (SideChef, Yummly) - 
+                مناسب للمستخدمين المتقدمين مستقبلاً<br/><br/>
+                • <strong>استيراد الوصفات من المواقع</strong> — إمكانية لصق رابط وصفة 
+                واستيرادها تلقائياً (Paprika Feature) — مناسب للمرحلة الثانية<br/><br/>
+                • <strong>التكامل مع واتساب</strong> — مشاركة الوصفات عبر واتساب بضغطة واحدة
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="requirements">
+        <div class="section-head">
+          <h3 class="section-title">المتطلبات الأساسية</h3>
+          <span class="section-kicker">Requirements</span>
+        </div>
+        <div class="grid-3" id="requirement-grid">
+          <div class="info-card">
+            <h4>المتطلبات الوظيفية</h4>
+            <p class="muted">
+              • إدارة كاملة للتصنيفات والمكونات والوصفات<br/>
+              • واجهة عامة للعرض والتصفح والبحث<br/>
+              • تعليقات عامة مع إدارة من Admin<br/>
+              • تحميل PDF لكل وصفة<br/>
+              • رفع صور وإضافة روابط YouTube
+            </p>
+          </div>
+          <div class="info-card">
+            <h4>المتطلبات التقنية</h4>
+            <p class="muted">
+              • Next.js (App Router) + TypeScript<br/>
+              • PostgreSQL + Prisma ORM<br/>
+              • Tailwind CSS<br/>
+              • استضافة On-premise<br/>
+              • RTL (عربي) بالكامل
+            </p>
+          </div>
+          <div class="info-card">
+            <h4>متطلبات البيانات</h4>
+            <p class="muted">
+              • المكونات — كيانات منفصلة مع وحدات قياس<br/>
+              • الوصفات — ربط بالمكونات والكميات<br/>
+              • التصنيفات — هيكل هرمي<br/>
+              • الصور والفيديو — روابط/مرفقات<br/>
+              • التعليقات — مع حالة الموافقة
+            </p>
+          </div>
+          <div class="info-card">
+            <h4>متطلبات التصميم</h4>
+            <p class="muted">
+              • Claude Design System (getdesign.md)<br/>
+              • ألوان: كريمي (#faf9f5) + مرجاني (#cc785c) + كحلي (#181715)<br/>
+              • خطوط: Copernicus-like (serif) + Inter (sans)<br/>
+              • RTL بالكامل<br/>
+              • متجاوب مع جميع الشاشات
+            </p>
+          </div>
+          <div class="info-card">
+            <h4>متطلبات الأمان</h4>
+            <p class="muted">
+              • حماية لوحة التحكم بكلمة مرور<br/>
+              • فصل تام بين Admin والواجهة العامة<br/>
+              • التحقق من التعليقات (موافقة مسبقة)<br/>
+              • منع رفع الملفات الضارة
+            </p>
+          </div>
+          <div class="info-card">
+            <h4>متطلبات التشغيل</h4>
+            <p class="muted">
+              • استضافة On-premise (على سيرفر العميل)<br/>
+              • Docker-ready (اختياري)<br/>
+              • قاعدة بيانات PostgreSQL<br/>
+              • دعم النسخ الاحتياطي للبيانات
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="business-value">
+        <div class="section-head">
+          <h3 class="section-title">القيمة المتوقعة من التطبيق</h3>
+          <span class="section-kicker">Expected Value</span>
+        </div>
+        <div class="section-card">
+          <div class="grid-3">
+            <div class="panel">
+              <h3>تنظيم احترافي</h3>
+              <p class="muted">
+                نظام المكونات المنفصل يضمن الاتساق عبر جميع الوصفات ويمنع التكرار
+                والكتابة العشوائية — سهولة البحث والتصفية حسب المكونات.
+              </p>
+            </div>
+            <div class="panel">
+              <h3>تجربة زوار ممتازة</h3>
+              <p class="muted">
+                واجهة عرض أنيقة مع دعم الوسائط المتعددة، تحميل PDF، تعليقات، ومقياس 
+                ديناميكي للوصفات — كل ما يحتاجه الزائر في مكان واحد.
+              </p>
+            </div>
+            <div class="panel">
+              <h3>قابلية التوسع</h3>
+              <p class="muted">
+                بنية تقنية مرنة (Next.js + Prisma) تسمح بإضافة الميزات المستقبلية 
+                بسهولة مثل خطة الوجبات، المعلومات الغذائية، والتطبيق الجوال.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="assumptions">
+        <div class="section-head">
+          <h3 class="section-title">الافتراضات والنقاط المفتوحة</h3>
+          <span class="section-kicker">Assumptions</span>
+        </div>
+        <div class="section-card">
+          <table class="assumption-table" id="assumptions-table">
+            <thead>
+              <tr>
+                <th>المجال</th>
+                <th>الافتراض</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>التقنية</td>
+                <td>Next.js + Prisma + PostgreSQL — المكدس الموصى به</td>
+                <td><span class="status-pill status-confirmed">مؤكد</span></td>
+              </tr>
+              <tr>
+                <td>التصميم</td>
+                <td>Claude design system من getdesign.md — بألوانه وخطوطه</td>
+                <td><span class="status-pill status-confirmed">مؤكد</span></td>
+              </tr>
+              <tr>
+                <td>اللغة</td>
+                <td>العربية (RTL) فقط — لا حاجة للإنجليزية حالياً</td>
+                <td><span class="status-pill status-confirmed">مؤكد</span></td>
+              </tr>
+              <tr>
+                <td>الاستضافة</td>
+                <td>On-premise — على سيرفر العميل (تحديد المواصفات لاحقاً)</td>
+                <td><span class="status-pill status-pending">يحتاج تأكيد</span></td>
+              </tr>
+              <tr>
+                <td>الفيديو</td>
+                <td>روابط YouTube فقط — لا رفع مباشر للفيديو</td>
+                <td><span class="status-pill status-confirmed">مؤكد</span></td>
+              </tr>
+              <tr>
+                <td>التصنيفات</td>
+                <td>تصنيفات طبخ تقليدية (يحددها Admin لاحقاً)</td>
+                <td><span class="status-pill status-pending">يحتاج تأكيد</span></td>
+              </tr>
+              <tr>
+                <td>التعليقات</td>
+                <td>عامة بدون حساب — مع موافقة مسبقة من Admin</td>
+                <td><span class="status-pill status-pending">يحتاج تأكيد</span></td>
+              </tr>
+              <tr>
+                <td>المقترحات التحسينية</td>
+                <td>قائمة مشتيات، Scaling، وقت التحضير — مقترحة ضمن المرحلة الأولى</td>
+                <td><span class="status-pill status-pending">بانتظار موافقة العميل</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="roadmap">
+        <div class="section-head">
+          <h3 class="section-title">خارطة التنفيذ المقترحة</h3>
+          <span class="section-kicker">Delivery Roadmap</span>
+        </div>
+        <div class="section-card">
+          <div class="timeline" id="timeline">
+            <div class="timeline-item">
+              <div class="timeline-step">1</div>
+              <div class="timeline-body">
+                <h4>المرحلة الأولى — Core MVP</h4>
+                <p>
+                  النواة الأساسية: لوحة تحكم Admin كاملة (تصنيفات، مكونات، وصفات)، 
+                  واجهة عرض عامة، صور، فيديو YouTube، تعليقات، تحميل PDF، 
+                  قائمة مشتريات، مقياس الوصفات، وقت التحضير، مفضلة.
+                </p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-step">2</div>
+              <div class="timeline-body">
+                <h4>المرحلة الثانية — Extended MVP</h4>
+                <p>
+                  معلومات غذائية (سعرات حرارية)، خطة وجبات أسبوعية، 
+                  بحث بالمكونات المتوفرة، تقييم ونجوم، تقليل هدر الطعام، 
+                  طبخ بدون إنترنت، استيراد وصفات من المواقع.
+                </p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-step">3</div>
+              <div class="timeline-body">
+                <h4>مراحل لاحقة — Future</h4>
+                <p>
+                  اقتراح وصفات بالذكاء الاصطناعي، بدائل المكونات الذكية، 
+                  ميزانية التسوق، تطبيق جوال / PWA، مشاركة القوائم، 
+                  تحكم صوتي، تكامل واتساب.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="approval-section">
+        <div class="section-head">
+          <h3 class="section-title">الاعتماد والموافقة</h3>
+          <span class="section-kicker">Approval</span>
+        </div>
+        <div class="section-card">
+          <p class="lead muted">
+            يعتمد هذا العرض كمرجع مبدئي لفهم تطبيق CockingApp، نطاق النسخة الأولى، 
+            المقترحات التحسينية، والخطة المقترحة. 
+            يخضع أي توسع لاحق أو تغيير في النطاق لاعتماد مستقل وموثق.
+          </p>
+          <div class="approval-grid" id="approval">
+            <div class="signature-card">
+              <div>
+                <h4>نور (العميل)</h4>
+                <div class="role">صاحب التطبيق — CockingApp</div>
+              </div>
+              <div>
+                <div class="signature-line"></div>
+                <div class="muted">التوقيع / التاريخ</div>
+              </div>
+            </div>
+            <div class="signature-card">
+              <div>
+                <h4>ماجد (Teranoo)</h4>
+                <div class="role">ممثل Teranoo — تنفيذ وإدارة المشاريع</div>
+              </div>
+              <div>
+                <div class="signature-line"></div>
+                <div class="muted">التوقيع / التاريخ</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer" id="proposal-footer">
+        <span>Teranoo — CockingApp Application Proposal</span>
+        <span>إعداد: Tera Agent · 30 يونيو 2026</span>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>
