@@ -14,7 +14,7 @@ No UI Implementation without project-preparation/28_UI_UX_GUIDELINES.md when vis
 ## Design Source Modes
 
 | Mode | Use When | Required Output |
-|---|---|---|---|
+|---|---|---|
 | `INTERNAL_TERA_KIT` | No external source; admin/ERP/CRM/dashboard default | Compact or full `28_UI_UX_GUIDELINES.md` from internal kit |
 | `GETDESIGN_MD` | A suitable `getdesign.md` DESIGN.md exists | Raw DESIGN.md + conversion into `28_UI_UX_GUIDELINES.md` |
 | `FIGMA_DESIGN_FILE` | Client provides a Figma design file with frames, components, tokens, or auto-layout | Figma analysis → extracted tokens → `28_UI_UX_GUIDELINES.md` |
@@ -42,6 +42,8 @@ No UI Implementation without project-preparation/28_UI_UX_GUIDELINES.md when vis
 4. If the project is internal admin/ERP/CRM/dashboard without a design source, use `INTERNAL_TERA_KIT` starting with `KIT_ADMIN_DASHBOARD.md`.
 5. If the project has no UI, record `NO_UI` and do not create design files.
 6. Do not mention famous brands to clients as identity promises. Describe style qualities instead.
+
+When `FIGMA_DESIGN_FILE` is selected as the official design source, Tera must use `FIGMA_INTEGRATION.md` and ask the user for the required official Figma adoption inputs. The user is not expected to remember that checklist.
 
 ## Required Decision Record
 

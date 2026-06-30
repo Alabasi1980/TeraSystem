@@ -32,7 +32,7 @@ project-preparation/design-source/
 ```
 
 | Source | Type | Path / Link | Used? | Notes |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 |  | getdesign.md / Figma file / screenshot / CSS / URL / client notes |  | Yes / No |  |
 
 ## 4. Client Branding Overrides
@@ -191,6 +191,7 @@ If a required UI rule is missing, EngineeringAgent must raise a `Design Gap` ins
 | Accessibility baseline met | PASS / FAIL |  |
 | Forbidden styling avoided | PASS / FAIL |  |
 | Design gaps recorded instead of guessed | PASS / FAIL / N/A |  |
+| If FIGMA_DESIGN_FILE: Figma mapping completed | PASS / FAIL / N/A |  |
 
 ## 15. Figma Source Mapping
 

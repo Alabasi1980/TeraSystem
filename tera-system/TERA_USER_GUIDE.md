@@ -369,6 +369,22 @@ If you have general rules for all Tera projects, they belong in `tera-system/` i
 3. أنشئ أو حدّث فقط: project-preparation/28_UI_UX_GUIDELINES.md
 ```
 
+#### Official Figma design source
+
+إذا قلت إن Figma هو مصدر التصميم الرسمي، يجب على Tera ألا يتوقع منك تذكر التفاصيل المطلوبة. يجب أن يطلب منك تلقائيًا:
+
+```text
+- رابط Figma أو الملف أو الإطارات المصدرة.
+- الصفحات/Frames المعتمدة فقط.
+- Frames الممنوع استخدامها.
+- درجة الالتزام: exact / close match / guided adaptation.
+- اتجاه الواجهة: RTL / LTR / الاثنين.
+- العناصر المطلوب استخراجها: colors, typography, spacing, layout, components, states, responsive assumptions, RTL/LTR.
+- الحالات الناقصة التي يجب فحصها: empty/loading/error/disabled/mobile/tablet.
+- القيود: no API, no MCP, no plugin, no direct EngineeringAgent implementation from Figma.
+- أي هوية أو ألوان مشروع يجب أن تتجاوز Figma.
+```
+
 ### Start controlled implementation
 
 ```text

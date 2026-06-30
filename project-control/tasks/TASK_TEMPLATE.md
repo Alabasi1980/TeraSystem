@@ -14,7 +14,7 @@
 | **Linked Plan Item** | PROJECT_DETAILED_EXECUTION_PLAN item / N/A |
 | **Linked Batch** | EXECUTION_BATCH_PLAN batch / N/A |
 | **Active Technology Profile** | Profile name / N/A |
-| **Design Source Decision** | INTERNAL_TERA_KIT / GETDESIGN_MD / USER_PROVIDED_REFERENCE / EXTERNAL_URL_ANALYSIS / HYBRID / NO_UI / N/A |
+| **Design Source Decision** | INTERNAL_TERA_KIT / GETDESIGN_MD / FIGMA_DESIGN_FILE / USER_PROVIDED_REFERENCE / EXTERNAL_URL_ANALYSIS / HYBRID / NO_UI / N/A |
 | **UI Acceptance Gate Required** | Yes / No / N/A |
 
 ## 2. Objective
@@ -60,7 +60,7 @@ Required for any UI, Frontend, layout, style, or component task.
 
 | Item | Value |
 |---|---|
-| UI Source | `28_UI_UX_GUIDELINES.md` / DESIGN.md reference / Internal Kit / No UI |
+| UI Source | `28_UI_UX_GUIDELINES.md` / DESIGN.md reference / FIGMA_DESIGN_FILE / Internal Kit / No UI |
 | UI Rules | Tokens / Layout / Component Rules / RTL-LTR / Accessibility |
 | UI Acceptance | `tera-system/design-system/UI_ACCEPTANCE_GATE.md` required? Yes / No |
 | Design Gap Handling | Raise Design Gap / Ask Tera / N/A |

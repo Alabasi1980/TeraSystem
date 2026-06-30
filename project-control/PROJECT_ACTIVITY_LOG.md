@@ -16,6 +16,22 @@
 
 ## Activity Log
 
+## [2026-06-30] - SYSTEM_DOC: Official Figma adoption user-input checklist
+
+- Related Task: N/A (System Maintenance)
+- Actor: User + Tera Agent
+- Summary: Documented that when the user wants Figma as the official design source (`FIGMA_DESIGN_FILE`), Tera must automatically ask for the required Figma adoption inputs instead of expecting the user to remember them. Added the required input checklist and Arabic ready-to-fill prompt to `tera-system/design-system/FIGMA_INTEGRATION.md`. Added a short reminder to `TERA_USER_GUIDE.md` and linked the requirement from `DESIGN_SOURCE_PROTOCOL.md`.
+- Decision / Result: Future official Figma adoption will trigger Tera to ask for Figma link/file, approved frames, excluded frames, commitment level, direction, extraction scope, missing state checks, restrictions, and project identity overrides.
+- Next Action: None.
+
+## [2026-06-30] - SYSTEM_AUDIT_FIX: FIGMA_DESIGN_FILE consistency audit
+
+- Related Task: N/A (System Maintenance)
+- Actor: Tera Agent
+- Summary: Re-audited the `FIGMA_DESIGN_FILE` Design Governance changes. Found and fixed minor consistency issues: added `FIGMA_DESIGN_FILE` to `project-control/tasks/TASK_TEMPLATE.md`, fixed Markdown table separator column counts in `DESIGN_SOURCE_PROTOCOL.md`, `UI_ACCEPTANCE_GATE.md`, and `28_UI_UX_GUIDELINES.md`, aligned `FIGMA_INTEGRATION.md` reference from old `Section 3.5` wording to actual `Section 15: Figma Source Mapping`, and added Figma mapping check to `28_UI_UX_GUIDELINES.md` UI Acceptance Checklist.
+- Decision / Result: Audit passed after fixes. `opencode.json` is valid JSON, Markdown tables check passed, mode lists include `FIGMA_DESIGN_FILE`, and `git diff --check` has no errors except normal CRLF warnings.
+- Next Action: None.
+
 ## [2026-06-30] - SYSTEM_IMPROVE: FIGMA_DESIGN_FILE protocol added as official Design Source Mode
 
 - Related Task: N/A (System Maintenance)

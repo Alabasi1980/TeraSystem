@@ -21,7 +21,7 @@ Any UI implementation task must pass UI_ACCEPTANCE_GATE before it can be accepte
 ## Gate Checklist
 
 | Check | Required Result |
-|---|---|---|
+|---|---|
 | UI source mode is recorded | PASS |
 | `28_UI_UX_GUIDELINES.md` used as primary design source | PASS |
 | No invented colors, spacing, typography, or component style | PASS |
