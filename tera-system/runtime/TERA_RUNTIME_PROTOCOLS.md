@@ -322,7 +322,7 @@ Helper agent authority limits:
 For any UI / Frontend / visual style task:
 
 1. Tera determines Design Governance Level: None / Compact / Full.
-2. Tera records Design Source Mode: `INTERNAL_TERA_KIT`, `GETDESIGN_MD`, `USER_PROVIDED_REFERENCE`, `EXTERNAL_URL_ANALYSIS`, `HYBRID`, `NO_UI`, or `N/A`.
+2. Tera records Design Source Mode: `INTERNAL_TERA_KIT`, `GETDESIGN_MD`, `FIGMA_DESIGN_FILE`, `USER_PROVIDED_REFERENCE`, `EXTERNAL_URL_ANALYSIS`, `HYBRID`, `NO_UI`, or `N/A`.
 3. Raw sources are saved in `project-preparation/design-source/` when applicable.
 4. Final executable rules are written to `project-preparation/28_UI_UX_GUIDELINES.md`.
 5. `EngineeringAgent` must implement from `28_UI_UX_GUIDELINES.md`; if a rule is missing, it raises `Design Gap` instead of guessing.

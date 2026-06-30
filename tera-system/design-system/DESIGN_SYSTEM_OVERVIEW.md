@@ -21,7 +21,8 @@ Tera chooses the design level by project type:
 | Simple internal CRUD | Internal Kit + compact `28_UI_UX_GUIDELINES.md` |
 | ERP / CRM / dashboard | Full Design Governance |
 | SaaS / public UI / design-sensitive app | Full Design Governance + `getdesign.md` when useful |
-| Client screenshots / reference website / Figma | `USER_PROVIDED_REFERENCE` or `EXTERNAL_URL_ANALYSIS` |
+| Client provides Figma design file | `FIGMA_DESIGN_FILE` — requires structured extraction into `28_UI_UX_GUIDELINES.md` |
+| Client screenshots / reference website / brand notes | `USER_PROVIDED_REFERENCE` or `EXTERNAL_URL_ANALYSIS` |
 
 ## Source to Execution Flow
 
@@ -39,7 +40,8 @@ Design Source Decision
 |---|---|
 | `DESIGN_SOURCE_PROTOCOL.md` | Design source modes and activation rules |
 | `DESIGN_MD_INTEGRATION.md` | `getdesign.md` / DESIGN.md protocol |
-| `EXTERNAL_REFERENCE_ANALYSIS.md` | Screenshots, Figma, URLs, user references |
+| `EXTERNAL_REFERENCE_ANALYSIS.md` | Screenshots, URLs, brand notes, user references |
+| `FIGMA_INTEGRATION.md` | Figma design file protocol (when FIGMA_DESIGN_FILE is active) |
 | `INTERNAL_KITS_INDEX.md` | Internal fallback kits |
 | `DESIGN_TOKENS_SCHEMA.md` | Approved token schema |
 | `COMPONENT_LIBRARY_SCHEMA.md` | Component rule schema |
@@ -57,7 +59,7 @@ The final executable UI design decision is always:
 project-preparation/28_UI_UX_GUIDELINES.md
 ```
 
-Raw sources such as DESIGN.md, screenshots, Figma notes, color palettes, and external references belong in:
+Raw sources such as DESIGN.md, Figma files/exports, screenshots, color palettes, and external references belong in:
 
 ```text
 project-preparation/design-source/

@@ -313,7 +313,7 @@ project-preparation/design-source/ عند توفيره من Tera
 | اسم العميل | UI Visual Designer Agent |
 | المعرّف | `UI_VISUAL_DESIGNER_AGENT` |
 | الفئة | أساسي عند وجود واجهات مهمة / مشروط للمشاريع البسيطة |
-| الدور | تحويل مصدر التصميم إلى Design Tokens وComponent Rules وLayout Rules وقواعد تنفيذ بصرية داخل `28_UI_UX_GUIDELINES.md` |
+| الدور | تحويل مصدر التصميم (بما في ذلك Figma files) إلى Design Tokens وComponent Rules وLayout Rules وقواعد تنفيذ بصرية داخل `28_UI_UX_GUIDELINES.md` |
 
 ### الفرق بينه وبين UIUXStructureAgent
 
@@ -327,6 +327,7 @@ project-preparation/design-source/ عند توفيره من Tera
 - عند وجود Frontend أو UI مهم.
 - عند استخدام `getdesign.md` أو DESIGN.md.
 - عند وجود صور، Figma، CSS، ألوان، أو موقع مرجعي من العميل.
+- عند استخدام `FIGMA_DESIGN_FILE` — لتحليل ملف Figma واستخراج التوكينز والقواعد.
 - عند مشروع ERP / CRM / Dashboard يحتاج هوية بصرية منضبطة.
 - عندما يجب إنشاء أو تحديث `project-preparation/28_UI_UX_GUIDELINES.md`.
 
@@ -337,6 +338,7 @@ project-preparation/07_SCREENS_AND_UI_STRUCTURE.md
 project-preparation/design-source/ عند وجوده
 tera-system/design-system/DESIGN_SOURCE_PROTOCOL.md
 tera-system/design-system/DESIGN_MD_INTEGRATION.md
+tera-system/design-system/FIGMA_INTEGRATION.md  (عند استخدام FIGMA_DESIGN_FILE)
 tera-system/design-system/EXTERNAL_REFERENCE_ANALYSIS.md
 tera-system/design-system/DESIGN_TOKENS_SCHEMA.md
 tera-system/design-system/COMPONENT_LIBRARY_SCHEMA.md
@@ -361,6 +363,8 @@ project-preparation/design-source/DESIGN_SOURCE_NOTES.md عند الحاجة
 - لا يجعل `getdesign.md` مصدرًا إلزاميًا.
 - لا يتجاوز قرار Tera أو تفضيلات العميل المعتمدة.
 - لا يعتمد الواجهة كمنفذة؛ يرفع قواعد التصميم فقط إلى Tera.
+- عند `FIGMA_DESIGN_FILE`: لا يمرر Figma مباشرة لـ EngineeringAgent — يستخرج القواعد أولاً.
+- عند `FIGMA_DESIGN_FILE`: يسجل أي تفاصيل تصميم ناقصة (fonts, states, variants) كـ Design Gap.
 
 ### معايير القبول
 
@@ -371,6 +375,7 @@ project-preparation/design-source/DESIGN_SOURCE_NOTES.md عند الحاجة
 - RTL/LTR وAccessibility مذكورة.
 - Forbidden Styling واضح.
 - Engineering Implementation Instructions تمنع التخمين.
+- إذا كان المصدر `FIGMA_DESIGN_FILE`: Figma tokens/components تم استخراجها وتوثيقها بالكامل.
 
 ---
 

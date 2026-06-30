@@ -16,6 +16,14 @@
 
 ## Activity Log
 
+## [2026-06-30] - SYSTEM_IMPROVE: FIGMA_DESIGN_FILE protocol added as official Design Source Mode
+
+- Related Task: N/A (System Maintenance)
+- Actor: Tera Agent (per expert review)
+- Summary: Added `FIGMA_DESIGN_FILE` as an official Design Source Mode. Created `tera-system/design-system/FIGMA_INTEGRATION.md` with flow, roles, and restrictions. Updated 13 files: `DESIGN_SOURCE_PROTOCOL.md` (new mode + selection rule), `DESIGN_SYSTEM_OVERVIEW.md` (separate Figma row), `UI_ACCEPTANCE_GATE.md` (Figma check in pre-task + checklist + result template), `28_UI_UX_GUIDELINES.md` (Section 15 Figma Source Mapping), `TeraSubAgents.md` (UIVisualDesignerAgent expanded for Figma), `TeraAgent.md`, `.opencode/agents/tera.md`, `Tera_Project_Preparation_Files.md`, `TERA_USER_GUIDE.md`, `TERA_RUNTIME_TEMPLATES.md`, `TERA_RUNTIME_CHECKLISTS.md`, `TERA_RUNTIME_PROTOCOLS.md`.
+- Decision / Result: Figma is now a recognized design source distinct from screenshots. No API integration. No direct EngineeringAgent access to Figma. The executable spec remains `28_UI_UX_GUIDELINES.md`. Design gaps are recorded for missing Figma details.
+- Next Action: Layer is ready for projects with Figma design files.
+
 ## [2026-06-30] - SYSTEM_IMPROVE: opencode.json optimization + 5 new slash commands
 
 - Related Task: N/A (System Maintenance)

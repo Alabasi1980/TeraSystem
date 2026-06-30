@@ -16,11 +16,12 @@ Any UI implementation task must pass UI_ACCEPTANCE_GATE before it can be accepte
 - `project-preparation/28_UI_UX_GUIDELINES.md` exists for visual UI work.
 - Raw sources are saved in `project-preparation/design-source/` when applicable.
 - TASK file includes UI Source, UI Rules, UI Acceptance, and Design Gap Handling.
+- If `Design Source Mode = FIGMA_DESIGN_FILE`: Figma analysis must be completed and rules extracted into `28_UI_UX_GUIDELINES.md` before implementation.
 
 ## Gate Checklist
 
 | Check | Required Result |
-|---|---|
+|---|---|---|
 | UI source mode is recorded | PASS |
 | `28_UI_UX_GUIDELINES.md` used as primary design source | PASS |
 | No invented colors, spacing, typography, or component style | PASS |
@@ -32,6 +33,7 @@ Any UI implementation task must pass UI_ACCEPTANCE_GATE before it can be accepte
 | Forbidden styling avoided | PASS |
 | Design gaps recorded instead of guessed | PASS / N/A |
 | Existing component patterns reused where available | PASS / N/A |
+| **If FIGMA_DESIGN_FILE: Figma tokens/components matched** | PASS / N/A |
 
 ## Outcomes
 
@@ -63,6 +65,7 @@ Use this template inside the related `project-control/tasks/TASK-COD-XXX.md` bef
 | Forbidden styling avoided | PASS / FAIL |  |  |
 | Design gaps recorded instead of guessed | PASS / FAIL / N/A |  |  |
 | Existing component patterns reused where available | PASS / FAIL / N/A |  |  |
+| If FIGMA_DESIGN_FILE: Figma tokens/components matched | PASS / FAIL / N/A |  |  |
 
 Gate Status: PASS / NEEDS_FIX / BLOCKED_DESIGN_GAP
 

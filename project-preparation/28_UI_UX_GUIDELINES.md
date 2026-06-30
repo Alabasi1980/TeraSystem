@@ -7,7 +7,7 @@
 
 | Field | Value |
 |---|---|
-| Design Source Mode | INTERNAL_TERA_KIT / GETDESIGN_MD / USER_PROVIDED_REFERENCE / EXTERNAL_URL_ANALYSIS / HYBRID / NO_UI / N/A |
+| Design Source Mode | INTERNAL_TERA_KIT / GETDESIGN_MD / FIGMA_DESIGN_FILE / USER_PROVIDED_REFERENCE / EXTERNAL_URL_ANALYSIS / HYBRID / NO_UI / N/A |
 | Selected Source | TBD |
 | Source Status | Draft / Approved / Needs Decision / N/A |
 | Design Governance Level | None / Compact / Full |
@@ -32,8 +32,8 @@ project-preparation/design-source/
 ```
 
 | Source | Type | Path / Link | Used? | Notes |
-|---|---|---|---|---|
-|  | getdesign.md / screenshot / Figma / CSS / URL / client notes |  | Yes / No |  |
+|---|---|---|---|---|---|
+|  | getdesign.md / Figma file / screenshot / CSS / URL / client notes |  | Yes / No |  |
 
 ## 4. Client Branding Overrides
 
@@ -192,7 +192,25 @@ If a required UI rule is missing, EngineeringAgent must raise a `Design Gap` ins
 | Forbidden styling avoided | PASS / FAIL |  |
 | Design gaps recorded instead of guessed | PASS / FAIL / N/A |  |
 
-## 15. Open Design Gaps
+## 15. Figma Source Mapping
+
+This section is required only when `Design Source Mode = FIGMA_DESIGN_FILE`.
+
+| Item | Value / Notes |
+|---|---|
+| Figma file / link |  |
+| Pages / Frames used |  |
+| Components mapped |  |
+| Variants / States documented |  |
+| Variables / Tokens extracted |  |
+| Responsive breakpoints in Figma |  |
+| Missing states (loading, empty, error) |  |
+| Responsive assumptions |  |
+| Figma fonts available in stack? | Yes / No / Gap |
+| Figma components replicable in chosen framework? | Yes / Partially / Gap |
+| Design Gaps from Figma analysis |  |
+
+## 16. Open Design Gaps
 
 | Gap ID | Gap | Impact | Decision Needed | Status |
 |---|---|---|---|---|

@@ -707,7 +707,7 @@ EXECUTION_BATCH_PLAN.md
 هذا الملف ليس مطلوبًا في مشاريع API/backend فقط، لكنه يصبح مطلوبًا عند وجود أي واجهة ذات ستايل بصري، أو عند استخدام Internal Kit، أو `getdesign.md`، أو صور/موقع/Figma/CSS/Design Tokens من العميل.
 
 ### ماذا يحتوي؟
-- Design Source Decision: `INTERNAL_TERA_KIT` / `GETDESIGN_MD` / `USER_PROVIDED_REFERENCE` / `EXTERNAL_URL_ANALYSIS` / `HYBRID` / `NO_UI` / `N/A`.
+- Design Source Decision: `INTERNAL_TERA_KIT` / `GETDESIGN_MD` / `FIGMA_DESIGN_FILE` / `USER_PROVIDED_REFERENCE` / `EXTERNAL_URL_ANALYSIS` / `HYBRID` / `NO_UI` / `N/A`.
 - Approved Design Direction.
 - Raw Design Sources داخل `project-preparation/design-source/`.
 - Client Branding Overrides.

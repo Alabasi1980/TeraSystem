@@ -361,7 +361,7 @@ If you have general rules for all Tera projects, they belong in `tera-system/` i
 قبل تنفيذ الواجهة، يجب حسم مصدر التصميم.
 
 قرار التصميم:
-[ INTERNAL_TERA_KIT / getdesign.md DESIGN.md / صور أو Figma أو CSS / موقع مرجعي / ألوان وهوية محددة ]
+[ INTERNAL_TERA_KIT / getdesign.md DESIGN.md / FIGMA_DESIGN_FILE / صور أو CSS / موقع مرجعي / ألوان وهوية محددة ]
 
 المطلوب:
 1. لا تبدأ كود.

@@ -240,7 +240,7 @@ tera-system/design-system/
 Before any frontend execution planning or UI implementation, decide the design source mode:
 
 ```text
-INTERNAL_TERA_KIT / GETDESIGN_MD / USER_PROVIDED_REFERENCE / EXTERNAL_URL_ANALYSIS / HYBRID / NO_UI / N/A
+INTERNAL_TERA_KIT / GETDESIGN_MD / FIGMA_DESIGN_FILE / USER_PROVIDED_REFERENCE / EXTERNAL_URL_ANALYSIS / HYBRID / NO_UI / N/A
 ```
 
 Checklist:
