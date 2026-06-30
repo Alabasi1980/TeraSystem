@@ -84,9 +84,7 @@ project-preparation/PROJECT_RULES.md
 
 إذا وجد هذا الملف، فهو مصدر رسمي لقواعد المشروع الخاصة، ويجب قراءته قبل قرارات النطاق، التصميم، التفويض، والتنفيذ.
 
----
-
-## 2.1 Session Startup Context Rule
+### 2.1 Session Startup Context Rule
 
 عند بداية أي Session جديدة في مشروع قائم، لا يبدأ Tera بقراءة كل ملفات المنظومة أو المشروع عشوائيًا.
 

@@ -6,26 +6,28 @@
   <title>Teranoo - Application Proposal - [APP_NAME]</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f3f5f8;
+      --bg: #eef1f5;
       --paper: #ffffff;
-      --ink: #16202b;
-      --muted: #5f6b7a;
-      --line: #d8dee6;
+      --cream: #faf8f3;
+      --ink: #18222e;
+      --muted: #5c6677;
+      --line: #dfe3e9;
       --soft: #eef2f6;
-      --brand: #0f2742;
-      --brand-2: #16385d;
-      --accent: #b8923f;
-      --accent-soft: #f4ecda;
+      --brand: #0d2238;
+      --brand-2: #173b5e;
+      --accent: #a9802f;
+      --accent-deep: #8a6a26;
+      --accent-soft: #f3ead2;
       --ok: #1f7a4d;
       --warn: #a86417;
       --defer: #6a7280;
-      --shadow: 0 16px 48px rgba(14, 28, 45, 0.10);
-      --radius: 16px;
+      --shadow: 0 20px 46px rgba(13, 34, 56, 0.12);
+      --radius: 14px;
       --radius-sm: 10px;
-      --page-width: 1120px;
+      --page-width: 1040px;
     }
 
     * { box-sizing: border-box; }
@@ -53,168 +55,233 @@
       border: 1px solid rgba(15, 39, 66, 0.08);
     }
 
-    .hero {
-      background:
-        linear-gradient(135deg, rgba(15, 39, 66, 0.96), rgba(22, 56, 93, 0.96)),
-        radial-gradient(circle at top left, rgba(184, 146, 63, 0.25), transparent 34%);
+    /* ===== Letterhead bar — slim brand strip, not a tall web "hero" ===== */
+    .letterhead-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      background: linear-gradient(120deg, var(--brand), var(--brand-2));
       color: #ffffff;
-      padding: 34px 42px 30px;
+      padding: 16px 34px;
       position: relative;
     }
 
-    .hero::after {
+    .letterhead-bar::after {
       content: "";
       position: absolute;
       inset-inline: 0;
       bottom: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent), #d7bc7b, var(--accent));
-    }
-
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 24px;
-      margin-bottom: 28px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), #e3cd92 50%, var(--accent));
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       min-width: 0;
     }
 
     .brand-mark {
-      width: 82px;
-      height: 82px;
-      border-radius: 20px;
+      width: 46px;
+      height: 46px;
+      border-radius: 11px;
       background: rgba(255, 255, 255, 0.10);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      backdrop-filter: blur(4px);
       flex-shrink: 0;
     }
 
     .brand-mark img {
-      width: 72%;
-      height: 72%;
+      width: 70%;
+      height: 70%;
       object-fit: contain;
       display: block;
     }
 
     .brand-copy h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 17px;
       font-weight: 800;
-      letter-spacing: 0;
+      letter-spacing: 0.2px;
     }
 
     .brand-copy p {
-      margin: 4px 0 0;
-      color: rgba(255, 255, 255, 0.78);
-      font-size: 14px;
+      margin: 1px 0 0;
+      color: rgba(255, 255, 255, 0.66);
+      font-size: 10.5px;
     }
 
     .proposal-badge {
       display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 14px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      font-size: 12px;
-      font-weight: 700;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1px;
+      padding: 7px 16px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(227, 205, 146, 0.35);
       white-space: nowrap;
     }
 
-    .proposal-badge::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 5px rgba(184, 146, 63, 0.18);
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
-      gap: 28px;
-      align-items: end;
-    }
-
-    .hero-main .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: #d7bc7b;
-      font-size: 12px;
+    .proposal-badge .ar {
+      font-size: 11.5px;
       font-weight: 700;
-      margin-bottom: 12px;
+      color: #f0e2bb;
     }
 
-    .hero-main .eyebrow::before {
-      content: "";
-      width: 24px;
-      height: 1px;
-      background: currentColor;
+    .proposal-badge .en {
+      font-family: "Inter", "Tajawal", sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
     }
 
-    .hero-main h2 {
-      margin: 0;
-      font-size: 38px;
-      line-height: 1.3;
-      font-weight: 800;
+    /* ===== Reference & subject block — reads like a real letter header, ===== */
+    /* ===== not a dashboard meta card.                                   ===== */
+    .doc-meta {
+      background: var(--cream);
+      border-bottom: 1px solid var(--line);
     }
 
-    .hero-main p {
-      margin: 16px 0 0;
-      max-width: 760px;
-      color: rgba(255, 255, 255, 0.82);
-      font-size: 16px;
+    .ref-strip {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      padding: 0 34px;
+      border-bottom: 1px solid var(--line);
     }
 
-    .hero-meta {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 18px;
-      padding: 18px;
-      backdrop-filter: blur(4px);
+    .ref-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 11px 18px;
+      border-inline-start: 1px solid var(--line);
     }
 
-    .meta-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px 18px;
+    .ref-item:first-child {
+      border-inline-start: 0;
+      padding-inline-start: 0;
     }
 
-    .meta-item {
-      min-width: 0;
+    .ref-item .ref-label {
+      font-size: 11.5px;
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
     }
 
-    .meta-item .label {
-      display: block;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.62);
-      margin-bottom: 4px;
-    }
-
-    .meta-item .value {
-      display: block;
-      font-size: 15px;
+    .ref-item .ref-value {
+      font-family: "Inter", "Tajawal", sans-serif;
+      font-variant-numeric: tabular-nums;
+      font-size: 13px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--brand);
       word-break: break-word;
     }
 
+    .ref-client {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .ref-client .ref-value {
+      font-family: "Tajawal", sans-serif;
+    }
+
+    .ref-status {
+      margin-inline-start: auto;
+      border-inline-start: 0;
+      align-items: center;
+      padding-inline-end: 0;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 13px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(169, 128, 47, 0.35);
+      color: var(--accent-deep);
+      font-size: 11.5px;
+      font-weight: 800;
+    }
+
+    .status-chip::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .subject-block {
+      padding: 20px 34px 24px;
+    }
+
+    .subject-block .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-deep);
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .subject-block .kicker::before {
+      content: "";
+      width: 14px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .subject-block h2 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--brand);
+    }
+
+    .subject-rule {
+      width: 64px;
+      height: 4px;
+      margin: 12px 0 0;
+      border-radius: 2px;
+      background: var(--brand);
+      position: relative;
+    }
+
+    .subject-rule::after {
+      content: "";
+      position: absolute;
+      top: 7px;
+      inset-inline-start: 0;
+      width: 34px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--accent);
+    }
+
+    .subject-block p {
+      margin: 16px 0 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
     .content {
-      padding: 36px 42px 42px;
+      padding: 32px 34px 38px;
     }
 
     .section {
@@ -484,98 +551,92 @@
     }
 
     @media (max-width: 980px) {
-      .hero-grid,
       .grid-2,
       .grid-3,
       .approval-grid {
         grid-template-columns: 1fr;
       }
 
-      .hero-top,
       .footer {
         flex-direction: column;
         align-items: start;
       }
 
-      .meta-list {
-        grid-template-columns: 1fr;
+      .ref-strip {
+        flex-wrap: wrap;
+        row-gap: 6px;
+      }
+
+      .ref-status {
+        margin-inline-start: 0;
+        border-inline-start: 1px solid var(--line);
+        padding-inline-start: 18px;
       }
     }
 
     @media (max-width: 640px) {
       body { padding: 16px; }
-      .hero, .content { padding: 24px 20px; }
-      .brand { align-items: start; }
-      .brand-mark { width: 68px; height: 68px; }
-      .hero-main h2 { font-size: 28px; }
+      .content { padding: 24px 20px; }
+      .letterhead-bar,
+      .ref-strip,
+      .subject-block { padding-inline: 20px; }
+      .letterhead-bar { flex-wrap: wrap; row-gap: 10px; }
+      .ref-strip { flex-direction: column; }
+      .ref-item { border-inline-start: 0; padding-inline-start: 0; border-top: 1px solid var(--line); }
+      .ref-item:first-child { border-top: 0; }
+      .ref-status { border-top: 1px solid var(--line); padding-top: 10px; }
+      .subject-block h2 { font-size: 22px; }
       .section-title { font-size: 19px; }
     }
 
-    @page {
-      size: A4;
-      margin: 16mm;
-    }
-
-    @media print {
-      body {
-        background: #ffffff;
-        padding: 0;
-      }
-
-      .proposal-shell {
-        box-shadow: none;
-        border: none;
-        border-radius: 0;
-      }
-    }
   </style>
+  <link rel="stylesheet" href="tera-document-print.css" media="print" />
 </head>
 <body>
   <main class="proposal-shell" role="document" aria-label="عرض تقديمي للتطبيق [APP_NAME]">
-    <section class="hero" id="proposal-header">
-      <div class="hero-top">
-        <div class="brand">
-          <div class="brand-mark">
-            <img src="teranoo-logo.png" alt="شعار Teranoo" />
-          </div>
-          <div class="brand-copy">
-            <h1>Teranoo</h1>
-            <p>مقترح تنفيذ وتطوير تطبيق مؤسسي باعتماد منهجية تحليل وتنفيذ منضبطة</p>
-          </div>
+    <section class="letterhead-bar" id="proposal-header">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="teranoo-logo.png" alt="شعار Teranoo" />
         </div>
-        <div class="proposal-badge">Application Proposal</div>
+        <div class="brand-copy">
+          <h1>Teranoo</h1>
+          <p>تنفيذ وتطوير تطبيقات مؤسسية</p>
+        </div>
+      </div>
+      <div class="proposal-badge">
+        <span class="ar">نموذج عرض تطبيق</span>
+        <span class="en">Application Proposal</span>
+      </div>
+    </section>
+
+    <section class="doc-meta" aria-label="بيانات العرض">
+      <div class="ref-strip">
+        <div class="ref-item">
+          <span class="ref-label">الرقم</span>
+          <span class="ref-value">[PROPOSAL_ID]</span>
+        </div>
+        <div class="ref-item">
+          <span class="ref-label">التاريخ</span>
+          <span class="ref-value">[PROPOSAL_DATE]</span>
+        </div>
+        <div class="ref-item ref-client">
+          <span class="ref-label">إلى السادة</span>
+          <span class="ref-value">[CLIENT_NAME]</span>
+        </div>
+        <div class="ref-item ref-status">
+          <span class="status-chip">[STATUS]</span>
+        </div>
       </div>
 
-      <div class="hero-grid">
-        <div class="hero-main">
-          <span class="eyebrow">عرض رسمي للتطبيق</span>
-          <h2>[APP_NAME]</h2>
-          <p>
-            هذا العرض يوضح الفهم التنفيذي للتطبيق المقترح، النطاق المتوقع للنسخة الأولى،
-            المتطلبات الأساسية، ومراحل التنفيذ المقترحة بشكل مهني قابل للمراجعة والاعتماد.
-          </p>
-        </div>
-
-        <aside class="hero-meta" aria-label="بيانات العرض">
-          <div class="meta-list">
-            <div class="meta-item">
-              <span class="label">العميل</span>
-              <span class="value">[CLIENT_NAME]</span>
-            </div>
-            <div class="meta-item">
-              <span class="label">رقم العرض</span>
-              <span class="value">[PROPOSAL_ID]</span>
-            </div>
-            <div class="meta-item">
-              <span class="label">تاريخ الإصدار</span>
-              <span class="value">[PROPOSAL_DATE]</span>
-            </div>
-            <div class="meta-item">
-              <span class="label">الحالة</span>
-              <span class="value">[STATUS]</span>
-            </div>
-          </div>
-        </aside>
+      <div class="subject-block">
+        <span class="kicker">الموضوع</span>
+        <h2>عرض تنفيذ وتطوير تطبيق [APP_NAME]</h2>
+        <div class="subject-rule"></div>
+        <p>
+          يوضح هذا العرض الفهم التنفيذي للتطبيق المقترح، النطاق المتوقع للنسخة الأولى،
+          المتطلبات الأساسية، ومراحل التنفيذ المقترحة بشكل مهني قابل للمراجعة والاعتماد.
+        </p>
       </div>
     </section>
 

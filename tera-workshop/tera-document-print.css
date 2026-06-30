@@ -1,0 +1,601 @@
+@page {
+  size: A4;
+  margin: 11mm 12mm 13mm;
+}
+
+@media print {
+  :root {
+    --print-ink: #111827;
+    --print-muted: #4b5563;
+    --print-soft: #f6f8fb;
+    --print-line: #d7dde5;
+    --print-brand: #10243d;
+    --print-accent: #9b762c;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  html,
+  body {
+    width: auto !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: var(--print-ink) !important;
+    font-family: "Tajawal", Arial, sans-serif !important;
+    font-size: 9.4pt !important;
+    line-height: 1.5 !important;
+  }
+
+  .proposal-shell,
+  .agreement-shell,
+  .sow-shell,
+  .shell {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .hero {
+    padding: 5mm 5mm 5.5mm !important;
+    margin: 0 0 6mm !important;
+    color: #ffffff !important;
+    background: #16385d !important;
+    border: 0.8pt solid #16385d !important;
+    border-bottom: 1.2pt solid var(--print-accent) !important;
+    border-radius: 3.5mm !important;
+    break-inside: avoid;
+  }
+
+  .hero::before,
+  .hero::after {
+    display: none !important;
+  }
+
+  .hero-top {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 8mm !important;
+    margin: 0 0 5mm !important;
+  }
+
+  .brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 3.2mm !important;
+    min-width: 0 !important;
+  }
+
+  .brand-mark,
+  .seal {
+    width: 15mm !important;
+    height: 15mm !important;
+    min-width: 15mm !important;
+    border: 0.7pt solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 3mm !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    backdrop-filter: none !important;
+  }
+
+  .brand-mark img,
+  .seal img {
+    width: 78% !important;
+    height: 78% !important;
+    object-fit: contain !important;
+  }
+
+  .brand-copy h1,
+  .hero h1 {
+    margin: 0 !important;
+    color: #ffffff !important;
+    font-size: 15.5pt !important;
+    line-height: 1.15 !important;
+    font-weight: 800 !important;
+  }
+
+  .brand-copy p,
+  .hero .subtitle {
+    max-width: 118mm !important;
+    margin: 1mm 0 0 !important;
+    color: rgba(255, 255, 255, 0.78) !important;
+    font-size: 7.8pt !important;
+    line-height: 1.45 !important;
+  }
+
+  .proposal-badge,
+  .badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 2mm !important;
+    padding: 1.6mm 3.2mm !important;
+    border: 0.7pt solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 99mm !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: #ffffff !important;
+    font-size: 7.4pt !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+  }
+
+  .proposal-badge::before {
+    width: 1.7mm !important;
+    height: 1.7mm !important;
+    background: var(--print-accent) !important;
+    box-shadow: none !important;
+  }
+
+  .hero-grid {
+    display: block !important;
+  }
+
+  .hero-main {
+    text-align: right !important;
+  }
+
+  .hero-main .eyebrow {
+    display: block !important;
+    margin: 0 0 1.2mm !important;
+    color: #e2c789 !important;
+    font-size: 8pt !important;
+    font-weight: 800 !important;
+  }
+
+  .hero-main .eyebrow::before {
+    display: none !important;
+  }
+
+  .hero-main h2,
+  .hero h2 {
+    margin: 0 !important;
+    color: #ffffff !important;
+    font-size: 20pt !important;
+    line-height: 1.22 !important;
+    font-weight: 800 !important;
+  }
+
+  .hero-main p {
+    max-width: 160mm !important;
+    margin: 2.5mm 0 0 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 9pt !important;
+    line-height: 1.6 !important;
+  }
+
+  .hero-meta {
+    margin: 5mm 0 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+
+  .meta-list {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+    border: 0.7pt solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 2.5mm !important;
+    overflow: hidden !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .meta-item {
+    min-width: 0 !important;
+    padding: 2.4mm 3mm !important;
+    border-left: 0.5pt solid rgba(255, 255, 255, 0.14) !important;
+  }
+
+  .meta-item:last-child {
+    border-left: 0 !important;
+  }
+
+  .meta-item .label {
+    display: block !important;
+    margin: 0 0 0.7mm !important;
+    color: rgba(255, 255, 255, 0.68) !important;
+    font-size: 7.1pt !important;
+    line-height: 1.25 !important;
+  }
+
+  .meta-item .value {
+    display: block !important;
+    color: #ffffff !important;
+    font-size: 8.5pt !important;
+    line-height: 1.35 !important;
+    font-weight: 800 !important;
+    word-break: break-word !important;
+  }
+
+  .content {
+    padding: 0 !important;
+  }
+
+  /* ===== New compact letterhead header (proposal template) ===== */
+  .letterhead-bar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6mm !important;
+    padding: 3.4mm 5mm !important;
+    margin: 0 0 3.5mm !important;
+    color: #ffffff !important;
+    background: #16385d !important;
+    border: 0.8pt solid #16385d !important;
+    border-radius: 2.6mm 2.6mm 0 0 !important;
+    break-inside: avoid !important;
+  }
+
+  .letterhead-bar::after {
+    display: none !important;
+  }
+
+  .letterhead-bar .brand-mark {
+    width: 10mm !important;
+    height: 10mm !important;
+    min-width: 10mm !important;
+    border: 0.6pt solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 2.2mm !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .letterhead-bar .brand-copy h1 {
+    margin: 0 !important;
+    color: #ffffff !important;
+    font-size: 10.5pt !important;
+    font-weight: 800 !important;
+  }
+
+  .letterhead-bar .brand-copy p {
+    margin: 0.3mm 0 0 !important;
+    color: rgba(255, 255, 255, 0.66) !important;
+    font-size: 6.6pt !important;
+  }
+
+  .proposal-badge {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    gap: 0.3mm !important;
+    padding: 1.4mm 3mm !important;
+    border: 0.6pt solid rgba(227, 205, 146, 0.45) !important;
+    border-radius: 1.8mm !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .proposal-badge .ar {
+    color: #f0e2bb !important;
+    font-size: 6.9pt !important;
+    font-weight: 700 !important;
+  }
+
+  .proposal-badge .en {
+    color: rgba(255, 255, 255, 0.55) !important;
+    font-size: 5.6pt !important;
+    letter-spacing: 0.4pt !important;
+  }
+
+  .doc-meta {
+    margin: 0 0 6mm !important;
+    background: var(--print-soft) !important;
+    border: 0.7pt solid var(--print-line) !important;
+    border-top: 0 !important;
+    border-radius: 0 0 2.6mm 2.6mm !important;
+    break-inside: avoid !important;
+  }
+
+  .ref-strip {
+    display: flex !important;
+    padding: 0 5mm !important;
+    border-bottom: 0.6pt solid var(--print-line) !important;
+  }
+
+  .ref-item {
+    padding: 2.4mm 3.6mm !important;
+    border-inline-start: 0.6pt solid var(--print-line) !important;
+    gap: 1.6mm !important;
+  }
+
+  .ref-item:first-child {
+    border-inline-start: 0 !important;
+    padding-inline-start: 0 !important;
+  }
+
+  .ref-item .ref-label {
+    color: var(--print-muted) !important;
+    font-size: 7pt !important;
+  }
+
+  .ref-item .ref-value {
+    color: var(--print-brand) !important;
+    font-size: 7.8pt !important;
+  }
+
+  .ref-status {
+    margin-inline-start: auto !important;
+    border-inline-start: 0 !important;
+  }
+
+  .status-chip {
+    border: 0.6pt solid var(--print-accent) !important;
+    background: #f3ead2 !important;
+    color: #6b5220 !important;
+    font-size: 6.9pt !important;
+    padding: 0.8mm 2.6mm !important;
+  }
+
+  .subject-block {
+    padding: 3.8mm 5mm 4.4mm !important;
+  }
+
+  .subject-block .kicker {
+    color: var(--print-accent) !important;
+    font-size: 7pt !important;
+    margin: 0 0 1.2mm !important;
+  }
+
+  .subject-block h2 {
+    margin: 0 !important;
+    color: var(--print-brand) !important;
+    font-size: 14.5pt !important;
+    line-height: 1.3 !important;
+    font-weight: 800 !important;
+  }
+
+  .subject-rule {
+    width: 14mm !important;
+    height: 0.9mm !important;
+    margin: 2.4mm 0 0 !important;
+    background: var(--print-brand) !important;
+  }
+
+  .subject-rule::after {
+    top: 1.6mm !important;
+    width: 7mm !important;
+    height: 0.5mm !important;
+    background: var(--print-accent) !important;
+  }
+
+  .subject-block p {
+    margin: 3mm 0 0 !important;
+    max-width: none !important;
+    color: var(--print-muted) !important;
+    font-size: 8.3pt !important;
+    line-height: 1.55 !important;
+  }
+
+  .section {
+    margin: 0 0 5mm !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  .section-head {
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    gap: 4mm !important;
+    margin: 0 0 2.2mm !important;
+    padding: 0 0 1.4mm !important;
+    border-bottom: 0.7pt solid var(--print-line) !important;
+  }
+
+  .section-title {
+    margin: 0 !important;
+    color: var(--print-brand) !important;
+    font-size: 12.8pt !important;
+    line-height: 1.25 !important;
+    font-weight: 800 !important;
+  }
+
+  .section-kicker {
+    color: var(--print-accent) !important;
+    font-size: 7pt !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+  }
+
+  .section-card,
+  .panel,
+  .info-card,
+  .timeline-body,
+  .signature-card {
+    padding: 3.2mm !important;
+    border: 0.7pt solid var(--print-line) !important;
+    border-radius: 2.4mm !important;
+    background: #ffffff !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .lead {
+    margin: 0 !important;
+    color: var(--print-ink) !important;
+    font-size: 9.2pt !important;
+    line-height: 1.6 !important;
+  }
+
+  .grid-2,
+  .approval-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 3.2mm !important;
+  }
+
+  .grid-3 {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 3.2mm !important;
+  }
+
+  .panel {
+    min-height: 0 !important;
+  }
+
+  .panel h3,
+  .info-card h4,
+  .timeline-body h4,
+  .signature-card h4 {
+    margin: 0 0 1.6mm !important;
+    color: var(--print-brand) !important;
+    font-size: 8.9pt !important;
+    line-height: 1.35 !important;
+    font-weight: 800 !important;
+  }
+
+  .panel p,
+  .panel li,
+  .info-card p,
+  .timeline-body p,
+  .muted {
+    margin: 0 !important;
+    color: #374151 !important;
+    font-size: 8.4pt !important;
+    line-height: 1.55 !important;
+  }
+
+  .feature-list,
+  .notes-list {
+    display: grid !important;
+    gap: 1.8mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+  }
+
+  .feature-list li {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 2mm !important;
+    padding: 2mm 2.4mm !important;
+    border: 0.6pt solid #e5eaf1 !important;
+    border-radius: 1.8mm !important;
+    background: #ffffff !important;
+  }
+
+  .feature-list li::before {
+    content: "" !important;
+    width: 1.6mm !important;
+    height: 1.6mm !important;
+    margin-top: 2mm !important;
+    border-radius: 50% !important;
+    background: var(--print-accent) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .feature-list.out li::before {
+    background: #b85c5c !important;
+  }
+
+  .info-card {
+    min-height: 22mm !important;
+  }
+
+  .timeline {
+    display: grid !important;
+    gap: 2.6mm !important;
+  }
+
+  .timeline-item {
+    display: grid !important;
+    grid-template-columns: 8mm 1fr !important;
+    gap: 2.5mm !important;
+    align-items: start !important;
+    break-inside: avoid !important;
+  }
+
+  .timeline-step {
+    width: 8mm !important;
+    height: 8mm !important;
+    border: 0.7pt solid var(--print-brand) !important;
+    border-radius: 2mm !important;
+    background: #ffffff !important;
+    color: var(--print-brand) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 7.6pt !important;
+    font-weight: 800 !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+  }
+
+  th,
+  td {
+    padding: 2.3mm 2.6mm !important;
+    border: 0.6pt solid var(--print-line) !important;
+    color: var(--print-ink) !important;
+    font-size: 8.1pt !important;
+    line-height: 1.45 !important;
+    vertical-align: top !important;
+  }
+
+  th {
+    background: #ffffff !important;
+    color: var(--print-brand) !important;
+    font-weight: 800 !important;
+  }
+
+  .status-pill {
+    display: inline-flex !important;
+    min-width: 18mm !important;
+    justify-content: center !important;
+    padding: 1mm 2.4mm !important;
+    border: 0.6pt solid var(--print-line) !important;
+    border-radius: 99mm !important;
+    background: #ffffff !important;
+    color: var(--print-brand) !important;
+    font-size: 7.1pt !important;
+    font-weight: 800 !important;
+  }
+
+  .signature-card {
+    min-height: 31mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  .signature-line {
+    height: 0 !important;
+    margin: 8mm 0 1.8mm !important;
+    border-top: 0.7pt solid #9ca3af !important;
+    background: transparent !important;
+  }
+
+  .footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 5mm !important;
+    margin: 6mm 0 0 !important;
+    padding: 2.2mm 0 0 !important;
+    border-top: 0.7pt solid var(--print-line) !important;
+    color: #6b7280 !important;
+    font-size: 7.2pt !important;
+  }
+
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}
