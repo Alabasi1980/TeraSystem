@@ -22,10 +22,14 @@ mode:
 بيئة العمل:
 الدور:
 نوع التفويض: Preparation Delegation / Implementation Delegation / Review / Control
+Activation Trigger: (مرجع إلى AGENT_ACTIVATION_MATRIX.md)
+Phase Usage: (المراحل المناسبة)
+Default Permission Level: (مرجع إلى AGENT_PERMISSION_MODEL.md)
 متى يستدعيه تيرا:
 الملفات والمصادر التي يقرأها:
-الأدوات المسموحة:
+الأدوات المسموحة: (بما فيها MCPs المسموحة)
 الأدوات الممنوعة:
+قيود الأدوات (Tool Restrictions):
 الملفات المسموح له بتعديلها:
 المخرجات المطلوبة:
 صيغة تسليم النتيجة:
@@ -33,6 +37,7 @@ MVP Constraints:
 Forbidden Tools / Actions:
 Token Budget: Light / Medium / Strong
 Context Rules: Task Context / Summary Context / Full Context
+Escalation Rules:
 معايير قبول مخرجاته:
 متى يعيد النتيجة إلى تيرا:
 ```
@@ -69,6 +74,33 @@ mode: subagent
 - Phase 4 agents create or review preparation files only.
 - Phase 6 agents execute approved application `TASK-COD-*` items only.
 - An agent must not treat a preparation delegation as application implementation.
+
+## Activation Trigger
+
+This agent is activated based on `AGENT_ACTIVATION_MATRIX.md` triggers:
+
+- **Trigger Type:** `PHASE_GATE` / `DOCUMENT_READY` / `DECISION_MADE` / `COMPLEXITY_SIGNAL` / `RISK_SIGNAL` / `USER_REQUEST` / `EXTERNAL_FACTOR` / `REVIEW_NEEDED` / `PHASE_7_GATE`
+- **Trigger Description:** [متى يتم تفعيل هذا العميل بالضبط]
+- **Rule:** لا يتم تفعيل العميل لأنه موجود، بل لأنه مطلوب بسبب Trigger واضح. Tera هو الوحيد الذي يقرر التفعيل.
+
+## Phase Usage
+
+| Phase | Usage |
+|---|---|
+| Phase 1–3 | [هل يُستخدم؟] |
+| Phase 4 | [هل يُستخدم؟] |
+| Phase 5 | [هل يُستخدم؟] |
+| Phase 6 | [هل يُستخدم؟] |
+| Phase 7 | [هل يُستخدم؟] |
+
+## Default Permission Level
+
+Based on `AGENT_PERMISSION_MODEL.md`:
+
+- **Default Level:** `READ_ONLY` / `PLAN_ONLY` / `WRITE_DOCS` / `WRITE_CONTROL` / `WRITE_CODE` / `RUN_TESTS` / `DEPLOY_WITH_APPROVAL`
+- **Can be raised to:** [مستوى أعلى عند الحاجة، بشرط موافقة Tera]
+- **Can be lowered to:** [مستوى أدنى إذا كانت المهمة محدودة]
+- **Rule:** لا يحق للعميل تجاوز صلاحيته الافتراضية دون قرار صريح من Tera.
 
 ## Token Budget
 
@@ -113,6 +145,23 @@ Default reference files:
 - Edit only allowed output files.
 - Generate structured Markdown output.
 - Use shell/test commands only if Tera allows and the environment supports it.
+- MCPs (Model Context Protocols): usage governed by `TOOLING_AND_MCP_POLICY.md`
+  - Playwright/Browser MCP: for UI testing — permission level `RUN_TESTS`, requires Tera approval
+  - API Testing MCP: for API verification — permission level `RUN_TESTS`, requires Tera approval
+  - Git/GitHub MCP: `READ_ONLY` by default; write requires explicit Tera approval
+  - Database Read-Only MCP: `READ_ONLY` only; writing is strictly forbidden
+  - Any additional MCPs only with explicit Tera approval per `TOOLING_AND_MCP_POLICY.md`
+
+## Tool Restrictions
+
+- No tool/MCP usage without a clear trigger and Tera approval.
+- No production environment access without explicit user approval.
+- No write/deploy tools without explicit Tera approval.
+- No tool may bypass the agent's permission level.
+- MCPs default to `READ_ONLY`; write-capable MCPs require per-operation approval.
+- Tool results must be recorded in official project files, not left in chat only.
+- If a tool encounters an error or security issue, it must report to Tera and stop.
+- No tool may modify data permanently without a documented rollback plan.
 
 ## MVP Constraints
 
@@ -162,20 +211,37 @@ Include this section when generating any DomainResearchAgent, DomainExpertAgent,
 - Do not implement business validation rules such as `amount > 0` as database constraints unless Tera explicitly approves that rule at the database layer.
 - For domain agents: do not convert research findings into implementation scope, do not create tasks, and do not approve MVP expansion.
 
-## Allowed Write Targets
+## Escalation Rules
 
-- ...
+The agent must escalate to Tera when:
 
-## Expected Outputs
+- Required information or inputs are missing or incomplete.
+- The task conflicts with approved project files or scope.
+- A decision is needed beyond the agent's delegated authority.
+- A security risk, data sensitivity, or compliance concern is discovered.
+- The task would exceed the approved `Allowed Write Targets`.
+- The agent detects scope creep or feature bloat.
+- The agent needs to use a tool/MCP not explicitly allowed.
+- Any error or unexpected behavior occurs during execution.
+- The agent finds a contradiction between project files.
+- The agent needs to communicate with another sub-agent (must go through Tera).
 
-- ...
+**Rule:** When in doubt, escalate. Do not guess, assume, or proceed beyond the delegated task.
 
-## Output Format
+## Output / Handback Format
+
+يتم تسليم النتيجة بهذه الصيغة:
 
 ```text
 Task ID:
 Agent:
-Status: Done / Blocked / Needs Clarification / Rework Needed
+Status: Done / Blocked / Needs Clarification / Rework Needed / Escalated
+Activation Trigger:
+Default Permission Level:
+Permission Level Used (if raised/lowered):
+Tool(s) Used:
+MCP Usage: [MCP used if any] / None
+MCP Results: [Summary of MCP findings] / N/A
 Handback Record Target: project-control/tasks/[TASK-ID].md
 Project-Control Update Required: Yes / No
 Documentation Status: Submitted to Tera for recording / Recorded by Tera / Recorded by ProjectControlAgent
@@ -187,6 +253,10 @@ Issues or Missing Information:
 Decisions Needed from Tera:
 Recommendation:
 ```
+
+## Expected Outputs
+
+- ...
 
 ## Acceptance Criteria
 

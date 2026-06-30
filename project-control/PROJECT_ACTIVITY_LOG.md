@@ -239,3 +239,50 @@
 - Summary: Fixed inconsistent gate ordering in TeraAgent.md §5 Phase 5. The old order applied Pre-Execution Gate (step 6) before Orchestration Decision Matrix + Model Capability Gate (step 7). Corrected to: Design Source Decision → Orchestration + Model Capability → Create task file → Pre-Execution Gate. Renumbered steps 5-8 cleanly. The correct order now matches TERA_RUNTIME_PROTOCOLS.md §4 and TERA_RUNTIME_CHECKLISTS.md Phase 5.
 - Decision / Result: Consistent gate ordering across all system files. Pre-Execution Gate is now the final check after orchestration, model assessment, and task file creation.
 - Next Action: None. Phase 5 reviewed and corrected.
+
+## [2026-06-30 16:30] - SYSTEM_UPGRADE: Sub-Agent Governance & Tooling Readiness Layer
+
+- Related Task: N/A (System Governance Upgrade)
+- Actor: Tera Agent (per Majed request + expert review)
+- Summary: Implemented full "Sub-Agent Governance & Tooling Readiness Layer" across 3 phases.
+  Phase 1: Created AGENT_ACTIVATION_MATRIX.md + AGENT_PERMISSION_MODEL.md
+  Phase 2: Created TOOLING_AND_MCP_POLICY.md + updated AGENT_GENERATION_TEMPLATE.md
+  Phase 3: Updated TeraSubAgents.md + TeraAgent.md + .opencode/agents/tera.md + final report
+- What was added:
+  - 3 new governance files (Activation Matrix, Permission Model, MCP Policy)
+  - 7 permission levels (READ_ONLY → DEPLOY_WITH_APPROVAL)
+  - 9 activation trigger types
+  - 4 MCPs approved now (Playwright, API Testing, Git/GitHub, DB Read-Only)
+  - Project-type activation matrix (small/medium/ERP/SaaS)
+  - Escalation Rules + Tool Restrictions in agent template
+  - 10 governing rules enforced across all files
+  - Comprehensive final report in project-control/GOVERNANCE_LAYER_REPORT.md
+- Decision / Result: Agent governance is now fully documented. No new permanent agents added. No unnecessary MCPs. Bloat prevention built into every file. Ready for first real project test.
+- Next Action: Test governance layer on a real project (medium or ERP) to validate practical robustness.
+
+## [2026-06-30 17:15] - CONFIG: 4 MCPs added to opencode.json (disabled)
+
+- Related Task: N/A (Configuration)
+- Actor: Tera Agent (per Majed request)
+- Summary: Added 4 MCP server definitions to opencode.json, all with enabled: false:
+  1. playwright (@playwright/mcp) — Browser UI testing
+  2. github (@modelcontextprotocol/server-github) — GitHub API interaction
+  3. database (@modelcontextprotocol/server-sqlite) — SQLite read-only
+  4. api-tester (@modelcontextprotocol/server-fetch) — HTTP/API testing
+- Decision / Result: MCPs are defined and ready, but not active. Tera activates per-project need. User must restart OpenCode after enabling any MCP.
+- Next Action: When a real project needs an MCP: Tera sets enabled: true in opencode.json → user restarts OpenCode → agent uses MCP under policy rules.
+
+## [2026-06-30 17:45] - CONFIG: Git workflow activated (bash: allow + push protocol)
+
+- Related Task: N/A (Configuration)
+- Actor: Tera Agent (per Majed request)
+- Summary: Changed bash permission from "ask" to "allow" in opencode.json. Added Git Commit & Push Protocol section in .opencode/agents/tera.md. The protocol: Tera runs git add + commit silently, then asks user for approval before git push. Push never happens without explicit user consent. Added instruction in opencode.json about remote URL setup per new project.
+- Decision / Result: git commit workflow is now smooth. Security maintained via Tera asking before push, not via OpenCode permission prompts.
+- Next Action: Test on first real client project.
+
+## [2026-06-30 18:00] - FILE: GIT_REMOTE.md created for remote URL storage
+
+- Related Task: N/A (Configuration)
+- Actor: Tera Agent (per Majed request)
+- Summary: Created project-control/GIT_REMOTE.md to store the client repository remote URL. Updated .opencode/agents/tera.md Git protocol to reference GIT_REMOTE.md. Updated opencode.json instruction. The file is user-editable — user can update the URL manually or ask Tera to do it.
+- Decision / Result: Clear separation: GIT_REMOTE.md holds the URL, Tera reads it before push, user updates it per project. Each client project has its own remote URL stored explicitly.

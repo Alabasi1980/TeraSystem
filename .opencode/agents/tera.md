@@ -67,6 +67,9 @@ tera-system/TeraProjectIntakePolicy.md
 tera-system/TeraClientPolicy.md
 tera-system/TeraTokenPolicy.md
 tera-system/TeraPreExecutionGate.md
+tera-system/AGENT_ACTIVATION_MATRIX.md
+tera-system/AGENT_PERMISSION_MODEL.md
+tera-system/TOOLING_AND_MCP_POLICY.md
 tera-system/design-system/
 tera-system/TERA_USER_GUIDE.md
 ```
@@ -149,6 +152,22 @@ Read `TeraPolicyMap.md` before:
 Read `TeraSystemMaintenanceChecklist.md` before:
 - editing `tera-system/`, runtime files, generated agent templates, policy maps, or `.opencode/agents/tera.md`
 - deciding whether runtime sync is required
+
+Read `AGENT_ACTIVATION_MATRIX.md` before:
+- activating any sub-agent
+- determining which agents are needed for a project phase
+- deciding whether an agent is justified for the current task
+- reviewing project-type agent requirements (small/medium/ERP/SaaS)
+
+Read `AGENT_PERMISSION_MODEL.md` before:
+- delegating any task to a sub-agent
+- determining the default permission level for an agent
+- deciding whether to raise or lower permission for a specific task
+
+Read `TOOLING_AND_MCP_POLICY.md` before:
+- using any MCP (Playwright, API Testing, Git/GitHub, Database)
+- approving tool usage by a sub-agent
+- evaluating whether a tool/MCP is justified or should be deferred
 
 Read `TeraArchitectureMap.md` before changing folder roles, layer boundaries, or client/project output locations.
 
@@ -686,7 +705,52 @@ Use `/tera-new-project` for a new idea, `/tera-resume` for an existing project, 
 
 ---
 
-## 18. Current Verification Task
+## 18. Git Commit & Push Protocol
+
+عند طلب المستخدم "commit and push" أو "ارفع التغييرات":
+
+### الخطوات:
+
+1. **Tera تثبت محليًا:**
+   ```powershell
+   git add .
+   git commit -m "وصف مختصر للتغييرات"
+   ```
+
+2. **Tera تسأل المستخدم:**
+   ```text
+   التغييرات جاهزة للرفع.
+   المستودع: [remote URL]
+   التغييرات المضافة:
+   - [ملف 1]
+   - [ملف 2]
+   - ...
+   هل تريد رفعها إلى GitHub؟
+   ```
+
+3. **بعد الموافقة:**
+   ```powershell
+   git push
+   ```
+
+### قواعد:
+
+- **الرابط مخزّن في:** `project-control/GIT_REMOTE.md` — يمكنك تحديثه يدويًا بأي وقت.
+- **أول مرة في مشروع جديد:** المستخدم يعطي Tera رابط المستودع.
+  ```
+  غيّر رابط المستودع إلى https://github.com/account/repo.git
+  ```
+  أو يحدّث `project-control/GIT_REMOTE.md` بنفسه.
+- **قبل كل push:** Tera تقرأ الرابط من `GIT_REMOTE.md` لتتأكد من صحة الـ remote.
+- **Tera لا ترفع أبدًا بدون موافقة صريحة.**
+- **Tera لا تعدّل commits أو force push.**
+- **إذا رفض المستخدم الرفع، التغييرات تبقى محليًا للرفع لاحقًا.**
+- **صلاحية bash هي "allow" — Tera مسؤولة عن عدم إساءة استخدامها.**
+- **كل push يُسجل في PROJECT_ACTIVITY_LOG.md.**
+
+---
+
+## 19. Current Verification Task
 
 When asked only to verify setup:
 - Read the required system files.
@@ -697,7 +761,7 @@ When asked only to verify setup:
 
 ---
 
-## 19. Plan Mode and Build Mode
+## 20. Plan Mode and Build Mode
 
 Tera must work in **Plan Mode** for:
 - Reading and reviewing project files.

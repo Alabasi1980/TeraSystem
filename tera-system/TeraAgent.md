@@ -68,6 +68,9 @@
 | `TeraClientPolicy.md` | يوحّد سياسات العميل: التوثيق، حزمة الاعتماد، التحكم بالتغيير، والمحتوى الموجه للعميل (مدمج من 4 ملفات سابقة) |
 | `TeraTokenPolicy.md` | يعرّف سياسة إدارة السياق، تقليل التوكنز، وقراءة الملفات |
 | `TeraPreExecutionGate.md` | يعرّف بوابة مراجعة إلزامية قبل اعتماد أو تفويض أي مهمة تنفيذية |
+| `AGENT_ACTIVATION_MATRIX.md` | يحدد متى يُفعّل كل عميل فرعي بناءً على Trigger واضح، ومثال لكل نوع مشروع |
+| `AGENT_PERMISSION_MODEL.md` | يحدد مستويات الصلاحيات (READ_ONLY → DEPLOY_WITH_APPROVAL) والصلاحية الافتراضية لكل عميل |
+| `TOOLING_AND_MCP_POLICY.md` | يحدد سياسة استخدام الأدوات و MCPs، المسموحة حاليًا والمؤجلة، وقواعد الاستخدام |
 | `design-system/` | طبقة حوكمة التصميم: مصادر التصميم، Design Tokens، Component Rules، Internal Kits، UI Acceptance Gate |
 | `project-control/TERA_ACTIVE_CONTEXT.md` | نقطة بداية الجلسات الجارية إن وجدت، وتلخص الحالة التشغيلية الحالية للمشروع |
 | `project-control/PROJECT_STATE.md` | ذاكرة المشروع المختصرة المعتمدة لتقليل إعادة قراءة الملفات |
@@ -1448,7 +1451,44 @@ Request explicit user approval before:
 
 ---
 
-## 37. Operating Model — Folder Structure Reference
+## 37. Sub-Agent Governance & Tooling Readiness Layer
+
+تخضع منظومة العملاء الفرعيين لطبقة حوكمة جديدة تتكون من 3 ملفات:
+
+| الملف | الوظيفة |
+|---|---|
+| `AGENT_ACTIVATION_MATRIX.md` | يحدد متى يُفعّل كل عميل بناءً على Trigger واضح. لا تفعيل بدون سبب. أمثلة لكل نوع مشروع. |
+| `AGENT_PERMISSION_MODEL.md` | يحدد 7 مستويات صلاحية (READ_ONLY → DEPLOY_WITH_APPROVAL) والصلاحية الافتراضية لكل عميل. |
+| `TOOLING_AND_MCP_POLICY.md` | يحدد سياسة الأدوات: 4 MCPs مسموحة الآن (Playwright, API Testing, Git/GitHub, Database Read-Only)، والقواعد، والمؤجلة. |
+
+### قواعد الحوكمة الإلزامية
+
+1. **لا تفعيل بدون Trigger** — لا يُفعّل أي عميل لمجرد وجوده.
+2. **لا صلاحية بدون تحديد** — لكل عميل صلاحية افتراضية من `AGENT_PERMISSION_MODEL.md`.
+3. **لا أداة بدون سياسة** — كل استخدام MCP يخضع لـ `TOOLING_AND_MCP_POLICY.md`.
+4. **لا تواصل مباشر** — Sub-Agent → Tera → Sub-Agent فقط.
+5. **الصلاحية الأقل هي الأصل** — عند الشك، اختر الصلاحية الأقل.
+6. **القراءة هي الأصل للأدوات** — الكتابة تحتاج موافقة.
+7. **التفعيل للمهمة الحالية فقط** — لا تفعيل لسيناريوهات مستقبلية.
+
+### متى يستخدم Tera هذه الملفات؟
+
+- `AGENT_ACTIVATION_MATRIX.md`: قبل تفعيل أي عميل فرعي، وقبل تحديد العملاء المطلوبين في أي مرحلة.
+- `AGENT_PERMISSION_MODEL.md`: قبل تفويض أي مهمة، لتحديد صلاحية العميل وكتابتها في `TASK-ID`.
+- `TOOLING_AND_MCP_POLICY.md`: قبل استخدام أي أداة أو MCP خارجية.
+
+### تفعيل MCPs
+
+MCPs ليست مفعلة تلقائيًا. يتم تفعيل MCP فقط عندما:
+
+1. يقرر Tera أن هناك حاجة محددة.
+2. يحدد Tera الـ MCP المطلوب والصلاحية.
+3. يسجل Tera القرار في `TASK-ID`.
+4. يحدد Tera البيئة (Development / Staging / Production بإذن).
+
+---
+
+## 38. Operating Model — Folder Structure Reference
 
 (Content merged from `tera-system/Tera Operating Model.md`, now deprecated.)
 
