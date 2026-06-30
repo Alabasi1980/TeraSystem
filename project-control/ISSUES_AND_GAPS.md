@@ -21,4 +21,6 @@
 **Severity:** Critical / High / Medium / Low
 **Status:** Open / Deferred / In Progress / Resolved / Cancelled
 
+**Phase 7 Rule:** No hidden open issues. Any unresolved issue must be documented as Resolved / Deferred / Won't Fix / Requires TASK-COD-FIX before project closure.
+
 ## Open Issues and Gaps

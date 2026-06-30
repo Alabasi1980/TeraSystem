@@ -124,7 +124,54 @@ When the user provides a project idea and technical information:
 9. Update `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, and `ISSUES_AND_GAPS.md` when needed.
 10. Do not open the next task unless the current task is accepted or explicitly handled.
 11. **Self-Diagnosis Checkpoint:** After every 3 closed tasks, record a compact self-diagnosis (see §1.3 in `.opencode/agents/tera.md`) before opening the 4th task.
-12. **No implementation without approved TASK-ID. No closure without Post-Execution Review. No scope expansion.**
+12. When all approved implementation tasks are closed or explicitly deferred, prepare Phase 7 entry review.
+13. **No implementation without approved TASK-ID. No closure without Post-Execution Review. No scope expansion. Implementation completion does not equal project closure.**
+
+### Phase 7: Delivery, Handover & Closure
+
+Entry Gate:
+
+- [ ] All approved `TASK-COD-*` tasks are Closed / Accepted, or incomplete items are documented as Deferred Items.
+- [ ] No undocumented Critical blockers.
+- [ ] Post-Execution Reviews are complete for all accepted implementation tasks.
+- [ ] `TASK_REGISTRY.md`, `PROJECT_STATE.md`, and `ISSUES_AND_GAPS.md` are current.
+
+Allowed activities:
+
+- Final QA Review.
+- Smoke / Regression Review.
+- Delivery Readiness Review.
+- Documentation finalization.
+- Release Notes.
+- Client/User Acceptance.
+- Handover Package.
+- Post-Implementation Review.
+- Project Closure Decision.
+
+Forbidden in Phase 7:
+
+- [ ] No new scope.
+- [ ] No code changes.
+- [ ] No direct edits to implementation files.
+- [ ] No hidden open issues.
+- [ ] No undocumented Deferred Items.
+
+Exit Gate:
+
+- [ ] Delivery Readiness Report complete or intentionally minimized for small internal projects.
+- [ ] Final Acceptance Checklist complete.
+- [ ] Release Notes complete.
+- [ ] Project Closure Report complete.
+- [ ] Client Handover Package complete for external client projects.
+- [ ] Deferred Items documented.
+- [ ] Final closure decision recorded in `PROJECT_ACTIVITY_LOG.md` and `PROJECT_STATE.md`.
+
+If Phase 7 finds a blocking issue:
+
+1. Do not fix it inside Phase 7.
+2. Create `TASK-COD-FIX-*`.
+3. Return to Phase 6 for fix + review.
+4. Re-enter Phase 7 after the fix is accepted.
 
 ---
 

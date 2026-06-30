@@ -6,4 +6,4 @@
 |---|---|---|---|---|
 | | | | | |
 
-**Categories:** Scope / Technology / Design / Priority / Deferral / Out-of-Scope / Other
+**Categories:** Scope / Technology / Design / Priority / Deferral / Out-of-Scope / Delivery / Closure / Other

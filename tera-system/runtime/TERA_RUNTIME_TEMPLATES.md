@@ -733,7 +733,7 @@ The generated proposal is saved to:
 - `clients/.../client-approval/` (external clients)
 - `project-inputs/` (internal projects)
 
-See `TERA_RUNTIME_PROTOCOLS.md` Section 18, Phase 7 for the protocol.
+See `TERA_RUNTIME_PROTOCOLS.md` Section 18, Client Discovery Step 7 for the protocol.
 
 ---
 
@@ -1171,11 +1171,224 @@ Required sections:
 ## 12. Forbidden Styling
 ## 13. Engineering Implementation Instructions
 ## 14. UI Acceptance Checklist
-## 15. Open Design Gaps
+## 15. Figma Source Mapping (when FIGMA_DESIGN_FILE is active)
+## 16. Open Design Gaps
 ```
 
 Rule:
 
 ```text
 EngineeringAgent implements UI from this file first. Missing rules become Design Gaps, not guesses.
+```
+
+---
+
+## 34. Phase 7 Delivery, Handover & Closure Templates
+
+These templates are used after Phase 6 implementation is complete. Phase 7 does not execute code. Blocking findings return to Phase 6 as `TASK-COD-FIX-*`.
+
+### 34.1 Delivery Readiness Report
+
+Generated file: `project-control/DELIVERY_READINESS_REPORT.md`
+
+```markdown
+# DELIVERY_READINESS_REPORT.md
+
+## 1. Metadata
+
+| Field | Value |
+|---|---|
+| Project |  |
+| Phase | 7 — Delivery, Handover & Closure |
+| Date |  |
+| Prepared By | Tera / QAAndAcceptanceAgent / DevOpsAgent |
+| Status | Draft / Ready / Blocked |
+
+## 2. Entry Gate
+
+| Check | Result | Notes |
+|---|---|---|
+| All approved TASK-COD closed or deferred | PASS / FAIL |  |
+| Post-Execution Reviews complete | PASS / FAIL |  |
+| No undocumented Critical blockers | PASS / FAIL |  |
+| TASK_REGISTRY current | PASS / FAIL |  |
+| PROJECT_STATE current | PASS / FAIL |  |
+| ISSUES_AND_GAPS current | PASS / FAIL / N/A |  |
+
+## 3. Delivery Readiness
+
+| Area | Result | Notes |
+|---|---|---|
+| Core workflows | Ready / Not Ready |  |
+| Final QA / smoke | PASS / FAIL / N/A |  |
+| Regression review | PASS / FAIL / N/A |  |
+| Documentation | Ready / Needs Work |  |
+| Deployment readiness | Ready / Not Ready / N/A |  |
+| Security closure | PASS / FAIL / N/A |  |
+
+## 4. Blockers
+
+| Blocker | Severity | Required Action | Return to Phase 6? |
+|---|---|---|---|
+|  | Critical / High / Medium / Low |  | Yes / No |
+
+## 5. Result
+
+Delivery Readiness Status: READY / NEEDS_FIX / BLOCKED
+```
+
+### 34.2 Final Acceptance Checklist
+
+Generated file: `project-control/FINAL_ACCEPTANCE_CHECKLIST.md`
+
+```markdown
+# FINAL_ACCEPTANCE_CHECKLIST.md
+
+| Acceptance Area | Result | Evidence / Notes |
+|---|---|---|
+| Approved scope delivered | PASS / FAIL |  |
+| Deferred items documented | PASS / FAIL / N/A |  |
+| Open issues reviewed | PASS / FAIL |  |
+| User/client acceptance recorded | PASS / FAIL |  |
+| No hidden blockers | PASS / FAIL |  |
+| Handover package ready if client project | PASS / FAIL / N/A |  |
+
+Final Acceptance Status: ACCEPTED / NEEDS_FIX / BLOCKED
+```
+
+### 34.3 Release Notes
+
+Generated file: `project-control/RELEASE_NOTES.md`
+
+```markdown
+# RELEASE_NOTES.md
+
+## Version / Release
+
+- Release Name:
+- Date:
+- Scope:
+
+## Delivered
+
+- ...
+
+## Changed
+
+- ...
+
+## Fixed
+
+- ...
+
+## Deferred / Not Included
+
+- ...
+
+## Known Issues
+
+- ...
+```
+
+### 34.4 Post-Implementation Review
+
+Generated file: `project-control/POST_IMPLEMENTATION_REVIEW.md`
+
+```markdown
+# POST_IMPLEMENTATION_REVIEW.md
+
+## What Went Well
+- ...
+
+## What Was Difficult
+- ...
+
+## Scope / Quality Notes
+- ...
+
+## Process Improvements
+- ...
+
+## Follow-up Recommendations
+- ...
+```
+
+### 34.5 Project Closure Report
+
+Generated file: `project-control/PROJECT_CLOSURE_REPORT.md`
+
+```markdown
+# PROJECT_CLOSURE_REPORT.md
+
+## 1. Closure Metadata
+
+| Field | Value |
+|---|---|
+| Project |  |
+| Closure Date |  |
+| Closure Decision | Closed / Needs Final Fix / Deferred / Blocked |
+| Approved By | User / Client / Tera |
+
+## 2. Completion Summary
+
+- Delivered:
+- Deferred:
+- Out of Scope:
+
+## 3. Required Outputs
+
+| Output | Status | Notes |
+|---|---|---|
+| Delivery Readiness Report | Complete / N/A |  |
+| Final Acceptance Checklist | Complete / N/A |  |
+| Release Notes | Complete / N/A |  |
+| Client Handover Package | Complete / N/A |  |
+
+## 4. Open Issues / Deferred Items
+
+| Item | Status | Recommended Action |
+|---|---|---|
+|  | Deferred / Closed / Won't Fix |  |
+
+## 5. Final Decision
+
+Project Closure Status: CLOSED / BLOCKED / NEEDS_PHASE_6_FIX
+```
+
+### 34.6 Client Handover Package
+
+Generated file for external client projects:
+
+```text
+clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/delivery/CLIENT_HANDOVER_PACKAGE.md
+```
+
+```markdown
+# CLIENT_HANDOVER_PACKAGE.md
+
+## 1. تسليم المشروع
+
+- اسم العميل:
+- اسم التطبيق:
+- تاريخ التسليم:
+- نسخة التسليم:
+
+## 2. ما تم تسليمه
+
+- ...
+
+## 3. طريقة التشغيل / الوصول
+
+- لا تكتب أسرارًا أو كلمات مرور.
+- أشر فقط إلى أن البيانات الحساسة محفوظة كـ local environment secrets أو عبر قناة آمنة.
+
+## 4. العناصر المؤجلة أو غير المشمولة
+
+- ...
+
+## 5. القبول النهائي
+
+- Accepted / Needs Fix / Deferred
+- اسم صاحب الاعتماد:
+- التاريخ:
 ```

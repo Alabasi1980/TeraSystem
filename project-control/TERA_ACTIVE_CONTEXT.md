@@ -9,7 +9,7 @@
 ## 1. Project Identity
 
 - **Project Name:** 
-- **Current Phase:** _Intake / Preparation / Architecture / Planning / Execution / Testing / Delivery_
+- **Current Phase:** _1 Intake / 2 Decision / 3 Preparation Planning / 4 Preparation Delegation / 5 Execution Planning / 6 Implementation / 7 Delivery-Handover-Closure_
 - **Active Technology Profile:** _Not selected / nextjs-prisma / dotnet-blazor-ef / other_
 - **Project Size:** _Small / Medium / Large / ERP_
 

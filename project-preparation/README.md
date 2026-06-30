@@ -15,7 +15,7 @@
 | File | Status | Description |
 |---|---|---|
 | `00_PROJECT_INPUTS.md` | _Planned / Draft / Complete / N/A_ | Normalized summary of intake |
-| `TERA_PROJECT_DECISION.md` | _Planned / Draft / Complete / N/A_ | قرار تيرا الأولي — المرحلة 2 من 6 (Project Decision Formation) |
+| `TERA_PROJECT_DECISION.md` | _Planned / Draft / Complete / N/A_ | قرار تيرا الأولي — المرحلة 2 من 7 (Project Decision Formation) |
 | `01_PROJECT_BRIEF.md` | _Planned / Draft / Complete / N/A_ | Project overview |
 | `02_SCOPE_AND_BOUNDARIES.md` | _Planned / Draft / Complete / N/A_ | Scope definition |
 | `PROJECT_RULES.md` | _Planned / Draft / Complete / N/A_ | Project-specific rules |

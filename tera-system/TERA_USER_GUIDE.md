@@ -399,6 +399,26 @@ If you have general rules for all Tera projects, they belong in `tera-system/` i
 6. لا تبدأ قبل موافقتي.
 ```
 
+### Start delivery, handover, and closure
+
+```text
+أعتمد أن مرحلة التنفيذ البرمجي اكتملت أو أن العناصر غير المكتملة موثقة كمؤجلة.
+
+المطلوب الآن:
+1. انتقل إلى Phase 7 — Delivery, Handover & Closure.
+2. لا تنفذ كودًا ولا تضف scope جديدًا.
+3. شغّل Delivery Readiness validation.
+4. أنشئ أو حدّث مخرجات Phase 7 المناسبة حسب حجم المشروع:
+   - DELIVERY_READINESS_REPORT.md
+   - FINAL_ACCEPTANCE_CHECKLIST.md
+   - RELEASE_NOTES.md
+   - POST_IMPLEMENTATION_REVIEW.md
+   - PROJECT_CLOSURE_REPORT.md
+   - CLIENT_HANDOVER_PACKAGE.md لمشاريع العملاء.
+5. إذا وجدت blocker، لا تصلحه داخل Phase 7. أنشئ TASK-COD-FIX وأعده إلى Phase 6.
+6. لا تغلق المشروع إلا بعد توثيق Deferred Items وOpen Issues والقرار النهائي.
+```
+
 ### Post-execution review
 
 ```text

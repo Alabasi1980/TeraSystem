@@ -15,10 +15,10 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | Client engagement and approval | Manages client profile, contacts, approval package, and change control | `TeraClient*.md`, `clients/` |
 | Preparation and analysis | Converts intake into internal project planning and execution-ready files | `Tera_Project_Preparation_Files.md`, `project-preparation/` |
 | Design governance | Controls design source decisions, design tokens, component rules, internal kits, and UI acceptance | `tera-system/design-system/`, `project-preparation/28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/` |
-| Orchestration and gates | Controls delegation, task readiness, pre/post execution review, and build mode | `TeraPreExecutionGate.md`, `runtime/`, `project-control/` |
+| Orchestration and gates | Controls delegation, task readiness, pre/post execution review, build mode, and project closure gates | `TeraPreExecutionGate.md`, `runtime/`, `project-control/` |
 | Technical specialization | Keeps stack-specific behavior outside the generic Tera system | `tera-system/profiles/` |
 | Sub-agent lifecycle | Defines, generates, narrows, activates, and reviews specialized agents | `TeraSubAgents.md`, `AGENT_GENERATION_TEMPLATE.md`, `generated-agents/`, `.opencode/agents/` |
-| Delivery and handoff | Produces final docs, client delivery material, and operational handover | `project-preparation/11_DELIVERY_AND_HANDOVER.md`, `clients/.../delivery/` |
+| Delivery, handoff, and closure | Produces final delivery readiness, release notes, client handover material, acceptance records, and closure reports | `project-control/DELIVERY_READINESS_REPORT.md`, `project-control/PROJECT_CLOSURE_REPORT.md`, `clients/.../delivery/` |
 
 ## 3. Folder Roles
 
@@ -49,7 +49,7 @@ Client / User Idea
 -> Delegated Execution
 -> Post-Execution Review
 -> Milestone / Client Approval
--> Delivery and Handoff
+-> Delivery, Handoff, and Closure
 ```
 
 ## 5. External Client Flow
@@ -64,6 +64,7 @@ Client Registration
 -> Execution Authorization
 -> Internal Preparation and Implementation Planning
 -> Build Mode
+-> Phase 7 Delivery, Handover, and Closure
 -> Change Control for later requests
 ```
 

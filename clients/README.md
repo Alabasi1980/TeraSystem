@@ -25,7 +25,10 @@ Rules:
 - Client assets such as logos, images, references, or supplied documents belong in `client-assets/`.
 - Communication summaries belong in `client-communications/`.
 - Final handover material belongs in `delivery/`.
+- For Phase 7 external client closure, create `delivery/CLIENT_HANDOVER_PACKAGE.md` using `clients/CLIENT_HANDOVER_PACKAGE_TEMPLATE.md` as the base.
 - Do not store secrets, passwords, API keys, or private credentials here.
 - Default client-facing language is Arabic unless Majed decides otherwise.
 
 Implementation must not start for external client projects before the mandatory client approval package is complete and approved according to Tera policies.
+
+Project closure must not be recorded for external client projects before the Phase 7 Client Handover Package and Final Acceptance Checklist are complete or explicitly deferred by an approved decision.

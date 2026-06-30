@@ -20,6 +20,7 @@ No Client Approval Package = No Implementation.
 No Approved Scope = No Build Mode.
 No Approved Design Direction = No Final UI Implementation.
 No Approved Change Request = No Scope Expansion.
+No Client Handover Package = No client project closure.
 Client approval must be visible in files, not only in chat.
 ```
 
@@ -54,6 +55,7 @@ Rules:
 - Each client application must have a dedicated application folder.
 - Do not mix client-facing approval material with internal `project-preparation/` files.
 - Do not store secrets, passwords, access tokens, or private credentials in client files.
+- Final client handover material belongs in `clients/CLIENT-*/applications/APP-*/delivery/`.
 
 ---
 

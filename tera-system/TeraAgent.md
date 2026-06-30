@@ -16,7 +16,7 @@
 - فهم المشروع.
 - تحديد حجمه ونطاقه.
 - تحديد الملفات المطلوبة.
-- إنشاء قرار تيرا الأولي (TERA_PROJECT_DECISION.md — المرحلة 2 من 6).
+- إنشاء قرار تيرا الأولي (TERA_PROJECT_DECISION.md — المرحلة 2 من 7).
 - اختيار العملاء الفرعيين المناسبين.
 - توليد ملفات العملاء الفرعيين الفعلية حسب بيئة العمل.
 - توزيع المهام على العملاء الفرعيين.
@@ -58,7 +58,7 @@
 | `Tera_Project_Preparation_Files.md` | يعرّف ملفات المشروع الممكن إنشاؤها |
 | `TeraSubAgents.md` | يعرّف العملاء الفرعيين الممكن استخدامهم |
 | `AGENT_GENERATION_TEMPLATE.md` | يعرّف قالب توليد العملاء الفعليين وقواعد `MVP Constraints` و`Forbidden Actions` الإلزامية |
-| `TERA_PROJECT_DECISION.md` | قرار تيرا الأولي للمشروع — المرحلة 2 من 6 (Project Decision Formation) |
+| `TERA_PROJECT_DECISION.md` | قرار تيرا الأولي للمشروع — المرحلة 2 من 7 (Project Decision Formation) |
 | `TERA_USER_GUIDE.md` | يعرّف برومتات تعامل المستخدم مع Tera، ومنها بدء مشروع جديد واستئناف مشروع قائم |
 | `TeraPolicyMap.md` | يحدد مصدر الحقيقة الرسمي لكل مجال ويمنع تكرار القواعد |
 | `TeraArchitectureMap.md` | يشرح طبقات المنظومة وأدوار المجلدات والتدفق العام |
@@ -277,7 +277,7 @@ They must not be mixed into `project-preparation/`, which remains the internal T
 
 ---
 
-## 5. التسلسل العام للمراحل (6 مراحل)
+## 5. التسلسل العام للمراحل (7 مراحل)
 
 ```
 1. Project Intake & Client Discovery    ← المقابلة، جمع المعلومات، العرض التقديمي
@@ -286,6 +286,7 @@ They must not be mixed into `project-preparation/`, which remains the internal T
 4. Sub-Agent Generation & Preparation Delegation ← توليد العملاء وتفويض إنشاء ملفات التحضير
 5. Execution Planning                   ← MASTER_PLAN + DETAILED_PLAN + BATCH_PLAN — خطة التنفيذ
 6. Implementation                       ← التنفيذ البرمجي + Post-Execution Review
+7. Delivery, Handover & Closure          ← جاهزية التسليم + القبول النهائي + إغلاق المشروع
 ```
 
 ### تفاصيل المرحلة 3 (Project Preparation Planning)
@@ -464,6 +465,76 @@ They must not be mixed into `project-preparation/`, which remains the internal T
 - No next task if current task is not Accepted or explicitly handled.
 - No UI implementation without approved Design Source Decision.
 - No silent scope expansion and no hidden technical decisions.
+- Implementation completion does not equal project closure.
+- No project closure after last TASK-COD only.
+
+---
+
+### تفاصيل المرحلة 7 (Delivery, Handover & Closure)
+
+**الهدف:** إغلاق المشروع كاملًا بعد التنفيذ، عبر فحص جاهزية التسليم، توثيق الإصدار، قبول المستخدم/العميل، حزمة التسليم، وتقرير الإغلاق.
+
+**تبدأ المرحلة 7 فقط إذا:**
+- كل مهام `TASK-COD-*` مغلقة ومقبولة؛ أو
+- التنفيذ مكتمل مع وجود Deferred Items موثقة بوضوح.
+- لا توجد Critical blockers غير موثقة.
+- كل Post-Execution Reviews المطلوبة مكتملة.
+
+**لا تسمح المرحلة 7 بـ:**
+- Scope جديد.
+- كود جديد.
+- تعديل مباشر على ملفات التطبيق التنفيذية.
+- تجاهل Issues مفتوحة.
+- إغلاق مشروع بوجود Critical blockers غير موثقة.
+
+**تسمح المرحلة 7 بـ:**
+- Final QA Review.
+- Smoke / Regression Review.
+- Delivery Readiness Review.
+- Documentation Finalization.
+- Release Notes.
+- Client/User Acceptance.
+- Handover Package.
+- Post-Implementation Review.
+- Project Closure Decision.
+
+**إذا اكتشفت المرحلة 7 مشكلة مانعة:**
+- لا تعالجها داخل Phase 7 مباشرة.
+- أنشئ `TASK-COD-FIX-*`.
+- أعد المشروع إلى Phase 6.
+- بعد الإصلاح والمراجعة، يعود المشروع إلى Phase 7.
+
+**مخرجات المرحلة 7 حسب حجم المشروع:**
+
+| نوع المشروع | مخرجات Phase 7 |
+|---|---|
+| مشروع صغير داخلي | Release Notes مختصرة + Project Closure Report مختصر |
+| مشروع متوسط | Delivery Readiness Report + Final Acceptance Checklist + Release Notes + Project Closure Report |
+| مشروع عميل | كل مخرجات Phase 7 + Client Handover Package إلزامي |
+| مشروع فيه Deployment | إضافة Deployment Readiness ضمن Delivery Readiness Report أو بمشاركة DevOpsAgent |
+
+**المخرجات الرسمية:**
+- `project-control/DELIVERY_READINESS_REPORT.md`
+- `project-control/FINAL_ACCEPTANCE_CHECKLIST.md`
+- `project-control/RELEASE_NOTES.md`
+- `project-control/POST_IMPLEMENTATION_REVIEW.md`
+- `project-control/PROJECT_CLOSURE_REPORT.md`
+- للمشاريع الخارجية: `clients/CLIENT-*/applications/APP-*/delivery/CLIENT_HANDOVER_PACKAGE.md`
+
+**العملاء المشاركون عند الحاجة:**
+- `QAAndAcceptanceAgent`: Final QA / Smoke / Regression / Acceptance.
+- `DocumentationHandoverAgent`: Release Notes / Handover Package / Closure Report.
+- `DevOpsAgent`: Deployment Readiness عند الحاجة.
+- `SecurityAgent`: Security closure عند الحاجة.
+- `Tera`: القرار النهائي وإغلاق المشروع.
+
+**قواعد حاكمة:**
+- No project closure without Delivery Readiness validation.
+- No client project closure without Client Handover Package.
+- No closure with hidden open issues.
+- No undocumented Deferred Items.
+- No new scope in Phase 7.
+- Blocking issues found in Phase 7 must return to Phase 6 as `TASK-COD-FIX-*`.
 
 ## 6. أول مخرج إلزامي
 
@@ -475,7 +546,7 @@ TERA_PROJECT_DECISION.md
 
 لكن هذا لا يحدث إلا بعد اجتياز `Project Intake Gate` بالحد الأدنى المقبول.
 
-هذا الملف يمثل قرار تيرا الأولي الرسمي للمشروع — المرحلة 2 من 6 (Project Decision Formation).
+هذا الملف يمثل قرار تيرا الأولي الرسمي للمشروع — المرحلة 2 من 7 (Project Decision Formation).
 
 يحتوي على 13 قسماً:
 

@@ -249,6 +249,56 @@ Rules:
 - Items with status `Deferred`, `Cancelled`, `Out of Scope`, or `Moved to Later Phase` are not considered missing.
 - If status is uncertain, document as `Status unclear` instead of guessing.
 
+### 4.2 Phase 7 Delivery, Handover, and Closure Protocol
+
+Phase 7 is the official project-level closure phase. It is separate from Phase 6 task implementation.
+
+Core rules:
+
+- Implementation completion does not equal project closure.
+- No project closure after the last `TASK-COD-*` only.
+- No new scope in Phase 7.
+- Phase 7 does not execute code or directly modify implementation files.
+- No project closure without Delivery Readiness validation.
+- No client project closure without Client Handover Package.
+- No hidden open issues.
+- No undocumented Deferred Items.
+- Blocking issues found in Phase 7 must return to Phase 6 as `TASK-COD-FIX-*`.
+
+Phase 7 entry gate:
+
+1. All approved `TASK-COD-*` tasks are Closed / Accepted, or incomplete work is documented as Deferred Items.
+2. Post-Execution Reviews are complete.
+3. No Critical blockers are undocumented.
+4. `TASK_REGISTRY.md`, `PROJECT_STATE.md`, and `ISSUES_AND_GAPS.md` are current.
+
+Phase 7 output sizing:
+
+| Project Type | Required Phase 7 Outputs |
+|---|---|
+| Small internal project | Compact Release Notes + compact Project Closure Report |
+| Medium project | Delivery Readiness Report + Final Acceptance Checklist + Release Notes + Project Closure Report |
+| External client project | All Phase 7 outputs + Client Handover Package |
+| Project with deployment | Include Deployment Readiness inside Delivery Readiness Report or involve `DevOpsAgent` |
+
+Allowed helper agents:
+
+- `QAAndAcceptanceAgent`: Final QA / Smoke / Regression / Acceptance.
+- `DocumentationHandoverAgent`: Release Notes / Handover Package / Closure Report.
+- `DevOpsAgent`: Deployment Readiness when needed.
+- `SecurityAgent`: Security closure when needed.
+- Tera: final closure decision.
+
+If Phase 7 finds a blocker:
+
+```text
+Phase 7 finds blocker
+-> create TASK-COD-FIX-XXX
+-> return to Phase 6
+-> fix + Post-Execution Review
+-> return to Phase 7
+```
+
 ---
 
 ## 5. Orchestration Decision Matrix
@@ -1297,7 +1347,7 @@ Each suggestion must be classified as:
 
 Suggestions must be clearly separated from confirmed requirements and documented as suggestions, not scope.
 
-#### Phase 7: Proposal Generation (Client Output)
+#### Client Discovery Step 7: Proposal Generation (Client Output)
 
 After all phases complete and understanding is confirmed, generate the **Application Proposal** — a professional client-facing document that captures everything agreed upon.
 
@@ -1412,7 +1462,7 @@ Assumptions that are marked `Needs confirmation` must be reviewed:
 
 - `Client Discovery Mode` (Stage 1) is the **pre-intake conversation** — it happens before the formal intake gate.
 - `Smart Interview` (Stage 2) is the **structured follow-up** when the Discovery reveals gaps.
-- **Phase 7 (Proposal Generation)** produces the client-facing `APPLICATION_PROPOSAL.html` using the template at `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html`. The proposal must be approved before formal preparation begins.
+- **Client Discovery Step 7 (Proposal Generation)** produces the client-facing `APPLICATION_PROPOSAL.html` using the template at `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html`. The proposal must be approved before formal preparation begins.
 - After the proposal is approved, `TeraProjectIntakePolicy.md` readiness checks apply.
 - The `Application Discovery Protocol` (Section 13) is now a downstream step — run after the proposal is approved.
 - `Client Approval Workflow Protocol` (Section 14) remains unchanged for external clients — the proposal feeds into Gate 2 (Scope Approval).

@@ -947,7 +947,7 @@ tera-system/design-system/
 
 هذا الملف هو **كتالوج مرجعي** لملفات التحضير. لا يُنشئ تيرا الملفات مباشرة من هنا، بل:
 
-انظر `TeraAgent.md` القسم 5 للتسلسل العام للمراحل (6 مراحل).
+انظر `TeraAgent.md` القسم 5 للتسلسل العام للمراحل (7 مراحل).
 
 | المرحلة | ماذا يفعل تيرا |
 |---|---|
@@ -956,6 +956,7 @@ tera-system/design-system/
 | **4. Sub-Agent Generation & Preparation Delegation** | يولد العملاء الفرعيين المطلوبين ويفوّض إنشاء ملفات التحضير المخطط لها فقط |
 | **5. Execution Planning** | يحوّل ملفات التحضير المعتمدة إلى خطة تنفيذ رئيسية وتفصيلية ودفعات TASK-ID مع Pre-Execution Gate |
 | **6. Implementation** | ينفذ TASK-ID المعتمدة، يستلم Handback، يطبق Post-Execution Review، ثم يقبل أو يطلب إصلاح |
+| **7. Delivery, Handover & Closure** | يتحقق من جاهزية التسليم، القبول النهائي، Release Notes، Handover عند الحاجة، وتقرير إغلاق المشروع |
 
 **قاعدة منع التضخيم:**
 

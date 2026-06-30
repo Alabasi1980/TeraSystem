@@ -16,6 +16,14 @@
 
 ## Activity Log
 
+## [2026-06-30] - SYSTEM_FEATURE: Phase 7 Delivery, Handover & Closure
+
+- Related Task: N/A (System Maintenance)
+- Actor: User + Tera Agent
+- Summary: Added official `Phase 7 — Delivery, Handover & Closure` to Tera. Updated the operating workflow from 6 phases to 7 phases. Phase 7 is project-level closure, not code execution. Added entry/exit gates, anti-bloat output sizing by project type, blocker return path to Phase 6 as `TASK-COD-FIX-*`, and explicit rules preventing project closure after the last TASK-COD only. Added Phase 7 templates in `project-control/` and a client handover package template under `clients/`. Updated Tera core, active OpenCode runtime, runtime protocols/checklists/templates, policy/architecture maps, client policy, user guide, sub-agent responsibilities, project state/control templates, and client workspace guidance.
+- Decision / Result: Tera now has a formal 7-phase lifecycle ending with Delivery, Handover & Closure. Phase 7 cannot add scope or write code. Blocking issues discovered in Phase 7 return to Phase 6.
+- Next Action: Run validation and commit as `Add Phase 7 delivery handover closure`.
+
 ## [2026-06-30] - SYSTEM_DOC: Official Figma adoption user-input checklist
 
 - Related Task: N/A (System Maintenance)
