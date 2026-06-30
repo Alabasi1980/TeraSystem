@@ -433,6 +433,8 @@ They must not be mixed into `project-preparation/`, which remains the internal T
 - موافقة المستخدم على الدفعة أو المهمة
 
 **تسلسل التنفيذ:**
+
+0. **طلب الدخول في Build Mode:** يسأل Tera المستخدم صراحةً: "هل توافق على بدء Build Mode لتنفيذ TASK-COD-XXX؟" قبل أي تفويض تنفيذي. تبقى الحالة Plan Mode لحين الموافقة.
 1. اختيار `TASK-COD-XXX` معتمدة من `EXECUTION_BATCH_PLAN.md`.
 2. التأكد من أن العميل المسؤول نشط وأن Technology Profile محمل.
 3. تفويض العميل بالمهمة فقط: Objective, Allowed Sources, Allowed Write Targets, Forbidden Actions, Expected Output, Acceptance Criteria.
@@ -443,6 +445,7 @@ They must not be mixed into `project-preparation/`, which remains the internal T
 8. اتخاذ قرار تيرا النهائي: Accepted / Needs Fix / Blocked / Rework Needed / Deferred / Cancelled.
 9. تحديث `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, و `ISSUES_AND_GAPS.md` عند الحاجة.
 10. لا ينتقل تيرا إلى المهمة التالية إلا إذا أُغلقت الحالية أو عولجت صراحةً كـ Deferred / Blocked / Cancelled.
+11. **Self-Diagnosis Checkpoint:** بعد كل 3 مهام مقفلة، يسجّل Tera Self-Diagnosis قبل فتح المهمة الرابعة (راجع `.opencode/agents/tera.md` §12).
 
 **المخرجات:**
 - ملفات تطبيق محدثة ضمن Allowed Write Targets.
@@ -452,6 +455,7 @@ They must not be mixed into `project-preparation/`, which remains the internal T
 
 **قواعد حاكمة:**
 - No approved TASK-ID = No Implementation.
+- No Build Mode approval = No Implementation.
 - No Pre-Execution Gate PASS = No Implementation.
 - No active responsible agent = No Implementation.
 - No work outside Allowed Write Targets.

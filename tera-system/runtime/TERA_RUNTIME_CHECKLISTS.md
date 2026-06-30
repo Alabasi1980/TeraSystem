@@ -88,8 +88,11 @@ When the user provides a project idea and technical information:
 9. **No coding. No UI without Design Source Decision. No TASK-ID without Pre-Execution Gate PASS.**
 
 ### Phase 6: Implementation
+
+0. **Request Build Mode:** Ask the user explicitly: "Do you approve entering Build Mode for TASK-COD-XXX?" before any implementation delegation. Remain in Plan Mode until approved.
 1. Select one approved `TASK-COD-XXX` from the approved `EXECUTION_BATCH_PLAN.md`.
 2. Confirm:
+   - [ ] Build Mode approved by user.
    - [ ] Task status is `Approved` or `Assigned`.
    - [ ] Responsible agent is active and appropriate.
    - [ ] Active Technology Profile is loaded.
@@ -115,7 +118,8 @@ When the user provides a project idea and technical information:
 8. Decide final task status: Accepted / Needs Fix / Blocked / Rework Needed / Deferred / Cancelled.
 9. Update `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, and `ISSUES_AND_GAPS.md` when needed.
 10. Do not open the next task unless the current task is accepted or explicitly handled.
-11. **No implementation without approved TASK-ID. No closure without Post-Execution Review. No scope expansion.**
+11. **Self-Diagnosis Checkpoint:** After every 3 closed tasks, record a compact self-diagnosis (see §1.3 in `.opencode/agents/tera.md`) before opening the 4th task.
+12. **No implementation without approved TASK-ID. No closure without Post-Execution Review. No scope expansion.**
 
 ---
 

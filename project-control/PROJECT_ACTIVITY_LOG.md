@@ -159,3 +159,11 @@
 - Summary: Phase 1 of Tera agent splitting. Expanded TERA_RUNTIME_PROTOCOLS.md from 14 to 17 sections (added Roadmap Tracking §4.1, Decision Matrix Rules §5, Escalation Ladder §5, full Model Capability Gate §6, Security Sensitivity Levels §7, Handoff Readiness Gate §15, Plan Compliance Review §16, Sub-Agent Status Review §17). Replaced 718-line Section 25 (Task Orchestration) and Sections 13-14, 26-27, 31-35 in TeraAgent.md with compact references.
 - Decision / Result: TeraAgent.md reduced from 1,919 to 771 lines (~60% reduction). TERA_RUNTIME_PROTOCOLS.md enriched as the operational source of truth.
 - Next Action: Awaiting user decision on: (1) Tera Operating Model.md merge/remove, (2) Client policy file consolidation, (3) TERA_USER_GUIDE.md reduction.
+
+## [2026-06-30] - SYSTEM_FIX: Phase 6 gaps corrected (4 gaps)
+
+- Related Task: N/A (System Maintenance)
+- Actor: Tera Agent (per Majed request)
+- Summary: Fixed 4 identified gaps in Phase 6 (Implementation) across the system. (1) Added Build Mode approval step as step 0 in Phase 6 flow — TeraAgent.md §5 Phase 6, TERA_RUNTIME_CHECKLISTS.md Phase 6, .opencode/agents/tera.md §11 and §12. (2) Added OpenCode delegation mechanism note in TeraSubAgents.md §9. (3) Added Emergency ↔ Task Lifecycle integration table in TERA_RUNTIME_PROTOCOLS.md §8 with exact task status per emergency level. (4) Added Self-Diagnosis Checkpoint as step 11 in Phase 6 checklist and step 11 in TeraAgent.md Phase 6 sequence.
+- Decision / Result: All 4 gaps closed with minimal edits (3 lines added max per file). Build Mode, delegation mechanism, emergency-task integration, and self-diagnosis checkpoint now explicitly documented in Phase 6 flow.
+- Next Action: None. Phase 6 is now fully documented with no identified gaps.

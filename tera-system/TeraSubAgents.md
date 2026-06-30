@@ -1299,6 +1299,9 @@ Domain Intelligence Report
 
 # 9. بروتوكول تفويض المهمة
 
+**آلية التفويض في OpenCode:**
+Tera يستخدم أداة `task` في OpenCode مع `subagent_type` المناسب (مثل `EngineeringAgent` أو `general`) ويمرّر حزمة المهمة كاملة (Objective, Allowed Sources, Allowed Write Targets, Forbidden Actions, Acceptance Criteria) داخل وصف الـ task. لا يُفوّض Tera عبر الشات مباشرة؛ الحزمة تمر عبر الـ task tool مع جميع القيود.
+
 عند استدعاء أي عميل فرعي، يستخدم Tera Agent الصيغة التالية:
 
 ```text

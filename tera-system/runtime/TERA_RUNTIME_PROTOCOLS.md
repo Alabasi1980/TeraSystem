@@ -527,6 +527,17 @@ Rules:
 - Any real secret exposure blocks acceptance until documented safely and the user is warned to rotate or revoke it.
 - Use `TERA_RUNTIME_TEMPLATES.md` for the Emergency Report format.
 
+### Emergency ↔ Task Lifecycle Integration
+
+| Emergency Level | Task Status After Response | Record In |
+|---|---|---|
+| Yellow | `Needs Fix` | Task file + `ISSUES_AND_GAPS.md` (Low/Medium) |
+| Orange | `Blocked` | Task file + `ISSUES_AND_GAPS.md` (High) |
+| Red | `Blocked` — stop further writes, redact secrets | Task file + `ISSUES_AND_GAPS.md` (Critical) + notify user |
+| Black | `Blocked` — stop all delegation, await user | Task file + `ISSUES_AND_GAPS.md` (Critical) + notify user immediately |
+
+The task status `Blocked` prevents any follow-up task from opening until Tera and the user decide: fix-forward, rollback, or defer. The `Post-Execution Review Gate` cannot pass until the emergency is contained and classified.
+
 ---
 
 ## 9. User Contradiction Resolution Protocol

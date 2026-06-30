@@ -7,6 +7,7 @@
 | **TASK-ID** | TASK- |
 | **Task Type** | Preparation / Coding / Review / Control |
 | **Phase** | |
+| **Build Mode Approved** | Yes / No / N/A (preparation tasks) |
 | **Status** | Draft |
 | **Assigned To** | |
 | **Created** | YYYY-MM-DD |
