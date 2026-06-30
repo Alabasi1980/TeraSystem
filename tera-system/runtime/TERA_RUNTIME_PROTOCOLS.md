@@ -228,9 +228,10 @@ project-control/EXECUTION_BATCH_PLAN.md
 
 Rules:
 - Tera must read both files before selecting the next task when they exist.
-- `PROJECT_MASTER_PLAN.md` defines main phases, sub-phases, status per phase, and whether each is within MVP or a later phase.
+- `PROJECT_MASTER_PLAN.md` defines main phases, sub-phases, status per phase, and the formal phased roadmap (Core MVP / Extended MVP / Phase 2 / Later / Out of Scope).
 - `PROJECT_DETAILED_EXECUTION_PLAN.md` defines traceable execution items linked to tasks, issues, and decisions.
 - `EXECUTION_BATCH_PLAN.md` defines the current approved batch only and prevents executing the whole project at once.
+- `project-preparation/09_IMPLEMENTATION_PLAN.md` is a preliminary preparation output; it does not replace the official execution plans in `project-control/`.
 - Tera or `ProjectControlAgent` must update these files when:
   - creating a new project before the first implementation task
   - creating a major task linked to a plan item
@@ -819,7 +820,7 @@ Core rules:
 ```text
 No undocumented materially important discovery.
 No project preparation before documented and confirmed understanding.
-No execution planning before approved phased roadmap.
+No detailed execution planning or TASK-ID generation before `PROJECT_MASTER_PLAN.md` (including the formal phased roadmap) is approved.
 ```
 
 Entry triggers:
@@ -888,7 +889,9 @@ Phased roadmap approval:
 
 - After discovery and optional Domain Intelligence, Tera creates a `Phased Application Roadmap`.
 - Tera decides what belongs in Phase 1 / MVP and what belongs in later phases.
-- The user must approve the phased roadmap before execution planning.
+- The discovery roadmap is a preliminary scope/phasing agreement.
+- During Phase 5, it is formalized inside `project-control/PROJECT_MASTER_PLAN.md` as the official implementation roadmap.
+- The user must approve `PROJECT_MASTER_PLAN.md` before detailed execution planning or `TASK-COD-*` generation.
 
 Exit criteria:
 
@@ -912,7 +915,7 @@ Forbidden actions:
 - Do not leave materially important discovery information only in chat.
 - Do not ask large question dumps.
 - Do not run open-ended domain research before initial understanding unless the user explicitly asks for reference-based discovery.
-- Do not move to execution planning before phased roadmap approval.
+- Do not move to detailed execution planning or `TASK-COD-*` generation before `PROJECT_MASTER_PLAN.md` approval.
 
 ---
 

@@ -386,10 +386,17 @@ They must not be mixed into `project-preparation/`, which remains the internal T
 3. `project-control/EXECUTION_BATCH_PLAN.md` — الدفعة الحالية فقط (أول دفعة معتمدة).
 4. `project-control/tasks/TASK-COD-001.md` إلى ... — ملفات المهام للدفعة الأولى فقط.
 
+**تمييز مهم:**
+- `project-preparation/09_IMPLEMENTATION_PLAN.md` = خطة تنفيذ مبدئية ضمن ملفات التحضير.
+- `project-control/PROJECT_MASTER_PLAN.md` = الخطة الرئيسية الرسمية بعد اعتماد التحضير، وتتضمن الـ Phased Roadmap الرسمي.
+- `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md` = تفصيل التنفيذ إلى عناصر قابلة للتتبع.
+- `project-control/EXECUTION_BATCH_PLAN.md` = الدفعة القادمة فقط.
+- `project-control/tasks/TASK-COD-XXX.md` = وحدة تنفيذ فعلية.
+
 **خطوات التخطيط:**
 
 1. **Execution Readiness Check:** التحقق من أن جميع ملفات التحضير المطلوبة مكتملة ومعتمدة، و AGENT_DELEGATION_PLAN معتمد، و Technology Profile نشط، ولا توجد Issues مانعة.
-2. **إنشاء PROJECT_MASTER_PLAN.md:** تقسيم التطبيق إلى مراحل رئيسية (مثل: Technical Foundation → Database Schema → Core Features → Reports → QA → Handover) مع شروط الانتقال بينها.
+2. **إنشاء PROJECT_MASTER_PLAN.md:** تقسيم التطبيق إلى مراحل رئيسية (مثل: Technical Foundation → Database Schema → Core Features → Reports → QA → Handover)، وتثبيت الـ Phased Roadmap الرسمي وشروط الانتقال بينها.
 3. **إنشاء PROJECT_DETAILED_EXECUTION_PLAN.md:** تفصيل كل مرحلة إلى مهام صغيرة قابلة للتحويل إلى TASK-ID، مرتبطة بخطة التتبع.
 4. **تحديد أول Batch:** اختيار أول دفعة قابلة للتنفيذ فقط — لا يخطط كل المشروع دفعة واحدة.
 5. **توليد TASK-ID للدفعة الأولى فقط:** إنشاء ملفات المهام (TASK-COD-001, TASK-COD-002, ...) مع تحديد الهدف والمراجع و Allowed Write Targets.
@@ -733,7 +740,7 @@ Core rules:
 - **When the client does not know an answer**: propose a suitable default and document it as an `Assumption`, not as a final decision.
 - **After the interview, generate an Application Proposal** (`APPLICATION_PROPOSAL.html`) using the template. The proposal must be approved by the client before formal preparation begins.
 - No project preparation before documented, approved, and confirmed understanding.
-- No execution planning before approved phased roadmap.
+- No detailed execution planning or `TASK-COD-*` generation before approved `PROJECT_MASTER_PLAN.md` including the formal phased roadmap.
 - Feature classification (`MVP_DEFINITION_PROTOCOL.md`) is mandatory before MVP scope.
 - **User-selected features during discovery are not automatically MVP.**
 - After the interview, enter the Suggestions and Improvements phase before formal preparation.

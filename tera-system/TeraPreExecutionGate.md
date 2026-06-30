@@ -435,6 +435,12 @@ Blocked
 
 ### Checklist إلزامي
 
+القالب الرسمي لتسجيل هذه المراجعة داخل ملف المهمة موجود في:
+
+```text
+tera-system/runtime/TERA_RUNTIME_TEMPLATES.md Section 32
+```
+
 | # | فحص المراجعة بعد التنفيذ | النتيجة المطلوبة |
 |---|---|---|
 | 1 | هل الملفات التي تغيرت تقع داخل Allowed Write Targets؟ | Yes |

@@ -21,6 +21,7 @@ mode:
 الفئة:
 بيئة العمل:
 الدور:
+نوع التفويض: Preparation Delegation / Implementation Delegation / Review / Control
 متى يستدعيه تيرا:
 الملفات والمصادر التي يقرأها:
 الأدوات المسموحة:
@@ -61,6 +62,13 @@ mode: subagent
 ## Purpose
 
 [اكتب مهمة العميل المحددة بجملة أو جملتين.]
+
+## Delegation Type
+
+- Preparation Delegation (`TASK-PREP-*`) / Implementation Delegation (`TASK-COD-*`) / Review / Control
+- Phase 4 agents create or review preparation files only.
+- Phase 6 agents execute approved application `TASK-COD-*` items only.
+- An agent must not treat a preparation delegation as application implementation.
 
 ## Token Budget
 

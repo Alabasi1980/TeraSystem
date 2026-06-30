@@ -65,6 +65,7 @@ When the user provides a project idea and technical information:
     - [ ] Design Source Decision resolved for any incoming UI tasks.
 2. Create `project-control/PROJECT_MASTER_PLAN.md` using template Section 29:
     - Define execution phases with objectives and dependencies.
+    - Include the formal phased roadmap (Core MVP / Extended MVP / Phase 2 / Later / Out of Scope).
     - Define transition conditions between phases.
     - Record Design Source Decision per phase.
 3. Create `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md` using template Section 30:
@@ -538,9 +539,9 @@ Research findings cannot become approved scope without user/Tera decision.
 
 ---
 
-## 19. Phased Roadmap Readiness Checklist
+## 19. Phased Roadmap / Master Plan Readiness Checklist
 
-Before execution planning, confirm:
+Before detailed execution planning or `TASK-COD-*` generation, confirm:
 
 - [ ] Feature classification (`tera-system/runtime/MVP_DEFINITION_PROTOCOL.md`) has been completed before MVP scope was set.
 - [ ] Phase 1 / MVP is clear and small enough.
@@ -549,6 +550,8 @@ Before execution planning, confirm:
 - [ ] Enterprise or complex features are deferred unless explicitly approved.
 - [ ] Out-of-scope items are listed where relevant.
 - [ ] User decisions are captured.
-- [ ] The user approved the phased roadmap.
+- [ ] The preliminary phased roadmap from discovery has been reviewed.
+- [ ] `PROJECT_MASTER_PLAN.md` includes the formal phased roadmap.
+- [ ] The user approved `PROJECT_MASTER_PLAN.md`.
 
-No execution planning before phased roadmap approval.
+No detailed execution planning or `TASK-COD-*` generation before `PROJECT_MASTER_PLAN.md` approval.

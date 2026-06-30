@@ -94,6 +94,8 @@ Recommendation:
 
 ## 10. Tera Review
 
+> Use `TERA_RUNTIME_TEMPLATES.md` Section 32 as the official Post-Execution Review template.
+
 | Check | Result | Notes |
 |---|---|---|
 | TASK objective completed? | PASS / FAIL | |

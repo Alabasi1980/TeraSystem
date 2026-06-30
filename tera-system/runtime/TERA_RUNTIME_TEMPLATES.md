@@ -940,14 +940,35 @@ The generated file is saved to `project-control/PROJECT_MASTER_PLAN.md`.
 | Status | Draft / Approved / Active |
 | Reference | `project-preparation/09_IMPLEMENTATION_PLAN.md` |
 
+## 1.1 Relationship to Preparation Plan
+
+| File | Role |
+|---|---|
+| `project-preparation/09_IMPLEMENTATION_PLAN.md` | Preliminary implementation plan produced during preparation |
+| `project-control/PROJECT_MASTER_PLAN.md` | Official execution roadmap after preparation approval |
+| `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md` | Detailed traceable execution items |
+| `project-control/EXECUTION_BATCH_PLAN.md` | Next approved executable batch only |
+| `project-control/tasks/TASK-COD-XXX.md` | Actual executable unit |
+
 ## 2. Execution Phases
 
-| Phase | Name | Objective | Depends On | Status |
-|---|---|---|---|---|
-| 1 | [e.g. Technical Foundation] | [e.g. Scaffold project, init ORM, verify startup] | — | Planned |
-| 2 | [e.g. Database Schema] | [e.g. Define models, create migration, seed] | Phase 1 | Planned |
-| 3 | [e.g. Core Feature] | [e.g. Main workflow implementation] | Phase 1, 2 | Planned |
-| ... | ... | ... | ... | ... |
+| Phase | Name | Objective | Roadmap Tier | Depends On | Status |
+|---|---|---|---|---|---|
+| 1 | [e.g. Technical Foundation] | [e.g. Scaffold project, init ORM, verify startup] | Core MVP / Foundation | — | Planned |
+| 2 | [e.g. Database Schema] | [e.g. Define models, create migration, seed] | Core MVP | Phase 1 | Planned |
+| 3 | [e.g. Core Feature] | [e.g. Main workflow implementation] | Core MVP / Extended MVP | Phase 1, 2 | Planned |
+| ... | ... | ... | ... | ... | ... |
+
+## 2.1 Formal Phased Roadmap
+
+| Roadmap Tier | Included Phases / Features | Explicitly Excluded / Later |
+|---|---|---|
+| Core MVP | ... | ... |
+| Extended MVP | ... | ... |
+| Phase 2 | ... | ... |
+| Later / Out of Scope | ... | ... |
+
+> **Rule:** No detailed execution planning or `TASK-COD-*` generation before this master plan, including the formal phased roadmap, is approved.
 
 ## 3. Transition Conditions
 
@@ -1079,4 +1100,41 @@ The generated file is saved to `project-control/EXECUTION_BATCH_PLAN.md`.
 > - No UI Task without Design Source Decision.
 > - No TASK-ID without Pre-Execution Gate PASS.
 > - No batch execution without user approval.
+```
+
+---
+
+## 32. Post-Execution Review (Phase 6 Review Template)
+
+This template is used inside `project-control/tasks/TASK-COD-XXX.md` after an agent handback and before any task acceptance or closure.
+
+```markdown
+## Post-Execution Review
+
+| Check | Result | Notes |
+|---|---|---|
+| TASK objective completed? | PASS / FAIL | ... |
+| Output matches approved scope? | PASS / FAIL | ... |
+| No files outside Allowed Write Targets? | PASS / FAIL | ... |
+| No forbidden files created? | PASS / FAIL | ... |
+| No unexpected libraries added? | PASS / FAIL | ... |
+| No secrets, tokens, passwords, or real `.env` values? | PASS / FAIL | ... |
+| Technology Profile respected? | PASS / FAIL | ... |
+| UI/UX rules respected if UI exists? | PASS / FAIL / N/A | ... |
+| Acceptance Criteria passed? | PASS / FAIL | ... |
+| CLI / tool side effects reviewed? | PASS / FAIL / N/A | ... |
+| Rollback needed? | Yes / No | ... |
+
+Gate Result:
+PASS / NEEDS_FIX / BLOCKED
+
+Final Tera Decision:
+Accepted / Needs Fix / Blocked / Rework Needed / Deferred / Cancelled
+
+Required Record Updates:
+- [ ] `project-control/tasks/TASK-COD-XXX.md`
+- [ ] `project-control/TASK_REGISTRY.md`
+- [ ] `project-control/PROJECT_ACTIVITY_LOG.md`
+- [ ] `project-control/PROJECT_STATE.md`
+- [ ] `project-control/ISSUES_AND_GAPS.md` if needed
 ```

@@ -16,6 +16,14 @@
 
 ## Activity Log
 
+## [2026-06-29] - SYSTEM_CORRECTION: Expert 1-6 consistency refinements applied
+
+- Related Task: N/A (System Maintenance)
+- Actor: Tera Agent (with expert review)
+- Summary: Applied expert consistency refinements after the full 1-6 phase review. Clarified that the preliminary discovery roadmap is formalized during Phase 5 inside `PROJECT_MASTER_PLAN.md`, and replaced old roadmap gate wording with: no detailed execution planning or `TASK-COD-*` generation before approved `PROJECT_MASTER_PLAN.md`. Updated `PROJECT_MASTER_PLAN.md` template to include formal phased roadmap and relationship to `09_IMPLEMENTATION_PLAN.md`. Clarified in `TeraAgent.md`, `TERA_RUNTIME_PROTOCOLS.md`, `TERA_RUNTIME_CHECKLISTS.md`, and `Tera_Project_Preparation_Files.md` that `09_IMPLEMENTATION_PLAN.md` is preliminary while `PROJECT_MASTER_PLAN.md`, `PROJECT_DETAILED_EXECUTION_PLAN.md`, and `EXECUTION_BATCH_PLAN.md` are official execution-control files. Added `TERA_RUNTIME_TEMPLATES.md` Section 32 for Post-Execution Review and linked it from `TASK_TEMPLATE.md`, `TeraPreExecutionGate.md`, and `TeraPolicyMap.md`. Added Delegation Type to `AGENT_GENERATION_TEMPLATE.md` and clarified Phase 4 vs Phase 6 delegation in `TeraSubAgents.md`.
+- Decision / Result: Remaining expert-noted consistency gaps were addressed. Phase 5 roadmap boundary, execution-plan layering, and Phase 6 review output are now explicitly documented.
+- Next Action: Optional: run scenario stress tests for the final 6-phase workflow.
+
 ## [2026-06-29] - SYSTEM_VERIFICATION: Full 1-6 phase consistency review
 
 - Related Task: N/A (System Maintenance)
