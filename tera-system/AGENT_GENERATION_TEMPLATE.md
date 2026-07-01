@@ -34,6 +34,7 @@ Default Permission Level: (مرجع إلى AGENT_PERMISSION_MODEL.md)
 المخرجات المطلوبة:
 صيغة تسليم النتيجة:
 MVP Constraints:
+Engineering Governance Responsibilities:
 Forbidden Tools / Actions:
 Token Budget: Light / Medium / Strong
 Context Rules: Task Context / Summary Context / Full Context
@@ -172,6 +173,23 @@ Default reference files:
 - If an item can be safely deferred without breaking the MVP, mark it as postponed instead of creating it.
 - Report any proposed expansion as a decision needed from Tera.
 
+## Engineering Governance Responsibilities
+
+Use when the agent touches or reviews application code, architecture, modules, APIs, validation, permissions, database, shared utilities, testing, or maintainability.
+
+Official reference:
+
+```text
+tera-system/engineering-governance/
+```
+
+Role-specific rule:
+
+- Apply only the responsibilities relevant to this agent's role from `ENGINEERING_AGENT_RESPONSIBILITIES.md`.
+- Do not apply Full governance to Compact projects unless Tera explicitly approves.
+- Do not create new architecture, folders, abstractions, tests, or documentation unless they are required by the task or approved by Tera.
+- Escalate to Tera when the task would violate module boundaries, mix UI with business logic, misuse shared/utils, omit required validation/permissions/tests, or create an oversized/multi-responsibility file.
+
 ## Domain Agent Constraints
 
 Include this section when generating any DomainResearchAgent, DomainExpertAgent, or specialized domain-research agent.
@@ -204,6 +222,9 @@ Include this section when generating any DomainResearchAgent, DomainExpertAgent,
 - Do not treat notes in `GENERATED_AGENTS_MANIFEST.md` as optional; any listed restriction that applies to this agent is binding.
 - Do not invent UI styling. For UI tasks, follow `project-preparation/28_UI_UX_GUIDELINES.md`; use `project-preparation/design-source/` only when referenced by Tera. If design rules are missing, raise `Design Gap` instead of guessing.
 - Do not assume stack-specific scaffold, ORM, migration, or database rules unless Tera explicitly provides the active Technology Profile.
+- Do not violate Engineering Governance when it applies; follow `tera-system/engineering-governance/` and the project engineering level assigned by Tera.
+- Do not place module-specific logic into `shared/` or generic `utils` without explicit task approval.
+- Do not mix business logic into UI components when the task or project structure requires separation.
 - Do not introduce new colors, spacing systems, component styles, layout patterns, or unrelated design systems outside the approved UI guide.
 - Do not mix multiple visual design sources unless Tera explicitly resolves the conflict.
 - Do not change project-control statuses to `Accepted`, `Closed`, `Deferred`, or `Cancelled` unless Tera explicitly decides that status.
@@ -221,6 +242,7 @@ The agent must escalate to Tera when:
 - A security risk, data sensitivity, or compliance concern is discovered.
 - The task would exceed the approved `Allowed Write Targets`.
 - The agent detects scope creep or feature bloat.
+- The agent detects an engineering governance issue such as oversized files, unclear module ownership, UI/business-logic mixing, shared/utils misuse, missing validation/permissions/tests, or unplanned architecture changes.
 - The agent needs to use a tool/MCP not explicitly allowed.
 - Any error or unexpected behavior occurs during execution.
 - The agent finds a contradiction between project files.

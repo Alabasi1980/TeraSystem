@@ -67,7 +67,19 @@ git diff --stat
 
 Also search for the changed rule name to detect duplicates or conflicts.
 
-## 7. Completion Record
+## 7. TeraSystemEvolutionAgent-Specific Checks
+
+If the change is executed by `TeraSystemEvolutionAgent`:
+
+- Was a `SYSTEM_CHANGE_PROPOSAL` produced and approved before any edit?
+- Was the change logged in `project-control/SYSTEM_EVOLUTION_LOG.md`?
+- Did the change pass the Anti-Bloat Gate?
+- Does the change require `TeraPolicyMap.md` or `TeraArchitectureMap.md` update?
+- Did the change avoid modifying client application files?
+- Did the change avoid unauthorized tool/MCP additions?
+- Does the change preserve folder boundaries from `TeraArchitectureMap.md`?
+
+## 8. Completion Record
 
 When the maintenance change is complete, summarize:
 

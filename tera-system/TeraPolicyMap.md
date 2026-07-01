@@ -51,6 +51,7 @@ Project files record project-specific decisions.
 | Technology profiles | `tera-system/profiles/` | `.opencode/agents/tera.md` | Stack-specific rules stay in profiles. |
 | Design governance layer | `tera-system/design-system/` | `.opencode/agents/tera.md`, `TERA_RUNTIME_CHECKLISTS.md`, `TERA_RUNTIME_PROTOCOLS.md` | Governs Design Source Decision, DESIGN.md integration, internal kits, design tokens, component rules, and UI Acceptance Gate. |
 | Project UI/UX executable guide | `project-preparation/28_UI_UX_GUIDELINES.md` using `TERA_RUNTIME_TEMPLATES.md` Section 33 | `TASK_TEMPLATE.md`, `TeraPreExecutionGate.md` | Final executable visual design rules for EngineeringAgent; raw sources stay in `project-preparation/design-source/`. |
+| Engineering governance and maintainability | `tera-system/engineering-governance/` | `.opencode/agents/tera.md`, `TERA_RUNTIME_CHECKLISTS.md`, `TeraPreExecutionGate.md`, `AGENT_GENERATION_TEMPLATE.md` | Governs module structure, file-size responsibility, UI/business-logic separation, validation, errors, permissions, testing, database/API maintainability, and agent review responsibilities. Runtime summaries must stay compact. |
 | Application proposal template | `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html` | `TERA_RUNTIME_TEMPLATES.md` (Section 26) | Self-contained HTML page, RTL, printable. Generated after Client Discovery before formal preparation. |
 | Scope of Work template | `tera-workshop/SCOPE_OF_WORK_TEMPLATE.html` | — | Formal SOW document — scope, deliverables, timeline, payment, assumptions, sign-off. Generated after proposal approval. |
 | Technical Proposal template | `tera-workshop/TECHNICAL_PROPOSAL_TEMPLATE.html` | — | Technical architecture, stack, hosting, security, testing, CI/CD. Generated after SOW approval. |
@@ -70,7 +71,8 @@ Project files record project-specific decisions.
 | NDA | `tera-workshop/NDA_TEMPLATE.html` | — | Non-Disclosure Agreement — confidentiality, exclusions, governing law. |
 | Client Satisfaction Survey | `tera-workshop/CLIENT_SATISFACTION_SURVEY_TEMPLATE.html` | — | Post-project feedback — ratings, open questions, recommendation. |
 | User guide | `tera-system/TERA_USER_GUIDE.md` | Not applicable | User-facing prompts and usage examples. |
-| System maintenance | `tera-system/TeraSystemMaintenanceChecklist.md` | `.opencode/agents/tera.md` | Use when modifying Tera itself. |
+| System maintenance | `tera-system/TeraSystemMaintenanceChecklist.md` | `.opencode/agents/tera.md`, `.opencode/agents/tera-system-evolution.md` | Use when modifying Tera itself. |
+| System evolution governance | `project-control/SYSTEM_EVOLUTION_LOG.md` + `.opencode/agents/tera-system-evolution.md` + `TeraSystemMaintenanceChecklist.md` | `.opencode/agents/tera.md` | Governs how Tera improves itself: approval-before-change, anti-bloat gate, evolution logging, and agent improvement rules. Only `TeraSystemEvolutionAgent` executes system evolution changes after owner approval. |
 | Scenario stress tests | `tera-system/TeraScenarioStressTests.md` | Not applicable | Used for validation, not daily runtime. |
 | Client/application workspace guide | `clients/README.md` | Not applicable | Folder usage guide only; policies remain in `tera-system/`. |
 

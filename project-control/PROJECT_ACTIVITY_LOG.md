@@ -250,6 +250,36 @@
 
 ---
 
+### [2026-07-01 12:00] — SYSTEM_ENGINEERING_GOVERNANCE_LAYER_ADDED
+
+- Related Task: TASK-SYS-ENGINEERING-GOVERNANCE-001
+- Actor: Tera 2
+- Summary: Added a system-level Engineering Governance Layer derived from Majed's best-practice report in `temp/Note01.md`. The layer defines maintainability principles, Engineering Governance Gate, review checklist, and agent-specific responsibilities.
+- Decision / Result: Engineering governance is now connected to Tera policy/architecture maps, runtime checklists, Pre/Post Execution Gate, agent generation template, sub-agent registry, and active governance agents (`tera`, `auditor`, `monitor`, `design-reviewer`).
+- Next Action: Restart OpenCode if relying on updated active agent definitions. Future application projects should select Engineering Governance Level: Compact / Standard / Full during preparation.
+
+---
+
+### [2026-07-01 13:00] — ENGINEERING_GOVERNANCE_TRACEABILITY_IMPROVED
+
+- Related Task: TASK-COD-002
+- Actor: Tera 2 (System Maintenance)
+- Summary: Monitor governance session identified that TASK-COD-002's Pre-Execution Gate lacked explicit reference to `ENGINEERING_GOVERNANCE_GATE.md`. Although governance checks were applied implicitly, the traceability was not documented. Added explicit `Engineering Governance Gate applied` and `No silent maintainability violation` rows with direct reference to the gate file.
+- Decision / Result: TASK-COD-002 now has explicit Engineering Governance Gate traceability. Future task templates in `TeraPreExecutionGate.md` already include these rows by default.
+- Next Action: No further action needed — improvement applied to TASK-COD-002; template already correct in system gate files.
+
+---
+
+### [2026-07-01 13:15] — MONITOR_TRACEABILITY_CHECK_PERMANENT
+
+- Related Task: TASK-COD-002
+- Actor: Tera 2 (System Maintenance)
+- Summary: بناءً على توصية Monitor، تمت إضافة فحص دائم لـ traceability: التأكد من وجود reference صريح إلى `ENGINEERING_GOVERNANCE_GATE.md` في Pre-Execution Gate لأي مهمة تمس الكود أو المعمارية. تم تحديث ملفي Monitor الرسميين.
+- Decision / Result: `.opencode/agents/monitor.md` + `TeraSubAgents.md` محدثان. الفحص أصبح سلوكاً دائماً لـ Monitor في أي تطبيق مستقبلي.
+- Next Action: لا شيء.
+
+---
+
 ## Log Format
 
 ```md

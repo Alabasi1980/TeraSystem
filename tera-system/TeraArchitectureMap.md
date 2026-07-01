@@ -15,7 +15,9 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | Client engagement and approval | Manages client profile, contacts, approval package, and change control | `TeraClient*.md`, `clients/` |
 | Preparation and analysis | Converts intake into internal project planning and execution-ready files | `Tera_Project_Preparation_Files.md`, active application workspace `project-preparation/` |
 | Design governance | Controls design source decisions, design tokens, component rules, internal kits, and UI acceptance | `tera-system/design-system/`, active application workspace `project-preparation/28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/` |
+| Engineering governance | Controls code maintainability, module structure, responsibility boundaries, validation/error/security placement, tests, database/API traceability, and engineering review responsibilities | `tera-system/engineering-governance/`, active application workspace architecture/testing/security/data preparation files |
 | Orchestration and gates | Controls delegation, task readiness, pre/post execution review, build mode, and project closure gates | `TeraPreExecutionGate.md`, `runtime/`, active application workspace `project-control/` |
+| System evolution governance | Controls self-improvement of Tera: agent review, anti-bloat gate, change proposals, and evolution logging via `TeraSystemEvolutionAgent` | `project-control/SYSTEM_EVOLUTION_LOG.md`, `TeraSystemMaintenanceChecklist.md`, `.opencode/agents/tera-system-evolution.md` |
 | Technical specialization | Keeps stack-specific behavior outside the generic Tera system | `tera-system/profiles/` |
 | Sub-agent lifecycle | Defines, generates, narrows, activates, and reviews specialized agents | `TeraSubAgents.md`, `AGENT_GENERATION_TEMPLATE.md`, `generated-agents/`, `.opencode/agents/` |
 | Application workspace isolation | Keeps every generated application removable/exportable without polluting the Tera system root | `clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/` |
@@ -32,9 +34,10 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | `project-inputs/` | Root-level template/bootstrap area only unless explicitly operating without an application workspace | New application-specific intake after an application workspace is identified |
 | `project-preparation/` | Root-level template/bootstrap area only unless explicitly operating without an application workspace | New application-specific preparation after an application workspace is identified |
 | `project-preparation/design-source/` | Root-level template/bootstrap design-source area only | New application-specific design sources after an application workspace is identified |
-| `project-control/` | Root-level Tera/system maintenance control and bootstrap state | New application task/control records after an application workspace is identified |
+| `project-control/` | Root-level Tera/system maintenance control and bootstrap state, including `SYSTEM_EVOLUTION_LOG.md` (system evolution log for Tera itself — not for tracking client application work or project tasks) | New application task/control records after an application workspace is identified |
 | `generated-agents/opencode/` | Root-level draft generated agents for system maintenance or bootstrap only | New application-specific agents after an application workspace is identified |
 | `tera-system/design-system/` | System design governance, schemas, gates, and internal kits | Project-specific design decisions or client raw assets |
+| `tera-system/engineering-governance/` | System engineering governance, maintainability policies, engineering gates, review checklists, and agent engineering responsibility map | Project-specific implementation outputs, application code, or client-specific decisions |
 | `tera-system/profiles/` | Technology-specific execution rules | Generic project policy |
 | `tera-workshop/` | System development and tooling files (templates, experiments, system-level outputs) | Core policy, project files, or runtime agents |
 

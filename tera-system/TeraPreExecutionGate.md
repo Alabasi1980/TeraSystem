@@ -149,6 +149,25 @@ Before evaluating any UI / Frontend / layout / style / component task, Tera must
 
 If any required design item is missing, the Pre-Execution Gate result must be `BLOCKED` with reason `Design Source Decision missing` or `Design Gap`.
 
+## 3.4.2 Engineering Governance Gate
+
+Before evaluating any implementation task that touches application code, modules, UI logic, API, validation, permissions, database, shared utilities, tests, or architecture-sensitive files, Tera must apply:
+
+```text
+tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md
+```
+
+Tera must verify:
+
+- Engineering Governance Level is known: Compact / Standard / Full.
+- The affected module, shared area, or core area is clear.
+- The task does not silently mix UI and business logic.
+- The task does not place module-specific logic into `shared/` or generic `utils` without justification.
+- File-size and responsibility risks are considered.
+- Validation, permissions, database, API, and tests are placed according to the project level and active Technology Profile.
+
+If the task would violate the approved engineering governance level, the Pre-Execution Gate result must be `NEEDS_REVISION` or `BLOCKED` until the task is split, corrected, or explicitly approved as a documented exception.
+
 ## 3.5 Direct Execution Exception Policy
 
 الأصل أن Tera لا ينفذ كود التطبيق مباشرة، بل يدير العملاء الفرعيين ويراجع نتائجهم.
@@ -219,6 +238,8 @@ BLOCKED
 | 20 | هل يوجد مسار تراجع آمن إذا فشل التنفيذ؟ | Yes |
 | 21 | إذا كانت المهمة UI/Frontend، هل يوجد Design Source Decision و`28_UI_UX_GUIDELINES.md` عند الحاجة؟ | Yes / N/A |
 | 22 | إذا كانت المهمة UI/Frontend، هل ترتبط بـ `UI_ACCEPTANCE_GATE.md` وتتضمن UI Source / UI Rules / UI Acceptance / Design Gap Handling؟ | Yes / N/A |
+| 23 | إذا كانت المهمة تمس كود التطبيق أو المعمارية أو الموديولات أو API أو Validation أو Permissions أو Database أو Tests، هل تم تطبيق Engineering Governance Gate؟ | Yes / N/A |
+| 24 | هل المهمة تحترم مستوى الحوكمة الهندسية المعتمد Compact / Standard / Full دون over-engineering؟ | Yes / N/A |
 
 إذا فشل أي بند، يجب على Tera تصحيح المهمة قبل عرضها.
 
@@ -488,6 +509,8 @@ tera-system/runtime/TERA_RUNTIME_TEMPLATES.md Section 32
 | 29 | هل تم تصنيف أي تعديل خارج Allowed Write Targets إلى `Approved deviation` أو `Needs user approval` أو `Reverted`؟ | Yes / N/A |
 | 30 | هل قرر Tera بوضوح إن كانت المهمة تحتاج مراجعة مستقلة من `ProjectControlAgent` أو `SecurityAgent` أو `QAAndAcceptanceAgent`؟ | Yes |
 | 31 | إذا كانت المهمة UI/Frontend، هل اجتازت `tera-system/design-system/UI_ACCEPTANCE_GATE.md`؟ | Yes / N/A |
+| 32 | إذا كانت المهمة تمس كود التطبيق أو الموديولات أو API أو Validation أو Permissions أو Database أو Tests، هل اجتازت `tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md`؟ | Yes / N/A |
+| 33 | هل توجد مخالفة هيكلية مثل تضخم ملف، خلط UI/Business Logic، سوء استخدام shared/utils، أو غياب اختبار لمنطق مهم دون تسجيل؟ | No |
 
 ### Control Files Review Rule
 
@@ -667,6 +690,8 @@ Cleanup required
 | No duplicate project-control IDs created | PASS / FAIL | ... |
 | Any out-of-target changes classified | PASS / FAIL / N/A | ... |
 | Independent review decision recorded | PASS / FAIL | ... |
+| Engineering Governance Gate passed when relevant | PASS / FAIL / N/A | ... |
+| No file/module/shared-logic maintainability violation | PASS / FAIL / N/A | ... |
 
 Gate Status: PASS / NEEDS_FIX / BLOCKED
 
@@ -745,6 +770,8 @@ tera-system/profiles/[active-profile].md
 | CLI side effects checked | PASS / FAIL | ... |
 | No internal contradiction between constraints and outputs | PASS / FAIL | ... |
 | Allowed Write Targets are narrow | PASS / FAIL | ... |
+| Engineering Governance Gate applied when relevant | PASS / FAIL / N/A | ... |
+| No silent maintainability violation | PASS / FAIL / N/A | ... |
 | Acceptance criteria are testable | PASS / FAIL | ... |
 
 Gate Status: PASS / NEEDS_REVISION / BLOCKED

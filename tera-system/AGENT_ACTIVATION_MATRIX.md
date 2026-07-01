@@ -25,7 +25,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | `RISK_SIGNAL` | مؤشر خطر | بيانات حساسة → SecurityAgent |
 | `USER_REQUEST` | طلب مباشر من المستخدم | "أضف Domain Research" → DomainResearchAgent |
 | `EXTERNAL_FACTOR` | عامل خارجي | مشروع عميل خارجي → Client Engagement Agents |
-| `REVIEW_NEEDED` | حاجة مراجعة | بعد عدة مهام تنفيذية → QualityReviewCoordinatorAgent |
+| `REVIEW_NEEDED` | حاجة مراجعة | بعد عدة مهام تنفيذية، أو ظهور مؤشرات technical debt / maintainability drift → QualityReviewCoordinatorAgent / Auditor / Monitor |
 | `PHASE_7_GATE` | بداية Phase 7 | QAAndAcceptanceAgent + DocumentationHandoverAgent |
 
 ---
@@ -83,9 +83,10 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 
 | العميل | المعرف | Trigger التشغيل | المرحلة | متى لا يعمل | الحد الأدنى من المدخلات |
 |---|---|---|---|---|---|
-| Auditor | `AUDITOR_AGENT` | `USER_REQUEST`: طلب تدقيق جودة/عمل أو commit بعد قبول مرحلة | 5–6–7 | قبل وجود تسليم موثق أو قبل قبول المالك للـ commit | `PROJECT_STATE.md` + `TASK-ID` أو ملفات التغيير |
-| Monitor | `MONITOR_AGENT` | `USER_REQUEST`: طلب مراجعة توافق الخطة أو كشف الانحراف | 3–7 | إذا لا توجد خطة أو لا توجد مرحلة/دفعة لمقارنتها | `PROJECT_MASTER_PLAN.md` أو الخطة المتاحة + `TASK_REGISTRY.md` |
+| Auditor | `AUDITOR_AGENT` | `USER_REQUEST`: طلب تدقيق جودة/عمل أو commit بعد قبول مرحلة، أو مراجعة maintainability/engineering governance | 5–6–7 | قبل وجود تسليم موثق أو قبل قبول المالك للـ commit | `PROJECT_STATE.md` + `TASK-ID` أو ملفات التغيير |
+| Monitor | `MONITOR_AGENT` | `USER_REQUEST`: طلب مراجعة توافق الخطة أو كشف الانحراف، بما في ذلك انحرافات Engineering Governance عن الخطة | 3–7 | إذا لا توجد خطة أو لا توجد مرحلة/دفعة لمقارنتها | `PROJECT_MASTER_PLAN.md` أو الخطة المتاحة + `TASK_REGISTRY.md` |
 | Design Reviewer | `DESIGN_REVIEWER_AGENT` | `USER_REQUEST`: طلب تدقيق بصري أو عند وجود مهمة UI/UX | 5–7 | إذا لا يوجد UI أو لا يوجد مصدر تصميم معتمد | `28_UI_UX_GUIDELINES.md` + المهمة/الشاشة ذات العلاقة |
+| TeraSystemEvolutionAgent | `SYSTEM_EVOLUTION_AGENT` | `USER_REQUEST`: طلب تطوير المنظومة، تضارب سياسات، فجوة في أداء عميل، مراجعة تقارير حوكمة (Auditor/Monitor/DesignReviewer)، حاجة بحثية لتحسين Tera، تقليل التضخم أو استهلاك التوكنز | System Maintenance | إذا كان الطلب يتعلق بتطبيق عميل مباشر (وليس تحسين المنظومة) | الملفات المرجعية + `SYSTEM_EVOLUTION_LOG.md` |
 
 ---
 

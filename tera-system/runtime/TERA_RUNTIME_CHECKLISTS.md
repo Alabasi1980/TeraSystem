@@ -38,9 +38,10 @@ When the user provides a project idea and technical information:
 3. Create `project-control/PREPARATION_PLAN.md` using the template in `TERA_RUNTIME_TEMPLATES.md` Section 27:
    - Classify each file: Required / Conditional / Deferred / Not Required.
    - Determine creation order and dependencies.
-   - Assign each file to the appropriate sub-agent.
-    - Identify user approval points.
-    - If UI exists, decide whether `28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/`, or `UIVisualDesignerAgent` are required.
+    - Assign each file to the appropriate sub-agent.
+     - Identify user approval points.
+     - If UI exists, decide whether `28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/`, or `UIVisualDesignerAgent` are required.
+     - Decide the project Engineering Governance Level: Compact / Standard / Full using `tera-system/engineering-governance/ENGINEERING_BEST_PRACTICES.md`.
 4. **No file creation. No agent generation.**
 5. Present the plan for user approval.
 
@@ -73,6 +74,7 @@ When the user provides a project idea and technical information:
     - [ ] All required preparation files complete and approved.
     - [ ] `AGENT_DELEGATION_PLAN.md` approved.
     - [ ] Active Technology Profile confirmed.
+    - [ ] Engineering Governance Level confirmed when application code will be implemented.
     - [ ] No blocking Issues.
     - [ ] Design Source Decision resolved for any incoming UI tasks.
     - [ ] `28_UI_UX_GUIDELINES.md` exists for incoming visual UI tasks.
@@ -100,6 +102,7 @@ When the user provides a project idea and technical information:
     - Run **Pre-Execution Gate** (checklist from `TeraPreExecutionGate.md`, including Design Governance items for UI tasks).
     - Record `Pre-Execution Gate Result: PASS` in the task file.
      - For UI tasks, include UI Source / UI Rules / UI Acceptance / Design Gap Handling and link `UI_ACCEPTANCE_GATE.md`.
+     - For implementation tasks that touch code architecture, modules, API, validation, permissions, database, shared utilities, or tests, apply `tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md`.
 6.5 **Create `IMPLEMENTATION_AGENT_STRATEGY.md`** (مطلب إلزامي قبل الانتقال إلى Phase 6):
     - أنشئ الملف في `project-control/IMPLEMENTATION_AGENT_STRATEGY.md`.
     - أجب عن جميع الأسئلة الإلزامية:
@@ -127,7 +130,8 @@ When the user provides a project idea and technical information:
    - [ ] **IMPLEMENTATION_AGENT_STRATEGY.md** approved.
    - [ ] Task status is `Approved` or `Assigned`.
    - [ ] Responsible agent is active and appropriate.
-    - [ ] Active Technology Profile is loaded.
+     - [ ] Active Technology Profile is loaded.
+     - [ ] Engineering Governance Gate is applicable or explicitly N/A for the current task.
     - [ ] `Pre-Execution Gate Result: PASS` exists in the task file.
     - [ ] User approval exists for the batch or task.
     - [ ] Target Version / Release Type exists in the task file.
@@ -149,6 +153,7 @@ When the user provides a project idea and technical information:
    - Summary, Assumptions, Issues, Decisions Needed, Recommendation.
 6. Record handback in `project-control/tasks/TASK-COD-XXX.md`; it must not remain only in chat.
 7. Run `Post-Execution Review Gate` from `TeraPreExecutionGate.md` before any acceptance/closure.
+   - Include Engineering Governance review for code/module/API/database/validation/permission/test tasks.
 8. Decide final task status: Accepted / Needs Fix / Blocked / Rework Needed / Deferred / Cancelled.
 9. Update `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, and `ISSUES_AND_GAPS.md` when needed.
 9a. Update `VERSION_REGISTRY.md` and `RELEASE_NOTES.md` when the task affects delivered scope, fixed issues, known issues, or deferred items.
@@ -164,6 +169,7 @@ Entry Gate:
 - [ ] All approved `TASK-COD-*` tasks are Closed / Accepted, or incomplete items are documented as Deferred Items.
 - [ ] No undocumented Critical blockers.
 - [ ] Post-Execution Reviews are complete for all accepted implementation tasks.
+- [ ] Engineering governance findings are closed, accepted as known issues, or deferred with records.
 - [ ] `TASK_REGISTRY.md`, `PROJECT_STATE.md`, and `ISSUES_AND_GAPS.md` are current.
 - [ ] Closure Type is classified: Version / Maintenance / Hotfix / Final Application.
 - [ ] `VERSION_REGISTRY.md` and `RELEASE_NOTES.md` are current when version management is active.
@@ -371,6 +377,41 @@ Default rule:
 No Frontend Execution Planning without Design Source Decision.
 No UI Implementation without 28_UI_UX_GUIDELINES.md when visual style matters.
 ```
+
+---
+
+## 6.5 Engineering Governance Checklist
+
+Official reference:
+
+```text
+tera-system/engineering-governance/
+```
+
+Use this checklist before implementation planning, before delegating code tasks, during post-execution review, and before delivery readiness when the project includes application code.
+
+Checklist:
+
+- [ ] Engineering Governance Level selected: Compact / Standard / Full.
+- [ ] Active Technology Profile loaded when stack-specific structure matters.
+- [ ] Module or feature ownership is clear for the task.
+- [ ] Business logic is not planned inside UI components unless explicitly justified.
+- [ ] Module-specific logic is not planned inside `shared/` or generic `utils`.
+- [ ] File-size / responsibility risk is considered for large components, services, schemas, or handlers.
+- [ ] Validation layer is clear: UI only / backend/API / service/domain / database integrity.
+- [ ] Permissions are not frontend-only when security matters.
+- [ ] Database changes are traceable through approved schema/migration task path.
+- [ ] API response/error behavior follows project standards when applicable.
+- [ ] Important business logic has tests or a documented deferral.
+- [ ] Engineering deviations are recorded as task notes, `ISSUES_AND_GAPS.md`, or `DECISIONS_LOG.md`.
+
+Default rule:
+
+```text
+No code implementation task should PASS when it silently violates the approved engineering governance level.
+```
+
+Do not apply Full governance to Compact projects unless Tera and the user explicitly approve the extra structure.
 
 ---
 

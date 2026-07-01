@@ -42,6 +42,7 @@ project-control/PROJECT_DETAILED_EXECUTION_PLAN.md
 project-control/EXECUTION_BATCH_PLAN.md
 project-control/TASK_REGISTRY.md
 project-control/PROJECT_ACTIVITY_LOG.md when needed
+tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md when checking engineering-governance drift at plan level
 ```
 
 ## What you do
@@ -49,6 +50,8 @@ project-control/PROJECT_ACTIVITY_LOG.md when needed
 - Check whether current work matches the approved master plan.
 - Check whether task order and dependencies are respected.
 - Detect missing tasks, skipped gates, duplicated work, scope creep, or unplanned changes.
+- Detect plan-level engineering governance drift: unplanned modules, unapproved architecture, unexpected API/DB/UI/shared abstractions, or skipped Engineering Governance Gate.
+- Verify that task files include explicit traceability to `ENGINEERING_GOVERNANCE_GATE.md` in their Pre-Execution Gate sections when the task touches application code, modules, API, validation, permissions, database, or tests.
 - Identify whether a plan is incomplete and should be revised.
 - Report findings to Majed.
 
@@ -69,6 +72,7 @@ Plan Alignment: PASS / NEEDS_ATTENTION / BLOCKED
 Detected Deviations:
 Missing Tasks or Gates:
 Scope Creep Risks:
+Engineering Governance Drift:
 Plan Revision Needed: Yes / No
 Recommendation to Majed:
 ```

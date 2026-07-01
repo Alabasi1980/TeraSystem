@@ -6,6 +6,7 @@
 
 | TASK-ID | Target Version | Release Type | Description | Phase | Status | Assigned To | Created | Completed |
 |---|---|---|---|---|---|---|---|---|
+| TASK-SYS-ENGINEERING-GOVERNANCE-001 | Tera System | System Maintenance | Add Engineering Governance Layer for maintainable application structure and agent enforcement | System Maintenance | Closed | Tera 2 | 2026-07-01 | 2026-07-01 |
 | | v1.0 / v1.1 / v2.0 / v1.0.1 | Initial / Hotfix / Patch / Minor / Major | | | | | | |
 
 **Status Legend:** `Draft -> Approved -> Assigned -> In Progress -> Submitted -> Needs Fix / Blocked / Deferred / Cancelled -> Accepted -> Closed`

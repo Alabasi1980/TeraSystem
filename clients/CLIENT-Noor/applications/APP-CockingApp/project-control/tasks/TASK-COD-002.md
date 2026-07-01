@@ -108,6 +108,8 @@ User Approval Needed: No
 | **Previous issues reviewed** | ✅ PASS | IS-001, IS-002, IS-003, IS-004 checked — none block B2 |
 | **Design Source Decision** | N/A | No UI task |
 | **UI Acceptance Gate** | N/A | No UI task |
+| **Engineering Governance Gate applied** | ✅ PASS | Explicit reference: `tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md` — 12 pre-checks verified |
+| **No silent maintainability violation** | ✅ PASS | Single file, single responsibility (Prisma schema), no UI/Logic mixing, no shared/utils misuse |
 | **Target Version / Release Type** set | ✅ PASS | v1.0 / Initial |
 | **Security Agent required?** | No | Low sensitivity — no Auth/API/Secrets |
 | **QA Agent required?** | No | Tera will review schema directly |
