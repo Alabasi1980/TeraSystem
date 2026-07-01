@@ -3,6 +3,38 @@
 
 ---
 
+## 2026-07-01
+
+### [2026-07-01 00:00] - GOVERNANCE_MODEL_APPROVED
+
+- Related Task: N/A
+- Actor: Majed + Tera Agent
+- Summary: Majed approved the OpenCode multi-session workspace governance model for CockingApp.
+- Decision / Result: Main sessions approved: `tera`, `auditor`, `monitor`, `design-reviewer`. Shared coordination folder remains `project-control/`.
+- Next Action: Create governance model record and OpenCode agent definitions.
+
+---
+
+### [2026-07-01 00:05] - GOVERNANCE_MODEL_IMPLEMENTED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Added `WORKSPACE_GOVERNANCE_MODEL.md`, updated project rules, and registered governance session agents in Tera/OpenCode system files.
+- Decision / Result: Governance sessions are user-triggered only; no automatic activation. Auditor may commit locally only after explicit owner approval.
+- Next Action: Validate changes and restart OpenCode so new agents load correctly.
+
+---
+
+### [2026-07-01 00:10] - PROJECT_STATE_UPDATED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Updated `PROJECT_STATE.md` and `TERA_ACTIVE_CONTEXT.md` to include the approved workspace governance model and new governance session agents.
+- Decision / Result: Session handoff now records `auditor`, `monitor`, and `design-reviewer` as manually controlled governance sessions.
+- Next Action: Run validation checks and report restart requirement to Majed.
+
+---
+
 ## 2026-06-30
 
 ### [2026-06-30 10:00] — PROJECT_CREATED
@@ -295,6 +327,16 @@
 - Summary: User approved TASK-COD-002 delegation. DataPrismaAgent (`cockingapp-data-prisma`) activated in `.opencode/agents/`. All "9 models" references corrected to "7 models + Unit Enum" across 8 files.
 - Decision / Result: ✅ `cockingapp-data-prisma` activated. TASK-COD-002 ready for delegation.
 - Next Action: User restarts OpenCode, then Tera delegates TASK-COD-002 to `cockingapp-data-prisma`.
+
+---
+
+### [2026-07-01 10:15] — AUDITOR_PERMISSIONS_TIGHTENED
+
+- Related Task: N/A
+- Actor: Majed + Tera Agent
+- Summary: Majed confirmed `auditor.md` permissions should be `edit: deny` and `write: deny` (not `ask`) to align with `READ_ONLY` label in `AGENT_PERMISSION_MODEL.md`. `bash: ask` retained for Git commands after owner approval. `AGENT_PERMISSION_MODEL.md` Section 3.4 updated with clarifying note.
+- Decision / Result: ✅ Auditor permissions now strictly READ_ONLY + `bash: ask` for local Git commit. No edit/write without separate authorization.
+- Next Action: Delegate TASK-COD-002 to `cockingapp-data-prisma` after OpenCode restart.
 
 ---
 

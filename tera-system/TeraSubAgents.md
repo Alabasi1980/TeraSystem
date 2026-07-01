@@ -6,6 +6,8 @@
 
 هذا الملف يعرّف العملاء الفرعيين الذين يستطيع **Tera Agent** استخدامها في إدارة المشاريع البرمجية.
 
+كما يسجل هذا الملف، عند الحاجة، **عملاء جلسات الحوكمة الرئيسية** الذين يعملون كجلسات OpenCode مستقلة يفتحها المستخدم يدويًا لمراقبة Tera أو مراجعة العمل. هؤلاء ليسوا عملاء فرعيين تحت Tera ولا يملكون سلطة تنفيذية على Tera؛ دورهم رقابي وتقريري فقط ما لم يمنحهم المستخدم صلاحية محددة مثل commit محلي بعد القبول.
+
 الملف يعمل كـ **سجل مركزي / Registry**، وليس كبديل عن ملفات مستقلة لكل عميل فرعي.
 
 يوضح الملف:
@@ -152,6 +154,41 @@ but the generic sub-agent registry in `TeraSubAgents.md` must remain stack-neutr
 - إذا احتاج العميل إلى نتيجة من عميل آخر، يرفع الطلب إلى Tera.
 - Tera هو المنسق الوحيد والموزع الوحيد للمهام.
 - أي خرق لقاعدة التواصل المباشر يُسجل كـ `Issue` ويُرفع إلى Tera فورًا.
+
+### 3.7 عملاء جلسات الحوكمة الرئيسية
+
+بعض العملاء يعملون كـ **جلسات OpenCode مستقلة** يفتحها المالك يدويًا، مثل:
+
+```text
+auditor
+monitor
+design-reviewer
+```
+
+**هؤلاء ليسوا عملاءً فرعيين تحت Tera. هم متوازون مع Tera تحت المالك مباشرة.**
+
+```
+                         المالك (Majed)
+                       /        |         \
+                      /         |          \
+               Tera (منسق)   Auditor     Monitor / Design-Reviewer
+               (يدير عملاء    (جودة)      (رقابة خطة/تصميم)
+                فرعيين)
+```
+
+قواعدهم:
+
+- لا يعملون تلقائيًا — المالك يفتحهم يدويًا.
+- لا يتواصلون مباشرة مع العملاء الفرعيين التنفيذيين.
+- لا يغيرون النطاق أو الخطة أو الكود إلا إذا صرّح المستخدم بذلك صراحة.
+- يقرأون من مساحة التطبيق النشطة، خصوصًا `project-control/` وملفات الخطة أو التصميم ذات العلاقة.
+- يرفعون تقاريرهم **للمالك مباشرة**، وليس لـ Tera. المالك يعود إلى Tera بطلب التصحيح أو الاعتماد.
+- لا يستبدلون Pre-Execution Gate أو Post-Execution Review Gate.
+- **لا يملكون سلطة قبول نهائية** — القبول النهائي والاعتماد حق للمالك وحده.
+
+إذا كان المشروع يحتوي على ملف `WORKSPACE_GOVERNANCE_MODEL.md` في `project-control/`، فهو النموذج التشغيلي الخاص بهذا المشروع ويجب اعتماده كمصدر رسمي لقواعد الحوكمة.
+
+> **ملاحظة:** يتم إنشاء `WORKSPACE_GOVERNANCE_MODEL.md` تلقائياً في بداية كل مشروع جديد عبر الـ Project Intake Gate. راجع `TeraAgent.md` Section 2.3 و `TERA_RUNTIME_TEMPLATES.md` Section 40.
 
 ---
 
@@ -1619,3 +1656,108 @@ Risk if continuing without it:
 ```
 
 ولا يكمل بافتراضات خطرة.
+
+---
+
+## 14. عملاء جلسات الحوكمة الرئيسية
+
+هؤلاء العملاء ليسوا عملاء فرعيين عاديين تحت Tera، بل جلسات مستقلة يتحكم المستخدم بتشغيلها يدويًا داخل OpenCode.
+
+### 14.1 Auditor
+
+| البند | القيمة |
+|---|---|
+| اسم العميل | Auditor |
+| المعرّف | `AUDITOR_AGENT` |
+| النوع | Governance Session Agent |
+| الدور | تدقيق جودة العمل والتوثيق، وتسجيل commit محلي بعد قبول المالك الصريح |
+
+#### يقرأ
+
+```text
+project-control/PROJECT_STATE.md
+project-control/PROJECT_ACTIVITY_LOG.md
+project-control/TASK_REGISTRY.md
+project-control/tasks/TASK-*.md
+الملفات المتغيرة في نطاق المهمة المقبولة
+```
+
+#### ينتج
+
+```text
+Quality Review Report
+Git commit محلي عند طلب المالك فقط
+```
+
+#### حدوده
+
+- لا ينفذ مزايا.
+- لا يغير النطاق.
+- لا يعمل push.
+- لا يعمل commit قبل قبول المالك الصريح.
+
+### 14.2 Monitor
+
+| البند | القيمة |
+|---|---|
+| اسم العميل | Monitor |
+| المعرّف | `MONITOR_AGENT` |
+| النوع | Governance Session Agent |
+| الدور | مراجعة توافق العمل مع الخطة الرئيسية والتفصيلية واكتشاف الانحرافات |
+
+#### يقرأ
+
+```text
+project-control/PROJECT_STATE.md
+project-control/PROJECT_MASTER_PLAN.md
+project-control/PROJECT_DETAILED_EXECUTION_PLAN.md
+project-control/EXECUTION_BATCH_PLAN.md
+project-control/TASK_REGISTRY.md
+project-control/PROJECT_ACTIVITY_LOG.md
+```
+
+#### ينتج
+
+```text
+Plan Compliance Report
+Deviation / Missing Task / Scope Risk notes
+```
+
+#### حدوده
+
+- لا يراجع جودة الكود تفصيليًا.
+- لا يصحح التنفيذ مباشرة.
+- لا يغير الخطة؛ يوصي فقط.
+
+### 14.3 Design Reviewer
+
+| البند | القيمة |
+|---|---|
+| اسم العميل | Design Reviewer |
+| المعرّف | `DESIGN_REVIEWER_AGENT` |
+| النوع | Governance Session Agent |
+| الدور | مراجعة الالتزام البصري والتصميمي للتطبيق |
+
+#### يقرأ
+
+```text
+project-preparation/28_UI_UX_GUIDELINES.md
+project-preparation/07_SCREENS_AND_UI_STRUCTURE.md
+project-preparation/design-source/
+project-control/tasks/TASK-*.md
+ملفات الواجهة ذات العلاقة عند الحاجة
+```
+
+#### ينتج
+
+```text
+Design Review Report
+UI deviation / visual issue notes
+```
+
+#### حدوده
+
+- لا يصمم بدل فريق التصميم.
+- لا ينفذ UI.
+- لا يغير الألوان أو المكونات.
+- لا يشغل التطبيق أو يستخدم fetch إلا بطلب أو موافقة المالك.

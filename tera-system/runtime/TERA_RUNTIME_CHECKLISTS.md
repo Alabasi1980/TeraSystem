@@ -15,14 +15,18 @@ When the user provides a project idea and technical information:
 ### Phase 1: Project Intake & Client Discovery
 1. Identify or create the isolated application workspace under `clients/CLIENT-*/applications/APP-*/`.
 2. Read the required system references in `tera-system/`.
-3. Check `[active application workspace]/project-inputs/01_APPLICATION_IDEA.md` and `[active application workspace]/project-inputs/02_TECHNICAL_CONTEXT.md`.
-4. If intake is incomplete, enter `Client Discovery Mode` and complete intake first.
-5. If the user provides project-specific rules, create or update `[active application workspace]/project-preparation/PROJECT_RULES.md`.
-6. If the project has UI, collect design preferences and sources: colors, screenshots, Figma, CSS, reference sites, RTL/LTR, brand notes.
-7. Before leaving Phase 1, verify both intake files have an intake status of `Complete` or a documented Tera-approved exception explaining what remains undecided and why it does not block formal preparation.
-8. For external/client-facing work, generate `client-approval/APPLICATION_PROPOSAL.html` from `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html`; do not copy the template file itself into the application workspace.
-9. Record Phase 1 creation/completion, intake file updates, proposal generation, assumptions, and remaining gaps in `project-control/PROJECT_ACTIVITY_LOG.md`.
-10. Update `project-control/PROJECT_STATE.md` and `project-control/TERA_ACTIVE_CONTEXT.md` when present or needed for handoff.
+3. **Governance initialization:** Immediately after workspace creation:
+   a. Create `[active application workspace]/project-control/WORKSPACE_GOVERNANCE_MODEL.md` using `TERA_RUNTIME_TEMPLATES.md` Section 40.
+   b. Create or update `[active application workspace]/project-preparation/PROJECT_RULES.md` with governance rules: Auditor/Monitor/Design-Reviewer are independent sessions parallel to Tera, final authority belongs to the owner, no direct agent-to-agent communication.
+   c. Rule: No new project without `WORKSPACE_GOVERNANCE_MODEL.md` + updated `PROJECT_RULES.md`.
+4. Check `[active application workspace]/project-inputs/01_APPLICATION_IDEA.md` and `[active application workspace]/project-inputs/02_TECHNICAL_CONTEXT.md`.
+5. If intake is incomplete, enter `Client Discovery Mode` and complete intake first.
+6. If the user provides project-specific rules, create or update `[active application workspace]/project-preparation/PROJECT_RULES.md`.
+7. If the project has UI, collect design preferences and sources: colors, screenshots, Figma, CSS, reference sites, RTL/LTR, brand notes.
+8. Before leaving Phase 1, verify both intake files have an intake status of `Complete` or a documented Tera-approved exception explaining what remains undecided and why it does not block formal preparation.
+9. For external/client-facing work, generate `client-approval/APPLICATION_PROPOSAL.html` from `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html`; do not copy the template file itself into the application workspace.
+10. Record Phase 1 creation/completion, intake file updates, proposal generation, assumptions, and remaining gaps in `project-control/PROJECT_ACTIVITY_LOG.md`.
+11. Update `project-control/PROJECT_STATE.md` and `project-control/TERA_ACTIVE_CONTEXT.md` when present or needed for handoff.
 
 ### Phase 2: Project Decision Formation
 1. Create or update `project-preparation/00_PROJECT_INPUTS.md` as a normalized summary derived from `project-inputs/`.
@@ -671,3 +675,64 @@ Before detailed execution planning or `TASK-COD-*` generation, confirm:
 - [ ] The user approved `PROJECT_MASTER_PLAN.md`.
 
 No detailed execution planning or `TASK-COD-*` generation before `PROJECT_MASTER_PLAN.md` approval.
+
+---
+
+## 20. Cross-Verification Checklist
+
+Before execution planning (Phase 5) and again before each new batch execution (Phase 6), cross-verify consistency between preparation files and control records.
+
+### Why
+
+During CockingApp development, a discrepancy was discovered: `EXECUTION_BATCH_PLAN.md` stated "9 models" while `19_DATABASE_DESIGN.md` contained 7 models + 1 enum. This required correcting 8 files. This checklist prevents such discrepancies from reaching execution.
+
+### When to run
+
+- **Checkpoint A:** After all preparation files are complete (end of Phase 3/4), before execution planning (Phase 5).
+- **Checkpoint B:** Before each new batch execution (Phase 6), after the previous batch may have changed plans.
+- **Checkpoint C:** Before Phase 7 closure, to ensure final records match reality.
+
+### Checklist
+
+| # | Check | Reference Files | What to verify |
+|---|-------|----------------|----------------|
+| 1 | Model/entity count | `06_DATA_MODEL_PREPARATION.md`, `19_DATABASE_DESIGN.md`, `EXECUTION_BATCH_PLAN.md`, `PROJECT_MASTER_PLAN.md` | All files agree on the total number of models/entities/tables. |
+| 2 | Screen count | `07_SCREENS_AND_UI_STRUCTURE.md`, `PROJECT_MASTER_PLAN.md`, `EXECUTION_BATCH_PLAN.md` | Screen count matches across structure definition, roadmap, and batch plan. |
+| 3 | Module/feature count | `03_MODULES_AND_FEATURES.md`, `09_IMPLEMENTATION_PLAN.md`, `PROJECT_MASTER_PLAN.md` | All modules listed in scope appear in implementation plan and master plan. |
+| 4 | User roles | `04_USERS_ROLES_PERMISSIONS.md`, `07_SCREENS_AND_UI_STRUCTURE.md`, `15_SECURITY_AND_ACCESS_CONTROL.md` | Roles defined in security match screen-level role assignments. |
+| 5 | API endpoints | `08_TECHNICAL_ARCHITECTURE.md`, `09_IMPLEMENTATION_PLAN.md` | Endpoint inventory matches implementation scope. |
+| 6 | TASK-ID coverage | `PROJECT_DETAILED_EXECUTION_PLAN.md`, `TASK_REGISTRY.md` | All planned TASK-IDs exist in registry and vice versa. |
+| 7 | Agent-task mapping | `IMPLEMENTATION_AGENT_STRATEGY.md`, `EXECUTION_BATCH_PLAN.md` | Every TASK-ID has an assigned agent and the agent is activated or scheduled. |
+| 8 | Design source vs UI work | `07_SCREENS_AND_UI_STRUCTURE.md`, `PROJECT_MASTER_PLAN.md` | Every UI batch/phase has a Design Source Decision. |
+| 9 | Version scope | `PROJECT_MASTER_PLAN.md`, `VERSION_REGISTRY.md` | Items listed as "in scope" for current version match the roadmap scope. |
+| 10 | Out-of-scope items preserved | `02_SCOPE_AND_BOUNDARIES.md`, `35_ROADMAP_AND_FUTURE_PHASES.md`, `PROJECT_MASTER_PLAN.md` | Items explicitly excluded from scope are not accidentally re-included. |
+
+### Recording
+
+- For Checkpoint A: Record results in `PROJECT_ACTIVITY_LOG.md`.
+- For Checkpoint B: Record results in the task file or batch plan notes.
+- For Checkpoint C: Record results in `DELIVERY_READINESS_REPORT.md`.
+
+### Result rules
+
+```text
+ALL MATCH:  Proceed.
+MISMATCH FOUND:
+  - If clearly wrong value in one file → correct it, log the correction.
+  - If unclear which file is correct → stop, investigate, confirm with user.
+  - If discrepancy affects scope or feasibility → treat as ISSUES_AND_GAPS item.
+  - Must resolve before execution if the mismatch affects the current batch.
+```
+
+### Correction record format
+
+When correcting a cross-verification mismatch, record this in the activity log:
+
+```text
+Cross-Verification Correction
+- Item: [check #]
+- Discrepancy: [file A says X, file B says Y]
+- Correction applied to: [list of files]
+- Resolution: [accepted value]
+- Impact: [none / minor / affected batch plan]
+```

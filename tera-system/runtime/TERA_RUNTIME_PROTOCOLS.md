@@ -69,6 +69,7 @@ Generation rules:
 - Every generated agent must include `MVP Constraints` and `Forbidden Actions` sections.
 - Every generated agent must have a defined **Token Budget** (Light / Medium / Strong) and **Context Rules** (Task Context / Summary Context / Full Context) based on `TeraTokenPolicy.md`.
 - The manifest must document project name, runtime environment, generation date, generated agents, agents not generated with reasons, and deferred/future agents.
+- Use the manifest template in `TERA_RUNTIME_TEMPLATES.md` Section 37 (Generated Agents Manifest).
 - Do not generate all sub-agents by default.
 - Keep the manifest compact. Do not convert it into a long activity log.
 
@@ -1498,3 +1499,85 @@ Assumptions that are marked `Needs confirmation` must be reviewed:
 - After the proposal is approved, `TeraProjectIntakePolicy.md` readiness checks apply.
 - The `Application Discovery Protocol` (Section 13) is now a downstream step — run after the proposal is approved.
 - `Client Approval Workflow Protocol` (Section 14) remains unchanged for external clients — the proposal feeds into Gate 2 (Scope Approval).
+
+---
+
+## 19. Agent Deactivation Protocol
+
+### Purpose
+
+Sub-agents that are no longer needed must be deactivated cleanly to prevent:
+- Confusion with new project agents.
+- Accidental use of old agents.
+- Orphaned active copies in `.opencode/agents/`.
+- Overlapping or conflicting agent scopes between projects.
+
+### When to deactivate
+
+Deactivate a sub-agent when any of these conditions is met:
+
+- The application project is complete and the agent is application-specific.
+- The agent has been superseded by a more specialized agent (e.g., generic engineering → foundation engineering).
+- The agent's phase is complete and reactivation is not expected soon.
+- The agent was created for a specific task that is now closed and the user approved deactivation.
+- A governance decision (e.g., `IMPLEMENTATION_AGENT_STRATEGY.md` Option B) requires disabling a generic agent.
+- Tera explicitly decides the agent is no longer safe or needed.
+
+### Deactivation procedure
+
+```
+Step 1: Decision
+  - Tera decides to deactivate and records the reason.
+  - User approval is not required for routine deactivations unless the agent is currently executing a task.
+
+Step 2: Disable the active copy
+  - Open `.opencode/agents/[agent-name].md`.
+  - Add or set `disable: true` in the frontmatter.
+  - Do NOT delete the active copy unless the agent will never be used again.
+  - Deleting is riskier than disabling — disabled agents stay available for audit.
+
+Step 3: Update the manifest
+  - In `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md`, set the agent Status to `Disabled`.
+  - Record the deactivation date and reason.
+
+Step 4: Update control records
+  - In `project-control/PROJECT_STATE.md`, remove the agent from "Active sub-agents" or move to "Inactive sub-agents".
+  - In `project-control/PROJECT_ACTIVITY_LOG.md`, record:
+    ```
+    ## [YYYY-MM-DD HH:mm] - AGENT_DEACTIVATED
+    - Agent: [name]
+    - Reason: [reason]
+    - Replacement: [name or None]
+    ```
+
+Step 5: Notify user
+  - Inform the user that the agent has been deactivated.
+  - If the user is currently in the same OpenCode session, ask them to restart OpenCode for the change to take effect.
+
+Step 6: Cleanup (optional — for completed projects)
+  - When the project is fully closed, the generated agent file in `generated-agents/opencode/` may be removed as part of Phase 7 closure, but only if explicitly approved.
+
+Step 7: Cross-project cleanup
+  - When closing a full application, check `.opencode/agents/` for any remaining application-specific agents.
+  - Deactivate or remove them before starting a new application project.
+  - Record in `PROJECT_CLOSURE_REPORT.md` under "Cleanup actions".
+```
+
+### Deactivation vs. deletion
+
+| Action | Meaning | When to use |
+|--------|---------|-------------|
+| **Disable** (`disable: true`) | Agent stays in `.opencode/agents/` but is ignored by OpenCode. Safe, reversible. | Default deactivation method. |
+| **Remove** (delete file) | Agent is permanently removed from `.opencode/agents/`. Generated draft remains in `generated-agents/opencode/`. | Only when the project is fully closed AND the agent is application-specific. |
+| **Delete both** | Remove active copy AND generated draft. | Only with explicit user approval, after project closure and final audit. |
+
+### Cross-project rule
+
+When a new application starts:
+
+1. The `.opencode/agents/` folder MUST be checked for leftover application-specific agents.
+2. Any agent whose scope, allowed write targets, or purpose refers to a closed application must be deactivated.
+3. `tera.md` and system agents (auditor, monitor, design-reviewer) must NEVER be deactivated.
+4. This check is recorded in the new application's `PROJECT_ACTIVITY_LOG.md` as `CROSS_PROJECT_AGENT_CLEANUP`.
+
+> **Rule:** A new application must not start with leftover agents from a previous application in `.opencode/agents/`.

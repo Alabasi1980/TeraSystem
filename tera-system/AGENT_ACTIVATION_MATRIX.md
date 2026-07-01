@@ -77,6 +77,16 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | ClientApprovalReviewAgent | `CLIENT_APPROVAL_REVIEW_AGENT` | `EXTERNAL_FACTOR`: قبل إرسال حزمة اعتماد العميل أو قبل Build Mode | ما قبل التنفيذ | إذا لم تكتمل حزمة الاعتماد بعد | `clients/.../client-approval/` |
 | ChangeControlAgent | `CHANGE_CONTROL_AGENT` | `EXTERNAL_FACTOR`: طلب تغيير جديد بعد اعتماد النطاق | أي مرحلة بعد اعتماد النطاق | إذا لم يظهر أي طلب تغيير | `11_CHANGE_CONTROL.md` أو طلب التغيير الجديد |
 
+### 2.4 عملاء جلسات الحوكمة الرئيسية
+
+هؤلاء لا يخضعون للتفعيل التلقائي بواسطة Tera. المالك يفتحهم أو يطلب عملهم يدويًا حسب مجريات المشروع.
+
+| العميل | المعرف | Trigger التشغيل | المرحلة | متى لا يعمل | الحد الأدنى من المدخلات |
+|---|---|---|---|---|---|
+| Auditor | `AUDITOR_AGENT` | `USER_REQUEST`: طلب تدقيق جودة/عمل أو commit بعد قبول مرحلة | 5–6–7 | قبل وجود تسليم موثق أو قبل قبول المالك للـ commit | `PROJECT_STATE.md` + `TASK-ID` أو ملفات التغيير |
+| Monitor | `MONITOR_AGENT` | `USER_REQUEST`: طلب مراجعة توافق الخطة أو كشف الانحراف | 3–7 | إذا لا توجد خطة أو لا توجد مرحلة/دفعة لمقارنتها | `PROJECT_MASTER_PLAN.md` أو الخطة المتاحة + `TASK_REGISTRY.md` |
+| Design Reviewer | `DESIGN_REVIEWER_AGENT` | `USER_REQUEST`: طلب تدقيق بصري أو عند وجود مهمة UI/UX | 5–7 | إذا لا يوجد UI أو لا يوجد مصدر تصميم معتمد | `28_UI_UX_GUIDELINES.md` + المهمة/الشاشة ذات العلاقة |
+
 ---
 
 ## 3. مصفوفة التفعيل حسب نوع المشروع

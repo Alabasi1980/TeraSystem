@@ -1,11 +1,259 @@
-# PROJECT_ACTIVITY_LOG.md
+# PROJECT_ACTIVITY_LOG
+## CockingApp — Recipe Web Application
 
-> **Purpose:** Chronological log of major project activities.
+---
 
-## Required Entry Format
+## 2026-07-01
+
+### [2026-07-01 00:00] — GOVERNANCE_MODEL_APPROVED
+
+- Related Task: N/A
+- Actor: Majed + Tera Agent
+- Summary: Majed approved the OpenCode multi-session workspace governance model for CockingApp.
+- Decision / Result: Main sessions approved: `tera`, `auditor`, `monitor`, `design-reviewer`. Shared coordination folder remains `project-control/`.
+- Next Action: Create governance model record and OpenCode agent definitions.
+
+---
+
+### [2026-07-01 00:05] — GOVERNANCE_MODEL_IMPLEMENTED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Added `WORKSPACE_GOVERNANCE_MODEL.md`, updated project rules, and registered governance session agents in Tera/OpenCode system files.
+- Decision / Result: Governance sessions are user-triggered only; no automatic activation. Auditor may commit locally only after explicit owner approval.
+- Next Action: Validate changes and restart OpenCode so new agents load correctly.
+
+---
+
+### [2026-07-01 00:10] — PROJECT_STATE_UPDATED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Updated `PROJECT_STATE.md` and `TERA_ACTIVE_CONTEXT.md` to include the approved workspace governance model and new governance session agents.
+- Decision / Result: Session handoff now records `auditor`, `monitor`, and `design-reviewer` as manually controlled governance sessions.
+- Next Action: Run validation checks and report restart requirement to Majed.
+
+---
+
+## 2026-06-30
+
+### [2026-06-30 10:00] — PROJECT_CREATED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created application workspace `clients/CLIENT-Noor/applications/APP-CockingApp/` with full directory structure
+- Decision / Result: Workspace ready for project intake
+- Next Action: Enter Client Discovery Mode
+
+---
+
+### [2026-06-30 10:15] — CLIENT_DISCOVERY
+
+- Related Task: N/A
+- Actor: Tera Agent + Majed
+- Summary: Discussed CockingApp idea — recipe web app with admin dashboard for Noor. Confirmed: name, features (recipes, categories, linked ingredients, steps, images, comments, PDF), tech stack (Next.js + Prisma), design (getdesign.md/Claude), on-premise deployment, Arabic-only, anonymous visitors + single admin
+- Decision / Result: Full discovery completed. `01_APPLICATION_IDEA.md` and `02_TECHNICAL_CONTEXT.md` created and confirmed
+- Next Action: Domain Research (market analysis)
+
+---
+
+### [2026-06-30 10:45] — DOMAIN_RESEARCH
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Researched 17 cooking apps (global and Arabic). Extracted 8 improvement suggestions for CockingApp
+- Decision / Result: Suggestions presented to Majed; 4 approved for Phase 1B, 4 for Phase 2
+- Next Action: Prepare Application Proposal
+
+---
+
+### [2026-06-30 11:15] — PROPOSAL_PREPARED_AND_APPROVED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created `APPLICATION_PROPOSAL.html` from `APPLICATION_PROPOSAL_TEMPLATE.html`. Proposal included all features, MVP classification, and client terms. Noor approved the full proposal via Majed
+- Decision / Result: Proposal approved. Proposal status updated to "معتمد" (Approved)
+- Next Action: Create TERA_PROJECT_DECISION.md
+
+---
+
+### [2026-06-30 11:30] — PROJECT_DECISION_CREATED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created `TERA_PROJECT_DECISION.md` documenting all Phase 1–2 decisions, MVP classification (6 phases), research improvements, and project approval
+- Decision / Result: Phase 2 complete. Decision documented
+- Next Action: Phase 3 — Preparation Planning
+
+---
+
+### [2026-06-30 11:45] — PREPARATION_PLAN_CREATED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created `PREPARATION_PLAN.md` v1 — 19 preparation files across 7 batches
+- Decision / Result: Draft presented to Majed
+- Next Action: Await approval
+
+---
+
+### [2026-06-30 12:00] — PREPARATION_PLAN_UPDATED_AND_APPROVED
+
+- Related Task: N/A
+- Actor: Tera Agent + Majed
+- Summary: Majed requested stronger professional version. Created v2 with: strategic approach, risk assessment, quality gates, success criteria, traceability. Majed approved v2 with condition to enter Phase 4 formally. Added "Not Required" files section as suggested
+- Decision / Result: ✅ `PREPARATION_PLAN.md` v2 Approved. Phase 3 complete.
+- Next Action: Create AGENT_DELEGATION_PLAN.md (Phase 4)
+
+---
+
+### [2026-06-30 12:15] — AGENT_DELEGATION_PLAN_CREATED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created `AGENT_DELEGATION_PLAN.md` documenting that no sub-agents are required for preparation. All 9 agent types considered and explicitly excluded with rationale
+- Decision / Result: ✅ Phase 4 complete. Tera proceeds directly to preparation file creation.
+- Next Action: **Start Batch 1 — Foundation files (C1–C4)**
+
+---
+
+### [2026-06-30 12:30] — PREPARATION_BATCH_1_COMPLETE
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created Batch 1 (Foundation): PROJECT_RULES.md, 00_PROJECT_INPUTS.md, 01_PROJECT_BRIEF.md, 02_SCOPE_AND_BOUNDARIES.md
+- Decision / Result: ✅ Quality Gate PASS. Proceed to Batch 2.
+- Next Action: Batch 2 — Core Structure
+
+---
+
+### [2026-06-30 12:50] — PREPARATION_BATCH_2_COMPLETE
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created Batch 2: 03_MODULES_AND_FEATURES.md, 04_USERS_ROLES_PERMISSIONS.md, 05_BUSINESS_WORKFLOWS.md
+- Decision / Result: ✅ Quality Gate PASS. Proceed to Batch 3.
+- Next Action: Batch 3 — Data Layer
+
+---
+
+### [2026-06-30 13:10] — PREPARATION_BATCH_3_COMPLETE
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created Batch 3: 06_DATA_MODEL_PREPARATION.md, 19_DATABASE_DESIGN.md (Prisma schema with 9 models + 1 enum)
+- Decision / Result: ✅ Quality Gate PASS. Proceed to Batch 4.
+- Next Action: Batch 4 — Screens & Design
+
+---
+
+### [2026-06-30 13:25] — PREPARATION_BATCH_4_COMPLETE
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created Batch 4: 07_SCREENS_AND_UI_STRUCTURE.md (17 screens, 15 components, full API routes), 28_UI_UX_GUIDELINES.md (Claude design system with design gaps)
+- Decision / Result: ✅ Quality Gate PASS. Proceed to Batch 5.
+- Next Action: Batch 5 — Architecture & Rules
+
+---
+
+### [2026-06-30 13:50] — PREPARATION_BATCH_5_COMPLETE
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created Batch 5: 08_TECHNICAL_ARCHITECTURE.md (folder structure, data flow), 12_BUSINESS_RULES.md (38 rules), 15_SECURITY_AND_ACCESS_CONTROL.md (JWT auth), 21_VALIDATION_AND_ERROR_HANDLING.md
+- Decision / Result: ✅ Quality Gate PASS. Proceed to Batch 6.
+- Next Action: Batch 6 — Operations
+
+---
+
+### [2026-06-30 14:10] — PREPARATION_BATCH_6_COMPLETE
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created Batch 6: 13_REPORTS_AND_DASHBOARDS.md, 22_DEPLOYMENT_AND_ENVIRONMENTS.md (on-premise), 18_IMPORT_EXPORT_DATA.md
+- Decision / Result: ✅ Quality Gate PASS. Proceed to Batch 7.
+- Next Action: Batch 7 — Plans & Delivery
+
+---
+
+### [2026-06-30 14:30] — PREPARATION_BATCH_7_COMPLETE
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created Batch 7: 09_IMPLEMENTATION_PLAN.md (18 TASK-IDs, ~24h), 10_TESTING_AND_ACCEPTANCE.md, 11_DELIVERY_AND_HANDOVER.md, 35_ROADMAP_AND_FUTURE_PHASES.md (6-phase roadmap)
+- Decision / Result: ✅ **All 22 preparation files created. Phase 3 complete.** All 7 quality gates passed.
+- Next Action: **Phase 5 — Execution Planning (PROJECT_MASTER_PLAN.md)**
+
+---
+
+### [2026-06-30 15:00] — EXECUTION_PLANNING_COMPLETE
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: Created Phase 5 execution planning documents:
+  - `PROJECT_MASTER_PLAN.md` — 8 milestones, 18 TASK-IDs, ~13 ساعة
+  - `PROJECT_DETAILED_EXECUTION_PLAN.md` — تفاصيل كل TASK-ID مع الملفات المستهدفة ومعايير القبول
+  - `EXECUTION_BATCH_PLAN.md` — 15 دفعة تنفيذية مع Pre/Post gates
+- Decision / Result: ✅ **Phase 5 complete. All 18 TASK-IDs planned with acceptance criteria.**
+- Next Action: **Request Build Mode approval → Phase 6 — Implementation**
+
+---
+
+### [2026-06-30 15:15] — SESSION_RESUMED
+
+- Related Task: N/A
+- Actor: Tera Agent + User
+- Summary: User returned and requested to continue. Tera reviewed active context, project state, project rules, execution batch plan, and active `nextjs-prisma` technology profile.
+- Decision / Result: Project is ready for Phase 6, but Build Mode has not yet been explicitly approved. `TERA_ACTIVE_CONTEXT.md` corrected to reflect Phase 5 completion and Build Mode pending state.
+- Next Action: Request explicit Build Mode approval before creating or executing `TASK-COD-001`.
+
+---
+
+### [2026-06-30 15:25] — BUILD_MODE_APPROVED_AND_ENGINEERING_AGENT_ACTIVATED
+
+- Related Task: TASK-COD-001
+- Actor: User + Tera Agent
+- Summary: User explicitly approved Build Mode for Phase 6. Tera reviewed Pre-Execution Gate, runtime checklist, activation matrix, permission model, sub-agent protocols, and confirmed direct application-code execution by Tera is not allowed for scaffold work.
+- Decision / Result: Generated and activated `COCKINGAPP_ENGINEERING_AGENT` for Phase 6 implementation only. Active file: `.opencode/agents/cockingapp-engineering.md`. Generated draft and manifest saved under `generated-agents/opencode/`.
+- Next Action: User must restart OpenCode so the newly activated EngineeringAgent becomes available; then Tera can create `TASK-COD-001`, run Pre-Execution Gate, and delegate B1.
+
+---
+
+### [2026-06-30 15:40] — IMPLEMENTATION_AGENT_STRATEGY_CREATED
+
+- Related Task: N/A
+- Actor: Tera Agent
+- Summary: User reported updated system rules requiring `IMPLEMENTATION_AGENT_STRATEGY.md` between Phase 5 and Phase 6. Tera read updated `TeraAgent.md`, `TERA_RUNTIME_CHECKLISTS.md`, and `TERA_RUNTIME_PROTOCOLS.md`, then created the required strategy.
+- Decision / Result: `IMPLEMENTATION_AGENT_STRATEGY.md` created as Draft v1. Previous Build Mode approval is suspended until the strategy is approved. Existing `cockingapp-engineering` agent must not be used until the strategy chooses whether to narrow it or replace it.
+- Next Action: Present strategy to user for approval and choose Option A or Option B.
+
+---
+
+### [2026-06-30 15:50] — IMPLEMENTATION_AGENT_STRATEGY_APPROVED_OPTION_B
+
+- Related Task: TASK-COD-001
+- Actor: User + Tera Agent
+- Summary: User approved Tera recommendation Option B: create a dedicated `cockingapp-foundation-engineering` agent and do not use the generic `cockingapp-engineering` agent.
+- Decision / Result: `IMPLEMENTATION_AGENT_STRATEGY.md` updated to Approved v1. `cockingapp-foundation-engineering` generated and activated. Generic `cockingapp-engineering` disabled in generated and active copies.
+- Next Action: User must restart OpenCode before Tera creates/gates/delegates `TASK-COD-001`.
+
+---
+
+### [2026-06-30 16:05] — TASK_CREATED_AND_PRE_GATE_PASS
+
+- Related Task: TASK-COD-001
+- Actor: Tera Agent
+- Summary: Created `project-control/TASK_REGISTRY.md` and `project-control/tasks/TASK-COD-001.md`. Corrected `PROJECT_DETAILED_EXECUTION_PLAN.md` for TASK-COD-001 to replace direct Tera execution with `cockingapp-foundation-engineering`, remove Tailwind from first task, and avoid `prisma generate`.
+- Decision / Result: `TASK-COD-001` has `Pre-Execution Gate Result: PASS`. Task remains awaiting final user confirmation before delegation.
+- Next Action: Ask user for final approval to delegate TASK-COD-001 to `cockingapp-foundation-engineering`.
+
+---
+
+## Log Format
 
 ```md
-## [YYYY-MM-DD HH:mm] - [EVENT_TYPE]
+## [YYYY-MM-DD HH:mm] — [EVENT_TYPE]
 
 - Related Task: TASK-XXXX / N/A
 - Actor: Tera / Sub-Agent Name / User
@@ -13,388 +261,3 @@
 - Decision / Result:
 - Next Action:
 ```
-
-## Activity Log
-
-## [2026-06-30 18:30] - SYSTEM_FIX: Intake closure and template governance
-
-- Related Task: N/A
-- Actor: User + Tera 3
-- Summary: User provided Tera 2 analysis of four operational gaps: system template copying ambiguity, missing explicit Phase 1 activity logging checklist, stale `PROJECT_STATE.md` / `TERA_ACTIVE_CONTEXT.md` risk, and intake files remaining `Partial` when Phase 1 closes.
-- Decision / Result: Updated Tera core, active OpenCode runtime, runtime checklist, and system issues register. New rules prevent copying unchanged `*_TEMPLATE.*` files into application workspaces, require phase-transition control-record updates, and require intake status completion or a documented exception before leaving discovery.
-- Next Action: Future Tera sessions must apply these gates during Phase 1 and before every phase transition.
-
-## [2026-06-30 14:15] - GIT_REMOTE_CURRENT_VERSION_ADOPTION
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: User rejected integrating remote content as final state and requested adopting the current local Tera system version as the approved repository state.
-- Decision / Result: Tera will preserve remote history through a non-force merge while keeping the current local file tree as the final content, then retry normal push.
-- Next Action: Commit log records, merge remote history with local tree preserved, then push without force.
-
-## [2026-06-30 14:10] - GIT_PUSH_BLOCKED_REMOTE_HISTORY
-
-- Related Task: N/A
-- Actor: Tera
-- Summary: Attempted to push local commits to documented remote after user approval, but GitHub rejected the push because `origin/master` already contains commits not present locally.
-- Decision / Result: Push blocked safely. No force push was used. Remote history must be integrated before pushing.
-- Next Action: Ask user to approve safe non-force merge strategy before retrying push.
-
-## [2026-06-30 14:05] - GIT_PUSH_APPROVED
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: User approved pushing the initial Tera system commit to the documented GitHub remote.
-- Decision / Result: Approved remote: `https://github.com/Alabasi1980/TeraSystem`. Tera will execute `git push -u origin master` after committing this activity log entry.
-- Next Action: Push committed changes to GitHub and report the result.
-
-## [2026-06-30 13:55] - SYSTEM_RULE: Version Scope Change handling
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: Added official rule for moving features, screens, workflows, modules, or requirements between application versions.
-- Decision / Result: Such requests are classified as `Version Scope Change`. If the target version is unreleased, Tera updates scope/plans/tasks/version records after approval. If the target version is released, Tera must not rewrite release history or tags and must open a Patch/Hotfix/Minor/Major cycle instead.
-- Next Action: Apply this rule whenever Majed/client asks to move scope between versions.
-
-## [2026-06-30 13:45] - SYSTEM_RULE: Version scope proposal ownership
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: Established the official ownership rule for proposing what enters each application version.
-- Decision / Result: During Phase 2, Tera proposes version scope based on Phase 1 discovery, MVP classification, client priorities, risks, dependencies, and anti-bloat rules. User/client approval is required before any version scope becomes official and recorded.
-- Next Action: Apply this rule during Project Decision Formation and when opening later version cycles.
-
-## [2026-06-30 13:35] - SYSTEM_FEATURE: GitHub Releases + Tags enabled
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: Enabled GitHub Releases together with Git release tags as the approved lightweight GitHub integration for version closure. Tera handles tag and GitHub Release workflow; user approves push/tag/release actions.
-- Decision / Result: `VERSION_LIFECYCLE_PROTOCOL.md`, active `.opencode/agents/tera.md`, Tera core, tooling policy, runtime protocols/checklists/templates, and project-control version/release files now include GitHub Release metadata and rules. Git tags remain the code anchor; GitHub Releases are the repository-facing release record when GitHub/gh is available.
-- Next Action: During Phase 7 closure, create/push tag and GitHub Release only after explicit user approval.
-
-## [2026-06-30 13:20] - SYSTEM_FEATURE: Git Release Tagging for versions
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: Added official Git Release Tagging responsibility to the Version Management Layer. Tera is responsible for repository handling, git status/diff/log review, commit preparation, remote verification through `GIT_REMOTE.md`, release tag creation, and tag push after approval. User/Majed approves or rejects push/tag actions only.
-- Decision / Result: Version releases can now be anchored to Git tags such as `v1.0`, `v1.0.1`, `v1.1`, and `v2.0`. Updated version protocol, tooling policy, runtime protocols/checklists/templates, active `.opencode/agents/tera.md`, Tera core, `VERSION_REGISTRY.md`, `RELEASE_NOTES.md`, `NEXT_VERSION_HANDOFF.md`, `PROJECT_CLOSURE_REPORT.md`, and `GIT_REMOTE.md`.
-- Next Action: Use Git release tagging during Phase 7 version/hotfix/patch closure after explicit user approval.
-
-## [2026-06-30 13:10] - SYSTEM_ARCHITECTURE_UPDATE
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: Adopted application workspace isolation by client and application name. New applications must use `clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/` as the canonical workspace instead of writing application-specific files into Tera root folders.
-- Decision / Result: Updated active runtime, Tera core folder references, client workspace README, and OpenCode commands so intake, preparation, control records, generated agents, source code, approvals, assets, communications, and delivery files stay inside the active application workspace. Root-level project folders are template/bootstrap or Tera-system maintenance areas after a workspace is identified.
-- Next Action: For the next new application, ask for client/owner name and application name first, then create/use the isolated workspace.
-
-## [2026-06-30 12:55] - SYSTEM_RUNTIME_SYNC_FIX: Active Tera runtime synced
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: User correctly pointed out that `.opencode/agents/tera.md` exists despite an earlier glob result saying no active runtime file was found. Tera verified the file by direct read and synchronized it with the Version Management Layer.
-- Decision / Result: `.opencode/agents/tera.md` now includes `VERSION_LIFECYCLE_PROTOCOL.md`, runtime loading triggers for version work, Phase 7 version/application closure wording, and Version Management Layer rules. `Last Synced` was updated to include Version Management Layer.
-- Next Action: Treat `.opencode/agents/tera.md` as the higher-priority active runtime source, as stated in Authority Order.
-
-## [2026-06-30 12:30] - SYSTEM_FEATURE: Version Management Layer
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: Added official Tera Version Management Layer based on expert review and Majed approval. Created `VERSION_LIFECYCLE_PROTOCOL.md`, `VERSION_REGISTRY.md`, and `NEXT_VERSION_HANDOFF.md`. Updated project state, task registry, task template, release notes, closure report, runtime protocols/checklists/templates, policy map, and Tera core identity references.
-- Decision / Result: Tera now supports real version handling for `v1.0 -> hotfix/patch -> v1.1 -> v2.0 -> final application closure`, with versioned task metadata, release notes per version, next-version handoff, and a rule preventing direct modification of released versions without a Version/Maintenance/Hotfix cycle. Level 3 expansion is documented as intentionally deferred until large-project or multi-version triggers exist.
-- Next Action: Validate references and continue using the lightweight Version Management Layer before activating Level 3.
-
-## [2026-06-30 12:45] - SYSTEM_VALIDATION_FIX: Version closure wording alignment
-
-- Related Task: N/A
-- Actor: Tera
-- Summary: Rechecked Version Management Layer implementation and found legacy Phase 7 wording that could imply every Phase 7 is full project closure. Updated Tera core and runtime wording to distinguish Version Closure, Maintenance Closure, Hotfix Closure, and Final Application Closure.
-- Decision / Result: No scope expansion. The version layer remains lightweight; Level 3 remains deferred. Phase 7 wording is now aligned with version lifecycle rules.
-- Next Action: Report validation result to user.
-
-## [2026-06-30 00:00] - OPERATOR_AUTH_POLICY_UPDATE
-
-- Related Task: N/A
-- Actor: User + Tera
-- Summary: Created and updated `project-control/OPERATOR_AUTH_POLICY.md` to define Majed Khairaldin as the only authorized primary operator and to require identity verification at the start of sessions or whenever identity is unclear.
-- Decision / Result: Verification now uses the prompt "عرّف عن نفسك" without revealing expected answers. The accepted verification identity is name `ماجد خيرالدين` plus date of birth `30-09-1980`. Password-based verification is not used and plaintext secret storage remains prohibited.
-- Next Action: In future sessions, ask for identity verification before project operations if the operator identity is not already clear.
-
-## [2026-06-30 11:45] - SYSTEM_CONSISTENCY_FIX
-
-- Related Task: N/A
-- Actor: Tera
-- Summary: Applied small Phase 7 consistency refinements requested by the user. Renamed the design linkage heading in `TeraAgent.md` from six phases to project phases, expanded `FINAL_ACCEPTANCE_CHECKLIST.md` acceptance areas, and expanded `POST_IMPLEMENTATION_REVIEW.md` learning sections.
-- Decision / Result: Phase 7 structure and logic unchanged. No new phase or sub-agent added.
-- Next Action: Validate diff and keep changes limited to requested consistency refinements.
-
-## [2026-06-30] - SYSTEM_FEATURE: Phase 7 Delivery, Handover & Closure
-
-- Related Task: N/A (System Maintenance)
-- Actor: User + Tera Agent
-- Summary: Added official `Phase 7 — Delivery, Handover & Closure` to Tera. Updated the operating workflow from 6 phases to 7 phases. Phase 7 is project-level closure, not code execution. Added entry/exit gates, anti-bloat output sizing by project type, blocker return path to Phase 6 as `TASK-COD-FIX-*`, and explicit rules preventing project closure after the last TASK-COD only. Added Phase 7 templates in `project-control/` and a client handover package template under `clients/`. Updated Tera core, active OpenCode runtime, runtime protocols/checklists/templates, policy/architecture maps, client policy, user guide, sub-agent responsibilities, project state/control templates, and client workspace guidance.
-- Decision / Result: Tera now has a formal 7-phase lifecycle ending with Delivery, Handover & Closure. Phase 7 cannot add scope or write code. Blocking issues discovered in Phase 7 return to Phase 6.
-- Next Action: Run validation and commit as `Add Phase 7 delivery handover closure`.
-
-## [2026-06-30] - SYSTEM_DOC: Official Figma adoption user-input checklist
-
-- Related Task: N/A (System Maintenance)
-- Actor: User + Tera Agent
-- Summary: Documented that when the user wants Figma as the official design source (`FIGMA_DESIGN_FILE`), Tera must automatically ask for the required Figma adoption inputs instead of expecting the user to remember them. Added the required input checklist and Arabic ready-to-fill prompt to `tera-system/design-system/FIGMA_INTEGRATION.md`. Added a short reminder to `TERA_USER_GUIDE.md` and linked the requirement from `DESIGN_SOURCE_PROTOCOL.md`.
-- Decision / Result: Future official Figma adoption will trigger Tera to ask for Figma link/file, approved frames, excluded frames, commitment level, direction, extraction scope, missing state checks, restrictions, and project identity overrides.
-- Next Action: None.
-
-## [2026-06-30] - SYSTEM_AUDIT_FIX: FIGMA_DESIGN_FILE consistency audit
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Re-audited the `FIGMA_DESIGN_FILE` Design Governance changes. Found and fixed minor consistency issues: added `FIGMA_DESIGN_FILE` to `project-control/tasks/TASK_TEMPLATE.md`, fixed Markdown table separator column counts in `DESIGN_SOURCE_PROTOCOL.md`, `UI_ACCEPTANCE_GATE.md`, and `28_UI_UX_GUIDELINES.md`, aligned `FIGMA_INTEGRATION.md` reference from old `Section 3.5` wording to actual `Section 15: Figma Source Mapping`, and added Figma mapping check to `28_UI_UX_GUIDELINES.md` UI Acceptance Checklist.
-- Decision / Result: Audit passed after fixes. `opencode.json` is valid JSON, Markdown tables check passed, mode lists include `FIGMA_DESIGN_FILE`, and `git diff --check` has no errors except normal CRLF warnings.
-- Next Action: None.
-
-## [2026-06-30] - SYSTEM_IMPROVE: FIGMA_DESIGN_FILE protocol added as official Design Source Mode
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (per expert review)
-- Summary: Added `FIGMA_DESIGN_FILE` as an official Design Source Mode. Created `tera-system/design-system/FIGMA_INTEGRATION.md` with flow, roles, and restrictions. Updated 13 files: `DESIGN_SOURCE_PROTOCOL.md` (new mode + selection rule), `DESIGN_SYSTEM_OVERVIEW.md` (separate Figma row), `UI_ACCEPTANCE_GATE.md` (Figma check in pre-task + checklist + result template), `28_UI_UX_GUIDELINES.md` (Section 15 Figma Source Mapping), `TeraSubAgents.md` (UIVisualDesignerAgent expanded for Figma), `TeraAgent.md`, `.opencode/agents/tera.md`, `Tera_Project_Preparation_Files.md`, `TERA_USER_GUIDE.md`, `TERA_RUNTIME_TEMPLATES.md`, `TERA_RUNTIME_CHECKLISTS.md`, `TERA_RUNTIME_PROTOCOLS.md`.
-- Decision / Result: Figma is now a recognized design source distinct from screenshots. No API integration. No direct EngineeringAgent access to Figma. The executable spec remains `28_UI_UX_GUIDELINES.md`. Design gaps are recorded for missing Figma details.
-- Next Action: Layer is ready for projects with Figma design files.
-
-## [2026-06-30] - SYSTEM_IMPROVE: opencode.json optimization + 5 new slash commands
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (per Majed review)
-- Summary: Optimized `opencode.json` — updated permissions (read/glob/grep/todowrite/question = allow, edit/write/bash/webfetch = ask), added 6 compact instructions (Plan Mode default, read active context on resume, Client Discovery for new projects, report state first, use Technology Profile, refer to tera.md). Created 5 new commands in `.opencode/commands/`: `tera-new-project.md` (Client Discovery entry), `tera-plan.md` (Plan Mode enforcement), `tera-request-build.md` (Build Mode request/review), `tera-review.md` (Post-Execution Review), `tera-help.md` (command reference). Improved `tera-resume.md` to also read PROJECT_ACTIVITY_LOG.md. Added Section 17 (Quick Commands) and renumbered to Section 19 in `.opencode/agents/tera.md`. Total: 10 commands in `.opencode/commands/`.
-- Decision / Result: `opencode.json` is now a light operational layer. All logic stays in `.opencode/agents/tera.md` and `tera-system/`. Commands are individual files, not JSON duplicates.
-- Next Action: Test the new commands on a real project session.
-
-## [2026-06-30] - SYSTEM_FIX: Design Governance expert refinements
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (per Majed expert review)
-- Summary: Applied expert refinements to the Full Tera Design Governance Layer. Unified Design Source Mode labels across templates and runtime references to: `INTERNAL_TERA_KIT`, `GETDESIGN_MD`, `USER_PROVIDED_REFERENCE`, `EXTERNAL_URL_ANALYSIS`, `HYBRID`, `NO_UI`, `N/A`. Replaced old labels in `TASK_TEMPLATE.md` and runtime templates. Added `UI Acceptance Gate Result` template to `tera-system/design-system/UI_ACCEPTANCE_GATE.md` with Check, Result, Evidence, Notes, Gate Status, Design Gaps, Required Fixes, and Reviewer.
-- Decision / Result: Naming is now consistent; no new files were added; design logic unchanged.
-- Next Action: None.
-
-## [2026-06-30] - SYSTEM_FEATURE: Full Tera Design Governance Layer
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (per Majed request)
-- Summary: Added the Full Tera Design Governance Layer to prevent random UI styling and formalize design source decisions. Created `tera-system/design-system/` with overview, source protocol, DESIGN.md integration, external reference analysis, internal kits index, token/component/layout/RTL/accessibility schemas, UI Acceptance Gate, and `kits/KIT_ADMIN_DASHBOARD.md`. Created `project-preparation/28_UI_UX_GUIDELINES.md` as the final executable UI design guide. Updated TeraAgent, TeraSubAgents, EngineeringAgent rules, Pre/Post Execution Gates, runtime protocols/checklists/templates, preparation catalog, question bank, policy/architecture maps, task template, agent generation template, user guide, and active OpenCode runtime summary.
-- Decision / Result: Design governance is now a full system layer but activation is conditional by project type. `getdesign.md` is an approved external source, not mandatory. EngineeringAgent must not invent UI styling and must raise Design Gap when design rules are missing. UI/Frontend tasks must pass `UI_ACCEPTANCE_GATE`.
-- Next Action: Use the new layer in the next UI-bearing project; future optional kits: SaaS, Public Website, Mobile First, Data Dense ERP.
-
-## [2026-06-29] - SYSTEM_CORRECTION: Expert 1-6 consistency refinements applied
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (with expert review)
-- Summary: Applied expert consistency refinements after the full 1-6 phase review. Clarified that the preliminary discovery roadmap is formalized during Phase 5 inside `PROJECT_MASTER_PLAN.md`, and replaced old roadmap gate wording with: no detailed execution planning or `TASK-COD-*` generation before approved `PROJECT_MASTER_PLAN.md`. Updated `PROJECT_MASTER_PLAN.md` template to include formal phased roadmap and relationship to `09_IMPLEMENTATION_PLAN.md`. Clarified in `TeraAgent.md`, `TERA_RUNTIME_PROTOCOLS.md`, `TERA_RUNTIME_CHECKLISTS.md`, and `Tera_Project_Preparation_Files.md` that `09_IMPLEMENTATION_PLAN.md` is preliminary while `PROJECT_MASTER_PLAN.md`, `PROJECT_DETAILED_EXECUTION_PLAN.md`, and `EXECUTION_BATCH_PLAN.md` are official execution-control files. Added `TERA_RUNTIME_TEMPLATES.md` Section 32 for Post-Execution Review and linked it from `TASK_TEMPLATE.md`, `TeraPreExecutionGate.md`, and `TeraPolicyMap.md`. Added Delegation Type to `AGENT_GENERATION_TEMPLATE.md` and clarified Phase 4 vs Phase 6 delegation in `TeraSubAgents.md`.
-- Decision / Result: Remaining expert-noted consistency gaps were addressed. Phase 5 roadmap boundary, execution-plan layering, and Phase 6 review output are now explicitly documented.
-- Next Action: Optional: run scenario stress tests for the final 6-phase workflow.
-
-## [2026-06-29] - SYSTEM_VERIFICATION: Full 1-6 phase consistency review
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Performed full consistency review across `.opencode/agents/tera.md`, `TeraAgent.md`, `TERA_RUNTIME_CHECKLISTS.md`, `TERA_RUNTIME_TEMPLATES.md`, `Tera_Project_Preparation_Files.md`, `TERA_PROJECT_DECISION.md`, `TeraPolicyMap.md`, `TERA_RUNTIME_PROTOCOLS.md`, `TeraPreExecutionGate.md`, `TASK_TEMPLATE.md`, and `TERA_USER_GUIDE.md`. Verified final phase order, phase outputs, TASK-PREP/TASK-COD distinction, project-control vs project-preparation output boundaries, execution batch linkage, and Post-Execution Review flow. Fixed remaining boundary wording in `.opencode/agents/tera.md` and `TERA_USER_GUIDE.md` so analysis/preparation content stays in `project-preparation/` while control/planning/task records belong in `project-control/`. Search confirmed no remaining old terms: `Project Preparation Files Generation`, `Sub-Agent Generation & Delegation`, `Required / Optional`, `5-6. Execution`, old default phase order.
-- Decision / Result: Final 1-6 phase workflow is consistent enough for controlled use. Minor future improvement: add optional stress-test scenarios for the final 6-phase workflow.
-- Next Action: If user approves, proceed to system stress test or begin applying the workflow to a real project.
-
-## [2026-06-29] - SYSTEM_STRUCTURE: Phase 6 documented (Implementation Cycle)
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (with expert review)
-- Summary: Compared expert analysis for Phase 6 with Tera analysis and documented the final Implementation cycle. Updated `TeraAgent.md` with Phase 6 inputs, 10-step execution flow, outputs, and governing rules. Expanded `TERA_RUNTIME_CHECKLISTS.md` Phase 6 from 2 steps to an 11-step implementation checklist. Strengthened `project-control/tasks/TASK_TEMPLATE.md` with Execution Report / Agent Handback, Tera Review, Post-Execution Review Result, and Final Tera Decision sections. Updated `TeraPreExecutionGate.md` to clarify the difference between Post-Execution Gate result (PASS / NEEDS_FIX / BLOCKED) and final Tera task decision (Accepted / Needs Fix / Blocked / Rework Needed / Deferred / Cancelled). Synced `.opencode/agents/tera.md` phase discipline and Last Synced summary.
-- Decision / Result: Phase 6 is now explicitly defined as controlled execution of approved `TASK-COD-*` only, with mandatory handback, Post-Execution Review, registry updates, and no next task until the current one is accepted or explicitly handled.
-- Next Action: Run final full 1-6 phase consistency review before using Build Mode.
-
-## [2026-06-29] - SYSTEM_CORRECTION: Phase 1-4 audit fixes applied
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (with expert review)
-- Summary: Applied expert review corrections for phases 1-4 and added one runtime-priority correction from Tera audit. Fixed Phase 4 wording in `TERA_RUNTIME_CHECKLISTS.md` to clarify preparation-file delegation only (`TASK-PREP-XXX`) and no application implementation. Renumbered checklist steps so each phase starts from 1. Updated `Tera_Project_Preparation_Files.md` to use `Sub-Agent Generation & Preparation Delegation` and split Phase 5 Execution Planning from Phase 6 Implementation. Updated `TERA_PROJECT_DECISION.md` from Optional to Conditional and corrected Phase 4 name. Updated `TeraAgent.md` Phase 4 task wording to `TASK-PREP-XXX`. Synced `.opencode/agents/tera.md` Phase Discipline to the final 6-phase workflow. Updated `TeraPolicyMap.md`, `TERA_RUNTIME_PROTOCOLS.md`, `TeraPreExecutionGate.md`, and `TASK_TEMPLATE.md` to include execution batch and task-type distinctions. Fixed broken Markdown fences in `TERA_RUNTIME_TEMPLATES.md`.
-- Decision / Result: Phases 1-4 are now aligned and the preparation-vs-implementation boundary is explicit.
-- Next Action: Continue reviewing Phase 5 / Phase 6 only after user approval.
-
-## [2026-06-29] - SYSTEM_FEATURE: Application Proposal Template + Process
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Created APPLICATION_PROPOSAL_TEMPLATE.html — a professional, self-contained HTML proposal with RTL support, print optimization, and 8 sections (Understanding, Users/Roles, Scope, Requirements, Assumptions, Roadmap, Notes, Approval). Added Phase 7 (Proposal Generation) to the Client Discovery protocol (TERA_RUNTIME_PROTOCOLS.md Section 18). Added proposal reference to TERA_RUNTIME_TEMPLATES.md (Section 26). Updated TeraClientPolicy.md, TeraAgent.md Section 13, TeraPolicyMap.md, and .opencode/agents/tera.md. The proposal must be approved by the client before formal preparation begins.
-- Decision / Result: Full client-ready proposal pipeline: interview → generate proposal → client approval → formal preparation. The proposal becomes the official scope reference.
-- Next Action: Moved to tera-workshop/ folder as part of system-tooling reorganization.
-
-## [2026-06-29] - SYSTEM_STRUCTURE: Created tera-workshop/ folder
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Created `tera-workshop/` as the dedicated folder for Tera system development files. Moved `APPLICATION_PROPOSAL_TEMPLATE.html` out of `tera-system/` into `tera-workshop/`. Updated 7 reference files (TeraPolicyMap.md, TERA_RUNTIME_TEMPLATES.md, TERA_RUNTIME_PROTOCOLS.md, TeraClientPolicy.md, TeraAgent.md, .opencode/agents/tera.md, TeraArchitectureMap.md).
-- Decision / Result: `tera-system/` remains strictly read-only during project execution. System development files live in `tera-workshop/`.
-- Next Action: All future system-development files go to `tera-workshop/`.
-
-## [2026-06-29] - SYSTEM_TOOLING: Final batch — 5 remaining documents created
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Created 5 remaining workshop documents: CLIENT_INTAKE_FORM.html, PROJECT_CHARTER_TEMPLATE.html, USER_PERSONA_MATRIX_TEMPLATE.html, GAP_ANALYSIS_TEMPLATE.html, RISK_REGISTER_TEMPLATE.html, SLA_TEMPLATE.html, CLIENT_SATISFACTION_SURVEY_TEMPLATE.html, NDA_TEMPLATE.html.
-- Decision / Result: 20 out of 20 workshop documents are now created.
-- Next Action: All documents in tera-workshop/ ready for use.
-
-## [2026-06-29] - SYSTEM_STRUCTURE: Rewrote TERA_PROJECT_DECISION.md (merged version)
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Rewrote `TERA_PROJECT_DECISION.md` as a merged version combining the expert's 10-section structure with Tera's Model Tier Plan, Token Policy, Client Readiness, and Post-Decision Protocol. Result: 13-section document with clear positioning as "Phase 2: Project Decision Formation" in the 6-phase sequence. Added golden rule, classification system, technology status handling (Found/Missing/Unclear), and concrete decision examples.
-- Decision / Result: The project decision phase is now fully documented as an administrative/analytical phase between intake and preparation. The golden rule is: "لا يملأ التفاصيل بدل الملفات الأخرى."
-- Next Action: Ready to proceed to Phase 3 (Project Preparation Planning) when needed.
-
-## [2026-06-29] - SYSTEM_STRUCTURE: Phase 3 fully documented (Planning + PREPARATION_PLAN.md)
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (with expert validation)
-- Summary: Completed Phase 3 documentation based on expert review. Changes: (1) Added Section 27 to TERA_RUNTIME_TEMPLATES.md with full PREPARATION_PLAN.md template including Required/Conditional/Deferred/Not Required classification, owner assignment, dependency sequencing, and user approval points. (2) Rewrote TERA_RUNTIME_CHECKLISTS.md Section 1 into 6-phase structure (was old linear flow). (3) Updated Tera_Project_Preparation_Files.md last section to reference the 6-phase system instead of old linear flow. (4) Expanded TeraAgent.md Section 5 with detailed Phase 3 and Phase 4 sub-sections, formal output reference, and governing rules. (5) Expanded TERA_PROJECT_DECISION.md Section 13 with classification examples and PREPARATION_PLAN.md reference.
-- Decision / Result: Phase 3 now has a formal documented output (PREPARATION_PLAN.md), clear classification system, and explicit boundary between planning and execution. All 5 files updated.
-- Next Action: Ready for Phase 4 documentation when needed.
-
-## [2026-06-29] - SYSTEM_STRUCTURE: Phase 5 fully documented (Execution Planning + 3 templates)
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (with expert validation)
-- Summary: Completed Phase 5 documentation. Changes: (1) Added full Phase 5 section to TeraAgent.md with inputs (16 files), 4 outputs (MASTER_PLAN, DETAILED_PLAN, BATCH_PLAN, TASK-IDs), 10-step planning workflow, and 6 governing rules including "No UI without Design Source Decision". (2) Added Section 29 (PROJECT_MASTER_PLAN.md), Section 30 (PROJECT_DETAILED_EXECUTION_PLAN.md), and Section 31 (EXECUTION_BATCH_PLAN.md) to TERA_RUNTIME_TEMPLATES.md. (3) Rewrote TERA_RUNTIME_CHECKLISTS.md Phase 5 with 9-item checklist including Execution Readiness Check, batch planning, and Pre-Execution Gate per task.
-- Decision / Result: Phase 5 now has full structure: Master Plan → Detailed Plan → First Batch → TASK-IDs → Pre-Execution Gate → User Approval. Design Source Decision is now a mandatory gate before any UI task.
-- Next Action: Ready for Phase 6 documentation when needed.
-
-## [2026-06-29] - SYSTEM_STRUCTURE: Phase 4 fully documented (Generation & Preparation Delegation + AGENT_DELEGATION_PLAN.md)
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (with expert validation)
-- Summary: Completed Phase 4 documentation. Changes: (1) Renamed Phase 4 to "Sub-Agent Generation & Preparation Delegation" in TeraAgent.md Section 5 with full 11-step workflow. (2) Added AGENT_DELEGATION_PLAN.md template as Section 28 in TERA_RUNTIME_TEMPLATES.md. (3) Updated TeraAgent.md Section 8 with three agent states (Use Existing / Specialize / Generate). (4) Updated TeraAgent.md Section 9 to reference PREPARATION_PLAN.md instead of old "after creating 01, 02, 03". (5) Added Token Budget (Light/Medium/Strong) + Context Rules to AGENT_GENERATION_TEMPLATE.md Required Sections and General Template. (6) Expanded TERA_RUNTIME_PROTOCOLS.md Section 2 with Token Budget generation rules. (7) Added "4.1 Token Budget لكل عميل فرعي" to TeraTokenPolicy.md. (8) Updated TERA_RUNTIME_CHECKLISTS.md Phase 4 with detailed 12-step checklist.
-- Decision / Result: Phase 4 now has formal output (AGENT_DELEGATION_PLAN.md), three agent states for generation decisions, token budget per agent, and clear 12-step execution checklist.
-- Next Action: Ready for Phase 5 documentation when needed.
-
-## [2026-06-29] - SYSTEM_VERIFICATION: Phase 2 full documentation audit
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Full audit of Phase 2 (Project Decision Formation) documentation across the system. Verified 11 files for cross-reference consistency. Found and fixed: renumbered TeraAgent.md sections 6→7→...→37 (was duplicate #6 from inserting new section 5), updated 4 references from "opening decision" to "Phase 2: Project Decision Formation", updated project-preparation/README.md description, updated .opencode/agents/tera.md anchored summary. Result: 40 sections in TeraAgent.md with clean sequential numbering, consistent "المرحلة 2 من 6" phrasing across all 11 referencing files.
-- Decision / Result: Phase 2 is fully documented and consistent across the system.
-- Next Action: Proceeded to Phase 3 redefinition.
-
-## [2026-06-29] - SYSTEM_TOOLING: Created TECHNICAL_PROPOSAL_TEMPLATE.html
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Created `TECHNICAL_PROPOSAL_TEMPLATE.html` in `tera-workshop/` — Technical proposal with 12 sections: overview, architecture, frontend stack, backend stack, hosting/infrastructure, security, performance/scalability, testing, CI/CD, technical exclusions, assumptions, and sign-off. Same design system.
-- Decision / Result: Third HTML template in the workshop series. Bridges the SOW with technical execution.
-- Next Action: Created CHANGE_REQUEST_FORM.html in same batch.
-
-## [2026-06-29] - SYSTEM_FEATURE: Domain Intelligence Expansion + No-Guessing Rule
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Expanded Domain Intelligence Protocol (TERA_RUNTIME_PROTOCOLS.md Section 12) to cover research during Client Discovery (real-time search), structured research triggers in Smart Interview, and on-demand research at any point. Added the No-Guessing Rule: when Tera lacks source-grounded knowledge, search before assuming. Added three research depths (Quick Search, Focused Research, Deep Research). Added 🔍 research markers to 13 questions across Technical, Design, Security, and Operational domains in the Question Bank. Added research trigger checklists. Updated TeraAgent.md Section 14, .opencode/agents/tera.md, TeraPolicyMap.md, TERA_RUNTIME_CHECKLISTS.md.
-- Decision / Result: All recommendations must now be research-backed. Client "لا أعرف" handled by search first, then recommend with sources. No unresearched opinions presented as reliable recommendations.
-- Next Action: Test on a real project intake.
-
-## [2026-06-29] - SYSTEM_REFINE: Expert Review Applied (Client Discovery + Assumptions)
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Applied expert review feedback to intake process. Restructured Section 18 into two-stage protocol: Client Discovery Mode (open listening + understanding summary) → Smart Interview (structured questioning if gaps remain). Added Assumption Handling across all phases with documentation format and classification. Added adaptive depth by project size (10-15 / 20-35 / deeper). Updated TeraProjectIntakePolicy.md, TeraApplicationQuestionBank.md, TeraAgent.md (Sections 2.3, 13), TeraPolicyMap.md, and .opencode/agents/tera.md.
-- Decision / Result: Intake process now complete: Discovery → Understanding Summary → Smart Interview (if needed) → Suggestions → Intake Gate. All client "لا أعرف" scenarios handled via assumptions, not guesses.
-- Next Action: Test on a real project intake.
-
-## [2026-06-29] - SYSTEM_FEATURE: Smart Interview + Question Bank
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Created Smart Interview Protocol (TERA_RUNTIME_PROTOCOLS.md Section 18) with adaptive multi-round questioning flow. Created TeraApplicationQuestionBank.md with 7 domains (~80 questions: Administrative, Functional, Data, Technical, Design, Security, Operational). Updated TeraProjectIntakePolicy.md, TeraAgent.md (Sections 2.3, 13), TeraPolicyMap.md, and .opencode/agents/tera.md to reference the new Smart Interview approach.
-- Decision / Result: Intake Collection Mode replaced by Smart Interview Mode. Question Bank provides structured comprehensive questioning across all domains. All references updated.
-- Next Action: Test the Smart Interview on a real application intake.
-
-## [2026-06-29] - SYSTEM_REFACTOR: Merge and Consolidation (Phase 2)
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Merged Tera Operating Model.md → TeraAgent.md Section 36 (deleted old file). Merged 4 client policy files → TeraClientPolicy.md (deleted originals). Trimmed TERA_USER_GUIDE.md (827→398 lines, removed redundancies, kept user-facing prompts). Updated TeraPolicyMap.md, .opencode/agents/tera.md, TERA_RUNTIME_PROTOCOLS.md, TeraProjectIntakePolicy.md, TeraSubAgents.md, Tera_Project_Preparation_Files.md, and TeraAgent.md file catalog to point to new unified files.
-- Decision / Result: File count reduced by 4 (5 created + 5 deleted = net -4 files from tera-system/). TeraAgent.md now 1,141 lines. All cross-references updated.
-- Next Action: None. Consolidation complete.
-
-## [2026-06-29] - SYSTEM_REFACTOR: TeraAgent.md Splitting
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent
-- Summary: Phase 1 of Tera agent splitting. Expanded TERA_RUNTIME_PROTOCOLS.md from 14 to 17 sections (added Roadmap Tracking §4.1, Decision Matrix Rules §5, Escalation Ladder §5, full Model Capability Gate §6, Security Sensitivity Levels §7, Handoff Readiness Gate §15, Plan Compliance Review §16, Sub-Agent Status Review §17). Replaced 718-line Section 25 (Task Orchestration) and Sections 13-14, 26-27, 31-35 in TeraAgent.md with compact references.
-- Decision / Result: TeraAgent.md reduced from 1,919 to 771 lines (~60% reduction). TERA_RUNTIME_PROTOCOLS.md enriched as the operational source of truth.
-- Next Action: Awaiting user decision on: (1) Tera Operating Model.md merge/remove, (2) Client policy file consolidation, (3) TERA_USER_GUIDE.md reduction.
-
-## [2026-06-30] - SYSTEM_FIX: Phase 6 gaps corrected (4 gaps)
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (per Majed request)
-- Summary: Fixed 4 identified gaps in Phase 6 (Implementation) across the system. (1) Added Build Mode approval step as step 0 in Phase 6 flow — TeraAgent.md §5 Phase 6, TERA_RUNTIME_CHECKLISTS.md Phase 6, .opencode/agents/tera.md §11 and §12. (2) Added OpenCode delegation mechanism note in TeraSubAgents.md §9. (3) Added Emergency ↔ Task Lifecycle integration table in TERA_RUNTIME_PROTOCOLS.md §8 with exact task status per emergency level. (4) Added Self-Diagnosis Checkpoint as step 11 in Phase 6 checklist and step 11 in TeraAgent.md Phase 6 sequence.
-- Decision / Result: All 4 gaps closed with minimal edits (3 lines added max per file). Build Mode, delegation mechanism, emergency-task integration, and self-diagnosis checkpoint now explicitly documented in Phase 6 flow.
-- Next Action: None. Phase 6 is now fully documented with no identified gaps.
-
-## [2026-06-30] - SYSTEM_FIX: Phase 5 gate ordering corrected
-
-- Related Task: N/A (System Maintenance)
-- Actor: Tera Agent (per Majed request)
-- Summary: Fixed inconsistent gate ordering in TeraAgent.md §5 Phase 5. The old order applied Pre-Execution Gate (step 6) before Orchestration Decision Matrix + Model Capability Gate (step 7). Corrected to: Design Source Decision → Orchestration + Model Capability → Create task file → Pre-Execution Gate. Renumbered steps 5-8 cleanly. The correct order now matches TERA_RUNTIME_PROTOCOLS.md §4 and TERA_RUNTIME_CHECKLISTS.md Phase 5.
-- Decision / Result: Consistent gate ordering across all system files. Pre-Execution Gate is now the final check after orchestration, model assessment, and task file creation.
-- Next Action: None. Phase 5 reviewed and corrected.
-
-## [2026-06-30 16:30] - SYSTEM_UPGRADE: Sub-Agent Governance & Tooling Readiness Layer
-
-- Related Task: N/A (System Governance Upgrade)
-- Actor: Tera Agent (per Majed request + expert review)
-- Summary: Implemented full "Sub-Agent Governance & Tooling Readiness Layer" across 3 phases.
-  Phase 1: Created AGENT_ACTIVATION_MATRIX.md + AGENT_PERMISSION_MODEL.md
-  Phase 2: Created TOOLING_AND_MCP_POLICY.md + updated AGENT_GENERATION_TEMPLATE.md
-  Phase 3: Updated TeraSubAgents.md + TeraAgent.md + .opencode/agents/tera.md + final report
-- What was added:
-  - 3 new governance files (Activation Matrix, Permission Model, MCP Policy)
-  - 7 permission levels (READ_ONLY → DEPLOY_WITH_APPROVAL)
-  - 9 activation trigger types
-  - 4 MCPs approved now (Playwright, API Testing, Git/GitHub, DB Read-Only)
-  - Project-type activation matrix (small/medium/ERP/SaaS)
-  - Escalation Rules + Tool Restrictions in agent template
-  - 10 governing rules enforced across all files
-  - Comprehensive final report in project-control/GOVERNANCE_LAYER_REPORT.md
-- Decision / Result: Agent governance is now fully documented. No new permanent agents added. No unnecessary MCPs. Bloat prevention built into every file. Ready for first real project test.
-- Next Action: Test governance layer on a real project (medium or ERP) to validate practical robustness.
-
-## [2026-06-30 17:15] - CONFIG: 4 MCPs added to opencode.json (disabled)
-
-- Related Task: N/A (Configuration)
-- Actor: Tera Agent (per Majed request)
-- Summary: Added 4 MCP server definitions to opencode.json, all with enabled: false:
-  1. playwright (@playwright/mcp) — Browser UI testing
-  2. github (@modelcontextprotocol/server-github) — GitHub API interaction
-  3. database (@modelcontextprotocol/server-sqlite) — SQLite read-only
-  4. api-tester (@modelcontextprotocol/server-fetch) — HTTP/API testing
-- Decision / Result: MCPs are defined and ready, but not active. Tera activates per-project need. User must restart OpenCode after enabling any MCP.
-- Next Action: When a real project needs an MCP: Tera sets enabled: true in opencode.json → user restarts OpenCode → agent uses MCP under policy rules.
-
-## [2026-06-30 17:45] - CONFIG: Git workflow activated (bash: allow + push protocol)
-
-- Related Task: N/A (Configuration)
-- Actor: Tera Agent (per Majed request)
-- Summary: Changed bash permission from "ask" to "allow" in opencode.json. Added Git Commit & Push Protocol section in .opencode/agents/tera.md. The protocol: Tera runs git add + commit silently, then asks user for approval before git push. Push never happens without explicit user consent. Added instruction in opencode.json about remote URL setup per new project.
-- Decision / Result: git commit workflow is now smooth. Security maintained via Tera asking before push, not via OpenCode permission prompts.
-- Next Action: Test on first real client project.
-
-## [2026-06-30 18:00] - FILE: GIT_REMOTE.md created for remote URL storage
-
-- Related Task: N/A (Configuration)
-- Actor: Tera Agent (per Majed request)
-- Summary: Created project-control/GIT_REMOTE.md to store the client repository remote URL. Updated .opencode/agents/tera.md Git protocol to reference GIT_REMOTE.md. Updated opencode.json instruction. The file is user-editable — user can update the URL manually or ask Tera to do it.
-- Decision / Result: Clear separation: GIT_REMOTE.md holds the URL, Tera reads it before push, user updates it per project. Each client project has its own remote URL stored explicitly.
-
-## [2026-06-30] - Git Push
-
-- Related Task: N/A
-- Actor: Tera Agent (per user request)
-- Summary: Git add, commit, and push to origin/master. Changes: modified .opencode/agents/tera.md, tera-system/TeraAgent.md, tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html; deleted 16 old workshop templates; added tera-workshop/tera-document-print.css. Commit: 49ba90b.
-- Decision / Result: Push successful to https://github.com/Alabasi1980/TeraSystem
-- Next Action: None

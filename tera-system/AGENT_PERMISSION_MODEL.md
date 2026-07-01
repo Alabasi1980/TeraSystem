@@ -223,6 +223,16 @@
 | ClientApprovalReviewAgent | `CLIENT_APPROVAL_REVIEW_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تدوين ملاحظات المراجعة | يراجع فقط |
 | ChangeControlAgent | `CHANGE_CONTROL_AGENT` | `WRITE_DOCS` | — | يوثق طلب التغيير فقط |
 
+### 3.4 عملاء جلسات الحوكمة الرئيسية
+
+هؤلاء يعملون كجلسات OpenCode مستقلة يفتحها المستخدم يدويًا، وليسوا عملاء فرعيين تحت Tera.
+
+| العميل | المعرف | الصلاحية الافتراضية | هل يمكن رفعها؟ | ملاحظة |
+|---|---|---|---|---|
+| Auditor | `AUDITOR_AGENT` | `READ_ONLY` + `bash: ask` for local Git commit after explicit owner approval. No edit/write unless separately authorized for a specific report file. | إلى `WRITE_CONTROL` لتوثيق تقرير محدد فقط | لا push، لا تعديل كود، لا commit قبل قبول المالك الصريح |
+| Monitor | `MONITOR_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` لتسليم تقرير محدد فقط | يراجع توافق الخطة ولا يصحح التنفيذ |
+| Design Reviewer | `DESIGN_REVIEWER_AGENT` | `READ_ONLY` | إلى `RUN_TESTS` للمعاينة/الفحص البصري بعد موافقة المالك | لا ينفذ UI ولا يغير التصميم |
+
 ---
 
 ## 4. رفع الصلاحية أو خفضها
