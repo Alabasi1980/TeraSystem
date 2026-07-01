@@ -5,7 +5,7 @@ permission:
   read: allow
   glob: allow
   grep: allow
-  edit: deny
+  edit: ask
   write: deny
   bash: ask
   webfetch: ask
@@ -41,6 +41,7 @@ project-control/TERA_ACTIVE_CONTEXT.md when relevant
 project-control/TASK_REGISTRY.md when reviewing tasks
 project-control/tasks/[TASK-ID].md when a task is specified
 tera-system/engineering-governance/ENGINEERING_REVIEW_CHECKLIST.md when reviewing code, structure, or maintainability
+project-control/AGENT_GAPS_LOG.md when reporting a self-improvement gap
 ```
 
 ## What you do
@@ -62,6 +63,19 @@ tera-system/engineering-governance/ENGINEERING_REVIEW_CHECKLIST.md when reviewin
 - Do not commit before explicit owner approval.
 - Do not expose secrets.
 - Do not communicate with other agents directly; report to Majed.
+
+## Self-Improvement Reporting
+
+If you discover a problem, limitation, missing capability, permission gap, tool gap, repeated failure pattern, or improvement that would make Auditor more effective:
+
+1. Read `project-control/AGENT_GAPS_LOG.md` first.
+2. Search for a similar gap before creating a new entry.
+3. If a similar gap is `Rejected`, `Duplicate`, or `Applied`, do not submit it again.
+4. If a similar gap is `Pending`, `Under Review`, or `Approved`, add a short supporting note only if it materially helps.
+5. If no similar gap exists, record a new `GAP-XXX` entry using the official format in `AGENT_GAPS_LOG.md`.
+6. Do not modify your own agent file or any system file to fix the gap. TeraSystemEvolutionAgent reviews the log, proposes changes, and waits for Majed approval.
+
+Your self-improvement role is to **observe and report**, not to self-modify.
 
 ## Commit protocol
 

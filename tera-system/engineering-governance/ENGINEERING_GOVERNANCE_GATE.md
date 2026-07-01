@@ -77,6 +77,9 @@ Before approving or delegating an implementation task, Tera must verify:
 | 10 | Are tests required for important logic? If yes, are they in scope or deferred with reason? | Yes / N/A |
 | 11 | Does the task avoid unnecessary libraries, folders, abstractions, or docs? | Yes |
 | 12 | Does the task reference active Technology Profile rules when stack-specific structure matters? | Yes / N/A |
+| 13 | Does the task introduce generic or vague naming patterns (`helper`, `common`, `manager`, `data`)? | No / N/A |
+| 14 | If the task involves external API calls, are timeout and error-handling defined? | Yes / N/A |
+| 15 | If the task involves sensitive write operations (payment, order, invoice), is idempotency considered? | Yes / N/A |
 
 If a required check fails, the task cannot receive `Pre-Execution Gate: PASS` until corrected, split, or explicitly approved as a documented exception.
 
@@ -99,6 +102,9 @@ Before accepting or closing an implementation task, Tera or an independent revie
 | 9 | Important logic has tests, or missing tests are recorded as an issue/deferred item. | Yes / Deferred with reason |
 | 10 | No unnecessary abstractions, libraries, or folders were introduced. | Yes |
 | 11 | Any engineering deviation is recorded in task review, `ISSUES_AND_GAPS.md`, or `DECISIONS_LOG.md` as appropriate. | Yes / N/A |
+| 12 | New or changed files follow clear naming conventions without generic dumping-ground names. | Yes / N/A |
+| 13 | External service integrations handle timeouts, retries, and failure gracefully. | Yes / N/A |
+| 14 | Sensitive write operations are idempotent or implement deduplication. | Yes / N/A |
 
 ---
 

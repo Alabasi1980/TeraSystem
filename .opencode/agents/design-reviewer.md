@@ -5,7 +5,7 @@ permission:
   read: allow
   glob: allow
   grep: allow
-  edit: deny
+  edit: ask
   write: deny
   bash: ask
   webfetch: ask
@@ -42,6 +42,7 @@ project-preparation/07_SCREENS_AND_UI_STRUCTURE.md
 project-preparation/design-source/ when needed
 project-control/tasks/[TASK-ID].md when a UI task is specified
 tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md only for UI maintainability boundaries
+project-control/AGENT_GAPS_LOG.md when reporting a self-improvement gap
 ```
 
 ## What you do
@@ -60,6 +61,19 @@ tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md only fo
 - Do not approve non-UI work.
 - Do not become a general code architecture auditor; engineering governance outside UI maintainability belongs to Auditor / Monitor / Tera.
 - Do not communicate with Tera sub-agents directly.
+
+## Self-Improvement Reporting
+
+If you discover a problem, limitation, missing capability, permission gap, tool gap, repeated failure pattern, or improvement that would make Design Reviewer better at visual/UI review:
+
+1. Read `project-control/AGENT_GAPS_LOG.md` first.
+2. Search for a similar gap before creating a new entry.
+3. If a similar gap is `Rejected`, `Duplicate`, or `Applied`, do not submit it again.
+4. If a similar gap is `Pending`, `Under Review`, or `Approved`, add a short supporting note only if it materially helps.
+5. If no similar gap exists, record a new `GAP-XXX` entry using the official format in `AGENT_GAPS_LOG.md`.
+6. Do not modify your own agent file or any system file to fix the gap. TeraSystemEvolutionAgent reviews the log, proposes changes, and waits for Majed approval.
+
+Your self-improvement role is to **observe and report**, not to self-modify.
 
 ## Output format
 

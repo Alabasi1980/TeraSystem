@@ -5,7 +5,7 @@
 | Metadata | |
 |---|---|
 | **Status** | Active system policy |
-| **Source** | Derived from Majed's `temp/Note01.md` and normalized for Tera governance |
+| **Source** | Derived from Majed's `temp/Note01.md` / `temp/Developer Best Practice.md` and normalized for Tera governance |
 | **Scope** | All future Tera-managed applications, adjusted by project size and technology profile |
 | **Last Updated** | 2026-07-01 |
 
@@ -193,7 +193,33 @@ shared/utils/ becomes a dumping ground.
 
 ---
 
-## 9. Validation
+## 9. Naming Conventions
+
+Names must express purpose clearly. Generic or vague names are not acceptable.
+
+Avoid:
+
+```text
+helper
+common
+manager
+data
+process
+handle
+temp
+```
+
+Guidelines:
+
+- Functions/methods use verbs: `calculateTotal`, `validateInput`, `sendInvoiceEmail`.
+- Classes, components, and variables use nouns: `InvoiceService`, `userList`, `PaymentGateway`.
+- Constants use UPPER_SNAKE_CASE: `MAX_RETRY_COUNT`, `DEFAULT_PAGE_SIZE`.
+- Use one consistent style per project (camelCase / PascalCase / snake_case) according to the language.
+- File names should match their primary export or responsibility.
+
+---
+
+## 10. Validation
 
 Validation must not exist only in UI.
 
@@ -207,7 +233,7 @@ Rules:
 
 ---
 
-## 10. Error Handling
+## 11. Error Handling
 
 Applications must use consistent error handling instead of ad-hoc messages everywhere.
 
@@ -226,7 +252,7 @@ User-facing errors should be consistent and should not expose internal technical
 
 ---
 
-## 11. Permissions and Security Enforcement
+## 12. Permissions and Security Enforcement
 
 Do not rely on hiding UI buttons as security.
 
@@ -247,7 +273,7 @@ canViewCost(user)
 
 ---
 
-## 12. Configuration and Secrets
+## 13. Configuration and Secrets
 
 Configuration must be centralized and environment-aware.
 
@@ -259,7 +285,7 @@ Rules:
 
 ---
 
-## 13. Logging and Audit
+## 14. Logging and Audit
 
 Do not log everything, but important actions must be traceable.
 
@@ -278,7 +304,7 @@ For ERP and administration-heavy systems, Audit Log is often essential.
 
 ---
 
-## 14. Database Design and Migrations
+## 15. Database Design and Migrations
 
 Database design must be traceable and consistent.
 
@@ -295,7 +321,7 @@ Rules:
 
 ---
 
-## 15. API Design
+## 16. API Design
 
 APIs should be predictable and consistent.
 
@@ -310,7 +336,33 @@ Rules:
 
 ---
 
-## 16. Testing
+## 17. External Integration
+
+When integrating with external services, the system must remain resilient.
+
+Requirements:
+
+- Define explicit timeouts for every external call.
+- Implement limited retry with backoff for transient failures.
+- Handle service outages gracefully: fail with a clear user message instead of crashing.
+- Use Circuit Breaker or equivalent pattern when the external service is critical and failure-prone.
+- Never rely on external service availability without fallback or clear user feedback.
+
+---
+
+## 18. Idempotency and Concurrency
+
+Operations that create side effects (payments, invoices, stock deductions, order confirmations) must be safe to retry.
+
+Design principles:
+
+- Use idempotency keys or request IDs for sensitive write operations.
+- Handle race conditions on shared records using optimistic locking, transactions, or explicit locks.
+- Prevent double processing when the same request arrives more than once.
+
+---
+
+## 19. Testing
 
 Testing must focus on important risk, not test-count vanity.
 
@@ -332,7 +384,7 @@ Examples that often need tests:
 
 ---
 
-## 17. Documentation and Decisions
+## 20. Documentation and Decisions
 
 Projects do not need bloated documentation, but they need governing documentation.
 
@@ -353,7 +405,7 @@ Within Tera-managed projects, these may be represented by project-preparation an
 
 ---
 
-## 18. Git and CI/CD
+## 21. Git and CI/CD
 
 Rules:
 
@@ -365,7 +417,7 @@ Rules:
 
 ---
 
-## 19. Performance
+## 22. Performance
 
 Avoid premature optimization, but prevent obvious structural performance mistakes.
 
@@ -380,7 +432,7 @@ Watch for:
 
 ---
 
-## 20. AI Governance
+## 23. AI Governance
 
 AI-generated work must be constrained by official project files and task scope.
 
@@ -393,11 +445,14 @@ Agents must:
 5. not change database structure without a schema/migration task;
 6. add tests when important logic changes;
 7. update or request documentation updates when behavior changes;
-8. report exactly what files were changed.
+8. report exactly what files were changed;
+9. explain the purpose and impact of each modified file;
+10. record important decisions when the task introduces architectural or behavioral changes;
+11. identify and communicate risks before executing potentially destructive operations (deletions, bulk changes, permission changes, or data migrations).
 
 ---
 
-## 21. The Ten Non-Negotiables
+## 24. The Twelve Non-Negotiables
 
 1. Use clear modules.
 2. Separate business logic from UI.
@@ -405,7 +460,9 @@ Agents must:
 4. Extract shared code carefully, not blindly.
 5. Test important business logic.
 6. Enforce permissions beyond the frontend.
-7. Use consistent error handling.
+7. Use consistent error handling and logging.
 8. Record important architecture decisions.
 9. Use migrations or traceable database changes.
 10. Govern AI-generated code with task scope, gates, and review.
+11. Protect secrets: never store passwords, tokens, API keys, or credentials in source code, task files, logs, or handbacks.
+12. Do not break existing API contracts without justification and documented migration.

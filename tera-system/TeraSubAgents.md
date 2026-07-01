@@ -1827,6 +1827,7 @@ tera-system/TeraSystemMaintenanceChecklist.md
 tera-system/TeraPolicyMap.md
 tera-system/TeraArchitectureMap.md
 project-control/SYSTEM_EVOLUTION_LOG.md
+project-control/AGENT_GAPS_LOG.md
 الملفات المرتبطة بالمشكلة أو الطلب فقط
 تطبيقات العملاء — للتحليل فقط (لاكتشاف فجوات المنظومة)
 ```
@@ -1843,6 +1844,7 @@ RESEARCH_TO_SYSTEM_CHANGE_REPORT
 #### مسؤوليته
 
 - تحسين منظومة Tera بناءً على مشكلة مثبتة أو طلب مالك أو فجوة نظامية.
+- مراجعة `AGENT_GAPS_LOG.md` لمعالجة فجوات العملاء وتحديد حالتها: Pending / Under Review / Approved / Applied / Rejected / Duplicate / Deferred.
 - منع التضخم وتضارب السياسات.
 - تسجيل كل تغيير في `SYSTEM_EVOLUTION_LOG.md`.
 

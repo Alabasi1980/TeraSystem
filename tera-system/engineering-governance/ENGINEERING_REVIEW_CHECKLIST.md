@@ -96,7 +96,25 @@ Review only the relevant areas. Do not expand a small review into a full audit u
 
 ---
 
-## 10. Review Output Classification
+## 10. Naming and Code Standards
+
+- [ ] File, function, and variable names express purpose clearly.
+- [ ] No generic names like `helper`, `common`, `manager`, `data`, `process`, or `handle`.
+- [ ] Naming style is consistent within the project (camelCase / PascalCase / snake_case).
+- [ ] File names match their primary export or responsibility.
+
+---
+
+## 11. External Integration and Idempotency
+
+- [ ] External calls have explicit timeouts and retry limits.
+- [ ] Service failures are handled gracefully without crashing the system.
+- [ ] Sensitive write operations (payments, orders, invoices) are idempotent or use request-id deduplication.
+- [ ] Race conditions on shared records are handled with locking or transactions.
+
+---
+
+## 12. Review Output Classification
 
 Classify every finding as one of:
 

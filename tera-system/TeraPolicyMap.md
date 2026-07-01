@@ -73,6 +73,7 @@ Project files record project-specific decisions.
 | User guide | `tera-system/TERA_USER_GUIDE.md` | Not applicable | User-facing prompts and usage examples. |
 | System maintenance | `tera-system/TeraSystemMaintenanceChecklist.md` | `.opencode/agents/tera.md`, `.opencode/agents/tera-system-evolution.md` | Use when modifying Tera itself. |
 | System evolution governance | `project-control/SYSTEM_EVOLUTION_LOG.md` + `.opencode/agents/tera-system-evolution.md` + `TeraSystemMaintenanceChecklist.md` | `.opencode/agents/tera.md` | Governs how Tera improves itself: approval-before-change, anti-bloat gate, evolution logging, and agent improvement rules. Only `TeraSystemEvolutionAgent` executes system evolution changes after owner approval. |
+| Agent self-improvement gaps | `project-control/AGENT_GAPS_LOG.md` | `.opencode/agents/tera-system-evolution.md`, `.opencode/agents/auditor.md`, `.opencode/agents/monitor.md`, `.opencode/agents/design-reviewer.md` | Central log for core governance agents to self-report gaps, bugs, and improvement suggestions. TeraSystemEvolutionAgent reviews entries and controls their status. |
 | Scenario stress tests | `tera-system/TeraScenarioStressTests.md` | Not applicable | Used for validation, not daily runtime. |
 | Client/application workspace guide | `clients/README.md` | Not applicable | Folder usage guide only; policies remain in `tera-system/`. |
 
