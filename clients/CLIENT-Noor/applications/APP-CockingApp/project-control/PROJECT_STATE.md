@@ -25,7 +25,7 @@
 | **3 — Preparation Planning** | ✅ Complete | 2026-06-30 | `PREPARATION_PLAN.md` v2 approved by Majed. All 22 preparation files created across 7 batches |
 | **4 — Agent Delegation Planning** | ✅ Complete | 2026-06-30 | `AGENT_DELEGATION_PLAN.md` — no sub-agents needed for preparation |
 | **5 — Execution Planning** | ✅ Complete | 2026-06-30 | `PROJECT_MASTER_PLAN.md`, `PROJECT_DETAILED_EXECUTION_PLAN.md`, `EXECUTION_BATCH_PLAN.md` |
-| **6 — Implementation** | 🟢 In Progress | 2026-06-30 | TASK-COD-001 Accepted / Closed; next task is TASK-COD-002 after planning/gate |
+| **6 — Implementation** | 🟢 In Progress | 2026-07-01 | TASK-COD-001 ✅ Closed; TASK-COD-002 🟡 Ready — Pre-Execution Gate PASS, awaiting delegation approval |
 | **7 — Delivery, Handover & Closure** | ⬜ Not Started | — | |
 
 ---
@@ -75,8 +75,9 @@
 | `PROJECT_ACTIVITY_LOG.md` | ✅ Active | Activity log |
 | `TERA_ACTIVE_CONTEXT.md` | ✅ Active | Session handoff |
 | `IMPLEMENTATION_AGENT_STRATEGY.md` | ✅ Approved v1 | Option B approved |
-| `TASK_REGISTRY.md` | ✅ Active | Includes TASK-COD-001 |
+| `TASK_REGISTRY.md` | ✅ Active | Includes TASK-COD-001 ✅ + TASK-COD-002 🟡 |
 | `tasks/TASK-COD-001.md` | ✅ Accepted / Closed | Foundation scaffold complete |
+| `tasks/TASK-COD-002.md` | 🟡 Draft / Pre-Gate PASS | Prisma schema — awaiting delegation |
 
 ### generated-agents / opencode
 | File | Status | Notes |
@@ -129,7 +130,8 @@
 | Severity | Issue | Status | Action |
 |----------|-------|--------|--------|
 | Low | On-premise deployment details pending | Open | Deferred to `22_DEPLOYMENT_AND_ENVIRONMENTS.md` |
-| Medium | Dependency audit reports moderate vulnerabilities in current Next/Prisma dependency tree | Open | Tracked as IS-004; re-check before production release |
+| Low | On-premise deployment details pending | Open | Deferred to `22_DEPLOYMENT_AND_ENVIRONMENTS.md` |
+| Medium | Dependency audit moderate vulnerabilities (Next/Prisma) | Open | Tracked as IS-004; re-check before production |
 
 *(Detailed tracking in `ISSUES_AND_GAPS.md`)*
 
@@ -148,8 +150,10 @@
 | 7 | ~~Create and gate `TASK-COD-001`~~ ✅ | Pre-Execution Gate PASS |
 | 8 | ~~Approve delegation of TASK-COD-001~~ ✅ | Completed |
 | 9 | ~~Execute and review TASK-COD-001~~ ✅ | Accepted / Closed |
-| 10 | Prepare TASK-COD-002 (Prisma schema) | 🔜 Next |
-| 11 | Delivery, Handover & Closure | 📅 Phase 7 |
+| 10 | ~~Prepare TASK-COD-002 (Prisma schema)~~ ✅ | Pre-Gate PASS, awaiting delegation |
+| 11 | **Delegate TASK-COD-002 to DataPrismaAgent** | 🔜 Next — needs user approval |
+| 12 | Execute and review TASK-COD-002 | 🔜 After delegation |
+| 13 | Delivery, Handover & Closure | 📅 Phase 7 |
 
 ---
 
@@ -164,3 +168,4 @@
 | v5 | 2026-06-30 | Tera | Implementation Agent Strategy approved with Option B; foundation engineering agent activated; generic engineering agent disabled |
 | v6 | 2026-06-30 | Tera | TASK-COD-001 created with Pre-Execution Gate PASS; awaiting final delegation approval |
 | v7 | 2026-06-30 | Tera | TASK-COD-001 accepted/closed; dependency audit issue IS-004 logged |
+| v8 | 2026-07-01 | Tera | DataPrismaAgent created; TASK-COD-002 created with Pre-Execution Gate PASS; awaiting user approval for delegation |

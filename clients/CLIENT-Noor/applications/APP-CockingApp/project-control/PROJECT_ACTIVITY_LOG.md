@@ -109,7 +109,7 @@
 
 - Related Task: N/A
 - Actor: Tera Agent
-- Summary: Created Batch 3: 06_DATA_MODEL_PREPARATION.md, 19_DATABASE_DESIGN.md (Prisma schema with 9 models + 1 enum)
+- Summary: Created Batch 3: 06_DATA_MODEL_PREPARATION.md, 19_DATABASE_DESIGN.md (Prisma schema with 7 models + Unit enum)
 - Decision / Result: ✅ Quality Gate PASS. Proceed to Batch 4.
 - Next Action: Batch 4 — Screens & Design
 
@@ -265,6 +265,36 @@
 - Summary: Post-Execution Review completed after focused `.env.example` tracking fix. Reviewed scaffold files, Prisma basic schema, `.env.example`, package dependencies, RTL layout, no Tailwind/API/Auth/migrations, and lint result.
 - Decision / Result: Post-Execution Review Gate: PASS. `TASK-COD-001` accepted and closed.
 - Next Action: Prepare `TASK-COD-002` for Prisma schema using the Implementation Agent Strategy and a DataPrismaAgent.
+
+---
+
+### [2026-07-01 10:00] — DATA_PRISMA_AGENT_CREATED
+
+- Related Task: TASK-COD-002
+- Actor: Tera Agent
+- Summary: Created `cockingapp-data-prisma` agent for B2 Prisma schema implementation. Agent narrowed to `cocking-app/prisma/schema.prisma` only, with strict MVP constraints and no migrations/API/UI/Auth scope.
+- Decision / Result: Agent created in `generated-agents/opencode/cockingapp-data-prisma.md`. Manifest updated.
+- Next Action: Create TASK-COD-002.md with full definition and Pre-Execution Gate.
+
+---
+
+### [2026-07-01 10:05] — TASK_CREATED_AND_PRE_GATE_PASS
+
+- Related Task: TASK-COD-002
+- Actor: Tera Agent
+- Summary: Created `project-control/tasks/TASK-COD-002.md` with complete schema task definition based on `19_DATABASE_DESIGN.md`. Includes: all 7 models + Unit Enum, Model Capability Assessment (Light sufficient), Pre-Execution Gate (PASS), delegation package, acceptance criteria (10 ACs), and execution plan.
+- Decision / Result: `TASK-COD-002` has `Pre-Execution Gate Result: PASS`. Task awaiting user approval for delegation.
+- Next Action: Present to user for approval — need to activate agent, restart OpenCode, then delegate.
+
+---
+
+### [2026-07-01 10:10] — DATA_PRISMA_AGENT_ACTIVATED
+
+- Related Task: TASK-COD-002
+- Actor: User + Tera Agent
+- Summary: User approved TASK-COD-002 delegation. DataPrismaAgent (`cockingapp-data-prisma`) activated in `.opencode/agents/`. All "9 models" references corrected to "7 models + Unit Enum" across 8 files.
+- Decision / Result: ✅ `cockingapp-data-prisma` activated. TASK-COD-002 ready for delegation.
+- Next Action: User restarts OpenCode, then Tera delegates TASK-COD-002 to `cockingapp-data-prisma`.
 
 ---
 

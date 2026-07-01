@@ -23,8 +23,10 @@
 - **Active B1 Agent**: `cockingapp-foundation-engineering`
 - **Disabled Agent**: `cockingapp-engineering`
 - **TASK-COD-001**: ✅ Accepted / Closed
+- **TASK-COD-002**: 🟡 Draft / Pre-Execution Gate PASS — awaiting delegation approval
+- **Agent**: `cockingapp-data-prisma` ✅ Activated in `.opencode/agents/`
 - **Open Issue**: IS-004 dependency audit (Medium) — non-blocking before production
-- **Next**: Prepare TASK-COD-002 (Prisma schema) with DataPrismaAgent strategy
+- **Next**: Restart OpenCode → delegate TASK-COD-002 to `cockingapp-data-prisma`
 
 ---
 
@@ -66,14 +68,15 @@
 
 ## 4.1 Next Action
 
-**Prepare TASK-COD-002**
+**Delegate TASK-COD-002**
 
 Ready state:
-1. `TASK-COD-001` closed
-2. Create/generate or activate DataPrismaAgent for B2 if needed
-3. Create `TASK-COD-002.md`
-4. Run Pre-Execution Gate for Prisma schema task
-5. Ask user approval before delegation
+1. ✅ `TASK-COD-001` closed
+2. ✅ `cockingapp-data-prisma` agent activated in `.opencode/agents/`
+3. ✅ `TASK-COD-002.md` created with full definition
+4. ✅ Pre-Execution Gate: PASS
+5. ✅ User approval received
+6. 🔜 **Restart OpenCode** → then Tera will delegate TASK-COD-002
 
 ---
 

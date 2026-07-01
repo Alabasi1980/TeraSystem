@@ -22,8 +22,8 @@
 
 | الدفعة | TASK-IDs | المحتوى | الوقت | التراكمي |
 |--------|----------|---------|-------|----------|
-| **B1** | 001 | Scaffold Next.js + Prisma + .env.example | 30 min | 30 min |
-| **B2** | 002 | Prisma Schema كامل (9 models + Enum) | 45 min | 1.25 h |
+| **B1** | 001 | Scaffold Next.js + Prisma + .env.example | 30 min | 30 min | ✅ |
+| **B2** | 002 | Prisma Schema كامل (7 models + Unit Enum) | 45 min | 1.25 h |
 | **B3** | 003 | هيكل المجلدات + UI Components أساسية + Tailwind/Colors | 30 min | 1.75 h |
 | **B4** | 004, 005 | Categories CRUD + Ingredients CRUD (Admin) | 90 min | 3.25 h |
 | **B5** | 006 | Recipes CRUD + RecipeForm + IngredientPicker + StepEditor (Admin) | 90 min | 4.75 h |
@@ -49,12 +49,14 @@
 |---------|-------|-----------------|-------|
 | 001 | Next.js + Prisma + .env.example | `package.json`, `prisma/schema.prisma` (basic), `src/app/layout.tsx`, `src/lib/prisma.ts` | 30 min |
 
+**Status**: ✅ **Completed** — Post-Execution Review PASS (2026-07-01)
+
 **Pre-Execution Gate**: ✅
-- [ ] Scaffold flags clean (--no-tailwind, --typescript, --app, --src-dir)
-- [ ] Prisma basic schema فقط (لا models)
-- [ ] لا `.env` بقيم حقيقية
-- [ ] لا `db push`
-- [ ] لا UI/API/Auth
+- [x] Scaffold flags clean (--no-tailwind, --typescript, --app, --src-dir)
+- [x] Prisma basic schema فقط (لا models)
+- [x] لا `.env` بقيم حقيقية
+- [x] لا `db push`
+- [x] لا UI/API/Auth
 
 ---
 
@@ -64,7 +66,10 @@
 |---------|-------|-----------------|-------|
 | 002 | إضافة جميع Prisma models + Enum | `prisma/schema.prisma` (النموذج الكامل من `19_DATABASE_DESIGN.md`) | 45 min |
 
+**Status**: 🔜 **Ready for delegation** — Pre-Execution Gate PASS
+
 **Gate**: `npx prisma generate` يعمل ✅
+**Agent**: `cockingapp-data-prisma` (awaiting activation + delegation approval)
 
 ---
 
@@ -244,3 +249,4 @@
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | v1 | 2026-06-30 | Tera | خطة 15 دفعة تنفيذية — 18 TASK-ID عبر 13 ساعة تقديرية |
+| v2 | 2026-07-01 | Tera | B1 completed ✅; B2 ready for delegation with Pre-Execution Gate PASS |

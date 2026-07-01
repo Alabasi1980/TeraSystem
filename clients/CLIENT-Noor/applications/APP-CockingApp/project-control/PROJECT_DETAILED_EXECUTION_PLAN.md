@@ -68,7 +68,7 @@ npx create-next-app@latest cocking-app --typescript --eslint --app --src-dir --n
 - `prisma/schema.prisma` — إضافة Category, Ingredient, Recipe, RecipeIngredient, RecipeImage, RecipeStep, Comment, Unit Enum
 
 ### معايير القبول
-- [ ] جميع الـ 9 models + Enum معرفة
+- [ ] جميع الـ 7 models + Unit Enum معرفة
 - [ ] العلاقات صحيحة (1:M, M:M عبر جدول وسيط)
 - [ ] `@@index` معرفة على الحقول المطلوبة
 - [ ] `@@map` لتحويل أسماء الجداول إلى snake_case
