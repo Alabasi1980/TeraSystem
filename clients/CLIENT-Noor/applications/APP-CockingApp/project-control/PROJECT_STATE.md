@@ -75,6 +75,8 @@
 | `PROJECT_ACTIVITY_LOG.md` | ✅ Active | Activity log |
 | `TERA_ACTIVE_CONTEXT.md` | ✅ Active | Session handoff |
 | `IMPLEMENTATION_AGENT_STRATEGY.md` | ✅ Approved v1 | Option B approved |
+| `TASK_REGISTRY.md` | ✅ Active | Includes TASK-COD-001 |
+| `tasks/TASK-COD-001.md` | ✅ Pre-Gate PASS | Awaiting final delegation approval |
 
 ### generated-agents / opencode
 | File | Status | Notes |
@@ -141,10 +143,11 @@
 | 3 | ~~Execution Plan (Master + Detailed + Batch)~~ ✅ | Phase 5 Complete |
 | 4 | ~~Approve `IMPLEMENTATION_AGENT_STRATEGY.md`~~ ✅ | Option B approved |
 | 5 | ~~Decide Option A or B for FoundationEngineeringAgent~~ ✅ | Option B |
-| 6 | **Restart OpenCode after agent activation** | 🟡 Required |
-| 7 | Create and gate `TASK-COD-001` | 🔜 After restart |
-| 8 | Start Implementation (B1–B15) | 🔜 Phase 6 |
-| 9 | Delivery, Handover & Closure | 📅 Phase 7 |
+| 6 | ~~Restart OpenCode after agent activation~~ ✅ | Agent available |
+| 7 | ~~Create and gate `TASK-COD-001`~~ ✅ | Pre-Execution Gate PASS |
+| 8 | **Approve delegation of TASK-COD-001** | 🟡 Pending |
+| 9 | Start Implementation (B1–B15) | 🔜 Phase 6 |
+| 10 | Delivery, Handover & Closure | 📅 Phase 7 |
 
 ---
 
@@ -157,3 +160,4 @@
 | v3 | 2026-06-30 | Tera | Build Mode approved; CockingApp EngineeringAgent generated and activated; restart required |
 | v4 | 2026-06-30 | Tera | Updated system rule applied: Implementation Agent Strategy created; Phase 6 blocked until strategy approval |
 | v5 | 2026-06-30 | Tera | Implementation Agent Strategy approved with Option B; foundation engineering agent activated; generic engineering agent disabled |
+| v6 | 2026-06-30 | Tera | TASK-COD-001 created with Pre-Execution Gate PASS; awaiting final delegation approval |

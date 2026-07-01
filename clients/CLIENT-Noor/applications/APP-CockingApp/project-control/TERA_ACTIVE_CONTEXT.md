@@ -9,7 +9,7 @@
 | **Last Phase** | Phase 5 Complete — Execution Planning ready |
 | **Next Phase** | Phase 6 — TASK-COD-001 after OpenCode restart |
 | **User** | Majed (Owner) |
-| **Status** | 🟡 Strategy approved; OpenCode restart required before delegation |
+| **Status** | 🟡 TASK-COD-001 Pre-Gate PASS; awaiting final delegation approval |
 
 ---
 
@@ -22,7 +22,7 @@
 - **Phase 5.1 Implementation Agent Strategy**: ✅ Approved — Option B
 - **Active B1 Agent**: `cockingapp-foundation-engineering`
 - **Disabled Agent**: `cockingapp-engineering`
-- **Next**: Restart OpenCode, then create/gate/delegate `TASK-COD-001`
+- **Next**: Delegate `TASK-COD-001` to `cockingapp-foundation-engineering` after final user approval
 
 ---
 
@@ -64,13 +64,13 @@
 
 ## 4.1 Next Action
 
-**Restart OpenCode first**
+**Approve TASK-COD-001 delegation**
 
-Before Build Mode resumes:
-1. Restart OpenCode so `.opencode/agents/cockingapp-foundation-engineering.md` is loaded
-2. Create `project-control/tasks/TASK-COD-001.md`
-3. Run Pre-Execution Gate for `TASK-COD-001`
-4. Delegate B1 to `cockingapp-foundation-engineering`
+Ready state:
+1. `TASK-COD-001.md` exists
+2. Pre-Execution Gate: PASS
+3. Responsible agent: `cockingapp-foundation-engineering`
+4. Next action: user final approval to delegate
 
 ---
 
