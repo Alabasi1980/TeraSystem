@@ -218,6 +218,56 @@
 
 ---
 
+### [2026-06-30 16:10] — TASK_DELEGATED
+
+- Related Task: TASK-COD-001
+- Actor: Tera Agent
+- Summary: User approved final delegation of TASK-COD-001. Task assigned to `cockingapp-foundation-engineering` with strict scaffold-only scope and Allowed Write Target `cocking-app/**`.
+- Decision / Result: TASK-COD-001 status changed to Assigned / In Progress.
+- Next Action: Await sub-agent handback, then record handback and run Post-Execution Review Gate.
+
+---
+
+### [2026-06-30 16:25] — SUB_AGENT_HANDBACK_RECEIVED
+
+- Related Task: TASK-COD-001
+- Actor: cockingapp-foundation-engineering
+- Summary: Sub-agent reported scaffold complete, Prisma dependencies installed, basic schema and `.env.example` added, RTL layout updated, and lint passed.
+- Decision / Result: Handback recorded in `project-control/tasks/TASK-COD-001.md`. Task remains under Tera Post-Execution Review; not accepted yet.
+- Next Action: Tera physically reviews changed files and runs verification commands before acceptance decision.
+
+---
+
+### [2026-06-30 16:35] — POST_REVIEW_NEEDS_FIX
+
+- Related Task: TASK-COD-001
+- Actor: Tera Agent
+- Summary: Post-Execution Review found `.env.example` is ignored by `cocking-app/.gitignore` because of the `.env*` rule.
+- Decision / Result: TASK-COD-001 marked Needs Fix. Required fix: add `!.env.example` exception while keeping real `.env*` files ignored.
+- Next Action: Return TASK-COD-001 to `cockingapp-foundation-engineering` for focused fix only.
+
+---
+
+### [2026-06-30 16:45] — ISSUE_RECORDED
+
+- Related Task: TASK-COD-001
+- Actor: Tera Agent
+- Summary: `npm audit --audit-level=moderate` reported 5 moderate vulnerabilities in current Next/Prisma dependency tree. Suggested `npm audit fix --force` would introduce breaking changes.
+- Decision / Result: Logged as `IS-004` in `ISSUES_AND_GAPS.md`. No force fix run because it is outside TASK-COD-001 and potentially breaking.
+- Next Action: Re-check dependencies before production release or when safe updates become available.
+
+---
+
+### [2026-06-30 16:50] — TASK_ACCEPTED_CLOSED
+
+- Related Task: TASK-COD-001
+- Actor: Tera Agent
+- Summary: Post-Execution Review completed after focused `.env.example` tracking fix. Reviewed scaffold files, Prisma basic schema, `.env.example`, package dependencies, RTL layout, no Tailwind/API/Auth/migrations, and lint result.
+- Decision / Result: Post-Execution Review Gate: PASS. `TASK-COD-001` accepted and closed.
+- Next Action: Prepare `TASK-COD-002` for Prisma schema using the Implementation Agent Strategy and a DataPrismaAgent.
+
+---
+
 ## Log Format
 
 ```md

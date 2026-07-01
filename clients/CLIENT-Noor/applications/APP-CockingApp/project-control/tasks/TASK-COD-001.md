@@ -5,7 +5,7 @@
 | **Task ID** | TASK-COD-001 |
 | **Batch** | B1 — Scaffold Foundation |
 | **Phase** | 6 — Implementation |
-| **Status** | Draft / Pre-Execution Gate PASS / Awaiting final delegation approval |
+| **Status** | Accepted / Closed |
 | **Target Version** | v1.0 |
 | **Release Type** | Initial MVP |
 | **Version Scope Status** | In Scope — Core 1A Foundation |
@@ -213,19 +213,115 @@ Required manual additions/edits:
 
 **Gate Status:** PASS
 
-**Required Action:** Await final user confirmation to delegate TASK-COD-001 to `cockingapp-foundation-engineering`.
+**Required Action:** Delegated to `cockingapp-foundation-engineering` after user approval.
 
 ---
 
 ## 11. Sub-Agent Handback
 
-Pending.
+```text
+Task ID: TASK-COD-001
+Agent: cockingapp-foundation-engineering
+Status: Done
+Activation Trigger: Phase 6 B1 scaffold after Implementation Agent Strategy Option B
+Default Permission Level: WRITE_CODE
+Permission Level Used: WRITE_CODE
+Tool(s) Used: read, bash, apply_patch, glob, grep, todowrite
+MCP Usage: None
+Handback Record Target: project-control/tasks/TASK-COD-001.md
+Project-Control Update Required: Yes (Tera records handback/review)
+Documentation Status: Submitted to Tera for recording
+Secrets Handling: No secrets used
+Files Produced or Updated:
+- cocking-app/package.json
+- cocking-app/package-lock.json
+- cocking-app/tsconfig.json
+- cocking-app/next.config.ts
+- cocking-app/eslint.config.mjs
+- cocking-app/next-env.d.ts
+- cocking-app/.gitignore
+- cocking-app/README.md
+- cocking-app/.env.example
+- cocking-app/prisma/schema.prisma
+- cocking-app/src/lib/prisma.ts
+- cocking-app/src/app/layout.tsx
+- cocking-app/src/app/page.tsx
+- cocking-app/src/app/page.module.css
+- cocking-app/src/app/globals.css
+- cocking-app/src/app/favicon.ico
+- cocking-app/public/*.svg
+- cocking-app/node_modules/**
+Commands Run:
+- Test-Path for cocking-app
+- npx create-next-app@latest cocking-app --typescript --eslint --app --src-dir --no-tailwind --import-alias "@/*" --use-npm
+- npm install prisma @prisma/client
+- npm run lint
+Summary:
+- Created Next.js App Router scaffold with TypeScript, ESLint, src, npm, no Tailwind.
+- Installed prisma and @prisma/client.
+- Added basic prisma/schema.prisma with generator and datasource only.
+- Added .env.example placeholders only.
+- Added Prisma singleton and RTL layout basics.
+- Lint passes per agent report.
+Issues:
+- create-next-app shell timed out after 120 seconds after dependency installation output, but subsequent verification and lint succeeded.
+- npm reported moderate vulnerabilities; no remediation command run because out of scope.
+Recommendation:
+- Proceed to Tera Post-Execution Review Gate.
+```
 
 ---
 
 ## 12. Tera Review / Post-Execution Review
 
-Pending.
+## Post-Execution Review Result
+
+| Check | Result | Notes |
+|---|---|---|
+| Changed files within Allowed Write Targets | PASS | Application files created under `cocking-app/**`; Tera-managed control files updated separately |
+| No unauthorized files created | PASS | Only scaffold/default files + required Prisma/env/lib files |
+| No unauthorized files deleted | PASS | No deletion performed |
+| No unauthorized packages added | PASS | Only approved `prisma` and `@prisma/client` beyond scaffold dependencies |
+| No unauthorized UI/CSS/theme changes | PASS | Default scaffold boilerplate classified as Allowed boilerplate; actual UI design deferred to TASK-COD-003+ |
+| UI Acceptance Gate passed for UI tasks | N/A | Not a UI implementation task |
+| No real secrets outside approved local environment files | PASS | `.env.example` placeholder only; no real `.env` tracked |
+| Secrets redacted in docs/logs/config references | PASS | DATABASE_URL placeholder is redacted/generic |
+| No unauthorized ORM models/entities/migrations | PASS | `schema.prisma` contains generator + datasource only |
+| No unapproved business validation moved to DB constraints | PASS | No models/constraints added |
+| No unauthorized API/Auth created | PASS | No `route.ts`, no middleware/Auth files created |
+| Acceptance criteria satisfied | PASS | All criteria satisfied after `.env.example` ignore fix |
+| CLI side effects reviewed | PASS | create-next-app, npm install, lint, npm ls, git status/check-ignore, npm audit reviewed |
+| Task file and core project-control records reviewed | PASS | Task, registry, activity log, state/context reviewed/updated |
+| No secret leakage in task files/logs/reports/handbacks | PASS | No live secrets present |
+| No duplicate project-control IDs created | PASS | TASK-COD-001 and IS-004 unique |
+| Any out-of-target changes classified | PASS | Tera project-control updates are authorized orchestration updates |
+| Independent review decision recorded | PASS | No independent review required for B1 scaffold |
+
+**Gate Status:** PASS
+
+### Physical Review Notes
+
+- Reviewed key scaffold/config files: `package.json`, `package-lock.json`, `.gitignore`, `.env.example`, `next.config.ts`, `eslint.config.mjs`, `tsconfig.json`, `prisma/schema.prisma`, `src/lib/prisma.ts`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/page.module.css`, `src/app/globals.css`, public SVG assets.
+- `favicon.ico` is binary scaffold boilerplate; existence and size checked.
+- `node_modules/**` is generated dependency content and is ignored by `.gitignore`; dependency tree reviewed through `package.json`, `package-lock.json`, and `npm ls prisma @prisma/client`.
+- `.env.example` was initially ignored by `.env*`; returned to agent for focused fix. Fixed by adding `!.env.example`. Git status confirms `.env.example` is trackable while `.env` remains ignored.
+- `npm run lint` executed by Tera and passed.
+- `npm audit --audit-level=moderate` found 5 moderate vulnerabilities in current Next/Prisma dependency tree. Logged as `IS-004`; no `npm audit fix --force` run because it would introduce breaking changes and is outside task scope.
+
+### Independent Review
+
+- ProjectControlAgent: Not required — Tera reviewed and updated control records directly.
+- SecurityAgent: Not required — no Auth/JWT/Cookies/API/secrets implemented; dependency audit issue logged as medium.
+- QAAndAcceptanceAgent: Not required — scaffold verification and lint sufficient for B1.
+
+### Deviation Classification
+
+- Default scaffold README, page CSS, placeholder page, SVG assets, and favicon: **Allowed boilerplate**.
+- `node_modules/**`: **Generated dependency directory; ignored by Git**.
+
+### Final Decision
+
+`TASK-COD-001` is **Accepted / Closed**.
 
 ---
 
@@ -234,3 +330,7 @@ Pending.
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | v1 | 2026-06-30 | Tera | Initial TASK-COD-001 package with Pre-Execution Gate PASS |
+| v1.1 | 2026-06-30 | Tera | User approved delegation; task marked Assigned / In Progress |
+| v1.2 | 2026-06-30 | Tera | Sub-agent handback recorded; Post-Execution Review started |
+| v1.3 | 2026-06-30 | Tera | Post-review finding: `.env.example` ignored; task returned for focused fix |
+| v1.4 | 2026-06-30 | Tera | Post-Execution Review PASS; task Accepted / Closed |

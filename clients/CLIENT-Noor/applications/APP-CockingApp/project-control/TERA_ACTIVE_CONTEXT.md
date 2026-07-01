@@ -9,7 +9,7 @@
 | **Last Phase** | Phase 5 Complete — Execution Planning ready |
 | **Next Phase** | Phase 6 — TASK-COD-001 after OpenCode restart |
 | **User** | Majed (Owner) |
-| **Status** | 🟡 TASK-COD-001 Pre-Gate PASS; awaiting final delegation approval |
+| **Status** | 🟢 TASK-COD-001 Accepted / Closed; ready to prepare TASK-COD-002 |
 
 ---
 
@@ -22,7 +22,9 @@
 - **Phase 5.1 Implementation Agent Strategy**: ✅ Approved — Option B
 - **Active B1 Agent**: `cockingapp-foundation-engineering`
 - **Disabled Agent**: `cockingapp-engineering`
-- **Next**: Delegate `TASK-COD-001` to `cockingapp-foundation-engineering` after final user approval
+- **TASK-COD-001**: ✅ Accepted / Closed
+- **Open Issue**: IS-004 dependency audit (Medium) — non-blocking before production
+- **Next**: Prepare TASK-COD-002 (Prisma schema) with DataPrismaAgent strategy
 
 ---
 
@@ -64,13 +66,14 @@
 
 ## 4.1 Next Action
 
-**Approve TASK-COD-001 delegation**
+**Prepare TASK-COD-002**
 
 Ready state:
-1. `TASK-COD-001.md` exists
-2. Pre-Execution Gate: PASS
-3. Responsible agent: `cockingapp-foundation-engineering`
-4. Next action: user final approval to delegate
+1. `TASK-COD-001` closed
+2. Create/generate or activate DataPrismaAgent for B2 if needed
+3. Create `TASK-COD-002.md`
+4. Run Pre-Execution Gate for Prisma schema task
+5. Ask user approval before delegation
 
 ---
 

@@ -25,7 +25,7 @@
 | **3 — Preparation Planning** | ✅ Complete | 2026-06-30 | `PREPARATION_PLAN.md` v2 approved by Majed. All 22 preparation files created across 7 batches |
 | **4 — Agent Delegation Planning** | ✅ Complete | 2026-06-30 | `AGENT_DELEGATION_PLAN.md` — no sub-agents needed for preparation |
 | **5 — Execution Planning** | ✅ Complete | 2026-06-30 | `PROJECT_MASTER_PLAN.md`, `PROJECT_DETAILED_EXECUTION_PLAN.md`, `EXECUTION_BATCH_PLAN.md` |
-| **6 — Implementation** | 🟡 Strategy Approved / Agent Restart Required | 2026-06-30 | Option B approved; `cockingapp-foundation-engineering` activated; OpenCode restart required before TASK-COD-001 delegation |
+| **6 — Implementation** | 🟢 In Progress | 2026-06-30 | TASK-COD-001 Accepted / Closed; next task is TASK-COD-002 after planning/gate |
 | **7 — Delivery, Handover & Closure** | ⬜ Not Started | — | |
 
 ---
@@ -76,7 +76,7 @@
 | `TERA_ACTIVE_CONTEXT.md` | ✅ Active | Session handoff |
 | `IMPLEMENTATION_AGENT_STRATEGY.md` | ✅ Approved v1 | Option B approved |
 | `TASK_REGISTRY.md` | ✅ Active | Includes TASK-COD-001 |
-| `tasks/TASK-COD-001.md` | ✅ Pre-Gate PASS | Awaiting final delegation approval |
+| `tasks/TASK-COD-001.md` | ✅ Accepted / Closed | Foundation scaffold complete |
 
 ### generated-agents / opencode
 | File | Status | Notes |
@@ -129,6 +129,7 @@
 | Severity | Issue | Status | Action |
 |----------|-------|--------|--------|
 | Low | On-premise deployment details pending | Open | Deferred to `22_DEPLOYMENT_AND_ENVIRONMENTS.md` |
+| Medium | Dependency audit reports moderate vulnerabilities in current Next/Prisma dependency tree | Open | Tracked as IS-004; re-check before production release |
 
 *(Detailed tracking in `ISSUES_AND_GAPS.md`)*
 
@@ -145,9 +146,10 @@
 | 5 | ~~Decide Option A or B for FoundationEngineeringAgent~~ ✅ | Option B |
 | 6 | ~~Restart OpenCode after agent activation~~ ✅ | Agent available |
 | 7 | ~~Create and gate `TASK-COD-001`~~ ✅ | Pre-Execution Gate PASS |
-| 8 | **Approve delegation of TASK-COD-001** | 🟡 Pending |
-| 9 | Start Implementation (B1–B15) | 🔜 Phase 6 |
-| 10 | Delivery, Handover & Closure | 📅 Phase 7 |
+| 8 | ~~Approve delegation of TASK-COD-001~~ ✅ | Completed |
+| 9 | ~~Execute and review TASK-COD-001~~ ✅ | Accepted / Closed |
+| 10 | Prepare TASK-COD-002 (Prisma schema) | 🔜 Next |
+| 11 | Delivery, Handover & Closure | 📅 Phase 7 |
 
 ---
 
@@ -161,3 +163,4 @@
 | v4 | 2026-06-30 | Tera | Updated system rule applied: Implementation Agent Strategy created; Phase 6 blocked until strategy approval |
 | v5 | 2026-06-30 | Tera | Implementation Agent Strategy approved with Option B; foundation engineering agent activated; generic engineering agent disabled |
 | v6 | 2026-06-30 | Tera | TASK-COD-001 created with Pre-Execution Gate PASS; awaiting final delegation approval |
+| v7 | 2026-06-30 | Tera | TASK-COD-001 accepted/closed; dependency audit issue IS-004 logged |
