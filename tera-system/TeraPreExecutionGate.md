@@ -128,9 +128,10 @@ tera-system/profiles/
 
 Before evaluating any implementation task for an external client project, Tera must verify:
 
-- client profile exists in `clients/`.
-- contacts and approval authority are documented.
-- client approval package exists under `clients/.../client-approval/`.
+- client profile exists in `clients/` (من TeraClientEngagementAgent للمشاريع الخارجية).
+- contacts and approval authority are documented (من TCEA للمشاريع الخارجية).
+- client approval package exists under `clients/.../client-approval/` (من TCEA — Tera يتحقق فقط).
+- `TERA_HANDOFF_PACKAGE.md` موجود ومكتمل (بديل للحزمة التقليدية للمشاريع الخارجية).
 - approved scope is documented.
 - design direction is approved before final UI work.
 - `Execution Authorization` is approved and recorded before Build Mode.
@@ -183,6 +184,62 @@ If the task would violate the approved engineering governance level, the Pre-Exe
    - أن يخضع لاحقًا إلى `Post-Execution Review Gate`.
 
 أي تنفيذ كود تطبيقي أو تعديل معماري أو بناء شاشة أو API أو قاعدة بيانات يجب أن يذهب إلى العميل المختص، ولا يسمح لتيرا بتنفيذه مباشرة.
+
+## 3.6 Task Engineering Review Prerequisite
+
+`Task Engineering Review` ليست بوابة سماح نهائية بالتنفيذ.
+
+هي خطوة صقل وتحليل لجودة المهمة نفسها قبل تشغيل `Pre-Execution Gate`، ويمكن أن ينفذها:
+
+```text
+ExecutionPreparationAgent
+```
+
+عندما يقرر Tera ذلك حسب الخطورة أو التعقيد.
+
+الفرق الإلزامي:
+
+```text
+Task Engineering Review = refine the task.
+Pre-Execution Gate = authorize or block execution.
+Sub-Agent Execution = perform the approved work.
+Post-Execution Review = inspect the real output after execution.
+```
+
+القرارات المسموحة داخل `Task Engineering Review` فقط:
+
+```text
+APPROVED_FOR_GATE
+REVISION_REQUIRED
+SPLIT_REQUIRED
+BLOCKED_BY_MISSING_DECISION
+WRONG_AGENT
+NEEDS_PRE_REVIEW
+REJECTED_OUT_OF_SCOPE
+```
+
+القاعدة الأساسية:
+
+```text
+For Medium, High, or Critical implementation tasks,
+Pre-Execution Gate cannot PASS unless Task Engineering Review is completed
+and its decision is APPROVED_FOR_GATE.
+```
+
+يجوز تجاوز `Task Engineering Review` فقط عندما تكون المهمة:
+
+- Low-risk
+- صغيرة جدًا
+- ضمن Fast Path المبرر بوضوح من Tera
+- ولا تحتوي مؤشرات تعقيد أو خطر أو تعدد ملفات/اختصاصات
+
+عندما تستخدم هذه المراجعة، يجب تسجيلها داخل ملف المهمة أو في:
+
+```text
+[active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TASK_ENGINEERING_REVIEW.md
+```
+
+لكنها لا تستبدل أبدًا `Pre-Execution Gate Result` داخل ملف المهمة.
 
 ---
 
@@ -240,6 +297,7 @@ BLOCKED
 | 22 | إذا كانت المهمة UI/Frontend، هل ترتبط بـ `UI_ACCEPTANCE_GATE.md` وتتضمن UI Source / UI Rules / UI Acceptance / Design Gap Handling؟ | Yes / N/A |
 | 23 | إذا كانت المهمة تمس كود التطبيق أو المعمارية أو الموديولات أو API أو Validation أو Permissions أو Database أو Tests، هل تم تطبيق Engineering Governance Gate؟ | Yes / N/A |
 | 24 | هل المهمة تحترم مستوى الحوكمة الهندسية المعتمد Compact / Standard / Full دون over-engineering؟ | Yes / N/A |
+| 25 | إذا كانت المهمة Medium / High / Critical أو عليها Trigger تعقيد/خطر، هل اكتملت `Task Engineering Review` وكان قرارها `APPROVED_FOR_GATE`؟ | Yes / N/A |
 
 إذا فشل أي بند، يجب على Tera تصحيح المهمة قبل عرضها.
 
@@ -805,8 +863,14 @@ Read project state → Identify next task → Prepare/draft task package → Che
 ### ExecutionPreparationAgent Preparation Rule
 
 Tera may use `ExecutionPreparationAgent` to prepare the initial task package before delegation.
-This agent may draft scope, references, write targets, acceptance criteria, risk notes, and reviewer suggestions only.
+This agent may draft scope, references, write targets, acceptance criteria, risk notes, reviewer suggestions, and `Task Engineering Review` findings only.
 Tera must still review that package himself, run the full `Pre-Execution Gate`, and keep final authority over approval, delegation, and closure.
+
+If `Task Engineering Review` is required for the task risk/complexity level, Tera must not treat the package as ready for gate authorization until the review decision is:
+
+```text
+APPROVED_FOR_GATE
+```
 
 لا يعتمد على الذاكرة أو الاستنتاج العام. يعتمد على القائمة والفحص.
 

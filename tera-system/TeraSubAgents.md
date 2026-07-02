@@ -132,17 +132,29 @@ but the generic sub-agent registry in `TeraSubAgents.md` must remain stack-neutr
 
 ### 3.5 حوكمة التفعيل والصلاحيات والأدوات
 
-كل عميل فرعي في هذه المنظومة يخضع لثلاثة ملفات حوكمة:
+كل عميل فرعي في هذه المنظومة يخضع لأربع طبقات حوكمة:
 
 | الملف | ماذا يحدد؟ |
 |---|---|
 | `AGENT_ACTIVATION_MATRIX.md` | متى يُفعّل العميل، وما Trigger التفعيل، ومتى لا يُفعّل |
 | `AGENT_PERMISSION_MODEL.md` | ما صلاحية العميل الافتراضية، وهل يمكن رفعها أو خفضها |
 | `TOOLING_AND_MCP_POLICY.md` | ما الأدوات و MCPs المسموحة للعميل، وما قواعد استخدامها |
+| `project-control/SUB_AGENT_STATUS.md` | الحالة التشغيلية، الجودة، وTrust Metadata داخل المشروع الحالي |
 
 **لا يتم تفعيل أي عميل دون Trigger واضح.**
 **لا يملك أي عميل صلاحية أعلى من المسموح له بها.**
 **لا يستخدم أي عميل أداة أو MCP دون سياسة محددة.**
+
+### Trust Metadata & Intervention Safety Rules (Single Source of Truth)
+
+- **Trust Level ≠ Permission Level** — الصلاحية تُحدد بملف `AGENT_PERMISSION_MODEL.md`.
+- **Trust Level ≠ Activation Trigger** — التفعيل يُحدد بملف `AGENT_ACTIVATION_MATRIX.md`.
+- **Trust Level ≠ Acceptance Authority** — القبول النهائي يبقى على فتح الملفات والتحقق الفعلي.
+- **Trust Level لا يمنح صلاحية أعلى، ولا يسمح بالقبول دون مراجعة فعلية.**
+- **أي تدخل من Tera على عميل فرعي (Stop / Narrow / Restrict / Suspend / Reinstate) يجب أن يكون موثقاً في سجلات المشروع.**
+- **Scoped Runtime Override مسموح فقط داخل حدود المهمة المعتمدة، ولا يجوز أن يتحول إلى توسيع صامت للنطاق أو بديل عن إعادة التخطيط.**
+- **Intervention Logging لا يستبدل Emergency Response للحوادث الشديدة.**
+- **Runtime Override لا يستبدل مراجعة ما بعد التنفيذ الفعلية.**
 
 ### 3.6 قواعد التواصل والتفاعل
 
@@ -189,7 +201,7 @@ design-reviewer
 
 إذا كان المشروع يحتوي على ملف `WORKSPACE_GOVERNANCE_MODEL.md` في `project-control/`، فهو النموذج التشغيلي الخاص بهذا المشروع ويجب اعتماده كمصدر رسمي لقواعد الحوكمة.
 
-> **ملاحظة:** يتم إنشاء `WORKSPACE_GOVERNANCE_MODEL.md` تلقائياً في بداية كل مشروع جديد عبر الـ Project Intake Gate. راجع `TeraAgent.md` Section 2.3 و `TERA_RUNTIME_TEMPLATES.md` Section 40.
+> **ملاحظة:** يتم إنشاء `WORKSPACE_GOVERNANCE_MODEL.md` بعد إنشاء مساحة العمل وتسليمها إلى TeraAgent كجزء من تفعيل الحوكمة للمشروع. راجع `TeraAgent.md` §4.0 و `TERA_RUNTIME_TEMPLATES.md` Section 40.
 
 ---
 
@@ -758,24 +770,14 @@ clients/CLIENT-*/applications/APP-*/delivery/CLIENT_HANDOVER_PACKAGE.md لمشا
 
 ---
 
-## 6.0 Client Engagement Helper Agents
+## 6.0 Client Engagement (Deprecated — Replaced by TeraClientEngagementAgent)
 
-هؤلاء عملاء مشروطون لمشاريع العملاء الخارجيين فقط. لا يتم توليدهم تلقائيًا، ولا يتواصلون مع العميل مباشرة، ولا يعتمدون أي قرار بدل Tera أو Majed.
-
-| العميل | المعرّف | متى يستخدمه Tera | المصادر الأساسية | المخرجات |
-|---|---|---|---|---|
-| Client Discovery Agent | `CLIENT_DISCOVERY_AGENT` | بداية مشروع عميل خارجي أو صياغة أسئلة يرسلها Majed للعميل | `project-inputs/`, `CLIENT_PROFILE.md`, `CONTACTS.md`, `TeraClientPolicy.md` | `Client Question Set`, `Client Discovery Notes` |
-| Proposal and Scope Agent | `PROPOSAL_SCOPE_AGENT` | إنتاج Proposal أو Scope of Work أو Feature Scope Matrix | `project-inputs/`, `00_PROJECT_INPUTS.md` عند وجوده, ملفات العميل, سياسات الاعتماد والمحتوى | `01_CLIENT_PROJECT_BRIEF.md`, `02_CLIENT_PROPOSAL.md`, `03_SCOPE_OF_WORK.md`, `04_FEATURE_SCOPE_MATRIX.md` |
-| Client Approval Review Agent | `CLIENT_APPROVAL_REVIEW_AGENT` | قبل إرسال حزمة الاعتماد أو قبل Build Mode | `clients/.../client-approval/`, سياسات الاعتماد والمحتوى | `Client Approval Package Checklist`, `Client-Facing Clarity Review` |
-| Change Control Agent | `CHANGE_CONTROL_AGENT` | عند ظهور طلب جديد بعد اعتماد النطاق أو التصميم أو بدء التنفيذ | `11_CHANGE_CONTROL.md`, `03_SCOPE_OF_WORK.md`, `04_FEATURE_SCOPE_MATRIX.md`, `TeraClientPolicy.md` | `Client Change Request Record`, `Change classification recommendation` |
-
-حدود مشتركة:
-
-- لا يتواصلون مع العميل مباشرة.
-- لا يعتمدون النطاق أو Gate أو التغيير النهائي.
-- لا ينشئون وعودًا أو ميزات جديدة إلا كاقتراح منفصل يحتاج موافقة.
-- لا يكتبون في `clients/` إلا إذا أعطاهم Tera `Allowed Write Targets` محددة.
-- لا يغيرون ملفات الخطة أو المهام إلا بتفويض واضح من Tera.
+> **ملاحظة نظامية:** `ClientDiscoveryAgent`، `ProposalScopeAgent`،
+> `ClientApprovalReviewAgent`، و `ChangeControlAgent` أُزيلوا من المنظومة.
+> مسؤولياتهم دُمجت بالكامل في `TeraClientEngagementAgent` (عميل حوكمة مستقل — راجع §14.5).
+>
+> لمشاريع العملاء الخارجيين: تبدأ جلسة TCEA بدلاً من استدعاء أي من هؤلاء.
+> راجع `tera-system/TeraClientEngagement.md` للتفاصيل الكاملة.
 
 ---
 
@@ -1085,7 +1087,7 @@ project-control/tasks/
 | اسم العميل | Execution Preparation Agent |
 | المعرّف | `EXECUTION_PREPARATION_AGENT` |
 | الفئة | مشروط / مساعد رئيسي |
-| شرط الاستدعاء | عند الحاجة إلى تجهيز Task Package واضحة قبل التفويض، خاصة إذا كانت المهمة متعددة العملاء، أو تتجاوز 3 ملفات، أو تشمل Backend + Frontend، أو تحمل مخاطر أمنية/معمارية، أو معرضة لتضخم النطاق |
+| شرط الاستدعاء | عند الحاجة إلى تجهيز Task Package واضحة قبل التفويض، أو عند الحاجة إلى `Task Engineering Review` للمهمات Medium/High/Critical، خاصة إذا كانت المهمة متعددة العملاء، أو تتجاوز 3 ملفات، أو تشمل Backend + Frontend، أو تمس DB/API/UI معًا، أو تحمل مخاطر أمنية/معمارية، أو معرضة لتضخم النطاق |
 
 ### يقرأ
 
@@ -1103,11 +1105,13 @@ project-control/tasks/[TASK-ID].md عند وجوده
 
 ```text
 project-control/tasks/*.md
+project-control/task-engineering-reviews/[TASK-ID]_TASK_ENGINEERING_REVIEW.md
 ```
 
 ### دوره
 
 - يحول قرار Tera إلى Task Package جاهزة للتنفيذ.
+- ينفذ `Task Engineering Review` على Draft Task قبل `Pre-Execution Gate` عندما يطلب Tera ذلك.
 - يجهز:
   - الهدف
   - النطاق
@@ -1116,9 +1120,22 @@ project-control/tasks/*.md
   - الملفات المرجعية
   - `Allowed Write Targets`
   - معايير القبول
-  - `Pre-Execution` checklist
+  - `Pre-Execution` checklist inputs
   - ملاحظات المخاطر
   - المراجعين المقترحين بعد التنفيذ
+- يقرر في `Task Engineering Review` واحدة من الحالات التالية فقط:
+  - `APPROVED_FOR_GATE`
+  - `REVISION_REQUIRED`
+  - `SPLIT_REQUIRED`
+  - `BLOCKED_BY_MISSING_DECISION`
+  - `WRONG_AGENT`
+  - `NEEDS_PRE_REVIEW`
+  - `REJECTED_OUT_OF_SCOPE`
+- يوضح الفرق بصرامة بين:
+  - `Task Engineering Review` = صقل جودة المهمة نفسها
+  - `Pre-Execution Gate` = السماح النهائي أو المنع النهائي قبل التنفيذ
+  - `Sub-Agent Execution` = التنفيذ الفعلي داخل الحدود المعتمدة
+  - `Post-Execution Review` = مراجعة الناتج الفعلي بعد التنفيذ
 
 ### حدوده
 
@@ -1128,6 +1145,7 @@ project-control/tasks/*.md
 - لا يحدّث `TASK_REGISTRY.md` أو `PROJECT_ACTIVITY_LOG.md` أو `DECISIONS_LOG.md` أو `ISSUES_AND_GAPS.md`.
 - لا يوافق على المهمة أو يغلقها.
 - لا يشغّل `Pre-Execution Gate` النهائي بدل Tera؛ يمكنه فقط تجهيز الحزمة ليمررها Tera عبر البوابة.
+- لا يمنح إذن التنفيذ النهائي؛ قرار `APPROVED_FOR_GATE` يعني فقط أن المهمة ناضجة للمرور إلى `Pre-Execution Gate`.
 - لا يقرر المراجعين النهائيين بعد التنفيذ؛ يقترحهم فقط.
 - لا ينشئ أو يفعّل أو يعدّل أو يفوض Agent آخر من تلقاء نفسه.
 
@@ -1140,6 +1158,7 @@ project-control/tasks/*.md
 - معايير القبول قابلة للفحص.
 - ملاحظات المخاطر مختصرة ومرتبطة بالمهمة فقط.
 - المراجعين المقترحين بعد التنفيذ مذكورون عند الحاجة.
+- إذا طُلب `Task Engineering Review`، فيجب أن يحتوي التقرير على: القرار، سبب القرار، العناصر الناقصة أو المقترح تقسيمها، وأي `Pre-Review` مطلوب قبل التنفيذ.
 
 ---
 

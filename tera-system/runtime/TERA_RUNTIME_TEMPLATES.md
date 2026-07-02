@@ -1066,10 +1066,10 @@ The generated file is saved to `project-control/EXECUTION_BATCH_PLAN.md`.
 
 ## 2. Included Tasks
 
-| TASK-ID | Description | Assigned Agent | Allowed Write Targets | Pre-Execution Gate |
-|---|---|---|---|---|
-| TASK-COD-001 | [e.g. Scaffold project] | EngineeringAgent | `.` (project root) | PASS |
-| TASK-COD-002 | [e.g. Init ORM + DB] | EngineeringAgent | `prisma/schema.prisma`, `.env.example` | PASS |
+| TASK-ID | Description | Assigned Agent | Allowed Write Targets | Pre-Execution Gate | Fast Path |
+|---|---|---|---|---|---|
+| TASK-COD-001 | [e.g. Scaffold project] | EngineeringAgent | `.` (project root) | PASS | No |
+| TASK-COD-002 | [e.g. Init ORM + DB] | EngineeringAgent | `prisma/schema.prisma`, `.env.example` | PASS | No |
 | ... | ... | ... | ... | ... |
 
 ## 3. Not Included (Deferred to Later Batches)
@@ -1106,6 +1106,7 @@ The generated file is saved to `project-control/EXECUTION_BATCH_PLAN.md`.
 > - UI tasks must link `tera-system/design-system/UI_ACCEPTANCE_GATE.md`.
 > - No TASK-ID without Pre-Execution Gate PASS.
 > - No batch execution without user approval.
+> - `Fast Path = Yes` means lower orchestration overhead only; it never removes physical post-execution review.
 ```
 
 ---
@@ -1579,7 +1580,7 @@ Per-version folders and version slash commands remain deferred until large-proje
 This template is used for the mandatory Phase 5.1 output (Implementation Agent Strategy Gate).
 The generated file is saved to `project-control/IMPLEMENTATION_AGENT_STRATEGY.md`.
 
-Reference: `TeraAgent.md` Section 5.1
+Reference: `TeraAgent.md` §4.4 (Execution Planning / Implementation Agent Strategy)
 
 > **Rules:**
 > - No Build Mode, no Phase 6, and no `TASK-COD-*` delegation before this strategy is approved.
@@ -1598,7 +1599,7 @@ Reference: `TeraAgent.md` Section 5.1
 | **Required Before** | Phase 6 / Build Mode / Any `TASK-COD-*` delegation |
 | **Created By** | Tera Agent |
 | **Date** | YYYY-MM-DD |
-| **System Rule** | `TeraAgent.md` Section 5.1 |
+| **System Rule** | `TeraAgent.md` §4.4 |
 
 ---
 
@@ -1807,6 +1808,107 @@ Reference: `TERA_RUNTIME_PROTOCOLS.md` Section 19 (Agent Deactivation Protocol)
 
 ---
 
+## 38.1 Sub-Agent Status File
+
+This template defines the compact structure of:
+
+```text
+project-control/SUB_AGENT_STATUS.md
+```
+
+Reference: `TERA_RUNTIME_PROTOCOLS.md` Section 17 (Sub-Agent Status Review)
+
+```markdown
+# SUB_AGENT_STATUS.md
+
+## Metadata
+
+| Field | Value |
+|---|---|
+| Project | [Project Name] |
+| Updated By | Tera Agent / ProjectControlAgent by request |
+| Last Updated | YYYY-MM-DD |
+
+---
+
+## Agents
+
+| Agent | Status | Quality | Trust Level | Last Event | Last Basis / Evidence | Decision / Notes |
+|---|---|---|---|---|---|---|
+| EngineeringAgent | Active / Inactive / Overloaded / Disabled | Good / Mixed / Weak / Unknown | New / Observed / Verified / Trusted / Restricted / Suspended | [Intervention/Override event or None] | [e.g. 3 accepted tasks, 1 rework] | [e.g. keep active, narrow scope] |
+| QAAndAcceptanceAgent | ... | ... | ... | ... | ... | ... |
+| ProjectControlAgent | ... | ... | ... | ... | ... | ... |
+
+---
+
+## Rules
+
+- Keep this file compact.
+- Do not copy `PROJECT_ACTIVITY_LOG.md` into this file.
+- `Trust Level` is metadata for delegation planning only.
+- `Last Event` shows the most recent intervention or runtime override for quick status.
+- `Trust Level` does **not** change permission level.
+- `Trust Level` does **not** replace physical post-execution review.
+- No entry in this file may be used to justify acceptance without opening the changed files.
+- Trust Level re-evaluation triggers after 2 `Needs Fix` in 5 tasks or after 15 tasks without review.
+```
+
+---
+
+## 38.2 Sub-Agent Intervention Record
+
+This template is used when Tera needs a compact formal record for an explicit intervention applied to a sub-agent.
+
+```markdown
+## Sub-Agent Intervention
+
+| Field | Value |
+|---|---|
+| Agent | [Agent Name] |
+| Related Task | TASK-COD-XXX / TASK-PREP-XXX / N/A |
+| Intervention Type | Stop / Narrow / Restrict / Suspend / Reinstate |
+| Trigger / Reason | [why Tera intervened] |
+| Scope Affected | [task / files / targets / trust state] |
+| Trust Change | [e.g. Verified -> Restricted] / None |
+| Permission Change | [if any] / None |
+| Follow-up Required | [review / redelegation / user decision / none] |
+```
+
+**Rules:**
+- Use inside `SUB_AGENT_STATUS.md` (Last Event), `PROJECT_ACTIVITY_LOG.md`, or the task file as appropriate.
+- Keep the record compact.
+- Intervention logging does not replace Emergency Response for severe incidents.
+- Intervention logging does not replace physical acceptance review.
+
+---
+
+## 38.3 Scoped Runtime Override Record
+
+This template is used when Tera adjusts part of the active delegation contract for the current task.
+
+```markdown
+## Scoped Runtime Override
+
+| Field | Value |
+|---|---|
+| Related Task | TASK-COD-XXX / TASK-PREP-XXX |
+| Agent | [Agent Name] |
+| Override Type | Narrow Targets / Expand Targets (In Scope) / Reduce Context / Escalate Review / Freeze Current Agent Path / Reassign Writer |
+| Reason | [why the override is needed] |
+| Changed From | [old boundary / old writer / old context] |
+| Changed To | [new boundary / new writer / new context] |
+| Scope Still Approved? | Yes / No |
+| Extra Approval Needed? | Yes / No |
+| Follow-up Action | continue / pause / re-delegate / re-plan |
+```
+
+**Rules:**
+- Use only when the task scope itself remains approved.
+- If `Scope Still Approved = No`, stop and return to planning instead of overriding.
+- Runtime Override never replaces physical post-execution review.
+
+---
+
 ## 39. Task Cross-Verification Report
 
 This template is used when cross-verifying consistency between preparation files before execution.
@@ -1849,10 +1951,10 @@ Reference: `TERA_RUNTIME_CHECKLISTS.md` Section 20 (Cross-Verification Checklist
 
 ## 40. Workspace Governance Model
 
-This template is used during Project Intake Gate (Phase 1) to define the governance model for a new application workspace.
+This template is used after the application workspace is created and handed off to TeraAgent to define the governance model for that workspace.
 The generated file is saved to `project-control/WORKSPACE_GOVERNANCE_MODEL.md`.
 
-Reference: `TeraAgent.md` Section 39 (Governance Session Agents) and Section 2.3 (Project Intake Gate).
+Reference: `TeraAgent.md` §14.5 (التواصل مع العملاء الآخرين) و §4.0 (استلام Handoff). تُعرّف القواعد التفصيلية (الاستقلال، خط التقارير، الصلاحيات، الحدود) في هذا القالب أدناه — أنشئت سابقاً في `TeraAgent.md` §39 (قسم أُزيل ونُقل إلى هذا القالب).
 
 **Rule:** No new project workspace is complete without this file.
 

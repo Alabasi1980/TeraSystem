@@ -2,9 +2,9 @@
 
 # قرار تيرا الأولي للمشروع
 
-> **المرحلة:** 2. Project Decision Formation — مرحلة تكوين قرار المشروع الأولي
+> **المرحلة:** بعد اكتمال Phase 1 (Handoff Intake & Validation للمشاريع الخارجية، أو Client Discovery للمشاريع الداخلية)
 >
-> **الهدف:** تحويل المدخلات التي جمعها تيرا من العميل إلى قرار واضح: هل نفهم المشروع؟ هل نكمل التحضير أم نحتاج معلومات إضافية؟
+> **الهدف:** تحويل المدخلات المتاحة — سواء من `TERA_HANDOFF_PACKAGE.md` (للمشاريع الخارجية عبر TeraClientEngagementAgent) أو من `project-inputs/` (للمشاريع الداخلية) — إلى قرار واضح: هل نفهم المشروع؟ هل نكمل التحضير أم نحتاج معلومات إضافية؟
 >
 > **القاعدة الحاكمة:** هذا الملف لا يملأ التفاصيل بدل الملفات الأخرى. هو يقرر ماذا سننشئ، ولمن، وبأي ترتيب — لا يكتب المحتوى التنفيذي بدلهم.
 
@@ -16,14 +16,30 @@
 |---|---|
 | اسم المشروع | `[PROJECT_NAME]` |
 | تاريخ القرار | `[DATE]` |
-| أعدّه | Tera Agent |
+| أعدّه | Tera Agent (مدخلات TeraClientEngagementAgent للمشاريع الخارجية) |
 | حالة القرار | Draft / Pending Approval / Approved / Blocked |
-| مرجع العرض المعتمد | `[PROPOSAL_REF]` |
-| مرجع المقابلة | `[INTERVIEW_REF]` |
+| مرجع العرض المعتمد | `[PROPOSAL_REF]` أو `TERA_HANDOFF_PACKAGE.md` |
+| مرجع المقابلة | `[INTERVIEW_REF]` أو `TERA_HANDOFF_PACKAGE.md` (للمشاريع الخارجية) |
 
 ---
 
 ## 2. Intake Readiness
+
+> يعتمد مصدر المدخلات على نوع المشروع:
+> - **المسار A — مشروع خارجي:** المصدر هو `TERA_HANDOFF_PACKAGE.md` (من TCEA). Tera يتحقق من اكتمالها.
+> - **المسار B — مشروع داخلي:** المصدر هو `project-inputs/` (من Tera Client Discovery).
+
+### المسار A — مشروع خارجي (عبر TERA_HANDOFF_PACKAGE.md)
+
+| البند | الحالة | المصدر | ملاحظات |
+|---|---|---|---|
+| Handoff Package Completeness | Complete / Partial / Missing | `TERA_HANDOFF_PACKAGE.md` (من TCEA) | `...` |
+| Application Understanding | Extracted / Partial / Missing | مستخرج من الحزمة | `...` |
+| Technical Context | Extracted / Partial / Missing | مستخرج من الحزمة | `...` |
+| Technology Profile Candidate | Found / Missing / Unclear | `tera-system/profiles/` | `...` |
+| **هل يمكن تكوين قرار أولي؟** | **Yes / Partial / No** | | **`...`** |
+
+### المسار B — مشروع داخلي (عبر Tera Client Discovery)
 
 | البند | الحالة | المصدر | ملاحظات |
 |---|---|---|---|
@@ -36,9 +52,9 @@
 
 | الحالة | المعنى |
 |---|---|
-| **Complete** | يمكن تكوين قرار مشروع أولي والمتابعة إلى الإعداد |
-| **Partial** | يمكن تكوين قرار جزئي مع أسئلة مفتوحة للعميل |
-| **Missing** | لا يجوز المتابعة — يجب الرجوع للعميل قبل أي خطوة |
+| **Complete / Extracted** | يمكن تكوين قرار مشروع أولي والمتابعة إلى الإعداد |
+| **Partial** | يمكن تكوين قرار جزئي مع أسئلة مفتوحة (للمشاريع الخارجية: تُرسل إلى Majed كـ CLARIFICATION_REQUEST.md) |
+| **Missing** | لا يجوز المتابعة — للمشاريع الداخلية: الرجوع إلى Majed. للمشاريع الخارجية: طلب توضيح من Majed |
 
 ---
 
@@ -96,14 +112,17 @@
 
 ## 6. Technology Understanding
 
+> **مصدر المعلومات التقنية:** للمشاريع الخارجية — مستخرج من `TERA_HANDOFF_PACKAGE.md` (من TCEA).
+> للمشاريع الداخلية — من `02_TECHNICAL_CONTEXT.md`.
+
 | المجال | القيمة | المصدر | الحالة |
 |---|---|---|---|
-| لغة البرمجة | `[LANGUAGE]` | `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
-| الإطار (Framework) | `[FRAMEWORK]` | `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
-| قاعدة البيانات | `[DATABASE]` | `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
-| ORM / Data Access | `[ORM]` | `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
-| الواجهة الأمامية | `[FRONTEND]` | `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
-| الاستضافة | `[HOSTING]` | `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
+| لغة البرمجة | `[LANGUAGE]` | `TERA_HANDOFF_PACKAGE.md` / `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
+| الإطار (Framework) | `[FRAMEWORK]` | `TERA_HANDOFF_PACKAGE.md` / `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
+| قاعدة البيانات | `[DATABASE]` | `TERA_HANDOFF_PACKAGE.md` / `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
+| ORM / Data Access | `[ORM]` | `TERA_HANDOFF_PACKAGE.md` / `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
+| الواجهة الأمامية | `[FRONTEND]` | `TERA_HANDOFF_PACKAGE.md` / `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
+| الاستضافة | `[HOSTING]` | `TERA_HANDOFF_PACKAGE.md` / `02_TECHNICAL_CONTEXT.md` | Confirmed / Missing |
 | Technology Profile | `[PROFILE_NAME]` | `tera-system/profiles/` | Found / Missing / Needs Creation |
 
 ### حالات Technology Profile
@@ -112,21 +131,26 @@
 |---|---|
 | **Found** | يسجّل كـ Candidate، يُفعّل بعد اعتماد الخطة التنفيذية |
 | **Missing** | لا يبدأ التنفيذ — يُنشئ Profile مسودة قبل التخطيط |
-| **Unclear** | يسأل المستخدم قبل أي خطوة تنفيذية |
+| **Unclear** | يسأل المستخدم (Majed) قبل أي خطوة تنفيذية |
 
 ---
 
 ## 7. Client Readiness (للعملاء الخارجيين)
 
-*للعملاء الداخليين: Ikhtiyar / N/A*
+> **ملاحظة نظامية:** مسؤولية إعداد ملفات العميل وحزمة الاعتماد هي لـ `TeraClientEngagementAgent`.
+> TeraAgent يتحقق فقط من وجودها واكتمالها قبل التنفيذ.
+
+*للعملاء الداخليين: اختياري / لا ينطبق*
+*للمشاريع الخارجية مع `TERA_HANDOFF_PACKAGE.md`: الحزمة الجاهزة تستبدل هذا القسم — Tera يتحقق من اكتمالها فقط.*
 
 | البند | الحالة | المصدر | ملاحظات |
 |---|---|---|---|
-| Client Profile | Complete / Partial / Missing / N/A | `clients/CLIENT-*/CLIENT_PROFILE.md` | `...` |
-| Client Contacts | Complete / Partial / Missing / N/A | `clients/CLIENT-*/CONTACTS.md` | `...` |
-| Approval Authority | Confirmed / Unknown / N/A | `CONTACTS.md` | `...` |
-| Client Approval Package | Complete / Draft / Missing / N/A | `clients/.../client-approval/` | `...` |
-| Execution Authorization | Approved / Pending / Blocked / N/A | `10_CLIENT_APPROVAL_RECORD.md` | `...` |
+| Client Profile | Complete / Partial / Missing / N/A | `clients/CLIENT-*/CLIENT_PROFILE.md` (من TCEA) | `...` |
+| Client Contacts | Complete / Partial / Missing / N/A | `clients/CLIENT-*/CONTACTS.md` (من TCEA) | `...` |
+| Approval Authority | Confirmed / Unknown / N/A | `CONTACTS.md` (من TCEA) | `...` |
+| Client Approval Package | Complete / Draft / Missing / N/A | `clients/.../client-approval/` (من TCEA) | `...` |
+| Execution Authorization | Approved / Pending / Blocked / N/A | `10_CLIENT_APPROVAL_RECORD.md` (من TCEA) | `...` |
+| TERA_HANDOFF_PACKAGE.md | Present & Complete / Draft / Missing / N/A | `client-engagement/TERA_HANDOFF_PACKAGE.md` (من TCEA) | البديل للحزمة التقليدية للمشاريع الخارجية |
 
 ---
 
@@ -196,7 +220,8 @@
 
 | المرحلة / نوع العمل | المستوى الموصى به | المستوى الأدنى المقبول | موافقة مسبقة؟ | السبب |
 |---|---|---|---|---|
-| Discovery / Intake | Medium | Light | No | جمع وفهم أولي |
+| Discovery / Intake (داخلي) | Medium | Light | No | Tera يدير Discovery مباشرة |
+| Intake Validation (خارجي) | Light | Light | No | Discovery تم بواسطة TCEA — Tera يتحقق فقط من الحزمة |
 | Scope / Requirements | Medium | Medium | No | يحتاج اتساقاً |
 | Technical Architecture | Strong | Medium | Yes if high risk | قرارات معمارية |
 | UI Structure | Medium | Light | No | نطاق محدود |
@@ -256,6 +281,8 @@ Stop / Waiting for User:
 عند اعتماد القرار:
 
 1. يُنشئ Tera `00_PROJECT_INPUTS.md` في `project-preparation/` (إن لم يوجد).
+   - للمشاريع الخارجية: المصدر هو `TERA_HANDOFF_PACKAGE.md` — يُحوّل محتواها إلى `00_PROJECT_INPUTS.md` (أو يُستخدم كمرجع مباشر).
+   - للمشاريع الداخلية: المصدر هو `project-inputs/` — يُدمج ويُوحّد في `00_PROJECT_INPUTS.md`.
 2. يُسجل قرار المشروع في `project-control/PROJECT_STATE.md`.
 3. يُسجل حدث في `project-control/PROJECT_ACTIVITY_LOG.md`.
 4. **يبدأ المرحلة 3 (Project Preparation Planning):**
@@ -268,7 +295,7 @@ Stop / Waiting for User:
    - يُنتج `project-control/PREPARATION_PLAN.md` (باستخدام قالب Section 27 في `TERA_RUNTIME_TEMPLATES.md`).
 5. **لا يُنشئ أي ملف تحضير ولا يُولّد أي عميل فرعي في هذه المرحلة.**
 6. **بعد اعتماد خطة التحضير → الانتقال إلى المرحلة 4 (Sub-Agent Generation & Preparation Delegation).**
-7. للمشاريع الخارجية: لا يُنتقل إلى التنفيذ البرمجي إلا بعد اكتمال حزمة اعتماد العميل.
+7. للمشاريع الخارجية: لا يُنتقل إلى التنفيذ البرمجي إلا بعد اكتمال `TERA_HANDOFF_PACKAGE.md` (من TeraClientEngagementAgent) أو حزمة اعتماد العميل التقليدية. Tera يتحقق فقط — لا ينتجها.
 
 ### أمثلة على التصنيف في المرحلة 3
 

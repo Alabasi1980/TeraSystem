@@ -2,6 +2,10 @@
 
 ## Purpose
 
+> **ملاحظة نظامية:** بنك الأسئلة هذا يُستخدم أساساً من قبل `TeraClientEngagementAgent` خلال Discovery و Smart Interview قبل إنتاج Handoff Package.
+> بعد وجود `TERA_HANDOFF_PACKAGE.md` معتمد من TCEA، يتخطى TeraAgent **Client Discovery Mode و Smart Interview تمامًا** — ويبدأ مباشرة من مرحلة القرار (`Phase 2 — Project Decision`).
+> في هذه الحالة، لا يُستخدم هذا البنك من قبل TeraAgent، بل يكون قد استُخدم بالفعل من قبل TeraClientEngagementAgent خلال جلسة الاستكشاف.
+
 This is the reference question bank for the **Client Discovery and Smart Interview** process — a two-stage approach that first explores the client's idea through open conversation, then follows with adaptive structured questioning across all domains.
 
 Tera does not ask all questions. Tera selects the right questions at the right time based on previous answers, and always starts with open listening before any structured questioning.

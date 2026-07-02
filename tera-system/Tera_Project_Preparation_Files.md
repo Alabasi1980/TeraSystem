@@ -55,6 +55,10 @@ clients/
 
 هذه الملفات ليست بديلة عن ملفات التحضير الداخلية، بل هي مخرجات موجهة للعميل للمراجعة والاعتماد قبل التنفيذ.
 
+> **ملاحظة نظامية:** إنتاج حزمة اعتماد العميل (Client Approval Package) هو مسؤولية `TeraClientEngagementAgent`.
+> TeraAgent يتحقق فقط من وجودها واكتمالها قبل التنفيذ.
+> راجع `tera-system/TeraClientEngagement.md` للتفاصيل.
+
 الموقع الرسمي:
 
 ```text
@@ -63,7 +67,7 @@ clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/client-appr
 
 ## Mandatory Client Approval Package
 
-في مشاريع العملاء الخارجيين، حزمة اعتماد العميل إلزامية قبل التنفيذ.
+في مشاريع العملاء الخارجيين، حزمة اعتماد العميل إلزامية قبل التنفيذ (من إنتاج TeraClientEngagementAgent).
 
 الملفات الافتراضية، بوابات الاعتماد، وقواعد الاستثناء المحدود موثقة رسميًا في:
 

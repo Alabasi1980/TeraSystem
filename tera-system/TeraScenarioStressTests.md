@@ -29,17 +29,17 @@ Input:
 
 Expected behavior:
 
-- Enter Client Discovery and Intake Collection Mode.
+- Enter Client Discovery and Intake Collection Mode (للمشاريع الداخلية؛ للمشاريع الخارجية هذا الدور لـ TeraClientEngagementAgent).
 - Ask short questions for client profile, contacts, approval authority, idea, users, workflows, and technical context.
 - Create or update `project-inputs/` only after answers are available.
-- Prepare `clients/CLIENT-*/` structure when client identity is known.
+- Prepare `clients/CLIENT-*/` structure when client identity is known (للمشاريع الخارجية: TeraClientEngagementAgent يدير ملفات العميل).
 - Do not create implementation tasks.
 - Do not enter Build Mode.
 
 Pass criteria:
 
 - No `project-preparation/` formal output before minimum intake readiness.
-- No implementation without technical context and client approval package.
+- No implementation without technical context and client approval package (أو `TERA_HANDOFF_PACKAGE.md` من TCEA).
 
 ## 4. Scenario B: Client Requests Scope Change After Approval
 
@@ -53,10 +53,10 @@ Client now asks to add online payments and WhatsApp integration.
 Expected behavior:
 
 - Do not implement directly.
-- Record request in `client-approval/11_CHANGE_CONTROL.md`.
-- Classify as `Enhancement` or `New Scope`.
-- Ask Majed for client approval decision.
-- If approved, update related project-control decision/issue/task records.
+- Route the change request to Majed (who forwards it to TeraClientEngagementAgent for classification and client communication).
+- Do not write directly to `client-approval/` — these files are managed by TeraClientEngagementAgent.
+- If change is approved, update related project-control decision/issue/task records for execution.
+- Classify implementation impact as `Enhancement` or `New Scope` (technical side).
 
 Pass criteria:
 
@@ -75,8 +75,9 @@ Implementation request includes dashboard UI.
 Expected behavior:
 
 - Block final UI implementation.
-- Ask for design direction or references.
-- Update `client-approval/07_DESIGN_DIRECTION.md` and internal UI guidance when needed.
+- Ask for design direction or references (للمشاريع الخارجية، يُحال إلى TeraClientEngagementAgent).
+- For internal projects: update design guidance internally.
+- For external projects: TeraClientEngagementAgent updates `client-approval/07_DESIGN_DIRECTION.md` — Tera does not write to `client-approval/` directly.
 - Keep work in Plan Mode until design direction is approved.
 
 Pass criteria:

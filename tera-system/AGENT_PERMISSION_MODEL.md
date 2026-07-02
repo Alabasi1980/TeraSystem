@@ -298,6 +298,35 @@ EngineeringAgent يُستخدم لمراجعة كود فقط → يخفض إلى
 أي رفع أو خفض للصلاحية يُسجل في `DECISIONS_LOG.md`.
 ```
 
+### 5.4 صلاحية العرض السريع (Fast Path)
+
+```
+Fast Path مسموح بمهام منخفضة المخاطر فقط.
+الشرط الأساسي: المستوى الثقة (Trust Level) للعميل يجب أن يكون `Trusted`.
+Trust Level 'Restricted' أو 'Suspended' يمنع Fast Path تلقائيًا.
+المستوى Trusted يُعاد تقييمه كل 15 مهمة أو عندما يُنتج 2 'Needs Fix' ضمن 5 مهام.
+```
+
+### 5.3.1 ملاحظة عن Trust Metadata
+
+```text
+Trust Level ≠ Permission Level.
+
+مستوى الثقة يُستخدم لتخطيط التفويض ومتابعة الاعتمادية داخل `SUB_AGENT_STATUS.md`.
+لكنه لا يرفع الصلاحية، ولا يمنح أي قبول تلقائي، ولا يكسر قاعدة:
+No acceptance without physical review.
+```
+
+### 5.3.2 ملاحظة عن Scoped Runtime Override
+
+```text
+Scoped Runtime Override ≠ Permission Escalation.
+
+Runtime Override يضبط حدود التفويض داخل المهمة الحالية فقط.
+أما رفع/خفض الصلاحية فيبقى خاضعاً لقرار صريح وتوثيق مستقل.
+ولا يجوز استخدام Runtime Override لتجاوز الصلاحية أو منح قبول نهائي.
+```
+
 ### 5.4 صلاحية الأدوات
 
 ```

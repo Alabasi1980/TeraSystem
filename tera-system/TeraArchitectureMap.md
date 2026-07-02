@@ -11,7 +11,7 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | Layer | Responsibility | Main files/folders |
 |---|---|---|
 | Identity and authority | Defines Tera role, authority, runtime order, and decision ownership | `TeraAgent.md`, `.opencode/agents/tera.md` |
-| Project intake | Captures raw idea, technical context, missing information, and readiness | `TeraProjectIntakePolicy.md`, active application workspace `project-inputs/` |
+| Project intake (TCEA) | TCEA captures raw idea, technical context, missing information, and readiness; produces TERA_HANDOFF_PACKAGE.md | `TeraProjectIntakePolicy.md`, `TeraClientEngagement.md` |
 | Client engagement and approval | Manages client profile, contacts, approval package, and change control | `TeraClient*.md`, `clients/` |
 | Preparation and analysis | Converts intake into internal project planning and execution-ready files | `Tera_Project_Preparation_Files.md`, active application workspace `project-preparation/` |
 | Design governance | Controls design source decisions, design tokens, component rules, internal kits, and UI acceptance | `tera-system/design-system/`, active application workspace `project-preparation/28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/` |
@@ -19,7 +19,7 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | Orchestration and gates | Controls delegation, task readiness, pre/post execution review, build mode, and project closure gates | `TeraPreExecutionGate.md`, `runtime/`, active application workspace `project-control/` |
 | System evolution governance | Controls self-improvement of Tera: agent review, agent self-reported gaps, anti-bloat gate, change proposals, and evolution logging via `TeraSystemEvolutionAgent` | `project-control/SYSTEM_EVOLUTION_LOG.md`, `project-control/AGENT_GAPS_LOG.md`, `TeraSystemMaintenanceChecklist.md`, `.opencode/agents/tera-system-evolution.md` |
 | Technical specialization | Keeps stack-specific behavior outside the generic Tera system | `tera-system/profiles/` |
-| Sub-agent lifecycle | Defines, generates, narrows, activates, and reviews specialized agents | `TeraSubAgents.md`, `AGENT_GENERATION_TEMPLATE.md`, `generated-agents/`, `.opencode/agents/` |
+| Sub-agent lifecycle | Defines, generates, narrows, activates, reviews, tracks trust metadata, records Tera interventions, and allows scoped runtime override within approved task boundaries | `TeraSubAgents.md`, `AGENT_GENERATION_TEMPLATE.md`, `generated-agents/`, `.opencode/agents/`, active workspace `project-control/SUB_AGENT_STATUS.md` |
 | Application workspace isolation | Keeps every generated application removable/exportable without polluting the Tera system root | `clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/` |
 | Delivery, handoff, and closure | Produces final delivery readiness, release notes, client handover material, acceptance records, and closure reports | active application workspace `project-control/DELIVERY_READINESS_REPORT.md`, `project-control/PROJECT_CLOSURE_REPORT.md`, `delivery/` |
 
@@ -43,27 +43,32 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 
 ## 4. Core Flow
 
-For every new application, Tera must first identify or create the isolated application workspace:
+For every new application, the isolated application workspace must be identified or created before TeraAgent starts execution planning:
 
 ```text
 clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/
 ```
 
-All application-specific files then live under that folder, including `project-inputs/`, `project-preparation/`, `project-control/`, `generated-agents/opencode/`, client approval folders, delivery folders, and the application source code. Removing or exporting this folder must remove/export the application without modifying the Tera system root.
+All application-specific files then live under that folder, including `project-inputs/`, `project-preparation/`, `project-control/`, `generated-agents/opencode/`, client approval folders, delivery folders, and the application source code. In the current operating model, `TeraClientEngagementAgent` creates the workspace and hands it off; `TeraAgent` works inside it after handoff validation. Removing or exporting this folder must remove/export the application without modifying the Tera system root.
 
 ```text
+[مرحلة TCEA — قبل دخول TeraAgent]
 Client / User Idea
--> Application Workspace Identification / Creation
--> Project Intake
--> Client Discovery and Approval Package when external client
--> Tera Project Decision
--> Internal Preparation
--> Implementation Planning
+-> Client Discovery (TCEA)
+-> Proposal & Approval (TCEA)
+-> TERA_HANDOFF_PACKAGE.md (TCEA)
+-> Workspace Creation: clients/CLIENT-*/applications/APP-*/ (TCEA)
+--------------------------------------------------
+[مرحلة TeraAgent — تبدأ من هنا]
+-> Phase 2: Tera Project Decision
+-> Phase 3: Preparation Planning
+-> Phase 4: Sub-Agent Generation & Preparation Delegation
+-> Phase 5: Execution Planning
 -> Pre-Execution Gate
--> Delegated Execution
+-> Phase 6: Delegated Execution
 -> Post-Execution Review
 -> Milestone / Client Approval
--> Delivery, Handoff, and Closure
+-> Phase 7: Delivery, Handoff, and Closure
 ```
 
 ## 5. External Client Flow

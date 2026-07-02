@@ -60,7 +60,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | ReportingAnalyticsAgent | `REPORTING_ANALYTICS_AGENT` | `COMPLEXITY_SIGNAL`: تقارير كثيرة، Dashboard، KPIs، تصدير | 5–6 | إذا كان التطبيق لا يحتوي تقارير أو لوحات بيانات | `13_REPORTS_AND_DASHBOARDS.md` |
 | MaintenanceMigrationAgent | `MAINTENANCE_MIGRATION_AGENT` | `EXTERNAL_FACTOR`: نظام قائم، ترحيل بيانات، Legacy | 5–6–7 | إذا كان المشروع جديدًا بالكامل بدون ترحيل | `31_MAINTENANCE_AND_SUPPORT.md` أو `00_PROJECT_INPUTS.md` |
 | ProjectControlAgent | `PROJECT_CONTROL_AGENT` | `REVIEW_NEEDED`: عند الحاجة لتحديث سجلات `project-control` أو فحص اتساق | 4–5–6–7 | إذا لم تكن هناك حاجة لتحديث سجلات متعددة أو فحص اتساق | ملفات project-control الحالية |
-| ExecutionPreparationAgent | `EXECUTION_PREPARATION_AGENT` | `COMPLEXITY_SIGNAL`: مهمة متعددة العملاء، أو تتجاوز 3 ملفات، أو تحمل مخاطر | 5–6 | إذا كانت المهمة بسيطة ويمكن لـ Tera تجهيز Task Package مباشرة | `TASK-ID` المقترح + ملفات التحليل المعتمدة |
+| ExecutionPreparationAgent | `EXECUTION_PREPARATION_AGENT` | `COMPLEXITY_SIGNAL / RISK_SIGNAL`: مهمة Medium/High/Critical، أو متعددة العملاء، أو تتجاوز 3 ملفات، أو تشمل Backend + Frontend، أو تمس DB/API/UI معًا، أو صلاحيات/مالية/مخزون/workflow/migration، أو تحتاج تقسيمًا أو قرارات حاسمة قبل التنفيذ | 5–6 | إذا كانت المهمة Low-risk وبسيطة ويمكن لـ Tera تجهيز Task Package مباشرة عبر Fast Path أو تجهيز مباشر محدود | `TASK-ID` المقترح + ملفات التحليل المعتمدة + Technology Profile النشط |
 | QualityReviewCoordinatorAgent | `QUALITY_REVIEW_COORDINATOR_AGENT` | `REVIEW_NEEDED`: قبل مرحلة تنفيذ كبيرة، أو بعد عدة مهام، أو قبل Release | 5–6–7 | إذا كان المشروع صغيرًا والمهام قليلة ويمكن لـ Tera متابعتها يدويًا | `PROJECT_STATE.md` + `TASK_REGISTRY.md` |
 | PlanComplianceReviewAgent | `PLAN_COMPLIANCE_REVIEW_AGENT` | `REVIEW_NEEDED`: نهاية Phase، أو بعد دفعة مهام رئيسية، أو قبل قبول MVP | 5–6–7 | إذا كان التنفيذ متوافقًا بوضوح مع الخطة ولا توجد انحرافات ظاهرة | `PROJECT_MASTER_PLAN.md` + `TASK_REGISTRY.md` |
 | DomainResearchAgent | `DOMAIN_RESEARCH_AGENT` | `COMPLEXITY_SIGNAL / USER_REQUEST`: مجال غير مألوف، أو حاجة بحث خارجي | 1–2–3 | إذا كان المجال معروفًا بالكامل أو المستخدم قدم جميع المعلومات المطلوبة | Domain Research Brief من Tera |
@@ -120,7 +120,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | PerformanceAgent | اختياري | إذا توقعنا حجم مستخدمين متوسط |
 | ReportingAnalyticsAgent | اختياري | إذا كان هناك Dashboard |
 | ProjectControlAgent | اختياري | عند تعدد المهمات |
-| ExecutionPreparationAgent | اختياري | عند تعقيد المهمات |
+| ExecutionPreparationAgent | اختياري | عند وجود Task Engineering Review أو تعقيد المهمات |
 
 ### 3.3 مشروع ERP (نظام تخطيط موارد مؤسسة)
 
@@ -169,7 +169,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | PerformanceAgent | نعم | قابلية التوسع |
 | ReportingAnalyticsAgent | اختياري | حسب الاحتياج |
 | ProjectControlAgent | اختياري | عند تعدد المهمات |
-| ExecutionPreparationAgent | اختياري | عند تعقيد المهمات |
+| ExecutionPreparationAgent | اختياري | عند وجود Task Engineering Review أو تعقيد المهمات |
 
 ---
 
@@ -226,6 +226,29 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 - المرحلة الحالية
 - Brief reason for activation
 ```
+
+### 4.6 قاعدة Task Engineering Review
+
+```text
+لا يُفعّل ExecutionPreparationAgent لكل مهمة بشكل تلقائي.
+يُستخدم Task Engineering Review فقط عندما تكون المهمة Medium / High / Critical
+أو عندما يظهر Trigger تعقيد/خطر واضح.
+
+Low-risk one-file fixes أو التعديلات النصية/التوثيقية البسيطة
+يمكن أن تمر دون Task Engineering Review إذا برر Tera ذلك ضمن Fast Path.
+```
+
+يجوز أيضاً أن يسجل Tera **Trust Level الحالي** للعميل في `SUB_AGENT_STATUS.md` إن كان الملف
+مفعلاً في المشروع، لكن:
+
+```text
+Trust Level لا يفعّل العميل تلقائياً.
+Trust Level لا يستبدل Trigger التفعيل.
+Trust Level لا يمنح قبولاً نهائياً.
+```
+
+إذا تدخل Tera على عميل فرعي أثناء التشغيل (`Stop` / `Narrow` / `Restrict` / `Suspend` / `Reinstate`)،
+فيجب توثيق ذلك في `SUB_AGENT_STATUS.md` و`PROJECT_ACTIVITY_LOG.md` عند الحاجة.
 
 ---
 

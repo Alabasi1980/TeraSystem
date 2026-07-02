@@ -136,6 +136,7 @@ When the user provides a project idea and technical information:
     - [ ] User approval exists for the batch or task.
     - [ ] Target Version / Release Type exists in the task file.
     - [ ] If Hotfix, no new features are included.
+    - [ ] If using Fast Path, task is truly low-risk and no disqualifier exists.
 3. Delegate only the current task package:
    - Task ID.
    - Objective.
@@ -161,6 +162,7 @@ When the user provides a project idea and technical information:
 11. **Self-Diagnosis Checkpoint:** After every 3 closed tasks, record a compact self-diagnosis (see §1.3 in `.opencode/agents/tera.md`) before opening the 4th task.
 12. When all approved implementation tasks are closed or explicitly deferred, prepare Phase 7 entry review.
 13. **No implementation without approved TASK-ID. No closure without Post-Execution Review. No scope expansion. Implementation completion does not equal project closure.**
+14. **Fast Path may reduce overhead only. It does not reduce physical review requirements.**
 
 ### Phase 7: Delivery, Handover & Closure
 

@@ -8,6 +8,15 @@
 
 يستخدمه `TeraSystemEvolutionAgent` كمصدر أساسي لتحسين العملاء، لأن أفضل تطوير هو تصحيح الأخطاء والفجوات الفعلية.
 
+يشمل ذلك صراحةً:
+
+- `TeraAgent`
+- `TeraClientEngagementAgent`
+- `TeraSystemEvolutionAgent`
+- `Auditor`
+- `Monitor`
+- `DesignReviewer`
+
 ---
 
 ## القاعدة الحاكمة
@@ -55,7 +64,7 @@ Only then changes are implemented.
 ## [YYYY-MM-DD] — [Agent Name] — GAP-XXX
 
 - Title:
-- Agent: Auditor / Monitor / DesignReviewer / TeraSystemEvolutionAgent
+- Agent: TeraAgent / TeraClientEngagementAgent / Auditor / Monitor / DesignReviewer / TeraSystemEvolutionAgent
 - Gap Type: Bug / Missing Capability / Policy Gap / Tool Gap / Permission Gap / Performance / Documentation Gap / Improvement Suggestion
 - Issue:
 - Impact on agent performance:

@@ -377,6 +377,39 @@ Always choose the smallest sufficient orchestration level that preserves safety,
 ```
 If the task is small and safe, manage it directly. If it grows more complex or risky, escalate — do not continue with an overly optimistic initial classification.
 
+### 5.0 Fast Path for Low-Risk Tasks
+
+`Fast Path` is allowed only for low-risk tasks where the goal is to reduce orchestration overhead,
+not to reduce safety or acceptance discipline.
+
+Eligibility indicators:
+- 1-2 files, or very small scoped change
+- no Auth / Secrets / Permissions / Middleware / JWT / Config risk
+- no DB schema / migration / seed changes
+- no architecture change
+- no external integration change
+- no combined UI + API + data mutation bundle
+- one primary writer only
+- easy physical review after execution
+
+Disqualifiers:
+- Medium/High security sensitivity
+- repeated `Needs Fix` pattern on similar task type
+- `Restricted` or `Suspended` trust level
+- recent intervention (`Stop`, `Restrict`, `Suspend`) on the assigned agent
+- unclear scope, unclear acceptance, or more than one major concern area
+
+Rules:
+- Fast Path may reduce preparation overhead only.
+- Fast Path does **not** remove `TASK-ID`, `Allowed Write Targets`, `Acceptance Criteria`, `Handback`, or `Post-Execution Review`.
+- Fast Path does **not** remove user approval where already required.
+- Tera must record whether the task used `Fast Path: Yes / No` and why.
+- The invariant remains absolute:
+
+```text
+No acceptance without physical review.
+```
+
 ### Escalation Ladder
 
 The initial classification is not final. If Tera discovers during preparation or execution that the task is larger, riskier, or more complex than initially estimated, it must escalate to the appropriate level instead of continuing with stale assumptions.
@@ -1221,7 +1254,7 @@ Tera maintains a lightweight file at:
 project-control/SUB_AGENT_STATUS.md
 ```
 
-Purpose: Track sub-agent usage, load, quality, update need, and potential merge or deactivation.
+Purpose: Track sub-agent usage, load, quality, trust metadata, update need, and potential merge or deactivation.
 
 ### Rules
 
@@ -1229,6 +1262,104 @@ Purpose: Track sub-agent usage, load, quality, update need, and potential merge 
 - `ProjectControlAgent` may only help collect data or update the file when Tera explicitly requests it.
 - The file must remain compact and non-archival. It must not become a copy of `PROJECT_ACTIVITY_LOG.md`.
 - Do not issue a strong judgment (e.g. `Needs Update`, `Overloaded`, `Candidate for Merge`) based on a single incident unless the problem is clearly structural and obvious.
+- `SUB_AGENT_STATUS.md` is the operational source of truth for **Trust Metadata** inside the active project.
+
+### Trust Metadata
+
+Every active or recently used sub-agent may carry a compact `Trust Level` in `SUB_AGENT_STATUS.md`.
+
+Approved trust levels:
+
+| Trust Level | Meaning |
+|---|---|
+| `New` | New or not yet proven in this project |
+| `Observed` | Used, but still needs close observation |
+| `Verified` | Produced acceptable outputs repeatedly under review |
+| `Trusted` | Reliable enough for low-risk fast-path delegation decisions, **without reducing mandatory acceptance review** |
+| `Restricted` | Has issues, drift, or recurring mistakes; narrow scope or review more strictly |
+| `Suspended` | Do not delegate until Tera reactivates explicitly |
+
+### Intervention Logging
+
+Tera may record explicit operational interventions against a sub-agent when the current task, current delegation scope, or current trust state needs adjustment.
+
+Approved intervention types:
+
+| Intervention | Meaning |
+|---|---|
+| `Stop` | Stop the current delegated work or halt the current agent path immediately |
+| `Narrow` | Narrow `Allowed Write Targets`, scope, or context window |
+| `Restrict` | Increase review strictness or downgrade trust for future delegation |
+| `Suspend` | Remove the agent from delegation until explicit reactivation |
+| `Reinstate` | Return a previously restricted/suspended agent to controlled use |
+
+Rules:
+
+- No intervention may be applied silently.
+- Every intervention must have a reason and a recorded effect.
+- `Intervention Type` is not itself an acceptance decision.
+- `Suspend` or `Restrict` may influence future delegation, not current task acceptance.
+- `Emergency Response Protocol` remains the source of truth for Red/Black incidents.
+- Use intervention logging for operational control; use emergency protocol for severe damage/risk.
+
+### Scoped Runtime Override
+
+`Scoped Runtime Override` allows Tera to adjust part of the active delegation contract for the
+current task without restarting the whole delegation flow from zero, but only within strict limits.
+
+Allowed runtime override actions:
+
+| Override Type | Meaning |
+|---|---|
+| `Narrow Targets` | reduce `Allowed Write Targets` |
+| `Expand Targets (In Scope)` | expand targets only within the already approved task scope |
+| `Reduce Context` | narrow files/context passed to the agent |
+| `Escalate Review` | add stronger review requirements after execution |
+| `Freeze Current Agent Path` | stop the current agent path and hold the task for Tera decision |
+| `Reassign Writer` | move current task writing responsibility to another approved agent |
+
+Forbidden runtime override actions:
+
+- changing the approved scope of the task
+- bypassing `Pre-Execution Gate` or `Post-Execution Review Gate`
+- turning acceptance into a trust-based decision
+- silently raising dangerous permissions without explicit decision/logging
+- converting a simple task into architecture/security/database scope without revisiting planning
+
+Decision rule:
+
+- If the change only adjusts execution boundaries inside the approved task, `Scoped Runtime Override` is allowed.
+- If the change alters the nature of the task itself, stop the task and return to planning, re-scoping, or re-delegation.
+
+Logging rule:
+
+- Every runtime override must record:
+  - override type
+  - reason
+  - what changed
+  - effect on the current task
+  - whether extra approval was needed
+
+- Record it in the task file, and when operationally important also in:
+  - `PROJECT_ACTIVITY_LOG.md`
+  - `SUB_AGENT_STATUS.md`
+
+### Critical rules for Trust Metadata
+
+- **Trust Level is not a permission level.** Permissions remain governed by `AGENT_PERMISSION_MODEL.md`.
+- **Trust Level is not an activation trigger.** Activation remains governed by `AGENT_ACTIVATION_MATRIX.md`.
+- **Trust Level is not acceptance authority.**
+- **No Trust Level may bypass Post-Execution Review Gate.**
+- **Trust Level re-evaluation / Decay Rule:** أي مستوى Trust من `Verified` أو `Trusted` يجب إعادة تقييمه إذا:
+  - أنتج 2 `Needs Fix` ضمن 5 مهام متتالية، أو
+  - مرّت 15 مهمة دون مراجعة الحالة.
+  - مستوى `Trusted` ضروري لاعتبار المهمة للـ `Fast Path`.
+- The following invariant remains absolute:
+
+```text
+No acceptance without physical review.
+Tera must open the changed files and verify the actual implementation before acceptance.
+```
 
 ### When to update
 
@@ -1237,20 +1368,66 @@ Purpose: Track sub-agent usage, load, quality, update need, and potential merge 
 - When adding, activating, or deactivating an agent.
 - When an error repeats or visible pressure appears on an agent.
 - Before starting a new medium or large project.
+- After an emergency stop, forced narrowing, or repeated `Needs Fix` pattern.
+- After repeated successful execution under full review.
+- **After Trust Level re-evaluation / Decay Rule triggers.**
+
+### Mandatory Separation within Evaluation
+
+- `Status` = agent's operational state within the project.
+- `Quality` = output quality of the agent.
+- `Trust Level` = current reliability judgment.
+- `Last Intervention` = latest explicit Tera action on the agent.
+- `Last Event` = latest runtime event (Intervention, Override) — for quick status.
+- `Decision / Notes` = Tera's decisions about the agent.
+
+**Rules reference:** `TeraSubAgents.md` §3.5 (Trust Metadata & Intervention Safety Rules)
+- When Tera applies `Stop`, `Narrow`, `Restrict`, `Suspend`, or `Reinstate`.
 
 ### Mandatory separation within evaluation
 
 - `Status` = agent's operational state within the project.
 - `Quality` = output quality of the agent.
+- `Trust Level` = current reliability judgment for future delegation planning.
+- `Intervention` = explicit operational action taken by Tera on the agent.
 - `Decision / Notes` = what Tera decides about the agent.
 
 If the review produces an important administrative decision, it may also be recorded in `DECISIONS_LOG.md`.
+
+### Minimum structure for `SUB_AGENT_STATUS.md`
+
+Each tracked agent should include at minimum:
+
+```text
+Agent
+Status
+Quality
+Trust Level
+Last Intervention
+Last Basis / Evidence
+Decision / Notes
+```
+
+### Logging locations
+
+- `SUB_AGENT_STATUS.md` = current compact agent state, including latest intervention.
+- `PROJECT_ACTIVITY_LOG.md` = timestamped event trail of important interventions.
+- task file = use when the intervention is tied to a specific `TASK-ID`.
 
 ---
 
 ## 18. Client Discovery and Smart Interview Protocol
 
-Purpose: Guide Tera through the complete pre-intake and intake process — from first client conversation through structured questioning to confirmed understanding — before any formal preparation or implementation begins.
+> **ملاحظة نظامية:** بعد إعادة تنظيم المنظومة، هذا البروتوكول يُستخدم أساساً بواسطة
+> **TeraClientEngagementAgent** لإدارة Client Discovery و Smart Interview للمشاريع
+> الخارجية والداخلية عبر Majed.
+>
+> **TeraAgent لا يبدأ من Discovery raw idea**، بل يبدأ بعد استلام Handoff Package
+> معتمد من TCEA ثم ينتقل إلى Phase 2 — Project Decision.
+>
+> راجع `tera-system/TeraClientEngagement.md` و `tera-system/TeraAgent.md §1.2` و `§4.0`.
+
+Purpose: Guide the responsible agent through the complete pre-intake and intake process — from first client conversation through structured questioning to confirmed understanding — before any formal handoff to TeraAgent or formal preparation begins.
 
 The process has two stages:
 

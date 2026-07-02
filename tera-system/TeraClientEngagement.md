@@ -39,7 +39,7 @@ TeraAgent لا يأمر TeraClientEngagementAgent.
 
 ---
 
-## 3. المسؤوليات (8 مجاميع)
+## 3. المسؤوليات (9 مجاميع)
 
 ### 3.1 Client Qualification
 - تحديد هل الزبون جاد
@@ -87,7 +87,25 @@ TeraAgent لا يأمر TeraClientEngagementAgent.
 - توصية
 - حزمة معتمدة لـ Tera بعد موافقة Majed
 
-### 3.6 Delivery & Handover
+### 3.6 Workspace Creation & Handoff to Tera
+- بعد اعتماد النطاق والموافقات، إنشاء مساحة العمل:
+
+```text
+clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/
+├── client-engagement/
+├── project-inputs/
+├── project-preparation/
+├── project-control/
+├── generated-agents/
+├── client-approval/
+└── delivery/
+```
+
+- وضع `TERA_HANDOFF_PACKAGE.md` داخل `client-engagement/`.
+- تسليم مساحة العمل الجاهزة + الحزمة إلى TeraAgent عبر Majed.
+- **TeraAgent لا ينشئ مساحة العمل بنفسه** — يستلمها جاهزة من TCEA.
+
+### 3.7 Delivery & Handover
 - بعد أن ينهي Tera التطبيق ← استلام التطبيق من Majed
 - تحضير حزمة تسليم رسمية للزبون:
   - Delivery Checklist
@@ -153,7 +171,7 @@ Draft-only until explicitly approved by Majed.
 
 ## 5. العلاقة مع TeraAgent — التدفق الكامل
 
-### 5.1 قبل التنفيذ
+### 5.1 قبل التنفيذ (إنشاء مساحة العمل + التسليم)
 
 \`\`\`text
 Client → Majed → TeraClientEngagementAgent
@@ -162,8 +180,20 @@ Client → Majed → TeraClientEngagementAgent
   → إنتاج TERA_HANDOFF_PACKAGE.md
   → إنتاج مسودات الوثائق (اختياري)
   → Majed يراجع ويوافق
-  → TeraAgent يستلم الحزمة (Phase 1 — Handoff Intake)
+  → إنشاء مساحة العمل:
+      clients/CLIENT-*/applications/APP-*/
+      ├── client-engagement/   (TERA_HANDOFF_PACKAGE.md داخله)
+      ├── project-inputs/
+      ├── project-preparation/
+      ├── project-control/
+      ├── generated-agents/
+      ├── client-approval/
+      └── delivery/
+  → تسليم مساحة العمل الجاهزة + الحزمة إلى TeraAgent عبر Majed
+  → TeraAgent يبدأ من Phase 2 — Project Decision (وليس من Client Discovery)
 \`\`\`
+
+**ملاحظة:** TeraAgent لا ينشئ مساحة العمل — TCEA ينشئها ويسلّمها جاهزة.
 
 ### 5.2 أثناء التنفيذ (عند وجود نقص)
 

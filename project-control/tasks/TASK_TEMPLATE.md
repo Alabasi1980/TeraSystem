@@ -45,7 +45,19 @@ _What is the goal of this task?_
 2. 
 3. 
 
-## 6.1 Execution Gates
+## 6.1 Task Engineering Review
+
+| Field | Value |
+|---|---|
+| Review Required | Yes / No |
+| Review Type | None / Light / Full / Critical |
+| Review Agent | ExecutionPreparationAgent / Tera (Fast Path) |
+| Review Decision | APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE / N/A |
+| Review File | `[active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TASK_ENGINEERING_REVIEW.md` / In-task only / N/A |
+| Risk Level | Low / Medium / High / Critical |
+| Approved for Pre-Execution Gate | Yes / No |
+
+## 6.2 Execution Gates
 
 | Gate | Result | Notes |
 |---|---|---|
@@ -53,13 +65,24 @@ _What is the goal of this task?_
 | Model Capability Gate | _Current model sufficient / Safeguards / Stronger recommended / Stronger required_ | |
 | Pre-Execution Gate | _PASS / NEEDS_REVISION / BLOCKED_ | |
 
-## 6.2 CLI / Tool Side Effects
+## 6.2.1 Scoped Runtime Override
+
+| Field | Value |
+|---|---|
+| Runtime Override Used? | Yes / No |
+| Override Type | None / Narrow Targets / Expand Targets (In Scope) / Reduce Context / Escalate Review / Freeze Current Agent Path / Reassign Writer |
+| Reason | |
+| Scope Still Approved? | Yes / No |
+| Extra Approval Needed? | Yes / No |
+| Logged In | Task File / PROJECT_ACTIVITY_LOG / SUB_AGENT_STATUS / N/A |
+
+## 6.3 CLI / Tool Side Effects
 
 | Command / Tool | Allowed? | Expected Side Effects | Approval Needed? |
 |---|---|---|---|
 |  | _Yes / No / N/A_ |  | _Yes / No_ |
 
-## 6.3 UI / Frontend Requirements
+## 6.4 UI / Frontend Requirements
 
 Required for any UI, Frontend, layout, style, or component task.
 
