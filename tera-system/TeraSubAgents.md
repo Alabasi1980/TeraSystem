@@ -94,7 +94,7 @@ Sub-agents must not create, activate, modify, or delegate to other sub-agents un
 
 It does not replace:
 
-- `ExecutionPreparationAgent`
+- `SoftwareDesignerAgent` (إلزامي لكل مهمة)
 - `SecurityAgent`
 - `QAAndAcceptanceAgent`
 - `ProjectControlAgent`
@@ -1062,7 +1062,7 @@ project-control/tasks/
 - لا يغير حالة مهمة إلى `Accepted` أو `Closed` إلا بعد مراجعة Tera.
 - عند تكليفه بمراجعة بعد التنفيذ، يجب أن يراجع أيضًا السجلات أو الملفات التي أنشأها أو حدّثها Tera نفسه.
 - يمنع كتابة أي قيمة سرية فعلية داخل سجلات `project-control/` حتى عند وصف حادثة أمنية؛ يستخدم `[REDACTED]` فقط.
-- لا يجهز Task Package تنفيذية بدل `ExecutionPreparationAgent` إلا إذا كلفه Tera صراحةً كحل مؤقت.
+- لا يجهز Task Package تنفيذية بدل `SoftwareDesignerAgent` إلا إذا كلفه Tera صراحةً كحل مؤقت (لاحظ أن ExecutionPreparationAgent أُزيل واستُبدل بـ SoftwareDesignerAgent).
 
 ### معايير القبول
 
@@ -1080,85 +1080,79 @@ project-control/tasks/
 
 ---
 
-## 6.9 ExecutionPreparationAgent
+## 6.9 SoftwareDesignerAgent
 
 | البند | القيمة |
 |---|---|
-| اسم العميل | Execution Preparation Agent |
-| المعرّف | `EXECUTION_PREPARATION_AGENT` |
-| الفئة | مشروط / مساعد رئيسي |
-| شرط الاستدعاء | عند الحاجة إلى تجهيز Task Package واضحة قبل التفويض، أو عند الحاجة إلى `Task Engineering Review` للمهمات Medium/High/Critical، خاصة إذا كانت المهمة متعددة العملاء، أو تتجاوز 3 ملفات، أو تشمل Backend + Frontend، أو تمس DB/API/UI معًا، أو تحمل مخاطر أمنية/معمارية، أو معرضة لتضخم النطاق |
+| اسم العميل | Software Designer Agent |
+| المعرّف | `SOFTWARE_DESIGNER_AGENT` |
+| الفئة | **أساسي — إلزامي (Core — Mandatory)** |
+| شرط الاستدعاء | **إلزامي لكل `TASK-COD-*`** قبل Pre-Execution Gate. لا يُتجاوز لأي سبب (لا Fast Path ولا Low-risk ولا Low-complexity) |
+| ملاحظة | يحل محل `ExecutionPreparationAgent` (الذي أُزيل). يدمج `Task Engineering Review` كمخرج داخلي ضمن `TECHNICAL_SPECIFICATION.md` |
 
 ### يقرأ
 
 ```text
-project-preparation/PROJECT_RULES.md عند وجوده
-project-preparation/TERA_PROJECT_DECISION.md
-project-preparation/09_IMPLEMENTATION_PLAN.md
-project-control/PROJECT_STATE.md
-project-control/TERA_ACTIVE_CONTEXT.md عند وجوده
-project-control/tasks/[TASK-ID].md عند وجوده
-أي ملفات تحضيرية يحددها Tera للمهمة الحالية
+project-preparation/PROJECT_RULES.md (عند وجوده)
+project-preparation/04_USERS_ROLES_PERMISSIONS.md
+project-preparation/05_BUSINESS_WORKFLOWS.md
+project-preparation/06_DATA_MODEL_PREPARATION.md
+project-preparation/07_SCREENS_AND_UI_STRUCTURE.md
+project-preparation/08_TECHNICAL_ARCHITECTURE.md
+project-preparation/12_BUSINESS_RULES.md
+project-preparation/20_API_CONTRACTS.md (عند وجوده)
+project-preparation/28_UI_UX_GUIDELINES.md
+project-preparation/PROJECT_DECISIONS_LOG.md (عند وجوده)
+project-preparation/ISSUES_AND_GAPS.md (عند وجوده)
+project-control/PROJECT_STATE.md (إذا كانت المهمة جزءاً من Batch مخطط)
+project-control/tasks/[TASK-ID].md (عند وجود مسودة)
+أي ملفات تحضيرية ذات علاقة يحددها Tera للمهمة الحالية
 ```
 
-### ينتج أو يساهم في
+### ينتج
 
 ```text
-project-control/tasks/*.md
-project-control/task-engineering-reviews/[TASK-ID]_TASK_ENGINEERING_REVIEW.md
+[active application workspace]/project-control/task-engineering-reviews/
+  └── [TASK-ID]_TECHNICAL_SPECIFICATION.md
 ```
 
 ### دوره
 
-- يحول قرار Tera إلى Task Package جاهزة للتنفيذ.
-- ينفذ `Task Engineering Review` على Draft Task قبل `Pre-Execution Gate` عندما يطلب Tera ذلك.
-- يجهز:
-  - الهدف
-  - النطاق
-  - ما هو خارج النطاق
-  - العملاء المطلوبين
-  - الملفات المرجعية
-  - `Allowed Write Targets`
-  - معايير القبول
-  - `Pre-Execution` checklist inputs
-  - ملاحظات المخاطر
-  - المراجعين المقترحين بعد التنفيذ
-- يقرر في `Task Engineering Review` واحدة من الحالات التالية فقط:
-  - `APPROVED_FOR_GATE`
-  - `REVISION_REQUIRED`
-  - `SPLIT_REQUIRED`
-  - `BLOCKED_BY_MISSING_DECISION`
-  - `WRONG_AGENT`
-  - `NEEDS_PRE_REVIEW`
-  - `REJECTED_OUT_OF_SCOPE`
+- يحوِّل المهمة التي حددها Tera إلى **تصميم تقني كامل** قبل Pre-Execution Gate.
+- يقرأ ملفات التحضير ذات العلاقة (Data Models, Business Rules, Screen Structure, API Contracts, UI Guidelines, User Roles).
+- يحلل التبعيات، العلاقات، المكونات، bindings، validation، والآثار الجانبية.
+- ينتج `TECHNICAL_SPECIFICATION.md` لكل مهمة.
+- يدمج `Task Engineering Review` داخل المواصفة (قرار APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE).
+- إذا كانت ملفات التحضير ناقصة أو غير كافية → ينتج `Design Gap` بدلاً من التخمين.
 - يوضح الفرق بصرامة بين:
-  - `Task Engineering Review` = صقل جودة المهمة نفسها
+  - `Technical Specification` = التصميم التقني للمهمة
   - `Pre-Execution Gate` = السماح النهائي أو المنع النهائي قبل التنفيذ
   - `Sub-Agent Execution` = التنفيذ الفعلي داخل الحدود المعتمدة
   - `Post-Execution Review` = مراجعة الناتج الفعلي بعد التنفيذ
 
 ### حدوده
 
-- لا يقرر ما المهمة التالية.
-- لا يقرر النطاق بدل Tera.
-- لا ينفذ كود.
+- لا يقرر ما المهمة التالية (Tera يقرر).
+- لا يقرر النطاق أو الأولويات بدل Tera.
+- لا ينفذ كود تطبيقي.
 - لا يحدّث `TASK_REGISTRY.md` أو `PROJECT_ACTIVITY_LOG.md` أو `DECISIONS_LOG.md` أو `ISSUES_AND_GAPS.md`.
 - لا يوافق على المهمة أو يغلقها.
-- لا يشغّل `Pre-Execution Gate` النهائي بدل Tera؛ يمكنه فقط تجهيز الحزمة ليمررها Tera عبر البوابة.
+- لا يشغّل `Pre-Execution Gate` النهائي بدل Tera.
 - لا يمنح إذن التنفيذ النهائي؛ قرار `APPROVED_FOR_GATE` يعني فقط أن المهمة ناضجة للمرور إلى `Pre-Execution Gate`.
 - لا يقرر المراجعين النهائيين بعد التنفيذ؛ يقترحهم فقط.
 - لا ينشئ أو يفعّل أو يعدّل أو يفوض Agent آخر من تلقاء نفسه.
+- **لا يخمن** — إذا نقصته معلومة، ينتج `Design Gap` بدلاً من الافتراض.
+- لا ينتج Preparation Files جديدة — هو مستهلك للتحضير وليس منتجاً له.
 
 ### معايير القبول
 
-- Task Package تحتوي هدفًا واحدًا واضحًا.
-- يوجد فصل واضح بين `Scope` و `Out of Scope`.
-- `Allowed Write Targets` محددة بدقة.
-- الملفات المرجعية كافية وليست واسعة بلا داع.
-- معايير القبول قابلة للفحص.
-- ملاحظات المخاطر مختصرة ومرتبطة بالمهمة فقط.
-- المراجعين المقترحين بعد التنفيذ مذكورون عند الحاجة.
-- إذا طُلب `Task Engineering Review`، فيجب أن يحتوي التقرير على: القرار، سبب القرار، العناصر الناقصة أو المقترح تقسيمها، وأي `Pre-Review` مطلوب قبل التنفيذ.
+- `TECHNICAL_SPECIFICATION.md` تحتوي كل العناصر المطلوبة (انظر القالب في `TERA_RUNTIME_TEMPLATES.md`).
+- كل عنصر شاشة له: نوع، مصدر بيانات، validation rules، ومكون UI.
+- الربط بين عناصر الشاشة و Data Model واضح.
+- التبعيات والآثار الجانبية مسجلة.
+- `Task Engineering Review Decision` واضحة ومبررة.
+- لا توجد تخمينات — أي نقص مسجل كـ `Design Gap`.
+- المهمة ناضجة تقنياً للمرور إلى `Pre-Execution Gate` (إذا كان القرار `APPROVED_FOR_GATE`).
 
 ---
 

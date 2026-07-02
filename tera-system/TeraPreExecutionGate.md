@@ -75,7 +75,7 @@ Purpose:
 
 It does not replace:
 
-- `ExecutionPreparationAgent`
+- `SoftwareDesignerAgent` — ينتج `TECHNICAL_SPECIFICATION.md` إلزامياً
 - `SecurityAgent`
 - `QAAndAcceptanceAgent`
 - `ProjectControlAgent`
@@ -185,61 +185,50 @@ If the task would violate the approved engineering governance level, the Pre-Exe
 
 أي تنفيذ كود تطبيقي أو تعديل معماري أو بناء شاشة أو API أو قاعدة بيانات يجب أن يذهب إلى العميل المختص، ولا يسمح لتيرا بتنفيذه مباشرة.
 
-## 3.6 Task Engineering Review Prerequisite
+## 3.6 Technical Specification Prerequisite (SoftwareDesignerAgent — إلزامي)
 
-`Task Engineering Review` ليست بوابة سماح نهائية بالتنفيذ.
+**SoftwareDesignerAgent** هو عميل التصميم التقني الإلزامي لكل مهمة تنفيذية `TASK-COD-*`.
 
-هي خطوة صقل وتحليل لجودة المهمة نفسها قبل تشغيل `Pre-Execution Gate`، ويمكن أن ينفذها:
+قبل تشغيل `Pre-Execution Gate`، يجب أن:
 
-```text
-ExecutionPreparationAgent
-```
-
-عندما يقرر Tera ذلك حسب الخطورة أو التعقيد.
+1. يُفعّل **SoftwareDesignerAgent** لكل مهمة (لا استثناء، لا Fast Path).
+2. يقرأ ملفات التحضير ذات العلاقة.
+3. ينتج `TECHNICAL_SPECIFICATION.md` في:
+   ```text
+   [active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TECHNICAL_SPECIFICATION.md
+   ```
+4. تتضمن المواصفة `Task Engineering Review Decision` (مدمجة وليست خطوة منفصلة):
+   ```text
+   APPROVED_FOR_GATE
+   REVISION_REQUIRED
+   SPLIT_REQUIRED
+   BLOCKED_BY_MISSING_DECISION
+   WRONG_AGENT
+   NEEDS_PRE_REVIEW
+   REJECTED_OUT_OF_SCOPE
+   ```
+5. إذا كانت ملفات التحضير ناقصة → ينتج `Design Gap` بدلاً من التخمين.
 
 الفرق الإلزامي:
 
 ```text
-Task Engineering Review = refine the task.
+Technical Specification (SoftwareDesignerAgent) = design the task technically.
 Pre-Execution Gate = authorize or block execution.
 Sub-Agent Execution = perform the approved work.
 Post-Execution Review = inspect the real output after execution.
 ```
 
-القرارات المسموحة داخل `Task Engineering Review` فقط:
-
-```text
-APPROVED_FOR_GATE
-REVISION_REQUIRED
-SPLIT_REQUIRED
-BLOCKED_BY_MISSING_DECISION
-WRONG_AGENT
-NEEDS_PRE_REVIEW
-REJECTED_OUT_OF_SCOPE
-```
-
 القاعدة الأساسية:
 
 ```text
-For Medium, High, or Critical implementation tasks,
-Pre-Execution Gate cannot PASS unless Task Engineering Review is completed
-and its decision is APPROVED_FOR_GATE.
+For EVERY implementation task,
+Pre-Execution Gate cannot PASS unless Technical Specification is completed
+and its Task Engineering Review Decision is APPROVED_FOR_GATE.
 ```
 
-يجوز تجاوز `Task Engineering Review` فقط عندما تكون المهمة:
+**لا يجوز تجاوز SoftwareDesignerAgent لأي سبب.** لا Fast Path ولا Low-risk ولا Low-complexity.
 
-- Low-risk
-- صغيرة جدًا
-- ضمن Fast Path المبرر بوضوح من Tera
-- ولا تحتوي مؤشرات تعقيد أو خطر أو تعدد ملفات/اختصاصات
-
-عندما تستخدم هذه المراجعة، يجب تسجيلها داخل ملف المهمة أو في:
-
-```text
-[active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TASK_ENGINEERING_REVIEW.md
-```
-
-لكنها لا تستبدل أبدًا `Pre-Execution Gate Result` داخل ملف المهمة.
+_ملاحظة: `Task Engineering Review` سابقاً كان خطوة منفصلة ينفذها `ExecutionPreparationAgent` (أُزيل). الآن Task Engineering Review مدمجة داخل `TECHNICAL_SPECIFICATION.md`.
 
 ---
 
@@ -297,7 +286,7 @@ BLOCKED
 | 22 | إذا كانت المهمة UI/Frontend، هل ترتبط بـ `UI_ACCEPTANCE_GATE.md` وتتضمن UI Source / UI Rules / UI Acceptance / Design Gap Handling؟ | Yes / N/A |
 | 23 | إذا كانت المهمة تمس كود التطبيق أو المعمارية أو الموديولات أو API أو Validation أو Permissions أو Database أو Tests، هل تم تطبيق Engineering Governance Gate؟ | Yes / N/A |
 | 24 | هل المهمة تحترم مستوى الحوكمة الهندسية المعتمد Compact / Standard / Full دون over-engineering؟ | Yes / N/A |
-| 25 | إذا كانت المهمة Medium / High / Critical أو عليها Trigger تعقيد/خطر، هل اكتملت `Task Engineering Review` وكان قرارها `APPROVED_FOR_GATE`؟ | Yes / N/A |
+| 25 | هل اكتملت `Technical Specification` من `SoftwareDesignerAgent` وكانت `Task Engineering Review Decision` فيها `APPROVED_FOR_GATE`؟ (إلزامي لكل المهام) | Yes |
 
 إذا فشل أي بند، يجب على Tera تصحيح المهمة قبل عرضها.
 
@@ -860,19 +849,22 @@ Required Action:
 Read project state → Identify next task → Prepare/draft task package → Check CLI side effects → Run checklist → Revise until PASS → Ask approval
 ```
 
-### ExecutionPreparationAgent Preparation Rule
+### SoftwareDesignerAgent Preparation Rule (إلزامي)
 
-Tera may use `ExecutionPreparationAgent` to prepare the initial task package before delegation.
-This agent may draft scope, references, write targets, acceptance criteria, risk notes, reviewer suggestions, and `Task Engineering Review` findings only.
-Tera must still review that package himself, run the full `Pre-Execution Gate`, and keep final authority over approval, delegation, and closure.
+**SoftwareDesignerAgent** يُفعّل إلزامياً لكل مهمة تنفيذية لينتج `TECHNICAL_SPECIFICATION.md`.
 
-If `Task Engineering Review` is required for the task risk/complexity level, Tera must not treat the package as ready for gate authorization until the review decision is:
+يقوم الـ Agent بـ:
+- تحليل المهمة وقراءة ملفات التحضير
+- إنتاج التصميم التقني (Screen Elements, Data Bindings, Dependencies, Validation, Side Effects)
+- إنتاج `Task Engineering Review Decision` مدمجة
+- رفع `Design Gap` عند نقص المعلومات
 
-```text
-APPROVED_FOR_GATE
-```
+Tera يستعرض الـ Technical Specification قبل تشغيل `Pre-Execution Gate`.
+Tera يحتفظ بالسلطة النهائية على الاعتماد والتفويض والإغلاق.
 
 لا يعتمد على الذاكرة أو الاستنتاج العام. يعتمد على القائمة والفحص.
+
+_ملاحظة: ExecutionPreparationAgent أُزيل. SoftwareDesignerAgent هو البديل الإلزامي._
 
 ---
 

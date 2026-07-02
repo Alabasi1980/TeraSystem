@@ -79,7 +79,22 @@ If the change is executed by `TeraSystemEvolutionAgent`:
 - Did the change avoid unauthorized tool/MCP additions?
 - Does the change preserve folder boundaries from `TeraArchitectureMap.md`?
 
-### 7.1 TeraClientEngagementAgent-Specific Checks
+### 7.1 SoftwareDesignerAgent-Specific Checks
+
+If introducing or modifying `SoftwareDesignerAgent`:
+
+- Is it defined as **mandatory** (not conditional) for every `TASK-COD-*`?
+- Does `TeraSubAgents.md` §6.9 correctly replace `ExecutionPreparationAgent`?
+- Does `AGENT_ACTIVATION_MATRIX.md` show mandatory activation for all task types?
+- Does `AGENT_PERMISSION_MODEL.md` assign the correct permission level (`PLAN_ONLY`)?
+- Does `TeraPreExecutionGate.md` §3.6 require `TECHNICAL_SPECIFICATION.md` before Pre-Execution Gate?
+- Does `TASK_TEMPLATE.md` §6.1 reference `SoftwareDesignerAgent` and `TECHNICAL_SPECIFICATION.md`?
+- Is the `TECHNICAL_SPECIFICATION.md` template available in `TERA_RUNTIME_TEMPLATES.md`?
+- Have all references to `ExecutionPreparationAgent` been removed or updated?
+- Does the agent definition include a **No-Guessing Rule** (Design Gap instead)?
+- Is the agent a consumer (not producer) of preparation files?
+
+### 7.2 TeraClientEngagementAgent-Specific Checks
 
 If the change is executed by `TeraClientEngagementAgent`:
 

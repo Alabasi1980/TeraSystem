@@ -45,17 +45,17 @@ _What is the goal of this task?_
 2. 
 3. 
 
-## 6.1 Task Engineering Review
+## 6.1 Technical Specification (SoftwareDesignerAgent)
 
 | Field | Value |
 |---|---|
-| Review Required | Yes / No |
-| Review Type | None / Light / Full / Critical |
-| Review Agent | ExecutionPreparationAgent / Tera (Fast Path) |
-| Review Decision | APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE / N/A |
-| Review File | `[active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TASK_ENGINEERING_REVIEW.md` / In-task only / N/A |
+| Review Required | **Yes — Mandatory** (SoftwareDesignerAgent for every task) |
+| Review Agent | SoftwareDesignerAgent |
+| Technical Specification File | `[active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TECHNICAL_SPECIFICATION.md` |
+| Task Engineering Review Decision | APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE / N/A |
 | Risk Level | Low / Medium / High / Critical |
 | Approved for Pre-Execution Gate | Yes / No |
+| Design Gaps | List any gaps if preparation files were insufficient |
 
 ## 6.2 Execution Gates
 

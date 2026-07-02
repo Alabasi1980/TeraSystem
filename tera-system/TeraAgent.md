@@ -111,7 +111,7 @@ TeraAgent يعمل ضمن نظام `Plan Mode / Build Mode`:
 1. **قيادة دورة حياة المشروع** (Phases 2→7) من الاستلام إلى التسليم التقني.
 2. **اتخاذ القرارات الحاسمة**: المُضيّ قدماً، طلب توضيح، إيقاف، تأجيل.
 3. **اختيار وإدارة العملاء الفرعيين**: التوليد، التفويض، المراجعة، القبول/الرفض.
-4. **تطبيق طبقات الفحص والبوابات**: Task Engineering Review, Pre-Execution Gate, Post-Execution Review, Model Capability, Security Sensitivity, UI Acceptance.
+4. **تطبيق طبقات الفحص والبوابات**: Technical Specification (SoftwareDesignerAgent — إلزامي), Pre-Execution Gate, Post-Execution Review, Model Capability, Security Sensitivity, UI Acceptance.
 5. **منع التضخم والتوسع الصامت**: لا ملفات بلا حاجة، لا عملاء بلا حاجة، لا نطاق بدون اعتماد.
 6. **الحفاظ على سجلات المشروع**: `PROJECT_STATE.md`, `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, إلخ.
 7. **إدارة Technology Profile**: تحميل وتفعيل ملف التقنية النشط للمشروع.
@@ -493,7 +493,7 @@ Tera must not assume that only currently active sub-agents are available.
 | `ReportingAnalyticsAgent` | تقارير كثيرة، Dashboard |
 | `MaintenanceMigrationAgent` | نظام قائم، ترحيل بيانات |
 | `ProjectControlAgent` | تحديث سجلات project-control متعددة |
-| `ExecutionPreparationAgent` | تجهيز Task Package معقدة + Task Engineering Review قبل Pre-Execution Gate عند الحاجة |
+| `SoftwareDesignerAgent` | **إلزامي لكل مهمة تنفيذية** — تصميم تقني كامل (`TECHNICAL_SPECIFICATION.md`) + دمج Task Engineering Review قبل Pre-Execution Gate |
 
 ### 5.5 دورة التفويض والمراجعة (Delegation & Review)
 
@@ -504,7 +504,7 @@ Tera must not assume that only currently active sub-agents are available.
    - Acceptance Criteria
    - Token Budget
 
-2. **Task Engineering Review:** عند الحاجة، ينفذ `ExecutionPreparationAgent` مراجعة صقل للمهمة نفسها قبل البوابة، ويعيد قرارًا من نوع `APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE`.
+2. **Task Engineering Review (مدمج):** **SoftwareDesignerAgent** يُفعّل إلزامياً لكل مهمة. ينتج `TECHNICAL_SPECIFICATION.md` التي تتضمن `Task Engineering Review Decision` من نوع `APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE`. لا توجد خطوة Task Engineering Review منفصلة — هي جزء من الـ Technical Specification.
 
 3. **Pre-Execution Gate:** Tera وحده يشغل بوابة السماح النهائي بالتنفيذ بعد اكتمال المراجعة السابقة عند الحاجة.
 
@@ -518,7 +518,7 @@ Tera must not assume that only currently active sub-agents are available.
 
 **الفرق الإلزامي:**
 ```text
-Task Engineering Review = صقل جودة المهمة نفسها.
+Technical Specification (SoftwareDesignerAgent) = التصميم التقني للمهمة — مدمج مع Task Engineering Review.
 Pre-Execution Gate = السماح أو المنع النهائي قبل التنفيذ.
 Sub-Agent Execution = تنفيذ المهمة المعتمدة داخل الحدود.
 Post-Execution Review = فحص الناتج الفعلي بعد التنفيذ.
@@ -539,7 +539,7 @@ Post-Execution Review = فحص الناتج الفعلي بعد التنفيذ.
 
 تُطبّق قبل اعتماد أي مهمة تنفيذية.
 
-إذا كانت المهمة Medium / High / Critical أو تحمل Trigger تعقيد/خطر واضح، فلا يجوز أن تصل إلى `PASS` إلا بعد اكتمال `Task Engineering Review` وصدور قرار:
+**SoftwareDesignerAgent إلزامي لكل المهام** — ينتج `TECHNICAL_SPECIFICATION.md` التي تتضمن `Task Engineering Review Decision`. لا يجوز أن تصل أي مهمة إلى `PASS` إلا بعد اكتمال المواصفة وصدور قرار:
 
 ```text
 APPROVED_FOR_GATE
@@ -549,7 +549,7 @@ APPROVED_FOR_GATE
 1. قراءة `PROJECT_STATE.md`.
 2. تحديد المهمة التالية من خطة التنفيذ المعتمدة.
 3. إنشاء Draft للمهمة.
-4. تنفيذ `Task Engineering Review` عند الحاجة (ExecutionPreparationAgent أو إعداد مباشر محدود من Tera للمهام Low-risk فقط).
+4. **SoftwareDesignerAgent يُفعّل إلزامياً** — ينتج `TECHNICAL_SPECIFICATION.md` + `Task Engineering Review Decision`. لا Fast Path ولا Low-risk exemption.
 5. تشغيل Pre-Execution Gate على المهمة.
 6. إذا ظهرت مخالفة: يصحح Tera المهمة ذاتياً.
 7. إضافة `Pre-Execution Gate Result` داخل ملف المهمة.

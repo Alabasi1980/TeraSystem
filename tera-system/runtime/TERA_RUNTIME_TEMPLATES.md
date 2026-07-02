@@ -1111,6 +1111,96 @@ The generated file is saved to `project-control/EXECUTION_BATCH_PLAN.md`.
 
 ---
 
+## 31.5 Technical Specification Template (SoftwareDesignerAgent Output)
+
+This template defines the required structure of `[TASK-ID]_TECHNICAL_SPECIFICATION.md`.
+
+Produced by **SoftwareDesignerAgent** before every `Pre-Execution Gate`.
+
+```markdown
+# [TASK-ID] Technical Specification
+
+## 1. Task Overview
+
+| Field | Value |
+|---|---|
+| Objective | |
+| Scope | |
+| Out of Scope | |
+
+## 2. Screen Elements
+
+| Element | Type | Data Source | Validation Rules | UI Component |
+|---|---|---|---|---|
+| [element name] | [Text/Number/Date/Select/etc.] | [Entity.Field] | [required, min, max, pattern, BR-XX] | [from 28_UI_UX_GUIDELINES.md] |
+| ... | ... | ... | ... | ... |
+
+## 3. Data Bindings
+
+| Element | Entity/Field | API Endpoint | Parameters |
+|---|---|---|---|
+| ... | ... | ... | ... |
+
+## 4. Screen Dependencies
+
+- [List screens/tasks this task depends on]
+
+## 5. Component Hierarchy
+
+```text
+[Component tree structure]
+```
+
+## 6. State Management
+
+| State | Behavior |
+|---|---|
+| Loading | |
+| Empty | |
+| Error | |
+| Success | |
+
+## 7. Event Handling
+
+| Event | Action |
+|---|---|
+| onSubmit | |
+| onCancel | |
+| onChange | |
+| onDelete | |
+
+## 8. Side-Effect Registry
+
+| Side Effect | Impact | Mitigation |
+|---|---|---|
+| ... | ... | ... |
+
+## 9. Reviewers (Suggested)
+
+- [Agent/role]
+
+## 10. Task Engineering Review Decision
+
+| Field | Value |
+|---|---|
+| Decision | APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE |
+| Reason | |
+| Risk Level | Low / Medium / High / Critical |
+
+## 11. Design Gaps
+
+| Gap | Missing File | Impact |
+|---|---|---|
+| ... | ... | ... |
+```
+
+**Rules:**
+- If any required preparation file is missing → `Design Gap` is raised, not guessed.
+- If `Task Engineering Review Decision` is not `APPROVED_FOR_GATE` → task cannot proceed to `Pre-Execution Gate`.
+- Non-UI tasks still produce a Technical Specification (focus on data flow, API, validation, side effects).
+
+---
+
 ## 32. Post-Execution Review (Phase 6 Review Template)
 
 This template is used inside `project-control/tasks/TASK-COD-XXX.md` after an agent handback and before any task acceptance or closure.

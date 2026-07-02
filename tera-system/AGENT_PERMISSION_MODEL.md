@@ -208,7 +208,7 @@
 | ReportingAnalyticsAgent | `REPORTING_ANALYTICS_AGENT` | `WRITE_DOCS` | — | يوثق متطلبات التقارير |
 | MaintenanceMigrationAgent | `MAINTENANCE_MIGRATION_AGENT` | `WRITE_DOCS` | — | يخطط للترحيل |
 | ProjectControlAgent | `PROJECT_CONTROL_AGENT` | `WRITE_CONTROL` | — | يتحكم في سجلات المشروع فقط |
-| ExecutionPreparationAgent | `EXECUTION_PREPARATION_AGENT` | `WRITE_DOCS` | إلى `PLAN_ONLY` إذا ما زالت الخطة غير ناضجة | يجهز Task Packages فقط |
+| SoftwareDesignerAgent | `SOFTWARE_DESIGNER_AGENT` | `PLAN_ONLY` | إلى `WRITE_DOCS` عند الحاجة لإنتاج Technical Specification مع مرفقات | ينتج `TECHNICAL_SPECIFICATION.md` فقط — يقرأ ملفات التحضير ولا يكتب كوداً |
 | QualityReviewCoordinatorAgent | `QUALITY_REVIEW_COORDINATOR_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم تقرير فقط | ينسق المراجعة فقط |
 | PlanComplianceReviewAgent | `PLAN_COMPLIANCE_REVIEW_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم التقرير فقط | يراجع توافق الخطة فقط |
 | DomainResearchAgent | `DOMAIN_RESEARCH_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم التقرير | يبحث فقط |

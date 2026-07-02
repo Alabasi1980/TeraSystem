@@ -60,7 +60,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | ReportingAnalyticsAgent | `REPORTING_ANALYTICS_AGENT` | `COMPLEXITY_SIGNAL`: تقارير كثيرة، Dashboard، KPIs، تصدير | 5–6 | إذا كان التطبيق لا يحتوي تقارير أو لوحات بيانات | `13_REPORTS_AND_DASHBOARDS.md` |
 | MaintenanceMigrationAgent | `MAINTENANCE_MIGRATION_AGENT` | `EXTERNAL_FACTOR`: نظام قائم، ترحيل بيانات، Legacy | 5–6–7 | إذا كان المشروع جديدًا بالكامل بدون ترحيل | `31_MAINTENANCE_AND_SUPPORT.md` أو `00_PROJECT_INPUTS.md` |
 | ProjectControlAgent | `PROJECT_CONTROL_AGENT` | `REVIEW_NEEDED`: عند الحاجة لتحديث سجلات `project-control` أو فحص اتساق | 4–5–6–7 | إذا لم تكن هناك حاجة لتحديث سجلات متعددة أو فحص اتساق | ملفات project-control الحالية |
-| ExecutionPreparationAgent | `EXECUTION_PREPARATION_AGENT` | `COMPLEXITY_SIGNAL / RISK_SIGNAL`: مهمة Medium/High/Critical، أو متعددة العملاء، أو تتجاوز 3 ملفات، أو تشمل Backend + Frontend، أو تمس DB/API/UI معًا، أو صلاحيات/مالية/مخزون/workflow/migration، أو تحتاج تقسيمًا أو قرارات حاسمة قبل التنفيذ | 5–6 | إذا كانت المهمة Low-risk وبسيطة ويمكن لـ Tera تجهيز Task Package مباشرة عبر Fast Path أو تجهيز مباشر محدود | `TASK-ID` المقترح + ملفات التحليل المعتمدة + Technology Profile النشط |
+| SoftwareDesignerAgent | `SOFTWARE_DESIGNER_AGENT` | `PHASE_GATE` + `MANDATORY`: كل `TASK-COD-*` بدون استثناء. لا Fast Path ولا Low-risk exemption | 5 | **أبداً** — إلزامي لكل مهمة تنفيذية. لا يُتجاوز | ملفات التحضير المعتمدة + سياق المهمة من Tera |
 | QualityReviewCoordinatorAgent | `QUALITY_REVIEW_COORDINATOR_AGENT` | `REVIEW_NEEDED`: قبل مرحلة تنفيذ كبيرة، أو بعد عدة مهام، أو قبل Release | 5–6–7 | إذا كان المشروع صغيرًا والمهام قليلة ويمكن لـ Tera متابعتها يدويًا | `PROJECT_STATE.md` + `TASK_REGISTRY.md` |
 | PlanComplianceReviewAgent | `PLAN_COMPLIANCE_REVIEW_AGENT` | `REVIEW_NEEDED`: نهاية Phase، أو بعد دفعة مهام رئيسية، أو قبل قبول MVP | 5–6–7 | إذا كان التنفيذ متوافقًا بوضوح مع الخطة ولا توجد انحرافات ظاهرة | `PROJECT_MASTER_PLAN.md` + `TASK_REGISTRY.md` |
 | DomainResearchAgent | `DOMAIN_RESEARCH_AGENT` | `COMPLEXITY_SIGNAL / USER_REQUEST`: مجال غير مألوف، أو حاجة بحث خارجي | 1–2–3 | إذا كان المجال معروفًا بالكامل أو المستخدم قدم جميع المعلومات المطلوبة | Domain Research Brief من Tera |
@@ -120,7 +120,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | PerformanceAgent | اختياري | إذا توقعنا حجم مستخدمين متوسط |
 | ReportingAnalyticsAgent | اختياري | إذا كان هناك Dashboard |
 | ProjectControlAgent | اختياري | عند تعدد المهمات |
-| ExecutionPreparationAgent | اختياري | عند وجود Task Engineering Review أو تعقيد المهمات |
+| SoftwareDesignerAgent | **نعم — إلزامي** | **إلزامي لكل مهمة تنفيذية — لا يُتجاوز** |
 
 ### 3.3 مشروع ERP (نظام تخطيط موارد مؤسسة)
 
@@ -143,7 +143,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | ReportingAnalyticsAgent | نعم | ERP يحتوي تقارير كثيرة |
 | MaintenanceMigrationAgent | نعم | ERP يحتاج ترحيل بيانات |
 | ProjectControlAgent | نعم | إدارة تتبع متقدمة |
-| ExecutionPreparationAgent | نعم | مهام متعددة ومعقدة |
+| SoftwareDesignerAgent | **نعم — إلزامي** | **إلزامي لكل مهمة تنفيذية — لا يُتجاوز** |
 | QualityReviewCoordinatorAgent | نعم | بعد مجموعات مهام |
 | PlanComplianceReviewAgent | نعم | قبل قبول مراحل |
 | DomainResearchAgent | اختياري | لمجالات ERP غير المألوفة |
@@ -169,7 +169,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | PerformanceAgent | نعم | قابلية التوسع |
 | ReportingAnalyticsAgent | اختياري | حسب الاحتياج |
 | ProjectControlAgent | اختياري | عند تعدد المهمات |
-| ExecutionPreparationAgent | اختياري | عند وجود Task Engineering Review أو تعقيد المهمات |
+| SoftwareDesignerAgent | **نعم — إلزامي** | **إلزامي لكل مهمة تنفيذية — لا يُتجاوز** |
 
 ---
 
@@ -227,15 +227,25 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 - Brief reason for activation
 ```
 
-### 4.6 قاعدة Task Engineering Review
+### 4.6 قاعدة Task Engineering Review (مدمجة في SoftwareDesignerAgent)
 
 ```text
-لا يُفعّل ExecutionPreparationAgent لكل مهمة بشكل تلقائي.
-يُستخدم Task Engineering Review فقط عندما تكون المهمة Medium / High / Critical
-أو عندما يظهر Trigger تعقيد/خطر واضح.
+SoftwareDesignerAgent إلزامي لكل مهمة تنفيذية TASK-COD-* بدون استثناء.
+لا Fast Path ولا Low-risk exemption.
 
-Low-risk one-file fixes أو التعديلات النصية/التوثيقية البسيطة
-يمكن أن تمر دون Task Engineering Review إذا برر Tera ذلك ضمن Fast Path.
+Task Engineering Review هو مخرج داخلي ضمن TECHNICAL_SPECIFICATION.md
+يُنتجه SoftwareDesignerAgent كجزء من تصميمه التقني، وليس خطوة منفصلة.
+
+قرارات Task Engineering Review المسموحة:
+  APPROVED_FOR_GATE
+  REVISION_REQUIRED
+  SPLIT_REQUIRED
+  BLOCKED_BY_MISSING_DECISION
+  WRONG_AGENT
+  NEEDS_PRE_REVIEW
+  REJECTED_OUT_OF_SCOPE
+
+ملاحظة: ExecutionPreparationAgent أُزيل — استُبدل بـ SoftwareDesignerAgent.
 ```
 
 يجوز أيضاً أن يسجل Tera **Trust Level الحالي** للعميل في `SUB_AGENT_STATUS.md` إن كان الملف

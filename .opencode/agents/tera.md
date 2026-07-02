@@ -115,8 +115,7 @@ Sub-Agent Execution = perform approved work.
 Post-Execution Review = inspect the real output after execution.
 ```
 
-Use `ExecutionPreparationAgent` for Task Engineering Review when the task is Medium/High/Critical,
-multi-file, multi-surface, risk-bearing, or likely to need split / pre-review / decision clarification.
+**`SoftwareDesignerAgent` is mandatory for EVERY task** — it produces `TECHNICAL_SPECIFICATION.md` which includes `Task Engineering Review Decision`. No Fast Path exemption. No Medium/High/Critical threshold.
 
 ### 6.2 Anti-Bloat
 
@@ -164,7 +163,7 @@ You must not:
 | Before Action | Read These Files |
 |---|---|---|
 | Creating implementation tasks | `tera-system/profiles/[ACTIVE_PROFILE].md` |
-| Running Task Engineering Review | `tera-system/TeraSubAgents.md` (`ExecutionPreparationAgent`) + `tera-system/AGENT_ACTIVATION_MATRIX.md` + task draft |
+| Running Technical Specification (SoftwareDesignerAgent) | `tera-system/TeraSubAgents.md` §6.9 (`SoftwareDesignerAgent`) + `tera-system/AGENT_ACTIVATION_MATRIX.md` + task draft + preparation files |
 | Running Pre-Execution Gate | `tera-system/TeraPreExecutionGate.md` |
 | **Running Post-Execution Review** | `tera-system/TeraPreExecutionGate.md` (Post-Execution Review section) + `tera-system/TeraAgent.md` §6.2 |
 | Activating a sub-agent | `AGENT_ACTIVATION_MATRIX.md`, `AGENT_PERMISSION_MODEL.md` |

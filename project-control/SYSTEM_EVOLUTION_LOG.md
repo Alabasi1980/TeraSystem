@@ -630,6 +630,88 @@ No acceptance without physical review.
 
 ---
 
+## SCP-2026-07-03-012: إنشاء SoftwareDesignerAgent مع إلغاء ExecutionPreparationAgent
+
+| الحقل | القيمة |
+|---|---|
+| **Date** | 2026-07-03 |
+| **Change ID** | SCP-2026-07-03-012 |
+| **Request Source** | SYSTEM_CHANGE_PROPOSAL (معتمد من Majed) |
+| **Change Type** | New Core Agent / Architecture Upgrade / Agent Replacement |
+| **Proposed by** | TeraSystemEvolutionAgent |
+| **Approved by** | Majed |
+
+### ما تم تنفيذه
+
+1. **إنشاء `SoftwareDesignerAgent`** — عميل تصميم تقني إلزامي لكل مهمة تنفيذية `TASK-COD-*`.
+2. **إلغاء `ExecutionPreparationAgent`** — استبداله بالكامل.
+3. **دمج `Task Engineering Review`** داخل `TECHNICAL_SPECIFICATION.md` — لم تعد خطوة منفصلة.
+4. **إضافة قالب `TECHNICAL_SPECIFICATION.md`** في `TERA_RUNTIME_TEMPLATES.md` §31.5.
+5. **تحديث كل الملفات النظامية** لتعكس الـ Agent الجديد.
+
+### ما تغير
+
+| الملف | التغيير |
+|---|---|
+| `.opencode/agents/tera-software-designer.md` | **جديد** — تعريف الـ Agent النشط |
+| `tera-system/TeraSubAgents.md` §6.9 | **استبدال** — ExecutionPreparationAgent ← SoftwareDesignerAgent |
+| `tera-system/AGENT_ACTIVATION_MATRIX.md` | **تحديث** — تفعيل إلزامي لكل المشاريع |
+| `tera-system/AGENT_PERMISSION_MODEL.md` | **تحديث** — `PLAN_ONLY` للـ Agent الجديد |
+| `tera-system/TeraAgent.md` §§5, 6 | **تحديث** — استبدال الإشارات |
+| `tera-system/TeraPreExecutionGate.md` §3.6 | **تحديث** — Technical Specification إلزامي |
+| `project-control/tasks/TASK_TEMPLATE.md` §6.1 | **تحديث** — ربط Technical Specification |
+| `tera-system/TeraPolicyMap.md` | **تحديث** — إضافة مصدر حقيقة |
+| `tera-system/TeraArchitectureMap.md` | **تحديث** — إضافة SoftwareDesignerAgent في Core Flow |
+| `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` | **تحديث** — استبدال إشارات الـ Orchestration |
+| `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` | **تحديث** — إضافة قالب Technical Specification |
+| `tera-system/TeraSystemMaintenanceChecklist.md` | **تحديث** — إضافة فحوصات الـ Agent |
+| `.opencode/agents/tera.md` | **تحديث** — استبدال الإشارات |
+
+### ما أُزيل
+
+- **`ExecutionPreparationAgent`** من `TeraSubAgents.md` §6.9 (استُبدل)
+- **`Task Engineering Review` كخطوة منفصلة** (أُدمج في Technical Specification)
+- **Fast Path exemption** للتصميم التقني (لم يعد مسموحاً)
+
+### Validation
+
+- ✅ All ExecutionPreparationAgent references updated or converted to history notes
+- ✅ No stale references in client apps or task files
+- ✅ 12 files modified + 1 new file = 237 lines added, ~132 removed
+- ✅ Anti-Bloat Gate: PASS — replaces + integrates, no new bloat
+- ✅ Architecture Map consistency: SoftwareDesignerAgent in Core Flow
+- ✅ Policy Map: new source of truth added
+- ✅ No client-app contamination
+- ✅ No unauthorized privilege expansion (PLAN_ONLY only)
+
+### المخاطر
+
+| المخاطرة | المستوى | خطة التخفيف |
+|---|---|---|
+| إلغاء ExecutionPreparationAgent قد يؤثر على مهام قديمة | منخفض | الـ Agent الجديد يدمج جميع وظائف القديم |
+| Technical Specification تطيل وقت التحضير | منخفض | الـ Agent يعمل بالتوازي مع Tera |
+| اعتماد على وثائق تحضير غير مكتملة | متوسط | الـ Agent ينتج Design Gap بدلاً من التخمين |
+
+### ملاحظات الاسترجاع (Rollback)
+
+1. `git restore .opencode/agents/tera.md`
+2. `git restore tera-system/TeraSubAgents.md`
+3. `git restore tera-system/AGENT_ACTIVATION_MATRIX.md`
+4. `git restore tera-system/AGENT_PERMISSION_MODEL.md`
+5. `git restore tera-system/TeraAgent.md`
+6. `git restore tera-system/TeraPreExecutionGate.md`
+7. `git restore project-control/tasks/TASK_TEMPLATE.md`
+8. `git restore tera-system/TeraPolicyMap.md`
+9. `git restore tera-system/TeraArchitectureMap.md`
+10. `git restore tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md`
+11. `git restore tera-system/runtime/TERA_RUNTIME_TEMPLATES.md`
+12. `git restore tera-system/TeraSystemMaintenanceChecklist.md`
+13. `Remove-Item -LiteralPath ".opencode/agents/tera-software-designer.md"`
+14. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+```
+
+---
+
 ### الإدخال الثالث عشر — SCP-2026-07-02-010
 
 ```
