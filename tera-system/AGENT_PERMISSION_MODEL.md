@@ -1,4 +1,4 @@
-# AGENT_PERMISSION_MODEL.md
+﻿# AGENT_PERMISSION_MODEL.md
 
 # نموذج صلاحيات العملاء الفرعيين — Sub-Agent Permission Model
 
@@ -216,12 +216,11 @@
 
 ### 3.3 عملاء التعامل مع العملاء الخارجيين
 
+> **ملاحظة نظامية:** `ClientDiscoveryAgent` و `ProposalScopeAgent` و `ClientApprovalReviewAgent` و `ChangeControlAgent` أُزيلوا من هذا الجدول. مسؤولياتهم دُمجت في `TeraClientEngagementAgent` (عميل حوكمة مستقل، ليس تابعاً لـ Tera). راجع `tera-system/TeraClientEngagement.md`.
+
 | العميل | المعرف | الصلاحية الافتراضية | هل يمكن رفعها؟ | ملاحظة |
 |---|---|---|---|---|
-| ClientDiscoveryAgent | `CLIENT_DISCOVERY_AGENT` | `WRITE_DOCS` | — | يكتب في client-inputs فقط |
-| ProposalScopeAgent | `PROPOSAL_SCOPE_AGENT` | `WRITE_DOCS` | — | يكتب proposal و scope فقط |
-| ClientApprovalReviewAgent | `CLIENT_APPROVAL_REVIEW_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تدوين ملاحظات المراجعة | يراجع فقط |
-| ChangeControlAgent | `CHANGE_CONTROL_AGENT` | `WRITE_DOCS` | — | يوثق طلب التغيير فقط |
+| TeraClientEngagementAgent | `CLIENT_ENGAGEMENT_AGENT` | `WRITE_DOCS` | لا — يبقى `WRITE_DOCS` | عميل جلسة حوكسة مستقل (ليس Sub-Agent). يدير دورة حياة الزبون وينتج `TERA_HANDOFF_PACKAGE.md`.
 
 ### 3.4 عملاء جلسات الحوكمة الرئيسية
 
@@ -233,6 +232,7 @@
 | Monitor | `MONITOR_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` لتسليم تقرير محدد فقط | يراجع توافق الخطة ولا يصحح التنفيذ |
 | Design Reviewer | `DESIGN_REVIEWER_AGENT` | `READ_ONLY` | إلى `RUN_TESTS` للمعاينة/الفحص البصري بعد موافقة المالك | لا ينفذ UI ولا يغير التصميم |
 
+| TeraClientEngagementAgent | "CLIENT_ENGAGEMENT_AGENT" | "WRITE_DOCS" | إلى "READ_ONLY" إذا كان الموقف يحتاج مراجعة فقط، أو إلى "WRITE_CONTROL" لتوثيق سجلات محددة بعد الموافقة | يكتب مسودات وثائق واستبيانات وحزم تسليم فقط. لا يكتب كوداً ولا يعدل تطبيقات ولا يعتمد العقود أو الأسعار النهائية |
 ---
 
 ## 4. رفع الصلاحية أو خفضها

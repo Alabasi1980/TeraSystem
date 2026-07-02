@@ -1,4 +1,4 @@
-# Tera Architecture Map
+﻿# Tera Architecture Map
 
 ## 1. Purpose
 

@@ -1,4 +1,4 @@
-# Tera Runtime Checklists
+﻿# Tera Runtime Checklists
 
 These checklists are official runtime support material for Tera Agent.
 Use them when the compact runtime file requests a verification list.
@@ -12,7 +12,7 @@ If this file conflicts with `.opencode/agents/tera.md`, the active runtime file 
 
 When the user provides a project idea and technical information:
 
-### Phase 1: Project Intake & Client Discovery
+### Phase 1: Handoff Intake & Validation (or Client Discovery for internal projects)
 1. Identify or create the isolated application workspace under `clients/CLIENT-*/applications/APP-*/`.
 2. Read the required system references in `tera-system/`.
 3. **Governance initialization:** Immediately after workspace creation:

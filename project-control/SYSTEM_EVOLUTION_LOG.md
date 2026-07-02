@@ -1,4 +1,4 @@
-# SYSTEM_EVOLUTION_LOG.md
+﻿# SYSTEM_EVOLUTION_LOG.md
 
 ## غرض هذا السجل
 
@@ -120,4 +120,78 @@
 3. git restore tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md
 4. استرجاع temp/Developer Best Practice.md من git
 5. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+```
+
+### الإدخال الرابع — SCP-2026-07-02-001
+
+```
+تاريخ: 2026-07-02
+معرف التغيير: SCP-2026-07-02-001
+مصدر الطلب: User Request (Majed) — إنشاء TeraClientEngagementAgent
+نوع التغيير: New Governance Session Agent + Policy Update + Architecture Update + Protocol Update
+الملفات المنشأة:
+- tera-system/TeraClientEngagement.md (مصدر الحقيقة المرجعي — 5 أجزاء)
+- .opencode/agents/tera-client-engagement.md (ملف العميل النشط لجلسات OpenCode)
+الملفات المعدلة (النظام الأساسي):
+- tera-system/TeraAgent.md — تحويل Phase 1 (14 تغييراً), إزالة مسؤوليات الزبون, تحديث شجرة $39
+- tera-system/TeraSubAgents.md — إضافة §14.5 TeraClientEngagementAgent
+- tera-system/AGENT_ACTIVATION_MATRIX.md — إضافة §2.4 CLIENT_REQUEST trigger
+- tera-system/AGENT_PERMISSION_MODEL.md — إضافة TeraClientEngagementAgent (WRITE_DOCS)
+- tera-system/TeraPolicyMap.md — إضافة المصادر الجديدة
+- tera-system/TeraArchitectureMap.md — تحديث صف Client engagement مع Client Engagement Workflow
+- tera-system/TeraSystemMaintenanceChecklist.md — إضافة §7.1 فحوصات خاصة
+- tera-system/TeraClientPolicy.md — إضافة ملاحظة نظامية: مسؤولية تنفيذ السياسة انتقلت
+- tera-system/TeraProjectIntakePolicy.md — إضافة ملاحظة: مسار بديل مع TERA_HANDOFF_PACKAGE.md
+الملفات المعدلة (ملفات العملاء):
+- .opencode/agents/tera.md — إضافة مرجع TeraClientEngagement.md + ملاحظة عن مسار التعامل مع الزبون
+الملفات المعدلة (Runtime — تحديث محدود):
+- tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md — تحديث §14 و §18 مع ملاحظات نظامية
+- tera-system/runtime/TERA_RUNTIME_TEMPLATES.md — تحديث §21 و §25 مع ملاحظات نظامية
+- tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md — تحديث Phase 1 + مسار بديل
+الملخص:
+إنشاء TeraClientEngagementAgent كعميل حوكمة مستقل لإدارة دورة حياة الزبون.
+العميل الجديد: اسمه TeraClientEngagementAgent، معرفه CLIENT_ENGAGEMENT_AGENT،
+نوعه Client Lifecycle Session Agent (جلسة حوكمة مستقلة).
+يحل محل TeraAgent في كل ما يتعلق بالزبون: Discovery, Proposal, Approval, Change Control.
+TeraAgent لم يعد يتواصل مع الزبون — يستقبل TERA_HANDOFF_PACKAGE.md جاهزة.
+كل التواصل عبر Majed فقط. لا عملاء فرعيين. لا MCPs. لا CRM.
+المصطلح المعماري: "Client Engagement Workflow" (وليست Layer).
+مجلد client-engagement/ يُنشأ فقط عند وجود تطبيق عميل فعلي.
+مصدر الأسئلة: TeraApplicationQuestionBank.md + أسئلة استشارية/تجارية إضافية.
+Websearch تلقائي بعد الفهم الأولي.
+التسعير: Scope-Based Pricing + Effort Estimation — مسودات فقط.
+كل الوثائق مسودات (Draft-only) حتى موافقة Majed الصريحة.
+الموافقة: Majed — Approved with Conditions
+
+### التصحيح الثاني (Second Pass) — 2026-07-02
+
+بعد اختبار TeraClientEngagementAgent، اكتُشفت بقايا مسؤوليات زبون لم تُنقل. تم تصحيحها:
+
+الملفات المعدلة إضافياً:
+- tera-system/TeraAgent.md:
+  - §3 — إزالة 7 مسؤوليات زبون وإبقاء 3 بنود حوكمة فقط + إضافة ملاحظة نظامية
+  - §13 — إزالة ClientDiscoveryAgent, ProposalScopeAgent, ClientApprovalReviewAgent, ChangeControlAgent من قائمة العملاء المشروطوين
+  - §14 — إعادة كتابة كاملة: مسار خارجي (تخطي Discovery) + مسار داخلي (Discovery كامل)
+  - §34 — تحديث شرط Build Mode ليشير إلى TERA_HANDOFF_PACKAGE.md بدلاً من client approval package
+  - Phase 7 — توثيق أن Client Handover Package من TCEA
+  - إضافة بروتوكول Maintenance & Support Bridge بعد Phase 7
+- tera-system/AGENT_PERMISSION_MODEL.md §3.3 — استبدال 4 عملاء فرعيين بـ TeraClientEngagementAgent
+- tera-system/AGENT_ACTIVATION_MATRIX.md §2.3 — إزالة جدول العملاء + إضافة ملاحظة نظامية; §2.4 — دمج صفي TCEA في صف واحد
+
+التحقق من الصحة: Git diff --check: PASS
+المخاطر:
+- متوسطة: تعديل TeraAgent.md جوهري — تحول 14 مقطعاً في التعديل الأول + 6 مقاطع في التصحيح الثاني
+- منخفضة للبقية
+ملاحظات الاسترجاع (Rollback):
+1. git restore tera-system/TeraAgent.md (أكبر ملف تغيير)
+2. git restore tera-system/AGENT_PERMISSION_MODEL.md
+3. git restore tera-system/AGENT_ACTIVATION_MATRIX.md
+4. حذف tera-system/TeraClientEngagement.md
+5. حذف .opencode/agents/tera-client-engagement.md
+6. عكس تغييرات TeraSubAgents.md
+7. عكس تغييرات TeraPolicyMap.md / TeraArchitectureMap.md / TeraSystemMaintenanceChecklist.md
+8. عكس تغييرات TeraClientPolicy.md / TeraProjectIntakePolicy.md
+9. عكس تغييرات .opencode/agents/tera.md
+10. عكس تغييرات runtime (TERA_RUNTIME_PROTOCOLS.md / TEMPLATES.md / CHECKLISTS.md)
+11. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
 ```

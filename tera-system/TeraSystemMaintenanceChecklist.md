@@ -1,4 +1,4 @@
-# Tera System Maintenance Checklist
+﻿# Tera System Maintenance Checklist
 
 ## 1. Purpose
 
@@ -78,6 +78,19 @@ If the change is executed by `TeraSystemEvolutionAgent`:
 - Did the change avoid modifying client application files?
 - Did the change avoid unauthorized tool/MCP additions?
 - Does the change preserve folder boundaries from `TeraArchitectureMap.md`?
+
+### 7.1 TeraClientEngagementAgent-Specific Checks
+
+If the change is executed by `TeraClientEngagementAgent`:
+
+- Was the `SYSTEM_CHANGE_PROPOSAL` produced and approved before any edit?
+- Is the change within the allowed scope (client-engagement/ folder and documents only)?
+- Did the change avoid modifying client application source code?
+- Did the change avoid modifying Tera system files (tera-system/, .opencode/agents/tera.md) unless authorized?
+- Did the change pass the Handoff Validation (TERA_HANDOFF_PACKAGE.md completeness)?
+- Were all pricing/contract changes kept as Draft-only?
+- Was Majed's explicit approval obtained for any commitment?
+- Does the change respect the boundary: TeraClientEngagementAgent does not communicate with TeraAgent directly?
 
 ## 8. Completion Record
 

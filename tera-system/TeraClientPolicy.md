@@ -1,4 +1,10 @@
-# Tera Client Policy
+﻿# Tera Client Policy
+> **ملاحظة نظامية:** مسؤولية تنفيذ هذه السياسة انتقلت من TeraAgent إلى `TeraClientEngagementAgent`.
+> TeraAgent لم يعد يدير Client Discovery أو Proposal أو Client Approval Package أو Change Control.
+> TeraClientEngagementAgent هو المسؤول عن كل ما يتعلق بالزبون عبر Majed.
+> TeraAgent يستقبل `TERA_HANDOFF_PACKAGE.md` جاهزة من Majed (بعد إعدادها من TeraClientEngagementAgent).
+> راجع `tera-system/TeraClientEngagement.md` للتفاصيل.
+
 
 > Merged from: `TeraClientEngagementPolicy.md`, `TeraClientApprovalPolicy.md`, `TeraClientChangeControlPolicy.md`, `TeraClientFacingContentPolicy.md` (v1.0)
 

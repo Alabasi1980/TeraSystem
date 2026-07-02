@@ -1,4 +1,4 @@
-# AGENT_ACTIVATION_MATRIX.md
+﻿# AGENT_ACTIVATION_MATRIX.md
 
 # مصفوفة تفعيل العملاء الفرعيين — Sub-Agent Activation Matrix
 
@@ -70,12 +70,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 
 ### 2.3 عملاء التعامل مع العملاء الخارجيين
 
-| العميل | المعرف | Trigger التفعيل | المرحلة | متى لا يُفعّل | الحد الأدنى من المدخلات |
-|---|---|---|---|---|---|
-| ClientDiscoveryAgent | `CLIENT_DISCOVERY_AGENT` | `EXTERNAL_FACTOR`: بداية مشروع عميل خارجي | Client Discovery (قبل Phase 1) | إذا كان المشروع داخليًا (غير موجه لعميل خارجي) | `CLIENT_PROFILE.md` + `project-inputs/` |
-| ProposalScopeAgent | `PROPOSAL_SCOPE_AGENT` | `EXTERNAL_FACTOR`: بعد اكتمال Client Discovery واعتماد الفهم | Client Discovery (قبل Phase 1) | إذا لم يكتمل Client Discovery بعد | `project-inputs/` كاملة |
-| ClientApprovalReviewAgent | `CLIENT_APPROVAL_REVIEW_AGENT` | `EXTERNAL_FACTOR`: قبل إرسال حزمة اعتماد العميل أو قبل Build Mode | ما قبل التنفيذ | إذا لم تكتمل حزمة الاعتماد بعد | `clients/.../client-approval/` |
-| ChangeControlAgent | `CHANGE_CONTROL_AGENT` | `EXTERNAL_FACTOR`: طلب تغيير جديد بعد اعتماد النطاق | أي مرحلة بعد اعتماد النطاق | إذا لم يظهر أي طلب تغيير | `11_CHANGE_CONTROL.md` أو طلب التغيير الجديد |
+> **ملاحظة نظامية:** `ClientDiscoveryAgent` و `ProposalScopeAgent` و `ClientApprovalReviewAgent` و `ChangeControlAgent` أُزيلوا من هذا الجدول. مسؤولياتهم دُمجت في `TeraClientEngagementAgent` (عميل حوكمة مستقل — راجع §2.4). راجع `tera-system/TeraClientEngagement.md`.
 
 ### 2.4 عملاء جلسات الحوكمة الرئيسية
 
@@ -86,7 +81,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | Auditor | `AUDITOR_AGENT` | `USER_REQUEST`: طلب تدقيق جودة/عمل أو commit بعد قبول مرحلة، أو مراجعة maintainability/engineering governance | 5–6–7 | قبل وجود تسليم موثق أو قبل قبول المالك للـ commit | `PROJECT_STATE.md` + `TASK-ID` أو ملفات التغيير |
 | Monitor | `MONITOR_AGENT` | `USER_REQUEST`: طلب مراجعة توافق الخطة أو كشف الانحراف، بما في ذلك انحرافات Engineering Governance عن الخطة | 3–7 | إذا لا توجد خطة أو لا توجد مرحلة/دفعة لمقارنتها | `PROJECT_MASTER_PLAN.md` أو الخطة المتاحة + `TASK_REGISTRY.md` |
 | Design Reviewer | `DESIGN_REVIEWER_AGENT` | `USER_REQUEST`: طلب تدقيق بصري أو عند وجود مهمة UI/UX | 5–7 | إذا لا يوجد UI أو لا يوجد مصدر تصميم معتمد | `28_UI_UX_GUIDELINES.md` + المهمة/الشاشة ذات العلاقة |
-| TeraSystemEvolutionAgent | `SYSTEM_EVOLUTION_AGENT` | `USER_REQUEST`: طلب تطوير المنظومة، تضارب سياسات، فجوة في أداء عميل، مراجعة تقارير حوكمة (Auditor/Monitor/DesignReviewer)، حاجة بحثية لتحسين Tera، تقليل التضخم أو استهلاك التوكنز | System Maintenance | إذا كان الطلب يتعلق بتطبيق عميل مباشر (وليس تحسين المنظومة) | الملفات المرجعية + `SYSTEM_EVOLUTION_LOG.md` |
+| **TeraClientEngagementAgent** | `CLIENT_ENGAGEMENT_AGENT` | `CLIENT_REQUEST`: بداية مشروع عميل جديد، أو طلب إدارة تغيير، أو طلب تحضير تسليم/صيانة، أو حاجة لتقدير تجاري | Client Lifecycle (كل دورة حياة الزبون) | إذا كان الطلب تقنياً بحتاً (ليس تعامل مع زبون) | `CLIENT_INTAKE.md` أو `TERA_HANDOFF_PACKAGE.md` أو طلب من Majed |
 
 ---
 
@@ -259,7 +254,7 @@ Tera يقرر: تفعيل RequirementsScopeAgent و BusinessWorkflowAgent و Dat
 ```
 Trigger: طلب إضافة تكامل دفع خارجي
 Tera يقرر: تفعيل IntegrationAgent
-لا يُفعّل: ChangeControlAgent (لأنه سيقترح فقط، ويمكن لـ Tera إدارة ذلك)
+ملاحظة: إدارة تغييرات العميل الآن من اختصاص TeraClientEngagementAgent — Tera ينفذ فقط بعد استلام التغيير المعتمد
 ```
 
 ### مثال 3: مراجعة بعد 5 مهام تنفيذية

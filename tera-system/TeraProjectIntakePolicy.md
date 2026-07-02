@@ -1,4 +1,9 @@
-# Project Intake Policy
+﻿# Project Intake Policy
+> **ملاحظة نظامية:** في المشاريع الخارجية التي يديرها `TeraClientEngagementAgent`، يكون `TERA_HANDOFF_PACKAGE.md` جاهزاً قبل وصول المشروع إلى Tera.
+> في هذه الحالة، يتخطى Tera Client Discovery Mode ويبدأ مباشرة بـ **Phase 1 — Handoff Intake & Validation**.
+> هذا الملف (Project Intake Policy) يُطبق فقط في حالة عدم وجود حزمة تسليم جاهزة (مشاريع داخلية).
+> راجع `tera-system/TeraClientEngagement.md` للتفاصيل.
+
 
 ## 1. Purpose
 

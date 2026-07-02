@@ -1,4 +1,4 @@
-# Tera Runtime Templates
+﻿# Tera Runtime Templates
 
 These templates are official runtime support material for Tera Agent.
 Use them when the compact runtime file requests a formal output format.
