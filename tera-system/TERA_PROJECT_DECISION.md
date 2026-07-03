@@ -27,7 +27,7 @@
 
 > يعتمد مصدر المدخلات على نوع المشروع:
 > - **المسار A — مشروع خارجي:** المصدر هو `TERA_HANDOFF_PACKAGE.md` (من TCEA). Tera يتحقق من اكتمالها.
-> - **المسار B — مشروع داخلي:** المصدر هو `project-inputs/` (من Tera Client Discovery).
+> - **المسار B — مشروع داخلي:** المصدر هو `project-inputs/` (من TeraClientEngagementAgent Client Discovery).
 
 ### المسار A — مشروع خارجي (عبر TERA_HANDOFF_PACKAGE.md)
 

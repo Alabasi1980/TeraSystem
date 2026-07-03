@@ -8,7 +8,7 @@
 
 This is the reference question bank for the **Client Discovery and Smart Interview** process — a two-stage approach that first explores the client's idea through open conversation, then follows with adaptive structured questioning across all domains.
 
-Tera does not ask all questions. Tera selects the right questions at the right time based on previous answers, and always starts with open listening before any structured questioning.
+TeraClientEngagementAgent does not ask all questions. TCEA selects the right questions at the right time based on previous answers, and always starts with open listening before any structured questioning.
 
 ## How to use this bank
 
@@ -36,7 +36,7 @@ When the client cannot answer a question, use this pattern:
 Record all assumptions in a table (inside `project-inputs/` or in a separate file for medium/large projects):
 
 ```text
-| المجال | السؤال | افتراض تيرا | الحالة | يحتاج مراجعة قبل |
+| المجال | السؤال | افتراض TCEA | الحالة | يحتاج مراجعة قبل |
 |--------|--------|-------------|--------|------------------|
 | تقني | Web/Mobile | Web App | يحتاج تأكيد | التوقيع على النطاق |
 | صلاحيات | عدد الأدوار | Admin + User | يحتاج تأكيد | التنفيذ |
@@ -47,7 +47,7 @@ Record all assumptions in a table (inside `project-inputs/` or in a separate fil
 | الحالة | المعنى |
 |--------|--------|
 | `مؤكد` | العميل أجاب بوضوح |
-| `يحتاج تأكيد` | اقتراح Tera — لم يؤكده العميل بعد |
+| `يحتاج تأكيد` | اقتراح TCEA — لم يؤكده العميل بعد |
 | `مؤجل` | العميل قال "ربما لاحقاً" |
 | `غير محدد حاليًا` | لم يُطرح السؤال بعد أو العميل لم يقرر |
 

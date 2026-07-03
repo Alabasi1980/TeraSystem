@@ -80,30 +80,34 @@ Use these statuses:
 - `Partial`
 - `Complete`
 
-## 6. Intake Collection via Internal Discovery (Internal Projects Only)
+## 6. Intake Collection via TeraClientEngagementAgent
 
-> هذا القسم يُطبق فقط على المشاريع الداخلية (حيث Tera يتحدث مع Majed مباشرة).
-> للمشاريع الخارجية: Discovery يديره `TeraClientEngagementAgent` — Tera لا يدخل Client Discovery Mode.
+For both internal and external projects, if one or both intake files are missing or materially incomplete, the responsible discovery/intake owner is `TeraClientEngagementAgent`.
 
-If one or both intake files are missing or materially incomplete, Tera enters:
+The discovery/intake flow is:
 
 ```text
-Client Discovery Mode
+TeraClientEngagementAgent
+-> Client Discovery Mode
+-> Smart Interview (if needed)
+-> Intake completion
+-> TERA_HANDOFF_PACKAGE.md
+-> handoff to TeraAgent
 ```
 
 This is a **two-stage process** defined in `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` (Section 18):
 
 ### Stage 1: Client Discovery (mandatory first step)
-1. **Open Listening** — Let Majed explain the idea freely without interruption.
-2. **Understanding Summary** — Summarize Tera's understanding and ask: "هل هذا الفهم صحيح؟"
-3. **Confirmation** — Do not proceed until Majed confirms or corrects.
+1. **Open Listening** — Let the client or Majed explain the idea freely without interruption.
+2. **Understanding Summary** — Summarize TCEA's understanding and ask: "هل هذا الفهم صحيح؟"
+3. **Confirmation** — Do not proceed until the explanation is confirmed or corrected.
 4. **Decision** — If the picture is clear enough, proceed to Intake Gate. If major gaps remain, proceed to Stage 2.
 
 ### Stage 2: Smart Interview (if gaps remain)
 1. **Opening Round** — Essential questions from Domains 1, 2, 4 (5–7 questions).
 2. **Analysis** — Identify gaps and select next domain.
 3. **Adaptive Rounds** — Continue in small batches until picture is complete.
-4. **Final Understanding Summary** — Confirm with Majed.
+4. **Final Understanding Summary** — Confirm with the client or Majed.
 5. **Suggestions and Improvements** — Propose improvements, classified separately from scope.
 
 ### Rules for both stages
@@ -113,12 +117,14 @@ This is a **two-stage process** defined in `tera-system/runtime/TERA_RUNTIME_PRO
 - Do not choose a final active Technology Profile.
 - Do not generate sub-agents for implementation work.
 - Do not create implementation `TASK-ID`s.
-- Document each answer immediately in `project-inputs/`.
-- **When Majed does not know**: propose a suitable default, document it as an `Assumption` (not as a final decision). See Question Bank for assumption documentation format.
+- Document each answer immediately in `project-inputs/` inside the active application workspace.
+- **When the decision owner does not know**: propose a suitable default, document it as an `Assumption` (not as a final decision). See Question Bank for assumption documentation format.
 
-## 7. Minimum Questions (Internal Projects)
+`TeraAgent` does not perform this discovery flow directly. It starts only after approved handoff.
 
-When intake is incomplete, Tera should ask Majed only the shortest useful questions, such as:
+## 7. Minimum Questions During Discovery
+
+When intake is incomplete, `TeraClientEngagementAgent` should ask only the shortest useful questions, such as:
 
 - What is the application idea?
 - Who will use it?
@@ -128,7 +134,7 @@ When intake is incomplete, Tera should ask Majed only the shortest useful questi
 - What database is required, if any?
 - Is there any preferred or forbidden UI/design direction?
 
-> **ملاحظة:** للمشاريع الخارجية، أسئلة العميل (الاسم، جهات الاتصال، الشعار، إلخ) يطرحها `TeraClientEngagementAgent`. TeraAgent لا يسأل هذه الأسئلة.
+> **ملاحظة:** أسئلة العميل (الاسم، جهات الاتصال، الشعار، إلخ) يطرحها `TeraClientEngagementAgent`. TeraAgent لا يسأل هذه الأسئلة.
 
 ## 8. When Tera Can Proceed
 
