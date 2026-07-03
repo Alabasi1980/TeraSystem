@@ -742,6 +742,11 @@ See `TERA_RUNTIME_PROTOCOLS.md` Section 18, Client Discovery Step 7 for the prot
 This template is used for the formal output of Phase 3 (Project Preparation Planning).
 The generated file is saved to `project-control/PREPARATION_PLAN.md`.
 
+> **حوكمة الوثائق:** راجع `tera-system/TeraPreparationDocumentationGovernance.md` للتصنيف حسب دورة الحياة وحالات النضج ودور Maker/Checker/Owner.
+>
+> **إلزامي — Lifecycle Header:** كل ملف تحضيري يُنشأ (عبر TASK-PREP) يجب أن يبدأ بـ **Lifecycle Header القياسي** (Section 41 أدناه).
+> Tera يرفض أي Handback من Maker بدون Header. ينطبق هذا على جميع مراحل المشروع، صغيراً كان أم كبيراً.
+
 ```markdown
 # PREPARATION_PLAN.md
 
@@ -753,12 +758,20 @@ Decision: Proceed / Blocked / Needs More Intake
 
 ## 2. Required Preparation Files
 
-| File | Required | Reason | Owner Agent | Order |
-|---|---|---|---|---|
-| `01_PROJECT_BRIEF.md` | Yes | Core understanding | RequirementsScopeAgent | 1 |
-| `02_SCOPE_AND_BOUNDARIES.md` | Yes | Scope discipline | RequirementsScopeAgent | 2 |
-| `03_MODULES_AND_FEATURES.md` | Conditional | Medium+ projects | RequirementsScopeAgent | 3 |
-| ... | ... | ... | ... | ... |
+| File | Required | Lifecycle Class | Reason | Maker Agent | Checker Agent | Target Maturity | Owner Approval Needed | Order |
+|---|---|---|---|---|---|---|---|---|
+| `01_PROJECT_BRIEF.md` | Yes | Foundation | Core understanding | RequirementsScopeAgent | BusinessWorkflowAgent | System Approved | No | 1 |
+| `02_SCOPE_AND_BOUNDARIES.md` | Yes | Foundation | Scope discipline | RequirementsScopeAgent | SolutionArchitectureAgent | System Approved | Yes (scope) | 2 |
+| `03_MODULES_AND_FEATURES.md` | Conditional | Foundation | Medium+ projects | RequirementsScopeAgent | DataDesignAgent | System Approved | Yes (modules) | 3 |
+| `04_USERS_ROLES_PERMISSIONS.md` | Conditional | Structural Analysis | Multi-user apps | RequirementsScopeAgent | SecurityAgent | System Approved | No | 4 |
+| `05_BUSINESS_WORKFLOWS.md` | Conditional | Structural Analysis | Complex workflows | BusinessWorkflowAgent | UIUXStructureAgent | Module Baseline Approved | No | 5 |
+| `06_DATA_MODEL_PREPARATION.md` | Conditional | Structural Analysis | Non-trivial data | DataDesignAgent | BusinessWorkflowAgent | Module Baseline Approved | No | 6 |
+| `07_SCREENS_AND_UI_STRUCTURE.md` | Conditional | Structural Analysis | UI needed | UIUXStructureAgent | DataDesignAgent | Module Baseline Approved | No | 7 |
+| `08_TECHNICAL_ARCHITECTURE.md` | Yes | Cross-Cutting Rules | Always needed | SolutionArchitectureAgent | SecurityAgent | System Approved | Yes (architecture) | 1 |
+| `09_IMPLEMENTATION_PLAN.md` | Yes | Planning & Control | Always needed | Tera | RequirementsScopeAgent | System Approved | No | 8 |
+| `10_TESTING_AND_ACCEPTANCE.md` | Yes | Late-Closure | Always needed | QAAndAcceptanceAgent | BusinessWorkflowAgent | Module Baseline Approved | No | 9 |
+| `11_DELIVERY_AND_HANDOVER.md` | Conditional | Late-Closure | External delivery | DocumentationHandoverAgent | Tera | System Approved | No | 10 |
+| ... | ... | ... | ... | ... | ... | ... | ... | ... |
 
 ### Classification Key
 
@@ -769,13 +782,31 @@ Decision: Proceed / Blocked / Needs More Intake
 | **Deferred** | Postponed to a later phase |
 | **Not Required** | Not needed for this project |
 
+### Lifecycle Class Key (راجع TeraPreparationDocumentationGovernance.md §2.1)
+
+| Class | Meaning |
+|---|---|
+| **Foundation** | No dependency on other prep files |
+| **Consumer** | Depends on Foundation files |
+| **Derived** | Built from reconciling other files |
+| **Living** | Updated throughout the project; partial baselines allowed |
+| **Late-Bound** | Created before delivery or after execution starts |
+
+### Target Maturity States (راجع TeraPreparationDocumentationGovernance.md §3)
+
+| State | Meaning |
+|---|---|
+| **Module Baseline Approved** | Stable per module; consumable by SoftwareDesignerAgent for that module |
+| **System Approved** | All modules reconciled; consumable by all |
+| **Locked** | Final; changes require formal Change Request |
+
 ## 3. Deferred Files
 
-| File | Reason | Trigger for Activation |
-|---|---|---|
-| `14_INTEGRATIONS_...` | No external services yet | When integration is confirmed |
-| `22_DEPLOYMENT_...` | Deployment not imminent | Before first deployment |
-| ... | ... | ... |
+| File | Lifecycle Class | Reason | Trigger for Activation |
+|---|---|---|---|
+| `14_INTEGRATIONS_...` | Consumer | No external services yet | When integration is confirmed |
+| `22_DEPLOYMENT_...` | Late-Bound | Deployment not imminent | Before first deployment |
+| ... | ... | ... | ... |
 
 ## 4. Not Required Files
 
@@ -787,44 +818,49 @@ Decision: Proceed / Blocked / Needs More Intake
 
 ## 5. Suggested Sub-Agents
 
-| Agent | Needed Now | Reason |
-|---|---|---|
-| `RequirementsScopeAgent` | Yes | Core scope files (01, 02, 03, 04) |
-| `BusinessWorkflowAgent` | Conditional | Only if workflows are complex |
-| `DataDesignAgent` | Conditional | Only if data model is non-trivial |
-| `UIUXStructureAgent` | Conditional | Only if screens need structured definition |
-| `UIVisualDesignerAgent` | Conditional | Only if visual design tokens/component rules are needed |
-| `SolutionArchitectureAgent` | Conditional | Only if architecture decisions are risky |
-| ... | ... | ... |
+| Agent | Needed Now | Maker Role | Checker Role | Reason |
+|---|---|---|---|---|
+| `RequirementsScopeAgent` | Yes | Maker for 01-04 | — | Core scope files |
+| `BusinessWorkflowAgent` | Conditional | Maker for 05 | Checker for 06 | Workflows + data consistency |
+| `DataDesignAgent` | Conditional | Maker for 06 | Checker for 07 | Data model + screen alignment |
+| `UIUXStructureAgent` | Conditional | Maker for 07 | Checker for 05 | Screens + workflow alignment |
+| `UIVisualDesignerAgent` | Conditional | Maker for 28 (UI_UX_GUIDELINES) | — | Visual design rules |
+| `SolutionArchitectureAgent` | Conditional | Maker for 08 | Checker for 02 | Architecture + scope alignment |
+| `QAAndAcceptanceAgent` | Conditional | Maker for 10 | — | Testing criteria |
+| `DocumentationHandoverAgent` | Conditional | Maker for 11 | — | Delivery documents |
+| `SecurityAgent` | Conditional | — | Checker for 04, 08 | Security cross-check |
+| ... | ... | ... | ... | ... |
 
 ## 6. Preparation Sequence
 
 ```
 Batch A (no dependencies):
-  01_PROJECT_BRIEF.md (RequirementsScopeAgent)
-  08_TECHNICAL_ARCHITECTURE.md (SolutionArchitectureAgent or Tera)
+  01_PROJECT_BRIEF.md (RequirementsScopeAgent · Foundation → System Approved)
+  08_TECHNICAL_ARCHITECTURE.md (SolutionArchitectureAgent · Cross-Cutting → System Approved)
 
 Batch B (depends on Batch A):
-  02_SCOPE_AND_BOUNDARIES.md (RequirementsScopeAgent)
-  04_USERS_ROLES_PERMISSIONS.md (RequirementsScopeAgent)
+  02_SCOPE_AND_BOUNDARIES.md (RequirementsScopeAgent · Foundation → System Approved)
+  04_USERS_ROLES_PERMISSIONS.md (RequirementsScopeAgent · Structural → System Approved)
 
 Batch C (depends on Batch B):
-  05_BUSINESS_WORKFLOWS.md (BusinessWorkflowAgent)
-  07_SCREENS_AND_UI_STRUCTURE.md (UIUXStructureAgent)
+  05_BUSINESS_WORKFLOWS.md (BusinessWorkflowAgent · Structural → MBA by module)
+  07_SCREENS_AND_UI_STRUCTURE.md (UIUXStructureAgent · Structural → MBA by module)
 
 Batch D (depends on Batch C):
-  06_DATA_MODEL_PREPARATION.md (DataDesignAgent)
-  09_IMPLEMENTATION_PLAN.md (Tera)
+  06_DATA_MODEL_PREPARATION.md (DataDesignAgent · Structural → MBA by module)
+  09_IMPLEMENTATION_PLAN.md (Tera · Planning → System Approved)
 ```
 
-## 7. User Approval Points
+## 7. User/Owner Approval Points
 
-| Point | What Needs Approval | Before Moving To |
-|---|---|---|
-| P1 | This plan (Preparation Decision) | Phase 4: Sub-Agent Generation & Preparation Delegation |
-| P2 | Scope and boundaries (02) | File creation for downstream files |
-| P3 | Technical architecture (08) | Implementation planning |
-| P4 | Implementation plan (09) | Phase 5: Execution Planning |
+| Point | What Needs Approval | Owner Sensitive? | Before Moving To |
+|---|---|---|---|
+| P1 | This plan (Preparation Decision) | No | Phase 4: Sub-Agent Generation & Preparation Delegation |
+| P2 | Scope and boundaries (02) | Yes — module boundaries | File creation for downstream files |
+| P3 | Technical architecture (08) | Yes — cross-cutting | Implementation planning |
+| P4 | Module Baseline for a module | No (Tera approves) | Execution planning for that module |
+| P5 | Implementation plan (09) | No | Phase 5: Execution Planning |
+| P6 | Change request after baseline | Yes — impact on scope/cost | Implementation after change |
 
 > **Rule:** No file creation happens in Phase 3. No agent generation happens before this plan is approved.
 
@@ -834,6 +870,17 @@ Batch D (depends on Batch C):
 - [ ] Plan approved → Proceed to Phase 4
 - [ ] Plan rejected → Revise and resubmit
 - [ ] Plan blocked → Reason: ...
+
+## 9. Document Maturity State Tracking
+
+| File | Current State | Target State | Baseline Module | Last Updated |
+|---|---|---|---|---|
+| `01_PROJECT_BRIEF.md` | Draft | System Approved | All | YYYY-MM-DD |
+| `02_SCOPE_AND_BOUNDARIES.md` | Draft | System Approved | All | YYYY-MM-DD |
+| `05_BUSINESS_WORKFLOWS.md` | Not Started | Module Baseline Approved | Inventory | YYYY-MM-DD |
+| ... | ... | ... | ... | ... |
+
+> Tracked states: Not Started → Draft → Under Cross-Review → Module Baseline Approved → System Pending Integration → System Approved → Locked
 ```
 
 ---
@@ -842,6 +889,8 @@ Batch D (depends on Batch C):
 
 This template is used for the formal output of Phase 4 (Sub-Agent Generation & Preparation Delegation).
 The generated file is saved to `project-control/AGENT_DELEGATION_PLAN.md`.
+
+> **حوكمة الوثائق:** راجع `tera-system/TeraPreparationDocumentationGovernance.md` §4 (Maker/Checker/Orchestrator/Owner). لكل ملف تعيّن Maker (يكتب) و Checker (يراجع تقاطعياً). لا يمكن أن يكون Maker و Checker هما نفس العميل.
 
 ```markdown
 # AGENT_DELEGATION_PLAN.md
@@ -854,11 +903,16 @@ Decision: Proceed / Needs User Approval / Blocked
 
 ## 2. Agents Needed Now
 
-| Agent | Reason | Status | Assigned Files |
-|---|---|---|---|
-| `RequirementsScopeAgent` | Core scope files (01, 02, 03, 04) | Generate / Use Existing / Specialize | `01_PROJECT_BRIEF.md`, `02_SCOPE_...`, ... |
-| `BusinessWorkflowAgent` | Business workflows (05) | Generate / Use Existing / Specialize | `05_BUSINESS_WORKFLOWS.md` |
-| ... | ... | ... | ... |
+| Agent | Role | Reason | Status | Assigned Files | Checked By |
+|---|---|---|---|---|---|
+| `RequirementsScopeAgent` | Maker | Core scope files (01, 02, 03, 04) | Generate / Use Existing / Specialize | `01_PROJECT_BRIEF.md`, `02_SCOPE_...`, ... | BusinessWorkflowAgent, SolutionArchitectureAgent |
+| `BusinessWorkflowAgent` | Maker | Business workflows (05) | Generate / Use Existing / Specialize | `05_BUSINESS_WORKFLOWS.md` | UIUXStructureAgent |
+| `DataDesignAgent` | Maker | Data model (06) | Generate / Use Existing / Specialize | `06_DATA_MODEL_PREPARATION.md` | BusinessWorkflowAgent |
+| `UIUXStructureAgent` | Maker | Screen structure (07) | Generate / Use Existing / Specialize | `07_SCREENS_AND_UI_STRUCTURE.md` | DataDesignAgent |
+| `SolutionArchitectureAgent` | Maker | Technical architecture (08) | Generate / Use Existing / Specialize | `08_TECHNICAL_ARCHITECTURE.md` | SecurityAgent |
+| `BusinessWorkflowAgent` | Checker | Cross-check data model | — | `06_DATA_MODEL_PREPARATION.md` | — |
+| `DataDesignAgent` | Checker | Cross-check screens | — | `07_SCREENS_AND_UI_STRUCTURE.md` | — |
+| ... | ... | ... | ... | ... | ... |
 
 ### Agent Status Key
 
@@ -2135,4 +2189,43 @@ Owner opens session
 | Created by | Tera Agent |
 | Governance model applies | [Project Name] |
 | Date | YYYY-MM-DD |
+```
+
+---
+
+## 41. Preparation Document Lifecycle Header (Standardised Document Metadata Block)
+
+This header MUST be placed at the top of every preparation file in `project-preparation/`, immediately after the main heading and before the file's content sections.
+
+It is the **Source of Truth** for the document's lifecycle state, owner agent, review chain, and consumption readiness.
+
+```markdown
+> ## Document Lifecycle
+>
+> | الحقل | القيمة |
+> |---|---|
+> | **Lifecycle Class** | Foundation / Structural Analysis / Cross-Cutting Rules / Executable Design / Planning & Control / Late-Closure |
+> | **Dependency Profile** | Foundation / Consumer / Derived / Living / Late-Bound |
+> | **Current State** | Draft / Under Cross-Review / Module Baseline Approved / System Pending Integration / System Approved / Locked |
+> | **Baseline Module** | All / [specific module name] |
+> | **Maker Agent** | [agent name that writes this document] |
+> | **Checker Agent** | [agent name that cross-reviews this document — must differ from Maker] |
+> | **Owner Approval Needed?** | Yes / No (Yes only for sensitive decisions: scope, architecture, security, compliance, change after baseline) |
+> | **Closure Condition** | Draft-usable / MBA-usable / System-Approved-required / Locked-required |
+> | **Last Updated** | YYYY-MM-DD |
+```
+
+### 41.1 Rules
+
+| Rule | Detail |
+|---|---|
+| **متى يُضاف؟** | عند إنشاء الملف لأول مرة (Draft) |
+| **من يملؤه؟** | Maker Agent يملأ الحقول الأولية؛ Tera يحدث Current State مع كل تقدم في دورة الحياة |
+| **متى يتغير Current State؟** | عند الانتقال بين الحالات: Tera يُحدث الحالة في PREPARATION_PLAN.md وفي الـ Header نفسه |
+| **ماذا يحدث إذا غاب الـ Header؟** | يعتبر الملف غير جاهز للاستهلاك. SoftwareDesignerAgent يرفع Design Gap إذا قرأ ملفاً بدون Header |
+| **هل هو إلزامي للمشاريع الصغيرة؟** | نعم — لكن يمكن تبسيطه إلى 4 حقول فقط (Class, State, Maker, Checker) |
+
+### 41.2 Integration with PREPARATION_PLAN.md
+
+The `Current State` in each file's Header **must match** the state tracked in `PREPARATION_PLAN.md` Section 9 (Document Maturity State Tracking). Tera is responsible for keeping these two in sync.
 ```

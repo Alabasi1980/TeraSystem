@@ -180,16 +180,21 @@ TeraAgent يعمل ضمن نظام `Plan Mode / Build Mode`:
 **المدخلات:**
 - `TERA_PROJECT_DECISION.md` (القرار: Proceed)
 - `tera-system/Tera_Project_Preparation_Files.md` (كتالوج ملفات التحضير)
+- `tera-system/TeraPreparationDocumentationGovernance.md` (حوكمة دورة حياة الوثائق)
 - `project-control/PROJECT_STATE.md`
 
 **الخطوات:**
 
 1. التحقق من أن القرار هو `Proceed`.
 2. مراجعة كتالوج ملفات التحضير واختيار المناسب فقط.
-3. تصنيف كل ملف: Required / Conditional / Deferred / Not Required.
-4. تحديد ترتيب الإنشاء بناءً على التبعيات.
-5. تحديد العميل الفرعي المسؤول عن كل ملف.
-6. تحديد نقاط اعتماد المستخدم.
+3. تصنيف كل ملف:
+   - **حسب الأهمية:** Required / Conditional / Deferred / Not Required.
+   - **حسب دورة الحياة (جديد):** Foundation / Consumer / Derived / Living / Late-Bound.
+   - **حسب حالة النضج المستهدفة:** Draft → Module Baseline Approved → System Approved.
+4. تحديد ترتيب الإنشاء بناءً على التبعيات (Foundation first → Consumer/Derived).
+5. تحديد العميل الفرعي المسؤول عن كل ملف (Maker).
+6. تحديد عميل المراجعة التقاطعية (Checker) لكل ملف — يجب أن يختلف عن Maker.
+7. تحديد نقاط اعتماد المالك (Owner) — فقط للقرارات الحساسة.
 
 **المخرجات:**
 - `[active application workspace]/project-control/PREPARATION_PLAN.md` (باستخدام قالب Section 27 من `TERA_RUNTIME_TEMPLATES.md`)
@@ -198,25 +203,28 @@ TeraAgent يعمل ضمن نظام `Plan Mode / Build Mode`:
 - لا إنشاء فعلي لأي ملف في هذه المرحلة.
 - لا توليد لأي عميل فرعي في هذه المرحلة.
 - لا تنتقل إلى Phase 4 إلا بعد اعتماد خطة التحضير.
+- **جديد:** لكل ملف في الخطة، يجب تحديد Document Lifecycle Class وحالة النضج المستهدفة قبل الانتقال إلى Phase 4.
+- راجع `TeraPreparationDocumentationGovernance.md` للتفاصيل الكاملة عن التصنيف والحالات ودور Maker/Checker/Owner.
 
 ---
 
 ### 4.3 Phase 4 — Sub-Agent Generation & Preparation Delegation
 
-**الهدف:** تحويل `PREPARATION_PLAN.md` من خطة نظرية إلى تفويضات منظمة للعملاء الفرعيين.
+**الهدف:** تحويل `PREPARATION_PLAN.md` من خطة نظرية إلى تفويضات منظمة للعملاء الفرعيين، مع تطبيق حوكمة دورة حياة الوثائق.
 
 **المدخلات:**
 - `PREPARATION_PLAN.md` (معتمد — إلزامي)
 - `TERA_PROJECT_DECISION.md`
 - `PROJECT_STATE.md`
 - `tera-system/TeraSubAgents.md` (سجل العملاء)
+- `tera-system/TeraPreparationDocumentationGovernance.md` (حوكمة الوثائق — لضمان التزام Maker/Checker)
 - `tera-system/AGENT_GENERATION_TEMPLATE.md` (قالب التوليد)
 - `tera-system/TeraTokenPolicy.md`
 - `tera-system/profiles/PROFILES_INDEX.md`
 
 **الخطوات:**
 
-1. قراءة `PREPARATION_PLAN.md` واستخراج: Required Files, Owner Agent, Sequence, Approval Points.
+1. قراءة `PREPARATION_PLAN.md` واستخراج: Required Files, Document Lifecycle Class, Maker Agent, Checker Agent, Sequence, Approval Points, Target Maturity State.
 2. تحديد العملاء المطلوبين للدفعة الأولى فقط (Needed Now).
 3. فحص حالة كل عميل:
    - **موجود ومناسب** ← يستخدم مباشرة.
@@ -224,24 +232,52 @@ TeraAgent يعمل ضمن نظام `Plan Mode / Build Mode`:
    - **غير موجود** ← يولّده من `AGENT_GENERATION_TEMPLATE.md`.
 4. توليد العملاء في `[active application workspace]/generated-agents/opencode/`.
 5. تحديد الحدود لكل عميل: Allowed Sources, Allowed Write Targets, Forbidden Actions, Token Budget, Context Rules, Expected Output Format, Acceptance Criteria.
-6. إنشاء `AGENT_DELEGATION_PLAN.md` (باستخدام قالب Section 28 من `TERA_RUNTIME_TEMPLATES.md`).
-7. إنشاء أو تحديث `GENERATED_AGENTS_MANIFEST.md`.
-8. عرض خطة التفويض للاعتماد.
-9. بعد الاعتماد: تفعيل العملاء في `.opencode/agents/` حسب الدفعة الحالية + طلب إعادة تشغيل OpenCode.
-10. إنشاء `TASK-PREP-XXX` لكل ملف تحضير + Pre-Execution Gate + تسليم لعميل التحضير.
-11. استلام النتيجة: مراجعة ملفات التحضير الناتجة + Handback + قبول أو إعادة.
+6. **جديد — تطبيق حوكمة Maker/Checker:**
+   - Maker Agent يكتب الملف ويصل إلى حالة `Draft`.
+   - Checker Agent (يختلف عن Maker) يراجعه تقاطعياً ويُدخله `Under Cross-Review`.
+   - Tera يكتشف التناقضات ويقرر رفع الحالة إلى `Module Baseline Approved` أو إعادته إلى `Draft`.
+   - Owner (Majed) يعتمد فقط القرارات الحساسة (النطاق، المعمارية، الأمان، التغيير بعد baseline).
+7. إنشاء `AGENT_DELEGATION_PLAN.md` (باستخدام قالب Section 28 من `TERA_RUNTIME_TEMPLATES.md`).
+8. إنشاء أو تحديث `GENERATED_AGENTS_MANIFEST.md`.
+9. عرض خطة التفويض للاعتماد.
+10. بعد الاعتماد: تفعيل العملاء في `.opencode/agents/` حسب الدفعة الحالية + طلب إعادة تشغيل OpenCode.
+11. إنشاء `TASK-PREP-XXX` لكل ملف تحضير + Pre-Execution Gate + تسليم لعميل التحضير (Maker).
+12. **بعد Handback من Maker — State Transition إلى `Draft`:**
+    a. تحقق من وجود **Lifecycle Header** في بداية الملف (Section 41 من TERA_RUNTIME_TEMPLATES.md).
+       - إذا غاب الـ Header ← أعد الملف إلى Maker مع طلب إضافة الـ Header.
+    b. تأكد أن `Current State` في الـ Header = `Draft`.
+    c. سجّل الحالة الجديدة في `PREPARATION_PLAN.md` Section 9 (Document Maturity State Tracking).
+    d. سلّم الملف إلى Checker للمراجعة التقاطعية.
+13. **بعد Cross-Review من Checker — State Transition من `Under Cross-Review` إلى `Module Baseline Approved` أو `Draft`:**
+    a. إذا وجد Checker مشاكل:
+       - أعد الملف إلى Maker مع documented findings.
+       - أعِد الحالة إلى `Draft`.
+    b. إذا وافق Checker:
+       - حدّث الـ Header إلى `Current State: Under Cross-Review`.
+       - راجع findings بنفسك (Tera) لاكتشاف التناقضات مع وثائق أخرى.
+       - إذا وجدت تناقضات ← أعد إلى Maker مع documented findings.
+       - إذا لا توجد تناقضات ← قدّم الحالة إلى `Module Baseline Approved` (أو `System Approved` إذا كان الملف يغطي النظام كاملاً).
+    c. إذا كان `Owner Approval Needed?` في الـ Header = `Yes`:
+       - اعرض ملخصًا للمالك (Majed) للاعتماد قبل رفع الحالة النهائية.
+    d. سجّل الحالة الجديدة في `PREPARATION_PLAN.md` Section 9 + في الـ Header نفسه.
 
 **المخرجات:**
 - `generated-agents/opencode/[AGENT_FILES]` — العملاء المولدون
 - `project-control/AGENT_DELEGATION_PLAN.md`
 - `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md`
-- `project-preparation/[01-11]_*.md` — ملفات التحضير
+- `project-preparation/[01-11]_*.md` — ملفات التحضير (لكل ملف حالة توثيق محدثة)
 
 **قواعد حاكمة:**
 - لا توليد عملاء قبل اعتماد PREPARATION_PLAN.md.
 - لا تفعيل قبل اعتماد AGENT_DELEGATION_PLAN.md.
 - لا إنشاء ملفات تحضير دون تفويض واضح (TASK-PREP-XXX + Allowed Write Targets).
 - كل عميل يجب أن يكون له Token Budget و Context Rules محددان.
+- **جديد:** لا يمكن أن يكون Maker و Checker لنفس الملف هما نفس العميل.
+- **جديد:** لا يجوز لـ SoftwareDesignerAgent استهلاك ملف تحضير قبل أن يصل إلى `Module Baseline Approved`.
+- **جديد:** لكل ملف تحضير، سجّل حالته الحالية (Draft / Under Cross-Review / MBA / إلخ) في PREPARATION_PLAN.md.
+- **جديد:** لا يقبل Tera Handback من Maker بدون Lifecycle Header في بداية الملف. إذا غاب الـ Header → يُعاد الملف إلى Maker مع طلب إضافة الـ Header.
+- **جديد:** لا يستهلك SoftwareDesignerAgent أي ملف تحضير دون `Module Baseline Approved` في Lifecycle Header — يرفع Design Gap بدلاً من التخمين.
+- **جديد:** عند الانتهاء من Cross-Review، يتحقق Tera من تناسق الحالة بين الـ Header و PREPARATION_PLAN.md قبل اعتماد أي Baseline.
 - No active need = No active sub-agent.
 
 ---
@@ -252,27 +288,30 @@ TeraAgent يعمل ضمن نظام `Plan Mode / Build Mode`:
 
 **المدخلات:**
 - `PROJECT_STATE.md`
-- `PREPARATION_PLAN.md`
+- `PREPARATION_PLAN.md` (مع حالات نضج الوثائق)
 - `AGENT_DELEGATION_PLAN.md`
-- `project-preparation/[01-11]_*.md` (ملفات التحضير المعتمدة)
+- `project-preparation/[01-11]_*.md` (ملفات التحضير)
 - `project-preparation/28_UI_UX_GUIDELINES.md` (إن وجد)
 - `tera-system/profiles/[ACTIVE_PROFILE].md`
 - `tera-system/TeraPreExecutionGate.md`
 - `tera-system/TeraTokenPolicy.md`
+- `tera-system/TeraPreparationDocumentationGovernance.md` (للتحقق من جاهزية الاستهلاك)
 
 **الخطوات:**
 
-1. **Execution Readiness Check:** التحقق من أن جميع ملفات التحضير المطلوبة مكتملة ومعتمدة، و AGENT_DELEGATION_PLAN معتمد، و Technology Profile نشط، ولا توجد Issues مانعة.
-2. **Cross-Verification Check:** التأكد من تطابق عدد الموديلات والشاشات والوحدات عبر جميع ملفات التحضير.
-3. **إنشاء PROJECT_DETAILED_EXECUTION_PLAN.md:** تفصيل كل مرحلة إلى مهام صغيرة.
-4. **تحديد أول Batch:** اختيار أول دفعة قابلة للتنفيذ فقط.
-5. **تحديد Design Source Decision** لكل TASK-ID في الدفعة.
-6. **تطبيق Orchestration Decision Matrix + Model Capability Gate** لكل TASK-ID.
-7. **إنشاء ملفات المهام** `TASK-COD-XXX.md` في `project-control/tasks/` باستخدام `TASK_TEMPLATE.md`.
-8. **تطبيق Pre-Execution Gate على كل TASK-ID** وتسجيل `PASS` في ملف المهمة.
-9. **عرض Master Plan + Detailed Plan + First Batch + TASK-IDs على المستخدم** والانتظار للموافقة.
-10. **إنشاء `IMPLEMENTATION_AGENT_STRATEGY.md`** — استراتيجية العملاء للتنفيذ.
-11. بعد الاعتماد ← الانتقال إلى Phase 6.
+1. **Document Readiness Gate (جديد):** التحقق من أن كل ملف تحضير مطلوب للـ Batch الحالي قد وصل على الأقل إلى `Module Baseline Approved`. إذا كان أي ملف لا يزال `Draft` أو `Under Cross-Review`، لا يمكن تضمينه في خطة التنفيذ إلا بعد رفع حالته أو بعد استثناء موثق.
+2. **Execution Readiness Check:** التحقق من أن جميع ملفات التحضير المطلوبة للـ Batch مكتملة ومعتمدة حسب حالة النضج المطلوبة، و AGENT_DELEGATION_PLAN معتمد، و Technology Profile نشط، ولا توجد Issues مانعة.
+3. **Cross-Verification Check:** التأكد من تطابق عدد الموديلات والشاشات والوحدات عبر جميع ملفات التحضير.
+4. **Module Baseline Consistency Check (جديد):** التأكد من أن جميع الوثائق الخاصة بكل موديول متناسقة قبل تضمينها في خطة التنفيذ.
+5. **إنشاء PROJECT_DETAILED_EXECUTION_PLAN.md:** تفصيل كل مرحلة إلى مهام صغيرة.
+6. **تحديد أول Batch:** اختيار أول دفعة قابلة للتنفيذ فقط.
+7. **تحديد Design Source Decision** لكل TASK-ID في الدفعة.
+8. **تطبيق Orchestration Decision Matrix + Model Capability Gate** لكل TASK-ID.
+9. **إنشاء ملفات المهام** `TASK-COD-XXX.md` في `project-control/tasks/` باستخدام `TASK_TEMPLATE.md`.
+10. **تطبيق Pre-Execution Gate على كل TASK-ID** وتسجيل `PASS` في ملف المهمة.
+11. **عرض Master Plan + Detailed Plan + First Batch + TASK-IDs على المستخدم** والانتظار للموافقة.
+12. **إنشاء `IMPLEMENTATION_AGENT_STRATEGY.md`** — استراتيجية العملاء للتنفيذ.
+13. بعد الاعتماد ← الانتقال إلى Phase 6.
 
 **Fast Path للمهام منخفضة المخاطر:**
 - يجوز لـ Tera استخدام Fast Path للمهام الصغيرة منخفضة المخاطر لتقليل الاحتكاك التحضيري فقط.
@@ -293,6 +332,11 @@ TeraAgent يعمل ضمن نظام `Plan Mode / Build Mode`:
 **قواعد حاكمة:**
 - **لا تنفيذ برمجي في هذه المرحلة.**
 - **لا TASK-ID فيه UI قبل Design Source Decision.**
+- **جديد: لا يستهلك SoftwareDesignerAgent أي ملف تحضير دون `Module Baseline Approved`.**
+- **جديد: إذا كان ملف التحضير في حالة `Draft` أو `Under Cross-Review`، يُرفع Design Gap ولا يُتجاوز.**
+- **جديد: لا TASK-PREP Handback يُقبل بدون Lifecycle Header في الملف الناتج.**
+- **جديد: لا Pre-Execution Gate `PASS` إذا كانت وثائق التحضير الخاصة بالمهمة في حالة < `Module Baseline Approved`.**
+- راجع `TeraPreparationDocumentationGovernance.md` Section 8 (Consumption Readiness Rules) للتفاصيل.
 - **لا TASK-ID بدون Pre-Execution Gate PASS.**
 - **لا توليد كامل TASK-IDs للمشروع دفعة واحدة — فقط للدفعة المعتمدة.**
 - **لا تنفيذ قبل اعتماد المستخدم.**

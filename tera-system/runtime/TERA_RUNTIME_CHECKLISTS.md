@@ -35,15 +35,18 @@ When the user provides a project idea and technical information:
 ### Phase 3: Project Preparation Planning
 1. Read `TERA_PROJECT_DECISION.md` — verify Decision is `Proceed to Project Preparation`.
 2. Read `tera-system/Tera_Project_Preparation_Files.md` as the file catalog.
-3. Create `project-control/PREPARATION_PLAN.md` using the template in `TERA_RUNTIME_TEMPLATES.md` Section 27:
+3. Read `tera-system/TeraPreparationDocumentationGovernance.md` for lifecycle taxonomy, maturity states, and maker/checker rules.
+4. Create `project-control/PREPARATION_PLAN.md` using the template in `TERA_RUNTIME_TEMPLATES.md` Section 27:
    - Classify each file: Required / Conditional / Deferred / Not Required.
-   - Determine creation order and dependencies.
-    - Assign each file to the appropriate sub-agent.
-     - Identify user approval points.
-     - If UI exists, decide whether `28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/`, or `UIVisualDesignerAgent` are required.
-     - Decide the project Engineering Governance Level: Compact / Standard / Full using `tera-system/engineering-governance/ENGINEERING_BEST_PRACTICES.md`.
-4. **No file creation. No agent generation.**
-5. Present the plan for user approval.
+   - **Assign Lifecycle Class (جديد):** Foundation / Consumer / Derived / Living / Late-Bound.
+   - **Determine Target Maturity (جديد):** Module Baseline Approved / System Approved / Locked.
+   - Determine creation order and dependencies (Foundation first).
+   - **Assign Maker Agent and Checker Agent (جديد) — يجب أن يختلفا.**
+   - Determine Owner-sensitive approval points only (module boundaries, architecture, security, change after baseline).
+   - If UI exists, decide whether `28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/`, or `UIVisualDesignerAgent` are required.
+   - Decide the project Engineering Governance Level: Compact / Standard / Full using `tera-system/engineering-governance/ENGINEERING_BEST_PRACTICES.md`.
+5. **No file creation. No agent generation.**
+6. Present the plan for user approval.
 
 ### Phase 4: Sub-Agent Generation & Preparation Delegation
 1. Verify `PREPARATION_PLAN.md` is approved. If not → do not start Phase 4.
@@ -53,11 +56,14 @@ When the user provides a project idea and technical information:
 4. If generating: create draft in `generated-agents/opencode/` using `AGENT_GENERATION_TEMPLATE.md`.
 5. For each agent, set:
     - `Allowed Sources` and `Allowed Write Targets`.
+    - **Role (جديد):** Maker (يكتب) أو Checker (يراجع) — لا يمكن أن يتطابق Maker و Checker لنفس الملف.
+    - **Document Lifecycle State Target (جديد):** Draft → Under Cross-Review → Module Baseline Approved — لكل ملف.
     - `Token Budget` (Light / Medium / Strong) and `Context Rules` (Task / Summary / Full).
     - `Forbidden Actions` and `Acceptance Criteria`.
 6. Create `project-control/AGENT_DELEGATION_PLAN.md` using template in `TERA_RUNTIME_TEMPLATES.md` Section 28.
 7. Create or update `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md`.
 8. Present delegation plan for user approval.
+9. **After approval (جديد):** لكل TASK-PREP-XXX، حدد ما إذا كان هذا التفويض للـ Maker (كتابة) أم للـ Checker (مراجعة تقاطعية). سجّل حالة الوثيقة المستهدفة لكل تفويض.
 9. After approval: activate agents in `.opencode/agents/` per current preparation batch.
 10. If activation happens, ask user to restart OpenCode.
 11. Delegate **preparation-file creation only**:
@@ -70,8 +76,12 @@ When the user provides a project idea and technical information:
 13. **This is not application implementation.**
 
 ### Phase 5: Execution Planning
+0. **Document Readiness Gate (جديد — راجع `TeraPreparationDocumentationGovernance.md` §8):**
+    - [ ] لكل ملف تحضير مطلوب للـ Batch الحالي، تأكد من أن حالته ≥ `Module Baseline Approved`.
+    - [ ] إذا كان أي ملف لا يزال `Draft` أو `Under Cross-Review`، لا يُضمّن في الخطة إلا باستثناء موثق.
+    - [ ] المواد المرجعية: `PREPARATION_PLAN.md` (قسم 9: Document Maturity State Tracking).
 1. Run **Execution Readiness Check**:
-    - [ ] All required preparation files complete and approved.
+    - [ ] All required preparation files complete and approved (≥ Module Baseline Approved).
     - [ ] `AGENT_DELEGATION_PLAN.md` approved.
     - [ ] Active Technology Profile confirmed.
     - [ ] Engineering Governance Level confirmed when application code will be implemented.
@@ -80,7 +90,10 @@ When the user provides a project idea and technical information:
     - [ ] `28_UI_UX_GUIDELINES.md` exists for incoming visual UI tasks.
     - [ ] Target Version and Release Type are identified for incoming execution tasks.
     - [ ] `VERSION_REGISTRY.md` is present or intentionally N/A for one-off non-versioned work.
-2. Create `project-control/PROJECT_MASTER_PLAN.md` using template Section 29:
+2. **Module Baseline Consistency Check (جديد):**
+    - [ ] تأكد من أن جميع وثائق التحضير لكل موديول متوافقة (لا تناقض في عدد الجداول، الشاشات، الحقول، المهام، workflows).
+    - [ ] إذا وُجد تناقض، سجّله وأعده إلى Phase 4 للمراجعة التقاطعية.
+3. Create `project-control/PROJECT_MASTER_PLAN.md` using template Section 29:
     - Define execution phases with objectives and dependencies.
     - Include the formal phased roadmap (Core MVP / Extended MVP / Phase 2 / Later / Out of Scope).
     - Define transition conditions between phases.
@@ -103,7 +116,7 @@ When the user provides a project idea and technical information:
     - Record `Pre-Execution Gate Result: PASS` in the task file.
      - For UI tasks, include UI Source / UI Rules / UI Acceptance / Design Gap Handling and link `UI_ACCEPTANCE_GATE.md`.
      - For implementation tasks that touch code architecture, modules, API, validation, permissions, database, shared utilities, or tests, apply `tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md`.
-6.5 **Create `IMPLEMENTATION_AGENT_STRATEGY.md`** (مطلب إلزامي قبل الانتقال إلى Phase 6):
+7.5 **Create `IMPLEMENTATION_AGENT_STRATEGY.md`** (مطلب إلزامي قبل الانتقال إلى Phase 6):
     - أنشئ الملف في `project-control/IMPLEMENTATION_AGENT_STRATEGY.md`.
     - أجب عن جميع الأسئلة الإلزامية:
       - **Agent: من نحتاج الآن؟** — أي عميل تنفيذي مطلوب للـ Batch الحالي.
@@ -113,13 +126,13 @@ When the user provides a project idea and technical information:
       - **Activation plan: متى يُفعّل كل عميل وبأي صلاحيات؟**
       - **Exceptions: هل يوجد استثناء للتنفيذ المباشر؟** — إذا كان Tera سينفذ كوداً مباشرة، وثق السبب.
     - سجّل القرار في `PROJECT_ACTIVITY_LOG.md`.
-7. Present to user: Master Plan + Detailed Plan + Batch Plan + **IMPLEMENTATION_AGENT_STRATEGY.md** + first TASK-IDs.
-8. Wait for user approval before moving to Phase 6:
+8. Present to user: Master Plan + Detailed Plan + Batch Plan + **IMPLEMENTATION_AGENT_STRATEGY.md** + first TASK-IDs.
+9. Wait for user approval before moving to Phase 6:
     - [ ] Master Plan approved.
     - [ ] Detailed Plan approved.
     - [ ] Batch Plan approved.
     - [ ] **IMPLEMENTATION_AGENT_STRATEGY.md approved.**
-9. **No coding. No UI without Design Source Decision. No TASK-ID without Pre-Execution Gate PASS. No Phase 6 without approved Implementation Agent Strategy.**
+10. **No coding. No UI without Design Source Decision. No TASK-ID without Pre-Execution Gate PASS. No Phase 6 without approved Implementation Agent Strategy.**
 
 ### Phase 6: Implementation
 

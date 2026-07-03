@@ -285,8 +285,12 @@ BLOCKED
 | 21 | إذا كانت المهمة UI/Frontend، هل يوجد Design Source Decision و`28_UI_UX_GUIDELINES.md` عند الحاجة؟ | Yes / N/A |
 | 22 | إذا كانت المهمة UI/Frontend، هل ترتبط بـ `UI_ACCEPTANCE_GATE.md` وتتضمن UI Source / UI Rules / UI Acceptance / Design Gap Handling؟ | Yes / N/A |
 | 23 | إذا كانت المهمة تمس كود التطبيق أو المعمارية أو الموديولات أو API أو Validation أو Permissions أو Database أو Tests، هل تم تطبيق Engineering Governance Gate؟ | Yes / N/A |
-| 24 | هل المهمة تحترم مستوى الحوكمة الهندسية المعتمد Compact / Standard / Full دون over-engineering؟ | Yes / N/A |
-| 25 | هل اكتملت `Technical Specification` من `SoftwareDesignerAgent` وكانت `Task Engineering Review Decision` فيها `APPROVED_FOR_GATE`؟ (إلزامي لكل المهام) | Yes |
+| 24 | هل جميع وثائق التحضير المرتبطة بالمهمة تحتوي على Lifecycle Header (Section 41 من TERA_RUNTIME_TEMPLATES.md)؟ | Yes |
+| 25 | هل حالة كل وثيقة تحضيرية في Lifecycle Header ≥ Module Baseline Approved للموديول المستهدف؟ | Yes |
+| 26 | هل تم التحقق من تطابق الحالة بين PREPARATION_PLAN.md (Section 9) والـ Lifecycle Header في كل ملف؟ | Yes |
+| 27 | إذا رفع SoftwareDesignerAgent Design Gap متعلق بحالة وثيقة (مثل Missing Header أو state < MBA)، هل تم حلّه قبل المرور عبر البوابة؟ | Yes |
+| 28 | هل المهمة تحترم مستوى الحوكمة الهندسية المعتمد Compact / Standard / Full دون over-engineering؟ | Yes / N/A |
+| 29 | هل اكتملت `Technical Specification` من `SoftwareDesignerAgent` وكانت `Task Engineering Review Decision` فيها `APPROVED_FOR_GATE`؟ (إلزامي لكل المهام) | Yes |
 
 إذا فشل أي بند، يجب على Tera تصحيح المهمة قبل عرضها.
 

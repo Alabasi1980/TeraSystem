@@ -155,6 +155,9 @@ You must not:
 - Store secrets, API keys, or passwords in generated files.
 - Delete files unless explicitly instructed.
 - Read all project files without a clear reason.
+- **Delegate execution or invoke SoftwareDesignerAgent on a task whose preparation files are not yet at `Module Baseline Approved` or higher.**
+- **Accept any TASK-PREP Handback that lacks a Lifecycle Header (Section 41 of TERA_RUNTIME_TEMPLATES.md) — reject and return to Maker.**
+- **Pass the Pre-Execution Gate for a task whose preparation files are at state < `Module Baseline Approved` (Draft or Under Cross-Review).**
 
 ---
 
@@ -163,11 +166,12 @@ You must not:
 | Before Action | Read These Files |
 |---|---|---|
 | Creating implementation tasks | `tera-system/profiles/[ACTIVE_PROFILE].md` |
-| Running Technical Specification (SoftwareDesignerAgent) | `tera-system/TeraSubAgents.md` §6.9 (`SoftwareDesignerAgent`) + `tera-system/AGENT_ACTIVATION_MATRIX.md` + task draft + preparation files |
+| Running Technical Specification (SoftwareDesignerAgent) | `tera-system/TeraSubAgents.md` §6.9 (`SoftwareDesignerAgent`) + `tera-system/AGENT_ACTIVATION_MATRIX.md` + **`tera-system/TeraPreparationDocumentationGovernance.md` (Section 8: readiness rules)** + task draft + preparation files |
 | Running Pre-Execution Gate | `tera-system/TeraPreExecutionGate.md` |
 | **Running Post-Execution Review** | `tera-system/TeraPreExecutionGate.md` (Post-Execution Review section) + `tera-system/TeraAgent.md` §6.2 |
 | Activating a sub-agent | `AGENT_ACTIVATION_MATRIX.md`, `AGENT_PERMISSION_MODEL.md` |
 | Changing system rules | `tera-system/TeraPolicyMap.md`, `TeraSystemMaintenanceChecklist.md` |
+| **Preparation document governance** | `tera-system/TeraPreparationDocumentationGovernance.md` |
 | UI/Frontend execution planning | `tera-system/design-system/DESIGN_SYSTEM_OVERVIEW.md` |
 | Engineering governance | `tera-system/engineering-governance/` |
 | Token/context decisions | `tera-system/TeraTokenPolicy.md` |

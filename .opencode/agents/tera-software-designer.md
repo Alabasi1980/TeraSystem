@@ -68,6 +68,23 @@ EngineeringAgent / FrontendAgent executes per spec
 
 If any required file is missing or insufficient → produce a **Design Gap** within the Technical Specification. Do not guess.
 
+### 4.1 Lifecycle Header Consumption Gate (جديد — حوكمة الوثائق)
+
+قبل قراءة أي ملف تحضيري، يجب التحقق من Lifecycle Header (Section 41 من TERA_RUNTIME_TEMPLATES.md) وفق القواعد التالية:
+
+1. **التحقق من وجود Lifecycle Header** في بداية الملف (أول كتلة بعد العنوان الرئيسي).
+   - إذا غاب الـ Header ← يرفع `Design Gap` ولا يقرأ الملف.
+2. **التحقق من Current State في الـ Header ≥ `Module Baseline Approved`**.
+   - إذا كانت الحالة `Draft` أو `Under Cross-Review` ← يرفع `Design Gap`: "Document [name] is at [state], requires ≥ MBA".
+   - لا يقرأ الملف ولا يخمن.
+3. **التحقق من أن Baseline Module يغطي الموديول المطلوب في المهمة**.
+   - إذا كان `Baseline Module: Inventory` والمهمة عن `Sales` ← يرفع `Module Coverage Gap`.
+4. **إذا اجتازت جميع الفحوصات** ← يقرأ الملف بشكل طبيعي.
+5. **إذا كان الملف من نوع `Living` أو `Late-Bound`** وكان Current State أقل من `MBA`:
+   - يجوز استثناء مؤقت كحالة طارئة بموافقة Tera وشرط أن الحالة ≥ `Draft` ومذكور كـ `Design Gap` مع خطة رفع الحالة.
+
+> **مبدأ أساسي:** لا تخمين. إذا نقص الـ Header أو الحالة غير كافية، ارفع `Design Gap` بدلاً من الافتراض.
+
 ---
 
 ## 5. What Software Designer Agent Produces

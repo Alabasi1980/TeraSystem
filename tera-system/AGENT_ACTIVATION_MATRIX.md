@@ -72,6 +72,21 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 
 > **ملاحظة نظامية:** `ClientDiscoveryAgent` و `ProposalScopeAgent` و `ClientApprovalReviewAgent` و `ChangeControlAgent` أُزيلوا من هذا الجدول. مسؤولياتهم دُمجت في `TeraClientEngagementAgent` (عميل حوكمة مستقل — راجع §2.4). راجع `tera-system/TeraClientEngagement.md`.
 
+### 2.3.1 Checker Activation After Maker Handback (جديد — حوكمة الوثائق)
+
+بعد أن يكمل Maker (عميل إنتاج ملفات التحضير) مهمته ويسلّم Handback إلى Tera، يُفعّل **Checker** وفق القواعد التالية:
+
+| Trigger | Action | Checker Agent |
+|---|---|---|
+| `TASK-PREP-Handback` من Maker مع Lifecycle Header وحالة = `Draft` | Tera يسلّم الملف إلى Checker للمراجعة التقاطعية | كما هو محدّد في `PREPARATION_PLAN.md` (عمود Checker Agent) |
+| `Checker Handback` مع PASS | Tera يراجع النتائج، يكتشف التناقضات، ويقرر ترقية الحالة إلى `Under Cross-Review` ثم إلى `MBA` أو إعادتها إلى `Draft` | — |
+| `Checker Handback` مع FAIL | Tera يعيد الملف إلى Maker مع documented findings ويعيد الحالة إلى `Draft` | — |
+
+**قواعد:**
+- Checker يجب أن يكون **عميلاً مختلفاً** عن Maker (لا يمكنه مراجعة نفسه).
+- لا يمكن تجاوز Checker — أي ملف تحضيري يجب أن يمر عبر Cross-Review قبل الوصول إلى `Module Baseline Approved`.
+- إذا لم يُحدّد Checker في `PREPARATION_PLAN.md`، Tera هو المسؤول عن المراجعة (يعمل كـ Checker مؤقت).
+
 ### 2.4 عملاء جلسات الحوكمة الرئيسية
 
 هؤلاء لا يخضعون للتفعيل التلقائي بواسطة Tera. المالك يفتحهم أو يطلب عملهم يدويًا حسب مجريات المشروع.

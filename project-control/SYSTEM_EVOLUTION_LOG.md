@@ -825,3 +825,193 @@ No acceptance without physical review.
 6. git restore project-control/tasks/TASK_TEMPLATE.md
 7. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
 ```
+
+---
+
+## SCP-2026-07-03-013 — Preparation Documentation Governance Model
+
+**التاريخ:** 2026-07-03
+**معرّف التغيير:** SCP-2026-07-03-013
+**مصدر الطلب:** System Enhancement — حوكمة دورة حياة وثائق التحضير
+**نوع التغيير:** New Policy + Multiple System File Updates
+**الملفات المتأثرة:**
+
+### تم الإنشاء
+- `tera-system/TeraPreparationDocumentationGovernance.md` — ملف حوكمة الوثائق الجديد
+
+### تم التحديث
+1. `tera-system/Tera_Project_Preparation_Files.md` — إضافة مرجع حوكمة + ملاحظة عن تصنيف دورة الحياة
+2. `tera-system/TeraAgent.md` — تحديث Phases 3/4/5: إضافة Document Lifecycle Class, Maker/Checker, Target Maturity, Readiness Gate
+3. `tera-system/TeraSubAgents.md` — إضافة §3.2.3 حوكمة Maker/Checker لوثائق التحضير + مرجع ملف الحوكمة
+4. `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` — تحديث Section 27 (PREPARATION_PLAN): إضافة Lifecycle Class, Maker/Checker, Target Maturity, Maturity Tracking. تحديث Section 28 (AGENT_DELEGATION_PLAN): إضافة Checker agents
+5. `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — إضافة Document Readiness Gate (قبل Phase 5) + Module Baseline Consistency Check + تحديث Phase 3/4 checklists
+6. `tera-system/TeraPolicyMap.md` — إضافة إدخال جديد: Preparation documentation governance
+7. `tera-system/TeraArchitectureMap.md` — إضافة طبقة جديدة: Preparation documentation governance
+8. `.opencode/agents/tera.md` — إضافة قاعدة منع: لا تنفيذ قبل Module Baseline Approved + مرجع حوكمة في Quick Reference + تحديث SoftwareDesignerAgent line
+
+### الملخص
+تم إنشاء نموذج حوكمة كامل لوثائق تحضير التطبيق، يشمل:
+
+- **Document Taxonomy**: تصنيف الوثائق حسب دورة الحياة (Foundation / Consumer / Derived / Living / Late-Bound) — بالإضافة إلى التصنيف الحالي (Core / Conditional / Supporting)
+- **Document Lifecycle States**: 8 حالات (Draft → Under Cross-Review → Module Baseline Approved → System Pending Integration → System Approved → Locked → Change Requested → Superseded)
+- **Maker/Checker/Orchestrator/Owner Model**: لكل وثيقة، Maker يكتب، Checker مختلف يراجع تقاطعياً، Tera ينسق ويكتشف التناقضات، Owner يعتمد القرارات الحساسة فقط
+- **Partial Approval / Module Baseline**: السماح باعتماد وثائق كل موديول على حدة دون انتظار الموديولات الأخرى
+- **Documentation Impact Analysis**: بروتوكول رسمي لتحليل أثر أي تغيير بعد Module Baseline Approved
+- **Focused Research Rule**: بحث موجه فقط لفجوة توثيقية محددة مع تقييم المصادر والتبني
+- **Consumption Readiness Rules**: لكل مستهلك (Tera, SoftwareDesignerAgent, EngineeringAgent) تعريف ما يمكنه استهلاكه وفي أي حالة
+- **Anti-Bloat Gate for Documents**: منع إنشاء أي وثيقة دون مبرر واضح
+
+### فلسفة التصميم
+- لم تُنشأ طبقة أو مجلد جديد (باستثناء ملف السياسة الواحد)
+- الحوكمة امتدت للنظام الحالي: لوحة السياسات، خريطة المعمارية، تعريفات العملاء، القوالب، قوائم الفحص
+- لم يُنشأ أي عميل جديد — استخدم العملاء الحاليون (DataDesignAgent, UIUXStructureAgent, إلخ) كـ Maker أو Checker
+- SoftwareDesignerAgent لم يتغير — هو مستهلك للوثائق، والتحسين في جودة ما يستهلكه
+
+### ما لم يتم فعله عمداً (Anti-Bloat)
+- لم تُنشأ قوالب منفصلة لكل حالة وثيقة
+- لم يُنشأ مجلد `tera-system/document-governance/` مستقل — بقي الملف في `tera-system/`
+- لم يُنشأ عميل `DocumentGovernanceAgent` — Tera هو المنظم
+- لم تُعدّل تعريفات العملاء التنفيذيين (EngineeringAgent إلخ) — التأثير فقط على عملاء التحضير
+- لم تُنشأ قاعدة بيانات منفصلة لحالات الوثائق — تُسجل داخل PREPARATION_PLAN.md
+
+### ما بقي للتطوير المستقبلي (Phase 2)
+- تحديث قوالب ملفات التحضير الفردية (كل ملف مثل 06_DATA_MODEL_PREPARATION.md) لتشمل Header lifecycle
+- إضافة automation لتحريك حالة الوثيقة تلقائياً عبر Pre-Execution Gate
+- ربط حالة الوثيقة بـ SoftwareDesignerAgent عند قراءة الملف
+
+### الموافقة: Majed — Approved (2026-07-03)
+### التحقق من الصحة: Validation Pending — سيتم تشغيله قبل الإغلاق
+### المخاطر:
+- منخفضة — التغيير يضيف حوكمة دون تغيير في السلوك الحالي
+- خطر ضئيل: قد يزيد التعقيد الأولي في Phase 3/4 قليلاً، لكنه يمنع إعادة العمل لاحقاً
+- الخطر مضبوط: التصنيف حسب الحجم (Small/Medium/Large) يسمح بتبسيط الحوكمة في المشاريع الصغيرة
+
+### ملاحظات الاسترجاع (Rollback):
+1. حذف `tera-system/TeraPreparationDocumentationGovernance.md`
+2. `git restore tera-system/Tera_Project_Preparation_Files.md`
+3. `git restore tera-system/TeraAgent.md`
+4. `git restore tera-system/TeraSubAgents.md`
+5. `git restore tera-system/runtime/TERA_RUNTIME_TEMPLATES.md`
+6. `git restore tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md`
+7. `git restore tera-system/TeraPolicyMap.md`
+8. `git restore tera-system/TeraArchitectureMap.md`
+9. `git restore .opencode/agents/tera.md`
+10. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+
+---
+
+## SCP-2026-07-03-014 — Preparation Document Lifecycle Header (Step B)
+
+**التاريخ:** 2026-07-03
+**معرّف التغيير:** SCP-2026-07-03-014
+**مصدر الطلب:** Step B من حوكمة وثائق التحضير — ربط lifecycle metadata بكل ملف تحضير
+**نوع التغيير:** Template Addition + Agent Instructions + Catalog Metadata Update
+**الملفات المتأثرة:**
+
+### تم التحديث
+1. `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` — إضافة Section 41: Preparation Document Lifecycle Header (قالب Header قياسي لكل ملف تحضير مع قواعد الاستخدام)
+2. `tera-system/TeraSubAgents.md` — إضافة قاعدة Lifecycle Header في مقدمة Section 5: كل عميل تحضيري يجب أن يبدأ ملفه بالـ Header القياسي
+3. `tera-system/Tera_Project_Preparation_Files.md` — إضافة Lifecycle Metadata (جدول مكون من 7 حقول) لكل ملف من 00_PROJECT_INPUTS إلى 35_ROADMAP_AND_FUTURE_PHASES (35 ملفاً)
+
+### الملخص
+تم إكمال Step B من حوكمة وثائق التحضير:
+
+1. **Section 41 جديد في TERA_RUNTIME_TEMPLATES.md**:
+   - قالب Lifecycle Header قياسي (9 حقول) يجب أن يوضع في بداية كل ملف تحضير
+   - قواعد الاستخدام: متى يُضاف، من يملؤه، ماذا يحدث إذا غاب
+   - رابط مع PREPARATION_PLAN.md (تزامن الحالة بين الملف والسجل)
+
+2. **تحديث TeraSubAgents.md**:
+   - قاعدة جديدة في مقدمة Section 5: كل عميل ينتج ملفاً تحضيرياً يجب أن يبدأ بالـ Header
+   - "لا يُقبل ملف بدون Lifecycle Header — Tera يعيد الملف إذا افتقر إلى الـ Header"
+
+3. **تحديث كتالوج Tera_Project_Preparation_Files.md**:
+   - لكل ملف من الـ 35 ملفاً، أضيف جدول Lifecycle Metadata يحتوي على:
+     - **Class**: التصنيف حسب دورة الحياة (Intake, Structural Analysis, Cross-Cutting, Executable Design, Planning & Control, Late-Closure)
+     - **Dependency Profile**: Foundation / Consumer / Derived / Living / Late-Bound
+     - **Default Maker**: العميل المسؤول عن الكتابة
+     - **Default Checker**: عميل المراجعة التقاطعية (يختلف عن Maker)
+     - **Owner Approval Needed?**: هل يحتاج موافقة Majed (فقط للقرارات الحساسة)
+     - **Minimal Usable State**: أقل حالة نضج تجعل الملف قابلاً للاستهلاك
+     - **Final Target State**: الحالة النهائية المستهدفة
+
+### إحصائيات
+- 11 ملفات Core Files ← Lifecycle Metadata أضيف
+- 14 ملفات Conditional Files ← Lifecycle Metadata أضيف
+- 10 ملفات Supporting Files ← Lifecycle Metadata أضيف
+- Owner Approval مطلوب لـ: 02_SCOPE, 08_ARCHITECTURE, 14_INTEGRATIONS, 15_SECURITY, 25_CHANGE_REQUESTS, 28_UI_UX, 33_MULTI_TENANCY, 34_COMPLIANCE
+
+### ما تم تجنبه عمداً (Anti-Bloat)
+- لم تُنشأ ملفات جديدة لكل ملف تحضير
+- لم يُنشأ عميل `LifecycleHeaderAgent`
+- لم تُنشأ قاعدة بيانات أو مجلد منفصل لحالات الوثائق
+- لم يُعدّل هيكل الملفات التحضيرية نفسها في التطبيقات الفعلية
+- الـ Header نفسه لم يُضف بعد إلى الملفات الفعلية في تطبيقات العملاء — سيُضاف تدريجياً عند إنشاء أو تعديل كل ملف
+
+### الموافقة: Majed — Approved
+### التحقق من الصحة: Validation Pending
+### المخاطر: منخفضة — تغيير في الكتالوج والقوالب فقط، لا تأثير على الملفات الفعلية أو السلوك التشغيلي الحالي
+
+### ملاحظات الاسترجاع (Rollback):
+1. `git restore tera-system/runtime/TERA_RUNTIME_TEMPLATES.md`
+2. `git restore tera-system/TeraSubAgents.md`
+3. `git restore tera-system/Tera_Project_Preparation_Files.md`
+4. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+
+---
+
+## SCP-2026-07-03-015
+
+تاريخ: 2026-07-03
+مصدر الطلب: System Owner Request
+نوع التغيير: Runtime Enforcement / Agent Behavior Update / Gate Integration
+
+### الملفات المعدلة:
+
+| الملف | التغيير |
+|---|---|
+| `.opencode/agents/tera-software-designer.md` | إضافة §4.1 Lifecycle Header Consumption Gate — 5 قواعد فحص قبل قراءة أي ملف تحضيري |
+| `tera-system/TeraPreExecutionGate.md` | إضافة 4 بنود تحقق جديدة (24-27): Header موجود، State ≥ MBA، تطابق PREPARATION_PLAN، حل Design Gaps |
+| `tera-system/TeraAgent.md` §4.3 | State Transition Logic: بعد Maker ← Draft، بعد Checker ← MBA/Draft مع مراجعة Tera واعتماد Owner |
+| `tera-system/TeraAgent.md` §4.3 (قواعد) | 4 قواعد جديدة: لا Handback بدون Header، لا استهلاك قبل MBA، لا Cross-Review بدون تناسق |
+| `tera-system/TeraAgent.md` §4.4 (Phase 5) | 3 قواعد جديدة: لا TASK-PREP بدون Header، لا Gate PASS إذا State < MBA |
+| `tera-system/TeraSubAgents.md` §6.9 | 4 حدود جديدة: فحص Lifecycle Header، رفع Design Gap عند غيابه أو State < MBA، Module Coverage Gap، استثناء Living/Late-Bound |
+| `tera-system/AGENT_ACTIVATION_MATRIX.md` | إضافة §2.3.1 Checker Activation After Maker Handback — 3 Triggers + 3 قواعد |
+| `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` §27 | إضافة تعليمة إلزامية: كل TASK-PREP يجب أن يبدأ بـ Lifecycle Header |
+| `.opencode/agents/tera.md` | إضافة 3 قواعد منع جديدة في §7: لا تفويض قبل MBA، لا Handback بدون Header، لا Gate PASS إذا < MBA |
+
+### الملخص:
+
+تم تحويل حوكمة دورة حياة وثائق التحضير من **Policy + Templates** (Step A + B) إلى **Runtime Enforcement** (Step C):
+
+1. **SoftwareDesignerAgent** أصبح يفحص Lifecycle Header قبل قراءة أي ملف — يمنع استهلاك وثائق Draft.
+2. **Tera** أصبح يطبّق State Transition منطقية: بعد Maker → Draft، بعد Checker → Under Cross-Review → MBA (أو إعادة إلى Draft مع documented findings).
+3. **Pre-Execution Gate** أصبح يتحقق من 4 بنود إضافية تضمن جاهزية الوثائق قبل السماح بالتنفيذ.
+4. **Checker Activation** أصبحت مشروطة بـ Handback من Maker مع Header.
+5. **Handback من Maker بدون Header مرفوض** — يعود الملف مع طلب إضافة الـ Header.
+6. استثناء محدود لملفات `Living`/`Late-Bound` بموافقة Tera.
+
+### What Each Agent Now Enforces:
+
+| Agent / Gate | Enforcement |
+|---|---|
+| SoftwareDesignerAgent | Header exists? → Yes. State ≥ MBA? → Yes. Baseline covers module? → Yes. Otherwise → Design Gap. |
+| Tera (Phase 4) | Handback rejected if no Header. Checker activated after Maker. State syncs between Header and PREPARATION_PLAN.md. Owner approves sensitive decisions. |
+| Tera (Phase 5) | Document Readiness Gate blocks batches with files < MBA. No Pre-Execution Gate PASS for tasks with insufficient doc state. |
+| Pre-Execution Gate | 4 new checklist items (24-27) verify Header presence, state ≥ MBA, PREPARATION_PLAN sync, gaps resolved. |
+| Checker Activation | Activated only after Maker Handback with Header. Must differ from Maker. Cannot be bypassed. |
+
+### الموافقة: Majed — Approved
+### التحقق من الصحة: Validation Passed — no trailing whitespace, no duplicates, all references consistent
+### المخاطر: منخفضة — إضافة فحوصات فقط قبل الاستهلاك والتنفيذ، لا تغيير في بنية الملفات أو تعريفات العملاء الجوهرية
+
+### ملاحظات الاسترجاع (Rollback):
+
+1. `git restore .opencode/agents/tera-software-designer.md`
+2. `git restore .opencode/agents/tera.md`
+3. `git restore tera-system/TeraPreExecutionGate.md`
+4. `git restore tera-system/TeraAgent.md`
+5. `git restore tera-system/TeraSubAgents.md`
+6. `git restore tera-system/AGENT_ACTIVATION_MATRIX.md`
+7. `git restore tera-system/runtime/TERA_RUNTIME_TEMPLATES.md`
+8. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md

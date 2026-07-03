@@ -48,6 +48,7 @@
 | `TOOLING_AND_MCP_POLICY.md` | يحدد سياسة استخدام الأدوات و MCPs المسموحة والمؤجلة |
 | `TeraTokenPolicy.md` | يحدد سياسة السياق والتوكنز التي يجب أن يلتزم بها كل عميل |
 | `TeraPreExecutionGate.md` | يحدد بوابة المراجعة الإلزامية قبل تفويض أي مهمة تنفيذية |
+| `TeraPreparationDocumentationGovernance.md` | يحدد دورة حياة وثائق التحضير، حالات النضج، نموذج Maker/Checker/Owner، ونظام القبول الجزئي للوحدات |
 | `engineering-governance/` | يحدد المثل الهندسية، بوابة الحوكمة الهندسية، Checklist المراجعة، ومسؤوليات العملاء تجاه قابلية الصيانة |
 | `project-control/PROJECT_STATE.md` | الذاكرة المختصرة التي يقرأها العملاء عند الحاجة بدل إعادة قراءة كل الملفات |
 
@@ -101,6 +102,17 @@ It does not replace:
 - `Post-Execution Review Gate`
 
 Its role is to help Tera decide whether the current model is sufficient, sufficient with safeguards, needs escalation, or whether the task should be split first.
+
+### 3.2.3 حوكمة Maker/Checker لوثائق التحضير — لكل ملف تحضيري
+
+وفقًا لـ `TeraPreparationDocumentationGovernance.md`، تنطبق القواعد التالية على جميع العملاء الذين ينتجون ملفات تحضيرية:
+
+1. **Maker**: العميل الذي يكتب الملف (مثل `DataDesignAgent` يكتب `06_DATA_MODEL_PREPARATION.md`).
+2. **Checker**: عميل **مختلف** يراجع الملف تقاطعياً (مثل `UIUXStructureAgent` يراجع `06_DATA_MODEL_PREPARATION.md` من منظور الشاشات).
+3. **Tera**: المنظّم الذي يكتشف التناقضات وينقل الوثيقة بين الحالات (Draft → Under Cross-Review → Module Baseline Approved).
+4. **Owner**: يعتمد فقط القرارات الحساسة — لا يراجع كل حقل.
+
+هذه القاعدة لا تنطبق على العملاء التنفيذيين (Phase 6) الذين ينفذون كوداً، بل فقط على عملاء إنتاج ومراجعة وثائق التحضير.
 
 ### 3.3 ملفات المشروع هي مصدر الحقيقة
 
@@ -226,6 +238,16 @@ design-reviewer
 ```
 
 لا حاجة إلى شخصية طويلة أو قصة خلفية. المهم هو العقد التشغيلي: متى يعمل، ماذا يستلم، ماذا ينتج، وما حدوده.
+
+### قاعدة Lifecycle Header لجميع عملاء إنتاج ملفات التحضير
+
+كل عميل فرعي ينتج ملفاً في `project-preparation/` يجب أن يلتزم بالقاعدة التالية:
+
+> **عند إنشاء أي ملف تحضيري:** ابدأ الملف بـ **Lifecycle Header القياسي** (راجع `TERA_RUNTIME_TEMPLATES.md` Section 41).
+> املأ الحقول: Lifecycle Class، Current State (`Draft` عند الإنشاء)، Maker Agent (اسمك)، Checker Agent (اسم عميل المراجعة)، Closure Condition.
+> **لا يُقبل ملف بدون Lifecycle Header** — Tera يعيد الملف إذا افتقر إلى الـ Header.
+
+هذه القاعدة تنطبق على كل العملاء في هذا القسم (5.1–5.8) وفي القسم 6 عند إنتاجهم لملفات تحضيرية.
 
 ---
 
@@ -1142,6 +1164,10 @@ project-control/tasks/[TASK-ID].md (عند وجود مسودة)
 - لا يقرر المراجعين النهائيين بعد التنفيذ؛ يقترحهم فقط.
 - لا ينشئ أو يفعّل أو يعدّل أو يفوض Agent آخر من تلقاء نفسه.
 - **لا يخمن** — إذا نقصته معلومة، ينتج `Design Gap` بدلاً من الافتراض.
+- **يجب أن يتحقق من Lifecycle Header قبل قراءة أي ملف تحضيري (حوكمة الوثائق).**
+- **إذا غاب الـ Header أو كانت Current State < `Module Baseline Approved` → يرفع `Design Gap` ولا يقرأ الملف.**
+- **إذا كان Baseline Module في الـ Header لا يغطي الموديول المستهدف → يرفع `Module Coverage Gap`.**
+- **الاستثناء الوحيد:** ملفات `Living` أو `Late-Bound` بحالة ≥ `Draft` وموافقة Tera ورفع Design Gap مع خطة رفع الحالة.
 - لا ينتج Preparation Files جديدة — هو مستهلك للتحضير وليس منتجاً له.
 
 ### معايير القبول
