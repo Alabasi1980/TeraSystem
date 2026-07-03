@@ -1434,10 +1434,12 @@ Decision / Notes
 
 Purpose: Guide the responsible agent through the complete pre-intake and intake process — from first client conversation through structured questioning to confirmed understanding — before any formal handoff to TeraAgent or formal preparation begins.
 
+**Ownership rule:** This section is executed by `TeraClientEngagementAgent` for both external and internal projects. `TeraAgent` does not perform raw Client Discovery directly; it validates the approved handoff package and starts from Phase 2.
+
 The process has two stages:
 
 ```text
-Client Discovery Mode  ← Open conversation, understanding, confirmation
+Client Discovery Mode (TCEA)  ← Open conversation, understanding, confirmation
        │
 Project Intake Gate   ← Readiness check (TeraProjectIntakePolicy.md)
        │
@@ -1448,7 +1450,7 @@ Smart Interview (if needed) ← Structured adaptive questioning
 
 ### Stage 1: Client Discovery Mode
 
-This is the **first conversation** with the client (or Majed describing the client's idea). It is a **dialogue, not a questionnaire**.
+This is the **first conversation** with the client (or Majed describing the client's idea). It is a **dialogue, not a questionnaire**. The responsible runtime owner here is `TeraClientEngagementAgent`.
 
 #### Phase 0: Open Listening
 
@@ -1458,7 +1460,7 @@ Start with a simple, open question — do not interrupt or launch into structure
 "صف لي التطبيق الذي تريده بكلامك، وما المشكلة التي تريد حلها؟"
 ```
 
-Let the client explain freely. Tera listens and notes:
+Let the client explain freely. TCEA listens and notes:
 - the core idea
 - the problem being solved
 - the expected users
@@ -1470,7 +1472,7 @@ Let the client explain freely. Tera listens and notes:
 
 #### Phase 1: Understanding Summary (First Confirmation)
 
-After the client finishes explaining, Tera produces a concise summary:
+After the client finishes explaining, TCEA produces a concise summary:
 
 ```
 فهمي الأولي:
@@ -1490,7 +1492,7 @@ Then ask:
 
 #### Decision: Proceed or Discovery Continues
 
-After confirmation, Tera assesses:
+After confirmation, TCEA assesses:
 - Is the application picture **clear enough** that I could describe it to another developer? → Proceed to **Project Intake Gate**.
 - Are there **major gaps** that make the idea ambiguous? → Proceed to **Smart Interview** (Stage 2).
 - Is the client unsure about **most aspects**? → Proceed to **Smart Interview**, starting with lightweight essential questions.
@@ -1584,7 +1586,7 @@ The proposal captures:
 
 Generate the proposal as a `.html` file under:
 - `clients/.../client-approval/` for external client projects
-- `project-inputs/` for internal projects
+- `clients/.../client-approval/` for internal projects as well
 
 **Do not proceed to formal preparation until the client approves this proposal.** After approval, the proposal becomes the official reference for scope — any change request is measured against it.
 
@@ -1595,8 +1597,8 @@ Generate the proposal as a `.html` file under:
 A core principle throughout the entire process:
 
 ```text
-When the client does not know an answer, Tera does not stop.
-Tera proposes a reasonable default — but records it as an assumption,
+When the client does not know an answer, TCEA does not stop.
+TCEA proposes a reasonable default — but records it as an assumption,
 not as a final decision.
 ```
 

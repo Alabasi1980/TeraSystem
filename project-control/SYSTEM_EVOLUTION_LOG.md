@@ -29,6 +29,33 @@
 
 ## سجل التغييرات
 
+### SCP-2026-07-03-017
+
+```
+تاريخ: 2026-07-03
+معرف التغيير: SCP-2026-07-03-017
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Protocol Change / Agent Improvement / Anti-Bloat
+الملفات المعدلة:
+- تم تحديث: .opencode/commands/tera-new-project.md
+- تم تحديث: .opencode/commands/tera-help.md
+- تم تحديث: .opencode/agents/auditor.md
+- تم تحديث: .opencode/agents/monitor.md
+- تم تحديث: .opencode/agents/design-reviewer.md
+- تم تحديث: .opencode/agents/tera-software-designer.md
+- تم تحديث: tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md
+- تم تحديث: tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md
+- تم تحديث: project-control/ISSUES_AND_GAPS.md
+الملخص:
+تنظيف نهائي لطبقة runtime قبل تجربة مشروع جديد: تحويل بدء المشروع الجديد إلى TCEA-first flow، إزالة أي hardcoded CockingApp paths من عملاء الحوكمة، إضافة front matter تشغيلي إلى SoftwareDesignerAgent، وتوحيد لغة discovery/runtime لتؤكد أن TCEA يدير الاكتشاف وأن Tera يبدأ فقط بعد handoff معتمد.
+الموافقة: Majed — Approved
+التحقق من الصحة: Validation Passed
+المخاطر: منخفضة — التغيير يزيل التعارضات ويقلل residue التشغيلي، مع بقاء الحاجة لإعادة تشغيل OpenCode لتحميل التحديثات.
+ملاحظات الاسترجاع (Rollback):
+1. استعادة الملفات المعدلة من Git إذا ظهر سلوك runtime غير صحيح.
+2. إعادة فتح GAP-SYS-0004 إذا عاد تعارض نقطة البداية.
+```
+
 ### الإدخال الأول — SCP-2026-07-01-001
 
 ```

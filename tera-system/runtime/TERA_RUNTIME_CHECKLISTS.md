@@ -10,22 +10,22 @@ If this file conflicts with `.opencode/agents/tera.md`, the active runtime file 
 
 ## 1. First Action in Any New Project
 
-When the user provides a project idea and technical information:
+When a new project is being started through the approved TCEA-first flow:
 
-### Phase 1: Handoff Intake & Validation (or Client Discovery for internal projects)
-1. Identify or create the isolated application workspace under `clients/CLIENT-*/applications/APP-*/`.
+### Phase 1: Handoff Intake & Validation
+1. Confirm that `TeraClientEngagementAgent` is the owner of Client Discovery and intake. `TeraAgent` does not perform raw discovery directly.
+2. Identify or create the isolated application workspace under `clients/CLIENT-*/applications/APP-*/`.
 2. Read the required system references in `tera-system/`.
 3. **Governance initialization:** Immediately after workspace creation:
    a. Create `[active application workspace]/project-control/WORKSPACE_GOVERNANCE_MODEL.md` using `TERA_RUNTIME_TEMPLATES.md` Section 40.
    b. Create or update `[active application workspace]/project-preparation/PROJECT_RULES.md` with governance rules: Auditor/Monitor/Design-Reviewer are independent sessions parallel to Tera, final authority belongs to the owner, no direct agent-to-agent communication.
    c. Rule: No new project without `WORKSPACE_GOVERNANCE_MODEL.md` + updated `PROJECT_RULES.md`.
-4. Check `[active application workspace]/project-inputs/01_APPLICATION_IDEA.md` and `[active application workspace]/project-inputs/02_TECHNICAL_CONTEXT.md`.
-5. If intake is incomplete, enter `Client Discovery Mode` and complete intake first.
-6. If the user provides project-specific rules, create or update `[active application workspace]/project-preparation/PROJECT_RULES.md`.
-7. If the project has UI, collect design preferences and sources: colors, screenshots, Figma, CSS, reference sites, RTL/LTR, brand notes.
-8. Before leaving Phase 1, verify both intake files have an intake status of `Complete` or a documented Tera-approved exception explaining what remains undecided and why it does not block formal preparation.
-9. For external/client-facing work, generate `client-approval/APPLICATION_PROPOSAL.html` from `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html`; do not copy the template file itself into the application workspace.
-10. Record Phase 1 creation/completion, intake file updates, proposal generation, assumptions, and remaining gaps in `project-control/PROJECT_ACTIVITY_LOG.md`.
+5. Validate `[active application workspace]/client-engagement/TERA_HANDOFF_PACKAGE.md` as the approved intake/handoff source.
+6. If the handoff package is incomplete, return the flow to `TeraClientEngagementAgent` instead of entering Client Discovery directly.
+7. If the user provides project-specific rules, create or update `[active application workspace]/project-preparation/PROJECT_RULES.md`.
+8. If the project has UI, confirm that design preferences and sources were captured during TCEA flow or are explicitly attached in the handoff.
+9. Before leaving Phase 1, verify the handoff package is complete or has a documented approved exception explaining what remains undecided and why it does not block formal preparation.
+10. Record Phase 1 validation, handoff findings, assumptions, and remaining gaps in `project-control/PROJECT_ACTIVITY_LOG.md`.
 11. Update `project-control/PROJECT_STATE.md` and `project-control/TERA_ACTIVE_CONTEXT.md` when present or needed for handoff.
 
 ### Phase 2: Project Decision Formation
@@ -740,7 +740,7 @@ Before execution planning (Phase 5) and again before each new batch execution (P
 
 ### Why
 
-During CockingApp development, a discrepancy was discovered: `EXECUTION_BATCH_PLAN.md` stated "9 models" while `19_DATABASE_DESIGN.md` contained 7 models + 1 enum. This required correcting 8 files. This checklist prevents such discrepancies from reaching execution.
+During a previous application delivery, a discrepancy was discovered: `EXECUTION_BATCH_PLAN.md` stated a data-model count that did not match `19_DATABASE_DESIGN.md`. This required correcting multiple related files. This checklist prevents such discrepancies from reaching execution.
 
 ### When to run
 

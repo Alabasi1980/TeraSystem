@@ -25,6 +25,19 @@
 
 ## Open Issues and Gaps
 
+## GAP-SYS-0004 - `tera-new-project` Command Contradicts TeraAgent Identity
+
+- Source Task: System cleanup — pre-test review
+- Discovered By: Majed
+- Severity: Medium
+- Status: Resolved
+- Description: `tera-new-project.md` commands Tera to enter Client Discovery Mode directly, but `TeraAgent.md` §1 states Tera starts only from `TERA_HANDOFF_PACKAGE.md` received from TCEA. This creates conflicting startup behavior.
+- Impact: Starting a project via `/tera-new-project` would put Tera in a mode it's no longer designed for, causing inconsistent behavior during first test.
+- Decision: First test starts from TCEA, not Tera. Tera never uses `/tera-new-project` as-is.
+- Recommended Action: Rewrite `tera-new-project.md` to redirect to TCEA-first flow and update help/runtime references to match.
+- Target Task / Phase: System cleanup completed before new-project test
+- Owner: TeraSystemEvolutionAgent
+
 ## GAP-SYS-0001 - System Template Copying Ambiguity
 
 - Source Task: Tera system maintenance request / Tera 2 analysis

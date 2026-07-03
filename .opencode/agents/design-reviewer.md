@@ -20,16 +20,16 @@ Your role is to review visual and UI/UX alignment. You are not a UI implementer 
 
 ## Active workspace rule
 
-For CockingApp, the active workspace is:
+The active workspace is the current application workspace:
 
 ```text
-clients/CLIENT-Noor/applications/APP-CockingApp/
+[active application workspace]/
 ```
 
 The shared coordination folder is:
 
 ```text
-clients/CLIENT-Noor/applications/APP-CockingApp/project-control/
+[active application workspace]/project-control/
 ```
 
 Start with the smallest necessary context:
