@@ -115,7 +115,7 @@ Sub-Agent Execution = perform approved work.
 Post-Execution Review = inspect the real output after execution.
 ```
 
-**`SoftwareDesignerAgent` is mandatory for EVERY task** — it produces `TECHNICAL_SPECIFICATION.md` which includes `Task Engineering Review Decision`. No Fast Path exemption. No Medium/High/Critical threshold.
+**`SoftwareDesignerAgent` is mandatory for impactful tasks** (DB, API, Business Logic, Security, Permissions, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic) — it produces `TECHNICAL_SPECIFICATION.md` which includes `Task Engineering Review Decision`. **Fast Path is allowed for low-risk tasks** meeting all SCP-016 criteria — Tera documents the Fast Path justification in the task file.
 
 ### 6.2 Anti-Bloat
 
@@ -124,14 +124,22 @@ Before creating anything, ask:
 - Can it be merged into an existing file?
 - Can it be safely postponed?
 
-### 6.2.1 Fast Path
+### 6.2.1 Fast Path (SCP-016)
 
-Use `Fast Path` only for small, direct, low-risk tasks.
+Use `Fast Path` only for small, direct, low-risk tasks meeting ALL conditions:
+- Single file change (or 2 tightly coupled files)
+- No DB/API/Business Logic/Security/Financial/Cross-module impact
+- Clear Acceptance Criteria that Tera can review directly
+- Examples: typo, label, simple display text, simple CSS, simple doc update
+- NOT allowed: field additions, validations, endpoints, schemas, permissions, workflows, financial/inventory logic
 
+**Fast Path rules:**
 ```text
-Fast Path reduces preparation overhead only.
-It does NOT remove TASK-ID, Allowed Write Targets, Handback,
-Acceptance Criteria, or physical Post-Execution Review.
+Fast Path bypasses SoftwareDesignerAgent only.
+Fast Path does NOT remove TASK-ID, Allowed Write Targets,
+Acceptance Criteria, Pre-Execution Gate, or Post-Execution Review.
+Tera MUST document the Fast Path justification in the task file
+(Low-risk assessment, affected files, no-SDA-impact checklist, AC).
 ```
 
 ### 6.3 Phase Discipline

@@ -75,7 +75,7 @@ Purpose:
 
 It does not replace:
 
-- `SoftwareDesignerAgent` — ينتج `TECHNICAL_SPECIFICATION.md` إلزامياً
+- `SoftwareDesignerAgent` — ينتج `TECHNICAL_SPECIFICATION.md` إلزامياً للمهام المؤثرة (Fast Path للمهام Low-risk)
 - `SecurityAgent`
 - `QAAndAcceptanceAgent`
 - `ProjectControlAgent`
@@ -185,19 +185,33 @@ If the task would violate the approved engineering governance level, the Pre-Exe
 
 أي تنفيذ كود تطبيقي أو تعديل معماري أو بناء شاشة أو API أو قاعدة بيانات يجب أن يذهب إلى العميل المختص، ولا يسمح لتيرا بتنفيذه مباشرة.
 
-## 3.6 Technical Specification Prerequisite (SoftwareDesignerAgent — إلزامي)
+## 3.6 Technical Specification Prerequisite (SoftwareDesignerAgent — إلزامي للمهام المؤثرة)
 
-**SoftwareDesignerAgent** هو عميل التصميم التقني الإلزامي لكل مهمة تنفيذية `TASK-COD-*`.
+**SoftwareDesignerAgent** هو عميل التصميم التقني للمهام التنفيذية `TASK-COD-*`. يُفعّل إلزامياً للمهام ذات الأثر، ويُسمح بـ Fast Path للمهام منخفضة الخطورة.
 
-قبل تشغيل `Pre-Execution Gate`، يجب أن:
+### 3.6.1 مسار SDA الإلزامي — للمهام المؤثرة
 
-1. يُفعّل **SoftwareDesignerAgent** لكل مهمة (لا استثناء، لا Fast Path).
+**SoftwareDesignerAgent إلزامي (ولا يُتجاوز)** إذا كانت المهمة تمس أيّاً من:
+- Database / Schema / Migration
+- API / Routes / Endpoints
+- Business Logic / Rules
+- Security / Permissions / Auth
+- Workflow / States / Approvals
+- Cross-module behavior
+- Architecture / Project Structure
+- Migration / External Integration
+- UI Structure or UX Design change
+- Financial / Inventory Logic
+
+قبل تشغيل `Pre-Execution Gate` في هذا المسار، يجب أن:
+
+1. يُفعّل **SoftwareDesignerAgent** للمهمة.
 2. يقرأ ملفات التحضير ذات العلاقة.
 3. ينتج `TECHNICAL_SPECIFICATION.md` في:
    ```text
    [active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TECHNICAL_SPECIFICATION.md
    ```
-4. تتضمن المواصفة `Task Engineering Review Decision` (مدمجة وليست خطوة منفصلة):
+4. تتضمن المواصفة `Task Engineering Review Decision`:
    ```text
    APPROVED_FOR_GATE
    REVISION_REQUIRED
@@ -209,26 +223,54 @@ If the task would violate the approved engineering governance level, the Pre-Exe
    ```
 5. إذا كانت ملفات التحضير ناقصة → ينتج `Design Gap` بدلاً من التخمين.
 
-الفرق الإلزامي:
+القاعدة الأساسية لهذا المسار:
 
 ```text
-Technical Specification (SoftwareDesignerAgent) = design the task technically.
-Pre-Execution Gate = authorize or block execution.
-Sub-Agent Execution = perform the approved work.
-Post-Execution Review = inspect the real output after execution.
-```
-
-القاعدة الأساسية:
-
-```text
-For EVERY implementation task,
+For impactful implementation tasks,
 Pre-Execution Gate cannot PASS unless Technical Specification is completed
 and its Task Engineering Review Decision is APPROVED_FOR_GATE.
 ```
 
-**لا يجوز تجاوز SoftwareDesignerAgent لأي سبب.** لا Fast Path ولا Low-risk ولا Low-complexity.
+### 3.6.2 مسار Fast Path — للمهام منخفضة الخطورة
 
-_ملاحظة: `Task Engineering Review` سابقاً كان خطوة منفصلة ينفذها `ExecutionPreparationAgent` (أُزيل). الآن Task Engineering Review مدمجة داخل `TECHNICAL_SPECIFICATION.md`.
+يُسمح بـ **Fast Path** (تجاوز SoftwareDesignerAgent) إذا تحققت **كل** الشروط التالية:
+
+| # | الشرط |
+|---|---|
+| 1 | المهمة **Low-risk** حسب تقييم Tera |
+| 2 | تعديل **ملف واحد فقط** (أو ملفان مرتبطان مباشرة) |
+| 3 | **لا DB impact** — لا جداول، لا حقول، لا Migration |
+| 4 | **لا API impact** — لا endpoints جديدة، لا تعديل موجودة |
+| 5 | **لا Business Logic impact** — لا قواعد عمل، لا معادلات |
+| 6 | **لا Security / Permissions impact** |
+| 7 | **لا Financial / Inventory impact** |
+| 8 | **لا Cross-module impact** |
+| 9 | **لا تغيير في بنية UI/UX** — تعديل بسيط فقط |
+| 10 | **Acceptance Criteria واضحة وقابلة للاختبار** |
+| 11 | **Tera يستطيع مراجعة المخرجات مباشرة** |
+
+**أمثلة Fast Path:** typo، label، نص عرض بسيط، CSS بسيط، تحديث توثيق بسيط.
+
+**أمثلة ممنوعة من Fast Path:** إضافة حقل، تعديل validation، تعديل endpoint، تعديل schema، تعديل صلاحية، تعديل workflow، تعديل منطق مالي/مخزني.
+
+عند استخدام Fast Path:
+
+1. **لا يُفعّل SoftwareDesignerAgent** — Tera يقوم بمراجعة تقنية مباشرة.
+2. **Tera يوثق سبب Fast Path** في ملف المهمة: Low-risk assessment، الملفات المتأثرة، عدم وجود DB/API/BL/Security/Cross-module impact، Acceptance Criteria.
+3. **Pre-Execution Gate يُطبّق بشكل طبيعي** — يفحص المهمة مباشرة بدلاً من Technical Specification.
+4. **Post-Execution Review Gate إلزامي** — لا استثناء.
+
+### 3.6.3 الفرق بين المسارين
+
+```text
+المسار العادي (SDA):
+  TASK-COD → SoftwareDesignerAgent → TECHNICAL_SPECIFICATION.md → Pre-Execution Gate → تنفيذ → Post-Execution Review
+
+Fast Path:
+  TASK-COD → Tera Task Review مباشر → Pre-Execution Gate → تنفيذ → Post-Execution Review
+```
+
+_ملاحظة: `Task Engineering Review` سابقاً كان خطوة منفصلة ينفذها `ExecutionPreparationAgent` (أُزيل واستُبدل بـ SoftwareDesignerAgent). في Fast Path، Tera يقوم بالمراجعة مباشرة._
 
 ---
 
@@ -290,7 +332,7 @@ BLOCKED
 | 26 | هل تم التحقق من تطابق الحالة بين PREPARATION_PLAN.md (Section 9) والـ Lifecycle Header في كل ملف؟ | Yes |
 | 27 | إذا رفع SoftwareDesignerAgent Design Gap متعلق بحالة وثيقة (مثل Missing Header أو state < MBA)، هل تم حلّه قبل المرور عبر البوابة؟ | Yes |
 | 28 | هل المهمة تحترم مستوى الحوكمة الهندسية المعتمد Compact / Standard / Full دون over-engineering؟ | Yes / N/A |
-| 29 | هل اكتملت `Technical Specification` من `SoftwareDesignerAgent` وكانت `Task Engineering Review Decision` فيها `APPROVED_FOR_GATE`؟ (إلزامي لكل المهام) | Yes |
+| 29 | هل اكتملت `Technical Specification` من `SoftwareDesignerAgent` وكانت `Task Engineering Review Decision` فيها `APPROVED_FOR_GATE`؟ (إلزامي للمهام المؤثرة — Fast Path لا يحتاجها) | Yes (N/A for Fast Path) |
 
 إذا فشل أي بند، يجب على Tera تصحيح المهمة قبل عرضها.
 
@@ -853,10 +895,11 @@ Required Action:
 Read project state → Identify next task → Prepare/draft task package → Check CLI side effects → Run checklist → Revise until PASS → Ask approval
 ```
 
-### SoftwareDesignerAgent Preparation Rule (إلزامي)
+### SoftwareDesignerAgent Preparation Rule
 
-**SoftwareDesignerAgent** يُفعّل إلزامياً لكل مهمة تنفيذية لينتج `TECHNICAL_SPECIFICATION.md`.
+**SoftwareDesignerAgent** يُفعّل إلزامياً للمهام المؤثرة لينتج `TECHNICAL_SPECIFICATION.md`. للمهام منخفضة الخطورة (Fast Path)، Tera يقوم بالمراجعة التقنية مباشرة دون SDA.
 
+**في المسار العادي (SDA):**
 يقوم الـ Agent بـ:
 - تحليل المهمة وقراءة ملفات التحضير
 - إنتاج التصميم التقني (Screen Elements, Data Bindings, Dependencies, Validation, Side Effects)
@@ -866,9 +909,14 @@ Read project state → Identify next task → Prepare/draft task package → Che
 Tera يستعرض الـ Technical Specification قبل تشغيل `Pre-Execution Gate`.
 Tera يحتفظ بالسلطة النهائية على الاعتماد والتفويض والإغلاق.
 
-لا يعتمد على الذاكرة أو الاستنتاج العام. يعتمد على القائمة والفحص.
+**في مسار Fast Path:**
+- Tera يقوم بمراجعة تقنية مباشرة
+- لا حاجة لـ Technical Specification
+- Tera يوثق سبب Fast Path في ملف المهمة
+- Pre-Execution Gate يُطبّق بشكل طبيعي
+- Post-Execution Review إلزامي
 
-_ملاحظة: ExecutionPreparationAgent أُزيل. SoftwareDesignerAgent هو البديل الإلزامي._
+_ملاحظة: ExecutionPreparationAgent أُزيل. SoftwareDesignerAgent هو البديل للمهام المؤثرة. Fast Path متاح للمهام Low-risk حسب SCP-016._
 
 ---
 

@@ -339,8 +339,9 @@ Core rules:
 | If the task... | Then default to... |
 |---|---|
 | Small, direct, low-risk, 1-2 files | Tera manages directly |
-| Any implementation task (mandatory) | **`SoftwareDesignerAgent`** (إلزامي لكل TASK-COD) |
-| Multi-agent, >3 files, Backend+Frontend, scope-drift prone, or needs detailed acceptance criteria / write targets | `SoftwareDesignerAgent` (بالإضافة إلى إلزاميته) |
+| Impactful task (DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory) | **`SoftwareDesignerAgent`** (إلزامي للمهام المؤثرة) |
+| Low-risk task (typo, label, CSS, simple doc update — no sensitive impact) | **Fast Path** (Tera direct review — SDA bypassed, Pre-Execution Gate remains) |
+| Multi-agent, >3 files, Backend+Frontend, scope-drift prone, or needs detailed acceptance criteria / write targets | `SoftwareDesignerAgent` (حتى لو كانت المهمة Low-risk ظاهرياً — التعقيد يستدعي SDA) |
 | Updates project-control records, closes/creates Issues, adds Decisions, modifies PROJECT_STATE.md / TERA_ACTIVE_CONTEXT.md, or involves multiple agents | `ProjectControlAgent` |
 | Touches Auth, JWT, Cookies, Middleware, Proxy, API Routes, Server Actions, Permissions, Role checks, Data Mutations, Secrets, or Config | Determine Security Sensitivity Level before delegation |
 | Contains UI, Workflow, main-screen behavior, or important acceptance criteria | Run `QAAndAcceptanceAgent` |
@@ -372,7 +373,7 @@ Anti-over-delegation rule:
 - Helper agents are used by trigger, not by habit. Do not route every small task through a long helper-agent chain unless complexity clearly justifies it.
 - Bad default pattern: `Tera -> [All agents] -> EngineeringAgent -> FrontendAgent -> SecurityAgent -> QAAndAcceptanceAgent -> ProjectControlAgent -> QualityReviewCoordinatorAgent`
 
-ملاحظة: `SoftwareDesignerAgent` أصبح الآن إلزامياً لكل مهمة — لكن هذا لا يعني إضافة SecurityAgent + QA + ProjectControl + QualityReview لكل مهمة صغيرة.
+ملاحظة: `SoftwareDesignerAgent` أصبح إلزامياً للمهام المؤثرة — لكن هذا لا يعني إضافة SecurityAgent + QA + ProjectControl + QualityReview لكل مهمة صغيرة. للمهام Low-risk: Fast Path مسموح.
 (سابقاً كان الـ Bad pattern يشير إلى ExecutionPreparationAgent الذي أُزيل واستُبدل بـ SoftwareDesignerAgent).
 
 Smallest Sufficient Orchestration Rule:
@@ -419,7 +420,7 @@ No acceptance without physical review.
 The initial classification is not final. If Tera discovers during preparation or execution that the task is larger, riskier, or more complex than initially estimated, it must escalate to the appropriate level instead of continuing with stale assumptions.
 
 Escalation examples:
-- Direct task → needs `SoftwareDesignerAgent` (إلزامي)
+- Direct task (impactful) → needs `SoftwareDesignerAgent` (إلزامي للمهام المؤثرة — Fast Path مسموح للمهام Low-risk)
 - Low Security → Medium or High Security
 - Simple UI → needs `QAAndAcceptanceAgent`
 - Normal task → needs `ProjectControlAgent`
@@ -430,7 +431,7 @@ If escalation changes scope, risk, or requires a new decision, document the reas
 
 Helper agent authority limits:
 
-- `SoftwareDesignerAgent`: produces `TECHNICAL_SPECIFICATION.md` per task (mandatory). Does not decide scope, timing, delegation, approval, acceptance, or closure. Does not write code. Raises Design Gap when preparation files are insufficient.
+- `SoftwareDesignerAgent`: produces `TECHNICAL_SPECIFICATION.md` for impactful tasks (mandatory for DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory). Fast Path allowed for low-risk tasks. Does not decide scope, timing, delegation, approval, acceptance, or closure. Does not write code. Raises Design Gap when preparation files are insufficient.
 - `ProjectControlAgent`: manages control records, checks traceability. Does not decide final status changes.
 - `QualityReviewCoordinatorAgent`: coordinates review scope and consolidates findings. Does not decide task/issue/deferred status. Does not write code or change designs.
 - `PlanComplianceReviewAgent`: reviews roadmap compliance. Does not open tasks/issues/decisions. Does not change status.

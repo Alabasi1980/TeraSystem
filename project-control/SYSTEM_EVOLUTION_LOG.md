@@ -1015,3 +1015,332 @@ No acceptance without physical review.
 6. `git restore tera-system/AGENT_ACTIVATION_MATRIX.md`
 7. `git restore tera-system/runtime/TERA_RUNTIME_TEMPLATES.md`
 8. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+
+---
+
+### الإدخال الخامس عشر — SCP-2026-07-03-016
+
+```
+تاريخ: 2026-07-03
+معرف التغيير: SCP-2026-07-03-016
+مصدر الطلب: Majed (موافقة بعد مراجعة الفريق)
+نوع التغيير: Policy Refinement — SoftwareDesignerAgent Activation & Fast Path
+```
+
+### سبب التغيير
+
+**SoftwareDesignerAgent** كان مفعّلاً إلزامياً لكل مهمة تنفيذية دون استثناء (SCP-012). مراجعة الفريق أظهرت أن هذا إفراط في التعقيد للمهام البسيطة. SCP-016 يضبط التفعيل حسب الخطورة:
+
+1. **SDA إلزامي للمهام المؤثرة فقط** (DB, API, Business Logic, Security, Permissions, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic).
+2. **Fast Path متاح للمهام منخفضة الخطورة** (11 شرطاً — typo, label, CSS بسيط, تحديث توثيق, إلخ).
+3. **Fast Path لا يلغي Pre-Execution Gate أو Post-Execution Review.**
+4. **Tera يوثق سبب Fast Path** في ملف المهمة.
+
+### ما تم تنفيذه
+
+1. **تحديث `.opencode/agents/tera-software-designer.md`**: تغيير الوصف من "إلزامي لكل مهمة" إلى "إلزامي للمهام المؤثرة"، إضافة مسار Fast Path في Activation Flow.
+2. **تحديث `tera-system/TeraPreExecutionGate.md` §3.6**: إعادة هيكلة إلى 3 أقسام — المسار العادي، Fast Path، الفرق بينهما. شرط 29 يصبح "N/A for Fast Path".
+3. **تحديث `tera-system/TeraAgent.md`**: §4.4 (Fast Path — قواعد مفصلة بدلاً من حظر التجاوز)، §5.4 (SDA row — تفعيل حسب الخطورة)، §6.1 (مساران للتسلسل).
+4. **تحديث `tera-system/TeraSubAgents.md` §6.9**: تغيير الفئة إلى "Risk-Activated"، شرط الاستدعاء حسب المهام المؤثرة.
+5. **تحديث `.opencode/agents/tera.md`**: §6.1 تغيير "mandatory for EVERY task" إلى "mandatory for impactful tasks"، §6.2.1 Fast Path مع 11 شرطاً.
+6. **تحديث `tera-system/AGENT_ACTIVATION_MATRIX.md`**: تغيير الجدول من "MANDATORY: لا Fast Path" إلى "RISK_ACTIVATED"، تحديث §4.6.
+
+### ملفات إضافية تم تحديثها للاتساق
+
+- `tera-system/TeraArchitectureMap.md` — تحديث الوصف والـ flow
+- `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` — 4 إشارات محدثة
+- `tera-system/TeraPreExecutionGate.md` (الفقرة الختامية) — تحديث
+- `project-control/tasks/TASK_TEMPLATE.md` §6.1 — إضافة Fast Path
+- `tera-system/TeraSubAgents.md` §3.2 (إشارة Model Capability Gate)
+
+### ما تغير
+
+| الملف | التغيير |
+|---|---|
+| `.opencode/agents/tera-software-designer.md` | تحديث الوصف + Activation Flow + قواعد Fast Path |
+| `tera-system/TeraPreExecutionGate.md` §3.6 | إعادة هيكلة كاملة — مسار عادي + Fast Path + 11 شرطاً |
+| `tera-system/TeraAgent.md` §§4.4, 5.4, 6.1 | Fast Path مفصل + تفعيل حسب الخطورة + مساران للتسلسل |
+| `tera-system/TeraSubAgents.md` §6.9 | فئة "Risk-Activated" + شرط استدعاء محدث |
+| `.opencode/agents/tera.md` §§6.1, 6.2.1 | "impactful tasks" + Fast Path مع 11 شرطاً |
+| `tera-system/AGENT_ACTIVATION_MATRIX.md` | الجدول + §4.6 + 3 جداول مشاريع |
+| `tera-system/TeraArchitectureMap.md` | تحديث §2 + §4 Core Flow |
+| `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` | 4 إشارات محدثة |
+| `project-control/tasks/TASK_TEMPLATE.md` §6.1 | إضافة Fast Path + توثيق السبب |
+| `tera-system/TeraPreExecutionGate.md` (فقرة ختامية) | تحديث |
+
+### ما لم يتغير
+
+- Steps A+B+C (حوكمة الوثائق) — لم تُمس
+- Lifecycle Header / Module Baseline Approved / Checker Activation — لم تُمس
+- حدود SoftwareDesignerAgent في استهلاك الوثائق — لم تُمس
+
+### Validation
+
+- ✅ No trailing whitespace (git diff --check)
+- ✅ Anti-Bloat Gate: PASS — التغيير يقلل التعقيد للمهام البسيطة (Fast Path بدلاً من SDA الإلزامي)
+- ✅ No stale "mandatory for every task" references in tera-system/ or .opencode/agents/
+- ✅ No stale "لا Fast Path" references
+- ✅ Architecture Map consistency updated
+- ✅ All references now say "إلزامي للمهام المؤثرة" or equivalent
+- ✅ No client-app contamination
+- ✅ No unauthorized privilege expansion
+
+### المخاطر
+
+| المخاطرة | المستوى | خطة التخفيف |
+|---|---|---|
+| Fast Path يُساء استخدامه لمهام تحتاج SDA | متوسط | 11 شرطاً واضحاً + توثيق السبب + Pre-Execution Gate إلزامي |
+| مطور يختار Fast Path لمهمة معقدة | منخفض | Tera هو من يقرر المسار وليس المطور |
+| نسيان توثيق سبب Fast Path | منخفض | القاعدة في tera.md + TASK_TEMPLATE تفرض الحقل |
+
+### ملاحظات الاسترجاع (Rollback):
+
+1. `git restore .opencode/agents/tera-software-designer.md`
+2. `git restore .opencode/agents/tera.md`
+3. `git restore tera-system/TeraPreExecutionGate.md`
+4. `git restore tera-system/TeraAgent.md`
+5. `git restore tera-system/TeraSubAgents.md`
+6. `git restore tera-system/AGENT_ACTIVATION_MATRIX.md`
+7. `git restore tera-system/TeraArchitectureMap.md`
+8. `git restore tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md`
+9. `git restore project-control/tasks/TASK_TEMPLATE.md`
+10. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+
+---
+
+## SCP-2026-07-03-017 — Tera Pricing System (v0.1 Draft)
+
+| الحقل | القيمة |
+|---|---|
+| **Date** | 2026-07-03 |
+| **Change ID** | SCP-2026-07-03-017 |
+| **Request Source** | SYSTEM_CHANGE_PROPOSAL_PRICING.md (معتمد من Majed) |
+| **Change Type** | New Policy + Architecture Update + Agent Improvement |
+| **Proposed by** | TeraSystemEvolutionAgent |
+| **Approved by** | Majed — Approved with Conditions (1. v0.1 Draft فقط، 2. TCEA يصدر Draft فقط، 3. مصفوفة داخلية، 4. JOD ولا تشمل ضرائب/استضافة، 5. لا توسع خارج Proposal، 6. تقرير إغلاق) |
+
+### ما تم إنشاؤه
+
+| الملف | الوصف |
+|---|---|
+| `tera-system/TeraPricingPolicy.md` | **جديد** — مصدر الحقيقة لنظام التسعير. 21 بنداً: المبادئ، النطاق، المعادلة، Rubric التعقيد (6 معايير)، المصفوفة، Minimum Price، Discovery، Risk Buffer (5 معايير)، الهامش، الصيانة، Change Request (6 تصنيفات)، الاستضافة، عرض السعر، خطة الدفع، الصلاحية، القاعدة الحاسمة، العملة/الضرائب، مراحل إخراج السعر (3 Levels)، توقيت الإخراج (4 تصنيفات مشاريع)، خطوات TCEA، أحكام ختامية. |
+
+### ما تم تحديثه
+
+| الملف | التغيير |
+|---|---|
+| `tera-system/TeraClientEngagement.md` §11 | **استبدال كامل** — من 6 أسطر مبادئ فقط → 19 قسماً متكاملاً مع إحالة إلى TeraPricingPolicy.md |
+| `tera-system/TeraPolicyMap.md` | **إضافة صف** — Pricing system (v0.1 Draft) مع مصدر الحقيقة والملخص |
+| `.opencode/agents/tera-client-engagement.md` §8 | **إضافة مرجع** — TeraPricingPolicy.md في المصادر المرجعية |
+
+### ما تم تجنبه عمداً (Anti-Bloat)
+
+- لم يُنشأ نظام PDF أو محاسبة أو فوترة
+- لم تُحدد باقات صيانة نهائية بأرقام (تؤجل بعد المعايرة)
+- لم يُنشأ عميل `TeraPricingAgent` — TCEA الحالي يقوم بالمهمة
+- لم يُنشأ مجلد `tera-system/pricing/` — ملف واحد فقط
+- لم تُضف MCPs أو أدوات خارجية
+- لم يُمس TeraAgent أو TeraSubAgents أو TeraArchitectureMap أو أي ملف في بنية النظام الأساسية
+
+### ملخص القرارات المطبقة
+
+| القرار | القيمة |
+|--------|--------|
+| Version | v0.1 — Draft — Calibration Required |
+| Scope | Custom Software Dev فقط (لا ERP Consulting) |
+| Method | Feature-Based + Complexity Scoring Rubric (6 معايير) |
+| Base Price | ساعات Simple × 15–25 JOD/ساعة (داخلي) |
+| Margin | 20% (يُعاد فحصه بعد أول مشروعين) |
+| Complexity Levels | Simple (1.0x) / Medium (1.5x) / Complex (2.5x) / Critical (3.5x+) |
+| Min Price | 500–700 JOD ويب / 1,200 JOD نظام |
+| Discovery | 50–100 JOD أو 5% — يُخصم عند التعاقد |
+| Risk Buffer | 0% / +10% / +20% (5 معايير تصنيف) |
+| Warranty | 3 أشهر Bug Fix — بدون اشتراك: يُسعّر لكل حالة |
+| Change Requests | 6 تصنيفات (Minor مجاني / Structural مُسعّر / إلخ) |
+| Payment | 50-25-25 Default |
+| Quote Validity | 14 يوم (افتراضي) / 30 يوم (للكبير) |
+| Currency | JOD — لا تشمل ضرائب/رسوم/استضافة/اشتراكات |
+| Authority | TCEA → Draft only / Majed → Final approval |
+| Matrix | **داخلية فقط** — لا تُعرض للزبون |
+
+### كيف يستخدمها TCEA في أول عرض سعر
+
+1. **استقبال طلب الزبون** من Majed.
+2. **تحليل المتطلبات** → تفكيك الميزات.
+3. **لكل ميزة**:
+   - تطبيق Rubric التعقيد (6 معايير → نقاط → مستوى).
+   - حساب Base Price (ساعات Simple المقدرة × السعر الداخلي).
+   - تطبيق معامل التعقيد.
+4. **جمع التكاليف**: كل الميزات + التكاملات.
+5. **تطبيق Risk Buffer**: تقييم المخاطر حسب 5 معايير.
+6. **إضافة الهامش** (20%).
+7. **مقارنة مع Minimum Price**: إذا كان الناتج أقل، يُرفع إلى الحد الأدنى.
+8. **إنتاج Draft Quotation** في `client-engagement/` مع عرض مبسط للزبون.
+9. **عرض الـ Draft على Majed** → اعتماد أو تعديل.
+10. **لا يُعرض سعر نهائي للزبون دون موافقة Majed.**
+
+### Validation
+
+- ✅ Anti-Bloat Gate: PASS — ملف سياسة واحد فقط، لا عملاء جدد، لا طبقات، لا توسع
+- ✅ Policy Map: صف جديد مضاف
+- ✅ No client-app contamination
+- ✅ No unauthorized privilege expansion
+- ✅ v0.1 Draft — Calibration Required — مذكور صراحة في الملف
+- ✅ جميع الشروط الستة من Majed مطبقة
+- ✅ Git diff --check: PASS
+
+### تحسين لاحق — 2026-07-03 — إضافة مراحل إخراج السعر وتوقيت الإصدار
+
+بعد اكتمال التنفيذ الأولي، طلب Majed إضافة:
+1. **§18 — مراحل إخراج السعر** (3 Levels): Preliminary Estimate ← Draft Quotation ← Official Quotation
+2. **§19 — توقيت الإخراج حسب تصنيف المشروع** (4 سيناريوهات): صغير/متوسط/معقد/غامض
+3. إعادة ترقيم §18-19 الأصليين → §20-21
+4. تحديث TeraClientEngagement.md §11 بإضافة 11.18 و 11.19
+
+المبدأ الجديد: أول مقابلة = تقدير مبدئي فقط. لا يصدر عرض سعر رسمي من أول مقابلة أبداً.
+
+### تحسين إضافي — 2026-07-03 — سير عمل TCEA + القوالب التحضيرية
+
+بعد اكتمال مراحل إخراج السعر، طلب Majed إكمال 3 فجوات تشغيلية:
+
+1. **إضافة §9 — سير عمل التسعير في تعريف TCEA** (`.opencode/agents/tera-client-engagement.md`):
+   - 3 مستويات إخراج مع صلاحيات واضحة
+   - تصنيف المشروع (صغير/متوسط/معقد/غامض)
+   - خطوات تفصيلية لكل Level
+   - تحديث مسار التدفق (قبل التنفيذ) ليشمل التسعير
+   - تحديث قائمة المسؤوليات (#9 Pricing, #10 Classification)
+   - تحديث قائمة الملفات المدارة لتشمل CLIENT_BRIEF, SCOPE_SUMMARY, DRAFT_QUOTATION
+   - تحديث الصلاحيات المسموحة
+
+2. **إنشاء 3 قوالب جديدة في `tera-workshop/client-templates/`** (مع إعادة هيكلة):
+   - `pre-contract/CLIENT_BRIEF_TEMPLATE.md` — 13 قسماً: معلومات أساسية، نوع التطبيق، شاشات، مستخدمون، ميزات، تكاملات، تقارير، إشعارات، تصنيف المشروع، تقدير مبدئي
+   - `commercial/SCOPE_SUMMARY_TEMPLATE.md` — 9 أقسام: حدود النطاق، وحدات، قائمة ميزات مفصلة، تكاملات، صلاحيات، تقارير، إشعارات، تقييم Risk Buffer
+   - `commercial/DRAFT_QUOTATION_TEMPLATE.md` — قالب مسودة عرض سعر (Level 2): معلومات زبون، بنود تسعير، تفاصيل احتساب داخلية، بنود مستثناة، خطة دفع، افتراضات، توقيع
+
+3. **إضافة §12 — مكتبة وثائق الزبون (Client Document Library)** في `TeraClientEngagement.md`:
+   - 4 فئات: pre-contract / commercial / contractual / handover
+   - مصفوفة تفعيل لكل نموذج (Trigger، من يملؤه، من يعتمده، داخلي/خارجي، توقيع، مراجعة قانونية)
+   - قاعدة: لا نموذج دون Trigger. TCEA يملأ المسودات. Majed يعتمد النهائي.
+
+4. **إنشاء هيكل مجلدات `tera-workshop/client-templates/`**:
+   - `pre-contract/` — 6 نماذج (CLIENT_INTAKE, MEETING_REPORT, NDA, GAP_ANALYSIS, RISK_REGISTER, USER_PERSONA)
+   - `commercial/` — 5 نماذج (PROPOSAL, TECHNICAL_PROPOSAL, QUOTATION, SOW, PROJECT_CHARTER)
+   - `contractual/` — 4 نماذج (AGREEMENT, SLA, CHANGE_REQUEST, STATUS_REPORT)
+   - `handover/` — 3 نماذج (HANDOVER_REPORT, COMPLETION_CERTIFICATE, SATISFACTION_SURVEY)
+
+5. **نقل القوالب الموجودة** إلى مجلداتها الجديدة + تحديث كل المراجع في TeraPolicyMap.md وتعريف TCEA
+
+6. **تحديث TeraPolicyMap.md** — إضافة صف Client Document Library + تحديث مسارات القوالب الثلاثة
+
+### تحويل تجريبي — 2026-07-03 — Application Proposal HTML → Markdown
+
+بناءً على طلب Majed، تم تنفيذ أول تحويل تجريبي من مكتبة القوالب:
+
+1. **قراءة** `tera-workshop/temp/APPLICATION_PROPOSAL_TEMPLATE.html`
+2. **استخراج البنية الحقيقية**: بيانات العرض، الملخص التنفيذي، المشكلة/الحل، المستخدمون، النطاق، المتطلبات، القيمة، الافتراضات، الخارطة، الموافقة
+3. **إنشاء نسخة Markdown تشغيلية** في:
+   - `tera-workshop/client-templates/commercial/APPLICATION_PROPOSAL_TEMPLATE.md`
+4. **تحسينات تشغيلية مقصودة**:
+   - إضافة YAML front matter قياسي (document_type, category, approval_required, client_facing, related_documents)
+   - تحويل التصميم البصري إلى بنية Markdown قابلة للتعبئة بواسطة TCEA
+   - توضيح أن الوثيقة ليست عرض سعر نهائيًا ولا عقدًا
+   - إضافة قسم `الوثائق المرتبطة` لربط Proposal مع Quotation و Scope of Work
+   - تحويل قسم الموافقة إلى مستويين: اعتماد داخلي إلزامي + إقرار عميل اختياري حسب السياق
+5. **تحديث TeraPolicyMap.md** ليشير إلى نسخة الـ Markdown التشغيلية بدلاً من الـ HTML كمصدر عمل لـ TCEA
+
+### تحويل تجريبي لاحق — 2026-07-03 — Quotation HTML → Markdown
+
+1. **قراءة** `tera-workshop/temp/QUOTATION_TEMPLATE.html`
+2. **استخراج البنية التشغيلية**: بيانات العرض، البنود، الملخص، شروط الدفع، التسليم، الاستثناءات، الاعتماد
+3. **إنشاء نسخة Markdown تشغيلية** في:
+   - `tera-workshop/client-templates/commercial/QUOTATION_TEMPLATE.md`
+4. **تحسينات تشغيلية مقصودة**:
+   - إضافة YAML front matter قياسي (document_type, currency, approval_required, related_documents)
+   - مواءمة العرض مع `TeraPricingPolicy.md`
+   - توضيح أن الضرائب والرسوم غير شاملة إلا إذا ذُكرت صراحة
+   - إزالة الإحالة إلى HTML كقالب تشغيل أساسي في TCEA وإحلال MD بدلاً منها
+   - تثبيت الاعتماد الداخلي الإلزامي من Majed قبل الإرسال
+5. **تحديث TeraPolicyMap.md** و `.opencode/agents/tera-client-engagement.md` لمواءمة مسار القالب الجديد
+
+### دفعة pre-contract — 2026-07-03 — 5 قوالب HTML → Markdown
+
+1. **قراءة وتحويل** خمسة ملفات من `tera-workshop/temp/` إلى Markdown تشغيلية:
+   - `CLIENT_INTAKE_FORM.html` → `tera-workshop/client-templates/pre-contract/CLIENT_INTAKE_FORM.md`
+   - `MEETING_REPORT_TEMPLATE.html` → `tera-workshop/client-templates/pre-contract/MEETING_REPORT_TEMPLATE.md`
+   - `NDA_TEMPLATE.html` → `tera-workshop/client-templates/pre-contract/NDA_TEMPLATE.md`
+   - `USER_PERSONA_MATRIX_TEMPLATE.html` → `tera-workshop/client-templates/pre-contract/USER_PERSONA_MATRIX_TEMPLATE.md`
+   - `RISK_REGISTER_TEMPLATE.html` → `tera-workshop/client-templates/pre-contract/RISK_REGISTER_TEMPLATE.md`
+
+2. **المنهج التشغيلي**:
+   - إضافة YAML front matter قياسي لكل قالب (document_type, category, approval_required, legal_review_required)
+   - تحويل التصميم البصري إلى Markdown قابل للتعبئة بواسطة TCEA
+   - إبقاء NDA كمستند قانوني حساس مع `legal_review_required: true`
+   - ربط القوالب بمسار `tera-workshop/client-templates/pre-contract/`
+   - جعل النماذج جاهزة للتعبئة ثم التحويل لاحقاً إلى PDF/طباعة بواسطة Majed
+
+3. **تحديث TeraPolicyMap.md**:
+   - إضافة صفوف رسمية لـ Client Intake Form / Meeting Report / NDA / User Persona Matrix / Risk Register
+   - ربط كل قالب بموقعه الجديد في `client-templates/pre-contract/`
+
+4. **ملاحظة تشغيلية**:
+   - هذه الدفعة هي جزء من سياسة: تحويل HTML → MD أولاً، ثم لاحقاً توحيد التصميم وإخراج النسخ القابلة للطباعة.
+
+### دفعة commercial / contractual — 2026-07-03 — 5 قوالب HTML → Markdown
+
+1. **قراءة وتحويل** خمسة ملفات إضافية من `tera-workshop/temp/` إلى Markdown تشغيلية:
+   - `SCOPE_OF_WORK_TEMPLATE.html` → `tera-workshop/client-templates/commercial/SCOPE_OF_WORK_TEMPLATE.md`
+   - `TECHNICAL_PROPOSAL_TEMPLATE.html` → `tera-workshop/client-templates/commercial/TECHNICAL_PROPOSAL_TEMPLATE.md`
+   - `PROJECT_CHARTER_TEMPLATE.html` → `tera-workshop/client-templates/commercial/PROJECT_CHARTER_TEMPLATE.md`
+   - `CHANGE_REQUEST_FORM.html` → `tera-workshop/client-templates/contractual/CHANGE_REQUEST_FORM.md`
+   - `STATUS_REPORT_TEMPLATE.html` → `tera-workshop/client-templates/contractual/STATUS_REPORT_TEMPLATE.md`
+
+2. **المنهج التشغيلي**:
+   - إضافة YAML front matter قياسي لكل قالب (document_type, category, approval_required, legal_review_required)
+   - مواءمة SOW مع Quotation وPricing Policy
+   - جعل Technical Proposal يركز على البنية والتقنيات والجودة والنشر
+   - جعل Project Charter وثيقة إطلاق رسمية للمشاريع المتوسطة/الكبيرة
+   - جعل Change Request وStatus Report ضمن المسار التعاقدي/التنفيذي
+
+3. **تحديث TeraPolicyMap.md**:
+   - تحديث مسارات Scope of Work / Technical Proposal / Project Charter / Change Request / Status Report إلى النسخ التشغيلية Markdown
+   - الإبقاء على Software Services Agreement HTML مؤقتاً حتى يتم تحويله في دفعة لاحقة
+
+### دفعة contractual / handover / governance — 2026-07-03 — 6 قوالب HTML → Markdown
+
+1. **قراءة وتحويل** ستة ملفات إضافية من `tera-workshop/temp/` إلى Markdown تشغيلية:
+   - `SOFTWARE_SERVICES_AGREEMENT_TEMPLATE.html` → `tera-workshop/client-templates/contractual/SOFTWARE_SERVICES_AGREEMENT_TEMPLATE.md`
+   - `HANDOVER_REPORT_TEMPLATE.html` → `tera-workshop/client-templates/handover/HANDOVER_REPORT_TEMPLATE.md`
+   - `COMPLETION_CERTIFICATE_TEMPLATE.html` → `tera-workshop/client-templates/handover/COMPLETION_CERTIFICATE_TEMPLATE.md`
+   - `GAP_ANALYSIS_TEMPLATE.html` → `tera-workshop/client-templates/pre-contract/GAP_ANALYSIS_TEMPLATE.md`
+   - `SLA_TEMPLATE.html` → `tera-workshop/client-templates/contractual/SLA_TEMPLATE.md`
+   - `CLIENT_SATISFACTION_SURVEY_TEMPLATE.html` → `tera-workshop/client-templates/handover/CLIENT_SATISFACTION_SURVEY_TEMPLATE.md`
+
+2. **المنهج التشغيلي**:
+   - إضافة YAML front matter قياسي لكل قالب (document_type, category, approval_required, legal_review_required)
+   - جعل Software Services Agreement حساساً قانونياً مع `legal_review_required: true`
+   - جعل Handover / Completion / Survey ضمن مرحلة التسليم والإغلاق
+   - جعل Gap Analysis ضمن التحليل المبكر قبل التعاقد الكامل
+   - جعل SLA ضمن المسار التعاقدي
+
+3. **تحديث TeraPolicyMap.md**:
+   - نقل القوالب من `temp/` إلى `client-templates/` في المسارات الرسمية
+   - بقاء أي قالب HTML غير محوّل فقط في `temp/` كمرجع مؤقت
+
+### المخاطر
+
+| المخاطرة | المستوى | خطة التخفيف |
+|---|---|---|
+| الأسعار قد لا تغطي التكاليف غير المباشرة | متوسط | مراجعة الهامش بعد أول مشروعين |
+| Rubric التعقيد قد لا يناسب كل أنواع المشاريع | متوسط | Rubric تجريبي — يُبسّط بعد أول 5 مشاريع |
+| اعتماد TCEA على أسعار داخلية تقديرية | منخفض | السعر الداخلي تجريبي (15–25 JOD) وموثق كـ "تجريبي" |
+
+### ملاحظات الاسترجاع (Rollback)
+
+1. `Remove-Item -LiteralPath "tera-system/TeraPricingPolicy.md" -Recurse`
+2. `Remove-Item -LiteralPath "tera-workshop/client-templates" -Recurse`
+3. `git restore tera-system/TeraClientEngagement.md`
+4. `git restore tera-system/TeraPolicyMap.md`
+5. `git restore .opencode/agents/tera-client-engagement.md`
+6. حذف هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+
+---

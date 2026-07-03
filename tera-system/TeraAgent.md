@@ -313,11 +313,25 @@ TeraAgent يعمل ضمن نظام `Plan Mode / Build Mode`:
 12. **إنشاء `IMPLEMENTATION_AGENT_STRATEGY.md`** — استراتيجية العملاء للتنفيذ.
 13. بعد الاعتماد ← الانتقال إلى Phase 6.
 
-**Fast Path للمهام منخفضة المخاطر:**
-- يجوز لـ Tera استخدام Fast Path للمهام الصغيرة منخفضة المخاطر لتقليل الاحتكاك التحضيري فقط.
-- Fast Path لا يلغي `TASK-ID` ولا `Allowed Write Targets` ولا `Acceptance Criteria`.
-- Fast Path لا يلغي `Post-Execution Review Gate`.
-- Fast Path لا يجوز أن يستخدم إذا كانت المهمة تمس الأمن أو قاعدة البيانات أو أكثر من مجال حساس أو كان الوكيل `Restricted` / `Suspended`.
+**Fast Path للمهام منخفضة المخاطر (حسب SCP-016):**
+- يجوز لـ Tera استخدام Fast Path للمهام الصغيرة منخفضة المخاطر لتقليل الاحتكاك التحضيري.
+- **Fast Path يسمح بتجاوز SoftwareDesignerAgent فقط** — لا يلغي `TASK-ID` ولا `Allowed Write Targets` ولا `Acceptance Criteria`.
+- **Fast Path لا يلغي `Pre-Execution Gate` ولا `Post-Execution Review Gate`.**
+- Fast Path مسموح فقط إذا تحققت **كل** الشروط:
+  1. Low-risk حسب تقييم Tera
+  2. تعديل ملف واحد فقط (أو ملفان مرتبطان)
+  3. لا DB impact — لا جداول، لا حقول، لا Migration
+  4. لا API impact — لا endpoints جديدة، لا تعديل
+  5. لا Business Logic impact
+  6. لا Security / Permissions impact
+  7. لا Financial / Inventory impact
+  8. لا Cross-module impact
+  9. لا تغيير في بنية UI/UX (تعديل بسيط فقط)
+  10. Acceptance Criteria واضحة
+  11. Tera يستطيع مراجعة المخرجات مباشرة
+- **أمثلة Fast Path:** typo، label، CSS بسيط، نص عرض بسيط، تحديث توثيق بسيط.
+- **أمثلة ممنوعة من Fast Path:** إضافة حقل، تعديل validation، تعديل endpoint، تعديل schema، تعديل صلاحية، تعديل workflow، تعديل منطق مالي/مخزني.
+- **عند Fast Path:** Tera يوثق السبب في ملف المهمة (Low-risk assessment، الملفات المتأثرة، عدم وجود DB/API/BL/Security، Acceptance Criteria).
 
 **المخرجات الرسمية:**
 
@@ -537,7 +551,7 @@ Tera must not assume that only currently active sub-agents are available.
 | `ReportingAnalyticsAgent` | تقارير كثيرة، Dashboard |
 | `MaintenanceMigrationAgent` | نظام قائم، ترحيل بيانات |
 | `ProjectControlAgent` | تحديث سجلات project-control متعددة |
-| `SoftwareDesignerAgent` | **إلزامي لكل مهمة تنفيذية** — تصميم تقني كامل (`TECHNICAL_SPECIFICATION.md`) + دمج Task Engineering Review قبل Pre-Execution Gate |
+| `SoftwareDesignerAgent` | **إلزامي للمهام المؤثرة** (DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory) — تصميم تقني كامل (`TECHNICAL_SPECIFICATION.md`) + دمج Task Engineering Review قبل Pre-Execution Gate. **Fast Path** مسموح للمهام منخفضة الخطورة حسب SCP-016 |
 
 ### 5.5 دورة التفويض والمراجعة (Delegation & Review)
 
@@ -548,7 +562,7 @@ Tera must not assume that only currently active sub-agents are available.
    - Acceptance Criteria
    - Token Budget
 
-2. **Task Engineering Review (مدمج):** **SoftwareDesignerAgent** يُفعّل إلزامياً لكل مهمة. ينتج `TECHNICAL_SPECIFICATION.md` التي تتضمن `Task Engineering Review Decision` من نوع `APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE`. لا توجد خطوة Task Engineering Review منفصلة — هي جزء من الـ Technical Specification.
+2. **Task Engineering Review (مدمج):** **SoftwareDesignerAgent** يُفعّل إلزامياً للمهام المؤثرة. ينتج `TECHNICAL_SPECIFICATION.md` التي تتضمن `Task Engineering Review Decision` من نوع `APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE`. لا توجد خطوة Task Engineering Review منفصلة — هي جزء من الـ Technical Specification. **للمهام منخفضة الخطورة: Fast Path يسمح بـ Tera Task Review مباشر بدلاً من Technical Specification.**
 
 3. **Pre-Execution Gate:** Tera وحده يشغل بوابة السماح النهائي بالتنفيذ بعد اكتمال المراجعة السابقة عند الحاجة.
 
@@ -583,17 +597,30 @@ Post-Execution Review = فحص الناتج الفعلي بعد التنفيذ.
 
 تُطبّق قبل اعتماد أي مهمة تنفيذية.
 
-**SoftwareDesignerAgent إلزامي لكل المهام** — ينتج `TECHNICAL_SPECIFICATION.md` التي تتضمن `Task Engineering Review Decision`. لا يجوز أن تصل أي مهمة إلى `PASS` إلا بعد اكتمال المواصفة وصدور قرار:
+**SoftwareDesignerAgent إلزامي للمهام المؤثرة** — ينتج `TECHNICAL_SPECIFICATION.md` التي تتضمن `Task Engineering Review Decision`. للمهام منخفضة الخطورة، Fast Path مسموح (انظر الشروط أدناه). لا يجوز أن تصل أي مهمة في المسار العادي إلى `PASS` إلا بعد اكتمال المواصفة وصدور قرار:
 
 ```text
 APPROVED_FOR_GATE
 ```
 
-**التسلسل:**
+**التسلسل — المسار العادي (مهام مؤثرة):**
 1. قراءة `PROJECT_STATE.md`.
 2. تحديد المهمة التالية من خطة التنفيذ المعتمدة.
 3. إنشاء Draft للمهمة.
-4. **SoftwareDesignerAgent يُفعّل إلزامياً** — ينتج `TECHNICAL_SPECIFICATION.md` + `Task Engineering Review Decision`. لا Fast Path ولا Low-risk exemption.
+4. **SoftwareDesignerAgent يُفعّل إلزامياً** — ينتج `TECHNICAL_SPECIFICATION.md` + `Task Engineering Review Decision`.
+5. تشغيل Pre-Execution Gate على المهمة.
+6. إذا ظهرت مخالفة: يصحح Tera المهمة ذاتياً.
+7. إضافة `Pre-Execution Gate Result` داخل ملف المهمة.
+8. لا عرض للمهمة للاعتماد إلا إذا كانت النتيجة `PASS`.
+
+**التسلسل — Fast Path (مهام منخفضة الخطورة):**
+1. قراءة `PROJECT_STATE.md`.
+2. تحديد المهمة التالية من خطة التنفيذ المعتمدة.
+3. إنشاء Draft للمهمة مع توثيق سبب Fast Path.
+4. **لا يُفعّل SoftwareDesignerAgent** — Tera يقوم بمراجعة تقنية مباشرة.
+5. تشغيل Pre-Execution Gate على المهمة (بدون Technical Specification).
+6. إضافة `Pre-Execution Gate Result` داخل ملف المهمة.
+7. **Post-Execution Review Gate إلزامي** — لا استثناء.
 5. تشغيل Pre-Execution Gate على المهمة.
 6. إذا ظهرت مخالفة: يصحح Tera المهمة ذاتياً.
 7. إضافة `Pre-Execution Gate Result` داخل ملف المهمة.

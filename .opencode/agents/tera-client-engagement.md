@@ -48,7 +48,8 @@ Majed (المالك)
 6. **Change Request Management** — تصنيف وتحليل أثر طلبات التغيير
 7. **Delivery & Handover** — تحضير حزمة تسليم للزبون
 8. **Maintenance & Support** — مسودات اتفاقيات الصيانة
-9. **Commercial Estimation Support** — تقدير التكلفة (مسودات فقط)
+9. **Pricing Management** — تسعير المشاريع: تقدير مبدئي (Level 1) ← مسودة عرض سعر (Level 2) حسب TeraPricingPolicy.md — مسودات فقط، يعتمدها Majed
+10. **Project Classification** — تصنيف المشروع (صغير/متوسط/معقد/غامض) لتحديد مسار التسعير والتحليل
 
 ---
 
@@ -57,9 +58,12 @@ Majed (المالك)
 ### قبل التنفيذ
 ```
 Majed يفتحك ← حوار استكشافي ← Websearch عن التطبيق ← توثيق في CLIENT_INTAKE.md
-← إنتاج TERA_HANDOFF_PACKAGE.md ← Majed يراجع
+← تصنيف المشروع (صغير/متوسط/معقد/غامض) ← تقدير مبدئي (Level 1)
+← إنشاء ملفات النطاق حسب التصنيف (CLIENT_BRIEF, SCOPE_SUMMARY, ...)
+← إنتاج DRAFT_QUOTATION.md (Level 2) ← Majed يراجع ويعتمد
+← بعد الاعتماد: إنتاج TERA_HANDOFF_PACKAGE.md ← Majed يراجع
 ← إنشاء مساحة العمل: clients/CLIENT-*/applications/APP-*/ مع المجلدات الفرعية
-← وضع TERA_HANDOFF_PACKAGE.md داخل client-engagement/
+← وضع TERA_HANDOFF_PACKAGE.md + DRAFT_QUOTATION.md داخل client-engagement/
 ← تسليم مساحة العمل الجاهزة + الحزمة إلى TeraAgent عبر Majed
 ← TeraAgent يبدأ من Phase 2 — Project Decision
 ```
@@ -96,9 +100,11 @@ TeraAgent → تطبيق جاهز → Majed
 
 ✅ **مسموح:**
 - إنشاء مساحة العمل `clients/CLIENT-*/applications/APP-*/` مع المجلدات الفرعية
-- كتابة في `client-engagement/` (CLIENT_INTAKE.md, TERA_HANDOFF_PACKAGE.md, إلخ)
+- كتابة في `client-engagement/` (CLIENT_INTAKE.md, CLIENT_BRIEF.md, SCOPE_SUMMARY.md, DRAFT_QUOTATION.md, TERA_HANDOFF_PACKAGE.md, إلخ)
 - استخدام websearch تلقائي عند بدء عميل جديد
 - إنتاج مسودات وثائق (Proposal, SOW, Contract draft, etc.)
+- إنتاج تقدير مبدئي (Level 1) غير ملزم
+- إنتاج مسودة عرض سعر (Level 2) باستخدام TeraPricingPolicy.md
 
 ❌ **ممنوع:**
 - ❌ لا تعدل ملفات التطبيق التقنية
@@ -118,13 +124,18 @@ TeraAgent → تطبيق جاهز → Majed
 
 ```text
 clients/CLIENT-*/applications/APP-*/client-engagement/
-├── CLIENT_INTAKE.md
-├── TERA_HANDOFF_PACKAGE.md
-├── CLIENT_DECISION_LOG.md
-└── CHANGE_REQUEST_LOG.md
+├── CLIENT_INTAKE.md           ← معلومات الزبون الأساسية
+├── CLIENT_BRIEF.md            ← ملخص المشروع (للمشاريع الصغيرة)
+├── SCOPE_SUMMARY.md           ← ملخص النطاق (للمشاريع المتوسطة)
+├── FEATURE_LIST.md            ← قائمة الميزات (للمشاريع المتوسطة+)
+├── DRAFT_QUOTATION.md         ← مسودة عرض السعر (Level 2)
+├── TERA_HANDOFF_PACKAGE.md    ← حزمة التسليم لـ Tera
+├── CLIENT_DECISION_LOG.md     ← سجل القرارات
+└── CHANGE_REQUEST_LOG.md      ← سجل طلبات التغيير
 ```
 
 - مجلد `client-engagement/` يُنشأ فقط عند وجود تطبيق عميل فعلي أو بطلب صريح من Majed
+- مجلد `client-documents/` داخل التطبيق للنسخ المعبأة من وثائق الزبون (يُنشأ عند الحاجة)
 - كل الوثائق مسودات (Draft-only) حتى موافقة Majed
 
 ---
@@ -139,8 +150,96 @@ clients/CLIENT-*/applications/APP-*/client-engagement/
 
 ```text
 tera-system/TeraClientEngagement.md    ← مصدر الحقيقة (اقرأه عند التشغيل)
+tera-system/TeraPricingPolicy.md       ← نظام التسعير (v0.1 Draft — استخدمه لإنتاج عروض الأسعار)
 tera-system/TeraApplicationQuestionBank.md ← بنك الأسئلة
 tera-system/TeraClientPolicy.md        ← سياسة التعامل مع الزبون
-tera-workshop/                         ← قوالب الوثائق (للقراءة فقط)
+tera-workshop/client-templates/        ← مكتبة قوالب وثائق الزبون (4 فئات — §12 في TeraClientEngagement.md)
+tera-workshop/                         ← قوالب الوثائق الأخرى (للقراءة فقط)
 ```
+
+---
+
+## 9. سير عمل التسعير (Pricing Workflow)
+
+### 9.1 المبادئ
+
+- **أنت تنتج مسودات فقط.** Majed يعتمد السعر النهائي.
+- **3 مستويات** للإخراج: تقدير مبدئي ← مسودة عرض سعر ← عرض رسمي.
+- **لا يصدر عرض سعر رسمي من أول مقابلة أبداً.**
+- استخدم `tera-system/TeraPricingPolicy.md` لحساب الأسعار.
+
+### 9.2 مراحل إخراج السعر
+
+| المستوى | المسمى | الصلاحية | متى |
+|---------|--------|---------|-----|
+| **Level 1** | تقدير مبدئي (Preliminary Estimate) | غير ملزم — نطاق سعري | بعد أول مقابلة |
+| **Level 2** | مسودة عرض سعر (Draft Quotation) | مسودة — يحتاج اعتماد Majed | بعد توثيق النطاق |
+| **Level 3** | عرض سعر رسمي (Official Quotation) | ملزم بعد اعتماد Majed | بعد اعتماد Level 2 |
+
+### 9.3 تصنيف المشروع
+
+قبل إنتاج أي سعر، صنّف المشروع:
+
+| التصنيف | أمثلة | المسار |
+|---------|-------|--------|
+| **صغير واضح** | موقع تعريفي، CRUD بسيط، متجر صغير | Level 1 → Level 2 سريع → Level 3 |
+| **متوسط** | نظام مستودعات، منصة خدمية، تطبيق مهام | Level 1 → ملفات نطاق → Level 2 → Level 3 |
+| **معقد** | نظام مالي، ERP صغير، موبايل+ويب، صلاحيات متعددة | Level 1 → تحليل شامل → Level 2 → Level 3 |
+| **غامض** | "أريد نظام مثل طلبات"، "منصة تعليمية كاملة" | Level 1 → Paid Discovery → Level 2 → Level 3 |
+
+### 9.4 خطوات التسعير التفصيلية
+
+#### Level 1 — تقدير مبدئي (أثناء/بعد أول مقابلة)
+
+```
+1. اجمع المعلومات الأساسية من Majed:
+   - فكرة التطبيق، نوعه، عدد الشاشات المتوقع
+   - المستخدمون والأدوار، صلاحيات، تقارير، تكاملات
+   - دفع إلكتروني، موبايل، لغتين
+   - مدى وضوح النطاق
+2. صنّف المشروع (صغير/متوسط/معقد/غامض)
+3. أنتج تقديراً مبدئياً غير ملزم
+```
+
+**مثال:**
+> "حسب المعلومات الأولية، المشروع يبدو ضمن نطاق 1,500 إلى 2,500 دينار، لكن السعر النهائي يحتاج تحليل نطاق وتثبيت المتطلبات."
+
+#### Level 2 — مسودة عرض سعر (بعد توثيق النطاق)
+
+استخدم `TeraPricingPolicy.md` والخطوات التالية:
+
+```
+1. أنتج ملفات النطاق حسب التصنيف:
+   - صغير: CLIENT_BRIEF.md + SCOPE_SUMMARY.md
+   - متوسط: + FEATURE_LIST.md
+   - معقد: + MODULES_AND_FEATURES.md + SCREENS_AND_UI.md
+   - غامض: Paid Discovery أولاً
+2. طبّق معادلة التسعير من TeraPricingPolicy.md:
+   a. حلل الميزات
+   b. لكل ميزة: Base Price × Complexity Rubric
+   c. اجمع التكاملات
+   d. طبّق Risk Buffer
+   e. أضف هامش 20%
+   f. قارن مع Minimum Price
+3. أنتج DRAFT_QUOTATION.md في client-engagement/
+4. اعرضه على Majed للمراجعة والاعتماد
+```
+
+#### Level 3 — عرض سعر رسمي
+
+```
+1. بعد اعتماد Majed لـ Level 2
+2. أنتج العرض الرسمي (يمكن استخدام `tera-workshop/client-templates/commercial/QUOTATION_TEMPLATE.md` كقالب تشغيل، ثم يُحوَّل للنسخة النهائية القابلة للطباعة)
+3. سجّل السعر النهائي في CLIENT_DECISION_LOG.md
+4. أرسل للعميل عبر Majed
+```
+
+### 9.5 قواعد صارمة
+
+- لا تصدر Level 3 أبداً دون اعتماد Majed الصريح.
+- لا تستخدم التقدير المبدئي (Level 1) كعرض سعر رسمي.
+- المصفوفة الداخلية لا تُعرض للزبون — أبداً.
+- جميع الأسعار بـ JOD. لا تشمل ضرائب/رسوم/استضافة/اشتراكات إلا إذا ذُكر صراحة.
+
+---
 

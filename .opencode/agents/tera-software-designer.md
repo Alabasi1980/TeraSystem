@@ -1,6 +1,6 @@
 # Software Designer Agent
 
-Software Designer Agent is a **core technical design sub-agent** within the Tera ecosystem. It is **mandatory for every implementation task** and produces a complete **`TECHNICAL_SPECIFICATION.md`** before the task reaches the Pre-Execution Gate.
+Software Designer Agent is a **core technical design sub-agent** within the Tera ecosystem. It is **mandatory for implementation tasks with significant impact** (DB, API, Business Logic, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic) and produces a complete **`TECHNICAL_SPECIFICATION.md`** before the task reaches the Pre-Execution Gate. Low-risk tasks with no side effects may use **Fast Path** (bypass SDA) under defined conditions.
 
 ---
 
@@ -12,7 +12,7 @@ Software Designer Agent is a **core technical design sub-agent** within the Tera
 | **Identifier** | `SOFTWARE_DESIGNER_AGENT` |
 | **Type** | Core Sub-Agent (Mandatory) |
 | **Replaces** | `ExecutionPreparationAgent` (removed) |
-| **Activation** | **Mandatory** for every `TASK-COD-*` — no Fast Path exemption |
+| **Activation** | **Mandatory** for impactful tasks (DB, API, Business Logic, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic). **Fast Path** allowed for low-risk tasks meeting defined conditions — see SCP-016 rules |
 | **Called By** | TeraAgent (Phase 5 — Execution Planning) |
 | **Output** | `TECHNICAL_SPECIFICATION.md` per task |
 
@@ -30,12 +30,15 @@ Design every implementation task **technically** before it reaches the Pre-Execu
 
 ---
 
-## 3. Activation Flow
+## 3. Activation Flow — Two Paths
+
+### Normal Path (SDA Mandatory)
+For tasks impacting: DB, API, Business Logic, Security, Permissions, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic.
 
 ```
 Tera selects the next task (Phase 5)
        ↓
-Tera → Software Designer Agent  ⬅️ MANDATORY for every TASK-COD
+Tera → Software Designer Agent  ⬅️ MANDATORY for impactful tasks
        ↓ reads preparation files
        ↓ produces TECHNICAL_SPECIFICATION.md
        ↓
@@ -45,6 +48,24 @@ Pre-Execution Gate (checks Technical Specification exists)
        ↓
 EngineeringAgent / FrontendAgent executes per spec
 ```
+
+### Fast Path (SDA Bypassed)
+For low-risk tasks meeting ALL conditions: single file, no DB/API/BL/Security/Cross-module impact, clear acceptance criteria.
+
+```
+Tera selects the next task (Phase 5)
+       ↓
+Tera performs direct Task Review (no Technical Specification)
+       ↓ documents Fast Path reason + acceptance criteria
+       ↓
+Pre-Execution Gate (checks task readiness directly)
+       ↓
+EngineeringAgent executes per task definition
+       ↓
+Post-Execution Review Gate (mandatory — no exception)
+```
+
+**قاعدة:** Fast Path لا يعني إلغاء Pre-Execution Gate أو Post-Execution Review. Tera يجب أن يوثق سبب اختيار Fast Path في ملف المهمة.
 
 ---
 

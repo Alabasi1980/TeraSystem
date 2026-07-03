@@ -17,7 +17,7 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | Preparation and analysis | Converts intake into internal project planning and execution-ready files | `Tera_Project_Preparation_Files.md`, `TeraPreparationDocumentationGovernance.md`, active application workspace `project-preparation/` |
 | Design governance | Controls design source decisions, design tokens, component rules, internal kits, and UI acceptance | `tera-system/design-system/`, active application workspace `project-preparation/28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/` |
 | Engineering governance | Controls code maintainability, module structure, responsibility boundaries, validation/error/security placement, tests, database/API traceability, and engineering review responsibilities | `tera-system/engineering-governance/`, active application workspace architecture/testing/security/data preparation files |
-| Orchestration and gates + Technical design | Controls delegation, **mandatory technical design per task (SoftwareDesignerAgent)**, task readiness, pre/post execution review, build mode, and project closure gates | `TeraPreExecutionGate.md`, `runtime/`, `TeraSubAgents.md` §6.9, active application workspace `project-control/` |
+| Orchestration and gates + Technical design | Controls delegation, **risk-activated technical design (SoftwareDesignerAgent — mandatory for impactful tasks, Fast Path for low-risk)**, task readiness, pre/post execution review, build mode, and project closure gates | `TeraPreExecutionGate.md`, `runtime/`, `TeraSubAgents.md` §6.9, active application workspace `project-control/` |
 | System evolution governance | Controls self-improvement of Tera: agent review, agent self-reported gaps, anti-bloat gate, change proposals, and evolution logging via `TeraSystemEvolutionAgent` | `project-control/SYSTEM_EVOLUTION_LOG.md`, `project-control/AGENT_GAPS_LOG.md`, `TeraSystemMaintenanceChecklist.md`, `.opencode/agents/tera-system-evolution.md` |
 | Technical specialization | Keeps stack-specific behavior outside the generic Tera system | `tera-system/profiles/` |
 | Sub-agent lifecycle | Defines, generates, narrows, activates, reviews, tracks trust metadata, records Tera interventions, and allows scoped runtime override within approved task boundaries | `TeraSubAgents.md`, `AGENT_GENERATION_TEMPLATE.md`, `generated-agents/`, `.opencode/agents/`, active workspace `project-control/SUB_AGENT_STATUS.md` |
@@ -65,8 +65,8 @@ Client / User Idea
 -> Phase 3: Preparation Planning
 -> Phase 4: Sub-Agent Generation & Preparation Delegation
 -> Phase 5: Execution Planning
-   -> SoftwareDesignerAgent (إلزامي لكل مهمة — تصميم تقني)
--> Pre-Execution Gate (يتحقق من TECHNICAL_SPECIFICATION.md)
+   -> SoftwareDesignerAgent (للمهام المؤثرة — تصميم تقني) أو Fast Path (للمهام Low-risk)
+-> Pre-Execution Gate (يتحقق من Technical Specification أو Fast Path readiness)
 -> Phase 6: Delegated Execution
 -> Post-Execution Review
 -> Milestone / Client Approval

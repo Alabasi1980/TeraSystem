@@ -95,7 +95,7 @@ Sub-agents must not create, activate, modify, or delegate to other sub-agents un
 
 It does not replace:
 
-- `SoftwareDesignerAgent` (إلزامي لكل مهمة)
+- `SoftwareDesignerAgent` (إلزامي للمهام المؤثرة)
 - `SecurityAgent`
 - `QAAndAcceptanceAgent`
 - `ProjectControlAgent`
@@ -1108,9 +1108,9 @@ project-control/tasks/
 |---|---|
 | اسم العميل | Software Designer Agent |
 | المعرّف | `SOFTWARE_DESIGNER_AGENT` |
-| الفئة | **أساسي — إلزامي (Core — Mandatory)** |
-| شرط الاستدعاء | **إلزامي لكل `TASK-COD-*`** قبل Pre-Execution Gate. لا يُتجاوز لأي سبب (لا Fast Path ولا Low-risk ولا Low-complexity) |
-| ملاحظة | يحل محل `ExecutionPreparationAgent` (الذي أُزيل). يدمج `Task Engineering Review` كمخرج داخلي ضمن `TECHNICAL_SPECIFICATION.md` |
+| الفئة | **أساسي — يُفعّل حسب الخطورة (Core — Risk-Activated)** |
+| شرط الاستدعاء | **إلزامي للمهام المؤثرة** (DB, API, Business Logic, Security, Permissions, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic) قبل Pre-Execution Gate. **Fast Path مسموح** للمهام منخفضة الخطورة حسب شروط SCP-016 |
+| ملاحظة | يحل محل `ExecutionPreparationAgent` (الذي أُزيل). يدمج `Task Engineering Review` كمخرج داخلي ضمن `TECHNICAL_SPECIFICATION.md`. Fast Path يسمح بتجاوز SDA فقط — لا يلغي Pre-Execution Gate أو Post-Execution Review |
 
 ### يقرأ
 

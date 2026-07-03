@@ -45,15 +45,16 @@ _What is the goal of this task?_
 2. 
 3. 
 
-## 6.1 Technical Specification (SoftwareDesignerAgent)
+## 6.1 Technical Specification / Fast Path
 
 | Field | Value |
 |---|---|
-| Review Required | **Yes — Mandatory** (SoftwareDesignerAgent for every task) |
-| Review Agent | SoftwareDesignerAgent |
-| Technical Specification File | `[active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TECHNICAL_SPECIFICATION.md` |
-| Task Engineering Review Decision | APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE / N/A |
-| Risk Level | Low / Medium / High / Critical |
+| Review Required | **Yes for impactful tasks** (DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory). **Fast Path** allowed for low-risk tasks — see SCP-016 rules |
+| Review Agent | SoftwareDesignerAgent (for impactful tasks) / Tera direct review (for Fast Path) |
+| Technical Specification File | `[active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TECHNICAL_SPECIFICATION.md` (N/A for Fast Path) |
+| Task Engineering Review Decision | APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE / N/A (N/A for Fast Path) |
+| Risk Level | Low (Fast Path eligible) / Medium / High / Critical |
+| Fast Path Justification | If Fast Path: document Low-risk assessment, affected files, no-SDA-impact checklist, Acceptance Criteria |
 | Approved for Pre-Execution Gate | Yes / No |
 | Design Gaps | List any gaps if preparation files were insufficient |
 
