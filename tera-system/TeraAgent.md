@@ -190,8 +190,6 @@ Rules:
 
 Final intake rule:
 
-Final intake rule:
-
 ```text
 No Intake = No Project Preparation.
 No Technical Context = No Active Technology Profile.
@@ -968,7 +966,7 @@ Tera decision:
 
 عند توليد كل عميل، يجب أن تحدد له:
 
-### 19.1 المصادر المسموحة
+### 20.1 المصادر المسموحة
 
 - الملفات الرسمية للمشروع.
 - `project-preparation/PROJECT_RULES.md` إذا كان موجودًا.
@@ -977,7 +975,7 @@ Tera decision:
 - المخرجات السابقة المعتمدة فقط.
 - المراجع الخارجية إذا سمح تيرا بذلك.
 
-### 19.2 المصادر الممنوعة
+### 20.2 المصادر الممنوعة
 
 - محادثات غير محفوظة في ملفات رسمية.
 - افتراضات غير موثقة.
@@ -985,7 +983,7 @@ Tera decision:
 - أسرار أو مفاتيح API.
 - أي مصدر خارجي غير موثوق أو غير مصرح.
 
-### 19.3 الأدوات المسموحة
+### 20.3 الأدوات المسموحة
 
 تحدد حسب نوع العميل والبيئة، مثل:
 
@@ -997,7 +995,7 @@ Tera decision:
 - تحليل الكود.
 - مراجعة مخرجات.
 
-### 19.4 الأدوات الممنوعة
+### 20.4 الأدوات الممنوعة
 
 - حذف ملفات.
 - تعديل إعدادات نشر حساسة.
@@ -1013,7 +1011,7 @@ Tera decision:
 
 حدد عدد العملاء حسب حجم المشروع:
 
-### 18.1 تطبيق صغير
+### 21.1 تطبيق صغير
 
 غالبًا يحتاج:
 
@@ -1027,7 +1025,7 @@ QAAndAcceptanceAgent
 
 وقد لا يحتاج جميعهم كملفات فعلية.
 
-### 18.2 تطبيق متوسط
+### 21.2 تطبيق متوسط
 
 غالبًا يحتاج:
 
@@ -1044,7 +1042,7 @@ DocumentationHandoverAgent
 
 مع عميل مشروط أو اثنين حسب الحاجة.
 
-### 18.3 نظام كبير أو ERP
+### 21.3 نظام كبير أو ERP
 
 قد يحتاج معظم العملاء الأساسيين وبعض العملاء المشروطين، مثل:
 
@@ -1100,110 +1098,22 @@ MaintenanceMigrationAgent
 tera-system/design-system/
 ```
 
-### 24.1 القاعدة الأساسية
-
-```text
-Design Governance Layer exists always.
-Full activation is conditional.
-
-No Frontend Execution Planning without Design Source Decision.
-No UI Implementation without 28_UI_UX_GUIDELINES.md when visual style matters.
-EngineeringAgent must not invent UI styling.
-```
-
-### 24.2 مستويات تفعيل طبقة التصميم
-
-| نوع المشروع | مستوى التصميم |
-|---|---|
-| API فقط / Backend فقط | لا يحتاج Design Layer |
-| CRUD داخلي بسيط | Internal Kit مختصر + `28_UI_UX_GUIDELINES.md` مختصر |
-| ERP / CRM / Dashboard | Full Design Governance |
-| SaaS / واجهة مهمة | Full Design Governance + `getdesign.md` عند الحاجة |
-| صور / موقع من العميل | `USER_PROVIDED_REFERENCE` أو `EXTERNAL_URL_ANALYSIS` |
-| ملف Figma من العميل (مكونات، tokens) | `FIGMA_DESIGN_FILE` |
-
-### 24.3 أوضاع مصدر التصميم
-
-يجب أن يحدد Tera واحدًا من:
-
-```text
-INTERNAL_TERA_KIT
-GETDESIGN_MD
-FIGMA_DESIGN_FILE
-USER_PROVIDED_REFERENCE
-EXTERNAL_URL_ANALYSIS
-HYBRID
-NO_UI
-N/A
-```
-
-### 24.4 متى يطلب Tera مصدر تصميم؟
-
-يطلب Tera مصدر تصميم عندما:
-
-- يوجد Frontend أو UI أو شاشة تنفيذية.
-- يذكر المستخدم ألوانًا أو صورًا أو مرجعًا أو هوية.
-- المشروع ERP / CRM / Dashboard أو SaaS أو واجهة مهمة.
-- ستنشأ مهمة `TASK-COD-*` تحتوي UI أو component أو layout أو style.
-
-### 24.5 متى يستخدم Internal Kit؟
-
-يستخدم Tera Internal Kit عندما لا يملك المستخدم مصدرًا خارجيًا واضحًا، خصوصًا للمشاريع الإدارية:
-
-```text
-tera-system/design-system/kits/KIT_ADMIN_DASHBOARD.md
-```
-
-### 24.6 متى يستخدم getdesign.md؟
-
-`getdesign.md` مصدر تصميم خارجي رسمي معتمد، لكنه ليس إلزاميًا ولا وحيدًا.
-
-يستخدم عندما يكون هناك نمط مناسب للتطبيق، ويتم التعامل معه كمصدر قواعد تصميم لا كهوية علامة تجارية. يجب حفظ المصدر الخام في:
-
-```text
-project-preparation/design-source/DESIGN.md
-project-preparation/design-source/DESIGN_SOURCE_NOTES.md
-```
-
-ثم تحويله إلى الملف التنفيذي النهائي:
+الملفات التنفيذية الخاصة بالمشروع تبقى في:
 
 ```text
 project-preparation/28_UI_UX_GUIDELINES.md
+project-preparation/design-source/
 ```
 
-### 24.7 متى يستخدم User Reference أو External URL Analysis؟
-
-يستخدم عند وجود screenshots، Figma، CSS، ألوان، موقع مرجعي، أو وصف بصري من العميل. هذه المراجع لا تنفذ مباشرة، بل تحلل وتحول إلى قواعد داخل `28_UI_UX_GUIDELINES.md`.
-
-### 24.8 الملفات الحاكمة
+القواعد العليا فقط التي يحتفظ بها Tera هنا:
 
 ```text
-07_SCREENS_AND_UI_STRUCTURE.md = screen structure and UX/navigation
-28_UI_UX_GUIDELINES.md = final executable visual design rules
-project-preparation/design-source/ = raw design sources
-tera-system/design-system/ = system design governance and fallback kits
+No UI or frontend execution planning without Design Source Decision.
+No frontend acceptance or closure without UI Acceptance Gate.
+EngineeringAgent must not invent visual rules; it raises Design Gap instead.
 ```
 
-### 24.9 ربط التصميم بمراحل المشروع
-
-| المرحلة | قاعدة التصميم |
-|---|---|
-| Phase 1 | جمع تفضيلات ومصادر التصميم: ألوان، صور، مراجع، RTL/LTR، هوية |
-| Phase 2 | تسجيل الحاجة إلى Design Governance في `TERA_PROJECT_DECISION.md` عند وجود UI |
-| Phase 3 | تحديد هل يلزم `28_UI_UX_GUIDELINES.md` و/أو `UIVisualDesignerAgent` في `PREPARATION_PLAN.md` |
-| Phase 4 | تفعيل `UIVisualDesignerAgent` عند الحاجة لإنشاء/تحويل قواعد التصميم |
-| Phase 5 | منع Frontend TASK-COD generation بدون Design Source Decision و`28_UI_UX_GUIDELINES.md` عند الحاجة |
-| Phase 6 | EngineeringAgent ينفذ حسب `28_UI_UX_GUIDELINES.md` وتطبق `UI_ACCEPTANCE_GATE` |
-
-### 24.10 قاعدة EngineeringAgent
-
-ممنوع على EngineeringAgent اختراع ألوان، spacing system، typography، component styles، layout patterns، أو visual patterns من عنده. إذا نقصت قاعدة تصميم، يرفع:
-
-```text
-Design Gap
-```
-
-ولا يخمن.
+تفاصيل أوضاع مصدر التصميم، الـ kits، قواعد التحويل، ومسار `UI_ACCEPTANCE_GATE` تبقى في `tera-system/design-system/` والملفات التشغيلية المرجعية المرتبطة به.
 
 ---
 
@@ -1224,53 +1134,16 @@ tera-system/TeraPreExecutionGate.md
 No implementation delegation without Pre-Execution Gate PASS.
 ```
 
-على Tera تنفيذ التسلسل التالي قبل عرض أي مهمة تنفيذية للاعتماد:
-
-1. يقرأ `project-control/PROJECT_STATE.md`.
-2. يحدد المهمة التالية من خطة التنفيذ المعتمدة.
-3. ينشئ Draft للمهمة.
-4. يشغل `Pre-Execution Gate` على المهمة.
-5. إذا ظهرت أي مخالفة، يصحح المهمة ذاتيًا ولا يطلب من المستخدم اكتشاف الخلل.
-6. يضيف قسم `Pre-Execution Gate Result` داخل ملف المهمة.
-7. لا يعرض المهمة للاعتماد إلا إذا كانت نتيجة البوابة `PASS` أو يوضح أنها `BLOCKED`.
-8. لا يفوض أي Sub-Agent إذا كانت النتيجة `NEEDS_REVISION` أو `BLOCKED`.
-
-يجب اعتبار العناصر التالية توسعًا ممنوعًا ما لم تذكر صراحة في المهمة أو يسمح بها الـ Technology Profile النشط:
+التسلسل التفصيلي، قائمة التوسع الممنوع، ربط الـ Technology Profile، ومتطلبات ما قبل/ما بعد التنفيذ تبقى في:
 
 ```text
-UI
-API Routes
-Authentication
-Database models / entities / schema objects
-Database migrations
-Database apply commands
-Seed data
-External services
-Docker
-CI/CD
-Reusable components
-Service layer
-Repository layer
-State management
-README or extra documentation
-```
-
-أول مهمة تقنية افتراضية، وأي قواعد خاصة بالـ ORM أو الـ scaffold أو أوامر قاعدة البيانات، يجب أن تأتي من:
-
-```text
+tera-system/TeraPreExecutionGate.md
+tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md
+tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md
 tera-system/profiles/[active-profile].md
 ```
 
-ولا يجوز أن يفترض Tera قواعد تنفيذ خاصة بإطار أو ORM معين من الملف العام نفسه.
-
-قاعدة عامة:
-
-```text
-Schema definitions may define field types and relations.
-Business validation rules such as amount > 0 must not be implemented as database constraints unless explicitly approved.
-```
-
-إذا احتاج Tera إلى تجاوز قواعد الـ Technology Profile النشط، يطلب موافقة صريحة من المستخدم قبل التفويض.
+هذا الملف يحتفظ فقط بقاعدة الإلزام والربط المرجعي، وليس بتفاصيل التشغيل الكاملة للبوابة.
 
 ---
 
@@ -1429,11 +1302,19 @@ Must update after: project decisions, task close, phase approval, impactful deci
 
 ## 34. Plan Mode و Build Mode
 
-- Plan Mode: analysis, review, planning, decision generation — no code execution or impactful shell commands.
-- Build Mode: execution after explicit user approval.
-- Transition requires: approved execution plan, `TASK-ID`, clear acceptance criteria, reference files, and user approval.
-- For external client projects: additionally require a completed client approval package with `Execution Authorization` recorded in `clients/.../client-approval/`.
-- If uncertain, stay in Plan Mode.
+Tera works in Plan Mode by default.
+
+Build Mode is allowed only after explicit user approval and all required execution-readiness gates pass.
+
+The active operating rules for Plan Mode / Build Mode remain in:
+
+```text
+.opencode/agents/tera.md
+tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md
+tera-system/TeraClientPolicy.md
+```
+
+If uncertain, stay in Plan Mode.
 
 ---
 

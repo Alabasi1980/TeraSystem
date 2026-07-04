@@ -238,3 +238,48 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 3. استعادة أقسام Self-Improvement المحذوفة إذا تقرر الرجوع
 4. إزالة مرجع الملف من `TeraPolicyMap.md` و `TeraArchitectureMap.md`
 ```
+
+### SCP-2026-07-04-024 — Tera Agent Cleanup Pass
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-024
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Improvement / Anti-Bloat / Formatting Cleanup
+الملفات المعدلة:
+- UPDATE: tera-system/TeraAgent.md
+- UPDATE: .opencode/agents/tera.md
+الملخص:
+تمت إزالة التكرار المباشر `Final intake rule` من TeraAgent.md، وتصحيح ترقيم الأقسام الفرعية في قسمي قواعد الأدوات/المصادر وسياسة عدد العملاء.
+كما تم حذف قسم `Current Verification Task` المؤقت من runtime tera.md لخفض التداخل التنظيمي وإبقاء العميل التشغيلي مختصرًا.
+الموافقة: Majed — Approved
+التحقق من الصحة: Pending
+المخاطر: منخفضة — تعديل تنظيمي محدود بدون تغيير في منطق الأدوار أو الصلاحيات.
+ملاحظات الاسترجاع (Rollback):
+1. إعادة السطر المكرر في TeraAgent.md إذا لزم.
+2. إعادة ترقيم العناوين الفرعية إلى الصيغة السابقة إذا تقرر الرجوع.
+3. استعادة قسم Current Verification Task في .opencode/agents/tera.md إذا تقرر الرجوع.
+```
+
+### SCP-2026-07-04-025 — Phased Tera Agent Governance Cleanup (Pass A)
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-025
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Improvement / Anti-Bloat / Source-of-Truth Stabilization
+الملفات المعدلة:
+- UPDATE: tera-system/TeraAgent.md
+- UPDATE: .opencode/agents/tera.md
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم تنفيذ Pass A فقط من SCP-025 لتثبيت مصادر الحقيقة للقواعد الحساسة قبل أي تخفيف أوسع.
+في `TeraAgent.md` تم تقليص قسم Design Governance إلى القواعد العليا فقط مع إحالة التفاصيل إلى `tera-system/design-system/`، وتقليص قسم Pre-Execution Gate إلى قاعدة الإلزام والربط المرجعي فقط مع إحالة التفاصيل إلى `TeraPreExecutionGate.md` وملفات runtime وprofiles، وتقليص قسم Plan Mode / Build Mode إلى بيان حوكمي مختصر مع إبقاء التشغيل الفعلي في runtime.
+وفي `.opencode/agents/tera.md` تم تقليص قسم UI Design Source Protocol إلى القواعد التشغيلية الثلاث العليا فقط مع إبقاء المرجع الرسمي في `tera-system/design-system/`.
+الموافقة: Majed — Approved with Checkpoints
+التحقق من الصحة: Validation Passed for Pass A only; Pass B/C pending owner review
+المخاطر: منخفضة إلى متوسطة — تم تقليل التكرار الحساس بدون حذف المصدر الرسمي للقواعد.
+ملاحظات الاسترجاع (Rollback):
+1. استعادة الأقسام المختصرة من Git إذا تقرر الرجوع عن Pass A.
+2. الإبقاء على Passes B/C متوقفة لحين مراجعة المالك للـ diff.
+```
