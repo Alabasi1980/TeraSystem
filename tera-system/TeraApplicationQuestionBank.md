@@ -2,13 +2,9 @@
 
 ## Purpose
 
-> **ملاحظة نظامية:** بنك الأسئلة هذا يُستخدم أساساً من قبل `TeraClientEngagementAgent` خلال Discovery و Smart Interview قبل إنتاج Handoff Package.
-> بعد وجود `TERA_HANDOFF_PACKAGE.md` معتمد من TCEA، يتخطى TeraAgent **Client Discovery Mode و Smart Interview تمامًا** — ويبدأ مباشرة من مرحلة القرار (`Phase 2 — Project Decision`).
-> في هذه الحالة، لا يُستخدم هذا البنك من قبل TeraAgent، بل يكون قد استُخدم بالفعل من قبل TeraClientEngagementAgent خلال جلسة الاستكشاف.
-
 This is the reference question bank for the **Client Discovery and Smart Interview** process — a two-stage approach that first explores the client's idea through open conversation, then follows with adaptive structured questioning across all domains.
 
-TeraClientEngagementAgent does not ask all questions. TCEA selects the right questions at the right time based on previous answers, and always starts with open listening before any structured questioning.
+Tera does not ask all questions. Tera selects the right questions at the right time based on previous answers, and always starts with open listening before any structured questioning.
 
 ## How to use this bank
 
@@ -17,6 +13,45 @@ TeraClientEngagementAgent does not ask all questions. TCEA selects the right que
 3. **Select questions based on gaps** — not all domains, not all questions.
 4. **When the client doesn't know** — propose a default, document as `Assumption`, do not treat as final decision.
 5. **Small projects: 10–15 questions. Medium: 20–35. Complex: deeper per domain.**
+
+## Operational mapping to TCEA 13-domain framework
+
+This bank remains a **question source**, not a completeness contract by itself.
+
+TCEA must still evaluate mandatory discovery coverage across these 13 operating domains:
+
+1. Business Context & Value
+2. Integrations & APIs
+3. Users & Roles
+4. Workflow & Operations
+5. Scope & MVP
+6. Data & Content
+7. Notifications Engine
+8. Screens & UX
+9. Design & Branding
+10. Reports & Dashboards
+11. Technical, Hosting & Compliance
+12. Security & Audit
+13. Acceptance, Commercials & Warranty
+
+**Rule:**
+
+```text
+The question bank helps TCEA ask.
+The Discovery Coverage Summary proves TCEA covered.
+```
+
+### Practical mapping guidance
+
+- Current Domain 1 supports: Business Context & Value
+- Current Domain 2 supports: Users & Roles, Workflow & Operations, Scope & MVP, Notifications, Screens & UX
+- Current Domain 3 supports: Data & Content, Reports & Dashboards
+- Current Domain 4 supports: Integrations & APIs, Technical / Hosting / Compliance
+- Current Domain 5 supports: Design & Branding, Screens & UX
+- Current Domain 6 supports: Security & Audit
+- Current Domain 7 supports: Technical / Hosting / Operational follow-up
+
+Acceptance, commercials, warranty, delivery assumptions, and approval-readiness questions may require TCEA to add consulting/commercial questions beyond this bank when needed.
 
 ## Assumption Handling
 
@@ -36,7 +71,7 @@ When the client cannot answer a question, use this pattern:
 Record all assumptions in a table (inside `project-inputs/` or in a separate file for medium/large projects):
 
 ```text
-| المجال | السؤال | افتراض TCEA | الحالة | يحتاج مراجعة قبل |
+| المجال | السؤال | افتراض تيرا | الحالة | يحتاج مراجعة قبل |
 |--------|--------|-------------|--------|------------------|
 | تقني | Web/Mobile | Web App | يحتاج تأكيد | التوقيع على النطاق |
 | صلاحيات | عدد الأدوار | Admin + User | يحتاج تأكيد | التنفيذ |
@@ -47,7 +82,7 @@ Record all assumptions in a table (inside `project-inputs/` or in a separate fil
 | الحالة | المعنى |
 |--------|--------|
 | `مؤكد` | العميل أجاب بوضوح |
-| `يحتاج تأكيد` | اقتراح TCEA — لم يؤكده العميل بعد |
+| `يحتاج تأكيد` | اقتراح Tera — لم يؤكده العميل بعد |
 | `مؤجل` | العميل قال "ربما لاحقاً" |
 | `غير محدد حاليًا` | لم يُطرح السؤال بعد أو العميل لم يقرر |
 

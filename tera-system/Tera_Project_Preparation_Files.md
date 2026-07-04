@@ -13,16 +13,6 @@
 
 ---
 
-> **مرجع حوكمة الوثائق:**
-> ينظّم `tera-system/TeraPreparationDocumentationGovernance.md` دورة حياة هذه الملفات:
-> تصنيفها، حالات النضج (Draft → Module Baseline Approved → System Approved → Locked)،
-> نموذج Maker/Checker/Owner، اعتماد الوحدات الجزئي، تحليل الأثر عند التغيير، وقواعد الاستهلاك.
->
-> هذا الملف (الكتالوج) يحدد **ما هي الملفات الموجودة**.
-> ملف الحوكمة يحدد **كيف تُدار** هذه الملفات.
-
----
-
 # قاعدة العمل العامة
 
 يقسم العميل تيرا الملفات إلى ثلاث فئات:
@@ -32,9 +22,6 @@
 | ملفات رئيسية | ملفات أساسية لأي مشروع تقريبًا | تُنشأ غالبًا في كل مشروع |
 | ملفات مشروطة | ملفات مهمة حسب طبيعة التطبيق | تُنشأ إذا وُجد سبب واضح لها |
 | ملفات ثانوية | ملفات داعمة أو تنظيمية | تُنشأ في المشاريع المتوسطة والكبيرة أو عند الحاجة |
-
-> **ملاحظة حوكمية:** تصنيفات (Core / Conditional / Supporting) تحدد **أهمية الملف** وليس دورة حياته.
-> راجع `TeraPreparationDocumentationGovernance.md` (Section 2.1) للتصنيف حسب دورة الحياة (Foundation / Consumer / Derived / Living / Late-Bound).
 
 ---
 
@@ -68,10 +55,6 @@ clients/
 
 هذه الملفات ليست بديلة عن ملفات التحضير الداخلية، بل هي مخرجات موجهة للعميل للمراجعة والاعتماد قبل التنفيذ.
 
-> **ملاحظة نظامية:** إنتاج حزمة اعتماد العميل (Client Approval Package) هو مسؤولية `TeraClientEngagementAgent`.
-> TeraAgent يتحقق فقط من وجودها واكتمالها قبل التنفيذ.
-> راجع `tera-system/TeraClientEngagement.md` للتفاصيل.
-
 الموقع الرسمي:
 
 ```text
@@ -80,7 +63,7 @@ clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/client-appr
 
 ## Mandatory Client Approval Package
 
-في مشاريع العملاء الخارجيين، حزمة اعتماد العميل إلزامية قبل التنفيذ (من إنتاج TeraClientEngagementAgent).
+في مشاريع العملاء الخارجيين، حزمة اعتماد العميل إلزامية قبل التنفيذ.
 
 الملفات الافتراضية، بوابات الاعتماد، وقواعد الاستثناء المحدود موثقة رسميًا في:
 
@@ -95,6 +78,56 @@ tera-system/runtime/TERA_RUNTIME_TEMPLATES.md
 - لا تذكر تفاصيل Tera الداخلية أو العملاء الفرعيين أو سياسات التشغيل.
 - لا يدخل المشروع Build Mode قبل اعتماد النطاق وحزمة العميل.
 - أي ملف غير مناسب لمشروع صغير يجب توثيق سبب عدم استخدامه في سجل اعتماد العميل.
+
+---
+
+# Blueprinting Artifacts (Pre-Preparation, Non-Baseline)
+
+هذه المواد تُنشأ فقط إذا فُعّل `ApplicationBlueprintAgent` بعد handoff عميل مؤكد وقبل أن يبدأ `TeraAgent` التحضير الرسمي.
+
+ليست بديلة عن ملفات التحضير الرسمية، ولا تُستهلك downstream مباشرة.
+
+## APPLICATION_BLUEPRINT.md
+
+**الموقع الرسمي:**
+
+```text
+project-preparation/APPLICATION_BLUEPRINT.md
+```
+
+**الغرض:**
+تحويل handoff المعتمد إلى blueprint داخلي عالي المستوى يساعد Tera لاحقاً في بدء التحضير الرسمي.
+
+**قاعدة إلزامية:**
+
+```text
+APPLICATION_BLUEPRINT.md starts as Draft.
+It must not be used for formal preparation until status = approved_for_preparation.
+```
+
+## BLUEPRINT_OPEN_QUESTIONS.md
+
+ملف اختياري لتجميع الأسئلة التي تمنع إكمال الـ blueprint أو تحتاج قراراً قبل التحضير الرسمي.
+
+## BLUEPRINT_DECISION_CANDIDATES.md
+
+ملف اختياري لتوثيق المرشحات والتوصيات (مثل التقنية، الاستضافة، قاعدة البيانات) بصيغة candidates فقط، لا كقرارات نهائية.
+
+## draft-seeds/
+
+```text
+project-preparation/draft-seeds/
+```
+
+يحوي Draft Seeds فقط عند الحاجة وضمن الضوابط التالية:
+
+- اختيارية وليست افتراضية
+- مبررة بوضوح
+- الحد الموصى به 3 ملفات فقط
+- تجاوز 3 يحتاج موافقة صريحة
+- كل ملف يجب أن يحمل: `Draft Seed` / `Not Baseline` / `Not approved for downstream execution`
+
+لا تُعد Draft Seeds جزءاً من baseline التحضيري، ويجب إعادة إنتاج محتواها أو اعتماده رسمياً ضمن ملفات التحضير المعتادة قبل أي استهلاك downstream.
 
 ---
 
@@ -145,16 +178,6 @@ project-control/tasks/
 ### أهميته
 يمنع ضياع القواعد داخل المحادثة، ويجعلها جزءًا من التفويض والمراجعة.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Intake / Client Understanding |
-| **Dependency Profile** | Foundation |
-| **Default Maker** | Tera (أو RequirementsScopeAgent) |
-| **Default Checker** | Tera |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Draft (كافٍ للمراجعة البشرية) |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 00_PROJECT_INPUTS.md
@@ -180,16 +203,6 @@ project-control/tasks/
 ### أهميته
 يمنع ضياع المعلومات، ويجعل بداية المشروع مبنية على مدخلات واضحة لا على ذاكرة أو فهم متفرق.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Intake / Client Understanding |
-| **Dependency Profile** | Foundation |
-| **Default Maker** | RequirementsScopeAgent |
-| **Default Checker** | BusinessWorkflowAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 01_PROJECT_BRIEF.md
@@ -207,16 +220,6 @@ project-control/tasks/
 
 ### أهميته
 يمثل مرجع الفهم الرئيسي للمشروع، ويمنع اختلاف تفسير الفكرة بين العميل تيرا والعملاء الفرعيين والمطور.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Intake / Client Understanding |
-| **Dependency Profile** | Foundation |
-| **Default Maker** | RequirementsScopeAgent |
-| **Default Checker** | SolutionArchitectureAgent |
-| **Owner Approval Needed?** | **نعم** — حدود النطاق قرار حساس |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
 
 ---
 
@@ -236,16 +239,6 @@ project-control/tasks/
 ### أهميته
 يحمي المشروع من التوسع العشوائي، ويمنع إدخال طلبات جديدة أثناء التنفيذ بدون قرار واضح.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Intake / Client Understanding |
-| **Dependency Profile** | Foundation |
-| **Default Maker** | RequirementsScopeAgent |
-| **Default Checker** | SolutionArchitectureAgent |
-| **Owner Approval Needed?** | **نعم** — حدود النطاق قرار حساس |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 03_MODULES_AND_FEATURES.md
@@ -262,16 +255,6 @@ project-control/tasks/
 
 ### أهميته
 يساعد في تنظيم التحليل والتنفيذ، ويمنع التعامل مع التطبيق ككتلة واحدة غير واضحة.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Structural Analysis |
-| **Dependency Profile** | Foundation |
-| **Default Maker** | RequirementsScopeAgent |
-| **Default Checker** | DataDesignAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
 
 ---
 
@@ -294,16 +277,6 @@ project-control/tasks/
 ### أهميته
 الصلاحيات تؤثر على الشاشات، العمليات، الأمان، التقارير، والاختبارات. تأخيرها يسبب إعادة عمل كبيرة.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Structural Analysis |
-| **Dependency Profile** | Foundation |
-| **Default Maker** | RequirementsScopeAgent |
-| **Default Checker** | SecurityAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 05_BUSINESS_WORKFLOWS.md
@@ -323,16 +296,6 @@ project-control/tasks/
 ### أهميته
 يضمن أن التطبيق يعكس دورة العمل الحقيقية، وليس مجرد شاشات إدخال وعرض.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Structural Analysis |
-| **Dependency Profile** | Consumer (يعتمد على 02_SCOPE, 03_MODULES) |
-| **Default Maker** | BusinessWorkflowAgent |
-| **Default Checker** | UIUXStructureAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 06_DATA_MODEL_PREPARATION.md
@@ -351,16 +314,6 @@ project-control/tasks/
 
 ### أهميته
 يمنع العشوائية في بناء قاعدة البيانات، ويكشف مبكرًا العلاقات والبيانات الناقصة.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Structural Analysis |
-| **Dependency Profile** | Consumer (يعتمد على 03_MODULES, 05_WORKFLOWS, 07_SCREENS) |
-| **Default Maker** | DataDesignAgent |
-| **Default Checker** | BusinessWorkflowAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | System Approved |
 
 ---
 
@@ -382,16 +335,6 @@ project-control/tasks/
 ### أهميته
 يمنع بناء واجهة غير مكتملة أو غير متوافقة مع العمليات والصلاحيات.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Structural Analysis |
-| **Dependency Profile** | Consumer (يعتمد على 04_ROLES, 05_WORKFLOWS) |
-| **Default Maker** | UIUXStructureAgent |
-| **Default Checker** | DataDesignAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 08_TECHNICAL_ARCHITECTURE.md
@@ -412,16 +355,6 @@ project-control/tasks/
 
 ### أهميته
 يمنع تضارب القرارات التقنية بين العملاء الفرعيين أثناء التنفيذ.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Foundation |
-| **Default Maker** | SolutionArchitectureAgent |
-| **Default Checker** | SecurityAgent |
-| **Owner Approval Needed?** | **نعم** — القرارات التقنية الكبرى (stack, hosting, security) |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
 
 ---
 
@@ -451,16 +384,6 @@ PROJECT_DETAILED_EXECUTION_PLAN.md
 EXECUTION_BATCH_PLAN.md
 ```
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Planning & Control |
-| **Dependency Profile** | Derived (يعتمد على جميع ملفات التحضير) |
-| **Default Maker** | Tera |
-| **Default Checker** | RequirementsScopeAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Draft (كافٍ للتخطيط) |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 10_TESTING_AND_ACCEPTANCE.md
@@ -481,16 +404,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 يقلل الأخطاء قبل التسليم، ويحول الاختبار من عمل عشوائي إلى عملية منظمة.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Late-Closure |
-| **Dependency Profile** | Consumer (يعتمد على جميع ملفات التحضير) |
-| **Default Maker** | QAAndAcceptanceAgent |
-| **Default Checker** | BusinessWorkflowAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 11_DELIVERY_AND_HANDOVER.md
@@ -509,16 +422,6 @@ EXECUTION_BATCH_PLAN.md
 
 ### أهميته
 يضمن أن نهاية المشروع واضحة، وأن التسليم لا يعتمد على ذاكرة المطور أو العميل تيرا.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Late-Closure |
-| **Dependency Profile** | Consumer (يعتمد على 10_TESTING) |
-| **Default Maker** | DocumentationHandoverAgent |
-| **Default Checker** | Tera |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Draft (التسليم النهائي يتطلب System Approved) |
-| **Final Target State** | Locked |
 
 ---
 
@@ -544,16 +447,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 ضروري في التطبيقات التي تحتوي على منطق عمل مهم مثل ERP، محاسبة، مخزون، موارد بشرية، أنظمة مالية، أو أنظمة موافقات.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 05_WORKFLOWS, 06_DATA_MODEL) |
-| **Default Maker** | BusinessWorkflowAgent |
-| **Default Checker** | DataDesignAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 13_REPORTS_AND_DASHBOARDS.md
@@ -574,16 +467,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 مهم عندما تكون التقارير جزءًا أساسيًا من قيمة التطبيق، ولا يكفي دمجها داخل ملف الشاشات.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 06_DATA_MODEL, 07_SCREENS) |
-| **Default Maker** | ReportingAnalyticsAgent |
-| **Default Checker** | DataDesignAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 14_INTEGRATIONS_AND_EXTERNAL_SERVICES.md
@@ -602,16 +485,6 @@ EXECUTION_BATCH_PLAN.md
 
 ### أهميته
 ضروري عند وجود تكامل مع دفع إلكتروني، رسائل، بريد، WhatsApp، ERP آخر، نظام محاسبي، Google Services، أو AI APIs.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 08_TECHNICAL_ARCHITECTURE) |
-| **Default Maker** | IntegrationAgent |
-| **Default Checker** | SecurityAgent |
-| **Owner Approval Needed?** | **نعم** — التكامل مع أنظمة خارجية قد يؤثر على الأمان والتكلفة |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
 
 ---
 
@@ -633,16 +506,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 ضروري في التطبيقات متعددة المستخدمين، الأنظمة المالية، SaaS، ERP، أو أي تطبيق يحتوي على بيانات حساسة.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 04_ROLES, 05_WORKFLOWS) |
-| **Default Maker** | SecurityAgent |
-| **Default Checker** | RequirementsScopeAgent |
-| **Owner Approval Needed?** | **نعم** — نموذج الأمان قرار حساس |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 16_AUDIT_LOG_AND_ACTIVITY_TRACKING.md
@@ -662,16 +525,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 ضروري عند وجود تعديلات مهمة، حذف، اعتماد، حركات مالية، صلاحيات، أو مسؤولية تشغيلية.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 04_ROLES, 05_WORKFLOWS) |
-| **Default Maker** | SecurityAgent |
-| **Default Checker** | RequirementsScopeAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 17_NOTIFICATIONS_AND_ALERTS.md
@@ -690,16 +543,6 @@ EXECUTION_BATCH_PLAN.md
 
 ### أهميته
 مهم في تطبيقات الموافقات، التحصيل، المواعيد، المهام، المتابعة، وERP.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 05_WORKFLOWS) |
-| **Default Maker** | BusinessWorkflowAgent أو UIUXStructureAgent |
-| **Default Checker** | IntegrationAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | System Approved |
 
 ---
 
@@ -722,16 +565,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 ضروري في التطبيقات الإدارية والتجارية التي تعتمد على إدخال أو إخراج بيانات بكميات كبيرة.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 06_DATA_MODEL) |
-| **Default Maker** | DataDesignAgent أو IntegrationAgent |
-| **Default Checker** | SolutionArchitectureAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 19_DATABASE_DESIGN.md
@@ -752,16 +585,6 @@ EXECUTION_BATCH_PLAN.md
 
 ### أهميته
 ضروري في المشاريع المتوسطة والكبيرة، خصوصًا عندما يكون نموذج البيانات معقدًا أو حساسًا.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Executable Design |
-| **Dependency Profile** | Derived (يعتمد على 06_DATA_MODEL  ←  تصميم قاعدة البيانات النهائي) |
-| **Default Maker** | DataDesignAgent |
-| **Default Checker** | SolutionArchitectureAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | Locked |
 
 ---
 
@@ -784,16 +607,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 ضروري عند وجود Frontend وBackend منفصلين، تطبيق موبايل، تكامل خارجي، أو Microservices.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Executable Design |
-| **Dependency Profile** | Derived (يعتمد على 07_SCREENS, 08_TECHNICAL_ARCHITECTURE) |
-| **Default Maker** | SolutionArchitectureAgent |
-| **Default Checker** | UIUXStructureAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | Locked |
-
 ---
 
 ## 21_VALIDATION_AND_ERROR_HANDLING.md
@@ -813,16 +626,6 @@ EXECUTION_BATCH_PLAN.md
 
 ### أهميته
 مهم جدًا في التطبيقات التي تحتوي على نماذج إدخال كثيرة أو بيانات حساسة.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 08_TECHNICAL_ARCHITECTURE) |
-| **Default Maker** | SolutionArchitectureAgent |
-| **Default Checker** | QAAndAcceptanceAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
 
 ---
 
@@ -845,16 +648,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 ضروري لأي تطبيق سيتم تشغيله فعليًا على سيرفر أو Cloud أو لدى عميل.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Late-Closure |
-| **Dependency Profile** | Late-Bound |
-| **Default Maker** | DevOpsDeploymentAgent |
-| **Default Checker** | SecurityAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Draft (يكفي للتخطيط) |
-| **Final Target State** | Locked |
-
 ---
 
 ## 23_BACKUP_AND_RECOVERY.md
@@ -873,16 +666,6 @@ EXECUTION_BATCH_PLAN.md
 
 ### أهميته
 ضروري في أي تطبيق يحتوي على بيانات مهمة. تجاهله في الأنظمة الإنتاجية خطر واضح.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Late-Closure |
-| **Dependency Profile** | Late-Bound |
-| **Default Maker** | DevOpsDeploymentAgent |
-| **Default Checker** | QAAndAcceptanceAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | Locked |
 
 ---
 
@@ -903,16 +686,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 مهم في المشاريع التي يوجد فيها عميل خارجي أو مراجعات متكررة، ويمنع الخلافات وسوء الفهم.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Planning & Control |
-| **Dependency Profile** | Living |
-| **Default Maker** | Tera |
-| **Default Checker** | RequirementsScopeAgent |
-| **Owner Approval Needed?** | لا (ولكن كل تغيير بعد baseline يحتاج موافقة مالك) |
-| **Minimal Usable State** | Draft (للتسجيل) |
-| **Final Target State** | Locked |
-
 ---
 
 ## 25_CHANGE_REQUESTS.md
@@ -931,16 +704,6 @@ EXECUTION_BATCH_PLAN.md
 
 ### أهميته
 ضروري في العمل التجاري. بدونه يتحول المشروع إلى تعديلات مفتوحة وغير مضبوطة.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Planning & Control |
-| **Dependency Profile** | Living |
-| **Default Maker** | Tera (أو TeraClientEngagementAgent للعملاء الخارجيين) |
-| **Default Checker** | RequirementsScopeAgent |
-| **Owner Approval Needed?** | **نعم** — أي تغيير في النطاق أو التكلفة |
-| **Minimal Usable State** | Draft (للتسجيل) |
-| **Final Target State** | Locked |
 
 ---
 
@@ -966,16 +729,6 @@ EXECUTION_BATCH_PLAN.md
 ### أهميته
 مفيد في المشاريع الكبيرة أو الغامضة، لكنه غير ضروري كمستند مستقل في التطبيقات الصغيرة.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Planning & Control |
-| **Dependency Profile** | Living |
-| **Default Maker** | RequirementsScopeAgent أو Tera |
-| **Default Checker** | BusinessWorkflowAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Draft |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 27_DECISIONS_LOG.md
@@ -993,16 +746,6 @@ EXECUTION_BATCH_PLAN.md
 
 ### أهميته
 مهم عند تعدد الأطراف أو العملاء الفرعيين، ويمنع الرجوع المتكرر لنفس النقاش.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Planning & Control |
-| **Dependency Profile** | Living |
-| **Default Maker** | Tera |
-| **Default Checker** | RequirementsScopeAgent |
-| **Owner Approval Needed?** | لا (كل قرار مسجل مع سببه) |
-| **Minimal Usable State** | Draft |
-| **Final Target State** | Locked |
 
 ---
 
@@ -1052,16 +795,6 @@ EXECUTION_BATCH_PLAN.md
 tera-system/design-system/
 ```
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Executable Design / Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 07_SCREENS, تصميم الهوية البصرية) |
-| **Default Maker** | UIVisualDesignerAgent |
-| **Default Checker** | UIUXStructureAgent |
-| **Owner Approval Needed?** | **نعم** — مصدر التصميم وتوجه البصري قرار حساس |
-| **Minimal Usable State** | Module Baseline Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 29_SAMPLE_DATA_AND_SEEDING.md
@@ -1079,16 +812,6 @@ tera-system/design-system/
 ### أهميته
 مفيد جدًا أثناء الاختبار والعرض التجريبي، خاصة في ERP والأنظمة الإدارية.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Late-Closure |
-| **Dependency Profile** | Late-Bound (يعتمد على 06_DATA_MODEL بعد اكتماله) |
-| **Default Maker** | DataDesignAgent أو QAAndAcceptanceAgent |
-| **Default Checker** | DocumentationHandoverAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Draft |
-| **Final Target State** | Locked |
-
 ---
 
 ## 30_USER_MANUAL_DRAFT.md
@@ -1105,16 +828,6 @@ tera-system/design-system/
 
 ### أهميته
 لا يُنشأ مبكرًا غالبًا، لكنه مهم قبل التسليم أو عند تدريب المستخدمين.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Late-Closure |
-| **Dependency Profile** | Late-Bound |
-| **Default Maker** | DocumentationHandoverAgent |
-| **Default Checker** | QAAndAcceptanceAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Draft |
-| **Final Target State** | Locked |
 
 ---
 
@@ -1135,16 +848,6 @@ tera-system/design-system/
 ### أهميته
 مهم في المشاريع التجارية، ويمنع الخلط بين الدعم المجاني والتطوير الجديد.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Late-Closure |
-| **Dependency Profile** | Late-Bound |
-| **Default Maker** | DocumentationHandoverAgent أو TeraClientEngagementAgent |
-| **Default Checker** | Tera |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Draft |
-| **Final Target State** | Locked |
-
 ---
 
 ## 32_PERFORMANCE_REQUIREMENTS.md
@@ -1162,16 +865,6 @@ tera-system/design-system/
 
 ### أهميته
 مفيد في الأنظمة الكبيرة أو التي تحتوي على تقارير وبيانات كثيرة.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Consumer |
-| **Dependency Profile** | Consumer (يعتمد على 03_MODULES, 06_DATA_MODEL) |
-| **Default Maker** | PerformanceAgent |
-| **Default Checker** | SolutionArchitectureAgent |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
 
 ---
 
@@ -1191,16 +884,6 @@ tera-system/design-system/
 ### أهميته
 ضروري في SaaS وERP والأنظمة متعددة الشركات أو الفروع.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Foundation |
-| **Default Maker** | ComplianceAgent |
-| **Default Checker** | SecurityAgent |
-| **Owner Approval Needed?** | **نعم** — هيكل تعدد الشركات/الفروع قرار معماري حساس |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 34_COMPLIANCE_AND_LEGAL_NOTES.md
@@ -1219,16 +902,6 @@ tera-system/design-system/
 ### أهميته
 مهم في التطبيقات المالية، الصحية، التعليمية، الحكومية، أو التي تحفظ بيانات حساسة.
 
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Cross-Cutting Rules |
-| **Dependency Profile** | Consumer (يعتمد على 02_SCOPE, 15_SECURITY) |
-| **Default Maker** | ComplianceAgent |
-| **Default Checker** | SolutionArchitectureAgent |
-| **Owner Approval Needed?** | **نعم** — الامتثال القانوني والتنظيمي قرار حساس |
-| **Minimal Usable State** | System Approved |
-| **Final Target State** | System Approved |
-
 ---
 
 ## 35_ROADMAP_AND_FUTURE_PHASES.md
@@ -1245,16 +918,6 @@ tera-system/design-system/
 
 ### أهميته
 يساعد على ضبط التوقعات ومنع إدخال كل الأفكار في النسخة الأولى.
-
-| Lifecycle Metadata | Value |
-|---|---|
-| **Class** | Planning & Control |
-| **Dependency Profile** | Living |
-| **Default Maker** | RequirementsScopeAgent أو Tera |
-| **Default Checker** | Tera |
-| **Owner Approval Needed?** | لا |
-| **Minimal Usable State** | Draft |
-| **Final Target State** | System Approved |
 
 ---
 
@@ -1339,6 +1002,7 @@ tera-system/design-system/
 | المرحلة | ماذا يفعل تيرا |
 |---|---|
 | **2. Project Decision Formation** | يصنف حجم المشروع ويحدد الملفات المطلوبة مبدئياً في `TERA_PROJECT_DECISION.md` القسم 8 |
+| **بين TCEA و Phase 2 عند الحاجة** | يقرأ Tera الـ `APPLICATION_BLUEPRINT.md` فقط إذا كانت حالته `approved_for_preparation`، ولا يعامل `draft-seeds/` كـ baseline |
 | **3. Project Preparation Planning** | يقرأ الكتالوج، يصنف كل ملف (Required / Conditional / Deferred / Not Required)، يحدد الترتيب والمسؤول، وينتج `project-control/PREPARATION_PLAN.md` |
 | **4. Sub-Agent Generation & Preparation Delegation** | يولد العملاء الفرعيين المطلوبين ويفوّض إنشاء ملفات التحضير المخطط لها فقط |
 | **5. Execution Planning** | يحوّل ملفات التحضير المعتمدة إلى خطة تنفيذ رئيسية وتفصيلية ودفعات TASK-ID مع Pre-Execution Gate |

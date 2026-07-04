@@ -1,4 +1,4 @@
-﻿# AGENT_PERMISSION_MODEL.md
+# AGENT_PERMISSION_MODEL.md
 
 # نموذج صلاحيات العملاء الفرعيين — Sub-Agent Permission Model
 
@@ -208,7 +208,7 @@
 | ReportingAnalyticsAgent | `REPORTING_ANALYTICS_AGENT` | `WRITE_DOCS` | — | يوثق متطلبات التقارير |
 | MaintenanceMigrationAgent | `MAINTENANCE_MIGRATION_AGENT` | `WRITE_DOCS` | — | يخطط للترحيل |
 | ProjectControlAgent | `PROJECT_CONTROL_AGENT` | `WRITE_CONTROL` | — | يتحكم في سجلات المشروع فقط |
-| SoftwareDesignerAgent | `SOFTWARE_DESIGNER_AGENT` | `PLAN_ONLY` | إلى `WRITE_DOCS` عند الحاجة لإنتاج Technical Specification مع مرفقات | ينتج `TECHNICAL_SPECIFICATION.md` فقط — يقرأ ملفات التحضير ولا يكتب كوداً |
+| ExecutionPreparationAgent | `EXECUTION_PREPARATION_AGENT` | `WRITE_DOCS` | إلى `PLAN_ONLY` إذا ما زالت الخطة غير ناضجة | يجهز Task Packages فقط |
 | QualityReviewCoordinatorAgent | `QUALITY_REVIEW_COORDINATOR_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم تقرير فقط | ينسق المراجعة فقط |
 | PlanComplianceReviewAgent | `PLAN_COMPLIANCE_REVIEW_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم التقرير فقط | يراجع توافق الخطة فقط |
 | DomainResearchAgent | `DOMAIN_RESEARCH_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم التقرير | يبحث فقط |
@@ -216,23 +216,13 @@
 
 ### 3.3 عملاء التعامل مع العملاء الخارجيين
 
-> **ملاحظة نظامية:** `ClientDiscoveryAgent` و `ProposalScopeAgent` و `ClientApprovalReviewAgent` و `ChangeControlAgent` أُزيلوا من هذا الجدول. مسؤولياتهم دُمجت في `TeraClientEngagementAgent` (عميل حوكمة مستقل، ليس تابعاً لـ Tera). راجع `tera-system/TeraClientEngagement.md`.
-
 | العميل | المعرف | الصلاحية الافتراضية | هل يمكن رفعها؟ | ملاحظة |
 |---|---|---|---|---|
-| TeraClientEngagementAgent | `CLIENT_ENGAGEMENT_AGENT` | `WRITE_DOCS` | لا — يبقى `WRITE_DOCS` | عميل جلسة حوكسة مستقل (ليس Sub-Agent). يدير دورة حياة الزبون وينتج `TERA_HANDOFF_PACKAGE.md`.
+| ClientDiscoveryAgent | `CLIENT_DISCOVERY_AGENT` | `WRITE_DOCS` | — | يكتب في client-inputs فقط |
+| ProposalScopeAgent | `PROPOSAL_SCOPE_AGENT` | `WRITE_DOCS` | — | يكتب proposal و scope فقط |
+| ClientApprovalReviewAgent | `CLIENT_APPROVAL_REVIEW_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تدوين ملاحظات المراجعة | يراجع فقط |
+| ChangeControlAgent | `CHANGE_CONTROL_AGENT` | `WRITE_DOCS` | — | يوثق طلب التغيير فقط |
 
-### 3.4 عملاء جلسات الحوكمة الرئيسية
-
-هؤلاء يعملون كجلسات OpenCode مستقلة يفتحها المستخدم يدويًا، وليسوا عملاء فرعيين تحت Tera.
-
-| العميل | المعرف | الصلاحية الافتراضية | هل يمكن رفعها؟ | ملاحظة |
-|---|---|---|---|---|
-| Auditor | `AUDITOR_AGENT` | `READ_ONLY` + `bash: ask` for local Git commit after explicit owner approval. No edit/write unless separately authorized for a specific report file. | إلى `WRITE_CONTROL` لتوثيق تقرير محدد فقط | لا push، لا تعديل كود، لا commit قبل قبول المالك الصريح |
-| Monitor | `MONITOR_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` لتسليم تقرير محدد فقط | يراجع توافق الخطة ولا يصحح التنفيذ |
-| Design Reviewer | `DESIGN_REVIEWER_AGENT` | `READ_ONLY` | إلى `RUN_TESTS` للمعاينة/الفحص البصري بعد موافقة المالك | لا ينفذ UI ولا يغير التصميم |
-
-| TeraClientEngagementAgent | "CLIENT_ENGAGEMENT_AGENT" | "WRITE_DOCS" | إلى "READ_ONLY" إذا كان الموقف يحتاج مراجعة فقط، أو إلى "WRITE_CONTROL" لتوثيق سجلات محددة بعد الموافقة | يكتب مسودات وثائق واستبيانات وحزم تسليم فقط. لا يكتب كوداً ولا يعدل تطبيقات ولا يعتمد العقود أو الأسعار النهائية |
 ---
 
 ## 4. رفع الصلاحية أو خفضها
@@ -296,35 +286,6 @@ EngineeringAgent يُستخدم لمراجعة كود فقط → يخفض إلى
 
 ```
 أي رفع أو خفض للصلاحية يُسجل في `DECISIONS_LOG.md`.
-```
-
-### 5.4 صلاحية العرض السريع (Fast Path)
-
-```
-Fast Path مسموح بمهام منخفضة المخاطر فقط.
-الشرط الأساسي: المستوى الثقة (Trust Level) للعميل يجب أن يكون `Trusted`.
-Trust Level 'Restricted' أو 'Suspended' يمنع Fast Path تلقائيًا.
-المستوى Trusted يُعاد تقييمه كل 15 مهمة أو عندما يُنتج 2 'Needs Fix' ضمن 5 مهام.
-```
-
-### 5.3.1 ملاحظة عن Trust Metadata
-
-```text
-Trust Level ≠ Permission Level.
-
-مستوى الثقة يُستخدم لتخطيط التفويض ومتابعة الاعتمادية داخل `SUB_AGENT_STATUS.md`.
-لكنه لا يرفع الصلاحية، ولا يمنح أي قبول تلقائي، ولا يكسر قاعدة:
-No acceptance without physical review.
-```
-
-### 5.3.2 ملاحظة عن Scoped Runtime Override
-
-```text
-Scoped Runtime Override ≠ Permission Escalation.
-
-Runtime Override يضبط حدود التفويض داخل المهمة الحالية فقط.
-أما رفع/خفض الصلاحية فيبقى خاضعاً لقرار صريح وتوثيق مستقل.
-ولا يجوز استخدام Runtime Override لتجاوز الصلاحية أو منح قبول نهائي.
 ```
 
 ### 5.4 صلاحية الأدوات

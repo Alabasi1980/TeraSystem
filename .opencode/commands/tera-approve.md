@@ -6,14 +6,14 @@ description: اعتماد المرحلة أو المهمة الحالية وال
 
 المرحلة أو المهمة الحالية معتمدة مني. نفّذ ما يلي:
 
-1. حدّد مساحة العمل النشطة للتطبيق ثم اقرأ `[active application workspace]/project-control/PROJECT_STATE.md` و`[active application workspace]/project-control/TASK_REGISTRY.md`.
+1. اقرأ `project-control/PROJECT_STATE.md` و`project-control/TASK_REGISTRY.md`.
 2. حدّد المهمة أو المرحلة المعتمدة من السياق.
 3. حدّث حالتها إلى `Accepted` أو `Closed` في:
-   - `[active application workspace]/project-control/TASK_REGISTRY.md`
-   - `[active application workspace]/project-control/tasks/[TASK-ID].md` إذا كانت موجودة
-4. سجّل قرار الاعتماد في `[active application workspace]/project-control/DECISIONS_LOG.md`.
-5. حدّث `[active application workspace]/project-control/PROJECT_STATE.md`.
-6. حدّث `[active application workspace]/project-control/PROJECT_ACTIVITY_LOG.md`.
+   - `project-control/TASK_REGISTRY.md`
+   - `project-control/tasks/[TASK-ID].md` إذا كانت موجودة
+4. سجّل قرار الاعتماد في `project-control/DECISIONS_LOG.md`.
+5. حدّث `project-control/PROJECT_STATE.md`.
+6. حدّث `project-control/PROJECT_ACTIVITY_LOG.md`.
 
 ثم أخبرني بـ:
 

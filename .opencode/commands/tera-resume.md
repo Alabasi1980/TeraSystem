@@ -6,11 +6,10 @@ description: استئناف المشروع من آخر نقطة توقف
 
 اتبع هذه الخطوات بالترتيب الصارم:
 
-1. حدّد مساحة العمل النشطة للتطبيق: `clients/CLIENT-*/applications/APP-*/`.
-2. اقرأ `[active application workspace]/project-control/TERA_ACTIVE_CONTEXT.md` أولاً إذا كان موجوداً.
-3. اقرأ `[active application workspace]/project-control/PROJECT_STATE.md`.
-4. اقرأ آخر 3 سجلات في `[active application workspace]/project-control/PROJECT_ACTIVITY_LOG.md`.
-5. اقرأ `[active application workspace]/project-control/TASK_REGISTRY.md` (نظرة سريعة على آخر المهام).
+1. اقرأ `project-control/TERA_ACTIVE_CONTEXT.md` أولاً إذا كان موجوداً.
+2. اقرأ `project-control/PROJECT_STATE.md`.
+3. اقرأ آخر 3 سجلات في `project-control/PROJECT_ACTIVITY_LOG.md`.
+4. اقرأ `project-control/TASK_REGISTRY.md` (نظرة سريعة على آخر المهام).
 
 لا تقرأ ملفات أخرى إلا إذا وجدت غموضاً أو تعارضاً يستوجب ذلك.
 
@@ -31,6 +30,5 @@ description: استئناف المشروع من آخر نقطة توقف
 
 قواعد:
 - لا تبدأ أي تنفيذ قبل موافقة صريحة.
-- إذا لم تكن مساحة العمل النشطة معروفة، اسألني عن اسم العميل/المالك واسم التطبيق.
-- إذا كان TERA_ACTIVE_CONTEXT.md غير موجود داخل مساحة العمل، أخبرني بذلك واقرأ PROJECT_STATE.md مباشرة.
-- إذا كان PROJECT_STATE.md غير موجود داخل مساحة العمل، هذا مشروع جديد أو غير مجهز — أخبرني وانتظر التعليمات.
+- إذا كان TERA_ACTIVE_CONTEXT.md غير موجود، أخبرني بذلك واقرأ PROJECT_STATE.md مباشرة.
+- إذا كان PROJECT_STATE.md غير موجود، هذا مشروع جديد — أخبرني وانتظر التعليمات.

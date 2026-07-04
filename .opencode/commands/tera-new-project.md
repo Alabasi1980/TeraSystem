@@ -1,43 +1,38 @@
 ---
-description: بدء مشروع جديد — توجيه المستخدم إلى TeraClientEngagementAgent أولاً
+description: بدء مشروع جديد — الدخول في Client Discovery Mode
 ---
 
-أنت Tera Agent. هذا الأمر **لم يعد** يبدأ Client Discovery داخل Tera.
+أنت Tera Agent. نحن نبدأ مشروعاً جديداً من الصفر.
 
-القاعدة التشغيلية الحالية:
+اتبع هذه الخطوات بالترتيب:
 
-- `TeraClientEngagementAgent` يبدأ المشروع الجديد
-- `TeraClientEngagementAgent` يدير Client Discovery + Smart Interview
-- `TeraClientEngagementAgent` ينشئ مساحة العمل `clients/CLIENT-*/applications/APP-*/`
-- `TeraClientEngagementAgent` ينتج `client-engagement/TERA_HANDOFF_PACKAGE.md`
-- `TeraAgent` يبدأ **بعد** استلام الحزمة فقط
+1. تحقق من وجود `project-inputs/01_APPLICATION_IDEA.md` و `project-inputs/02_TECHNICAL_CONTEXT.md`.
+2. إذا كانا موجودين وفيهما محتوى، اقرأهما واعرض ملخص فهمك.
+3. إذا كانا فارغين أو مفقودين، ادخل في **Client Discovery Mode**:
+   - اسألني أسئلة مفتوحة قصيرة عن فكرة التطبيق.
+   - دوّن إجاباتي في الملفين أعلاه.
+   - لا تملأ الملفات بتخمينات — ما أكتبه أنا فقط.
+4. بعد جمع المعلومات الأساسية، اعرض **ملخص الفهم (Understanding Summary)**.
 
-لذلك لا تدخل أنت في Client Discovery Mode، ولا تجمع intake بنفسك، ولا تملأ ملفات الاكتشاف الأولي.
+القواعد الصارمة:
+- لا تبدأ أي تحضير (project-preparation/) قبل اكتمال Intake Gate.
+- لا تختر Technology Profile قبل توثيق الـ Technical Context.
+- لا تنشئ TERA_PROJECT_DECISION.md قبل موافقتي على ملخص الفهم.
+- استخدم `tera-system/TeraApplicationQuestionBank.md` إذا احتجت أسئلة إضافية.
 
-اعرض للمستخدم هذه الرسالة بوضوح:
+اعرض النتيجة بهذا الشكل:
 
-```text
-## New Project Start
-
-بدء المشروع الجديد يتم الآن عبر `TeraClientEngagementAgent` أولاً، وليس عبر TeraAgent مباشرة.
-
-الخطوات الصحيحة:
-1. افتح `TeraClientEngagementAgent`
-2. نفّذ Client Discovery + Smart Interview عند الحاجة
-3. أنشئ مساحة العمل:
-   clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/
-4. أنشئ:
-   client-engagement/TERA_HANDOFF_PACKAGE.md
-5. بعد اعتماد الحزمة، سلّمها إلى TeraAgent
-
-TeraAgent لا يبدأ من raw idea ولا يدخل Client Discovery Mode.
-
-الخطوة التالية المقترحة:
-- افتح جلسة `TeraClientEngagementAgent` الآن لبدء المشروع
 ```
+## Client Discovery — ملخص الفهم
 
-ثم اسأل:
+التطبيق المقترح: [الاسم]
+الوصف المبدئي: ...
+المستخدمون المتوقعون: ...
+سير العمل الرئيسي: ...
+التقنية المقترحة: [إن وجدت]
 
-```text
-هل تريد أن نبدأ الآن عبر TeraClientEngagementAgent؟
+الحالة: Pending / Partial / Complete
+
+الخطوة التالية:
+- [طلب توضيح / اقتراح إضافات / تأكيد الفهم]
 ```

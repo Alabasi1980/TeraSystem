@@ -27,26 +27,6 @@
 
 ---
 
-## 2.5 تذكير التحسين المستمر — Continuous Improvement Reminder
-
-قبل تطبيق البوابة، على TeraAgent أن يستحضر سياسة التحسين المستمر في:
-
-```
-tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
-```
-
-**ملخص التذكير:**
-
-- هذه المنظومة في مرحلة تأسيس وتشغيل أولي.
-- إذا لاحظت أي خلل أو نقص أو غموض أو تضارب أو فرصة تحسين حقيقية — لا تتجاهلها.
-- سجل الملاحظات المهمة في `project-control/AGENT_GAPS_LOG.md`.
-- لا توقف العمل بسبب الملاحظة إلا إذا كان الخلل مؤثراً على سلامة القرار أو جودة التنفيذ.
-- الهدف: تحسين المنظومة، وليس إيقافها.
-
-> عند تفويض Sub-Agent، يُمرر TeraAgent هذا التذكير بشكل مختصر كجزء من تعليمات التفويض.
-
----
-
 ## 3. قاعدة التشغيل الأساسية
 
 قبل التفويض، يجب أن تكون المهمة:
@@ -95,7 +75,7 @@ Purpose:
 
 It does not replace:
 
-- `SoftwareDesignerAgent` — ينتج `TECHNICAL_SPECIFICATION.md` إلزامياً للمهام المؤثرة (Fast Path للمهام Low-risk)
+- `ExecutionPreparationAgent`
 - `SecurityAgent`
 - `QAAndAcceptanceAgent`
 - `ProjectControlAgent`
@@ -148,10 +128,9 @@ tera-system/profiles/
 
 Before evaluating any implementation task for an external client project, Tera must verify:
 
-- client profile exists in `clients/` (من TeraClientEngagementAgent للمشاريع الخارجية).
-- contacts and approval authority are documented (من TCEA للمشاريع الخارجية).
-- client approval package exists under `clients/.../client-approval/` (من TCEA — Tera يتحقق فقط).
-- `TERA_HANDOFF_PACKAGE.md` موجود ومكتمل (بديل للحزمة التقليدية للمشاريع الخارجية).
+- client profile exists in `clients/`.
+- contacts and approval authority are documented.
+- client approval package exists under `clients/.../client-approval/`.
 - approved scope is documented.
 - design direction is approved before final UI work.
 - `Execution Authorization` is approved and recorded before Build Mode.
@@ -170,25 +149,6 @@ Before evaluating any UI / Frontend / layout / style / component task, Tera must
 
 If any required design item is missing, the Pre-Execution Gate result must be `BLOCKED` with reason `Design Source Decision missing` or `Design Gap`.
 
-## 3.4.2 Engineering Governance Gate
-
-Before evaluating any implementation task that touches application code, modules, UI logic, API, validation, permissions, database, shared utilities, tests, or architecture-sensitive files, Tera must apply:
-
-```text
-tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md
-```
-
-Tera must verify:
-
-- Engineering Governance Level is known: Compact / Standard / Full.
-- The affected module, shared area, or core area is clear.
-- The task does not silently mix UI and business logic.
-- The task does not place module-specific logic into `shared/` or generic `utils` without justification.
-- File-size and responsibility risks are considered.
-- Validation, permissions, database, API, and tests are placed according to the project level and active Technology Profile.
-
-If the task would violate the approved engineering governance level, the Pre-Execution Gate result must be `NEEDS_REVISION` or `BLOCKED` until the task is split, corrected, or explicitly approved as a documented exception.
-
 ## 3.5 Direct Execution Exception Policy
 
 الأصل أن Tera لا ينفذ كود التطبيق مباشرة، بل يدير العملاء الفرعيين ويراجع نتائجهم.
@@ -204,93 +164,6 @@ If the task would violate the approved engineering governance level, the Pre-Exe
    - أن يخضع لاحقًا إلى `Post-Execution Review Gate`.
 
 أي تنفيذ كود تطبيقي أو تعديل معماري أو بناء شاشة أو API أو قاعدة بيانات يجب أن يذهب إلى العميل المختص، ولا يسمح لتيرا بتنفيذه مباشرة.
-
-## 3.6 Technical Specification Prerequisite (SoftwareDesignerAgent — إلزامي للمهام المؤثرة)
-
-**SoftwareDesignerAgent** هو عميل التصميم التقني للمهام التنفيذية `TASK-COD-*`. يُفعّل إلزامياً للمهام ذات الأثر، ويُسمح بـ Fast Path للمهام منخفضة الخطورة.
-
-### 3.6.1 مسار SDA الإلزامي — للمهام المؤثرة
-
-**SoftwareDesignerAgent إلزامي (ولا يُتجاوز)** إذا كانت المهمة تمس أيّاً من:
-- Database / Schema / Migration
-- API / Routes / Endpoints
-- Business Logic / Rules
-- Security / Permissions / Auth
-- Workflow / States / Approvals
-- Cross-module behavior
-- Architecture / Project Structure
-- Migration / External Integration
-- UI Structure or UX Design change
-- Financial / Inventory Logic
-
-قبل تشغيل `Pre-Execution Gate` في هذا المسار، يجب أن:
-
-1. يُفعّل **SoftwareDesignerAgent** للمهمة.
-2. يقرأ ملفات التحضير ذات العلاقة.
-3. ينتج `TECHNICAL_SPECIFICATION.md` في:
-   ```text
-   [active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TECHNICAL_SPECIFICATION.md
-   ```
-4. تتضمن المواصفة `Task Engineering Review Decision`:
-   ```text
-   APPROVED_FOR_GATE
-   REVISION_REQUIRED
-   SPLIT_REQUIRED
-   BLOCKED_BY_MISSING_DECISION
-   WRONG_AGENT
-   NEEDS_PRE_REVIEW
-   REJECTED_OUT_OF_SCOPE
-   ```
-5. إذا كانت ملفات التحضير ناقصة → ينتج `Design Gap` بدلاً من التخمين.
-
-القاعدة الأساسية لهذا المسار:
-
-```text
-For impactful implementation tasks,
-Pre-Execution Gate cannot PASS unless Technical Specification is completed
-and its Task Engineering Review Decision is APPROVED_FOR_GATE.
-```
-
-### 3.6.2 مسار Fast Path — للمهام منخفضة الخطورة
-
-يُسمح بـ **Fast Path** (تجاوز SoftwareDesignerAgent) إذا تحققت **كل** الشروط التالية:
-
-| # | الشرط |
-|---|---|
-| 1 | المهمة **Low-risk** حسب تقييم Tera |
-| 2 | تعديل **ملف واحد فقط** (أو ملفان مرتبطان مباشرة) |
-| 3 | **لا DB impact** — لا جداول، لا حقول، لا Migration |
-| 4 | **لا API impact** — لا endpoints جديدة، لا تعديل موجودة |
-| 5 | **لا Business Logic impact** — لا قواعد عمل، لا معادلات |
-| 6 | **لا Security / Permissions impact** |
-| 7 | **لا Financial / Inventory impact** |
-| 8 | **لا Cross-module impact** |
-| 9 | **لا تغيير في بنية UI/UX** — تعديل بسيط فقط |
-| 10 | **Acceptance Criteria واضحة وقابلة للاختبار** |
-| 11 | **Tera يستطيع مراجعة المخرجات مباشرة** |
-
-**أمثلة Fast Path:** typo، label، نص عرض بسيط، CSS بسيط، تحديث توثيق بسيط.
-
-**أمثلة ممنوعة من Fast Path:** إضافة حقل، تعديل validation، تعديل endpoint، تعديل schema، تعديل صلاحية، تعديل workflow، تعديل منطق مالي/مخزني.
-
-عند استخدام Fast Path:
-
-1. **لا يُفعّل SoftwareDesignerAgent** — Tera يقوم بمراجعة تقنية مباشرة.
-2. **Tera يوثق سبب Fast Path** في ملف المهمة: Low-risk assessment، الملفات المتأثرة، عدم وجود DB/API/BL/Security/Cross-module impact، Acceptance Criteria.
-3. **Pre-Execution Gate يُطبّق بشكل طبيعي** — يفحص المهمة مباشرة بدلاً من Technical Specification.
-4. **Post-Execution Review Gate إلزامي** — لا استثناء.
-
-### 3.6.3 الفرق بين المسارين
-
-```text
-المسار العادي (SDA):
-  TASK-COD → SoftwareDesignerAgent → TECHNICAL_SPECIFICATION.md → Pre-Execution Gate → تنفيذ → Post-Execution Review
-
-Fast Path:
-  TASK-COD → Tera Task Review مباشر → Pre-Execution Gate → تنفيذ → Post-Execution Review
-```
-
-_ملاحظة: `Task Engineering Review` سابقاً كان خطوة منفصلة ينفذها `ExecutionPreparationAgent` (أُزيل واستُبدل بـ SoftwareDesignerAgent). في Fast Path، Tera يقوم بالمراجعة مباشرة._
 
 ---
 
@@ -346,13 +219,6 @@ BLOCKED
 | 20 | هل يوجد مسار تراجع آمن إذا فشل التنفيذ؟ | Yes |
 | 21 | إذا كانت المهمة UI/Frontend، هل يوجد Design Source Decision و`28_UI_UX_GUIDELINES.md` عند الحاجة؟ | Yes / N/A |
 | 22 | إذا كانت المهمة UI/Frontend، هل ترتبط بـ `UI_ACCEPTANCE_GATE.md` وتتضمن UI Source / UI Rules / UI Acceptance / Design Gap Handling؟ | Yes / N/A |
-| 23 | إذا كانت المهمة تمس كود التطبيق أو المعمارية أو الموديولات أو API أو Validation أو Permissions أو Database أو Tests، هل تم تطبيق Engineering Governance Gate؟ | Yes / N/A |
-| 24 | هل جميع وثائق التحضير المرتبطة بالمهمة تحتوي على Lifecycle Header (Section 41 من TERA_RUNTIME_TEMPLATES.md)؟ | Yes |
-| 25 | هل حالة كل وثيقة تحضيرية في Lifecycle Header ≥ Module Baseline Approved للموديول المستهدف؟ | Yes |
-| 26 | هل تم التحقق من تطابق الحالة بين PREPARATION_PLAN.md (Section 9) والـ Lifecycle Header في كل ملف؟ | Yes |
-| 27 | إذا رفع SoftwareDesignerAgent Design Gap متعلق بحالة وثيقة (مثل Missing Header أو state < MBA)، هل تم حلّه قبل المرور عبر البوابة؟ | Yes |
-| 28 | هل المهمة تحترم مستوى الحوكمة الهندسية المعتمد Compact / Standard / Full دون over-engineering؟ | Yes / N/A |
-| 29 | هل اكتملت `Technical Specification` من `SoftwareDesignerAgent` وكانت `Task Engineering Review Decision` فيها `APPROVED_FOR_GATE`؟ (إلزامي للمهام المؤثرة — Fast Path لا يحتاجها) | Yes (N/A for Fast Path) |
 
 إذا فشل أي بند، يجب على Tera تصحيح المهمة قبل عرضها.
 
@@ -622,8 +488,6 @@ tera-system/runtime/TERA_RUNTIME_TEMPLATES.md Section 32
 | 29 | هل تم تصنيف أي تعديل خارج Allowed Write Targets إلى `Approved deviation` أو `Needs user approval` أو `Reverted`؟ | Yes / N/A |
 | 30 | هل قرر Tera بوضوح إن كانت المهمة تحتاج مراجعة مستقلة من `ProjectControlAgent` أو `SecurityAgent` أو `QAAndAcceptanceAgent`؟ | Yes |
 | 31 | إذا كانت المهمة UI/Frontend، هل اجتازت `tera-system/design-system/UI_ACCEPTANCE_GATE.md`؟ | Yes / N/A |
-| 32 | إذا كانت المهمة تمس كود التطبيق أو الموديولات أو API أو Validation أو Permissions أو Database أو Tests، هل اجتازت `tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md`؟ | Yes / N/A |
-| 33 | هل توجد مخالفة هيكلية مثل تضخم ملف، خلط UI/Business Logic، سوء استخدام shared/utils، أو غياب اختبار لمنطق مهم دون تسجيل؟ | No |
 
 ### Control Files Review Rule
 
@@ -803,8 +667,6 @@ Cleanup required
 | No duplicate project-control IDs created | PASS / FAIL | ... |
 | Any out-of-target changes classified | PASS / FAIL / N/A | ... |
 | Independent review decision recorded | PASS / FAIL | ... |
-| Engineering Governance Gate passed when relevant | PASS / FAIL / N/A | ... |
-| No file/module/shared-logic maintainability violation | PASS / FAIL / N/A | ... |
 
 Gate Status: PASS / NEEDS_FIX / BLOCKED
 
@@ -883,8 +745,6 @@ tera-system/profiles/[active-profile].md
 | CLI side effects checked | PASS / FAIL | ... |
 | No internal contradiction between constraints and outputs | PASS / FAIL | ... |
 | Allowed Write Targets are narrow | PASS / FAIL | ... |
-| Engineering Governance Gate applied when relevant | PASS / FAIL / N/A | ... |
-| No silent maintainability violation | PASS / FAIL / N/A | ... |
 | Acceptance criteria are testable | PASS / FAIL | ... |
 
 Gate Status: PASS / NEEDS_REVISION / BLOCKED
@@ -915,28 +775,13 @@ Required Action:
 Read project state → Identify next task → Prepare/draft task package → Check CLI side effects → Run checklist → Revise until PASS → Ask approval
 ```
 
-### SoftwareDesignerAgent Preparation Rule
+### ExecutionPreparationAgent Preparation Rule
 
-**SoftwareDesignerAgent** يُفعّل إلزامياً للمهام المؤثرة لينتج `TECHNICAL_SPECIFICATION.md`. للمهام منخفضة الخطورة (Fast Path)، Tera يقوم بالمراجعة التقنية مباشرة دون SDA.
+Tera may use `ExecutionPreparationAgent` to prepare the initial task package before delegation.
+This agent may draft scope, references, write targets, acceptance criteria, risk notes, and reviewer suggestions only.
+Tera must still review that package himself, run the full `Pre-Execution Gate`, and keep final authority over approval, delegation, and closure.
 
-**في المسار العادي (SDA):**
-يقوم الـ Agent بـ:
-- تحليل المهمة وقراءة ملفات التحضير
-- إنتاج التصميم التقني (Screen Elements, Data Bindings, Dependencies, Validation, Side Effects)
-- إنتاج `Task Engineering Review Decision` مدمجة
-- رفع `Design Gap` عند نقص المعلومات
-
-Tera يستعرض الـ Technical Specification قبل تشغيل `Pre-Execution Gate`.
-Tera يحتفظ بالسلطة النهائية على الاعتماد والتفويض والإغلاق.
-
-**في مسار Fast Path:**
-- Tera يقوم بمراجعة تقنية مباشرة
-- لا حاجة لـ Technical Specification
-- Tera يوثق سبب Fast Path في ملف المهمة
-- Pre-Execution Gate يُطبّق بشكل طبيعي
-- Post-Execution Review إلزامي
-
-_ملاحظة: ExecutionPreparationAgent أُزيل. SoftwareDesignerAgent هو البديل للمهام المؤثرة. Fast Path متاح للمهام Low-risk حسب SCP-016._
+لا يعتمد على الذاكرة أو الاستنتاج العام. يعتمد على القائمة والفحص.
 
 ---
 

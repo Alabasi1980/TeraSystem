@@ -1,4 +1,4 @@
-﻿# Tera Runtime Checklists
+# Tera Runtime Checklists
 
 These checklists are official runtime support material for Tera Agent.
 Use them when the compact runtime file requests a verification list.
@@ -10,23 +10,14 @@ If this file conflicts with `.opencode/agents/tera.md`, the active runtime file 
 
 ## 1. First Action in Any New Project
 
-When a new project is being started through the approved TCEA-first flow:
+When the user provides a project idea and technical information:
 
-### Phase 1: Handoff Intake & Validation
-1. Confirm that `TeraClientEngagementAgent` is the owner of Client Discovery and intake. `TeraAgent` does not perform raw discovery directly.
-2. Identify or create the isolated application workspace under `clients/CLIENT-*/applications/APP-*/`.
-2. Read the required system references in `tera-system/`.
-3. **Governance initialization:** Immediately after workspace creation:
-   a. Create `[active application workspace]/project-control/WORKSPACE_GOVERNANCE_MODEL.md` using `TERA_RUNTIME_TEMPLATES.md` Section 40.
-   b. Create or update `[active application workspace]/project-preparation/PROJECT_RULES.md` with governance rules: Auditor/Monitor/Design-Reviewer are independent sessions parallel to Tera, final authority belongs to the owner, no direct agent-to-agent communication.
-   c. Rule: No new project without `WORKSPACE_GOVERNANCE_MODEL.md` + updated `PROJECT_RULES.md`.
-5. Validate `[active application workspace]/client-engagement/TERA_HANDOFF_PACKAGE.md` as the approved intake/handoff source.
-6. If the handoff package is incomplete, return the flow to `TeraClientEngagementAgent` instead of entering Client Discovery directly.
-7. If the user provides project-specific rules, create or update `[active application workspace]/project-preparation/PROJECT_RULES.md`.
-8. If the project has UI, confirm that design preferences and sources were captured during TCEA flow or are explicitly attached in the handoff.
-9. Before leaving Phase 1, verify the handoff package is complete or has a documented approved exception explaining what remains undecided and why it does not block formal preparation.
-10. Record Phase 1 validation, handoff findings, assumptions, and remaining gaps in `project-control/PROJECT_ACTIVITY_LOG.md`.
-11. Update `project-control/PROJECT_STATE.md` and `project-control/TERA_ACTIVE_CONTEXT.md` when present or needed for handoff.
+### Phase 1: Project Intake & Client Discovery
+1. Read the required system references in `tera-system/`.
+2. Check `project-inputs/01_APPLICATION_IDEA.md` and `project-inputs/02_TECHNICAL_CONTEXT.md`.
+3. If intake is incomplete, enter `Client Discovery Mode` and complete intake first.
+4. If the user provides project-specific rules, create or update `project-preparation/PROJECT_RULES.md`.
+5. If the project has UI, collect design preferences and sources: colors, screenshots, Figma, CSS, reference sites, RTL/LTR, brand notes.
 
 ### Phase 2: Project Decision Formation
 1. Create or update `project-preparation/00_PROJECT_INPUTS.md` as a normalized summary derived from `project-inputs/`.
@@ -35,18 +26,14 @@ When a new project is being started through the approved TCEA-first flow:
 ### Phase 3: Project Preparation Planning
 1. Read `TERA_PROJECT_DECISION.md` — verify Decision is `Proceed to Project Preparation`.
 2. Read `tera-system/Tera_Project_Preparation_Files.md` as the file catalog.
-3. Read `tera-system/TeraPreparationDocumentationGovernance.md` for lifecycle taxonomy, maturity states, and maker/checker rules.
-4. Create `project-control/PREPARATION_PLAN.md` using the template in `TERA_RUNTIME_TEMPLATES.md` Section 27:
+3. Create `project-control/PREPARATION_PLAN.md` using the template in `TERA_RUNTIME_TEMPLATES.md` Section 27:
    - Classify each file: Required / Conditional / Deferred / Not Required.
-   - **Assign Lifecycle Class (جديد):** Foundation / Consumer / Derived / Living / Late-Bound.
-   - **Determine Target Maturity (جديد):** Module Baseline Approved / System Approved / Locked.
-   - Determine creation order and dependencies (Foundation first).
-   - **Assign Maker Agent and Checker Agent (جديد) — يجب أن يختلفا.**
-   - Determine Owner-sensitive approval points only (module boundaries, architecture, security, change after baseline).
-   - If UI exists, decide whether `28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/`, or `UIVisualDesignerAgent` are required.
-   - Decide the project Engineering Governance Level: Compact / Standard / Full using `tera-system/engineering-governance/ENGINEERING_BEST_PRACTICES.md`.
-5. **No file creation. No agent generation.**
-6. Present the plan for user approval.
+   - Determine creation order and dependencies.
+   - Assign each file to the appropriate sub-agent.
+    - Identify user approval points.
+    - If UI exists, decide whether `28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/`, or `UIVisualDesignerAgent` are required.
+4. **No file creation. No agent generation.**
+5. Present the plan for user approval.
 
 ### Phase 4: Sub-Agent Generation & Preparation Delegation
 1. Verify `PREPARATION_PLAN.md` is approved. If not → do not start Phase 4.
@@ -56,14 +43,11 @@ When a new project is being started through the approved TCEA-first flow:
 4. If generating: create draft in `generated-agents/opencode/` using `AGENT_GENERATION_TEMPLATE.md`.
 5. For each agent, set:
     - `Allowed Sources` and `Allowed Write Targets`.
-    - **Role (جديد):** Maker (يكتب) أو Checker (يراجع) — لا يمكن أن يتطابق Maker و Checker لنفس الملف.
-    - **Document Lifecycle State Target (جديد):** Draft → Under Cross-Review → Module Baseline Approved — لكل ملف.
     - `Token Budget` (Light / Medium / Strong) and `Context Rules` (Task / Summary / Full).
     - `Forbidden Actions` and `Acceptance Criteria`.
 6. Create `project-control/AGENT_DELEGATION_PLAN.md` using template in `TERA_RUNTIME_TEMPLATES.md` Section 28.
 7. Create or update `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md`.
 8. Present delegation plan for user approval.
-9. **After approval (جديد):** لكل TASK-PREP-XXX، حدد ما إذا كان هذا التفويض للـ Maker (كتابة) أم للـ Checker (مراجعة تقاطعية). سجّل حالة الوثيقة المستهدفة لكل تفويض.
 9. After approval: activate agents in `.opencode/agents/` per current preparation batch.
 10. If activation happens, ask user to restart OpenCode.
 11. Delegate **preparation-file creation only**:
@@ -76,24 +60,14 @@ When a new project is being started through the approved TCEA-first flow:
 13. **This is not application implementation.**
 
 ### Phase 5: Execution Planning
-0. **Document Readiness Gate (جديد — راجع `TeraPreparationDocumentationGovernance.md` §8):**
-    - [ ] لكل ملف تحضير مطلوب للـ Batch الحالي، تأكد من أن حالته ≥ `Module Baseline Approved`.
-    - [ ] إذا كان أي ملف لا يزال `Draft` أو `Under Cross-Review`، لا يُضمّن في الخطة إلا باستثناء موثق.
-    - [ ] المواد المرجعية: `PREPARATION_PLAN.md` (قسم 9: Document Maturity State Tracking).
 1. Run **Execution Readiness Check**:
-    - [ ] All required preparation files complete and approved (≥ Module Baseline Approved).
+    - [ ] All required preparation files complete and approved.
     - [ ] `AGENT_DELEGATION_PLAN.md` approved.
     - [ ] Active Technology Profile confirmed.
-    - [ ] Engineering Governance Level confirmed when application code will be implemented.
     - [ ] No blocking Issues.
     - [ ] Design Source Decision resolved for any incoming UI tasks.
     - [ ] `28_UI_UX_GUIDELINES.md` exists for incoming visual UI tasks.
-    - [ ] Target Version and Release Type are identified for incoming execution tasks.
-    - [ ] `VERSION_REGISTRY.md` is present or intentionally N/A for one-off non-versioned work.
-2. **Module Baseline Consistency Check (جديد):**
-    - [ ] تأكد من أن جميع وثائق التحضير لكل موديول متوافقة (لا تناقض في عدد الجداول، الشاشات، الحقول، المهام، workflows).
-    - [ ] إذا وُجد تناقض، سجّله وأعده إلى Phase 4 للمراجعة التقاطعية.
-3. Create `project-control/PROJECT_MASTER_PLAN.md` using template Section 29:
+2. Create `project-control/PROJECT_MASTER_PLAN.md` using template Section 29:
     - Define execution phases with objectives and dependencies.
     - Include the formal phased roadmap (Core MVP / Extended MVP / Phase 2 / Later / Out of Scope).
     - Define transition conditions between phases.
@@ -111,28 +85,12 @@ When a new project is being started through the approved TCEA-first flow:
     - Apply Orchestration Decision Matrix.
     - Apply Model Capability Gate.
     - Create task file in `project-control/tasks/TASK-COD-XXX.md`.
-    - Add Target Version, Release Type, Version Scope, and Release Notes requirement.
     - Run **Pre-Execution Gate** (checklist from `TeraPreExecutionGate.md`, including Design Governance items for UI tasks).
     - Record `Pre-Execution Gate Result: PASS` in the task file.
-     - For UI tasks, include UI Source / UI Rules / UI Acceptance / Design Gap Handling and link `UI_ACCEPTANCE_GATE.md`.
-     - For implementation tasks that touch code architecture, modules, API, validation, permissions, database, shared utilities, or tests, apply `tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md`.
-7.5 **Create `IMPLEMENTATION_AGENT_STRATEGY.md`** (مطلب إلزامي قبل الانتقال إلى Phase 6):
-    - أنشئ الملف في `project-control/IMPLEMENTATION_AGENT_STRATEGY.md`.
-    - أجب عن جميع الأسئلة الإلزامية:
-      - **Agent: من نحتاج الآن؟** — أي عميل تنفيذي مطلوب للـ Batch الحالي.
-      - **Agent: من نؤجل؟** — أي عميل سنحتاجه في Batches لاحقة.
-      - **Who writes: من ينفذ؟** — لكل TASK-ID في الدفعة.
-      - **Who reviews: من يراجع؟** — لكل TASK-ID، هل يحتاج مراجعة مستقلة أم Tera يراجعه.
-      - **Activation plan: متى يُفعّل كل عميل وبأي صلاحيات؟**
-      - **Exceptions: هل يوجد استثناء للتنفيذ المباشر؟** — إذا كان Tera سينفذ كوداً مباشرة، وثق السبب.
-    - سجّل القرار في `PROJECT_ACTIVITY_LOG.md`.
-8. Present to user: Master Plan + Detailed Plan + Batch Plan + **IMPLEMENTATION_AGENT_STRATEGY.md** + first TASK-IDs.
-9. Wait for user approval before moving to Phase 6:
-    - [ ] Master Plan approved.
-    - [ ] Detailed Plan approved.
-    - [ ] Batch Plan approved.
-    - [ ] **IMPLEMENTATION_AGENT_STRATEGY.md approved.**
-10. **No coding. No UI without Design Source Decision. No TASK-ID without Pre-Execution Gate PASS. No Phase 6 without approved Implementation Agent Strategy.**
+    - For UI tasks, include UI Source / UI Rules / UI Acceptance / Design Gap Handling and link `UI_ACCEPTANCE_GATE.md`.
+7. Present to user: Master Plan + Detailed Plan + Batch Plan + first TASK-IDs.
+8. Wait for user approval before moving to Phase 6.
+9. **No coding. No UI without Design Source Decision. No TASK-ID without Pre-Execution Gate PASS.**
 
 ### Phase 6: Implementation
 
@@ -140,16 +98,11 @@ When a new project is being started through the approved TCEA-first flow:
 1. Select one approved `TASK-COD-XXX` from the approved `EXECUTION_BATCH_PLAN.md`.
 2. Confirm:
    - [ ] Build Mode approved by user.
-   - [ ] **IMPLEMENTATION_AGENT_STRATEGY.md** approved.
    - [ ] Task status is `Approved` or `Assigned`.
    - [ ] Responsible agent is active and appropriate.
-     - [ ] Active Technology Profile is loaded.
-     - [ ] Engineering Governance Gate is applicable or explicitly N/A for the current task.
-    - [ ] `Pre-Execution Gate Result: PASS` exists in the task file.
-    - [ ] User approval exists for the batch or task.
-    - [ ] Target Version / Release Type exists in the task file.
-    - [ ] If Hotfix, no new features are included.
-    - [ ] If using Fast Path, task is truly low-risk and no disqualifier exists.
+   - [ ] Active Technology Profile is loaded.
+   - [ ] `Pre-Execution Gate Result: PASS` exists in the task file.
+   - [ ] User approval exists for the batch or task.
 3. Delegate only the current task package:
    - Task ID.
    - Objective.
@@ -167,15 +120,12 @@ When a new project is being started through the approved TCEA-first flow:
    - Summary, Assumptions, Issues, Decisions Needed, Recommendation.
 6. Record handback in `project-control/tasks/TASK-COD-XXX.md`; it must not remain only in chat.
 7. Run `Post-Execution Review Gate` from `TeraPreExecutionGate.md` before any acceptance/closure.
-   - Include Engineering Governance review for code/module/API/database/validation/permission/test tasks.
 8. Decide final task status: Accepted / Needs Fix / Blocked / Rework Needed / Deferred / Cancelled.
 9. Update `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, and `ISSUES_AND_GAPS.md` when needed.
-9a. Update `VERSION_REGISTRY.md` and `RELEASE_NOTES.md` when the task affects delivered scope, fixed issues, known issues, or deferred items.
 10. Do not open the next task unless the current task is accepted or explicitly handled.
 11. **Self-Diagnosis Checkpoint:** After every 3 closed tasks, record a compact self-diagnosis (see §1.3 in `.opencode/agents/tera.md`) before opening the 4th task.
 12. When all approved implementation tasks are closed or explicitly deferred, prepare Phase 7 entry review.
 13. **No implementation without approved TASK-ID. No closure without Post-Execution Review. No scope expansion. Implementation completion does not equal project closure.**
-14. **Fast Path may reduce overhead only. It does not reduce physical review requirements.**
 
 ### Phase 7: Delivery, Handover & Closure
 
@@ -184,10 +134,7 @@ Entry Gate:
 - [ ] All approved `TASK-COD-*` tasks are Closed / Accepted, or incomplete items are documented as Deferred Items.
 - [ ] No undocumented Critical blockers.
 - [ ] Post-Execution Reviews are complete for all accepted implementation tasks.
-- [ ] Engineering governance findings are closed, accepted as known issues, or deferred with records.
 - [ ] `TASK_REGISTRY.md`, `PROJECT_STATE.md`, and `ISSUES_AND_GAPS.md` are current.
-- [ ] Closure Type is classified: Version / Maintenance / Hotfix / Final Application.
-- [ ] `VERSION_REGISTRY.md` and `RELEASE_NOTES.md` are current when version management is active.
 
 Allowed activities:
 
@@ -196,12 +143,10 @@ Allowed activities:
 - Delivery Readiness Review.
 - Documentation finalization.
 - Release Notes.
-- Version Registry update.
-- Next Version Handoff.
 - Client/User Acceptance.
 - Handover Package.
 - Post-Implementation Review.
-- Version / Maintenance / Hotfix / Final Application Closure Decision.
+- Project Closure Decision.
 
 Forbidden in Phase 7:
 
@@ -217,10 +162,6 @@ Exit Gate:
 - [ ] Final Acceptance Checklist complete.
 - [ ] Release Notes complete.
 - [ ] Project Closure Report complete.
-- [ ] VERSION_REGISTRY.md current, or N/A explicitly justified.
-- [ ] NEXT_VERSION_HANDOFF.md complete unless Final Application Closure is recorded.
-- [ ] Git release tag created/pushed, or explicitly deferred with reason.
-- [ ] GitHub Release created, or explicitly Deferred/N/A with reason.
 - [ ] Client Handover Package complete for external client projects.
 - [ ] Deferred Items documented.
 - [ ] Final closure decision recorded in `PROJECT_ACTIVITY_LOG.md` and `PROJECT_STATE.md`.
@@ -231,24 +172,6 @@ If Phase 7 finds a blocking issue:
 2. Create `TASK-COD-FIX-*`.
 3. Return to Phase 6 for fix + review.
 4. Re-enter Phase 7 after the fix is accepted.
-
-### Version Management Checklist
-
-Before opening a new version or post-release fix:
-
-- [ ] Read `tera-system/runtime/VERSION_LIFECYCLE_PROTOCOL.md`.
-- [ ] Read `project-control/VERSION_REGISTRY.md` if it exists.
-- [ ] Read `project-control/NEXT_VERSION_HANDOFF.md` if it exists.
-- [ ] Classify request: Initial / Hotfix / Patch / Minor / Major.
-- [ ] Confirm affected version and target version.
-- [ ] Confirm user/client approval is needed or already recorded.
-- [ ] For Hotfix: verify no new features are included.
-- [ ] Update `PROJECT_STATE.md` Version State.
-- [ ] Create version-compatible TASK-ID format such as `TASK-COD-v1.0-001` or `TASK-COD-FIX-v1.0.1-001`.
-- [ ] Update `TASK_REGISTRY.md` with Target Version and Release Type.
-- [ ] Plan `RELEASE_NOTES.md` update before closure.
-- [ ] If releasing a version, verify `GIT_REMOTE.md`, inspect git status/diff/log, prepare commit/tag/GitHub Release notes, and ask user approval before push/tag push/GitHub Release creation.
-- [ ] Do not activate Level 3 expansion unless its trigger exists and the user approves it.
 
 ---
 
@@ -395,41 +318,6 @@ No UI Implementation without 28_UI_UX_GUIDELINES.md when visual style matters.
 
 ---
 
-## 6.5 Engineering Governance Checklist
-
-Official reference:
-
-```text
-tera-system/engineering-governance/
-```
-
-Use this checklist before implementation planning, before delegating code tasks, during post-execution review, and before delivery readiness when the project includes application code.
-
-Checklist:
-
-- [ ] Engineering Governance Level selected: Compact / Standard / Full.
-- [ ] Active Technology Profile loaded when stack-specific structure matters.
-- [ ] Module or feature ownership is clear for the task.
-- [ ] Business logic is not planned inside UI components unless explicitly justified.
-- [ ] Module-specific logic is not planned inside `shared/` or generic `utils`.
-- [ ] File-size / responsibility risk is considered for large components, services, schemas, or handlers.
-- [ ] Validation layer is clear: UI only / backend/API / service/domain / database integrity.
-- [ ] Permissions are not frontend-only when security matters.
-- [ ] Database changes are traceable through approved schema/migration task path.
-- [ ] API response/error behavior follows project standards when applicable.
-- [ ] Important business logic has tests or a documented deferral.
-- [ ] Engineering deviations are recorded as task notes, `ISSUES_AND_GAPS.md`, or `DECISIONS_LOG.md`.
-
-Default rule:
-
-```text
-No code implementation task should PASS when it silently violates the approved engineering governance level.
-```
-
-Do not apply Full governance to Compact projects unless Tera and the user explicitly approve the extra structure.
-
----
-
 ## 7. Security Sensitivity Levels
 
 Decide security sensitivity before delegation.
@@ -525,7 +413,7 @@ Must contain at minimum:
 
 Rules:
 - It is a context gateway, not a replacement for detailed files.
-- Update it before leaving any project phase, after closing a significant task, accepting a phase, registering a significant issue/decision, changing the roadmap, running `PlanComplianceReviewAgent`, or performing phase compaction/summary.
+- Update it after closing a significant task, accepting a phase, registering a significant issue/decision, changing the roadmap, running `PlanComplianceReviewAgent`, or performing phase compaction/summary.
 
 ---
 
@@ -674,9 +562,6 @@ Before leaving Application Discovery, confirm:
 - Assumptions are documented.
 - Open questions are documented.
 - Materially important chat-only information has been normalized into official `project-inputs` files.
-- `01_APPLICATION_IDEA.md` and `02_TECHNICAL_CONTEXT.md` are marked `Complete`, or any exception is explicitly documented with status, blocker, owner, and reason it does not block formal preparation.
-- `PROJECT_ACTIVITY_LOG.md` records discovery completion and all material intake/proposal updates.
-- `PROJECT_STATE.md` records the current phase result and next recommended step.
 
 Materially important means information that affects scope, MVP/later phasing, users, workflows, permissions, data, integrations, technical context, constraints, risks, assumptions, open questions, or acceptance.
 
@@ -731,64 +616,3 @@ Before detailed execution planning or `TASK-COD-*` generation, confirm:
 - [ ] The user approved `PROJECT_MASTER_PLAN.md`.
 
 No detailed execution planning or `TASK-COD-*` generation before `PROJECT_MASTER_PLAN.md` approval.
-
----
-
-## 20. Cross-Verification Checklist
-
-Before execution planning (Phase 5) and again before each new batch execution (Phase 6), cross-verify consistency between preparation files and control records.
-
-### Why
-
-During a previous application delivery, a discrepancy was discovered: `EXECUTION_BATCH_PLAN.md` stated a data-model count that did not match `19_DATABASE_DESIGN.md`. This required correcting multiple related files. This checklist prevents such discrepancies from reaching execution.
-
-### When to run
-
-- **Checkpoint A:** After all preparation files are complete (end of Phase 3/4), before execution planning (Phase 5).
-- **Checkpoint B:** Before each new batch execution (Phase 6), after the previous batch may have changed plans.
-- **Checkpoint C:** Before Phase 7 closure, to ensure final records match reality.
-
-### Checklist
-
-| # | Check | Reference Files | What to verify |
-|---|-------|----------------|----------------|
-| 1 | Model/entity count | `06_DATA_MODEL_PREPARATION.md`, `19_DATABASE_DESIGN.md`, `EXECUTION_BATCH_PLAN.md`, `PROJECT_MASTER_PLAN.md` | All files agree on the total number of models/entities/tables. |
-| 2 | Screen count | `07_SCREENS_AND_UI_STRUCTURE.md`, `PROJECT_MASTER_PLAN.md`, `EXECUTION_BATCH_PLAN.md` | Screen count matches across structure definition, roadmap, and batch plan. |
-| 3 | Module/feature count | `03_MODULES_AND_FEATURES.md`, `09_IMPLEMENTATION_PLAN.md`, `PROJECT_MASTER_PLAN.md` | All modules listed in scope appear in implementation plan and master plan. |
-| 4 | User roles | `04_USERS_ROLES_PERMISSIONS.md`, `07_SCREENS_AND_UI_STRUCTURE.md`, `15_SECURITY_AND_ACCESS_CONTROL.md` | Roles defined in security match screen-level role assignments. |
-| 5 | API endpoints | `08_TECHNICAL_ARCHITECTURE.md`, `09_IMPLEMENTATION_PLAN.md` | Endpoint inventory matches implementation scope. |
-| 6 | TASK-ID coverage | `PROJECT_DETAILED_EXECUTION_PLAN.md`, `TASK_REGISTRY.md` | All planned TASK-IDs exist in registry and vice versa. |
-| 7 | Agent-task mapping | `IMPLEMENTATION_AGENT_STRATEGY.md`, `EXECUTION_BATCH_PLAN.md` | Every TASK-ID has an assigned agent and the agent is activated or scheduled. |
-| 8 | Design source vs UI work | `07_SCREENS_AND_UI_STRUCTURE.md`, `PROJECT_MASTER_PLAN.md` | Every UI batch/phase has a Design Source Decision. |
-| 9 | Version scope | `PROJECT_MASTER_PLAN.md`, `VERSION_REGISTRY.md` | Items listed as "in scope" for current version match the roadmap scope. |
-| 10 | Out-of-scope items preserved | `02_SCOPE_AND_BOUNDARIES.md`, `35_ROADMAP_AND_FUTURE_PHASES.md`, `PROJECT_MASTER_PLAN.md` | Items explicitly excluded from scope are not accidentally re-included. |
-
-### Recording
-
-- For Checkpoint A: Record results in `PROJECT_ACTIVITY_LOG.md`.
-- For Checkpoint B: Record results in the task file or batch plan notes.
-- For Checkpoint C: Record results in `DELIVERY_READINESS_REPORT.md`.
-
-### Result rules
-
-```text
-ALL MATCH:  Proceed.
-MISMATCH FOUND:
-  - If clearly wrong value in one file → correct it, log the correction.
-  - If unclear which file is correct → stop, investigate, confirm with user.
-  - If discrepancy affects scope or feasibility → treat as ISSUES_AND_GAPS item.
-  - Must resolve before execution if the mismatch affects the current batch.
-```
-
-### Correction record format
-
-When correcting a cross-verification mismatch, record this in the activity log:
-
-```text
-Cross-Verification Correction
-- Item: [check #]
-- Discrepancy: [file A says X, file B says Y]
-- Correction applied to: [list of files]
-- Resolution: [accepted value]
-- Impact: [none / minor / affected batch plan]
-```

@@ -14,6 +14,10 @@ permission:
 
 # Software Designer Agent
 
+## CONDUCT GATE
+Before any action, you MUST read and pass:
+`tera-system/TERA_AGENT_CONDUCT.md`
+
 Software Designer Agent is a **core technical design sub-agent** within the Tera ecosystem. It is **mandatory for implementation tasks with significant impact** (DB, API, Business Logic, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic) and produces a complete **`TECHNICAL_SPECIFICATION.md`** before the task reaches the Pre-Execution Gate. Low-risk tasks with no side effects may use **Fast Path** (bypass SDA) under defined conditions.
 
 ---

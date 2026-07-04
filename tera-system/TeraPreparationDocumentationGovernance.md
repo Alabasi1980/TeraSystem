@@ -11,10 +11,40 @@ It is the source of truth for **document lifecycle governance**. It applies to a
 | File | Role |
 |---|---|
 | `Tera_Project_Preparation_Files.md` | Catalog of available preparation files |
+| `TeraApplicationBlueprint.md` | Governs blueprint artifacts before formal preparation begins |
 | `TeraAgent.md` (§4.2–4.4) | Phase 3/4/5 workflow using this governance model |
 | `TeraSubAgents.md` | Agent definitions that follow maker/checker rules |
 | `TERA_RUNTIME_TEMPLATES.md` | Templates that include lifecycle fields |
 | `AGENT_ACTIVATION_MATRIX.md` | Activation triggers respecting document readiness |
+
+---
+
+## 1.1 Pre-Baseline Blueprint Artifacts
+
+Before formal preparation begins, `ApplicationBlueprintAgent` may create:
+
+```text
+project-preparation/APPLICATION_BLUEPRINT.md
+project-preparation/BLUEPRINT_OPEN_QUESTIONS.md
+project-preparation/BLUEPRINT_DECISION_CANDIDATES.md
+project-preparation/draft-seeds/*
+```
+
+These are **pre-baseline blueprint artifacts**, not formal preparation baseline documents.
+
+Special rules:
+
+- `APPLICATION_BLUEPRINT.md` starts as `Draft`.
+- Allowed blueprint statuses are:
+  - `draft`
+  - `pending_confirmation`
+  - `approved_for_preparation`
+  - `revision_required`
+  - `blocked_by_unconfirmed_handoff`
+- No preparation agent may consume blueprint artifacts downstream unless `APPLICATION_BLUEPRINT.md` has reached `approved_for_preparation`.
+- `draft-seeds/` are never baseline by themselves and must not be consumed as execution-ready preparation files.
+
+Once blueprinting is approved, Tera uses the blueprint as an upstream advisory source to create formal preparation documents, which then follow the normal lifecycle below.
 
 ---
 

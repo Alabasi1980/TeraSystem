@@ -1,4 +1,4 @@
-﻿# Tera Runtime Protocols
+# Tera Runtime Protocols
 
 These protocols are official runtime support material for Tera Agent.
 Use them when the compact runtime file requests detailed execution behavior.
@@ -69,7 +69,6 @@ Generation rules:
 - Every generated agent must include `MVP Constraints` and `Forbidden Actions` sections.
 - Every generated agent must have a defined **Token Budget** (Light / Medium / Strong) and **Context Rules** (Task Context / Summary Context / Full Context) based on `TeraTokenPolicy.md`.
 - The manifest must document project name, runtime environment, generation date, generated agents, agents not generated with reasons, and deferred/future agents.
-- Use the manifest template in `TERA_RUNTIME_TEMPLATES.md` Section 37 (Generated Agents Manifest).
 - Do not generate all sub-agents by default.
 - Keep the manifest compact. Do not convert it into a long activity log.
 
@@ -190,7 +189,6 @@ Open -> Planned -> In Progress -> Resolved / Deferred / Won't Fix -> Closed
 
 Before delegation:
 
-0. **Verify `IMPLEMENTATION_AGENT_STRATEGY.md` exists and is approved.** If not — do not delegate. Return to Phase 5 to create and approve the strategy first.
 1. Read `project-control/PROJECT_STATE.md`.
 2. Select the next task from the approved implementation plan.
 3. Apply Orchestration Decision Matrix.
@@ -253,7 +251,7 @@ Rules:
 
 ### 4.2 Phase 7 Delivery, Handover, and Closure Protocol
 
-Phase 7 is the official delivery and closure phase for a version, maintenance cycle, hotfix cycle, or final application closure. It is separate from Phase 6 task implementation.
+Phase 7 is the official project-level closure phase. It is separate from Phase 6 task implementation.
 
 Core rules:
 
@@ -283,14 +281,6 @@ Phase 7 output sizing:
 | External client project | All Phase 7 outputs + Client Handover Package |
 | Project with deployment | Include Deployment Readiness inside Delivery Readiness Report or involve `DevOpsAgent` |
 
-Version Management Layer integration:
-
-- Phase 7 must identify Closure Type: `Version Closure`, `Maintenance Closure`, `Hotfix Closure`, or `Final Application Closure`.
-- Version Closure is not automatically Final Application Closure.
-- `VERSION_REGISTRY.md`, `RELEASE_NOTES.md`, and `NEXT_VERSION_HANDOFF.md` must be updated for every delivered version, patch, or hotfix when version management is active.
-- No released version may be modified without opening a Version Cycle, Maintenance Cycle, or Hotfix Cycle. Use `tera-system/runtime/VERSION_LIFECYCLE_PROTOCOL.md` as the source of truth.
-- Level 3 expansion (`project-control/versions/` and version slash commands) stays deferred until large-project or multi-version triggers exist.
-
 Allowed helper agents:
 
 - `QAAndAcceptanceAgent`: Final QA / Smoke / Regression / Acceptance.
@@ -309,29 +299,6 @@ Phase 7 finds blocker
 -> return to Phase 7
 ```
 
-### 4.3 Version Management Layer
-
-Use `tera-system/runtime/VERSION_LIFECYCLE_PROTOCOL.md` before:
-
-- starting a new version after a released version
-- classifying post-release work as hotfix, patch, minor, or major
-- creating versioned `TASK-ID`s
-- updating `VERSION_REGISTRY.md`, `RELEASE_NOTES.md`, or `NEXT_VERSION_HANDOFF.md`
-- deciding whether Phase 7 closes a version, maintenance cycle, hotfix, or the full application
-
-Core rules:
-
-- `v1.0` normally follows the full 7-phase workflow.
-- During Phase 2, Tera proposes the scope of each version based on Phase 1 discovery, MVP classification, client priorities, risks, dependencies, and anti-bloat rules. User/client approval is required before any version scope becomes official.
-- If the user/client asks to move a feature between versions, classify it as `Version Scope Change`: update unreleased target version scope after approval, but never rewrite a released version; use Patch/Hotfix/Minor/Major instead.
-- `v1.1`, `v2.0`, and later versions start from an updated decision/scope cycle, not from blank discovery unless the product direction changed materially.
-- Hotfix cycles must not include new features.
-- Patch cycles are for small safe fixes/improvements only.
-- Minor/Major releases require explicit scope decision and user/client approval.
-- Every task should record `Target Version`, `Release Type`, and version scope status.
-- Prefer version-compatible task IDs such as `TASK-COD-v1.0-001` and `TASK-COD-FIX-v1.0.1-001`.
-- For release tagging and GitHub Releases, Tera handles git status/diff/log review, local commit, remote verification, tag creation, tag push after approval, GitHub Release creation after approval, and logging. The user approves push/tag/release actions; Tera manages repository details.
-
 ---
 
 ## 5. Orchestration Decision Matrix
@@ -339,9 +306,7 @@ Core rules:
 | If the task... | Then default to... |
 |---|---|
 | Small, direct, low-risk, 1-2 files | Tera manages directly |
-| Impactful task (DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory) | **`SoftwareDesignerAgent`** (إلزامي للمهام المؤثرة) |
-| Low-risk task (typo, label, CSS, simple doc update — no sensitive impact) | **Fast Path** (Tera direct review — SDA bypassed, Pre-Execution Gate remains) |
-| Multi-agent, >3 files, Backend+Frontend, scope-drift prone, or needs detailed acceptance criteria / write targets | `SoftwareDesignerAgent` (حتى لو كانت المهمة Low-risk ظاهرياً — التعقيد يستدعي SDA) |
+| Multi-agent, >3 files, Backend+Frontend, scope-drift prone, or needs detailed acceptance criteria / write targets | `ExecutionPreparationAgent` |
 | Updates project-control records, closes/creates Issues, adds Decisions, modifies PROJECT_STATE.md / TERA_ACTIVE_CONTEXT.md, or involves multiple agents | `ProjectControlAgent` |
 | Touches Auth, JWT, Cookies, Middleware, Proxy, API Routes, Server Actions, Permissions, Role checks, Data Mutations, Secrets, or Config | Determine Security Sensitivity Level before delegation |
 | Contains UI, Workflow, main-screen behavior, or important acceptance criteria | Run `QAAndAcceptanceAgent` |
@@ -371,10 +336,7 @@ Deviation rule:
 
 Anti-over-delegation rule:
 - Helper agents are used by trigger, not by habit. Do not route every small task through a long helper-agent chain unless complexity clearly justifies it.
-- Bad default pattern: `Tera -> [All agents] -> EngineeringAgent -> FrontendAgent -> SecurityAgent -> QAAndAcceptanceAgent -> ProjectControlAgent -> QualityReviewCoordinatorAgent`
-
-ملاحظة: `SoftwareDesignerAgent` أصبح إلزامياً للمهام المؤثرة — لكن هذا لا يعني إضافة SecurityAgent + QA + ProjectControl + QualityReview لكل مهمة صغيرة. للمهام Low-risk: Fast Path مسموح.
-(سابقاً كان الـ Bad pattern يشير إلى ExecutionPreparationAgent الذي أُزيل واستُبدل بـ SoftwareDesignerAgent).
+- Bad default pattern: `Tera -> ExecutionPreparationAgent -> EngineeringAgent -> FrontendAgent -> SecurityAgent -> QAAndAcceptanceAgent -> ProjectControlAgent -> QualityReviewCoordinatorAgent`
 
 Smallest Sufficient Orchestration Rule:
 ```text
@@ -382,45 +344,12 @@ Always choose the smallest sufficient orchestration level that preserves safety,
 ```
 If the task is small and safe, manage it directly. If it grows more complex or risky, escalate — do not continue with an overly optimistic initial classification.
 
-### 5.0 Fast Path for Low-Risk Tasks
-
-`Fast Path` is allowed only for low-risk tasks where the goal is to reduce orchestration overhead,
-not to reduce safety or acceptance discipline.
-
-Eligibility indicators:
-- 1-2 files, or very small scoped change
-- no Auth / Secrets / Permissions / Middleware / JWT / Config risk
-- no DB schema / migration / seed changes
-- no architecture change
-- no external integration change
-- no combined UI + API + data mutation bundle
-- one primary writer only
-- easy physical review after execution
-
-Disqualifiers:
-- Medium/High security sensitivity
-- repeated `Needs Fix` pattern on similar task type
-- `Restricted` or `Suspended` trust level
-- recent intervention (`Stop`, `Restrict`, `Suspend`) on the assigned agent
-- unclear scope, unclear acceptance, or more than one major concern area
-
-Rules:
-- Fast Path may reduce preparation overhead only.
-- Fast Path does **not** remove `TASK-ID`, `Allowed Write Targets`, `Acceptance Criteria`, `Handback`, or `Post-Execution Review`.
-- Fast Path does **not** remove user approval where already required.
-- Tera must record whether the task used `Fast Path: Yes / No` and why.
-- The invariant remains absolute:
-
-```text
-No acceptance without physical review.
-```
-
 ### Escalation Ladder
 
 The initial classification is not final. If Tera discovers during preparation or execution that the task is larger, riskier, or more complex than initially estimated, it must escalate to the appropriate level instead of continuing with stale assumptions.
 
 Escalation examples:
-- Direct task (impactful) → needs `SoftwareDesignerAgent` (إلزامي للمهام المؤثرة — Fast Path مسموح للمهام Low-risk)
+- Direct task → needs `ExecutionPreparationAgent`
 - Low Security → Medium or High Security
 - Simple UI → needs `QAAndAcceptanceAgent`
 - Normal task → needs `ProjectControlAgent`
@@ -431,7 +360,7 @@ If escalation changes scope, risk, or requires a new decision, document the reas
 
 Helper agent authority limits:
 
-- `SoftwareDesignerAgent`: produces `TECHNICAL_SPECIFICATION.md` for impactful tasks (mandatory for DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory). Fast Path allowed for low-risk tasks. Does not decide scope, timing, delegation, approval, acceptance, or closure. Does not write code. Raises Design Gap when preparation files are insufficient.
+- `ExecutionPreparationAgent`: prepares task packages only. Does not decide scope, timing, delegation, approval, acceptance, or closure.
 - `ProjectControlAgent`: manages control records, checks traceability. Does not decide final status changes.
 - `QualityReviewCoordinatorAgent`: coordinates review scope and consolidates findings. Does not decide task/issue/deferred status. Does not write code or change designs.
 - `PlanComplianceReviewAgent`: reviews roadmap compliance. Does not open tasks/issues/decisions. Does not change status.
@@ -1259,7 +1188,7 @@ Tera maintains a lightweight file at:
 project-control/SUB_AGENT_STATUS.md
 ```
 
-Purpose: Track sub-agent usage, load, quality, trust metadata, update need, and potential merge or deactivation.
+Purpose: Track sub-agent usage, load, quality, update need, and potential merge or deactivation.
 
 ### Rules
 
@@ -1267,104 +1196,6 @@ Purpose: Track sub-agent usage, load, quality, trust metadata, update need, and 
 - `ProjectControlAgent` may only help collect data or update the file when Tera explicitly requests it.
 - The file must remain compact and non-archival. It must not become a copy of `PROJECT_ACTIVITY_LOG.md`.
 - Do not issue a strong judgment (e.g. `Needs Update`, `Overloaded`, `Candidate for Merge`) based on a single incident unless the problem is clearly structural and obvious.
-- `SUB_AGENT_STATUS.md` is the operational source of truth for **Trust Metadata** inside the active project.
-
-### Trust Metadata
-
-Every active or recently used sub-agent may carry a compact `Trust Level` in `SUB_AGENT_STATUS.md`.
-
-Approved trust levels:
-
-| Trust Level | Meaning |
-|---|---|
-| `New` | New or not yet proven in this project |
-| `Observed` | Used, but still needs close observation |
-| `Verified` | Produced acceptable outputs repeatedly under review |
-| `Trusted` | Reliable enough for low-risk fast-path delegation decisions, **without reducing mandatory acceptance review** |
-| `Restricted` | Has issues, drift, or recurring mistakes; narrow scope or review more strictly |
-| `Suspended` | Do not delegate until Tera reactivates explicitly |
-
-### Intervention Logging
-
-Tera may record explicit operational interventions against a sub-agent when the current task, current delegation scope, or current trust state needs adjustment.
-
-Approved intervention types:
-
-| Intervention | Meaning |
-|---|---|
-| `Stop` | Stop the current delegated work or halt the current agent path immediately |
-| `Narrow` | Narrow `Allowed Write Targets`, scope, or context window |
-| `Restrict` | Increase review strictness or downgrade trust for future delegation |
-| `Suspend` | Remove the agent from delegation until explicit reactivation |
-| `Reinstate` | Return a previously restricted/suspended agent to controlled use |
-
-Rules:
-
-- No intervention may be applied silently.
-- Every intervention must have a reason and a recorded effect.
-- `Intervention Type` is not itself an acceptance decision.
-- `Suspend` or `Restrict` may influence future delegation, not current task acceptance.
-- `Emergency Response Protocol` remains the source of truth for Red/Black incidents.
-- Use intervention logging for operational control; use emergency protocol for severe damage/risk.
-
-### Scoped Runtime Override
-
-`Scoped Runtime Override` allows Tera to adjust part of the active delegation contract for the
-current task without restarting the whole delegation flow from zero, but only within strict limits.
-
-Allowed runtime override actions:
-
-| Override Type | Meaning |
-|---|---|
-| `Narrow Targets` | reduce `Allowed Write Targets` |
-| `Expand Targets (In Scope)` | expand targets only within the already approved task scope |
-| `Reduce Context` | narrow files/context passed to the agent |
-| `Escalate Review` | add stronger review requirements after execution |
-| `Freeze Current Agent Path` | stop the current agent path and hold the task for Tera decision |
-| `Reassign Writer` | move current task writing responsibility to another approved agent |
-
-Forbidden runtime override actions:
-
-- changing the approved scope of the task
-- bypassing `Pre-Execution Gate` or `Post-Execution Review Gate`
-- turning acceptance into a trust-based decision
-- silently raising dangerous permissions without explicit decision/logging
-- converting a simple task into architecture/security/database scope without revisiting planning
-
-Decision rule:
-
-- If the change only adjusts execution boundaries inside the approved task, `Scoped Runtime Override` is allowed.
-- If the change alters the nature of the task itself, stop the task and return to planning, re-scoping, or re-delegation.
-
-Logging rule:
-
-- Every runtime override must record:
-  - override type
-  - reason
-  - what changed
-  - effect on the current task
-  - whether extra approval was needed
-
-- Record it in the task file, and when operationally important also in:
-  - `PROJECT_ACTIVITY_LOG.md`
-  - `SUB_AGENT_STATUS.md`
-
-### Critical rules for Trust Metadata
-
-- **Trust Level is not a permission level.** Permissions remain governed by `AGENT_PERMISSION_MODEL.md`.
-- **Trust Level is not an activation trigger.** Activation remains governed by `AGENT_ACTIVATION_MATRIX.md`.
-- **Trust Level is not acceptance authority.**
-- **No Trust Level may bypass Post-Execution Review Gate.**
-- **Trust Level re-evaluation / Decay Rule:** أي مستوى Trust من `Verified` أو `Trusted` يجب إعادة تقييمه إذا:
-  - أنتج 2 `Needs Fix` ضمن 5 مهام متتالية، أو
-  - مرّت 15 مهمة دون مراجعة الحالة.
-  - مستوى `Trusted` ضروري لاعتبار المهمة للـ `Fast Path`.
-- The following invariant remains absolute:
-
-```text
-No acceptance without physical review.
-Tera must open the changed files and verify the actual implementation before acceptance.
-```
 
 ### When to update
 
@@ -1373,73 +1204,25 @@ Tera must open the changed files and verify the actual implementation before acc
 - When adding, activating, or deactivating an agent.
 - When an error repeats or visible pressure appears on an agent.
 - Before starting a new medium or large project.
-- After an emergency stop, forced narrowing, or repeated `Needs Fix` pattern.
-- After repeated successful execution under full review.
-- **After Trust Level re-evaluation / Decay Rule triggers.**
-
-### Mandatory Separation within Evaluation
-
-- `Status` = agent's operational state within the project.
-- `Quality` = output quality of the agent.
-- `Trust Level` = current reliability judgment.
-- `Last Intervention` = latest explicit Tera action on the agent.
-- `Last Event` = latest runtime event (Intervention, Override) — for quick status.
-- `Decision / Notes` = Tera's decisions about the agent.
-
-**Rules reference:** `TeraSubAgents.md` §3.5 (Trust Metadata & Intervention Safety Rules)
-- When Tera applies `Stop`, `Narrow`, `Restrict`, `Suspend`, or `Reinstate`.
 
 ### Mandatory separation within evaluation
 
 - `Status` = agent's operational state within the project.
 - `Quality` = output quality of the agent.
-- `Trust Level` = current reliability judgment for future delegation planning.
-- `Intervention` = explicit operational action taken by Tera on the agent.
 - `Decision / Notes` = what Tera decides about the agent.
 
 If the review produces an important administrative decision, it may also be recorded in `DECISIONS_LOG.md`.
-
-### Minimum structure for `SUB_AGENT_STATUS.md`
-
-Each tracked agent should include at minimum:
-
-```text
-Agent
-Status
-Quality
-Trust Level
-Last Intervention
-Last Basis / Evidence
-Decision / Notes
-```
-
-### Logging locations
-
-- `SUB_AGENT_STATUS.md` = current compact agent state, including latest intervention.
-- `PROJECT_ACTIVITY_LOG.md` = timestamped event trail of important interventions.
-- task file = use when the intervention is tied to a specific `TASK-ID`.
 
 ---
 
 ## 18. Client Discovery and Smart Interview Protocol
 
-> **ملاحظة نظامية:** بعد إعادة تنظيم المنظومة، هذا البروتوكول يُستخدم أساساً بواسطة
-> **TeraClientEngagementAgent** لإدارة Client Discovery و Smart Interview للمشاريع
-> الخارجية والداخلية عبر Majed.
->
-> **TeraAgent لا يبدأ من Discovery raw idea**، بل يبدأ بعد استلام Handoff Package
-> معتمد من TCEA ثم ينتقل إلى Phase 2 — Project Decision.
->
-> راجع `tera-system/TeraClientEngagement.md` و `tera-system/TeraAgent.md §1.2` و `§4.0`.
-
-Purpose: Guide the responsible agent through the complete pre-intake and intake process — from first client conversation through structured questioning to confirmed understanding — before any formal handoff to TeraAgent or formal preparation begins.
-
-**Ownership rule:** This section is executed by `TeraClientEngagementAgent` for both external and internal projects. `TeraAgent` does not perform raw Client Discovery directly; it validates the approved handoff package and starts from Phase 2.
+Purpose: Guide Tera through the complete pre-intake and intake process — from first client conversation through structured questioning to confirmed understanding — before any formal preparation or implementation begins.
 
 The process has two stages:
 
 ```text
-Client Discovery Mode (TCEA)  ← Open conversation, understanding, confirmation
+Client Discovery Mode  ← Open conversation, understanding, confirmation
        │
 Project Intake Gate   ← Readiness check (TeraProjectIntakePolicy.md)
        │
@@ -1450,7 +1233,7 @@ Smart Interview (if needed) ← Structured adaptive questioning
 
 ### Stage 1: Client Discovery Mode
 
-This is the **first conversation** with the client (or Majed describing the client's idea). It is a **dialogue, not a questionnaire**. The responsible runtime owner here is `TeraClientEngagementAgent`.
+This is the **first conversation** with the client (or Majed describing the client's idea). It is a **dialogue, not a questionnaire**.
 
 #### Phase 0: Open Listening
 
@@ -1460,7 +1243,7 @@ Start with a simple, open question — do not interrupt or launch into structure
 "صف لي التطبيق الذي تريده بكلامك، وما المشكلة التي تريد حلها؟"
 ```
 
-Let the client explain freely. TCEA listens and notes:
+Let the client explain freely. Tera listens and notes:
 - the core idea
 - the problem being solved
 - the expected users
@@ -1472,7 +1255,7 @@ Let the client explain freely. TCEA listens and notes:
 
 #### Phase 1: Understanding Summary (First Confirmation)
 
-After the client finishes explaining, TCEA produces a concise summary:
+After the client finishes explaining, Tera produces a concise summary:
 
 ```
 فهمي الأولي:
@@ -1492,7 +1275,7 @@ Then ask:
 
 #### Decision: Proceed or Discovery Continues
 
-After confirmation, TCEA assesses:
+After confirmation, Tera assesses:
 - Is the application picture **clear enough** that I could describe it to another developer? → Proceed to **Project Intake Gate**.
 - Are there **major gaps** that make the idea ambiguous? → Proceed to **Smart Interview** (Stage 2).
 - Is the client unsure about **most aspects**? → Proceed to **Smart Interview**, starting with lightweight essential questions.
@@ -1586,7 +1369,7 @@ The proposal captures:
 
 Generate the proposal as a `.html` file under:
 - `clients/.../client-approval/` for external client projects
-- `clients/.../client-approval/` for internal projects as well
+- `project-inputs/` for internal projects
 
 **Do not proceed to formal preparation until the client approves this proposal.** After approval, the proposal becomes the official reference for scope — any change request is measured against it.
 
@@ -1597,8 +1380,8 @@ Generate the proposal as a `.html` file under:
 A core principle throughout the entire process:
 
 ```text
-When the client does not know an answer, TCEA does not stop.
-TCEA proposes a reasonable default — but records it as an assumption,
+When the client does not know an answer, Tera does not stop.
+Tera proposes a reasonable default — but records it as an assumption,
 not as a final decision.
 ```
 
@@ -1683,85 +1466,3 @@ Assumptions that are marked `Needs confirmation` must be reviewed:
 - After the proposal is approved, `TeraProjectIntakePolicy.md` readiness checks apply.
 - The `Application Discovery Protocol` (Section 13) is now a downstream step — run after the proposal is approved.
 - `Client Approval Workflow Protocol` (Section 14) remains unchanged for external clients — the proposal feeds into Gate 2 (Scope Approval).
-
----
-
-## 19. Agent Deactivation Protocol
-
-### Purpose
-
-Sub-agents that are no longer needed must be deactivated cleanly to prevent:
-- Confusion with new project agents.
-- Accidental use of old agents.
-- Orphaned active copies in `.opencode/agents/`.
-- Overlapping or conflicting agent scopes between projects.
-
-### When to deactivate
-
-Deactivate a sub-agent when any of these conditions is met:
-
-- The application project is complete and the agent is application-specific.
-- The agent has been superseded by a more specialized agent (e.g., generic engineering → foundation engineering).
-- The agent's phase is complete and reactivation is not expected soon.
-- The agent was created for a specific task that is now closed and the user approved deactivation.
-- A governance decision (e.g., `IMPLEMENTATION_AGENT_STRATEGY.md` Option B) requires disabling a generic agent.
-- Tera explicitly decides the agent is no longer safe or needed.
-
-### Deactivation procedure
-
-```
-Step 1: Decision
-  - Tera decides to deactivate and records the reason.
-  - User approval is not required for routine deactivations unless the agent is currently executing a task.
-
-Step 2: Disable the active copy
-  - Open `.opencode/agents/[agent-name].md`.
-  - Add or set `disable: true` in the frontmatter.
-  - Do NOT delete the active copy unless the agent will never be used again.
-  - Deleting is riskier than disabling — disabled agents stay available for audit.
-
-Step 3: Update the manifest
-  - In `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md`, set the agent Status to `Disabled`.
-  - Record the deactivation date and reason.
-
-Step 4: Update control records
-  - In `project-control/PROJECT_STATE.md`, remove the agent from "Active sub-agents" or move to "Inactive sub-agents".
-  - In `project-control/PROJECT_ACTIVITY_LOG.md`, record:
-    ```
-    ## [YYYY-MM-DD HH:mm] - AGENT_DEACTIVATED
-    - Agent: [name]
-    - Reason: [reason]
-    - Replacement: [name or None]
-    ```
-
-Step 5: Notify user
-  - Inform the user that the agent has been deactivated.
-  - If the user is currently in the same OpenCode session, ask them to restart OpenCode for the change to take effect.
-
-Step 6: Cleanup (optional — for completed projects)
-  - When the project is fully closed, the generated agent file in `generated-agents/opencode/` may be removed as part of Phase 7 closure, but only if explicitly approved.
-
-Step 7: Cross-project cleanup
-  - When closing a full application, check `.opencode/agents/` for any remaining application-specific agents.
-  - Deactivate or remove them before starting a new application project.
-  - Record in `PROJECT_CLOSURE_REPORT.md` under "Cleanup actions".
-```
-
-### Deactivation vs. deletion
-
-| Action | Meaning | When to use |
-|--------|---------|-------------|
-| **Disable** (`disable: true`) | Agent stays in `.opencode/agents/` but is ignored by OpenCode. Safe, reversible. | Default deactivation method. |
-| **Remove** (delete file) | Agent is permanently removed from `.opencode/agents/`. Generated draft remains in `generated-agents/opencode/`. | Only when the project is fully closed AND the agent is application-specific. |
-| **Delete both** | Remove active copy AND generated draft. | Only with explicit user approval, after project closure and final audit. |
-
-### Cross-project rule
-
-When a new application starts:
-
-1. The `.opencode/agents/` folder MUST be checked for leftover application-specific agents.
-2. Any agent whose scope, allowed write targets, or purpose refers to a closed application must be deactivated.
-3. `tera.md` and system agents (auditor, monitor, design-reviewer) must NEVER be deactivated.
-4. This check is recorded in the new application's `PROJECT_ACTIVITY_LOG.md` as `CROSS_PROJECT_AGENT_CLEANUP`.
-
-> **Rule:** A new application must not start with leftover agents from a previous application in `.opencode/agents/`.

@@ -1,4 +1,4 @@
-﻿# AGENT_ACTIVATION_MATRIX.md
+# AGENT_ACTIVATION_MATRIX.md
 
 # مصفوفة تفعيل العملاء الفرعيين — Sub-Agent Activation Matrix
 
@@ -25,7 +25,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | `RISK_SIGNAL` | مؤشر خطر | بيانات حساسة → SecurityAgent |
 | `USER_REQUEST` | طلب مباشر من المستخدم | "أضف Domain Research" → DomainResearchAgent |
 | `EXTERNAL_FACTOR` | عامل خارجي | مشروع عميل خارجي → Client Engagement Agents |
-| `REVIEW_NEEDED` | حاجة مراجعة | بعد عدة مهام تنفيذية، أو ظهور مؤشرات technical debt / maintainability drift → QualityReviewCoordinatorAgent / Auditor / Monitor |
+| `REVIEW_NEEDED` | حاجة مراجعة | بعد عدة مهام تنفيذية → QualityReviewCoordinatorAgent |
 | `PHASE_7_GATE` | بداية Phase 7 | QAAndAcceptanceAgent + DocumentationHandoverAgent |
 
 ---
@@ -60,7 +60,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | ReportingAnalyticsAgent | `REPORTING_ANALYTICS_AGENT` | `COMPLEXITY_SIGNAL`: تقارير كثيرة، Dashboard، KPIs، تصدير | 5–6 | إذا كان التطبيق لا يحتوي تقارير أو لوحات بيانات | `13_REPORTS_AND_DASHBOARDS.md` |
 | MaintenanceMigrationAgent | `MAINTENANCE_MIGRATION_AGENT` | `EXTERNAL_FACTOR`: نظام قائم، ترحيل بيانات، Legacy | 5–6–7 | إذا كان المشروع جديدًا بالكامل بدون ترحيل | `31_MAINTENANCE_AND_SUPPORT.md` أو `00_PROJECT_INPUTS.md` |
 | ProjectControlAgent | `PROJECT_CONTROL_AGENT` | `REVIEW_NEEDED`: عند الحاجة لتحديث سجلات `project-control` أو فحص اتساق | 4–5–6–7 | إذا لم تكن هناك حاجة لتحديث سجلات متعددة أو فحص اتساق | ملفات project-control الحالية |
-| SoftwareDesignerAgent | `SOFTWARE_DESIGNER_AGENT` | `PHASE_GATE` + `RISK_ACTIVATED`: إلزامي للمهام المؤثرة (DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory). Fast Path مسموح للمهام منخفضة الخطورة حسب شروط SCP-016 | 5 | **عندما تكون المهمة Low-risk** ولا تمس أي مجال حساس — يُتجاوز عبر Fast Path مع توثيق السبب | ملفات التحضير المعتمدة + سياق المهمة من Tera |
+| ExecutionPreparationAgent | `EXECUTION_PREPARATION_AGENT` | `COMPLEXITY_SIGNAL`: مهمة متعددة العملاء، أو تتجاوز 3 ملفات، أو تحمل مخاطر | 5–6 | إذا كانت المهمة بسيطة ويمكن لـ Tera تجهيز Task Package مباشرة | `TASK-ID` المقترح + ملفات التحليل المعتمدة |
 | QualityReviewCoordinatorAgent | `QUALITY_REVIEW_COORDINATOR_AGENT` | `REVIEW_NEEDED`: قبل مرحلة تنفيذ كبيرة، أو بعد عدة مهام، أو قبل Release | 5–6–7 | إذا كان المشروع صغيرًا والمهام قليلة ويمكن لـ Tera متابعتها يدويًا | `PROJECT_STATE.md` + `TASK_REGISTRY.md` |
 | PlanComplianceReviewAgent | `PLAN_COMPLIANCE_REVIEW_AGENT` | `REVIEW_NEEDED`: نهاية Phase، أو بعد دفعة مهام رئيسية، أو قبل قبول MVP | 5–6–7 | إذا كان التنفيذ متوافقًا بوضوح مع الخطة ولا توجد انحرافات ظاهرة | `PROJECT_MASTER_PLAN.md` + `TASK_REGISTRY.md` |
 | DomainResearchAgent | `DOMAIN_RESEARCH_AGENT` | `COMPLEXITY_SIGNAL / USER_REQUEST`: مجال غير مألوف، أو حاجة بحث خارجي | 1–2–3 | إذا كان المجال معروفًا بالكامل أو المستخدم قدم جميع المعلومات المطلوبة | Domain Research Brief من Tera |
@@ -70,33 +70,12 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 
 ### 2.3 عملاء التعامل مع العملاء الخارجيين
 
-> **ملاحظة نظامية:** `ClientDiscoveryAgent` و `ProposalScopeAgent` و `ClientApprovalReviewAgent` و `ChangeControlAgent` أُزيلوا من هذا الجدول. مسؤولياتهم دُمجت في `TeraClientEngagementAgent` (عميل حوكمة مستقل — راجع §2.4). راجع `tera-system/TeraClientEngagement.md`.
-
-### 2.3.1 Checker Activation After Maker Handback (جديد — حوكمة الوثائق)
-
-بعد أن يكمل Maker (عميل إنتاج ملفات التحضير) مهمته ويسلّم Handback إلى Tera، يُفعّل **Checker** وفق القواعد التالية:
-
-| Trigger | Action | Checker Agent |
-|---|---|---|
-| `TASK-PREP-Handback` من Maker مع Lifecycle Header وحالة = `Draft` | Tera يسلّم الملف إلى Checker للمراجعة التقاطعية | كما هو محدّد في `PREPARATION_PLAN.md` (عمود Checker Agent) |
-| `Checker Handback` مع PASS | Tera يراجع النتائج، يكتشف التناقضات، ويقرر ترقية الحالة إلى `Under Cross-Review` ثم إلى `MBA` أو إعادتها إلى `Draft` | — |
-| `Checker Handback` مع FAIL | Tera يعيد الملف إلى Maker مع documented findings ويعيد الحالة إلى `Draft` | — |
-
-**قواعد:**
-- Checker يجب أن يكون **عميلاً مختلفاً** عن Maker (لا يمكنه مراجعة نفسه).
-- لا يمكن تجاوز Checker — أي ملف تحضيري يجب أن يمر عبر Cross-Review قبل الوصول إلى `Module Baseline Approved`.
-- إذا لم يُحدّد Checker في `PREPARATION_PLAN.md`، Tera هو المسؤول عن المراجعة (يعمل كـ Checker مؤقت).
-
-### 2.4 عملاء جلسات الحوكمة الرئيسية
-
-هؤلاء لا يخضعون للتفعيل التلقائي بواسطة Tera. المالك يفتحهم أو يطلب عملهم يدويًا حسب مجريات المشروع.
-
-| العميل | المعرف | Trigger التشغيل | المرحلة | متى لا يعمل | الحد الأدنى من المدخلات |
+| العميل | المعرف | Trigger التفعيل | المرحلة | متى لا يُفعّل | الحد الأدنى من المدخلات |
 |---|---|---|---|---|---|
-| Auditor | `AUDITOR_AGENT` | `USER_REQUEST`: طلب تدقيق جودة/عمل أو commit بعد قبول مرحلة، أو مراجعة maintainability/engineering governance | 5–6–7 | قبل وجود تسليم موثق أو قبل قبول المالك للـ commit | `PROJECT_STATE.md` + `TASK-ID` أو ملفات التغيير |
-| Monitor | `MONITOR_AGENT` | `USER_REQUEST`: طلب مراجعة توافق الخطة أو كشف الانحراف، بما في ذلك انحرافات Engineering Governance عن الخطة | 3–7 | إذا لا توجد خطة أو لا توجد مرحلة/دفعة لمقارنتها | `PROJECT_MASTER_PLAN.md` أو الخطة المتاحة + `TASK_REGISTRY.md` |
-| Design Reviewer | `DESIGN_REVIEWER_AGENT` | `USER_REQUEST`: طلب تدقيق بصري أو عند وجود مهمة UI/UX | 5–7 | إذا لا يوجد UI أو لا يوجد مصدر تصميم معتمد | `28_UI_UX_GUIDELINES.md` + المهمة/الشاشة ذات العلاقة |
-| **TeraClientEngagementAgent** | `CLIENT_ENGAGEMENT_AGENT` | `CLIENT_REQUEST`: بداية مشروع عميل جديد، أو طلب إدارة تغيير، أو طلب تحضير تسليم/صيانة، أو حاجة لتقدير تجاري | Client Lifecycle (كل دورة حياة الزبون) | إذا كان الطلب تقنياً بحتاً (ليس تعامل مع زبون) | `CLIENT_INTAKE.md` أو `TERA_HANDOFF_PACKAGE.md` أو طلب من Majed |
+| ClientDiscoveryAgent | `CLIENT_DISCOVERY_AGENT` | `EXTERNAL_FACTOR`: بداية مشروع عميل خارجي | Client Discovery (قبل Phase 1) | إذا كان المشروع داخليًا (غير موجه لعميل خارجي) | `CLIENT_PROFILE.md` + `project-inputs/` |
+| ProposalScopeAgent | `PROPOSAL_SCOPE_AGENT` | `EXTERNAL_FACTOR`: بعد اكتمال Client Discovery واعتماد الفهم | Client Discovery (قبل Phase 1) | إذا لم يكتمل Client Discovery بعد | `project-inputs/` كاملة |
+| ClientApprovalReviewAgent | `CLIENT_APPROVAL_REVIEW_AGENT` | `EXTERNAL_FACTOR`: قبل إرسال حزمة اعتماد العميل أو قبل Build Mode | ما قبل التنفيذ | إذا لم تكتمل حزمة الاعتماد بعد | `clients/.../client-approval/` |
+| ChangeControlAgent | `CHANGE_CONTROL_AGENT` | `EXTERNAL_FACTOR`: طلب تغيير جديد بعد اعتماد النطاق | أي مرحلة بعد اعتماد النطاق | إذا لم يظهر أي طلب تغيير | `11_CHANGE_CONTROL.md` أو طلب التغيير الجديد |
 
 ---
 
@@ -135,7 +114,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | PerformanceAgent | اختياري | إذا توقعنا حجم مستخدمين متوسط |
 | ReportingAnalyticsAgent | اختياري | إذا كان هناك Dashboard |
 | ProjectControlAgent | اختياري | عند تعدد المهمات |
-| SoftwareDesignerAgent | **نعم — للمهام المؤثرة** | **إلزامي للمهام المؤثرة (DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory). Fast Path مسموح للمهام Low-risk** |
+| ExecutionPreparationAgent | اختياري | عند تعقيد المهمات |
 
 ### 3.3 مشروع ERP (نظام تخطيط موارد مؤسسة)
 
@@ -158,7 +137,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | ReportingAnalyticsAgent | نعم | ERP يحتوي تقارير كثيرة |
 | MaintenanceMigrationAgent | نعم | ERP يحتاج ترحيل بيانات |
 | ProjectControlAgent | نعم | إدارة تتبع متقدمة |
-| SoftwareDesignerAgent | **نعم — للمهام المؤثرة** | **إلزامي للمهام المؤثرة (DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory). Fast Path مسموح للمهام Low-risk** |
+| ExecutionPreparationAgent | نعم | مهام متعددة ومعقدة |
 | QualityReviewCoordinatorAgent | نعم | بعد مجموعات مهام |
 | PlanComplianceReviewAgent | نعم | قبل قبول مراحل |
 | DomainResearchAgent | اختياري | لمجالات ERP غير المألوفة |
@@ -184,7 +163,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | PerformanceAgent | نعم | قابلية التوسع |
 | ReportingAnalyticsAgent | اختياري | حسب الاحتياج |
 | ProjectControlAgent | اختياري | عند تعدد المهمات |
-| SoftwareDesignerAgent | **نعم — للمهام المؤثرة** | **إلزامي للمهام المؤثرة (DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory). Fast Path مسموح للمهام Low-risk** |
+| ExecutionPreparationAgent | اختياري | عند تعقيد المهمات |
 
 ---
 
@@ -242,43 +221,6 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 - Brief reason for activation
 ```
 
-### 4.6 قاعدة Task Engineering Review (مدمجة في SoftwareDesignerAgent)
-
-```text
-SoftwareDesignerAgent إلزامي للمهام المؤثرة (DB, API, BL, Security, Workflow,
-Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic).
-للمهام منخفضة الخطورة (لا تمس أي مجال حساس): Fast Path مسموح
-(تجاوز SoftwareDesignerAgent) مع توثيق السبب من Tera في ملف المهمة.
-
-Task Engineering Review هو مخرج داخلي ضمن TECHNICAL_SPECIFICATION.md
-يُنتجه SoftwareDesignerAgent كجزء من تصميمه التقني، وليس خطوة منفصلة.
-في Fast Path: Tera يقوم بالمراجعة المباشرة بدلاً من Technical Specification.
-
-قرارات Task Engineering Review المسموحة (للمسار العادي فقط):
-  APPROVED_FOR_GATE
-  REVISION_REQUIRED
-  SPLIT_REQUIRED
-  BLOCKED_BY_MISSING_DECISION
-  WRONG_AGENT
-  NEEDS_PRE_REVIEW
-  REJECTED_OUT_OF_SCOPE
-
-ملاحظة: ExecutionPreparationAgent أُزيل — استُبدل بـ SoftwareDesignerAgent.
-Fast Path لا يلغي Pre-Execution Gate أو Post-Execution Review.
-```
-
-يجوز أيضاً أن يسجل Tera **Trust Level الحالي** للعميل في `SUB_AGENT_STATUS.md` إن كان الملف
-مفعلاً في المشروع، لكن:
-
-```text
-Trust Level لا يفعّل العميل تلقائياً.
-Trust Level لا يستبدل Trigger التفعيل.
-Trust Level لا يمنح قبولاً نهائياً.
-```
-
-إذا تدخل Tera على عميل فرعي أثناء التشغيل (`Stop` / `Narrow` / `Restrict` / `Suspend` / `Reinstate`)،
-فيجب توثيق ذلك في `SUB_AGENT_STATUS.md` و`PROJECT_ACTIVITY_LOG.md` عند الحاجة.
-
 ---
 
 ## 6. إلغاء التفعيل أو التعطيل المؤقت
@@ -306,7 +248,7 @@ Tera يقرر: تفعيل RequirementsScopeAgent و BusinessWorkflowAgent و Dat
 ```
 Trigger: طلب إضافة تكامل دفع خارجي
 Tera يقرر: تفعيل IntegrationAgent
-ملاحظة: إدارة تغييرات العميل الآن من اختصاص TeraClientEngagementAgent — Tera ينفذ فقط بعد استلام التغيير المعتمد
+لا يُفعّل: ChangeControlAgent (لأنه سيقترح فقط، ويمكن لـ Tera إدارة ذلك)
 ```
 
 ### مثال 3: مراجعة بعد 5 مهام تنفيذية

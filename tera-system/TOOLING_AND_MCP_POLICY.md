@@ -112,17 +112,15 @@ MCP يربط الـ Agent بالنظام الخارجي.
 | **الصلاحية الافتراضية** | `READ_ONLY` |
 | **مسموح به لـ** | EngineeringAgent, QAAndAcceptanceAgent (للقراءة)، ProjectControlAgent (للقراءة) |
 | **يقرأ** | ✅ الفروع، الـ diffs، الـ commits، الـ issues |
-| **يكتب (بعد موافقة)** | ✅ commits و PRs و release tags و GitHub Releases (بعد موافقة Tera والمستخدم عند push/tag/release) |
+| **يكتب (بعد موافقة)** | ✅ commits و PRs (بعد موافقة Tera) |
 | **يعدّل branches** | ✅ إنشاء branches جديدة (بعد موافقة) |
 | **يحذف branches** | ❌ ممنوع |
 | **force push** | ❌ ممنوع |
 
 **شروط الاستخدام:**
 - القراءة متاحة دائمًا.
-- الكتابة (commit, push, PR, release tag, GitHub Release) تحتاج موافقة صريحة من Tera، وعمليات `push` و `tag push` و GitHub Release تحتاج موافقة المستخدم قبل التنفيذ.
-- Tera مسؤولة عن إدارة Git/GitHub Release، فحص `status/diff/log`، تجهيز commit/tag/release notes، والتحقق من `GIT_REMOTE.md`. المستخدم مسؤول عن الموافقة أو الرفض قبل الرفع أو tag push أو GitHub Release.
+- الكتابة (commit, push, PR) تحتاج موافقة صريحة من Tera لكل عملية.
 - يمنع force push أو حذف فروع.
-- يمنع حذف أو إعادة كتابة release tags إلا بموافقة طارئة صريحة وموثقة.
 - يتم تسجيل أي عملية كتابة في `PROJECT_ACTIVITY_LOG.md`.
 - أي commit يحتوي secrets أو مفاتيح يمنع رفعه ويسجل كحادثة أمنية.
 

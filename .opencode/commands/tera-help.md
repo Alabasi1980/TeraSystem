@@ -11,7 +11,7 @@ description: عرض جميع أوامر Tera المتاحة ووصف مختصر 
 
 | الأمر | الوصف |
 |---|---|
-| `/tera-new-project` | بدء مشروع جديد — تحويلك إلى TeraClientEngagementAgent أولاً |
+| `/tera-new-project` | بدء مشروع جديد — Client Discovery Mode |
 | `/tera-resume` | استئناف مشروع قائم من آخر نقطة توقف |
 | `/tera-status` | تقرير سريع عن حالة المشروع الحالي |
 | `/tera-plan` | تأكيد Plan Mode — قراءة وتحليل فقط |
@@ -24,7 +24,7 @@ description: عرض جميع أوامر Tera المتاحة ووصف مختصر 
 
 ## أدلة سريعة
 
-- **مشروع جديد؟** → `/tera-new-project` ثم ابدأ عبر `TeraClientEngagementAgent`
+- **مشروع جديد؟** → `/tera-new-project`
 - **مشروع قائم؟** → `/tera-resume`
 - **عند العودة للجلسة؟** → `/tera-resume`
 - **تريد التنفيذ؟** → `/tera-plan` أولاً، ثم `/tera-request-build`

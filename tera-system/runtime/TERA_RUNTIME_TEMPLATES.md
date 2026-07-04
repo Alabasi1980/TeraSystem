@@ -1,4 +1,4 @@
-﻿# Tera Runtime Templates
+# Tera Runtime Templates
 
 These templates are official runtime support material for Tera Agent.
 Use them when the compact runtime file requests a formal output format.
@@ -296,6 +296,46 @@ Please confirm one option:
 3. Not correct; continue discovery.
 
 Until confirmed, I will not move to project preparation or implementation.
+```
+
+---
+
+## 13A. Discovery Coverage Summary
+
+Use this after understanding confirmation and before scope / quotation / handoff outputs in external client discovery managed by TCEA.
+
+```text
+DISCOVERY_COVERAGE_SUMMARY
+
+Client:
+Application:
+Project classification: Small / Medium / Large-Complex / Ambiguous
+Understanding confirmed by Majed: Yes / No
+
+| Domain | Status | Reason / Notes | Blocks Quotation? | Blocks Handoff? | Next Question | Assumption | Risk |
+|--------|--------|----------------|-------------------|-----------------|---------------|------------|------|
+| Business Context & Value | Complete / Partial / Missing / Deferred / Not Applicable |  | Yes / No | Yes / No |  |  | Low / Medium / High |
+| Integrations & APIs |  |  |  |  |  |  |  |
+| Users & Roles |  |  |  |  |  |  |  |
+| Workflow & Operations |  |  |  |  |  |  |  |
+| Scope & MVP |  |  |  |  |  |  |  |
+| Data & Content |  |  |  |  |  |  |  |
+| Notifications Engine |  |  |  |  |  |  |  |
+| Screens & UX |  |  |  |  |  |  |  |
+| Design & Branding |  |  |  |  |  |  |  |
+| Reports & Dashboards |  |  |  |  |  |  |  |
+| Technical, Hosting & Compliance |  |  |  |  |  |  |  |
+| Security & Audit |  |  |  |  |  |  |  |
+| Acceptance, Commercials & Warranty |  |  |  |  |  |  |  |
+
+Open blockers:
+Quotation blockers:
+Handoff blockers:
+
+Gate decision:
+- Ready for Scope / Needs More Discovery / Ready for Quotation / Ready for Handoff / Blocked
+
+Majed approval status:
 ```
 
 ---
@@ -742,11 +782,6 @@ See `TERA_RUNTIME_PROTOCOLS.md` Section 18, Client Discovery Step 7 for the prot
 This template is used for the formal output of Phase 3 (Project Preparation Planning).
 The generated file is saved to `project-control/PREPARATION_PLAN.md`.
 
-> **حوكمة الوثائق:** راجع `tera-system/TeraPreparationDocumentationGovernance.md` للتصنيف حسب دورة الحياة وحالات النضج ودور Maker/Checker/Owner.
->
-> **إلزامي — Lifecycle Header:** كل ملف تحضيري يُنشأ (عبر TASK-PREP) يجب أن يبدأ بـ **Lifecycle Header القياسي** (Section 41 أدناه).
-> Tera يرفض أي Handback من Maker بدون Header. ينطبق هذا على جميع مراحل المشروع، صغيراً كان أم كبيراً.
-
 ```markdown
 # PREPARATION_PLAN.md
 
@@ -758,20 +793,12 @@ Decision: Proceed / Blocked / Needs More Intake
 
 ## 2. Required Preparation Files
 
-| File | Required | Lifecycle Class | Reason | Maker Agent | Checker Agent | Target Maturity | Owner Approval Needed | Order |
-|---|---|---|---|---|---|---|---|---|
-| `01_PROJECT_BRIEF.md` | Yes | Foundation | Core understanding | RequirementsScopeAgent | BusinessWorkflowAgent | System Approved | No | 1 |
-| `02_SCOPE_AND_BOUNDARIES.md` | Yes | Foundation | Scope discipline | RequirementsScopeAgent | SolutionArchitectureAgent | System Approved | Yes (scope) | 2 |
-| `03_MODULES_AND_FEATURES.md` | Conditional | Foundation | Medium+ projects | RequirementsScopeAgent | DataDesignAgent | System Approved | Yes (modules) | 3 |
-| `04_USERS_ROLES_PERMISSIONS.md` | Conditional | Structural Analysis | Multi-user apps | RequirementsScopeAgent | SecurityAgent | System Approved | No | 4 |
-| `05_BUSINESS_WORKFLOWS.md` | Conditional | Structural Analysis | Complex workflows | BusinessWorkflowAgent | UIUXStructureAgent | Module Baseline Approved | No | 5 |
-| `06_DATA_MODEL_PREPARATION.md` | Conditional | Structural Analysis | Non-trivial data | DataDesignAgent | BusinessWorkflowAgent | Module Baseline Approved | No | 6 |
-| `07_SCREENS_AND_UI_STRUCTURE.md` | Conditional | Structural Analysis | UI needed | UIUXStructureAgent | DataDesignAgent | Module Baseline Approved | No | 7 |
-| `08_TECHNICAL_ARCHITECTURE.md` | Yes | Cross-Cutting Rules | Always needed | SolutionArchitectureAgent | SecurityAgent | System Approved | Yes (architecture) | 1 |
-| `09_IMPLEMENTATION_PLAN.md` | Yes | Planning & Control | Always needed | Tera | RequirementsScopeAgent | System Approved | No | 8 |
-| `10_TESTING_AND_ACCEPTANCE.md` | Yes | Late-Closure | Always needed | QAAndAcceptanceAgent | BusinessWorkflowAgent | Module Baseline Approved | No | 9 |
-| `11_DELIVERY_AND_HANDOVER.md` | Conditional | Late-Closure | External delivery | DocumentationHandoverAgent | Tera | System Approved | No | 10 |
-| ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| File | Required | Reason | Owner Agent | Order |
+|---|---|---|---|---|
+| `01_PROJECT_BRIEF.md` | Yes | Core understanding | RequirementsScopeAgent | 1 |
+| `02_SCOPE_AND_BOUNDARIES.md` | Yes | Scope discipline | RequirementsScopeAgent | 2 |
+| `03_MODULES_AND_FEATURES.md` | Conditional | Medium+ projects | RequirementsScopeAgent | 3 |
+| ... | ... | ... | ... | ... |
 
 ### Classification Key
 
@@ -782,31 +809,13 @@ Decision: Proceed / Blocked / Needs More Intake
 | **Deferred** | Postponed to a later phase |
 | **Not Required** | Not needed for this project |
 
-### Lifecycle Class Key (راجع TeraPreparationDocumentationGovernance.md §2.1)
-
-| Class | Meaning |
-|---|---|
-| **Foundation** | No dependency on other prep files |
-| **Consumer** | Depends on Foundation files |
-| **Derived** | Built from reconciling other files |
-| **Living** | Updated throughout the project; partial baselines allowed |
-| **Late-Bound** | Created before delivery or after execution starts |
-
-### Target Maturity States (راجع TeraPreparationDocumentationGovernance.md §3)
-
-| State | Meaning |
-|---|---|
-| **Module Baseline Approved** | Stable per module; consumable by SoftwareDesignerAgent for that module |
-| **System Approved** | All modules reconciled; consumable by all |
-| **Locked** | Final; changes require formal Change Request |
-
 ## 3. Deferred Files
 
-| File | Lifecycle Class | Reason | Trigger for Activation |
-|---|---|---|---|
-| `14_INTEGRATIONS_...` | Consumer | No external services yet | When integration is confirmed |
-| `22_DEPLOYMENT_...` | Late-Bound | Deployment not imminent | Before first deployment |
-| ... | ... | ... | ... |
+| File | Reason | Trigger for Activation |
+|---|---|---|
+| `14_INTEGRATIONS_...` | No external services yet | When integration is confirmed |
+| `22_DEPLOYMENT_...` | Deployment not imminent | Before first deployment |
+| ... | ... | ... |
 
 ## 4. Not Required Files
 
@@ -818,49 +827,44 @@ Decision: Proceed / Blocked / Needs More Intake
 
 ## 5. Suggested Sub-Agents
 
-| Agent | Needed Now | Maker Role | Checker Role | Reason |
-|---|---|---|---|---|
-| `RequirementsScopeAgent` | Yes | Maker for 01-04 | — | Core scope files |
-| `BusinessWorkflowAgent` | Conditional | Maker for 05 | Checker for 06 | Workflows + data consistency |
-| `DataDesignAgent` | Conditional | Maker for 06 | Checker for 07 | Data model + screen alignment |
-| `UIUXStructureAgent` | Conditional | Maker for 07 | Checker for 05 | Screens + workflow alignment |
-| `UIVisualDesignerAgent` | Conditional | Maker for 28 (UI_UX_GUIDELINES) | — | Visual design rules |
-| `SolutionArchitectureAgent` | Conditional | Maker for 08 | Checker for 02 | Architecture + scope alignment |
-| `QAAndAcceptanceAgent` | Conditional | Maker for 10 | — | Testing criteria |
-| `DocumentationHandoverAgent` | Conditional | Maker for 11 | — | Delivery documents |
-| `SecurityAgent` | Conditional | — | Checker for 04, 08 | Security cross-check |
-| ... | ... | ... | ... | ... |
+| Agent | Needed Now | Reason |
+|---|---|---|
+| `RequirementsScopeAgent` | Yes | Core scope files (01, 02, 03, 04) |
+| `BusinessWorkflowAgent` | Conditional | Only if workflows are complex |
+| `DataDesignAgent` | Conditional | Only if data model is non-trivial |
+| `UIUXStructureAgent` | Conditional | Only if screens need structured definition |
+| `UIVisualDesignerAgent` | Conditional | Only if visual design tokens/component rules are needed |
+| `SolutionArchitectureAgent` | Conditional | Only if architecture decisions are risky |
+| ... | ... | ... |
 
 ## 6. Preparation Sequence
 
 ```
 Batch A (no dependencies):
-  01_PROJECT_BRIEF.md (RequirementsScopeAgent · Foundation → System Approved)
-  08_TECHNICAL_ARCHITECTURE.md (SolutionArchitectureAgent · Cross-Cutting → System Approved)
+  01_PROJECT_BRIEF.md (RequirementsScopeAgent)
+  08_TECHNICAL_ARCHITECTURE.md (SolutionArchitectureAgent or Tera)
 
 Batch B (depends on Batch A):
-  02_SCOPE_AND_BOUNDARIES.md (RequirementsScopeAgent · Foundation → System Approved)
-  04_USERS_ROLES_PERMISSIONS.md (RequirementsScopeAgent · Structural → System Approved)
+  02_SCOPE_AND_BOUNDARIES.md (RequirementsScopeAgent)
+  04_USERS_ROLES_PERMISSIONS.md (RequirementsScopeAgent)
 
 Batch C (depends on Batch B):
-  05_BUSINESS_WORKFLOWS.md (BusinessWorkflowAgent · Structural → MBA by module)
-  07_SCREENS_AND_UI_STRUCTURE.md (UIUXStructureAgent · Structural → MBA by module)
+  05_BUSINESS_WORKFLOWS.md (BusinessWorkflowAgent)
+  07_SCREENS_AND_UI_STRUCTURE.md (UIUXStructureAgent)
 
 Batch D (depends on Batch C):
-  06_DATA_MODEL_PREPARATION.md (DataDesignAgent · Structural → MBA by module)
-  09_IMPLEMENTATION_PLAN.md (Tera · Planning → System Approved)
+  06_DATA_MODEL_PREPARATION.md (DataDesignAgent)
+  09_IMPLEMENTATION_PLAN.md (Tera)
 ```
 
-## 7. User/Owner Approval Points
+## 7. User Approval Points
 
-| Point | What Needs Approval | Owner Sensitive? | Before Moving To |
-|---|---|---|---|
-| P1 | This plan (Preparation Decision) | No | Phase 4: Sub-Agent Generation & Preparation Delegation |
-| P2 | Scope and boundaries (02) | Yes — module boundaries | File creation for downstream files |
-| P3 | Technical architecture (08) | Yes — cross-cutting | Implementation planning |
-| P4 | Module Baseline for a module | No (Tera approves) | Execution planning for that module |
-| P5 | Implementation plan (09) | No | Phase 5: Execution Planning |
-| P6 | Change request after baseline | Yes — impact on scope/cost | Implementation after change |
+| Point | What Needs Approval | Before Moving To |
+|---|---|---|
+| P1 | This plan (Preparation Decision) | Phase 4: Sub-Agent Generation & Preparation Delegation |
+| P2 | Scope and boundaries (02) | File creation for downstream files |
+| P3 | Technical architecture (08) | Implementation planning |
+| P4 | Implementation plan (09) | Phase 5: Execution Planning |
 
 > **Rule:** No file creation happens in Phase 3. No agent generation happens before this plan is approved.
 
@@ -870,17 +874,6 @@ Batch D (depends on Batch C):
 - [ ] Plan approved → Proceed to Phase 4
 - [ ] Plan rejected → Revise and resubmit
 - [ ] Plan blocked → Reason: ...
-
-## 9. Document Maturity State Tracking
-
-| File | Current State | Target State | Baseline Module | Last Updated |
-|---|---|---|---|---|
-| `01_PROJECT_BRIEF.md` | Draft | System Approved | All | YYYY-MM-DD |
-| `02_SCOPE_AND_BOUNDARIES.md` | Draft | System Approved | All | YYYY-MM-DD |
-| `05_BUSINESS_WORKFLOWS.md` | Not Started | Module Baseline Approved | Inventory | YYYY-MM-DD |
-| ... | ... | ... | ... | ... |
-
-> Tracked states: Not Started → Draft → Under Cross-Review → Module Baseline Approved → System Pending Integration → System Approved → Locked
 ```
 
 ---
@@ -889,8 +882,6 @@ Batch D (depends on Batch C):
 
 This template is used for the formal output of Phase 4 (Sub-Agent Generation & Preparation Delegation).
 The generated file is saved to `project-control/AGENT_DELEGATION_PLAN.md`.
-
-> **حوكمة الوثائق:** راجع `tera-system/TeraPreparationDocumentationGovernance.md` §4 (Maker/Checker/Orchestrator/Owner). لكل ملف تعيّن Maker (يكتب) و Checker (يراجع تقاطعياً). لا يمكن أن يكون Maker و Checker هما نفس العميل.
 
 ```markdown
 # AGENT_DELEGATION_PLAN.md
@@ -903,16 +894,11 @@ Decision: Proceed / Needs User Approval / Blocked
 
 ## 2. Agents Needed Now
 
-| Agent | Role | Reason | Status | Assigned Files | Checked By |
-|---|---|---|---|---|---|
-| `RequirementsScopeAgent` | Maker | Core scope files (01, 02, 03, 04) | Generate / Use Existing / Specialize | `01_PROJECT_BRIEF.md`, `02_SCOPE_...`, ... | BusinessWorkflowAgent, SolutionArchitectureAgent |
-| `BusinessWorkflowAgent` | Maker | Business workflows (05) | Generate / Use Existing / Specialize | `05_BUSINESS_WORKFLOWS.md` | UIUXStructureAgent |
-| `DataDesignAgent` | Maker | Data model (06) | Generate / Use Existing / Specialize | `06_DATA_MODEL_PREPARATION.md` | BusinessWorkflowAgent |
-| `UIUXStructureAgent` | Maker | Screen structure (07) | Generate / Use Existing / Specialize | `07_SCREENS_AND_UI_STRUCTURE.md` | DataDesignAgent |
-| `SolutionArchitectureAgent` | Maker | Technical architecture (08) | Generate / Use Existing / Specialize | `08_TECHNICAL_ARCHITECTURE.md` | SecurityAgent |
-| `BusinessWorkflowAgent` | Checker | Cross-check data model | — | `06_DATA_MODEL_PREPARATION.md` | — |
-| `DataDesignAgent` | Checker | Cross-check screens | — | `07_SCREENS_AND_UI_STRUCTURE.md` | — |
-| ... | ... | ... | ... | ... | ... |
+| Agent | Reason | Status | Assigned Files |
+|---|---|---|---|
+| `RequirementsScopeAgent` | Core scope files (01, 02, 03, 04) | Generate / Use Existing / Specialize | `01_PROJECT_BRIEF.md`, `02_SCOPE_...`, ... |
+| `BusinessWorkflowAgent` | Business workflows (05) | Generate / Use Existing / Specialize | `05_BUSINESS_WORKFLOWS.md` |
+| ... | ... | ... | ... |
 
 ### Agent Status Key
 
@@ -1120,10 +1106,10 @@ The generated file is saved to `project-control/EXECUTION_BATCH_PLAN.md`.
 
 ## 2. Included Tasks
 
-| TASK-ID | Description | Assigned Agent | Allowed Write Targets | Pre-Execution Gate | Fast Path |
-|---|---|---|---|---|---|
-| TASK-COD-001 | [e.g. Scaffold project] | EngineeringAgent | `.` (project root) | PASS | No |
-| TASK-COD-002 | [e.g. Init ORM + DB] | EngineeringAgent | `prisma/schema.prisma`, `.env.example` | PASS | No |
+| TASK-ID | Description | Assigned Agent | Allowed Write Targets | Pre-Execution Gate |
+|---|---|---|---|---|
+| TASK-COD-001 | [e.g. Scaffold project] | EngineeringAgent | `.` (project root) | PASS |
+| TASK-COD-002 | [e.g. Init ORM + DB] | EngineeringAgent | `prisma/schema.prisma`, `.env.example` | PASS |
 | ... | ... | ... | ... | ... |
 
 ## 3. Not Included (Deferred to Later Batches)
@@ -1160,98 +1146,7 @@ The generated file is saved to `project-control/EXECUTION_BATCH_PLAN.md`.
 > - UI tasks must link `tera-system/design-system/UI_ACCEPTANCE_GATE.md`.
 > - No TASK-ID without Pre-Execution Gate PASS.
 > - No batch execution without user approval.
-> - `Fast Path = Yes` means lower orchestration overhead only; it never removes physical post-execution review.
 ```
-
----
-
-## 31.5 Technical Specification Template (SoftwareDesignerAgent Output)
-
-This template defines the required structure of `[TASK-ID]_TECHNICAL_SPECIFICATION.md`.
-
-Produced by **SoftwareDesignerAgent** before every `Pre-Execution Gate`.
-
-```markdown
-# [TASK-ID] Technical Specification
-
-## 1. Task Overview
-
-| Field | Value |
-|---|---|
-| Objective | |
-| Scope | |
-| Out of Scope | |
-
-## 2. Screen Elements
-
-| Element | Type | Data Source | Validation Rules | UI Component |
-|---|---|---|---|---|
-| [element name] | [Text/Number/Date/Select/etc.] | [Entity.Field] | [required, min, max, pattern, BR-XX] | [from 28_UI_UX_GUIDELINES.md] |
-| ... | ... | ... | ... | ... |
-
-## 3. Data Bindings
-
-| Element | Entity/Field | API Endpoint | Parameters |
-|---|---|---|---|
-| ... | ... | ... | ... |
-
-## 4. Screen Dependencies
-
-- [List screens/tasks this task depends on]
-
-## 5. Component Hierarchy
-
-```text
-[Component tree structure]
-```
-
-## 6. State Management
-
-| State | Behavior |
-|---|---|
-| Loading | |
-| Empty | |
-| Error | |
-| Success | |
-
-## 7. Event Handling
-
-| Event | Action |
-|---|---|
-| onSubmit | |
-| onCancel | |
-| onChange | |
-| onDelete | |
-
-## 8. Side-Effect Registry
-
-| Side Effect | Impact | Mitigation |
-|---|---|---|
-| ... | ... | ... |
-
-## 9. Reviewers (Suggested)
-
-- [Agent/role]
-
-## 10. Task Engineering Review Decision
-
-| Field | Value |
-|---|---|
-| Decision | APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE |
-| Reason | |
-| Risk Level | Low / Medium / High / Critical |
-
-## 11. Design Gaps
-
-| Gap | Missing File | Impact |
-|---|---|---|
-| ... | ... | ... |
-```
-
-**Rules:**
-- If any required preparation file is missing → `Design Gap` is raised, not guessed.
-- If `Task Engineering Review Decision` is not `APPROVED_FOR_GATE` → task cannot proceed to `Pre-Execution Gate`.
-- Non-UI tasks still produce a Technical Specification (focus on data flow, API, validation, side effects).
 
 ---
 
@@ -1408,15 +1303,9 @@ Generated file: `project-control/RELEASE_NOTES.md`
 ```markdown
 # RELEASE_NOTES.md
 
-## vX.Y - YYYY-MM-DD
+## Version / Release
 
 - Release Name:
-- Release Type: Initial / Hotfix / Patch / Minor / Major
-- Status: Draft / Released / Blocked
-- Git Tag:
-- Commit Hash:
-- GitHub Release URL:
-- GitHub Release Status: Draft / Published / Deferred / N/A
 - Date:
 - Scope:
 
@@ -1437,10 +1326,6 @@ Generated file: `project-control/RELEASE_NOTES.md`
 - ...
 
 ## Known Issues
-
-- ...
-
-## Verification
 
 - ...
 ```
@@ -1481,12 +1366,6 @@ Generated file: `project-control/PROJECT_CLOSURE_REPORT.md`
 |---|---|
 | Project |  |
 | Closure Date |  |
-| Closure Type | Version Closure / Maintenance Closure / Hotfix Closure / Final Application Closure |
-| Closed Version |  |
-| Git Tag |  |
-| Commit Hash |  |
-| GitHub Release URL |  |
-| GitHub Release Status | Published / Deferred / N/A |
 | Closure Decision | Closed / Needs Final Fix / Deferred / Blocked |
 | Approved By | User / Client / Tera |
 
@@ -1503,11 +1382,6 @@ Generated file: `project-control/PROJECT_CLOSURE_REPORT.md`
 | Delivery Readiness Report | Complete / N/A |  |
 | Final Acceptance Checklist | Complete / N/A |  |
 | Release Notes | Complete / N/A |  |
-| Version Registry | Complete / N/A |  |
-| Next Version Handoff | Complete / N/A |  |
-| Git Commit / Push | Complete / Deferred / N/A |  |
-| Git Release Tag | Complete / Deferred / N/A |  |
-| GitHub Release | Complete / Deferred / N/A |  |
 | Client Handover Package | Complete / N/A |  |
 
 ## 4. Open Issues / Deferred Items
@@ -1518,15 +1392,7 @@ Generated file: `project-control/PROJECT_CLOSURE_REPORT.md`
 
 ## 5. Final Decision
 
-Project Closure Status: VERSION_CLOSED / MAINTENANCE_CLOSED / HOTFIX_CLOSED / FINAL_APPLICATION_CLOSED / BLOCKED / NEEDS_PHASE_6_FIX
-
-## 6. Next Version / Maintenance Decision
-
-- Recommended Next Version:
-- Recommended Cycle: Hotfix / Patch / Minor / Major / Final Closure / None
-- NEXT_VERSION_HANDOFF.md Updated: Yes / No / N/A
-- Git Tag Created / Pushed: Yes / No / Deferred / N/A
-- GitHub Release Created: Yes / No / Deferred / N/A
+Project Closure Status: CLOSED / BLOCKED / NEEDS_PHASE_6_FIX
 ```
 
 ### 34.6 Client Handover Package
@@ -1565,667 +1431,4 @@ clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/delivery/CL
 - Accepted / Needs Fix / Deferred
 - اسم صاحب الاعتماد:
 - التاريخ:
-```
-
-## 35. Version Management Layer Templates
-
-Use `tera-system/runtime/VERSION_LIFECYCLE_PROTOCOL.md` as the source of truth.
-
-### 35.1 Version Registry
-
-Generated file: `project-control/VERSION_REGISTRY.md`
-
-```markdown
-# VERSION_REGISTRY.md
-
-## Current Version
-
-- Active Version:
-- Status: Planned / In Development / Released / Maintenance / Closed
-- Release Type: Initial / Hotfix / Patch / Minor / Major
-- Release Date:
-- Support Status: Not Started / Active / Maintenance Only / Deprecated / Ended
-- Git Tag:
-- Commit Hash:
-- GitHub Release URL:
-- GitHub Release Status: Published / Deferred / N/A
-
-## Version History
-
-| Version | Type | Status | Start Date | Release Date | Git Tag | Commit Hash | GitHub Release | Scope Summary | Support Status |
-|---|---|---|---|---|---|---|---|---|---|
-|  |  |  |  |  |  |  | Published / Deferred / N/A |  |  |
-
-## Deferred Features by Version
-
-| Feature / Item | Target Version | Source | Status | Notes |
-|---|---|---|---|---|
-|  |  |  |  |  |
-
-## Maintenance / Hotfix History
-
-| Version | Affected Version | Type | Status | Summary | Linked Task(s) | Release Notes Updated |
-|---|---|---|---|---|---|---|
-|  |  | Hotfix / Patch |  |  |  | Yes / No / N/A |
-
-## Git Release Tags
-
-| Version | Git Tag | Commit Hash | Push Status | Tag Push Status | GitHub Release Status | GitHub Release URL | Approved By | Notes |
-|---|---|---|---|---|---|---|---|---|
-|  |  |  | Pending / Pushed / Deferred | Pending / Pushed / Deferred | Published / Deferred / N/A |  |  |  |
-```
-
-### 35.2 Next Version Handoff
-
-Generated file: `project-control/NEXT_VERSION_HANDOFF.md`
-
-```markdown
-# NEXT_VERSION_HANDOFF.md
-
-## Closed Version
-
-- Version:
-- Closure Type: Version Closure / Maintenance Closure / Hotfix Closure / Final Application Closure
-- Status: Released / Closed / Blocked / Needs Phase 6 Fix
-- Release Date:
-- Approved By:
-- Git Tag:
-- Commit Hash:
-- GitHub Release URL:
-
-## Deferred Items
-
-| Item | Suggested Version | Reason | Source |
-|---|---|---|---|
-|  |  |  |  |
-
-## Known Issues
-
-| Issue | Severity | Recommended Action | Suggested Cycle |
-|---|---|---|---|
-|  | Critical / High / Medium / Low |  | Hotfix / Patch / Minor / Major / Won't Fix |
-
-## Recommended Next Version
-
-- Suggested Version:
-- Suggested Release Type: Hotfix / Patch / Minor / Major / None
-- Reason:
-- Readiness: Ready / Needs Discovery / Needs Client Approval / Deferred
-
-## Level 3 Expansion Note
-
-Per-version folders and version slash commands remain deferred until large-project, frequent-release, formal client approval, or parallel-version triggers exist.
-```
-
-### 35.3 Version Decision
-
-```markdown
-# VERSION_DECISION.md
-
-## Version Metadata
-
-- Target Version:
-- Release Type: Minor / Major
-- Source Version:
-- Decision Date:
-- Approved By:
-
-## Scope
-
-### Included
--
-
-### Deferred
--
-
-### Out of Scope
--
-
-## Required Planning Path
-
-- Phase 2 update: Required / Not Required
-- Phase 3: Required / Compact / Not Required
-- Phase 4: Required / Existing agents only / Not Required
-- Phase 5: Required
-- Phase 6: Required
-- Phase 7: Required
-```
-
-### 35.4 Hotfix Decision
-
-```markdown
-# HOTFIX_DECISION.md
-
-## Hotfix Metadata
-
-- Hotfix Version:
-- Affected Version:
-- Severity:
-- Decision Date:
-- Approved By:
-
-## Issue
-
-- Description:
-- Impact:
-- Affected Files / Areas:
-
-## Scope Guard
-
-- New features included? No
-- Risk Level:
-- Required Verification:
-```
-
----
-
-## 36. Implementation Agent Strategy (Phase 5.1 Output)
-
-This template is used for the mandatory Phase 5.1 output (Implementation Agent Strategy Gate).
-The generated file is saved to `project-control/IMPLEMENTATION_AGENT_STRATEGY.md`.
-
-Reference: `TeraAgent.md` §4.4 (Execution Planning / Implementation Agent Strategy)
-
-> **Rules:**
-> - No Build Mode, no Phase 6, and no `TASK-COD-*` delegation before this strategy is approved.
-> - This strategy must answer all 6 mandatory questions (Sections 2–7 below).
-> - The 6 questions are screens against generic planning. Each question must have a clear answer.
-
-```markdown
-# IMPLEMENTATION_AGENT_STRATEGY.md
-
-## [Application Name] — استراتيجية العملاء للتنفيذ
-
-| Metadata | |
-|----------|-|
-| **Phase** | 5.1 — Implementation Agent Strategy Gate |
-| **Status** | Draft / Approved — Option A / Approved — Option B / Needs Revision |
-| **Required Before** | Phase 6 / Build Mode / Any `TASK-COD-*` delegation |
-| **Created By** | Tera Agent |
-| **Date** | YYYY-MM-DD |
-| **System Rule** | `TeraAgent.md` §4.4 |
-
----
-
-## 1. Executive Decision
-
-[Summarize the core decision: single general agent vs. multiple specialized agents, and why.]
-
----
-
-## 2. السؤال الإلزامي 1 — Agent: من نحتاج الآن؟
-
-| Agent | القرار | الدفعات/المراحل | السبب | الصلاحية |
-|-------|--------|-----------------|-------|----------|
-| [Agent name] | Required Now / Required Next / Optional | [B1, B2, etc.] | [Why this agent is needed] | [Permission level] |
-
-### حالة العملاء الموجودين سابقاً
-
-| Existing Agent | الحالة | القرار |
-|----------------|--------|--------|
-| [name] | Generated + Activated / Generated only | Keep / Specialize / Disable / Do not use |
-
----
-
-## 3. السؤال الإلزامي 2 — Agent: من نؤجل؟
-
-| Agent | يؤجل إلى | سبب التأجيل |
-|-------|----------|-------------|
-| [name] | [phase/batch] | [reason] |
-
----
-
-## 4. السؤال الإلزامي 3 — Who writes: من ينفذ؟
-
-| TASK-ID | الدفعة | التنفيذ المقترح | ملاحظات |
-|---------|-------|----------------|---------|
-| TASK-COD-XXX | [batch] | [Agent name] | [scope notes] |
-
-**قاعدة الكاتب الأساسي:** كل `TASK-COD-*` يجب أن يحدد Writer واحداً فقط. إذا احتاجت المهمة أكثر من اختصاص، يجب تقسيمها أو تحديد Agent واحد ككاتب والآخر كمراجع.
-
----
-
-## 5. السؤال الإلزامي 4 — Who reviews: من يراجع؟
-
-| نوع المهمة | المراجع الأساسي | مراجعة مستقلة مطلوبة؟ | السبب |
-|------------|----------------|------------------------|-------|
-| [task type] | [reviewer] | Yes / No | [reason] |
-
----
-
-## 6. السؤال الإلزامي 5 — Activation plan: متى يُفعّل كل عميل وبأي صلاحيات؟
-
-| Agent | تفعيل | الصلاحية | Allowed Write Targets الافتراضية | ملاحظات |
-|-------|-------|----------|----------------------------------|---------|
-| [name] | now / before TASK-XXX | [permission level] | [paths] | [notes] |
-
----
-
-## 7. السؤال الإلزامي 6 — Exceptions: هل يوجد استثناء للتنفيذ المباشر؟
-
-| الحالة | القرار |
-|--------|--------|
-| هل ينفذ Tera كود التطبيق مباشرة؟ | No / Yes with documented reason |
-| هل توجد استثناءات حالية؟ | [list or None] |
-| ما الذي ينفذه Tera مباشرة؟ | Control files, task files, logs, strategy, reviews only |
-
----
-
-## 8. توصية إنشاء/تعديل العملاء
-
-### الإجراء المقترح بعد اعتماد هذه الاستراتيجية
-
-1. ...
-2. ...
-
-**توصية Tera:** [Option A / Option B / Custom]
-
----
-
-## 9. Current Batch Decision
-
-| Field | Decision |
-|-------|----------|
-| Batch | [e.g., B1] |
-| TASK-ID | TASK-COD-XXX |
-| Required Agent | [Agent name] |
-| Reviewer | [reviewer] |
-| SecurityAgent | Required / Not required for this batch |
-| QAAgent | Required / Not required for this batch |
-| ProjectControlAgent | Required / Not required / Tera handles |
-| Build Mode | Remains blocked until this strategy is approved |
-
----
-
-## 10. Approval
-
-| Role | Status |
-|------|--------|
-| Prepared by | Tera Agent |
-| Reviewed by | Tera Agent |
-| Approved by | [User / Client] — [Option selected] |
-
-### Approval Options
-
-| Option | Meaning |
-|--------|---------|
-| **Option A** | Use existing agent(s) after narrowing scope |
-| **Option B** | Create new dedicated agent(s), disable generic ones |
-| **Request Changes** | Modify agent split, timing, or review responsibilities |
-
----
-
-## 11. Change Log
-
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| v1 | YYYY-MM-DD | Tera | Initial Implementation Agent Strategy |
-```
-
----
-
-## 37. Generated Agents Manifest
-
-This template is used every time sub-agents are generated for a project.
-The generated file is saved to `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md`.
-
-Reference: `TERA_RUNTIME_PROTOCOLS.md` Section 2 (Generated Sub-Agent Lifecycle Protocol)
-
-```markdown
-# GENERATED_AGENTS_MANIFEST.md
-
-Project: [Project Name]
-Runtime Environment: OpenCode
-Generated Date: YYYY-MM-DD
-Generated By: Tera Agent
-
-## Agents Generated
-
-- Agent: [Agent Name]
-  - Reason: [Why this agent was generated]
-  - File: `generated-agents/opencode/[agent-file-name].md`
-  - Active Copy: `.opencode/agents/[agent-file-name].md`
-  - Category: [Specialized Implementation Agent / Basic Implementation Agent / Research Agent / Review Agent / Control Agent / Domain Agent]
-  - Status: Active / Disabled / Awaiting Activation
-  - Allowed Write Targets: [paths]
-  - Notes: [any restrictions or scope notes]
-
-[repeat for each generated agent]
-
-## Agents Not Generated
-
-- [Agent Name]: [Reason why not needed now or ever]
-- ...
-
-## Notes
-
-- [General notes about agent usage, restrictions, and sequencing]
-- [List of currently active implementation agents]
-- Agents must not execute without a task file containing `Pre-Execution Gate Result: PASS`.
-- OpenCode must be restarted after activation for the agent changes to be available in the running session.
-```
-
----
-
-## 38. Agent Deactivation Record
-
-This template is used when deactivating a sub-agent that was previously activated in `.opencode/agents/`.
-The generated file is saved to `project-control/AGENT_DEACTIVATION_RECORD.md` when a formal record is needed, or recorded in `GENERATED_AGENTS_MANIFEST.md` for routine deactivations.
-
-Reference: `TERA_RUNTIME_PROTOCOLS.md` Section 19 (Agent Deactivation Protocol)
-
-```markdown
-# AGENT_DEACTIVATION_RECORD.md
-
-## Deactivation Metadata
-
-| Field | Value |
-|-------|-------|
-| Agent Name | [name] |
-| Agent File | `generated-agents/opencode/[file].md` |
-| Active Copy | `.opencode/agents/[file].md` |
-| Deactivation Date | YYYY-MM-DD |
-| Deactivated By | Tera Agent |
-| Reason | [reason] |
-| Replacement Agent (if any) | [name or None] |
-
-## Impact Assessment
-
-- OpenCode restart needed to apply changes: Yes / No
-- Remaining active agents covering this scope: [list or None]
-- Generated draft kept for future use: Yes / No
-
-## Cleanup Actions
-
-- [ ] `disable: true` added to active copy frontmatter.
-- [ ] Manifest updated in `GENERATED_AGENTS_MANIFEST.md`.
-- [ ] Active copy removed from `.opencode/agents/` (optional — disabled is safer).
-- [ ] PROJECT_STATE.md updated.
-- [ ] PROJECT_ACTIVITY_LOG.md updated.
-- [ ] User notified of deactivation.
-
-## Approval
-
-- Deactivation approved by: [Tera / User]
-- Notes:
-```
-
----
-
-## 38.1 Sub-Agent Status File
-
-This template defines the compact structure of:
-
-```text
-project-control/SUB_AGENT_STATUS.md
-```
-
-Reference: `TERA_RUNTIME_PROTOCOLS.md` Section 17 (Sub-Agent Status Review)
-
-```markdown
-# SUB_AGENT_STATUS.md
-
-## Metadata
-
-| Field | Value |
-|---|---|
-| Project | [Project Name] |
-| Updated By | Tera Agent / ProjectControlAgent by request |
-| Last Updated | YYYY-MM-DD |
-
----
-
-## Agents
-
-| Agent | Status | Quality | Trust Level | Last Event | Last Basis / Evidence | Decision / Notes |
-|---|---|---|---|---|---|---|
-| EngineeringAgent | Active / Inactive / Overloaded / Disabled | Good / Mixed / Weak / Unknown | New / Observed / Verified / Trusted / Restricted / Suspended | [Intervention/Override event or None] | [e.g. 3 accepted tasks, 1 rework] | [e.g. keep active, narrow scope] |
-| QAAndAcceptanceAgent | ... | ... | ... | ... | ... | ... |
-| ProjectControlAgent | ... | ... | ... | ... | ... | ... |
-
----
-
-## Rules
-
-- Keep this file compact.
-- Do not copy `PROJECT_ACTIVITY_LOG.md` into this file.
-- `Trust Level` is metadata for delegation planning only.
-- `Last Event` shows the most recent intervention or runtime override for quick status.
-- `Trust Level` does **not** change permission level.
-- `Trust Level` does **not** replace physical post-execution review.
-- No entry in this file may be used to justify acceptance without opening the changed files.
-- Trust Level re-evaluation triggers after 2 `Needs Fix` in 5 tasks or after 15 tasks without review.
-```
-
----
-
-## 38.2 Sub-Agent Intervention Record
-
-This template is used when Tera needs a compact formal record for an explicit intervention applied to a sub-agent.
-
-```markdown
-## Sub-Agent Intervention
-
-| Field | Value |
-|---|---|
-| Agent | [Agent Name] |
-| Related Task | TASK-COD-XXX / TASK-PREP-XXX / N/A |
-| Intervention Type | Stop / Narrow / Restrict / Suspend / Reinstate |
-| Trigger / Reason | [why Tera intervened] |
-| Scope Affected | [task / files / targets / trust state] |
-| Trust Change | [e.g. Verified -> Restricted] / None |
-| Permission Change | [if any] / None |
-| Follow-up Required | [review / redelegation / user decision / none] |
-```
-
-**Rules:**
-- Use inside `SUB_AGENT_STATUS.md` (Last Event), `PROJECT_ACTIVITY_LOG.md`, or the task file as appropriate.
-- Keep the record compact.
-- Intervention logging does not replace Emergency Response for severe incidents.
-- Intervention logging does not replace physical acceptance review.
-
----
-
-## 38.3 Scoped Runtime Override Record
-
-This template is used when Tera adjusts part of the active delegation contract for the current task.
-
-```markdown
-## Scoped Runtime Override
-
-| Field | Value |
-|---|---|
-| Related Task | TASK-COD-XXX / TASK-PREP-XXX |
-| Agent | [Agent Name] |
-| Override Type | Narrow Targets / Expand Targets (In Scope) / Reduce Context / Escalate Review / Freeze Current Agent Path / Reassign Writer |
-| Reason | [why the override is needed] |
-| Changed From | [old boundary / old writer / old context] |
-| Changed To | [new boundary / new writer / new context] |
-| Scope Still Approved? | Yes / No |
-| Extra Approval Needed? | Yes / No |
-| Follow-up Action | continue / pause / re-delegate / re-plan |
-```
-
-**Rules:**
-- Use only when the task scope itself remains approved.
-- If `Scope Still Approved = No`, stop and return to planning instead of overriding.
-- Runtime Override never replaces physical post-execution review.
-
----
-
-## 39. Task Cross-Verification Report
-
-This template is used when cross-verifying consistency between preparation files before execution.
-The generated file is saved to `project-control/tasks/TASK-CROSS-XXX.md` or recorded inline in the task file.
-
-Reference: `TERA_RUNTIME_CHECKLISTS.md` Section 20 (Cross-Verification Checklist)
-
-```markdown
-# TASK-CROSS-XXX: Cross-Verification Report
-
-## Scope
-
-- Files verified:
-  - [file path 1]
-  - [file path 2]
-  - ...
-
-## Verification Items
-
-| Item | Count in File A | Count in File B | Match? |
-|------|----------------|-----------------|--------|
-| [e.g., Models] | [X] | [Y] | Yes / No — corrected |
-| [e.g., Screens] | [X] | [Y] | Yes / No — corrected |
-| [e.g., API endpoints] | [X] | [Y] | Yes / No — corrected |
-
-## Files Corrected
-
-| File | Before | After | Change |
-|------|--------|-------|--------|
-| [path] | [old value] | [new value] | [description] |
-
-## Result
-
-- [ ] All verified — no inconsistencies found
-- [ ] Inconsistencies found and corrected
-- [ ] Inconsistencies found — needs Tera/user decision before execution
-```
-
----
-
-## 40. Workspace Governance Model
-
-This template is used after the application workspace is created and handed off to TeraAgent to define the governance model for that workspace.
-The generated file is saved to `project-control/WORKSPACE_GOVERNANCE_MODEL.md`.
-
-Reference: `TeraAgent.md` §14.5 (التواصل مع العملاء الآخرين) و §4.0 (استلام Handoff). تُعرّف القواعد التفصيلية (الاستقلال، خط التقارير، الصلاحيات، الحدود) في هذا القالب أدناه — أنشئت سابقاً في `TeraAgent.md` §39 (قسم أُزيل ونُقل إلى هذا القالب).
-
-**Rule:** No new project workspace is complete without this file.
-
-```markdown
-# WORKSPACE_GOVERNANCE_MODEL.md
-
-## [Application Name] — نموذج حوكمة مساحة العمل
-
-| Metadata | |
-|----------|-|
-| **Created** | YYYY-MM-DD |
-| **Created By** | Tera Agent |
-| **Template** | `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` Section 40 |
-| **Project** | [Application Name] |
-| **Active Workspace** | `clients/CLIENT-[name]/applications/APP-[name]/` |
-
----
-
-## 1. Governance Session Agents
-
-هذا المشروع يخضع لنموذج جلسات الحوكمة المستقلة التالية:
-
-| Agent | المعرف | يقرأ | ينتج | ملاحظات خاصة بالمشروع |
-|-------|--------|------|------|----------------------|
-| **Auditor** | `AUDITOR_AGENT` | `PROJECT_STATE.md`, `PROJECT_ACTIVITY_LOG.md`, `TASK_REGISTRY.md`, ملفات المهام | Quality Review Report, Git commit محلي بعد قبول المالك | [ملاحظات إن وجدت] |
-| **Monitor** | `MONITOR_AGENT` | `PROJECT_MASTER_PLAN.md`, `PROJECT_DETAILED_EXECUTION_PLAN.md`, `EXECUTION_BATCH_PLAN.md`, `TASK_REGISTRY.md` | Plan Compliance Report | [ملاحظات إن وجدت] |
-| **Design Reviewer** | `DESIGN_REVIEWER_AGENT` | `28_UI_UX_GUIDELINES.md`, `07_SCREENS_AND_UI_STRUCTURE.md`, `design-source/`, ملفات UI | Design Review Report | [ملاحظات إن وجدت] |
-
-## 2. Governance Rules for this Project
-
-### 2.1 Independence
-
-- Auditor, Monitor, and Design Reviewer are **independent sessions**, not sub-agents under Tera.
-- They are **parallel to Tera**, not below or above.
-- Tera does not control when they run or what they review.
-- The owner (Majed) decides when to open each governance session.
-
-### 2.2 Reporting Line
-
-- Governance agents report directly to the **owner (Majed)**.
-- Reports are NOT submitted to Tera. Tera receives requests for correction or approval **via the owner**.
-- Governance agents do not communicate directly with Tera's sub-agents.
-
-### 2.3 Final Authority
-
-- **Final review and acceptance authority belongs to the owner (Majed).**
-- Tera reviews sub-agent output, but the final project acceptance is the owner's decision.
-- Governance agents are advisory and oversight layers only — they cannot approve scope, code, or phase transitions.
-
-### 2.4 Permissions
-
-| Agent | Default Permission | Can Be Raised To | Notes |
-|-------|-------------------|------------------|-------|
-| Auditor | `READ_ONLY` + `bash: ask` (local commit after owner approval) | `WRITE_CONTROL` for specific report | No push, no code edit, no commit before owner approval |
-| Monitor | `READ_ONLY` | `WRITE_DOCS` for report delivery | Reviews plan compliance, does not correct execution |
-| Design Reviewer | `READ_ONLY` | `RUN_TESTS` for visual inspection after owner approval | Does not design, does not implement UI |
-
-### 2.5 Boundaries
-
-- Governance agents do not replace Pre-Execution Gate or Post-Execution Review Gate.
-- Governance agents do not execute code, change scope, or modify plans.
-- Governance agents do not modify colors, components, or UI implementation.
-- Governance agents do not push to remote or force changes.
-- Tera and its sub-agents continue normal operation regardless of governance session activity.
-
-## 3. Communication Protocol
-
-```text
-Owner opens session
-  → Agent reads project files
-  → Agent produces report
-  → Agent returns to owner
-  → Owner reviews and decides
-  → If correction needed: owner requests from Tera
-  → Tera handles correction via sub-agent task
-```
-
-## 4. Project-Specific Governance Overrides
-
-[Any project-specific rules that override the general governance model. Leave empty if none.]
-
-- ...
-
-## 5. Approval
-
-| Role | Status |
-|------|--------|
-| Created by | Tera Agent |
-| Governance model applies | [Project Name] |
-| Date | YYYY-MM-DD |
-```
-
----
-
-## 41. Preparation Document Lifecycle Header (Standardised Document Metadata Block)
-
-This header MUST be placed at the top of every preparation file in `project-preparation/`, immediately after the main heading and before the file's content sections.
-
-It is the **Source of Truth** for the document's lifecycle state, owner agent, review chain, and consumption readiness.
-
-```markdown
-> ## Document Lifecycle
->
-> | الحقل | القيمة |
-> |---|---|
-> | **Lifecycle Class** | Foundation / Structural Analysis / Cross-Cutting Rules / Executable Design / Planning & Control / Late-Closure |
-> | **Dependency Profile** | Foundation / Consumer / Derived / Living / Late-Bound |
-> | **Current State** | Draft / Under Cross-Review / Module Baseline Approved / System Pending Integration / System Approved / Locked |
-> | **Baseline Module** | All / [specific module name] |
-> | **Maker Agent** | [agent name that writes this document] |
-> | **Checker Agent** | [agent name that cross-reviews this document — must differ from Maker] |
-> | **Owner Approval Needed?** | Yes / No (Yes only for sensitive decisions: scope, architecture, security, compliance, change after baseline) |
-> | **Closure Condition** | Draft-usable / MBA-usable / System-Approved-required / Locked-required |
-> | **Last Updated** | YYYY-MM-DD |
-```
-
-### 41.1 Rules
-
-| Rule | Detail |
-|---|---|
-| **متى يُضاف؟** | عند إنشاء الملف لأول مرة (Draft) |
-| **من يملؤه؟** | Maker Agent يملأ الحقول الأولية؛ Tera يحدث Current State مع كل تقدم في دورة الحياة |
-| **متى يتغير Current State؟** | عند الانتقال بين الحالات: Tera يُحدث الحالة في PREPARATION_PLAN.md وفي الـ Header نفسه |
-| **ماذا يحدث إذا غاب الـ Header؟** | يعتبر الملف غير جاهز للاستهلاك. SoftwareDesignerAgent يرفع Design Gap إذا قرأ ملفاً بدون Header |
-| **هل هو إلزامي للمشاريع الصغيرة؟** | نعم — لكن يمكن تبسيطه إلى 4 حقول فقط (Class, State, Maker, Checker) |
-
-### 41.2 Integration with PREPARATION_PLAN.md
-
-The `Current State` in each file's Header **must match** the state tracked in `PREPARATION_PLAN.md` Section 9 (Document Maturity State Tracking). Tera is responsible for keeping these two in sync.
 ```

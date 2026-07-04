@@ -1,24 +1,12 @@
-﻿# Tera Client Policy
-
-> **ملاحظة نظامية:** هذه السياسة تحدد **القواعد والمبادئ** للتعامل مع العملاء — الهيكل، الملفات، بوابات الاعتماد، إدارة التغيير، والمحتوى الموجه للعميل.
->
-> **تنفيذ هذه السياسة يختلف حسب نوع المشروع:**
-> - **المشاريع الخارجية:** ينفذها `TeraClientEngagementAgent` (يدير Discovery، Proposal، Approval، Change Control).
-> - **المشاريع الداخلية:** ينفذها `TeraAgent` مباشرة.
->
-> TeraAgent لم يعد يدير Client Discovery أو Proposal أو Client Approval Package أو Change Control **للمشاريع الخارجية**.
-> يستقبل `TERA_HANDOFF_PACKAGE.md` جاهزة من Majed (من TCEA).
->
-> راجع `tera-system/TeraClientEngagement.md` للتفاصيل الكاملة.
-
+# Tera Client Policy
 
 > Merged from: `TeraClientEngagementPolicy.md`, `TeraClientApprovalPolicy.md`, `TeraClientChangeControlPolicy.md`, `TeraClientFacingContentPolicy.md` (v1.0)
 
 ## 1. Purpose
 
-This policy defines the rules and principles for client engagement — from discovery through approval, change control, and client-facing documentation.
+This policy defines how Tera handles external client projects — from discovery and engagement through approval, change control, and client-facing documentation.
 
-> **المنفذ:** `TeraClientEngagementAgent` للمشاريع الخارجية، `TeraAgent` للمشاريع الداخلية.
+Tera must treat client work as a documented relationship, not only a technical build request.
 
 ---
 
@@ -58,11 +46,6 @@ clients/
         client-approval/
         client-assets/
         client-communications/
-        project-inputs/
-        project-preparation/
-        project-control/
-        generated-agents/opencode/
-        app-source/
         delivery/
 ```
 
@@ -70,9 +53,6 @@ Rules:
 
 - Each client must have a dedicated folder.
 - Each client application must have a dedicated application folder.
-- The application folder is the canonical isolated workspace for that application.
-- Application-specific intake, preparation, control records, generated agents, source code, approval material, assets, communications, and delivery records must stay inside the application folder.
-- Removing or exporting `clients/CLIENT-*/applications/APP-*/` should remove or export that application without polluting the Tera system root.
 - Do not mix client-facing approval material with internal `project-preparation/` files.
 - Do not store secrets, passwords, access tokens, or private credentials in client files.
 - Final client handover material belongs in `clients/CLIENT-*/applications/APP-*/delivery/`.
@@ -120,80 +100,86 @@ Tera must not treat approval from a contact as final unless that contact has doc
 
 ### Client Discovery Output — Application Proposal
 
-> **المنفذ:** `TeraClientEngagementAgent` للمشاريع الخارجية. `TeraAgent` للمشاريع الداخلية.
+After the Client Discovery + Smart Interview process completes (see `TERA_RUNTIME_PROTOCOLS.md` Section 18), Tera generates a **professional client-facing Application Proposal** as an HTML page using `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html`.
 
-After the Client Discovery + Smart Interview process completes (see `TERA_RUNTIME_PROTOCOLS.md` Section 18), the responsible agent generates a **professional client-facing Application Proposal** as an HTML page using `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html`.
+The proposal captures: understanding, users & roles, scope (MVP + out-of-scope), requirements by domain, assumptions, and proposed roadmap. Generated from `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html`.
 
-The proposal captures: understanding, users & roles, scope (MVP + out-of-scope), requirements by domain, assumptions, and proposed roadmap.
-
-The proposal is saved under:
-- `clients/.../client-approval/` (للمشاريع الخارجية — من TCEA)
-- `project-inputs/` (للمشاريع الداخلية — من Tera)
-
-The proposal **must be approved by the client (or Majed for internal projects)** before formal preparation begins. The approved proposal becomes the official scope reference for all subsequent gates.
+The proposal is saved under `clients/.../client-approval/` and **must be approved by the client** before formal preparation begins. The approved proposal becomes the official scope reference for all subsequent gates.
 
 ---
 
 ## 6. Client Discovery
 
-> **المنفذ:** للمشاريع الخارجية — `TeraClientEngagementAgent` (يراجع `TeraClientEngagement.md §3.2`).
-> للمشاريع الداخلية — `TeraAgent` (يراجع `TeraProjectIntakePolicy.md §6`).
+When a new external client project starts, Tera must enter Client Discovery before implementation.
 
-### للمشاريع الخارجية (TeraClientEngagementAgent)
-
-TCEA يدير Client Discovery كاملاً مع العميل عبر Majed. تشمل معلومات Discovery:
+Client Discovery gathers:
 
 - client identity
 - contacts and approval authority
 - application idea
-- client goals and pain points
+- client goals
+- client pain points
 - preferred style and visual direction
 - reference apps, sites, documents, colors, or brand assets
 - non-preferred examples
 - expected approval process
-- budget/time sensitivity if provided
+- budget/time sensitivity if the user chooses to provide it
 - client-specific risks
 
-**TeraAgent لا يقوم بهذه العملية.** عندما تصل الحزمة إلى Tera تكون جاهزة.
+### Mandatory Discovery Coverage Rule
 
-### للمشاريع الداخلية (TeraAgent)
+For external client work managed through `TeraClientEngagementAgent`, confirmed understanding alone is not sufficient.
 
-Tera يدير Discovery مباشرة مع Majed عبر:
+TCEA must not treat scope, quotation, or handoff outputs as ready until mandatory discovery coverage has been evaluated across the required discovery domains and approved by Majed.
 
-1. **Client Discovery Mode** — استماع مفتوح، فهم، تأكيد
-2. **Smart Interview** — أسئلة موجّهة إذا بقيت فجوات
+### Discovery Coverage Evidence
 
-التفاصيل في `TERA_RUNTIME_PROTOCOLS.md §18` و `TeraProjectIntakePolicy.md §6`.
+Discovery coverage must be visible in files, not only in chat.
 
-### Majed as Client Intermediary (للمشاريع الخارجية — TCEA)
+Recommended operational evidence:
 
-النموذج التشغيلي لـ TCEA:
+```text
+clients/.../client-engagement/DISCOVERY_COVERAGE_SUMMARY.md
+```
 
-- TCEA يصيغ أسئلة قصيرة ومباشرة للعميل.
-- Majed يرسلها للعميل.
-- Majed يعيد الإجابات إلى TCEA.
-- TCEA يوثق الإجابات في الملفات الصحيحة.
+The file should show:
+- domain coverage status
+- blocking vs non-blocking gaps
+- assumptions
+- readiness decision for scope / quotation / handoff
 
-### Improvement Suggestions (لجميع المشاريع)
+### Final Rule
 
-العميل المسؤول (TCEA أو Tera) قد يقترح تحسينات بشرط:
+```text
+No discovery coverage evidence = no trusted client scope, no trusted quotation basis, and no trusted internal handoff.
+```
 
-- دعم الهدف الأصلي للعميل
-- عدم تغيير فكرة المشروع الأساسية
-- وضع علامة واضحة كـ "اقتراح"
-- فصلها عن النطاق المعتمد
-- عرضها على Majed لمراجعتها مع العميل
+### Majed as Client Intermediary
 
-الاقتراحات لا تصبح نطاقاً حتى تُعتمد وتُوثق.
+The normal operating model is:
+
+- Tera asks Majed short, direct client questions.
+- Majed asks the client.
+- Majed returns the answers to Tera.
+- Tera documents material answers in the correct files.
+
+Tera must phrase questions so they can be forwarded to the client with minimal editing.
+
+### Improvement Suggestions
+
+Tera may suggest improvements, additions, or simplifications only if they:
+
+- support the client's original goal
+- do not change the core project idea
+- are clearly marked as suggestions
+- are separated from confirmed scope
+- are offered for Majed to review with the client
+
+Suggestions do not become scope until approved and documented.
 
 ---
 
 ## 7. Client Approval Package
-
-> **المنفذ:** للمشاريع الخارجية — `TeraClientEngagementAgent` (يُنتج الحزمة ويدير بوابات الاعتماد).
-> للمشاريع الداخلية — `TeraAgent` (يُنتج حزمة اعتماد مبسطة لماجد).
->
-> TeraAgent للمشاريع الخارجية: يتحقق فقط من وجود الحزمة واكتمالها قبل Build Mode. لا ينتجها.
 
 ### Location
 
@@ -217,7 +203,7 @@ The default mandatory package is:
 - `10_CLIENT_APPROVAL_RECORD.md`
 - `11_CHANGE_CONTROL.md`
 
-If a file is not applicable to a very small project, the responsible agent must still create an explicit section in `10_CLIENT_APPROVAL_RECORD.md` explaining why it is not applicable and what replaced it.
+If a file is not applicable to a very small project, Tera must still create an explicit section in `10_CLIENT_APPROVAL_RECORD.md` explaining why it is not applicable and what replaced it.
 
 ### Approval Gates
 
@@ -249,16 +235,13 @@ If a file is not applicable to a very small project, the responsible agent must 
 
 Implementation tasks must trace back to approved scope and acceptance criteria.
 
-The responsible agent must not create implementation `TASK-ID`s for client work before Gate 7 passes.
+Tera must not create implementation `TASK-ID`s for client work before Gate 7 passes.
 
 If Majed explicitly authorizes a pre-approval technical spike, it must be treated as non-deliverable research only, must not modify final application code, must not become client scope, and must be documented separately from Build Mode.
 
 ---
 
 ## 8. Change Control
-
-> **المنفذ:** للمشاريع الخارجية — `TeraClientEngagementAgent` (يدير Change Control مع العميل).
-> للمشاريع الداخلية — `TeraAgent` (يدير Change Control مع Majed مباشرة).
 
 ```text
 No undocumented change requests during execution.
@@ -303,7 +286,7 @@ Each change record must include:
 
 ### Implementation Restriction
 
-The responsible agent must not implement a change classified as `Enhancement` or `New Scope` until Majed confirms the required client approval and the approval is documented.
+Tera must not implement a change classified as `Enhancement` or `New Scope` until Majed confirms the required client approval and the approval is documented.
 
 For `New Scope`, approval from the documented client approval authority is required unless Majed explicitly records that the item is deferred to a later phase and will not affect the current build.
 

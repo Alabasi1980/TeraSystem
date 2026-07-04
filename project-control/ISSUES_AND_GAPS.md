@@ -24,5 +24,3 @@
 **Phase 7 Rule:** No hidden open issues. Any unresolved issue must be documented as Resolved / Deferred / Won't Fix / Requires TASK-COD-FIX before project closure.
 
 ## Open Issues and Gaps
-
-No open issues or historical gap records are kept in the active system workspace after the approved hard reset.

@@ -6,16 +6,16 @@ description: مراجعة ما بعد التنفيذ لآخر مهمة — Post-
 
 اتبع الخطوات التالية بالترتيب:
 
-1. حدّد مساحة العمل النشطة للتطبيق ثم اقرأ `[active application workspace]/project-control/TASK_REGISTRY.md`.
+1. اقرأ `project-control/TASK_REGISTRY.md`.
 2. ابحث عن آخر مهمة حالة `Submitted` أو `In Review` أو `Needs Fix`.
-3. اقرأ ملف المهمة الكامل من `[active application workspace]/project-control/tasks/[TASK-ID].md`.
+3. اقرأ ملف المهمة الكامل من `project-control/tasks/[TASK-ID].md`.
 4. طبّق Post-Execution Review Gate من `tera-system/TeraPreExecutionGate.md`:
    - تحقق من اكتمال acceptance criteria.
    - راجع الملفات التي تم تغييرها (من تقرير التنفيذ).
    - تحقق من عدم وجود secrets في المخرجات.
-   - تحقق من تحديث `[active application workspace]/project-control/PROJECT_STATE.md`.
-   - تحقق من تحديث `[active application workspace]/project-control/PROJECT_ACTIVITY_LOG.md`.
-   - تحقق من تحديث `[active application workspace]/project-control/ISSUES_AND_GAPS.md` إذا وجدت issues جديدة.
+   - تحقق من تحديث `project-control/PROJECT_STATE.md`.
+   - تحقق من تحديث `project-control/PROJECT_ACTIVITY_LOG.md`.
+   - تحقق من تحديث `project-control/ISSUES_AND_GAPS.md` إذا وجدت issues جديدة.
 5. إذا كانت المهمة UI/Frontend، طبّق `UI_ACCEPTANCE_GATE.md`.
 
 اعرض النتيجة:

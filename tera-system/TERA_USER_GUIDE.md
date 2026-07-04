@@ -123,10 +123,10 @@ Use a clear prompt:
 
 المطلوب من Tera الآن:
 1. اسألني فقط عن المعلومات الناقصة الضرورية.
-2. صغ الأسئلة بطريقة يمكنني إرسالها للعميل (أو أحِلها إلى TeraClientEngagementAgent للمشاريع الخارجية).
-3. أنشئ أو حدّث ملفات العميل داخل clients/ (للمشاريع الداخلية؛ للمشاريع الخارجية TeraClientEngagementAgent هو المسؤول).
+2. صغ الأسئلة بطريقة يمكنني إرسالها للعميل.
+3. أنشئ أو حدّث ملفات العميل داخل clients/.
 4. أنشئ أو حدّث project-inputs/ حسب الحاجة.
-5. تأكد من وجود `TERA_HANDOFF_PACKAGE.md` أو Client Approval Package (من TeraClientEngagementAgent) قبل التنفيذ.
+5. جهز Client Approval Package فقط بعد اكتمال الحد الأدنى من المعلومات.
 6. انتظر موافقتي قبل أي تنفيذ برمجي.
 ```
 

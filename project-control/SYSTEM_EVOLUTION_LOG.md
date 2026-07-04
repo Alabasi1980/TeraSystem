@@ -97,3 +97,144 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 11. إزالة السطور المضافة من .opencode/agents/tera-client-engagement.md
 12. إزالة السطر المضاف من .opencode/agents/tera-system-evolution.md
 ```
+
+### SCP-2026-07-04-018 — Understanding Confirmation Gate for TCEA
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-018
+مصدر الطلب: AGENT_GAPS_LOG.md (GAP-001) + User Request (Majed)
+نوع التغيير: Process Gap Fix + Runtime Sync + Limited Operational Remediation
+الملفات المعدلة:
+- UPDATE: project-control/AGENT_GAPS_LOG.md
+- UPDATE: tera-system/TeraClientEngagement.md
+- UPDATE: .opencode/agents/tera-client-engagement.md
+- UPDATE: clients/CLIENT-alfares-maintenance/applications/APP-maintenance-requests/client-engagement/CLIENT_INTAKE.md
+- UPDATE: clients/CLIENT-alfares-maintenance/applications/APP-maintenance-requests/client-engagement/CLIENT_BRIEF.md
+- UPDATE: clients/CLIENT-alfares-maintenance/applications/APP-maintenance-requests/client-engagement/SCOPE_SUMMARY.md
+- CREATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-018.md
+الملخص:
+تم إصلاح فجوة TCEA التي كانت تسمح بالانتقال من Discovery إلى ملفات النطاق دون Understanding Confirmation Gate صريحة.
+أضيفت بوابة إلزامية داخل المرجع `TeraClientEngagement.md` وداخل runtime `.opencode/agents/tera-client-engagement.md` تمنع إنتاج CLIENT_BRIEF / SCOPE_SUMMARY / DRAFT_QUOTATION / TERA_HANDOFF_PACKAGE قبل تأكيد Majed للملخص.
+كما تم تنفيذ remediation تشغيلية محدودة على التطبيق الحالي: توثيق حالة الفهم داخل `CLIENT_INTAKE.md` كـ pending، ووضع تنبيه حوكمي على `CLIENT_BRIEF.md` و `SCOPE_SUMMARY.md` بأنهما غير baseline حتى confirmation.
+تم تحديث GAP-001 إلى `Applied`.
+الموافقة: Majed — Approved
+التحقق من الصحة: Validation Passed
+المخاطر: منخفضة — تضيف Gate قصيرة لكنها تمنع بناء scope على فهم غير مؤكد.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة Understanding Confirmation Gate من `tera-system/TeraClientEngagement.md`
+2. إزالة التحديثات المناظرة من `.opencode/agents/tera-client-engagement.md`
+3. إزالة remediation من ملفات التطبيق الحالية إذا لزم
+4. إعادة صياغة GAP-001 إذا تقرر سحب التغيير
+```
+
+### SCP-2026-07-04-019 — ApplicationBlueprintAgent + Blueprint Confirmation Gate
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-019
+مصدر الطلب: User Request (Majed)
+نوع التغيير: New Agent + Architecture Update + Pre-Preparation Governance
+الملفات المعدلة:
+- CREATE: tera-system/TeraApplicationBlueprint.md
+- UPDATE: tera-system/TeraPolicyMap.md
+- UPDATE: tera-system/TeraArchitectureMap.md
+- UPDATE: tera-system/TeraClientEngagement.md
+- UPDATE: tera-system/TeraAgent.md
+- UPDATE: tera-system/Tera_Project_Preparation_Files.md
+- UPDATE: tera-system/TeraPreparationDocumentationGovernance.md
+- CREATE: .opencode/agents/application-blueprint.md
+- UPDATE: .opencode/agents/tera-client-engagement.md
+- UPDATE: .opencode/agents/tera.md
+- CREATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-019.md
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تمت إضافة `ApplicationBlueprintAgent` كعميل جلسة رئيسي مستقل لمرحلة blueprinting فقط بين TCEA و TeraAgent formal preparation.
+تم إنشاء مصدر حقيقة جديد يحدد هويته، حدوده، قاعدة `BLOCKED_BY_UNCONFIRMED_HANDOFF`، قاعدة `No Stack Finalization`, المخرجات الرسمية، وضوابط `draft-seeds/`.
+تمت إضافة `Blueprint Confirmation Gate` التي تمنع TeraAgent من استخدام `project-preparation/APPLICATION_BLUEPRINT.md` في التحضير الرسمي ما لم تصبح حالته `approved_for_preparation`.
+كما تم تحديث الخرائط والـ runtime لربط التدفق الجديد وتوضيح أن `draft-seeds/` ليست baseline ولا صالحة downstream مباشرة.
+الموافقة: Majed — Approved with Conditions
+التحقق من الصحة: Validation Passed
+المخاطر: متوسطة — تضيف Agent جديداً وبوابة جديدة، لكنها مضبوطة بحدود واضحة لمنع التضخم وتداخل الأدوار.
+ملاحظات الاسترجاع (Rollback):
+1. حذف `tera-system/TeraApplicationBlueprint.md`
+2. حذف `.opencode/agents/application-blueprint.md`
+3. إزالة مراجع الـ blueprint من `TeraPolicyMap.md` و `TeraArchitectureMap.md`
+4. إزالة تحديثات التدفق من `TeraClientEngagement.md` و `TeraAgent.md` و runtime files
+5. إزالة قسم Blueprint artifacts من `Tera_Project_Preparation_Files.md`
+6. إزالة قواعد pre-baseline blueprint من `TeraPreparationDocumentationGovernance.md`
+7. الإبقاء على أي ملفات blueprint موجودة كأرشيف فقط وعدم اعتمادها runtime
+```
+
+### SCP-2026-07-04-022 — TCEA Mandatory 13-Domain Client Discovery Framework
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-022
+مصدر الطلب: User Request (Majed) + GAP-002
+نوع التغيير: Process Governance Upgrade + Runtime Sync + Pricing/Discovery Alignment
+الملفات المعدلة:
+- UPDATE: tera-system/TeraClientEngagement.md
+- UPDATE: .opencode/agents/tera-client-engagement.md
+- UPDATE: tera-system/TeraApplicationQuestionBank.md
+- UPDATE: tera-system/TeraClientPolicy.md
+- UPDATE: tera-system/TeraPricingPolicy.md
+- UPDATE: tera-system/TeraApplicationBlueprint.md
+- UPDATE: tera-system/TeraPolicyMap.md
+- UPDATE: tera-system/TeraArchitectureMap.md
+- UPDATE: tera-system/runtime/TERA_RUNTIME_TEMPLATES.md
+- UPDATE: .opencode/agents/application-blueprint.md
+- UPDATE: project-control/AGENT_GAPS_LOG.md
+- CREATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-022.md
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تمت ترقية TeraClientEngagementAgent بإضافة إطار اكتشاف إلزامي من 13 مجالاً، مع Discovery Completeness Matrix داخل `DISCOVERY_COVERAGE_SUMMARY.md`، وDiscovery Coverage Gate، وQuotation Readiness Gate، وTera Handoff Readiness Gate.
+أصبح الانتقال من Discovery إلى CLIENT_BRIEF / SCOPE_SUMMARY / FEATURE_LIST / DRAFT_QUOTATION / TERA_HANDOFF_PACKAGE محكوماً بتغطية إلزامية مرئية وباعتماد Majed.
+كما تم الحفاظ على مبدأ منع التضخم عبر قاعدة `Mandatory Coverage ≠ Mandatory Deep Interview`، والسماح بـ Level 1 Preliminary Estimate كنطاق غير ملزم قبل اكتمال التغطية الكاملة، مع حظر Level 2 Draft Quotation قبل جاهزية الاقتباس.
+تم كذلك تحديث Question Bank والسياسات المرجعية والتصميم blueprintي ليتوافق مع جودة handoff الجديدة.
+الموافقة: Majed — Approved
+التحقق من الصحة: Validation Passed
+المخاطر: متوسطة — تزيد الحوكمة والوضوح، لكن قد تبطئ بعض المشاريع الصغيرة إذا أسيء تطبيق العمق. تم تخفيف ذلك بقواعد Depth Scaling وملف إضافي واحد فقط.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة أقسام 13-domain framework والبوابات الجديدة من `TeraClientEngagement.md`
+2. إزالة القواعد التشغيلية المناظرة من `.opencode/agents/tera-client-engagement.md`
+3. إزالة Discovery Coverage template من `TERA_RUNTIME_TEMPLATES.md`
+4. إزالة تحديثات `TeraApplicationQuestionBank.md` و`TeraClientPolicy.md` و`TeraPricingPolicy.md` و`TeraApplicationBlueprint.md`
+5. إزالة مرجع الإطار من `TeraPolicyMap.md` وعودة flow في `TeraArchitectureMap.md` إن لزم
+6. الإبقاء على أي `DISCOVERY_COVERAGE_SUMMARY.md` موجودة كأرشيف أو دمجها لاحقاً في `CLIENT_INTAKE.md` إذا تقرر سحب التغيير
+```
+
+### SCP-2026-07-04-023 — Central Agent Conduct Gate
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-023
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Improvement / Anti-Bloat / Runtime Governance
+الملفات المعدلة:
+- CREATE: tera-system/TERA_AGENT_CONDUCT.md
+- UPDATE: tera-system/TeraPolicyMap.md
+- UPDATE: tera-system/TeraArchitectureMap.md
+- UPDATE: .opencode/agents/tera.md
+- UPDATE: .opencode/agents/tera-client-engagement.md
+- UPDATE: .opencode/agents/application-blueprint.md
+- UPDATE: .opencode/agents/tera-system-evolution.md
+- UPDATE: .opencode/agents/auditor.md
+- UPDATE: .opencode/agents/monitor.md
+- UPDATE: .opencode/agents/design-reviewer.md
+- UPDATE: .opencode/agents/tera-software-designer.md
+- UPDATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-023.md
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم إنشاء ملف مركزي واحد `TERA_AGENT_CONDUCT.md` ليكون بوابة السلوك الإجباري للعملاء الأساسيين، ويحتوي على القواعد الحاسمة المشتركة، Pre-Action Gate، وقاعدة عدم اليقين، مع ربط مختصر بمسار Gap Reporting الرسمي.
+تمت إضافة مرجع Conduct Gate قصير في أعلى العملاء الأساسيين والعميل `tera-software-designer.md`، مع إزالة أقسام Self-Improvement المكررة من بعض ملفات runtime والإبقاء على Agent Gap Management الخاص بـ TeraSystemEvolutionAgent.
+الهدف هو تقوية الالتزام، تقليل المبادرة غير المصرح بها، وتنظيف التكرار دون تضخيم ملفات العملاء.
+الموافقة: Majed — Approved
+التحقق من الصحة: Validation Passed
+المخاطر: منخفضة — تضيف Gate سلوكية مركزية وقد تزيد التوقفات الوقائية، لكنها تقلل drift وتكرار القواعد.
+ملاحظات الاسترجاع (Rollback):
+1. حذف `tera-system/TERA_AGENT_CONDUCT.md`
+2. إزالة Conduct Gate references من ملفات `.opencode/agents/`
+3. استعادة أقسام Self-Improvement المحذوفة إذا تقرر الرجوع
+4. إزالة مرجع الملف من `TeraPolicyMap.md` و `TeraArchitectureMap.md`
+```

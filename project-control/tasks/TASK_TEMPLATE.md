@@ -14,11 +14,6 @@
 | **Linked Plan Item** | PROJECT_DETAILED_EXECUTION_PLAN item / N/A |
 | **Linked Batch** | EXECUTION_BATCH_PLAN batch / N/A |
 | **Active Technology Profile** | Profile name / N/A |
-| **Target Version** | v1.0 / v1.1 / v2.0 / v1.0.1 / N/A |
-| **Release Type** | Initial / Hotfix / Patch / Minor / Major / N/A |
-| **Version Scope** | In Scope / Deferred / Out of Scope / N/A |
-| **Version Registry Updated** | Yes / No / N/A |
-| **Release Notes Required** | Yes / No / N/A |
 | **Design Source Decision** | INTERNAL_TERA_KIT / GETDESIGN_MD / FIGMA_DESIGN_FILE / USER_PROVIDED_REFERENCE / EXTERNAL_URL_ANALYSIS / HYBRID / NO_UI / N/A |
 | **UI Acceptance Gate Required** | Yes / No / N/A |
 
@@ -45,20 +40,7 @@ _What is the goal of this task?_
 2. 
 3. 
 
-## 6.1 Technical Specification / Fast Path
-
-| Field | Value |
-|---|---|
-| Review Required | **Yes for impactful tasks** (DB, API, BL, Security, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory). **Fast Path** allowed for low-risk tasks — see SCP-016 rules |
-| Review Agent | SoftwareDesignerAgent (for impactful tasks) / Tera direct review (for Fast Path) |
-| Technical Specification File | `[active application workspace]/project-control/task-engineering-reviews/[TASK-ID]_TECHNICAL_SPECIFICATION.md` (N/A for Fast Path) |
-| Task Engineering Review Decision | APPROVED_FOR_GATE / REVISION_REQUIRED / SPLIT_REQUIRED / BLOCKED_BY_MISSING_DECISION / WRONG_AGENT / NEEDS_PRE_REVIEW / REJECTED_OUT_OF_SCOPE / N/A (N/A for Fast Path) |
-| Risk Level | Low (Fast Path eligible) / Medium / High / Critical |
-| Fast Path Justification | If Fast Path: document Low-risk assessment, affected files, no-SDA-impact checklist, Acceptance Criteria |
-| Approved for Pre-Execution Gate | Yes / No |
-| Design Gaps | List any gaps if preparation files were insufficient |
-
-## 6.2 Execution Gates
+## 6.1 Execution Gates
 
 | Gate | Result | Notes |
 |---|---|---|
@@ -66,24 +48,13 @@ _What is the goal of this task?_
 | Model Capability Gate | _Current model sufficient / Safeguards / Stronger recommended / Stronger required_ | |
 | Pre-Execution Gate | _PASS / NEEDS_REVISION / BLOCKED_ | |
 
-## 6.2.1 Scoped Runtime Override
-
-| Field | Value |
-|---|---|
-| Runtime Override Used? | Yes / No |
-| Override Type | None / Narrow Targets / Expand Targets (In Scope) / Reduce Context / Escalate Review / Freeze Current Agent Path / Reassign Writer |
-| Reason | |
-| Scope Still Approved? | Yes / No |
-| Extra Approval Needed? | Yes / No |
-| Logged In | Task File / PROJECT_ACTIVITY_LOG / SUB_AGENT_STATUS / N/A |
-
-## 6.3 CLI / Tool Side Effects
+## 6.2 CLI / Tool Side Effects
 
 | Command / Tool | Allowed? | Expected Side Effects | Approval Needed? |
 |---|---|---|---|
 |  | _Yes / No / N/A_ |  | _Yes / No_ |
 
-## 6.4 UI / Frontend Requirements
+## 6.3 UI / Frontend Requirements
 
 Required for any UI, Frontend, layout, style, or component task.
 
@@ -103,17 +74,6 @@ Reason:
 Proposed Split:
 - TASK-XXXX:
 - TASK-XXXX:
-```
-
-## 7.1 Version Scope Check
-
-```md
-Target Version:
-Release Type:
-Is this work allowed in the target version? Yes/No
-If Hotfix: Does it include any new feature? Yes/No/N/A
-VERSION_REGISTRY.md update required? Yes/No
-RELEASE_NOTES.md update required? Yes/No
 ```
 
 ## 8. Sub-Agent Output Review

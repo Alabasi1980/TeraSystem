@@ -262,6 +262,24 @@ Majed يعتمد السعر النهائي.
 - يستخدم `TeraPricingPolicy.md` لحساب السعر (معادلة، Rubric، Risk Buffer).
 - يُحفظ في `client-engagement/` مع إشارة واضحة: **DRAFT — لم يعتمد بعد**.
 
+**قاعدة جاهزية إلزامية:**
+
+لا يجوز إنتاج `Level 2 Draft Quotation` إلا بعد اجتياز **Quotation Readiness Gate** في TCEA، وبحد أدنى وضوح:
+
+- MVP Scope
+- Out of Scope
+- Screens estimate
+- Reports / Dashboards estimate
+- Integrations included / excluded
+- Notifications included / excluded
+- Design direction
+- Technical / Hosting assumption
+- Security assumptions
+- Commercial risks
+- Delivery assumptions
+
+إذا بقي شيء غير واضح، يجب توثيقه صراحة كـ `Assumption` أو `Risk` أو `Deferred`، وليس تجاهله.
+
 ### Level 3 — Official Quotation
 
 - **لا يصدر إلا بعد اعتماد Majed الصريح.**
@@ -281,9 +299,10 @@ Majed يعتمد السعر النهائي.
 1. Client Intake ← جمع معلومات أولية (أول مقابلة)
 2. Preliminary Estimate (Level 1) ← نطاق سعري تقريبي
 3. CLIENT_BRIEF + SCOPE_SUMMARY سريع ← ملفان خفيفان
-4. Draft Quotation (Level 2) ← من TCEA
-5. Majed Approval ← اعتماد
-6. Official Quotation (Level 3) ← إرسال للعميل
+4. Discovery Coverage + Quotation Readiness
+5. Draft Quotation (Level 2) ← من TCEA
+6. Majed Approval ← اعتماد
+7. Official Quotation (Level 3) ← إرسال للعميل
 ```
 
 ### ب. مشروع متوسط
@@ -293,9 +312,10 @@ Majed يعتمد السعر النهائي.
 1. Client Intake (أول مقابلة)
 2. Preliminary Estimate (Level 1)
 3. ملفات نطاق أساسية: CLIENT_BRIEF, SCOPE_AND_BOUNDARIES, FEATURE_LIST
-4. Draft Quotation (Level 2)
-5. Majed Approval
-6. Official Quotation (Level 3)
+4. Discovery Coverage + Quotation Readiness
+5. Draft Quotation (Level 2)
+6. Majed Approval
+7. Official Quotation (Level 3)
 ```
 
 ### ج. مشروع معقد
@@ -305,9 +325,10 @@ Majed يعتمد السعر النهائي.
 1. Client Intake (أول مقابلة)
 2. Preliminary Estimate (Level 1)
 3. تحليل نطاق شامل: ملفات SCOPE, MODULES, SCREENS, BUSINESS_RULES
-4. Draft Quotation (Level 2)
-5. Majed Approval
-6. Official Quotation (Level 3)
+4. Discovery Coverage + Quotation Readiness
+5. Draft Quotation (Level 2)
+6. Majed Approval
+7. Official Quotation (Level 3)
 ```
 
 ### د. مشروع غامض
@@ -317,16 +338,17 @@ Majed يعتمد السعر النهائي.
 1. Client Intake (أول مقابلة)
 2. Paid Discovery (§7) ← 50–100 JOD أو 5% — يُخصم عند التعاقد
 3. Discovery Output ← CLIENT_BRIEF + SCOPE_SUMMARY
-4. Draft Quotation (Level 2)
-5. Majed Approval
-6. Official Quotation (Level 3)
+4. Discovery Coverage + Quotation Readiness
+5. Draft Quotation (Level 2)
+6. Majed Approval
+7. Official Quotation (Level 3)
 ```
 
 ### القاعدة الحاسمة للتوقيت
 
 ```text
 أول مقابلة = تقدير مبدئي فقط (Level 1)
-بعد توثيق النطاق = Draft Quotation (Level 2)
+بعد توثيق النطاق + Quotation Readiness = Draft Quotation (Level 2)
 بعد اعتماد Majed = Official Quotation (Level 3)
 لا يصدر عرض سعر رسمي من أول مقابلة أبداً.
 ```

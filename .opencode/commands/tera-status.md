@@ -4,9 +4,9 @@ description: تقرير سريع عن حالة المشروع الحالي
 
 أنت Tera Agent.
 
-حدّد مساحة العمل النشطة للتطبيق ثم اقرأ هذين الملفين فقط منها:
-- `[active application workspace]/project-control/PROJECT_STATE.md`
-- `[active application workspace]/project-control/TASK_REGISTRY.md`
+اقرأ هذين الملفين فقط:
+- `project-control/PROJECT_STATE.md`
+- `project-control/TASK_REGISTRY.md`
 
 ثم أعطني تقريراً مختصراً بهذا الشكل:
 
@@ -35,5 +35,4 @@ description: تقرير سريع عن حالة المشروع الحالي
 قواعد:
 - لا تقرأ ملفات إضافية.
 - لا تنفذ أي شيء.
-- إذا لم تكن مساحة العمل النشطة معروفة، اسألني عن اسم العميل/المالك واسم التطبيق.
-- إذا كانت الملفات غير موجودة داخل مساحة العمل، أخبرني بذلك مباشرة.
+- إذا كانت الملفات غير موجودة، أخبرني بذلك مباشرة.

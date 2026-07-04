@@ -1,21 +1,13 @@
-﻿# Project Intake Policy
-
-> **ملاحظة نظامية:** هذا الملف يعرّف سياسة الـ intake و discovery قبل بدء TeraAgent في التخطيط والتنفيذ.
->
-> في النموذج التشغيلي الحالي، `TeraClientEngagementAgent` هو المنفذ الأساسي لهذه السياسة للمشاريع الداخلية والخارجية عبر Majed، ثم ينتج `TERA_HANDOFF_PACKAGE.md` ويسلّمها إلى TeraAgent.
->
-> `TeraAgent` لا يدير Discovery مباشرة، بل يبدأ بعد Handoff معتمد وينتقل إلى `Phase 2 — Project Decision`.
-> راجع `tera-system/TeraClientEngagement.md` و `tera-system/TeraAgent.md §1.2` و `§4.0`.
-
+# Project Intake Policy
 
 ## 1. Purpose
 
-This policy defines the intake process before formal handoff to TeraAgent. In the current operating model, the responsible intake agent is `TeraClientEngagementAgent` acting through Majed.
+This policy defines the intake process before Tera starts formal project preparation for any new project.
 
 The intake process has two sequential stages:
 
 ```
-Stage 1: Client Discovery Mode  ← Open conversation + understanding summary (with Majed)
+Stage 1: Client Discovery Mode  ← Open conversation + understanding summary
 Stage 2: Smart Interview         ← Structured adaptive questioning (only if gaps remain)
 ```
 
@@ -30,15 +22,11 @@ The minimum intake package is:
 - `project-inputs/01_APPLICATION_IDEA.md`
 - `project-inputs/02_TECHNICAL_CONTEXT.md`
 
-For every new application, these files must be created inside the active application workspace:
+For external client projects, Tera must also collect or create the client workspace records defined in `tera-system/TeraClientPolicy.md`:
 
-```text
-project-inputs/
-```
-
-Root-level `project-inputs/` is only a template/bootstrap area unless the user explicitly approves operating without an isolated application workspace.
-
-> **ملاحظة:** للمشاريع الخارجية، ملفات العميل (CLIENT_PROFILE.md، CONTACTS.md، إلخ) يديرها `TeraClientEngagementAgent`. TeraAgent لا ينشئها.
+- `clients/CLIENT-[client-name-or-id]/CLIENT_PROFILE.md`
+- `clients/CLIENT-[client-name-or-id]/CONTACTS.md`
+- `clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/client-approval/`
 
 ## 3. Application Idea File
 
@@ -80,34 +68,27 @@ Use these statuses:
 - `Partial`
 - `Complete`
 
-## 6. Intake Collection via TeraClientEngagementAgent
+## 6. Intake Collection via Client Discovery + Smart Interview
 
-For both internal and external projects, if one or both intake files are missing or materially incomplete, the responsible discovery/intake owner is `TeraClientEngagementAgent`.
-
-The discovery/intake flow is:
+If one or both intake files are missing or materially incomplete, Tera must enter:
 
 ```text
-TeraClientEngagementAgent
--> Client Discovery Mode
--> Smart Interview (if needed)
--> Intake completion
--> TERA_HANDOFF_PACKAGE.md
--> handoff to TeraAgent
+Client Discovery Mode
 ```
 
 This is a **two-stage process** defined in `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` (Section 18):
 
 ### Stage 1: Client Discovery (mandatory first step)
-1. **Open Listening** — Let the client or Majed explain the idea freely without interruption.
-2. **Understanding Summary** — Summarize TCEA's understanding and ask: "هل هذا الفهم صحيح؟"
-3. **Confirmation** — Do not proceed until the explanation is confirmed or corrected.
+1. **Open Listening** — Let the client explain freely without interruption.
+2. **Understanding Summary** — Summarize Tera's understanding and ask: "هل هذا الفهم صحيح؟"
+3. **Confirmation** — Do not proceed until the client confirms or corrects.
 4. **Decision** — If the picture is clear enough, proceed to Intake Gate. If major gaps remain, proceed to Stage 2.
 
 ### Stage 2: Smart Interview (if gaps remain)
 1. **Opening Round** — Essential questions from Domains 1, 2, 4 (5–7 questions).
 2. **Analysis** — Identify gaps and select next domain.
 3. **Adaptive Rounds** — Continue in small batches until picture is complete.
-4. **Final Understanding Summary** — Confirm with the client or Majed.
+4. **Final Understanding Summary** — Confirm with the user.
 5. **Suggestions and Improvements** — Propose improvements, classified separately from scope.
 
 ### Rules for both stages
@@ -117,14 +98,13 @@ This is a **two-stage process** defined in `tera-system/runtime/TERA_RUNTIME_PRO
 - Do not choose a final active Technology Profile.
 - Do not generate sub-agents for implementation work.
 - Do not create implementation `TASK-ID`s.
-- Document each answer immediately in `project-inputs/` inside the active application workspace.
-- **When the decision owner does not know**: propose a suitable default, document it as an `Assumption` (not as a final decision). See Question Bank for assumption documentation format.
+- Document each answer immediately in `project-inputs/`.
+- For external client projects, phrase questions for Majed to forward to the client.
+- **When the client does not know**: propose a suitable default, document it as an `Assumption` (not as a final decision). See Question Bank for assumption documentation format.
 
-`TeraAgent` does not perform this discovery flow directly. It starts only after approved handoff.
+## 7. Minimum Questions
 
-## 7. Minimum Questions During Discovery
-
-When intake is incomplete, `TeraClientEngagementAgent` should ask only the shortest useful questions, such as:
+When intake is incomplete, Tera should ask only the shortest useful questions, such as:
 
 - What is the application idea?
 - Who will use it?
@@ -134,7 +114,16 @@ When intake is incomplete, `TeraClientEngagementAgent` should ask only the short
 - What database is required, if any?
 - Is there any preferred or forbidden UI/design direction?
 
-> **ملاحظة:** أسئلة العميل (الاسم، جهات الاتصال، الشعار، إلخ) يطرحها `TeraClientEngagementAgent`. TeraAgent لا يسأل هذه الأسئلة.
+For external client projects, also ask the shortest useful client questions:
+
+- What is the client name?
+- Is the client an individual, company, or organization?
+- Who are the client contacts, and who can approve decisions?
+- What phone numbers or emails are available, if any?
+- What language should client documents use? Default is Arabic.
+- Does the client have a logo, colors, references, or examples they like?
+- Are there examples the client dislikes?
+- Does the client need a proposal, prototype, or design approval before implementation?
 
 ## 8. When Tera Can Proceed
 
@@ -144,7 +133,14 @@ Tera may proceed to formal preparation only when:
 - `02_TECHNICAL_CONTEXT.md` exists and is acceptable at minimum level, or clearly documents that the stack is still undecided.
 - Tera has determined whether an existing Technology Profile can be used, or whether a new profile draft will be needed later.
 
-> **ملاحظة:** للمشاريع الخارجية، Tera لا يمر بهذه البوابة. Tera يتحقق من اكتمال `TERA_HANDOFF_PACKAGE.md` فقط (من TCEA) ثم يبدأ التحضير. راجع `tera-system/TeraPreExecutionGate.md`.
+For external client projects, Tera may proceed only to client approval preparation when:
+
+- client profile and contacts are documented at minimum level.
+- approval authority is known or explicitly marked as unknown.
+- the client application folder under `clients/` is identified.
+- Tera has enough information to produce a client-facing approval package.
+
+Tera may not proceed to implementation until `tera-system/TeraClientPolicy.md` (Section 7: Client Approval Package) is satisfied.
 
 ## 9. Relationship with 00_PROJECT_INPUTS.md
 
