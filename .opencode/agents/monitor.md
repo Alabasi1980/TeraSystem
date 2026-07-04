@@ -40,7 +40,6 @@ The shared coordination folder is:
 Start with the smallest necessary context:
 
 ```text
-project-control/WORKSPACE_GOVERNANCE_MODEL.md
 project-control/PROJECT_STATE.md
 project-control/PROJECT_MASTER_PLAN.md
 project-control/PROJECT_DETAILED_EXECUTION_PLAN.md

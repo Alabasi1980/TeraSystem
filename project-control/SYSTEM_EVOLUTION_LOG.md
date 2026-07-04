@@ -510,3 +510,132 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 5. إعادة EPA في TeraPreExecutionGate.md (مكانين)
 6. إعادة EPA في TERA_RUNTIME_PROTOCOLS.md (4 أماكن)
 ```
+
+### SCP-2026-07-04-031 — ABA Quality & Honesty Gates (بوابة النزاهة + مؤشرات الانحراف + التدقيق الذاتي)
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-031
+مصدر الطلب: Self-assessment من ApplicationBlueprintAgent + تحليل TeraSystemEvolutionAgent
+نوع التغيير: Agent Capability Improvement / Policy Addition / Anti-Bloat
+الملفات المعدلة (3 files):
+- UPDATE: tera-system/TeraApplicationBlueprint.md (إضافة 3 أقسام + تعديل مخرجات + إعادة ترقيم)
+- UPDATE: .opencode/agents/application-blueprint.md (مزامنة 5 تغييرات من المصدر)
+- UPDATE: project-control/AGENT_GAPS_LOG.md (إضافة ABA + SDA للشمل + GAP-006)
+الملخص:
+تمت إضافة 3 ضوابط هيكلية لـ ApplicationBlueprintAgent بناءً على تحليله الذاتي لفجواته:
+
+1. بوابة النزاهة (§2) — Honesty Protocol (توقف عند نقص المعلومات، وثق، اسأل Majed) +
+   "لا أعلم" كخيار رسمي + Pacing Mandate (الدقة أهم من السرعة).
+
+2. مؤشرات الانحراف (§11) — 4 محفزات توقف إجباري (تضارب المصادر، تغطية غير كافية،
+   توصية بدون بيانات، تجاوز الدور).
+
+3. بوابة التدقيق الذاتي (§13) — مراجعة كل توصية مقابل مصدرها، تعليم الافتراضات،
+   تقييم ثقة كل قسم (High/Medium/Low)، حظر التسليم عند Low confidence.
+
+4. تعديل المخرجات — BLUEPRINT_OPEN_QUESTIONS.md من اختياري إلى إلزامي عند عدم اليقين.
+
+5. تحديث AGENT_GAPS_LOG.md — إضافة ApplicationBlueprintAgent و SoftwareDesignerAgent
+   لقائمة العملاء + تسجيل GAP-006 كـ Applied.
+
+تم رفض طلب إنشاء ملف TERA_AGENT_QUALITY_CONTROL.md (Anti-Bloat — دُمج المحتوى في الملفات الموجودة).
+الموافقة: Majed — Approved ("نفذ واعطني تقرير")
+التحقق من الصحة: Implementation Complete — Anti-Bloat Gate PASS (0 ملفات جديدة).
+المخاطر: منخفضة — ضوابط في ملفات موجودة، لا تغيير في صلاحيات أو أدوار.
+ملاحظات الاسترجاع (Rollback):
+1. TeraApplicationBlueprint.md: حذف §2, §11, §13 وإعادة ترقيم الأقسام إلى §1-13.
+2. application-blueprint.md: إزالة الإضافات (Honesty Gate, Deviation Detectors, Self-Verification Gate)
+   وإعادة BLUEPRINT_OPEN_QUESTIONS.md إلى اختياري فقط.
+3. AGENT_GAPS_LOG.md: إزالة ABA و SDA من قائمة الشمل، حذف GAP-006.
+```
+
+### SCP-2026-07-04-032 — DesignReviewer Improvements (معاينة + توكينز + Source of Truth + تنظيف مراجع)
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-032
+مصدر الطلب: تحليل DesignReviewer الذاتي + تحليل TeraSystemEvolutionAgent + موافقة Majed
+نوع التغيير: Agent Capability Improvement / Stale Reference Cleanup / Anti-Bloat
+الملفات المعدلة (8 files, 1 new):
+- UPDATE: .opencode/agents/design-reviewer.md (webfetch: allow, browser protocol, Token Verification, Source of Truth ref)
+- CREATE: tera-system/TeraDesignReviewer.md (Source of Truth لناقد — 12 قسماً)
+- UPDATE: tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md (تحديث §11)
+- UPDATE: .opencode/agents/monitor.md (إزالة WORKSPACE_GOVERNANCE_MODEL.md)
+- UPDATE: .opencode/agents/auditor.md (إزالة WORKSPACE_GOVERNANCE_MODEL.md)
+- UPDATE: opencode.json (تفعيل Playwright MCP; `browser: true` جرّبت ثم أُزيلت — OpenCode لا تعرفه)
+- UPDATE: project-control/AGENT_GAPS_LOG.md (إضافة GAP-007 كـ Applied)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم تطوير DesignReviewer (ناقد) بناءً على تحليله لـ 3 فجوات.
+
+1. **المعاينة البصرية**: تفعيل **Playwright MCP** للمعاينة البصرية.
+   ناقد الآن يستخدم `browser_navigate` و `browser_screenshot` لرؤية الواجهة المنفّذة
+   وأخذ لقطات شاشة حقيقية. `webfetch` أصبح Fallback فقط عندما يكون التطبيق غير شغال.
+   (ملاحظة: `browser: true` جُرّبت لكن OpenCode لا تعرفها — أُزيلت.)
+
+2. **فحص التوكينز**: إضافة Design Token Verification كخطوة Process منهجية (4 خطوات:
+   تحديد المصدر، استخراج القائمة، grep قاعدة الكود، توثيق الانحرافات).
+   لا حاجة لأداة جديدة — grep و glob كافيان.
+
+3. **مرجع WORKSPACE_GOVERNANCE_MODEL.md الميت**: حذف من 3 عملاء (ناقد، مدقق، رقيب)
+   — كان أول ملف في قائمة القراءة لكنه غير موجود.
+
+4. **إنشاء Source of Truth**: TeraDesignReviewer.md (12 قسماً — الهوية، الموقع، الغرض،
+   التفعيل، المدخلات، المخرجات، الصلاحيات، بروتوكول المعاينة، التحقق من التوكينز، الحدود،
+   العلاقات، التحسين المستمر).
+
+تم رفض إضافة MCP تصوير أو أداة Screenshot (Anti-Bloat — غير مبررة حالياً).
+الموافقة: Majed — Approved (عبر Question Flow)
+التحقق من الصحة: Implementation Complete — Anti-Bloat Gate PASS (ملف جديد واحد فقط = Source of Truth ضروري).
+المخاطر: منخفضة — webfetch: allow يمنح صلاحية معاينة دون موافقة مسبقة لكنها محدودة بالنص فقط.
+ملاحظات الاسترجاع (Rollback):
+1. design-reviewer.md: إعادة webfetch إلى ask، إزالة Limited Preview Protocol و Token Verification.
+2. حذف tera-system/TeraDesignReviewer.md.
+3. ENGINEERING_AGENT_RESPONSIBILITIES.md: إعادة §11 إلى الصيغة السابقة.
+4. monitor.md + auditor.md: إعادة إضافة WORKSPACE_GOVERNANCE_MODEL.md.
+5. opencode.json: إعادة Playwright MCP إلى `"enabled": false`.
+6. AGENT_GAPS_LOG.md: حذف GAP-007.
+```
+
+### SCP-2026-07-04-033 — DesignReviewer Improvements II (قاعدة معايير + بروتوتايب + مساعدة بصرية + توكينز معمّق)
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-033
+مصدر الطلب: تقرير DesignReviewer الذاتي + تحليل TeraSystemEvolutionAgent + موافقة Majed
+نوع التغيير: Agent Capability Improvement / Knowledge Base Creation / Process Expansion
+الملفات المعدلة (6 files, 1 new):
+- UPDATE: tera-system/TeraDesignReviewer.md (إضافة بروتوتايب §10، مساعدة بصرية، توكينز معمّق §9.2، v1.1)
+- CREATE: tera-system/design-system/DESIGN_REVIEW_STANDARDS.md (قاعدة معايير — 9 أقسام)
+- UPDATE: .opencode/agents/design-reviewer.md (write: ask + description محدّث + 4 بروتوكولات + Output format مطوّر)
+- UPDATE: tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md (تحديث §11: إضافة بروتوتايب + مرجع DESIGN_REVIEW_STANDARDS)
+- UPDATE: project-control/AGENT_GAPS_LOG.md (إضافة GAP-008 كـ Applied)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم تطوير DesignReviewer (ناقد) في 4 محاور بناءً على تقريره الذاتي:
+
+1. **قاعدة معايير موحدة (DESIGN_REVIEW_STANDARDS.md)** — 9 أقسام مع قوائم تفتيش قابلة للتنفيذ:
+   - اكتمال الحالات، الاتساق البصري، الجودة البصرية، نظافة التصميم، UX، الاستجابة، RTL/Arabic (7.1-7.5)، التوكينز (3-layer)، الاتساق الوظيفي.
+   - هذا ملف مرجعي، ت read-only — يقرأه ناقد قبل كل مراجعة.
+
+2. **بروتوكول المساعدة البصرية (Visual Assistance Protocol)** — عندما يحتاج ناقد تأكيداً بصرياً لا يستطيع الحصول عليه من Playwright MCP
+   (لون دقيق، بكسل، واجهة لا تعمل محلياً)، يطلب صورة من Majed بصيغة محددة ويحللها.
+
+3. **بروتوكول البروتوتايب (Prototype Protocol)** — بناء HTML/CSS سريع في project-control/prototypes/
+   (عند طلب Majed). مؤقت — يُحذف بعد الاعتماد. write: ask — كل كتابة تتطلب موافقة.
+
+4. **توسيع فحص التوكينز** — إضافة §9.2 (3-layer architecture: Primitive → Semantic → Component).
+
+ملاحظة: write: ask هو أوسع من المطلوب (OpenCode لا يدعم تقييد المسارات).
+الانضباط الذاتي في وصف agent يحدّد الاستخدام: الكتابة فقط لـ project-control/prototypes/.
+الموافقة: Majed — شفهياً: "نفذ"
+التحقق من الصحة: Anti-Bloat Gate PASS (ملف جديد واحد = مرجع معرفي، ليس سياسة).
+المخاطر: منخفضة — write: ask يمنح صلاحية كتابة لكن كل عملية تخضع لموافقة Majed.
+ملاحظات الاسترجاع (Rollback):
+1. .opencode/agents/design-reviewer.md: إعادة write: ask → write: deny، حذف البروتوكولات المضافة، إعادة Output format القديم.
+2. حذف tera-system/design-system/DESIGN_REVIEW_STANDARDS.md.
+3. tera-system/TeraDesignReviewer.md: حذف §10 (بروتوتايب) و §9.2 (توكينز معمّق)، إعادة §9 القديم، إعادة v1.0.
+4. tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md: إعادة §11 للصيغة السابقة.
+5. AGENT_GAPS_LOG.md: حذف GAP-008.
+```

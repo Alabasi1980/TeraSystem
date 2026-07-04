@@ -25,8 +25,8 @@
     "playwright": {
       "type": "local",
       "command": ["npx", "-y", "@playwright/mcp@latest", "--headless"],
-      "enabled": false,
-      "description": "Browser automation for UI testing, smoke tests, E2E, Phase 6 review, and Phase 7 QA. Permission: RUN_TESTS. Activation: only per Tera decision."
+      "enabled": true,
+      "description": "Browser automation for DesignReviewer visual preview, UI testing, smoke tests, E2E, Phase 6 review, and Phase 7 QA. Permission: RUN_TESTS. Activation: DesignReviewer (ناقد) may use autonomously for visual preview; Tera may use for E2E/QA per standard delegation."
     },
     "github": {
       "type": "local",

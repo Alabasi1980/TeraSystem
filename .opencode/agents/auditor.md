@@ -40,7 +40,6 @@ The shared coordination folder is:
 Before reviewing this application, read only the minimum necessary files, starting with:
 
 ```text
-project-control/WORKSPACE_GOVERNANCE_MODEL.md
 project-control/PROJECT_STATE.md
 project-control/TERA_ACTIVE_CONTEXT.md when relevant
 project-control/TASK_REGISTRY.md when reviewing tasks

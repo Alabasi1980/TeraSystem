@@ -6,7 +6,7 @@
 |---|---|
 | **Status** | Active responsibility map |
 | **Source** | `ENGINEERING_BEST_PRACTICES.md` |
-| **Last Updated** | 2026-07-01 |
+| **Last Updated** | 2026-07-04 |
 
 ---
 
@@ -142,14 +142,19 @@ PerformanceAgent must focus on:
 
 ## 11. DesignReviewer
 
-DesignReviewer remains visual/design focused.
+DesignReviewer is defined in its own source of truth: `tera-system/TeraDesignReviewer.md`.
+DesignReviewer review standards reference: `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md`.
 
-It may report engineering-adjacent issues only when they affect UI consistency or maintainability, such as:
+This section only documents the engineering-adjacent boundary:
+
+DesignReviewer remains visual/design focused. It may report engineering-adjacent issues only when they affect UI consistency or maintainability, such as:
 
 - duplicated visual components;
 - inconsistent component variants;
 - layout patterns not following `28_UI_UX_GUIDELINES.md`;
 - UI implementation that makes future visual changes unnecessarily hard.
+
+DesignReviewer may build static HTML/CSS prototypes from design sources for visual review when Majed requests. Prototypes are for review only, not production code. Temporary files stored in `project-control/prototypes/` and deleted after approval.
 
 DesignReviewer must not become a general code architecture auditor.
 

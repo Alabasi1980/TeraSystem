@@ -13,6 +13,8 @@
 - `TeraAgent`
 - `TeraClientEngagementAgent`
 - `TeraSystemEvolutionAgent`
+- `ApplicationBlueprintAgent`
+- `SoftwareDesignerAgent`
 - `Auditor`
 - `Monitor`
 - `DesignReviewer`
@@ -184,3 +186,56 @@ Only then changes are implemented.
   2. TeraClientEngagement.md §3.2.7: Uncertainty Protocol (3 حالات توقف + UNCERTAINTY_NOTICE + Websearch عند الشك)
   3. TERA_RUNTIME_TEMPLATES.md §35: إضافة 3 أعمدة Self-Check إلى Domain Coverage Matrix
   4. monitor.md: إضافة Random Discovery Audit (بأمر Majed)
+
+## 2026-07-04 — ApplicationBlueprintAgent — GAP-006
+
+- Title: **غياب 5 ضوابط هيكلية في ملف ABA — بوابة النزاهة، مؤشرات الانحراف، التدقيق الذاتي، التريث، و"لا أعلم"**
+- Agent: ApplicationBlueprintAgent
+- Gap Type: Missing Capability / Process Gap / Improvement Suggestion
+- Issue: ABA حلل ملفه الحالي وحدد 5 فجوات:
+  1. لا بروتوكول "لا أعلم" إلزامي → تخمين بدون اعتراف
+  2. لا تدقيق ذاتي قبل التسليم → توصيات غير دقيقة
+  3. لا مؤشرات انحراف أثناء العمل → انحراف بدون تنبيه
+  4. لا قاعدة إيقاف عند نقص المعلومات → إنتاج رغم عدم الاكتمال
+  5. لا شرط تريث → استعجال بدون داعٍ
+- Impact on agent performance: يضعف موثوقية blueprint ويزيد احتمالية تسليم خرائط تطبيقية غير دقيقة أو مبنية على افتراضات غير معلنة.
+- Suggested direction (optional): إضافة 3 أقسام جديدة إلى TeraApplicationBlueprint.md (بوابة النزاهة، مؤشرات الانحراف، التدقيق الذاتي) + تعديل المخرجات + مزامنة الرنتايم.
+- Status: Applied
+- Resolution Notes: تم اعتماد التحسينات عبر SCP-2026-07-04-031. تم رفض طلب إنشاء ملف TERA_AGENT_QUALITY_CONTROL.md (Anti-Bloat) — دُمج المحتوى في TeraApplicationBlueprint.md. تم تنفيذ SCP-031 بتاريخ 2026-07-04.
+
+## 2026-07-04 — DesignReviewer — GAP-007
+
+- Title: **3 فجوات في DesignReviewer: غياب المعاينة البصرية الفعلية + غياب فحص توكينز منهجي + مرجع WORKSPACE_GOVERNANCE_MODEL.md ميت**
+- Agent: DesignReviewer
+- Gap Type: Missing Capability / Process Gap / Stale Reference
+- Issue: ناقد حدد 3 مشاكل في دوره:
+  1. لا يستطيع رؤية الواجهة المنفذة بصرياً — دوره "مراجع تصميم" لكنه "أعمى" (webfetch يحول إلى نص فقط).
+  2. لا توجد عملية منهجية لفحص توكينز التصميم — عنده grep/glob لكن بدون خطوات واضحة.
+  3. WORKSPACE_GOVERNANCE_MODEL.md مذكور في ملفه كأول ملف قراءة (سطر 43) لكنه غير موجود — وهذا يؤثر على 3 عملاء (ناقد، مدقق، رقيب).
+- Impact on agent performance: يحد من فعالية ناقد في اكتشاف انحرافات التصميم قبل أن تصل إلى الإنتاج. مرجع ميت يربك تدفق القراءة.
+- Suggested direction (optional):
+  1. رفع webfetch من ask إلى allow + بروتوكول معاينة محدودة (webfetch لـ HTML، والمعاينة البصرية الكاملة لـ Majed للتطبيقات المعقدة).
+  2. إضافة خطوة Design Token Verification كـ Process (grep/glob — لا أداة جديدة).
+  3. حذف WORKSPACE_GOVERNANCE_MODEL.md من العملاء الثلاثة وإنشاء Source of Truth مخصص لـ ناقد (TeraDesignReviewer.md).
+- Status: Applied
+- Resolution Notes: تم تنفيذ جميع التحسينات عبر SCP-2026-07-04-032. تم رفع webfetch إلى allow، إضافة Limited Preview Protocol و Design Token Verification، حذف WORKSPACE_GOVERNANCE_MODEL.md من 3 عملاء، وإنشاء TeraDesignReviewer.md كـ Source of Truth.
+
+## 2026-07-04 — DesignReviewer — GAP-008
+
+- Title: **4 فجوات في DesignReviewer: غياب قاعدة معايير موحدة + غياب المساعدة البصرية + غياب البروتوتايب + فحص توكينز محدود**
+- Agent: DesignReviewer
+- Gap Type: Missing Capability / Process Gap / Improvement Suggestion
+- Issue: بعد SCP-032، ناقد يستطيع المعاينة البصرية عبر Playwright MCP ويملك Source of Truth مستقل. لكن تبقى 4 فجوات:
+  1. لا قاعدة معايير تدقيق منهجية — ناقد يعتمد على اجتهاده الشخصي في كل مراجعة.
+  2. لا بروتوكول لطلب المساعدة البصرية من Majed — عندما يحتاج تأكيداً لا يستطيع الحصول عليه آلياً.
+  3. لا قدرة على بناء بروتوتايب HTML/CSS للمراجعة قبل التنفيذ.
+  4. فحص التوكينز لا يغطي التسلسل الهرمي (3-layer: Primitive → Semantic → Component).
+- Impact on agent performance: يحد من دقة المراجعة واتساقها، ويترك ناقد بدون أدوات للتعامل مع الحالات التي لا يستطيع فيها المتصفح أو webfetch تقديم إجابة كاملة.
+- Suggested direction (optional):
+  1. إنشاء DESIGN_REVIEW_STANDARDS.md — قاعدة معايير ب 9 أقسام.
+  2. إضافة Visual Assistance Protocol — طلب صور/تأكيد من Majed.
+  3. إضافة Prototype Protocol — بناء HTML/CSS مؤقت للمراجعة.
+  4. توسيع فحص التوكينز ليشمل 3-layer architecture.
+  5. رفع write من deny إلى ask للسماح ببناء البروتوتايب.
+- Status: Applied
+- Resolution Notes: تم تنفيذ جميع التحسينات عبر SCP-2026-07-04-033. تم إنشاء DESIGN_REVIEW_STANDARDS.md (9 أقسام)، تحديث TeraDesignReviewer.md (بروتوتايب + مساعدة بصرية + توكينز معمّق)، تحديث design-reviewer.md (write: ask + 4 بروتوكولات + Output format مطوّر)، وتحديث ENGINEERING_AGENT_RESPONSIBILITIES.md §11.
