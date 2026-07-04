@@ -143,3 +143,44 @@ Only then changes are implemented.
 - Suggested direction (optional): إضافة TCEA Mandatory 13-Domain Client Discovery Framework + Discovery Coverage Summary + Discovery Coverage Gate + Quotation Readiness Gate + Tera Handoff Readiness Gate مع قاعدة Mandatory Coverage ≠ Mandatory Deep Interview.
 - Status: Applied
 - Resolution Notes: Reviewed by TeraSystemEvolutionAgent and implemented on 2026-07-04 via SCP-2026-07-04-022. TCEA source-of-truth and runtime were updated to require the 13-domain discovery framework, `DISCOVERY_COVERAGE_SUMMARY.md`, quotation/handoff readiness gates, and anti-bloat depth scaling. Supporting references were also updated (`TeraApplicationQuestionBank.md`, `TeraClientPolicy.md`, `TeraPricingPolicy.md`, `TeraApplicationBlueprint.md`, `TeraPolicyMap.md`, `TERA_RUNTIME_TEMPLATES.md`).
+
+## 2026-07-04 — TeraClientEngagementAgent — GAP-004
+
+- Title: **6 اقتراحات تحسين لملف TCEA المصدر والملفات المرتبطة**
+- Agent: TeraClientEngagementAgent
+- Gap Type: Improvement Suggestion / Policy Gap
+- Issue: TCEA حدد 6 فجوات في ملفه المصدر وبعض الملفات المرتبطة:
+  1. عدم تطابق بين Handoff Readiness Gate (§3.6.1) و Handoff Package Fields (§6.2) — 8 حقول ناقصة من الـ Gate
+  2. لا يوجد قالب تنسيقي لـ DISCOVERY_COVERAGE_SUMMARY.md — كل عميل يأخذ تنسيقاً مختلفاً
+  3. لا توجد عملية لطلبات توضيح من ApplicationBlueprintAgent — §5.2 يعالج TeraAgent فقط
+  4. لا توجد قاعدة لتحديث DISCOVERY_COVERAGE_SUMMARY بعد تغير حالة Discovery
+  5. المجال 13 (Acceptance, Commercials & Warranty) مركب جداً ويُعامل كحقل واحد
+  6. ميزانية الأسئلة (Question Budget) غير مذكورة في ملف TCEA
+- Impact on agent performance: كل فجوة تضعف جانباً محدداً من دقة أو تناسق عمل TCEA
+- Suggested direction (optional): جميع الاقتراحات وردت من TCEA نفسه مع حلول مقترحة لكل منها
+- Status: Applied
+- Resolution Notes: تم تحليل الـ 6 اقتراحات بواسطة TeraSystemEvolutionAgent ووجدت جميعها حقيقية. تم تطبيقها عبر SCP-2026-07-04-027:
+  1. §3.6.1: استبدال قائمة الـ 17 بند منفصلة بإشارة إلى §6.2 كقائمة كاملة
+  2. §3.2.3: إضافة ملاحظة المجال 13 المركب (3 جوانب داخلية)
+  3. §3.2.4: إضافة قاعدة تحديث Discovery Coverage بعد اعتمادها
+  4. §3.2.5: إضافة Question Budget (Small 10-15, Medium 20-35, Complex deeper)
+  5. §5.2: إضافة مسار توضيح لـ ApplicationBlueprintAgent (نفس آلية TeraAgent)
+  6. TERA_RUNTIME_TEMPLATES.md §35: إضافة قالب Discovery Coverage Summary بجدول 13 صفاً
+
+## 2026-07-04 — TeraClientEngagementAgent + Monitor — GAP-005
+
+- Title: **غياب بروتوكول الشك (صلاحية "لا أعرف") + Self-Check الداخلي + مراجعة Discovery الخارجية**
+- Agent: TeraClientEngagementAgent, Monitor
+- Gap Type: Process Gap / Missing Capability
+- Issue: TCEA اعترف بنفسه بثلاث فجوات هيكلية:
+  1. لا صلاحية صريحة ليقول "لا أعرف" بدلاً من التخمين
+  2. لا Self-Check داخلي يمنع الاستعجال — الـ Gates الحالية خارجية فقط (تعتمد على Majed)
+  3. لا مراجعة خارجية غير متوقعة للـ Discovery — Monitor لا يراجع DISCOVERY_COVERAGE_SUMMARY.md
+- Impact on agent performance: TCEA يخمن في domains غير مؤكدة، ينتقل لمخرجات دون تثبت، ولا يوجد من يراجع اكتشافاته
+- Suggested direction (optional): Self-Check Protocol (3 أسئلة قبل Complete) + Uncertainty Protocol + تمديد Monitor للمراجعة العشوائية
+- Status: Applied
+- Resolution Notes: تم التحليل والتطبيق عبر SCP-2026-07-04-028:
+  1. TeraClientEngagement.md §3.2.6: Self-Check Protocol (المصدر / تأكيد Majed / الخطورة) + قاعدة الحظر
+  2. TeraClientEngagement.md §3.2.7: Uncertainty Protocol (3 حالات توقف + UNCERTAINTY_NOTICE + Websearch عند الشك)
+  3. TERA_RUNTIME_TEMPLATES.md §35: إضافة 3 أعمدة Self-Check إلى Domain Coverage Matrix
+  4. monitor.md: إضافة Random Discovery Audit (بأمر Majed)

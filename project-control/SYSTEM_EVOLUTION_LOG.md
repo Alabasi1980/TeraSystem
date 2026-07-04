@@ -369,3 +369,144 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 3. إعادة قاعدة الإغلاق في tera.md §12 إلى الصيغة السابقة وإزالة Mid-Task Checkpoint.
 4. إزالة مسؤوليات Monitor من monitor.md.
 ```
+
+### SCP-2026-07-04-027 — TCEA 6 Improvements (GAP-004)
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-027
+مصدر الطلب: GAP-004 (TCEA — 6 اقتراحات تحسين)
+نوع التغيير: Agent Improvement / Policy Update / Anti-Bloat
+الملفات المعدلة:
+- UPDATE: tera-system/TeraClientEngagement.md (5 أقسام)
+- UPDATE: tera-system/runtime/TERA_RUNTIME_TEMPLATES.md (قالب §35)
+- UPDATE: project-control/AGENT_GAPS_LOG.md (GAP-004 → Applied)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم تنفيذ 6 تحسينات في ملف TCEA المصدر والملفات المرتبطة بناءً على اقتراحات TCEA نفسه:
+
+1. §3.6.1 (Handoff Readiness Gate): استبدال قائمة الـ 17 بند المنفصلة بإشارة مباشرة إلى §6.2 (25 حقلاً) — يمنع تضارب القائمتين مستقبلاً.
+2. §3.2.3 (Discovery Completeness Matrix): إضافة ملاحظة أن Domain 13 يحتاج تغطية 3 جوانب داخلية على الأقل (قبول + ميزانية + ضمان/صيانة) — بدون تقسيم الـ Framework نفسه.
+3. §3.2.4 (Discovery Coverage Gate): إضافة قاعدة — إذا تغيرت حالة Domain بعد اعتماد الملف، يجب التحديث وإعادة العرض على Majed.
+4. §3.2.5 (Depth Scaling Rule): إضافة Question Budget — Small 10-15, Medium 20-35, Complex deeper.
+5. §5.2 (Clarification): إضافة مسار توضيح لـ ApplicationBlueprintAgent بنفس آلية TeraAgent (CLARIFICATION_REQUEST.md → Majed → TCEA).
+6. TERA_RUNTIME_TEMPLATES.md §35: إضافة قالب Discovery Coverage Summary بجدول 13 مجالاً + قرار التغطية.
+الموافقة: Majed — Approved (عبر Question Flow)
+التحقق من الصحة: Implementation Complete — جميع التغييرات في ملفات موجودة، لا ملفات جديدة.
+المخاطر: منخفضة — تغييرات دقيقة في ملف مصدر واحد + قالب، لا تغيير في صلاحيات أو أدوار.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة التغييرات من §§3.2.3, 3.2.4, 3.2.5, 3.6.1, 5.2 في TeraClientEngagement.md.
+2. إزالة قالب §35 من TERA_RUNTIME_TEMPLATES.md.
+```
+
+### SCP-2026-07-04-028 — TCEA Self-Check + Uncertainty Protocol + Monitor Discovery Audit (GAP-005)
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-028
+مصدر الطلب: GAP-005 (اعتراف TCEA بفجواته الهيكلية + تحليل TeraSystemEvolutionAgent)
+نوع التغيير: Agent Process Improvement / Policy Gap Closure / Anti-Bloat
+الملفات المعدلة:
+- UPDATE: tera-system/TeraClientEngagement.md (§3.2.6 Self-Check + §3.2.7 Uncertainty Protocol)
+- UPDATE: tera-system/runtime/TERA_RUNTIME_TEMPLATES.md §35 (3 أعمدة جديدة)
+- UPDATE: .opencode/agents/monitor.md (Random Discovery Audit)
+- UPDATE: project-control/AGENT_GAPS_LOG.md (GAP-005 → Applied)
+- UPDATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-028.md
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم تطبيق 3 تحسينات نظامية بناءً على اعتراف TCEA بفجواته وبعد تحليل TeraSystemEvolutionAgent:
+
+1. Self-Check Protocol (§3.2.6): قبل "Complete" لأي Domain، يجب توثيق المصدر (Majed/Websearch/Inference/Unknown)،
+   تأكيد Majed (Yes/No/Partially)، وخطورة الخطأ (L/M/H). القاعدة: Inference/Unknown + High = ممنوع Complete.
+
+2. Uncertainty Protocol (§3.2.7): صلاحية إلزامية لـ TCEA ليقول "لا أعرف" في 3 حالات (مصدر غير مؤكد بخطورة عالية،
+   معلومة أحدث من 2025، طلب غير مألوف). آلية: UNCERTAINTY_NOTICE + توقف + رفع لـ Majed.
+   Websearch متاح دائماً عند عدم التأكد (بدون انتظار موافقة).
+
+3. Monitor — Random Discovery Audit: تمديد monitor.md ليشمل مراجعة DISCOVERY_COVERAGE_SUMMARY.md بأمر Majed
+   (كشف domains Complete بمصدر Inference/Unknown + High risk).
+
+جميع التغييرات في ملفات موجودة — لا ملفات جديدة، لا عملاء جدد، لا MCPs.
+الموافقة: Majed — Approved ("أوصي بالتنفيذ فوراً")
+التحقق من الصحة: Implementation Complete — Anti-Bloat Gate PASS (0 ملفات جديدة).
+المخاطر: منخفضة — تحسينات في ملفات موجودة فقط، لا تغيير في صلاحيات أساسية.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة §§3.2.6, 3.2.7 من TeraClientEngagement.md.
+2. إزالة الأعمدة 3 الجديدة من §35 في TERA_RUNTIME_TEMPLATES.md.
+3. إزالة فقرة Random Discovery Audit من monitor.md.
+```
+
+### SCP-2026-07-04-029 — Fulfilling SCP-017 Claims (CI Policy Ref + §14 Gap Reporting)
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-029
+مصدر الطلب: Blocked Items (unfulfilled SCP-017 claims identified during system audit)
+نوع التغيير: Policy Reference Completion / Gap Closure
+الملفات المعدلة:
+- UPDATE: tera-system/TeraAgent.md (إضافة §39 Continuous Improvement & Gap Reporting)
+- UPDATE: tera-system/TeraSubAgents.md (إضافة §14 Gap Reporting & Continuous Improvement)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم إكمال مطالبتين غير محققتين من SCP-017:
+
+1. TeraAgent.md §39: إضافة مرجع رسمي لـ TERA_CONTINUOUS_IMPROVEMENT_POLICY.md مع 4 قواعد:
+   - تذكير العملاء قبل كل تفويض
+   - فحص Handback لفجوات نظامية
+   - التزام TeraAgent نفسه بالإبلاغ
+   - عدم تسجيل تفاصيل صغيرة
+
+2. TeraSubAgents.md §14 (14.1-14.5): إضافة قسم كامل لـ Gap Reporting:
+   - 14.1: الإشارة إلى TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
+   - 14.2: تعريف AGENT_GAPS_LOG.md كسجل رسمي
+   - 14.3: 6 أنواع من الفجوات التي يجب الإبلاغ عنها
+   - 14.4: آلية الإبلاغ (3 خطوات)
+   - 14.5: قاعدة مهمة (لا تعطيل، لا تفاصيل صغيرة)
+الموافقة: Majed — Approved ("نفذ")
+التحقق من الصحة: Implementation Complete — 0 ملفات جديدة، 0 عملاء جدد.
+المخاطر: منخفضة — إضافة مراجع ووعي فقط، لا تغيير في صلاحيات.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة §39 من TeraAgent.md.
+2. إزالة §14 من TeraSubAgents.md.
+```
+
+### SCP-2026-07-04-030 — Replace ExecutionPreparationAgent with SoftwareDesignerAgent
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-030
+مصدر الطلب: قرار Majed — إزالة EPA واستبداله بـ SDA (بعد تحليل المخاطر)
+نوع التغيير: Architecture Cleanup / Agent Replacement / Cross-System Update
+الملفات المعدلة (7 files, 17 changes):
+- UPDATE: tera-system/AGENT_ACTIVATION_MATRIX.md (4 تحديثات: تعريف SDA + Medium/ERP/SaaS)
+- UPDATE: tera-system/AGENT_PERMISSION_MODEL.md (استبدال صف EPA بـ SDA)
+- UPDATE: tera-system/TeraAgent.md (استبدال EPA بـ SDA في قائمة Helper Agents)
+- UPDATE: tera-system/TeraSubAgents.md (3 تحديثات: سطر 94 + سطر 1014 + استبدال §6.9 بالكامل)
+- UPDATE: tera-system/TeraPreExecutionGate.md (تحديث reference + قاعدة التحضير)
+- UPDATE: tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md (4 تحديثات: Decision Matrix + Bad pattern + Escalation + Helper limits)
+- UPDATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-030.md
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+إزالة كل reference لـ ExecutionPreparationAgent من الملفات النظامية (14 reference)
+واستبدالها بـ SoftwareDesignerAgent (9 references جديدة + وصف كامل للدور).
+
+التغييرات الرئيسية:
+1. AGENT_ACTIVATION_MATRIX: تعريف SDA مع شرط التفعيل للمهام المعقدة (مستوى 5-6)
+2. AGENT_PERMISSION_MODEL: SDA صلاحية WRITE_DOCS (Technical Specification)
+3. TeraAgent: SDA في قائمة Helper Agents المعتمدين
+4. TeraSubAgents: §6.9 كامل لـ SDA بدل EPA مع Technical Specification
+5. TeraPreExecutionGate: SDA بدل EPA في reference + قاعدة التحضير
+6. TERA_RUNTIME_PROTOCOLS: SDA بدل EPA في 4 مسارات تفويض
+
+تم الحفاظ على السجلات التاريخية: RESPONSE_TO_TEAM_REVIEW, SCP-016, tera-software-designer.md
+الموافقة: Majed — Approved ("ضم المتبقي وابدأ التنفيذ")
+التحقق من الصحة: Implementation Complete — Anti-Bloat Gate PASS.
+المخاطر: منخفضة — SDA موجود فعلياً في `.opencode/agents/` ويعمل، التعديلات تجعل النظام متسقاً مع الواقع.
+ملاحظات الاسترجاع (Rollback):
+1. إعادة EPA إلى AGENT_ACTIVATION_MATRIX.md (4 أماكن)
+2. إعادة EPA إلى AGENT_PERMISSION_MODEL.md
+3. إعادة EPA إلى TeraAgent.md Helper list
+4. إعادة EPA في TeraSubAgents.md (3 أماكن)
+5. إعادة EPA في TeraPreExecutionGate.md (مكانين)
+6. إعادة EPA في TERA_RUNTIME_PROTOCOLS.md (4 أماكن)
+```

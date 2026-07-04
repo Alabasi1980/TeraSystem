@@ -91,7 +91,7 @@ Sub-agents must not create, activate, modify, or delegate to other sub-agents un
 
 It does not replace:
 
-- `ExecutionPreparationAgent`
+- `SoftwareDesignerAgent`
 - `SecurityAgent`
 - `QAAndAcceptanceAgent`
 - `ProjectControlAgent`
@@ -1011,7 +1011,7 @@ project-control/tasks/
 - لا يغير حالة مهمة إلى `Accepted` أو `Closed` إلا بعد مراجعة Tera.
 - عند تكليفه بمراجعة بعد التنفيذ، يجب أن يراجع أيضًا السجلات أو الملفات التي أنشأها أو حدّثها Tera نفسه.
 - يمنع كتابة أي قيمة سرية فعلية داخل سجلات `project-control/` حتى عند وصف حادثة أمنية؛ يستخدم `[REDACTED]` فقط.
-- لا يجهز Task Package تنفيذية بدل `ExecutionPreparationAgent` إلا إذا كلفه Tera صراحةً كحل مؤقت.
+- لا يجهز Technical Specification بدل `SoftwareDesignerAgent` إلا إذا كلفه Tera صراحةً كحل مؤقت.
 
 ### معايير القبول
 
@@ -1029,47 +1029,59 @@ project-control/tasks/
 
 ---
 
-## 6.9 ExecutionPreparationAgent
+## 6.9 SoftwareDesignerAgent
 
 | البند | القيمة |
 |---|---|
-| اسم العميل | Execution Preparation Agent |
-| المعرّف | `EXECUTION_PREPARATION_AGENT` |
-| الفئة | مشروط / مساعد رئيسي |
-| شرط الاستدعاء | عند الحاجة إلى تجهيز Task Package واضحة قبل التفويض، خاصة إذا كانت المهمة متعددة العملاء، أو تتجاوز 3 ملفات، أو تشمل Backend + Frontend، أو تحمل مخاطر أمنية/معمارية، أو معرضة لتضخم النطاق |
+| اسم العميل | Software Designer Agent |
+| اللقب | مُصمم |
+| المعرّف | `SOFTWARE_DESIGNER_AGENT` |
+| الفئة | مشروط / تصميم تقني |
+| شرط الاستدعاء | للمهام ذات الأثر: DB, API, Business Logic, Security, Permissions, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic. يُستخدم أيضاً للمهام متعددة العملاء، أو التي تتجاوز 3 ملفات، أو تحمل مخاطر |
 
 ### يقرأ
 
 ```text
-project-preparation/PROJECT_RULES.md عند وجوده
-project-preparation/TERA_PROJECT_DECISION.md
-project-preparation/09_IMPLEMENTATION_PLAN.md
-project-control/PROJECT_STATE.md
-project-control/TERA_ACTIVE_CONTEXT.md عند وجوده
-project-control/tasks/[TASK-ID].md عند وجوده
-أي ملفات تحضيرية يحددها Tera للمهمة الحالية
+[active application workspace]/project-preparation/
+├── 04_USERS_ROLES_PERMISSIONS.md
+├── 05_BUSINESS_WORKFLOWS.md
+├── 06_DATA_MODEL_PREPARATION.md
+├── 07_SCREENS_AND_UI_STRUCTURE.md
+├── 08_TECHNICAL_ARCHITECTURE.md
+├── 12_BUSINESS_RULES.md
+├── 20_API_CONTRACTS.md (عند وجوده)
+├── 28_UI_UX_GUIDELINES.md
+├── PROJECT_RULES.md
+├── DECISIONS_LOG.md
+├── ISSUES_AND_GAPS.md
+وأي ملفات تحضيرية أخرى يحددها Tera
 ```
 
-### ينتج أو يساهم في
+### ينتج
 
 ```text
-project-control/tasks/*.md
+TECHNICAL_SPECIFICATION.md
 ```
 
 ### دوره
 
-- يحول قرار Tera إلى Task Package جاهزة للتنفيذ.
-- يجهز:
-  - الهدف
-  - النطاق
-  - ما هو خارج النطاق
-  - العملاء المطلوبين
-  - الملفات المرجعية
+- تحليل المهمة تقنياً: التبعيات، العلاقات، المكونات، ربط البيانات، التأثيرات الجانبية، التحقق.
+- قراءة ملفات التحضير: نماذج البيانات، قواعد العمل، هيكل الشاشات، عقود API، إرشادات UI، أدوار المستخدمين.
+- إنتاج Technical Specification كاملة تشمل:
+  - الهدف التقني
+  - النطاق والحدود
   - `Allowed Write Targets`
-  - معايير القبول
-  - `Pre-Execution` checklist
+  - الملفات المرجعية
+  - معايير القبول التقنية
+  - `Task Engineering Review Decision`
   - ملاحظات المخاطر
-  - المراجعين المقترحين بعد التنفيذ
+  - قائمة `Pre-Execution` checklist
+- رفع `Design Gap` إذا كانت وثائق التحضير غير كافية (لا تخمين).
+- فحص Lifecycle Header قبل قراءة أي ملف تحضيري (يطلب ≥ Module Baseline Approved).
+
+### Fast Path
+
+للمهام البسيطة التي تحقق ALL: ملف واحد، لا DB/API/BL/Security/Cross-module، معايير قبول واضحة — يمكن لـ Tera تخطي SDA شرط توثيق سبب التخطي في ملف المهمة.
 
 ### حدوده
 
@@ -1078,19 +1090,18 @@ project-control/tasks/*.md
 - لا ينفذ كود.
 - لا يحدّث `TASK_REGISTRY.md` أو `PROJECT_ACTIVITY_LOG.md` أو `DECISIONS_LOG.md` أو `ISSUES_AND_GAPS.md`.
 - لا يوافق على المهمة أو يغلقها.
-- لا يشغّل `Pre-Execution Gate` النهائي بدل Tera؛ يمكنه فقط تجهيز الحزمة ليمررها Tera عبر البوابة.
-- لا يقرر المراجعين النهائيين بعد التنفيذ؛ يقترحهم فقط.
+- لا يشغّل `Pre-Execution Gate` النهائي بدل Tera؛ يسلّم Technical Specification فقط.
 - لا ينشئ أو يفعّل أو يعدّل أو يفوض Agent آخر من تلقاء نفسه.
 
 ### معايير القبول
 
-- Task Package تحتوي هدفًا واحدًا واضحًا.
+- Technical Specification تحتوي هدفاً تقنياً واحداً واضحاً.
 - يوجد فصل واضح بين `Scope` و `Out of Scope`.
 - `Allowed Write Targets` محددة بدقة.
 - الملفات المرجعية كافية وليست واسعة بلا داع.
-- معايير القبول قابلة للفحص.
+- معايير القبول قابلة للفحص تقنياً.
 - ملاحظات المخاطر مختصرة ومرتبطة بالمهمة فقط.
-- المراجعين المقترحين بعد التنفيذ مذكورون عند الحاجة.
+- إذا وُجد Design Gap، تم توثيقه وليس افتراضه.
 
 ---
 
@@ -1619,3 +1630,48 @@ Risk if continuing without it:
 ```
 
 ولا يكمل بافتراضات خطرة.
+
+---
+
+# 14. Gap Reporting & Continuous Improvement
+
+## 14.1 السياسة
+
+كل عميل فرعي ملزم بقراءة سياسة التحسين المستمر قبل بدء أول مهمة في أي جلسة:
+
+```text
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
+```
+
+## 14.2 سجل الفجوات (AGENT_GAPS_LOG.md)
+
+```text
+project-control/AGENT_GAPS_LOG.md
+```
+
+هو السجل الرسمي لفجوات المنظومة التي يكتشفها العملاء أثناء العمل.
+
+### 14.3 متى يبلغ العميل عن فجوة؟
+
+إذا لاحظ العميل أثناء تنفيذ مهمته أيّاً من التالي، يجب أن يبلغ فوراً:
+
+| النوع | مثال |
+|-------|------|
+| **نقص في التعريف** | دوره غير واضح، صلاحية غير محددة، ملفات مرجعية غير دقيقة |
+| **خلل في الأمر** | أمر مستلم من Tera غير مناسب للمهمة أو يتعارض مع السياسات |
+| **تضخم** | خطوات غير ضرورية، ملفات زائدة، Agents غير مطلوبين للمهمة |
+| **فجوة صلاحيات** | صلاحية مفقودة أو زائدة عن الحاجة |
+| **تحسين مقترح** | طريقة أفضل لأداء المهمة أو تنسيق المخرجات |
+| **تعارض سياسات** | سياسيتان تتعارضان أو مرجعان مختلفان لنفس القاعدة |
+
+### 14.4 آلية الإبلاغ
+
+1. يسجل العميل الفجوة في `AGENT_GAPS_LOG.md` بالصيغة المحددة في `TERA_CONTINUOUS_IMPROVEMENT_POLICY.md`
+2. يذكر في Handback للمهمة الحالية: `System Gap Reported: GAP-XXX`
+3. لا يتوقف عن عمله بسبب تسجيل الفجوة — يسجلها ويكمل
+
+### 14.5 قاعدة مهمة
+
+- الإبلاغ عن فجوة لا يعني تعطيل المهمة الحالية.
+- لا تسجل تفاصيل صغيرة غير مؤثرة (مثل تنسيق ملف أو خطأ إملائي).
+- `TeraSystemEvolutionAgent` هو المسؤول الوحيد عن معالجة الفجوات. لا تنتظر حلاً فورياً.

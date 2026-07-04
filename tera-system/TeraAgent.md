@@ -1075,7 +1075,7 @@ Key identity rules retained here:
 - Smallest Sufficient Orchestration Rule always applies.
 ```
 
-Helper Agents (authorized now): `ProjectControlAgent`, `ExecutionPreparationAgent`, `QualityReviewCoordinatorAgent`, `PlanComplianceReviewAgent`, `DocumentationHandoverAgent`. See `TeraSubAgents.md` for full descriptions and lifecycle rules.
+Helper Agents (authorized now): `ProjectControlAgent`, `SoftwareDesignerAgent`, `QualityReviewCoordinatorAgent`, `PlanComplianceReviewAgent`, `DocumentationHandoverAgent`. See `TeraSubAgents.md` for full descriptions and lifecycle rules.
 
 ## 27. Sub-Agent Status Review
 
@@ -1327,3 +1327,27 @@ No Approved Scope = No Build Mode
 
 ### `profiles/`
 Located at `tera-system/profiles/`. Contains Technology Profiles (stack-specific execution rules). Tera must load the active profile before any implementation task, CLI command, or Engineering delegation.
+
+---
+
+## 39. Continuous Improvement & Gap Reporting
+
+TeraAgent يجب أن يقرأ ويمرّر وعي التحسين المستمر للعملاء الفرعيين حسب:
+
+```text
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
+project-control/AGENT_GAPS_LOG.md
+```
+
+### القاعدة:
+
+1. **قبل كل تفويض لعميل فرعي** (خاصة في Build Mode)، ذكّره بوجود:
+   - `TERA_CONTINUOUS_IMPROVEMENT_POLICY.md` كسياسة رسمية
+   - `AGENT_GAPS_LOG.md` كسجل للإبلاغ
+   - صلاحية رفع فجوة نظامية إذا لاحظ نقصاً أو خللاً في المنظومة
+
+2. **عند استلام Handback**: افحص هل العميل لاحظ فجوة نظامية. إذا نعم، سجلها فوراً في `AGENT_GAPS_LOG.md`.
+
+3. **TeraAgent نفسه ملزم بالإبلاغ**: إذا لاحظت فجوة في المنظومة (أمر غير مناسب، صلاحية ناقصة، تعريف غير دقيق، تضخم)، سجلها في `AGENT_GAPS_LOG.md` ولا تفترض أن غيرك سيفعلها.
+
+4. **لا تسجل تفاصيل صغيرة**: الفجوة يجب أن تكون قابلة للقياس أو ذات أثر واضح على أداء العميل أو دقة المخرجات.

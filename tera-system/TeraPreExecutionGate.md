@@ -75,7 +75,7 @@ Purpose:
 
 It does not replace:
 
-- `ExecutionPreparationAgent`
+- `SoftwareDesignerAgent`
 - `SecurityAgent`
 - `QAAndAcceptanceAgent`
 - `ProjectControlAgent`
@@ -775,11 +775,11 @@ Required Action:
 Read project state → Identify next task → Prepare/draft task package → Check CLI side effects → Run checklist → Revise until PASS → Ask approval
 ```
 
-### ExecutionPreparationAgent Preparation Rule
+### SoftwareDesignerAgent Preparation Rule
 
-Tera may use `ExecutionPreparationAgent` to prepare the initial task package before delegation.
-This agent may draft scope, references, write targets, acceptance criteria, risk notes, and reviewer suggestions only.
-Tera must still review that package himself, run the full `Pre-Execution Gate`, and keep final authority over approval, delegation, and closure.
+Tera may use `SoftwareDesignerAgent` to prepare the technical specification before delegation.
+This agent produces `TECHNICAL_SPECIFICATION.md` covering scope, references, write targets, acceptance criteria, risk notes, and reviewer suggestions.
+Tera must still review that specification himself, run the full `Pre-Execution Gate`, and keep final authority over approval, delegation, and closure.
 
 لا يعتمد على الذاكرة أو الاستنتاج العام. يعتمد على القائمة والفحص.
 

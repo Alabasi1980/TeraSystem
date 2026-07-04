@@ -1459,3 +1459,53 @@ clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/delivery/CL
 - اسم صاحب الاعتماد:
 - التاريخ:
 ```
+
+---
+
+## 35. Discovery Coverage Summary (TCEA — Phase 2 Mandatory Output)
+
+This template defines `client-engagement/DISCOVERY_COVERAGE_SUMMARY.md`.
+It is produced by TCEA after completing the 13-domain discovery and before any scope/quotation/handoff.
+
+```markdown
+# DISCOVERY_COVERAGE_SUMMARY.md
+
+## 1. Metadata
+
+| Field | Value |
+|---|---|
+| Client | [name] |
+| Application | [name] |
+| Prepared by | TCEA |
+| Date | YYYY-MM-DD |
+| Last Updated | YYYY-MM-DD |
+
+## 2. Domain Coverage Matrix
+
+| # | Domain | Status | Reason if not Complete | Impact | Risk | Blocks Pricing? | Blocks Handoff? | **Source of Info** | **Confirmed by Majed?** | **Risk if Wrong** |
+|---|--------|--------|----------------------|--------|------|----------------|-----------------|--------------------|-------------------------|-------------------|
+| 1 | Business & Goals | Complete / Partial / Missing / Deferred / N/A | ... | ... | L/M/H | Yes/No | Yes/No | Majed / Websearch / Inference / Unknown | Yes / No / Partially | L / M / H |
+| 2 | Users, Roles & Access | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 3 | Process & Workflow | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 4 | Data & Content | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 5 | Scope & MVP | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 6 | Screens & UX | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 7 | Notifications Engine | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 8 | Reports & Dashboards | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 9 | Design & Branding | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 10 | Technical, Hosting & Compliance | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 11 | Security & Audit | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 12 | Integrations & APIs | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 13 | Acceptance, Commercials & Warranty | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+
+> **ملاحظة المجال 13:** يحتاج تغطية 3 جوانب داخلية على الأقل: (أ) معايير القبول والاختبارات, (ب) الميزانية وخطة الدفع, (ج) الضمان والصيانة.
+
+## 3. Coverage Decision
+
+| Item | Value |
+|---|---|
+| Overall Status | Ready for Scope / Needs More Discovery / Ready for Quotation / Ready for Handoff / Blocked |
+| Missing Critical Domains | [list or none] |
+| Next Action | [explicit next step] |
+| Approved by Majed | Yes / No / Pending |
+```

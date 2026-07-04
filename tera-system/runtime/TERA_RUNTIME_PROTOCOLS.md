@@ -335,7 +335,7 @@ Phase 7 finds blocker
 | If the task... | Then default to... |
 |---|---|
 | Small, direct, low-risk, 1-2 files | Tera manages directly |
-| Multi-agent, >3 files, Backend+Frontend, scope-drift prone, or needs detailed acceptance criteria / write targets | `ExecutionPreparationAgent` |
+| Multi-agent, >3 files, Backend+Frontend, scope-drift prone, or needs detailed acceptance criteria / write targets | `SoftwareDesignerAgent` |
 | Updates project-control records, closes/creates Issues, adds Decisions, modifies PROJECT_STATE.md / TERA_ACTIVE_CONTEXT.md, or involves multiple agents | `ProjectControlAgent` |
 | Touches Auth, JWT, Cookies, Middleware, Proxy, API Routes, Server Actions, Permissions, Role checks, Data Mutations, Secrets, or Config | Determine Security Sensitivity Level before delegation |
 | Contains UI, Workflow, main-screen behavior, or important acceptance criteria | Run `QAAndAcceptanceAgent` |
@@ -365,7 +365,7 @@ Deviation rule:
 
 Anti-over-delegation rule:
 - Helper agents are used by trigger, not by habit. Do not route every small task through a long helper-agent chain unless complexity clearly justifies it.
-- Bad default pattern: `Tera -> ExecutionPreparationAgent -> EngineeringAgent -> FrontendAgent -> SecurityAgent -> QAAndAcceptanceAgent -> ProjectControlAgent -> QualityReviewCoordinatorAgent`
+- Bad default pattern: `Tera -> SoftwareDesignerAgent -> EngineeringAgent -> FrontendAgent -> SecurityAgent -> QAAndAcceptanceAgent -> ProjectControlAgent -> QualityReviewCoordinatorAgent`
 
 Smallest Sufficient Orchestration Rule:
 ```text
@@ -378,7 +378,7 @@ If the task is small and safe, manage it directly. If it grows more complex or r
 The initial classification is not final. If Tera discovers during preparation or execution that the task is larger, riskier, or more complex than initially estimated, it must escalate to the appropriate level instead of continuing with stale assumptions.
 
 Escalation examples:
-- Direct task → needs `ExecutionPreparationAgent`
+- Direct task → needs `SoftwareDesignerAgent`
 - Low Security → Medium or High Security
 - Simple UI → needs `QAAndAcceptanceAgent`
 - Normal task → needs `ProjectControlAgent`
@@ -389,7 +389,7 @@ If escalation changes scope, risk, or requires a new decision, document the reas
 
 Helper agent authority limits:
 
-- `ExecutionPreparationAgent`: prepares task packages only. Does not decide scope, timing, delegation, approval, acceptance, or closure.
+- `SoftwareDesignerAgent`: prepares technical specifications only. Does not decide scope, timing, delegation, approval, acceptance, or closure.
 - `ProjectControlAgent`: manages control records, checks traceability. Does not decide final status changes.
 - `QualityReviewCoordinatorAgent`: coordinates review scope and consolidates findings. Does not decide task/issue/deferred status. Does not write code or change designs.
 - `PlanComplianceReviewAgent`: reviews roadmap compliance. Does not open tasks/issues/decisions. Does not change status.
