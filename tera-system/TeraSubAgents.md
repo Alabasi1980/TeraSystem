@@ -1034,7 +1034,7 @@ project-control/tasks/
 | البند | القيمة |
 |---|---|
 | اسم العميل | Software Designer Agent |
-| اللقب | مُصمم |
+| اللقب | مُصمم — يرد على "يا مصمم" أو "مصمم" |
 | المعرّف | `SOFTWARE_DESIGNER_AGENT` |
 | الفئة | مشروط / تصميم تقني |
 | شرط الاستدعاء | للمهام ذات الأثر: DB, API, Business Logic, Security, Permissions, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic. يُستخدم أيضاً للمهام متعددة العملاء، أو التي تتجاوز 3 ملفات، أو تحمل مخاطر |
