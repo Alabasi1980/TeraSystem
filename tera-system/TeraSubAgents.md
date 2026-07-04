@@ -1731,6 +1731,7 @@ project-control/PROJECT_ACTIVITY_LOG.md
 project-control/TASK_REGISTRY.md
 project-control/tasks/TASK-*.md
 tera-system/engineering-governance/ENGINEERING_REVIEW_CHECKLIST.md عند مراجعة كود أو تنفيذ
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md (سياسة التحسين المستمر — إلزامي قبل بدء العمل)
 الملفات المتغيرة في نطاق المهمة المقبولة
 ```
 
@@ -1774,6 +1775,7 @@ project-control/EXECUTION_BATCH_PLAN.md
 project-control/TASK_REGISTRY.md
 project-control/PROJECT_ACTIVITY_LOG.md
 tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md عند مراجعة انحرافات معمارية أو تخطيطية
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md (سياسة التحسين المستمر — إلزامي قبل بدء العمل)
 ```
 
 #### ينتج
@@ -1814,6 +1816,7 @@ project-preparation/design-source/
 project-control/tasks/TASK-*.md
 ملفات الواجهة ذات العلاقة عند الحاجة
 tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md عند وجود أثر UI maintainability فقط
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md (سياسة التحسين المستمر — إلزامي قبل بدء العمل)
 ```
 
 #### ينتج
@@ -1865,6 +1868,7 @@ UI deviation / visual issue notes
 tera-system/TeraSystemMaintenanceChecklist.md
 tera-system/TeraPolicyMap.md
 tera-system/TeraArchitectureMap.md
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md (سياسة التحسين المستمر — إلزامي قبل بدء العمل)
 project-control/SYSTEM_EVOLUTION_LOG.md
 project-control/AGENT_GAPS_LOG.md
 الملفات المرتبطة بالمشكلة أو الطلب فقط
@@ -1931,6 +1935,7 @@ RESEARCH_TO_SYSTEM_CHANGE_REPORT
 tera-system/TeraClientEngagement.md (مصدر الحقيقة)
 tera-system/TeraApplicationQuestionBank.md (بنك الأسئلة)
 tera-system/TeraClientPolicy.md (سياسة الزبون)
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md (سياسة التحسين المستمر — إلزامي قبل بدء العمل)
 tera-workshop/ (قوالب الوثائق)
 clients/CLIENT-*/applications/APP-*/ (ملفات التطبيق للتحليل)
 ```

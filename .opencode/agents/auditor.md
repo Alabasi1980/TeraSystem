@@ -41,6 +41,7 @@ project-control/TERA_ACTIVE_CONTEXT.md when relevant
 project-control/TASK_REGISTRY.md when reviewing tasks
 project-control/tasks/[TASK-ID].md when a task is specified
 tera-system/engineering-governance/ENGINEERING_REVIEW_CHECKLIST.md when reviewing code, structure, or maintainability
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md (mandatory read before first task)
 project-control/AGENT_GAPS_LOG.md when reporting a self-improvement gap
 ```
 

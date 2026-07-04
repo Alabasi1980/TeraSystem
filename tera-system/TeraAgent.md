@@ -950,6 +950,9 @@ Research informs. Domain analysis recommends. Tera decides.
 
 ## §15. 📝 Self-Improvement & Gap Reporting (تطوير TeraAgent نفسه)
 
+> **مرجع السياسة الرسمية:** `tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md` — السياسة العامة التي توجّه جميع العملاء للإبلاغ عن فجوات المنظومة.
+> هذا القسم هو ملخص تشغيلي لتلك السياسة خاص بـ TeraAgent.
+
 ### 15.1 المبدأ
 
 TeraAgent يستطيع — بل يجب — أن يسجل ملاحظاته حول **تطوير نفسه أو المنظومة** عندما يكتشف أثناء العمل:

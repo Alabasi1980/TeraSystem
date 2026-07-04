@@ -86,6 +86,7 @@ Project files record project-specific decisions.
 | Client engagement and lifecycle management | "tera-system/TeraClientEngagement.md" + ".opencode/agents/tera-client-engagement.md" | ".opencode/agents/tera.md" | TeraClientEngagementAgent يدير دورة حياة الزبون من البداية إلى النهاية، وينتج TERA_HANDOFF_PACKAGE.md لـ Tera |
 | Pricing system (v0.1 Draft) | `tera-system/TeraPricingPolicy.md` | `.opencode/agents/tera-client-engagement.md` (Section 8) | نظام تسعير موحد: Feature-Based + Complexity Rubric + Risk Buffer. TCEA يصدر Draft فقط — Majed يعتمد. لا يُعرض للزبون. أسس داخلية. |
 | Agent self-improvement gaps | `project-control/AGENT_GAPS_LOG.md` | `.opencode/agents/tera-system-evolution.md`, `.opencode/agents/auditor.md`, `.opencode/agents/monitor.md`, `.opencode/agents/design-reviewer.md` | Central log for core governance agents to self-report gaps, bugs, and improvement suggestions. TeraSystemEvolutionAgent reviews entries and controls their status. |
+| Continuous improvement policy | `tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md` | `TeraPreExecutionGate.md` (§2.5)، تعريفات العملاء الأساسيين | Mandatory read before first task of each session. Guides agents to observe, report, and log system gaps, bugs, and improvement opportunities. |
 | Scenario stress tests | `tera-system/TeraScenarioStressTests.md` | Not applicable | Used for validation, not daily runtime. |
 | Client/application workspace guide | `clients/README.md` | Not applicable | Folder usage guide only; policies remain in `tera-system/`. |
 

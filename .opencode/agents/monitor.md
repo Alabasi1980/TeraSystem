@@ -43,6 +43,7 @@ project-control/EXECUTION_BATCH_PLAN.md
 project-control/TASK_REGISTRY.md
 project-control/PROJECT_ACTIVITY_LOG.md when needed
 tera-system/engineering-governance/ENGINEERING_GOVERNANCE_GATE.md when checking engineering-governance drift at plan level
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md (mandatory read before first task)
 project-control/AGENT_GAPS_LOG.md when reporting a self-improvement gap
 ```
 

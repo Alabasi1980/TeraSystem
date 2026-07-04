@@ -249,6 +249,7 @@ Majed هو صاحب القرار النهائي.
 tera-system/TeraSystemMaintenanceChecklist.md
 tera-system/TeraPolicyMap.md
 tera-system/TeraArchitectureMap.md
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
 project-control/AGENT_GAPS_LOG.md
 ```
 

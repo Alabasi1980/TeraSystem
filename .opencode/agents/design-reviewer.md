@@ -42,6 +42,7 @@ project-preparation/07_SCREENS_AND_UI_STRUCTURE.md
 project-preparation/design-source/ when needed
 project-control/tasks/[TASK-ID].md when a UI task is specified
 tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md only for UI maintainability boundaries
+tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md (mandatory read before first task)
 project-control/AGENT_GAPS_LOG.md when reporting a self-improvement gap
 ```
 
