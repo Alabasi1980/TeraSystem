@@ -1188,7 +1188,34 @@ Required Record Updates:
 
 ---
 
-## 33. UI/UX Guidelines Template (Design Governance Output)
+## 33. Compliance Record (Task Closure Governance Summary)
+
+هذا القسم يُضاف إلى `project-control/tasks/TASK-COD-XXX.md` كآخر قسم قبل الإغلاق (بعد `Post-Execution Review`).
+وهو المرجع المعتمد لـ Monitor للتحقق من مطابقة Handback + Git diff + القواعد.
+
+```markdown
+## Compliance Record
+
+| # | Check | Result | Verified By |
+|---|---|---|---|
+| 1 | Pre-Execution Gate: PASS documented in task file | PASS / N/A | Tera |
+| 2 | Allowed Write Targets respected | PASS / FAIL | Tera |
+| 3 | No secrets/tokens/passwords in outputs or logs | PASS / FAIL | Tera |
+| 4 | Design Source Decision documented (if UI exists) | PASS / N/A | Tera |
+| 5 | Post-Execution Review: PASS | PASS / FAIL | Tera |
+| 6 | PROJECT_ACTIVITY_LOG.md updated | PASS / FAIL | Tera |
+| 7 | Handback recorded in TASK-ID file | PASS / FAIL | Tera |
+| 8 | Git diff matches Handback description | PASS / FAIL / PENDING | Monitor\* |
+| 9 | CLI/commands documented (if any) | Done / N/A | Tera |
+
+\* Item 8: Monitor يتحقق عند نشاطه. إذا لم يكن Monitor نشطاً، يوثق Tera الفحص الذاتي.
+
+Compliance Status: COMPLIANT / NON-COMPLIANT / PENDING_MONITOR_REVIEW
+```
+
+---
+
+## 34. UI/UX Guidelines Template (Design Governance Output)
 
 This template defines the required structure of `project-preparation/28_UI_UX_GUIDELINES.md`.
 

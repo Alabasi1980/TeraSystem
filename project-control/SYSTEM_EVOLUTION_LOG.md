@@ -283,3 +283,89 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 1. استعادة الأقسام المختصرة من Git إذا تقرر الرجوع عن Pass A.
 2. الإبقاء على Passes B/C متوقفة لحين مراجعة المالك للـ diff.
 ```
+
+### SCP-2026-07-04-025 — Phased Tera Agent Governance Cleanup (Pass B)
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-025
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Improvement / Anti-Bloat / Source Slimming
+الملفات المعدلة:
+- UPDATE: tera-system/TeraAgent.md
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم تنفيذ Pass B فقط من SCP-025 لتخفيف `TeraAgent.md` مع الحفاظ على دقته كملف هوية ومرجعية عليا. تم اختصار تفاصيل المراحل 3–7 وتحويلها من خطوات تشغيلية مطولة إلى بنية مختصرة تتضمن: الهدف، المدخلات الحرجة، المخرجات الرسمية، قواعد المنع الكبرى، والمرجع التشغيلي. بقيت التفاصيل الإجرائية في `TERA_RUNTIME_CHECKLISTS.md` و `TERA_RUNTIME_TEMPLATES.md` و `TERA_RUNTIME_PROTOCOLS.md` و `TeraPreExecutionGate.md`.
+الموافقة: Majed — Pass B Authorized
+التحقق من الصحة: Validation Passed for Pass B only; Pass C not started
+المخاطر: منخفضة — تم تخفيف المصدر دون حذف المراجع التشغيلية أو القواعد العليا.
+ملاحظات الاسترجاع (Rollback):
+1. استعادة كتلة المراحل 3–7 السابقة من Git إذا تقرر الرجوع عن Pass B.
+2. إبقاء Pass C متوقفاً حتى قرار المالك.
+```
+
+### SCP-2026-07-04-025 — Phased Tera Agent Governance Cleanup (Pass C)
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-025
+مصدر الطلب: User Request (Majed) — Pass C Authorized
+نوع التغيير: Agent Improvement / Anti-Bloat / Runtime Compression
+الملفات المعدلة:
+- UPDATE: .opencode/agents/tera.md
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم تنفيذ Pass C (المرحلة الأخيرة) من SCP-025 لضغط ملف runtime `.opencode/agents/tera.md` من 785 سطراً إلى 551 سطراً (انخفاض ~30%) مع الحفاظ على جميع triggers التشغيلية.
+
+التغييرات الرئيسية حسب القسم:
+- §2 (System Reference Files): 47→15 سطراً — تحويل القائمة النصية إلى صيغة مجموعات (source of truth / operational) مع الاحتفاظ بجميع الإشارات للملفات المهمة.
+- §3 (Runtime Loading Rules): 117→47 سطراً — تحويل قوائم الـ triggers الـ19 من صيغة prose مع bullets إلى جدول مضغوط (Read This File / Before Doing This)، مع بقاء ملخصات Domain Intelligence و Application Discovery.
+- §6 (Project Intake Gate): 45→28 سطراً — إزالة تكرار قواعد output location (موجودة في §7)، ضغط القوائم.
+- §10 (Decision and Anti-Bloat Rules): 30→27 سطراً — ضغط طفيف مع بقاء جميع معايير القرار.
+- §12 (Execution Orchestration Core): 128→48 سطراً — ضغط جوهري: تحويل أمثلة صيغ التسجيل والتقسيم والتشخيص من كتل Markdown كاملة إلى مراجع inline، مع بقاء جميع القواعد التشغيلية (task lifecycle, logging, TASK-ID size, acceptance, issues, self-diagnosis, handback).
+- §13 (Safety Gates): بدون تغيير جوهري — الحفاظ على كامل محتوى الأمان.
+- §18 (Git Commit & Push): 42→14 سطراً — ضغط الخطوات والقواعد إلى صيغة موجزة مع بقاء جميع قواعد الأمان والموافقة.
+الموافقة: Majed — Pass C Authorized via approval gate
+التحقق من الصحة: Validation Passed — جميع الـ triggers التشغيلية محفوظة، أزواج code blocks متوازنة، جميع الأقسام مرقمة.
+المخاطر: منخفضة — ضغط تنسيقي فقط بدون تغيير في القواعد أو الصلاحيات أو الأدوار.
+ملاحظات الاسترجاع (Rollback):
+1. استعادة النسخة السابقة من `.opencode/agents/tera.md` من Git إذا تقرر الرجوع عن Pass C.
+```
+
+### SCP-2026-07-04-026 — Compliance Record لكل TASK-ID
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-026
+مصدر الطلب: GAP-003 (TeraAgent)
+نوع التغيير: Agent Process Improvement / Policy Update / Anti-Bloat
+الملفات المعدلة:
+- UPDATE: tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md (قاعدة Compliance Record + Mid-Task Checkpoint)
+- UPDATE: tera-system/runtime/TERA_RUNTIME_TEMPLATES.md (قالب §33)
+- UPDATE: .opencode/agents/tera.md §12 (تحديث قاعدة الإغلاق + Mid-Task Checkpoint)
+- UPDATE: .opencode/agents/monitor.md (إضافة مسؤوليات التحقق)
+- UPDATE: project-control/AGENT_GAPS_LOG.md (GAP-003 → Applied)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم إضافة **Compliance Record إلزامي** لكل TASK-ID كشرط للإغلاق، و **Mid-Task Compliance Checkpoint** كحماية أثناء التنفيذ، لسد فجوة غياب سجل امتثال موحد يربط Handback + Git diff + القواعد + الانحراف التراكمي داخل المهمة الواحدة.
+
+التغييرات:
+1. `TERA_RUNTIME_PROTOCOLS.md`: 
+   - قاعدة إلزامية — لا إغلاق TASK-ID بدون Compliance Record (Handback + gates + Git diff matching).
+   - Mid-Task Compliance Checkpoint — بعد كل خطوة منطقية من Tool Calls، Tera يتوقف ويسجل Checkpoint ذاتي (Allowed Write Targets + No secrets + In scope). سطر واحد.
+2. `TERA_RUNTIME_TEMPLATES.md` §33: قالب Compliance Record بجدول 9 بنود (Pre-Execution Gate, Write Targets, Secrets, Design Source, Post-Execution Review, Activity Log, Handback, Git diff match, Commands) مع PASS/FAIL/N/A و Verified By.
+3. `tera.md §12`: 
+   - تحديث قاعدة الإغلاق من شرط واحد (Post-Execution Gate PASS) إلى 3 شروط: Gate PASS + Compliance COMPLIANT + Handback recorded.
+   - إضافة Mid-Task Compliance Checkpoint كفقرة جديدة.
+4. `monitor.md`: إضافة مسؤوليتين — التحقق من اكتمال Compliance Record، والمطابقة بين Handback و Git diff.
+
+الـ Compliance Record داخل ملف TASK-ID نفسه — لا ملفات جديدة. Mid-Task Checkpoint = سطر واحد فقط.
+الموافقة: Majed — Approved
+التحقق من الصحة: Implementation Complete — جميع التعديلات متسقة. فجوة 15% مغلقة بـ 3 طبقات دفاع (Mid-Task + Compliance Record + Monitor audit).
+المخاطر: منخفضة — التغيير يوثق إجراءات موجودة أصلاً، لا يغير صلاحيات أو أدوار.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة قاعدة Compliance Record و Mid-Task Checkpoint من TERA_RUNTIME_PROTOCOLS.md.
+2. إزالة القالب §33 من TERA_RUNTIME_TEMPLATES.md.
+3. إعادة قاعدة الإغلاق في tera.md §12 إلى الصيغة السابقة وإزالة Mid-Task Checkpoint.
+4. إزالة مسؤوليات Monitor من monitor.md.
+```

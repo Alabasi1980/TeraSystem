@@ -301,229 +301,126 @@ They must not be mixed into `project-preparation/`, which remains the internal T
 - إذا كانت الحالة `draft` أو `pending_confirmation` أو `revision_required` أو `blocked_by_unconfirmed_handoff` → لا يبدأ Tera التحضير الرسمي.
 - `draft-seeds/` لا تُعامل أبداً كـ baseline أو كمدخل downstream جاهز.
 
-### تفاصيل المرحلة 3 (Project Preparation Planning)
+### المرحلة 3 — Project Preparation Planning
 
-**لا يُنشئ تيرا ملفات التحضير عشوائياً. يجب أن يخطط أولاً.**
+**الهدف:** تحديد ملفات التحضير المطلوبة فقط، ترتيبها، ومسؤولية إنشائها قبل أي توليد أو كتابة فعليّة.
 
-**المدخلات:**
-- `project-preparation/TERA_PROJECT_DECISION.md` (خاصة القسم 8: الملفات المطلوبة)
-- `tera-system/Tera_Project_Preparation_Files.md` (الكتالوج)
-- `project-control/PROJECT_STATE.md`
-
-**خطوات التخطيط:**
-1. التحقق من أن القرار في `TERA_PROJECT_DECISION.md` هو `Proceed`.
-2. مراجعة كتالوج ملفات التحضير واختيار المناسب فقط.
-3. تصنيف كل ملف: Required / Conditional / Deferred / Not Required.
-4. تحديد ترتيب الإنشاء بناءً على التبعيات (أي ملف يعتمد على آخر).
-5. تحديد العميل الفرعي المسؤول عن كل ملف.
-6. تحديد نقاط اعتماد المستخدم: ما يحتاج موافقته قبل المتابعة.
-
-**المخرج الرسمي:** `project-control/PREPARATION_PLAN.md`
-- يستخدم القالب في `TERA_RUNTIME_TEMPLATES.md` Section 27.
-
-**قواعد حاكمة:**
-- لا إنشاء فعلي لأي ملف في هذه المرحلة.
-- لا توليد لأي عميل فرعي في هذه المرحلة.
-- لا تنتقل إلى المرحلة 4 إلا بعد اعتماد خطة التحضير.
-
-### تفاصيل المرحلة 4 (Sub-Agent Generation & Preparation Delegation)
-
-**الهدف:** تحويل `PREPARATION_PLAN.md` من خطة نظرية إلى تفويضات منظمة للعملاء الفرعيين.
-
-**المدخلات:**
-- `project-control/PREPARATION_PLAN.md` (معتمد — إلزامي)
+**المدخلات الحرجة:**
 - `project-preparation/TERA_PROJECT_DECISION.md`
+- `tera-system/Tera_Project_Preparation_Files.md`
 - `project-control/PROJECT_STATE.md`
-- `tera-system/TeraSubAgents.md` (سجل العملاء)
-- `tera-system/AGENT_GENERATION_TEMPLATE.md` (قالب التوليد)
-- `tera-system/TeraTokenPolicy.md` (سياسة التوكنز لكل عميل)
-- `tera-system/profiles/PROFILES_INDEX.md` (للملفات التقنية)
 
-**الخطوات:**
-1. قراءة `PREPARATION_PLAN.md` واستخراج: Required Files, Owner Agent, Sequence, Approval Points.
-2. تحديد العملاء المطلوبين للدفعة الأولى فقط (Needed Now).
-3. فحص حالة كل عميل:
-   - **موجود ومناسب** ← يستخدم مباشرة.
-   - **موجود لكن عام** ← يخصصه للمشروع (يضيق المصادر والصلاحيات).
-   - **غير موجود** ← يولّده من `AGENT_GENERATION_TEMPLATE.md`.
-4. توليد العملاء في `generated-agents/opencode/` (وليس مباشرة في `.opencode/agents/`).
-5. تحديد الحدود لكل عميل: Allowed Sources, Allowed Write Targets, Forbidden Actions,
-   Token Budget, Context Rules, Expected Output Format, Acceptance Criteria.
-6. إنشاء `project-control/AGENT_DELEGATION_PLAN.md` (باستخدام قالب Section 28 في `TERA_RUNTIME_TEMPLATES.md`).
-7. إنشاء أو تحديث `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md`.
-8. عرض خطة التفويض للاعتماد (نقاط اعتماد المستخدم).
-9. بعد الاعتماد: تفعيل العملاء في `.opencode/agents/` حسب الدفعة الحالية + طلب إعادة تشغيل OpenCode.
-10. التفويض: إنشاء `TASK-PREP-XXX` لكل ملف تحضير + Pre-Execution Gate + تسليم لعميل التحضير.
-11. استلام النتيجة: مراجعة ملفات التحضير الناتجة + Handback + قبول أو إعادة.
-
-**المخرجات:**
-- `generated-agents/opencode/[AGENT_FILES]` — العملاء المولدون
-- `project-control/AGENT_DELEGATION_PLAN.md` — خطة التفويض
-- `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md` — بيان العملاء
-- `project-preparation/[01-11]_*.md` — ملفات التحضير التي ينشئها العملاء
-
-**قواعد حاكمة:**
-- لا توليد عملاء قبل اعتماد PREPARATION_PLAN.md.
-- لا تفعيل قبل اعتماد AGENT_DELEGATION_PLAN.md.
-- لا إنشاء ملفات تحضير دون تفويض واضح (`TASK-PREP-XXX` + Allowed Write Targets).
-- كل عميل يجب أن يكون له Token Budget و Context Rules محددان.
-- No active need = No active sub-agent.
-
----
-
-### تفاصيل المرحلة 5 (Execution Planning)
-
-**الهدف:** تحويل ملفات التحضير المعتمدة إلى خطة تنفيذ مضبوطة قبل كتابة الكود.
-
-**المدخلات:**
-- `project-control/PROJECT_STATE.md`
+**المخرج الرسمي:**
 - `project-control/PREPARATION_PLAN.md`
-- `project-control/AGENT_DELEGATION_PLAN.md`
-- `project-preparation/01_PROJECT_BRIEF.md`
-- `project-preparation/02_SCOPE_AND_BOUNDARIES.md`
-- `project-preparation/03_MODULES_AND_FEATURES.md`
-- `project-preparation/04_USERS_ROLES_PERMISSIONS.md`
-- `project-preparation/05_BUSINESS_WORKFLOWS.md`
-- `project-preparation/06_DATA_MODEL_PREPARATION.md`
-- `project-preparation/07_SCREENS_AND_UI_STRUCTURE.md`
-- `project-preparation/08_TECHNICAL_ARCHITECTURE.md`
-- `project-preparation/09_IMPLEMENTATION_PLAN.md`
-- `project-preparation/10_TESTING_AND_ACCEPTANCE.md`
-- `project-preparation/28_UI_UX_GUIDELINES.md` (إن وجد)
-- `tera-system/profiles/[ACTIVE_PROFILE].md` (Technology Profile النشط)
-- `tera-system/TeraPreExecutionGate.md`
-- `tera-system/TeraTokenPolicy.md`
+
+**قواعد المنع الكبرى:**
+- لا إنشاء فعلي لملفات التحضير في هذه المرحلة.
+- لا توليد للعملاء الفرعيين في هذه المرحلة.
+- لا انتقال إلى المرحلة 4 قبل اعتماد `PREPARATION_PLAN.md`.
+
+**المرجع التشغيلي:**
+- `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — Phase 3
+- `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` — Section 27
+
+### المرحلة 4 — Sub-Agent Generation & Preparation Delegation
+
+**الهدف:** تحويل `PREPARATION_PLAN.md` المعتمد إلى تفويضات تحضير منظمة وعملاء مخصصين عند الحاجة.
+
+**المدخلات الحرجة:**
+- `project-control/PREPARATION_PLAN.md` (معتمد)
+- `tera-system/TeraSubAgents.md`
+- `tera-system/AGENT_GENERATION_TEMPLATE.md`
+- `project-control/PROJECT_STATE.md`
 
 **المخرجات الرسمية:**
-1. `project-control/PROJECT_MASTER_PLAN.md` — المخطط الرئيسي: مراحل التنفيذ وترتيبها وشروط الانتقال.
-2. `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md` — تفصيل كل مرحلة إلى مهام قابلة للتتبع.
-3. `project-control/EXECUTION_BATCH_PLAN.md` — الدفعة الحالية فقط (أول دفعة معتمدة).
-4. `project-control/tasks/TASK-COD-001.md` إلى ... — ملفات المهام للدفعة الأولى فقط.
+- `project-control/AGENT_DELEGATION_PLAN.md`
+- `generated-agents/opencode/GENERATED_AGENTS_MANIFEST.md`
+- العملاء المولدون عند الحاجة
+- ملفات التحضير المفوضة فقط
 
-**تمييز مهم:**
-- `project-preparation/09_IMPLEMENTATION_PLAN.md` = خطة تنفيذ مبدئية ضمن ملفات التحضير.
-- `project-control/PROJECT_MASTER_PLAN.md` = الخطة الرئيسية الرسمية بعد اعتماد التحضير، وتتضمن الـ Phased Roadmap الرسمي.
-- `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md` = تفصيل التنفيذ إلى عناصر قابلة للتتبع.
-- `project-control/EXECUTION_BATCH_PLAN.md` = الدفعة القادمة فقط.
-- `project-control/tasks/TASK-COD-XXX.md` = وحدة تنفيذ فعلية.
+**قواعد المنع الكبرى:**
+- لا توليد قبل اعتماد `PREPARATION_PLAN.md`.
+- لا تفعيل قبل اعتماد `AGENT_DELEGATION_PLAN.md`.
+- لا إنشاء ملفات تحضير دون تفويض واضح وحدود كتابة واضحة.
+- No active need = No active sub-agent.
 
-**خطوات التخطيط:**
-
-1. **Execution Readiness Check:** التحقق من أن جميع ملفات التحضير المطلوبة مكتملة ومعتمدة، و AGENT_DELEGATION_PLAN معتمد، و Technology Profile نشط، ولا توجد Issues مانعة.
-2. **إنشاء PROJECT_MASTER_PLAN.md:** تقسيم التطبيق إلى مراحل رئيسية (مثل: Technical Foundation → Database Schema → Core Features → Reports → QA → Handover)، وتثبيت الـ Phased Roadmap الرسمي وشروط الانتقال بينها.
-3. **إنشاء PROJECT_DETAILED_EXECUTION_PLAN.md:** تفصيل كل مرحلة إلى مهام صغيرة قابلة للتحويل إلى TASK-ID، مرتبطة بخطة التتبع.
-4. **تحديد أول Batch:** اختيار أول دفعة قابلة للتنفيذ فقط — لا يخطط كل المشروع دفعة واحدة.
-5. **تحديد Design Source Decision لكل TASK-ID في الدفعة:** تسجيل المصدر في `28_UI_UX_GUIDELINES.md` أو في خطة التنفيذ قبل إنشاء مهام UI.
-6. **تطبيق Orchestration Decision Matrix + Model Capability Gate** لكل TASK-ID (يُقرر أي العملاء ونوع النموذج قبل إنشاء المهمة).
-7. **إنشاء ملف المهمة** `TASK-COD-XXX.md` في `project-control/tasks/` باستخدام `TASK_TEMPLATE.md` مع الهدف والمراجع و Allowed Write Targets و Acceptance Criteria.
-8. **تطبيق Pre-Execution Gate على كل TASK-ID:** التحقق من checklist بوابة ما قبل التنفيذ (مع بنود Design Governance عند وجود UI) وتسجيل `PASS` في ملف المهمة.
-9. **عرض Master Plan + Detailed Plan + First Batch + TASK-IDs على المستخدم** والانتظار للموافقة.
-10. **بعد الاعتماد → الانتقال إلى المرحلة 6 (Implementation).**
-
-**قواعد حاكمة:**
-- **لا تنفيذ برمجي في هذه المرحلة.**
-- **لا TASK-ID فيه UI قبل Design Source Decision.**
-- **لا TASK-ID بدون Pre-Execution Gate PASS.**
-- **لا توليد كامل TASK-IDs للمشروع دفعة واحدة — فقط للدفعة المعتمدة.**
-- **لا تنفيذ قبل اعتماد المستخدم.**
-- **تصميم UI/UX يحسم في هذه المرحلة وليس في المرحلة 6.**
+**المرجع التشغيلي:**
+- `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — Phase 4
+- `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` — Section 28
+- `tera-system/TeraSubAgents.md`
+- `tera-system/AGENT_GENERATION_TEMPLATE.md`
 
 ---
 
-### تفاصيل المرحلة 6 (Implementation)
+### المرحلة 5 — Execution Planning
 
-**الهدف:** تنفيذ وحدات `TASK-COD-XXX` المعتمدة فقط، ثم مراجعة النتيجة وقبولها أو إعادتها للإصلاح.
+**الهدف:** تحويل ملفات التحضير المعتمدة إلى خطة تنفيذ رسمية ومهام أول دفعة فقط قبل أي تنفيذ برمجي.
 
-**المدخلات الإلزامية:**
+**المدخلات الحرجة:**
+- ملفات التحضير المعتمدة المطلوبة
+- `project-control/PREPARATION_PLAN.md`
+- `project-control/AGENT_DELEGATION_PLAN.md`
+- `tera-system/profiles/[ACTIVE_PROFILE].md`
+- `tera-system/TeraPreExecutionGate.md`
+
+**المخرجات الرسمية:**
 - `project-control/PROJECT_MASTER_PLAN.md`
 - `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md`
 - `project-control/EXECUTION_BATCH_PLAN.md`
-- `project-control/tasks/TASK-COD-XXX.md` بحالة `Approved` أو `Assigned`
-- `project-control/TASK_REGISTRY.md`
-- `project-control/PROJECT_STATE.md`
-- Technology Profile نشط من `tera-system/profiles/`
-- العميل المسؤول نشط ومناسب
-- `Pre-Execution Gate Result: PASS`
-- موافقة المستخدم على الدفعة أو المهمة
+- أول دفعة فقط من `TASK-COD-*`
 
-**تسلسل التنفيذ:**
+**قواعد المنع الكبرى:**
+- لا تنفيذ برمجي في هذه المرحلة.
+- لا `TASK-ID` فيه UI قبل Design Source Decision.
+- لا `TASK-ID` بدون Pre-Execution Gate PASS.
+- لا توليد كامل مهام المشروع دفعة واحدة.
+- لا انتقال إلى المرحلة 6 قبل اعتماد المستخدم.
 
-0. **طلب الدخول في Build Mode:** يسأل Tera المستخدم صراحةً: "هل توافق على بدء Build Mode لتنفيذ TASK-COD-XXX؟" قبل أي تفويض تنفيذي. تبقى الحالة Plan Mode لحين الموافقة.
-1. اختيار `TASK-COD-XXX` معتمدة من `EXECUTION_BATCH_PLAN.md`.
-2. التأكد من أن العميل المسؤول نشط وأن Technology Profile محمل.
-3. تفويض العميل بالمهمة فقط: Objective, Allowed Sources, Allowed Write Targets, Forbidden Actions, Expected Output, Acceptance Criteria.
-4. تنفيذ العميل داخل `Allowed Write Targets` فقط.
-5. استلام Handback رسمي يتضمن: Task ID, Agent, Status, Files Created/Modified, Commands Run, Summary, Assumptions, Issues, Decisions Needed, Recommendation.
-6. تسجيل handback داخل `project-control/tasks/TASK-COD-XXX.md` وعدم تركه في الشات فقط.
-7. تشغيل `Post-Execution Review Gate` من `TeraPreExecutionGate.md` على الملفات الفعلية، الأوامر، الآثار الجانبية، الأسرار، الالتزام بالنطاق، Technology Profile، UI/UX Guidelines، ومعايير القبول.
-8. اتخاذ قرار تيرا النهائي: Accepted / Needs Fix / Blocked / Rework Needed / Deferred / Cancelled.
-9. تحديث `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, و `ISSUES_AND_GAPS.md` عند الحاجة.
-10. لا ينتقل تيرا إلى المهمة التالية إلا إذا أُغلقت الحالية أو عولجت صراحةً كـ Deferred / Blocked / Cancelled.
-11. **Self-Diagnosis Checkpoint:** بعد كل 3 مهام مقفلة، يسجّل Tera Self-Diagnosis قبل فتح المهمة الرابعة (راجع `.opencode/agents/tera.md` §12).
+**المرجع التشغيلي:**
+- `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — Phase 5
+- `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` — Sections 29-31
+- `tera-system/TeraPreExecutionGate.md`
 
-**المخرجات:**
-- ملفات تطبيق محدثة ضمن Allowed Write Targets.
-- Handback مسجل في ملف المهمة.
-- Post-Execution Review Result.
-- تحديثات `TASK_REGISTRY.md`, `PROJECT_ACTIVITY_LOG.md`, `PROJECT_STATE.md`, `ISSUES_AND_GAPS.md` حسب الحاجة.
+### المرحلة 6 — Implementation
 
-**قواعد حاكمة:**
+**الهدف:** تنفيذ `TASK-COD-*` المعتمدة فقط، ثم مراجعة النتيجة وقبولها أو إعادتها.
+
+**المدخلات الحرجة:**
+- `project-control/PROJECT_MASTER_PLAN.md`
+- `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md`
+- `project-control/EXECUTION_BATCH_PLAN.md`
+- `project-control/tasks/TASK-COD-XXX.md`
+- Technology Profile نشط
+- Pre-Execution Gate PASS
+- Build Mode approval
+
+**المخرجات الرسمية:**
+- ملفات التطبيق ضمن Allowed Write Targets
+- Handback موثق داخل ملف المهمة
+- Post-Execution Review Result
+- تحديثات `project-control/` اللازمة
+
+**قواعد المنع الكبرى:**
 - No approved TASK-ID = No Implementation.
 - No Build Mode approval = No Implementation.
 - No Pre-Execution Gate PASS = No Implementation.
-- No active responsible agent = No Implementation.
-- No work outside Allowed Write Targets.
 - No task closure without Post-Execution Review.
-- No next task if current task is not Accepted or explicitly handled.
 - No UI implementation without approved Design Source Decision.
-- No silent scope expansion and no hidden technical decisions.
 - Implementation completion does not equal project closure.
-- No project closure after last TASK-COD only.
 
----
+**المرجع التشغيلي:**
+- `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — Phase 6
+- `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md`
+- `tera-system/TeraPreExecutionGate.md`
 
-### تفاصيل المرحلة 7 (Delivery, Handover & Closure)
+### المرحلة 7 — Delivery, Handover & Closure
 
-**الهدف:** إغلاق المشروع كاملًا بعد التنفيذ، عبر فحص جاهزية التسليم، توثيق الإصدار، قبول المستخدم/العميل، حزمة التسليم، وتقرير الإغلاق.
+**الهدف:** إغلاق المشروع بعد التنفيذ عبر جاهزية التسليم، القبول، التوثيق، والتسليم النهائي.
 
-**تبدأ المرحلة 7 فقط إذا:**
-- كل مهام `TASK-COD-*` مغلقة ومقبولة؛ أو
-- التنفيذ مكتمل مع وجود Deferred Items موثقة بوضوح.
-- لا توجد Critical blockers غير موثقة.
-- كل Post-Execution Reviews المطلوبة مكتملة.
-
-**لا تسمح المرحلة 7 بـ:**
-- Scope جديد.
-- كود جديد.
-- تعديل مباشر على ملفات التطبيق التنفيذية.
-- تجاهل Issues مفتوحة.
-- إغلاق مشروع بوجود Critical blockers غير موثقة.
-
-**تسمح المرحلة 7 بـ:**
-- Final QA Review.
-- Smoke / Regression Review.
-- Delivery Readiness Review.
-- Documentation Finalization.
-- Release Notes.
-- Client/User Acceptance.
-- Handover Package.
-- Post-Implementation Review.
-- Project Closure Decision.
-
-**إذا اكتشفت المرحلة 7 مشكلة مانعة:**
-- لا تعالجها داخل Phase 7 مباشرة.
-- أنشئ `TASK-COD-FIX-*`.
-- أعد المشروع إلى Phase 6.
-- بعد الإصلاح والمراجعة، يعود المشروع إلى Phase 7.
-
-**مخرجات المرحلة 7 حسب حجم المشروع:**
-
-| نوع المشروع | مخرجات Phase 7 |
-|---|---|
-| مشروع صغير داخلي | Release Notes مختصرة + Project Closure Report مختصر |
-| مشروع متوسط | Delivery Readiness Report + Final Acceptance Checklist + Release Notes + Project Closure Report |
-| مشروع عميل | كل مخرجات Phase 7 + Client Handover Package إلزامي |
-| مشروع فيه Deployment | إضافة Deployment Readiness ضمن Delivery Readiness Report أو بمشاركة DevOpsAgent |
+**المدخلات الحرجة:**
+- اكتمال أو إغلاق مهام التنفيذ المعتمدة
+- Post-Execution Reviews مكتملة
+- عدم وجود blockers حرجة غير موثقة
 
 **المخرجات الرسمية:**
 - `project-control/DELIVERY_READINESS_REPORT.md`
@@ -531,22 +428,19 @@ They must not be mixed into `project-preparation/`, which remains the internal T
 - `project-control/RELEASE_NOTES.md`
 - `project-control/POST_IMPLEMENTATION_REVIEW.md`
 - `project-control/PROJECT_CLOSURE_REPORT.md`
-- للمشاريع الخارجية: `clients/CLIENT-*/applications/APP-*/delivery/CLIENT_HANDOVER_PACKAGE.md`
+- للمشاريع الخارجية: `clients/.../delivery/CLIENT_HANDOVER_PACKAGE.md`
 
-**العملاء المشاركون عند الحاجة:**
-- `QAAndAcceptanceAgent`: Final QA / Smoke / Regression / Acceptance.
-- `DocumentationHandoverAgent`: Release Notes / Handover Package / Closure Report.
-- `DevOpsAgent`: Deployment Readiness عند الحاجة.
-- `SecurityAgent`: Security closure عند الحاجة.
-- `Tera`: القرار النهائي وإغلاق المشروع.
-
-**قواعد حاكمة:**
+**قواعد المنع الكبرى:**
+- No new scope in Phase 7.
+- No code changes in Phase 7.
 - No project closure without Delivery Readiness validation.
 - No client project closure without Client Handover Package.
-- No closure with hidden open issues.
-- No undocumented Deferred Items.
-- No new scope in Phase 7.
-- Blocking issues found in Phase 7 must return to Phase 6 as `TASK-COD-FIX-*`.
+- أي blocker في Phase 7 يعيد المشروع إلى Phase 6 عبر `TASK-COD-FIX-*`.
+
+**المرجع التشغيلي:**
+- `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — Phase 7
+- `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` — Section 34
+- `tera-system/runtime/VERSION_LIFECYCLE_PROTOCOL.md`
 
 ## 6. أول مخرج إلزامي
 

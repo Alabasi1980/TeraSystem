@@ -209,6 +209,24 @@ After execution:
 8. Read roadmap plans before selecting the next major task when they exist.
 9. Keep roadmap phase/sub-phase statuses aligned with actual outcomes.
 
+### Mid-Task Compliance Checkpoint
+
+During execution of a single TASK-ID, after each logical block of tool calls (writing a file, editing a config, running a command, or any write/execute tool), Tera must pause and confirm:
+
+1. **Allowed Write Targets** respected — no files outside the approved set were written or modified.
+2. **No secrets** leaked into outputs, logs, or files.
+3. **Still within TASK-ID scope** — the current block does not expand beyond the approved task scope.
+
+Record the checkpoint as a single line in the task file or chat context:
+
+```text
+[CP] Allowed Write Targets ✓ | No secrets ✓ | In scope ✓
+```
+
+If any check fails: stop, assess, and decide (fix, revert, or flag) before continuing. Do not accumulate multiple violations.
+
+This checkpoint is self-performed by Tera. It is not a replacement for Post-Execution Review or Compliance Record — it is a mid-execution safeguard to catch drift early.
+
 Handback recording rules:
 
 - A sub-agent result must not remain only in chat.
@@ -219,6 +237,17 @@ Handback recording rules:
 - Real secrets must never appear in task files, logs, handbacks, reports, or config/code fallback values.
 - Any change outside `Allowed Write Targets` must be classified.
 - IDs must be unique and sequential; read the last used ID before writing a new one.
+
+### Compliance Record (Mandatory)
+
+After completing the Post-Execution Review Gate and before any task may become `Accepted` or `Closed`, Tera must add a **Compliance Record** section to the task file (`project-control/tasks/TASK-COD-XXX.md`). This is a governance summary that ties together gates, outputs, handback, and commands for Monitor and Auditor verification.
+
+No task may become `Accepted` or `Closed` without:
+1. Handback recorded in TASK-ID file.
+2. Compliance Record (all applicable gates checked + commands documented).
+3. Git diff matches Handback content (verified by Monitor when active; otherwise self-verified by Tera).
+
+Use `TERA_RUNTIME_TEMPLATES.md §33` for the official template format.
 
 ### 4.1 Roadmap and Detailed Plan Tracking
 

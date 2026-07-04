@@ -58,6 +58,8 @@ project-control/AGENT_GAPS_LOG.md when reporting a self-improvement gap
 - Detect missing tasks, skipped gates, duplicated work, scope creep, or unplanned changes.
 - Detect plan-level engineering governance drift: unplanned modules, unapproved architecture, unexpected API/DB/UI/shared abstractions, or skipped Engineering Governance Gate.
 - Verify that task files include explicit traceability to `ENGINEERING_GOVERNANCE_GATE.md` in their Pre-Execution Gate sections when the task touches application code, modules, API, validation, permissions, database, or tests.
+- **Verify Compliance Record completeness** in task files before reporting. If Compliance Record is missing or NON-COMPLIANT, flag it as a deviation.
+- **Cross-check Handback vs Git diff** for each closed task using Compliance Record item 8. If they do not match, flag the discrepancy.
 - Identify whether a plan is incomplete and should be revised.
 - Report findings to Majed.
 

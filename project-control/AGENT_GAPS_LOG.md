@@ -77,6 +77,51 @@ Only then changes are implemented.
 
 ## السجل
 
+## 2026-07-04 — TeraAgent — GAP-003
+
+- Title: **غياب سجل امتثال (Compliance Record) لكل TASK-ID يربط Handback + Git diff + القواعد — ويفقده Monitor و Auditor مرجعاً موضوعياً للتدقيق**
+- Agent: TeraAgent
+- Gap Type: Process Gap / Missing Capability / Improvement Suggestion
+- Issue: حالياً بعد تنفيذ مهمة، ينتج TeraAgent:
+  1. Handback نصياً في TASK-ID file (ما يقول إنه فعله)
+  2. Git diff (ما تغير فعلاً في التطبيق)
+  3. لا يوجد Compliance Record يربط هذين المصدرين بالقواعد (Pre-Execution Gate PASS، التزام بـ Allowed Write Targets، عدم وجود secrets، إلخ)
+
+  هذا يخلق ثلاث مشاكل:
+  - Monitor لا يملك مرجعاً موحداً ليتحقق منه — يضطر لمقارنة Handback مع Git diff يدوياً بدون checklist واضح
+  - Auditor لا يملك سجل امتثال ليحكم على الالتزام بالقواعد
+  - TeraAgent نفسه قد يتجاوز خطوة أو ينسى توثيقها دون أن يكتشفه أحد لعدم وجود ورقة مطابقة إلزامية
+- Impact on agent performance: يضعف فعالية Monitor و Auditor كرقيبين، ويبقي TeraAgent عرضة للانحراف عن القواعد تدريجياً مع طول الجلسات دون كشف.
+- Suggested direction (optional): إلزام كل TASK-ID بـ Compliance Record (قائمة تفتيش امتثال) قبل الإغلاق، وأن يكون هذا السجل هو المرجع المعتمد لـ Monitor و Auditor للمطابقة مع Git diff. المقترح بالتفصيل:
+
+  ```
+  TASK-COD-XXX — Compliance Record
+  ──────────────────────────────────
+  □ Pre-Execution Gate: PASS (معرف في TASK-ID file)
+  □ Allowed Write Targets: ملتزم
+  □ Secrets check: لا أسرار في الملفات أو السجلات
+  □ Design Source Decision: N/A (أو مصدر معتمد)
+  □ Post-Execution Review: PASS
+  □ PROJECT_ACTIVITY_LOG.md: محدث
+  □ Handback: مسجل في TASK-ID file
+  □ Git diff يطابق Handback: (يتحقق منه Monitor)
+  □ Commands run: (إن وجدت — أدناه)
+
+  Commands:
+  - npx ... (إن وجد)
+  ```
+
+  القاعدة الإلزامية المقترحة (تضاف إلى .opencode/agents/tera.md §12 أو §13):
+  ```
+  No task may be Accepted or Closed without:
+  1. Handback مسجل في TASK-ID file
+  2. Compliance Record (gates checked + commands run)
+  3. Git diff يطابق الـ Handback (يتحقق منه Monitor)
+  ```
+
+- Status: Applied
+- Resolution Notes: تم تطبيق الحل عبر SCP-2026-07-04-026. تم تحديث `TERA_RUNTIME_PROTOCOLS.md` (قاعدة Compliance Record إلزامية)، `TERA_RUNTIME_TEMPLATES.md` (قالب §33)، `.opencode/agents/tera.md` §12 (تحديث قاعدة الإغلاق)، و `.opencode/agents/monitor.md` (إضافة مسؤوليات التحقق). الـ Compliance Record داخل ملف TASK-ID نفسه — لا ملفات جديدة.
+
 ## 2026-07-04 — TeraClientEngagementAgent — GAP-001
 
 - Title: **تخطي بوابة اعتماد الفهم (Understanding Confirmation Gate) قبل إنتاج ملفات النطاق**
