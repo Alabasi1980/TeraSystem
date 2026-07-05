@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teranoo — عرض سعر: نظام إدارة طلبات الصيانة</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --accent: #2563eb;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .print-table thead,
+        .print-table tfoot { background: #fff; }
+
+        .print-table thead td,
+        .print-table tfoot td,
+        .print-table tbody td { padding: 0; vertical-align: top; }
+
+        .page-header,
+        .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+
+        .page-header img,
+        .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .document {
+            padding: 0 var(--page-padding-x);
+        }
+
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+
+        .doc__top strong { color: var(--ink); }
+
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+
+        .field {
+            display: flex;
+            gap: 2mm;
+            align-items: baseline;
+        }
+
+        .field__label {
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        .field__value {
+            flex: 1;
+            min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+
+        .doc__recipient {
+            margin-top: 4mm;
+            font-size: 10.3pt;
+            line-height: 1.6;
+        }
+
+        .doc__recipient p,
+        .doc__body p { margin: 0 0 2.4mm; }
+
+        .doc__body {
+            margin-top: 2mm;
+            font-size: 10.7pt;
+        }
+
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+        }
+
+        .doc__body ul {
+            margin: 0 0 2.4mm;
+            padding: 0 5mm 0 0;
+        }
+
+        .doc__body li { margin-bottom: 1.4mm; }
+
+        .no-break {
+            break-inside: avoid-page;
+            page-break-inside: avoid;
+        }
+
+        .doc__body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2mm 0;
+            font-size: 10pt;
+        }
+
+        .doc__body th,
+        .doc__body td {
+            border: 1px solid var(--line);
+            padding: 1.5mm 2mm;
+            text-align: right;
+        }
+
+        .doc__body th {
+            background: var(--soft);
+            font-weight: 700;
+        }
+
+        .price-total td {
+            font-weight: 700;
+            background: #f0f5ff;
+            border-top: 2px solid var(--accent);
+        }
+
+        .price-discount td {
+            color: #16a34a;
+        }
+
+        .price-final td {
+            font-weight: 700;
+            font-size: 11pt;
+            background: #e8f5e9;
+            border-top: 2px solid #16a34a;
+            border-bottom: 2px solid #16a34a;
+        }
+
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+
+        .sign-box { flex: 1; }
+
+        .sign-box__label {
+            margin-bottom: 6mm;
+            font-size: 10.2pt;
+            font-weight: 700;
+        }
+
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+
+        .highlight {
+            background: #f0f5ff;
+            border-right: 3px solid var(--accent);
+            padding: 2mm 3mm;
+            margin: 2mm 0;
+            font-size: 10pt;
+        }
+
+        @media print {
+            body { background: #fff; }
+            .print-page { width: 100%; min-height: 0; margin: 0; box-shadow: none; overflow: visible; }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/05</div>
+                <div><strong>الرقم:</strong> TDS-QOT-2026-001</div>
+            </div>
+
+            <div class="doc__chip">عرض سعر — Quotation</div>
+
+            <p class="doc__subject">الموضوع: عرض سعر لتطوير نظام إدارة طلبات الصيانة</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">مؤسسة الموثوق لصيانة الأجهزة والخدمات الفنية</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">عنوان المشروع:</span>
+                    <span class="field__value">نظام إدارة طلبات الصيانة — النسخة الأولى</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">العملة:</span>
+                    <span class="field__value">دينار أردني (JOD)</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">صلاحية العرض:</span>
+                    <span class="field__value">14 يوماً من تاريخه</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة مؤسسة الموثوق لصيانة الأجهزة المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+
+                <p>نشكر لكم ثقتكم، ويسرّنا أن نقدم لكم عرض السعر الخاص بتطوير <strong>نظام إدارة طلبات الصيانة</strong> وفقاً للنطاق المتفق عليه والمبين في وثيقة عرض المشروع المرفقة.</p>
+
+                <h3>أولاً: بنود التسعير</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>البند</th>
+                            <th>الوصف</th>
+                            <th>السعر (JOD)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>النظام الأساسي</td>
+                            <td>تسجيل دخول، إدارة المستخدمين، Dashboard، الإعدادات</td>
+                            <td>450</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>إدارة العملاء</td>
+                            <td>سجل موحد، إضافة/تعديل/حذف/بحث، عرض تاريخ الطلبات</td>
+                            <td>150</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>إدارة طلبات الصيانة</td>
+                            <td>دورة كاملة: إنشاء برقم موحد، 10 حالات، تعيين فني، تشخيص، ملاحظات</td>
+                            <td>550</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>إدارة الفنيين</td>
+                            <td>قائمة، إضافة/تعديل/حذف، عرض الطلبات المفتوحة</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>الصلاحيات والأدوار</td>
+                            <td>4 أدوار: مدير، استقبال، فني، محاسب</td>
+                            <td>150</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>تسجيل الدفع</td>
+                            <td>حالة الدفع، إيصال بسيط</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>التقارير</td>
+                            <td>تقرير يومي بعدد الطلبات + تقرير شهري بالإيرادات</td>
+                            <td>150</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>قطع الغيار الأساسية</td>
+                            <td>تسجيل اسم القطعة وتكلفتها داخل طلب الصيانة</td>
+                            <td>80</td>
+                        </tr>
+                        <tr class="price-total">
+                            <td colspan="3" style="text-align: left;">الإجمالي قبل الخصم</td>
+                            <td>1,730</td>
+                        </tr>
+                        <tr class="price-discount">
+                            <td colspan="3" style="text-align: left;">خصم خاص — العميل الأول</td>
+                            <td>(230-)</td>
+                        </tr>
+                        <tr class="price-final">
+                            <td colspan="3" style="text-align: left;">الإجمالي النهائي</td>
+                            <td>1,500 JOD</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>ثانياً: خطة الدفع</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الدفعة</th>
+                            <th>النسبة</th>
+                            <th>المبلغ</th>
+                            <th>موعد الاستحقاق</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>الأولى</td>
+                            <td>30%</td>
+                            <td>450 JOD</td>
+                            <td>عند توقيع الاتفاق وبدء العمل</td>
+                        </tr>
+                        <tr>
+                            <td>الثانية</td>
+                            <td>40%</td>
+                            <td>600 JOD</td>
+                            <td>بعد تسليم النسخة الأولى للتجربة والموافقة</td>
+                        </tr>
+                        <tr>
+                            <td>الثالثة</td>
+                            <td>30%</td>
+                            <td>450 JOD</td>
+                            <td>عند التسليم النهائي واستلام المشروع</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>ثالثاً: ما يشمله السعر</h3>
+                <ul>
+                    <li>تطوير النظام بالكامل (Frontend + Backend + قاعدة بيانات).</li>
+                    <li>واجهة متجاوبة (Responsive) تعمل على الكمبيوتر والجوال والتابلت.</li>
+                    <li>دعم كامل للغة العربية (RTL).</li>
+                    <li>ضمان إصلاح الأخطاء لمدة 3 أشهر من تاريخ التسليم النهائي.</li>
+                    <li>تدريب أساسي لفريق العمل عن بُعد.</li>
+                    <li>نسخ احتياطي للبيانات.</li>
+                    <li>توثيق بسيط للمستخدم.</li>
+                </ul>
+
+                <h3>رابعاً: ما لا يشمله السعر</h3>
+                <ul>
+                    <li>رسوم الاستضافة الشهرية/السنوية (يتم اختيار الخيار المناسب لاحقاً).</li>
+                    <li>رسوم الدومين أو شهادة SSL.</li>
+                    <li>تطبيق جوال مستقل (iOS/Android) — النسخة الأولى ويب متجاوب.</li>
+                    <li>تكامل واتساب API التلقائي أو بوابات دفع إلكتروني.</li>
+                    <li>أي ميزات أو تعديلات خارج النطاق المذكور أعلاه.</li>
+                </ul>
+
+                <h3>خامساً: الجدول الزمني التقديري</h3>
+                <p>المدة المتوقعة لإنجاز النسخة الأولى: <strong>4 إلى 6 أسابيع</strong> من تاريخ بدء العمل، وفقاً للمراحل التالية:</p>
+                <ul>
+                    <li><strong>الأسبوع 1:</strong> تحضير وتصميم (هيكلة قاعدة البيانات، تصميم الشاشات).</li>
+                    <li><strong>الأسبوع 2-3:</strong> تطوير النظام الأساسي والعملاء وطلبات الصيانة.</li>
+                    <li><strong>الأسبوع 4:</strong> التقارير، الدفع، قطع الغيار.</li>
+                    <li><strong>الأسبوع 5:</strong> اختبار شامل، تعديلات، نشر.</li>
+                    <li><strong>الأسبوع 6:</strong> تسليم النسخة الأولى، تدريب الفريق.</li>
+                </ul>
+
+                <div class="highlight no-break">
+                    <strong>ملاحظة هامة:</strong> هذا العرض ساري المفعول لمدة 14 يوماً من تاريخه. بعد انتهاء الصلاحية، قد يُعاد تقييم السعر بناءً على المتغيرات الحالية. جميع الأسعار بالدينار الأردني ولا تشمل ضريبة المبيعات أو أي رسوم حكومية.
+                </div>
+
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">مقدم العرض</div>
+                    <div class="sign-box__line">الاسم: ...............................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: ...............................</div>
+                    <div class="sign-box__line">التوقيع: ...............................</div>
+                    <div class="sign-box__line">التاريخ: ...............................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">العميل — للموافقة</div>
+                    <div class="sign-box__line">الاسم: ...............................</div>
+                    <div class="sign-box__line">المؤسسة: ...............................</div>
+                    <div class="sign-box__line">التوقيع: ...............................</div>
+                    <div class="sign-box__line">التاريخ: ...............................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

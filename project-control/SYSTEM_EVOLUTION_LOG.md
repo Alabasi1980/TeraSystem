@@ -788,4 +788,41 @@ TeraClientEngagement.md (مصدر الحقيقة) والـ §35 إلى TERA_RUNT
 3. إعادة ترقيم الأقسام: §6→§5, §7→§6, §8→§7, §9→§8, §10→§9
 4. إعادة Last Synced إلى 2026-07-04
 ```
+
+### SCP-2026-07-05-038 — TCEA Strengthening: 4 New Governance Rules
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-038
+مصدر الطلب: User Request (Majed) — تقرير تحليل ثغرات TCEA بعد عميل Mawthooq
+نوع التغيير: Agent Improvement / Policy Addition / Process Gate Addition
+الملفات المعدلة (3 files, 0 new):
+- UPDATE: tera-system/TeraClientEngagement.md (إضافة §§3.3.1, 3.3.2, 3.3.3 + تحديث §3.6.1 + تحديث §5.1)
+- UPDATE: .opencode/agents/tera-client-engagement.md (مزامنة الـ 4 قواعد في runtime + تحديث Last Synced)
+الملخص:
+تمت إضافة 4 قواعد حوكمة لـ TCEA بناءً على تحليل Majed لثغرات عمله مع عميل "الموثوق":
+
+1. **Final Scope Reconciliation Gate (§3.3.1):** قبل Handoff، يجب توحيد حالة كل ميزة في FEATURE_LIST.md
+   إلى واحدة من 4 حالات (Included in MVP / Optional / Phase 2 / Out of Scope).
+
+2. **Budget-to-Scope Control Rule (§3.3.2):** عندما تكون الميزانية محدودة، تُصنف الميزات غير الأساسية
+   كـ Optional أو Phase 2 (وليس MVP).
+
+3. **Client Decision Register (§3.3.3):** كل قرار مهم من العميل يُسجل في CLIENT_DECISION_LOG.md
+   بإحدى 4 حالات موحدة (Approved / Deferred / Conditional / Not Finalized).
+
+4. **Approval Consistency Rule (§3.6.1):** لا يجوز TERA_HANDOFF_PACKAGE.md بحالة Approved
+   إذا بقيت ملفات المصدر (CLIENT_INTAKE, SCOPE_SUMMARY, FEATURE_LIST, DRAFT_QUOTATION,
+   CLIENT_DECISION_LOG) بحالة Draft أو Pending.
+
+تم رفض إنشاء ملفات جديدة أو عملاء جدد (Anti-Bloat).
+الموافقة: Majed — Approved
+التحقق من الصحة: Validation Passed — Anti-Bloat ✅ (0 ملفات جديدة)، لا تضخم، لا تكرار، لا تعديل صلاحيات، لا تلويث لتطبيقات العملاء
+المخاطر: منخفضة — قواعد إجرائية في ملفات موجودة، لا تغيير في صلاحيات أو أدوار.
+ملاحظات الاسترجاع (Rollback):
+1. tera-system/TeraClientEngagement.md: حذف §§3.3.1, 3.3.2, 3.3.3، إزالة الإضافة من §3.6.1،
+   إعادة §5.1 للصيغة السابقة.
+2. .opencode/agents/tera-client-engagement.md: إزالة الإشارات للقواعد الأربع من §§3, 7،
+   إعادة Last Synced إلى 2026-07-05 (SCP-037).
+```
 ```

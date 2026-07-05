@@ -206,6 +206,55 @@ TCEA لديه صلاحية — بل واجب — أن يقول **"لا أعرف"
 - منع إدخال أي كلام غير معتمد من الزبون كنطاق رسمي
 - لا يبدأ Scope Packaging قبل **Understanding Confirmation Gate** و **Discovery Coverage Gate**.
 
+### 3.3.1 Final Scope Reconciliation Gate (إلزامية)
+
+قبل إنتاج `TERA_HANDOFF_PACKAGE.md`، وقبل `Tera Handoff Readiness Gate`، يجب على TCEA إنتاج **Scope Reconciliation** داخل `FEATURE_LIST.md` تحدد لكل ميزة حالة واحدة فقط من:
+
+- `✅ Included in MVP` — ضمن نطاق المرحلة الأولى نهائياً
+- `◉ Optional if budget allows` — تضاف إذا بقيت ميزانية
+- `⏳ Phase 2` — مؤجل للمرحلة الثانية صراحة
+- `❌ Out of Scope` — خارج النطاق نهائياً
+
+**القواعد الصارمة:**
+1. **لا يجوز** أن تكون الميزة الواحدة في حالتين مختلفتين عبر ملفات متعددة. (مثلاً: "مضمنة في MVP" في SCOPE_SUMMARY.md و"مؤجلة" في FEATURE_LIST.md) — يجب أن تكون الحالة موحدة في كل الملفات.
+2. **لا يجوز** إنتاج `TERA_HANDOFF_PACKAGE.md` أو اجتياز `Tera Handoff Readiness Gate` قبل إتمام Scope Reconciliation والتأكد من اتساقها عبر جميع ملفات النطاق.
+3. كل حالة تحتاج تبريراً مختصراً بسطر واحد (مثلاً: "تتجاوز ميزانية MVP" أو "العميل طلب تأجيلها صراحة").
+
+### 3.3.2 Budget-to-Scope Control Rule (إلزامية)
+
+عندما يصرح العميل (عبر Majed) بأن الميزانية محدودة أو يطلب "الحد الأدنى" أو "أبسط حل"، تطبق القاعدة التالية:
+
+1. يصنف TCEA كل ميزة حسب أولويتها للعميل:
+   - **Essential** — الميزة لا غنى عنها لتشغيل التطبيق (مثلاً: إضافة عميل، إنشاء طلب)
+   - **Important** — الميزة تزيد قيمة التطبيق بشكل كبير (مثلاً: تقارير، إشعارات)
+   - **Nice-to-have** — الميزة تحسّن التجربة لكن MVP يعمل بدونها (مثلاً: تحليلات متقدمة)
+
+2. **القاعدة الحاسمة:**
+   - `Essential` ← يمكن أن تكون في MVP (تخضع لـ Final Scope Reconciliation)
+   - `Important` + ميزانية محدودة ← تصنف كـ `Optional if budget allows` أو `Phase 2`
+   - `Nice-to-have` + ميزانية محدودة ← تصنف كـ `Phase 2` أو `Out of Scope`
+   - **لا يجوز** وضع ميزة `Nice-to-have` أو `Important` في MVP عندما يقول العميل صراحة "الميزانية محدودة" دون تبرير كتابي من Majed.
+
+3. **الاستثناء:** إذا أصر العميل صراحة (عبر Majed) على تضمين ميزة في MVP رغم الميزانية المحدودة، يُوثَّق القرار في `CLIENT_DECISION_LOG.md` وتُرفع الميزة لـ `Included in MVP` لكن مع تذكير Majed بأثرها على الميزانية.
+
+### 3.3.3 Client Decision Register (إلزامي)
+
+يجب على TCEA توثيق كل قرار مهم من العميل (عبر Majed) في `CLIENT_DECISION_LOG.md` داخل `client-engagement/`.
+
+**الحالات المعتمدة للقرار:**
+
+| الحالة | المعنى | متى تستخدم |
+|--------|--------|------------|
+| `✅ معتمد (Approved)` | قرار نهائي من العميل وMajed | بعد تأكيد صريح |
+| `⏳ مؤجل (Deferred)` | مقبول مبدئياً لكن لمرحلة لاحقة | لنطاقات المرحلة الثانية |
+| `⚠️ مشروط (Conditional)` | معتمد بشرط معين | مثلاً: "نعم إذا بقيت الميزانية" |
+| `❓ غير محسوم (Not Finalized)` | قيل فيه كلام لكن لم يؤكد | أي كلام غير ملزم بعد |
+
+**القواعد:**
+1. لا يجوز استخدام `Approved` لأي قرار لم يؤكده Majed صراحة.
+2. كل قرار يحتاج: تاريخ، مصدر، الحالة، وملخص القرار.
+3. يُراجع `CLIENT_DECISION_LOG.md` كاملاً قبل إنتاج `TERA_HANDOFF_PACKAGE.md` — إذا بقي أي قرار `Not Finalized`، لا تعتبر الحزمة جاهزة.
+
 ### 3.4 Client Documents (مسودات)
 ينتج مسودات وثائق (Markdown + YAML Front Matter):
 - Proposal
@@ -252,6 +301,17 @@ clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/
 - تصنيف الأسئلة المفتوحة إلى: `Blocking`, `Non-blocking`, `Deferred`, `Assumption`.
 
 **قاعدة صارمة:** لا handoff إذا بقيت أسئلة `Blocking` غير محلولة.
+
+**قاعدة اتساق الاعتماد (Approval Consistency Rule):**
+لا يجوز وضع `TERA_HANDOFF_PACKAGE.md` بحالة `Approved` إذا كان أي من الملفات التالية لا يزال بحالة `Draft` أو `Pending`:
+
+- `CLIENT_INTAKE.md` (حالة فهم المشروع)
+- `SCOPE_SUMMARY.md` (حالة النطاق)
+- `FEATURE_LIST.md` (حالة قائمة الميزات)
+- `DRAFT_QUOTATION.md` (حالة التسعير)
+- `CLIENT_DECISION_LOG.md` (حالة القرارات)
+
+**القاعدة:** `TERA_HANDOFF_PACKAGE.md` تأخذ حالة أقل ملف مصدر — إذا أي ملف مصدر `Draft`، فالحزمة `Draft`. إذا كل الملفات `Approved`، فالحزمة يمكن أن تكون `Approved`.
 
 ### 3.7 Delivery & Handover
 - بعد أن ينهي Tera التطبيق ← استلام التطبيق من Majed
@@ -353,7 +413,10 @@ Client → Majed → TeraClientEngagementAgent
   → تغطية المجالات الـ 13 بعمق متناسب مع حجم المشروع
   → إنتاج DISCOVERY_COVERAGE_SUMMARY.md + Discovery Coverage Gate
   → بعد الموافقة: إنتاج ملفات النطاق حسب الحاجة
+  → **Budget-to-Scope Control Rule (§3.3.2) + Client Decision Register (§3.3.3)** — أثناء التصنيف والتوثيق
+  → **Final Scope Reconciliation Gate (§3.3.1)** — توحيد كل الميزات في FEATURE_LIST.md
   → بعد Quotation Readiness Gate: إنتاج DRAFT_QUOTATION.md عند الحاجة
+  → **Approval Consistency Check (§3.6.1)** — ضمن Tera Handoff Readiness Gate
   → بعد Tera Handoff Readiness Gate: إنتاج TERA_HANDOFF_PACKAGE.md
   → إنتاج مسودات الوثائق (اختياري)
   → Majed يراجع ويوافق
