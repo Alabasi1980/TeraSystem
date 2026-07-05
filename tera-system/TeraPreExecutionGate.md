@@ -43,7 +43,7 @@ Smallest Safe Executable Unit
 
 ## 3.1 Orchestration Decision Matrix Prerequisite
 
-Before running the `Pre-Execution Gate`, Tera must apply the Orchestration Decision Matrix defined in `tera-system/TeraAgent.md`.
+Before running the `Pre-Execution Gate`, Tera must apply the Orchestration Decision Matrix defined in `.opencode/agents/tera.md`.
 
 This pre-task step determines:
 

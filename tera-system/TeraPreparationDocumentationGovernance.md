@@ -11,8 +11,8 @@ It is the source of truth for **document lifecycle governance**. It applies to a
 | File | Role |
 |---|---|
 | `Tera_Project_Preparation_Files.md` | Catalog of available preparation files |
-| `TeraApplicationBlueprint.md` | Governs blueprint artifacts before formal preparation begins |
-| `TeraAgent.md` (§4.2–4.4) | Phase 3/4/5 workflow using this governance model |
+| `.opencode/agents/application-blueprint.md` | Governs blueprint artifacts before formal preparation begins |
+| `.opencode/agents/tera.md` (§4.2–4.4) | Phase 3/4/5 workflow using this governance model |
 | `TeraSubAgents.md` | Agent definitions that follow maker/checker rules |
 | `TERA_RUNTIME_TEMPLATES.md` | Templates that include lifecycle fields |
 | `AGENT_ACTIVATION_MATRIX.md` | Activation triggers respecting document readiness |

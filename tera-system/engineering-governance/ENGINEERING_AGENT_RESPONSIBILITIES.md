@@ -61,13 +61,13 @@ Must escalate when the existing structure conflicts with the task or would requi
 
 ## 5. Auditor
 
-Auditor (مُدقق) is defined in its own source of truth: `tera-system/TeraAuditor.md`.
+Auditor (مُدقق) is defined in its own file: `.opencode/agents/auditor.md`.
 
 This section only documents the engineering-adjacent boundary.
 
 ### 5.1 Core methodology
 
-Auditor follows a 6-stage graded methodology defined in `TeraAuditor.md §5`:
+Auditor follows a 6-stage graded methodology defined in `.opencode/agents/auditor.md` §5:
 1. **Understand** — read project context and active tasks.
 2. **Verify Documentation** — check Handback, Compliance Record, Activity Log.
 3. **Engineering Review** — follow `ENGINEERING_REVIEW_CHECKLIST.md` (12 sections).
@@ -107,11 +107,11 @@ Auditor remains advisory unless the owner grants specific action permissions (e.
 
 ## 6. Monitor
 
-Monitor (رقيب) is defined in its own source of truth: `tera-system/TeraMonitor.md`.
+Monitor (رقيب) is defined in its own file: `.opencode/agents/monitor.md`.
 
 This section only documents the engineering-adjacent boundary:
 
-Monitor is a plan-compliance auditor, not a code quality reviewer. Monitor audit framework is governed by **7 immutable rules** (defined in TeraMonitor.md §5):
+Monitor is a plan-compliance auditor, not a code quality reviewer. Monitor audit framework is governed by **7 immutable rules** (defined in `.opencode/agents/monitor.md` §5):
 
 1. **Plan match** — task exists in batch and master plans.
 2. **Dependencies** — fulfilled before task start.
@@ -121,7 +121,7 @@ Monitor is a plan-compliance auditor, not a code quality reviewer. Monitor audit
 6. **Scope creep** — changed files not linked to any task in current plan.
 7. **Architectural drift** — unplanned modules, APIs, DB, UI not in Master Plan.
 
-Monitor has **Plan Rejection Authority** (TeraMonitor.md §6): may reject or request review of a plan when it is missing, ambiguous, contains unlinked tasks, lacks compliance records, or skips engineering governance gates. Final decision rests with Majed.
+Monitor has **Plan Rejection Authority** (`.opencode/agents/monitor.md` §6): may reject or request review of a plan when it is missing, ambiguous, contains unlinked tasks, lacks compliance records, or skips engineering governance gates. Final decision rests with Majed.
 
 Monitor must not become a general code auditor; detailed code quality review belongs to Auditor and QA.
 
@@ -180,7 +180,7 @@ PerformanceAgent must focus on:
 
 ## 11. DesignReviewer
 
-DesignReviewer is defined in its own source of truth: `tera-system/TeraDesignReviewer.md`.
+DesignReviewer (ناقد) is defined in its own file: `.opencode/agents/design-reviewer.md`.
 DesignReviewer review standards reference: `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md`.
 
 This section only documents the engineering-adjacent boundary:

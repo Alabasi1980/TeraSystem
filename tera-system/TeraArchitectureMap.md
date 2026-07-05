@@ -10,10 +10,10 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 
 | Layer | Responsibility | Main files/folders |
 |---|---|---|
-| Identity and authority | Defines Tera role, authority, runtime order, decision ownership, and core agent conduct gate | `TeraAgent.md`, `TERA_AGENT_CONDUCT.md`, `.opencode/agents/tera.md` |
+| Identity and authority | Defines Tera role, authority, runtime order, decision ownership, and core agent conduct gate | `.opencode/agents/tera.md`, `TERA_AGENT_CONDUCT.md` |
 | Project intake | Captures raw idea, technical context, missing information, and readiness | `TeraProjectIntakePolicy.md`, `project-inputs/` |
 | Client engagement and approval | Manages client profile, contacts, approval package, and change control | `TeraClient*.md`, `clients/` |
-| Application blueprinting | Converts confirmed client handoff into a high-level internal application blueprint before formal preparation | `TeraApplicationBlueprint.md`, `project-preparation/APPLICATION_BLUEPRINT.md`, `project-preparation/draft-seeds/` |
+| Application blueprinting | Converts confirmed client handoff into a high-level internal application blueprint before formal preparation | `.opencode/agents/application-blueprint.md`, `project-preparation/APPLICATION_BLUEPRINT.md`, `project-preparation/draft-seeds/` |
 | Preparation and analysis | Converts intake into internal project planning and execution-ready files | `Tera_Project_Preparation_Files.md`, `project-preparation/` |
 | Design governance | Controls design source decisions, design tokens, component rules, internal kits, and UI acceptance | `tera-system/design-system/`, `project-preparation/28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/` |
 | Orchestration and gates | Controls delegation, task readiness, pre/post execution review, build mode, and project closure gates | `TeraPreExecutionGate.md`, `runtime/`, `project-control/` |

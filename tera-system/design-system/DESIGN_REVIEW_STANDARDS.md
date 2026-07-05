@@ -4,7 +4,7 @@
 
 هذا الملف هو **قاعدة المعايير** التي يستخدمها DesignReviewer (ناقد) كمرجع قبل وأثناء كل مراجعة تصميم. يحتوي على قوائم تفتيش قابلة للتنفيذ تغطي جميع جوانب مراجعة الواجهات.
 
-**العلاقة:** هذا ملف **مرجع معرفي** (Reference)، وليس Source of Truth لهوية العميل. Source of Truth هو `tera-system/TeraDesignReviewer.md`.
+**العلاقة:** هذا ملف **مرجع معرفي** (Reference)، وليس Source of Truth لهوية العميل. Source of Truth هو `.opencode/agents/design-reviewer.md`.
 
 **الاستخدام:** يقرأ ناقد هذا الملف قبل كل مراجعة ويطبق القوائم المناسبة حسب Phase المراجعة (Pre-Implementation / Post-Implementation).
 

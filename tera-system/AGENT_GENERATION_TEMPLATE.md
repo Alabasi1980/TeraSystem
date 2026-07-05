@@ -4,7 +4,7 @@
 
 هذا الملف هو المصدر الرسمي لقالب توليد أي عميل فرعي فعلي.
 
-لا تحفظ نسخة كاملة من هذا القالب داخل `TeraAgent.md`. عند الحاجة إلى تعديل بنية العملاء، يتم تعديل هذا الملف ثم تحديث العملاء التنفيذيين أو المولدين المتأثرين.
+لا تحفظ نسخة كاملة من هذا القالب داخل `.opencode/agents/tera.md`. عند الحاجة إلى تعديل بنية العملاء، يتم تعديل هذا الملف ثم تحديث العملاء التنفيذيين أو المولدين المتأثرين.
 
 ---
 
@@ -283,7 +283,7 @@ If the task involved a security incident or secret exposure, the handback must d
 
 ## Template Governance
 
-- `TeraAgent.md` owns the decision to generate agents.
+- `.opencode/agents/tera.md` owns the decision to generate agents.
 - `TeraSubAgents.md` owns the registry and delegation/handback/rejection protocols.
 - `AGENT_GENERATION_TEMPLATE.md` owns the generated-agent file structure.
 - `GENERATED_AGENTS_MANIFEST.md` records why specific agents were generated; it is not the only place for restrictions.

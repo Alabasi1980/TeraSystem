@@ -6,7 +6,7 @@
 
 > **Target audience:** Human users of the Tera system.
 > **Purpose:** Practical prompts and guidance for interacting with Tera effectively.
-> **Note:** This guide focuses on usage, not system internals. For Tera's identity and rules, see `tera-system/TeraAgent.md`.
+> **Note:** This guide focuses on usage, not system internals. For Tera's identity and rules, see `.opencode/agents/tera.md`.
 
 ---
 

@@ -40,6 +40,40 @@
 المخاطر: منخفضة — لا تغيير في الصلاحيات أو السلوك التنفيذي، فقط توضيح تنظيمي.
 ملاحظات الاسترجاع (Rollback):
 1. إزالة قسم `TeraDesignReviewer Functional Awareness` من `tera-system/TeraDesignReviewer.md`
+
+### SCP-2026-07-05-046 — ApplicationBlueprintAgent Functional Awareness section (role awareness polish)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-046
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Documentation / Role Awareness / Runtime Polish
+الملفات المعدلة:
+- UPDATE: .opencode/agents/application-blueprint.md
+الملخص:
+تمت إضافة قسم `ApplicationBlueprintAgent Functional Awareness` في بداية ملف agent لرفع الوعي الوظيفي وحدود التحويل من handoff إلى blueprint قبل بوابة البدء، مع صقل لغوي وتوضيح دور الـ blueprint مقابل التحضير التنفيذي.
+الموافقة: Majed — Approved
+التحقق من الصحة: Pending
+المخاطر: منخفضة — لا تغيير في الصلاحيات أو السلوك التنفيذي، فقط توضيح تنظيمي.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة قسم `ApplicationBlueprintAgent Functional Awareness` من `.opencode/agents/application-blueprint.md`
+
+### SCP-2026-07-05-047 — TeraSystemEvolutionAgent Core Functional Roles section (role awareness polish)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-047
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Documentation / Role Awareness / Runtime Polish
+الملفات المعدلة:
+- UPDATE: .opencode/agents/tera-system-evolution.md
+الملخص:
+تمت إضافة قسم `Core Functional Roles` في TeraSystemEvolutionAgent لتعزيز الوعي الوظيفي وحدود الحراسة والتطور قبل قسم المسؤوليات الرئيسية، مع صقل لغوي وتوضيح دور الحوكمة التطورية مقابل إدارة العملاء.
+الموافقة: Majed — Approved
+التحقق من الصحة: Pending
+المخاطر: منخفضة — لا تغيير في الصلاحيات أو السلوك التنفيذي، فقط توضيح تنظيمي.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة قسم `Core Functional Roles` من `.opencode/agents/tera-system-evolution.md`
 ```
 
 ### SCP-2026-07-05-042 — TeraAuditor Core Functional Roles section (role awareness polish)
@@ -1199,4 +1233,212 @@ TeraClientEngagement.md (مصدر الحقيقة) والـ §35 إلى TERA_RUNT
 
 ملاحظات الاسترجاع (Rollback):
 1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-047 — Merge TeraMonitor.md into monitor.md (Phase 1: Dual-to-Single File)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-047
+مصدر الطلب: Majed (طلب تحسين معماري)
+نوع التغيير: Anti-Bloat / Architecture Simplification
+الملفات المعدلة:
+- .opencode/agents/monitor.md (دمج محتوى TeraMonitor.md بالكامل — 117←251 سطراً)
+- tera-system/TeraMonitor.md (حذف — بعد نقل المحتوى)
+- tera-system/TeraPolicyMap.md (تحديث مرجع Monitor)
+- tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md (3 تحديثات للمراجع)
+الملخص: دمج ملف مصدر الحقيقة TeraMonitor.md (154 سطراً) في ملف التنفيذ monitor.md (117 سطراً) لينتج ملف واحد (251 سطراً) لكل العميل. تم إزالة 10 محتويات كانت في TeraMonitor.md وغير موجودة في monitor.md (الهوية الكاملة، الموقع في المنظومة، الغرض المفصّل، التدرج الهرمي للمراجع، قاعدة صارمة، التدقيق التراكمي، آلية تنفيذ القواعد، صلاحية رفض الخطة كاملة، العلاقات مع العملاء، مرجع التحسين المستمر). تم حذف TeraMonitor.md وتحديث جميع المراجع. هذا هو النموذج الأول (Phase 1) لتوحيد ملفات العملاء.
+الموافقة: Majed — Approved
+التحقق من الصحة: Anti-Bloat Gate PASS — ملف واحد بدلاً من اثنين، إزالة 40 سطراً من التكرار. Git diff --check نظيف. جميع المراجع محدثة.
+المخاطر: منخفضة — تم الحفاظ على كل المحتوى من كلا الملفين، المراجع محدثة في 3 ملفات.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/monitor.md
+2. git checkout -- tera-system/TeraPolicyMap.md
+3. git checkout -- tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md
+4. git checkout HEAD -- tera-system/TeraMonitor.md (استرجاع الملف المحذوف)
+```
+
+### SCP-2026-07-05-048 — Merge TeraAuditor.md into auditor.md (Phase 2: Dual-to-Single File)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-048
+مصدر الطلب: Majed (استكمال توحيد ملفات العملاء)
+نوع التغيير: Anti-Bloat / Architecture Simplification
+الملفات المعدلة:
+- .opencode/agents/auditor.md (دمج محتوى TeraAuditor.md بالكامل — 104←~370 سطراً)
+- tera-system/TeraAuditor.md (حذف — بعد نقل المحتوى)
+- tera-system/TeraPolicyMap.md (تحديث مرجع Auditor)
+- tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md (تحديث مرجعين)
+الملخص: دمج ملف مصدر الحقيقة TeraAuditor.md (288 سطراً) في ملف التنفيذ auditor.md (104 سطراً) لينتج ملف واحد (~370 سطراً) لكل العميل. تمت إضافة 14 محتوى من TeraAuditor.md: الهوية الكاملة، الموقع في المنظومة، الغرض المفصّل مع 7 أدوار وظيفية، التدرج الهرمي للمراجع، قاعدة صارمة، منهجية 6 مراحل كاملة، جدول تصنيف النتائج مع تعليمات إضافية، بروتوكول عدم اليقين والبحث، بروتوكول التراكم، العلاقات مع العملاء، مرجع التحسين المستمر. تم حذف TeraAuditor.md وتحديث جميع المراجع. Phase 2 من توحيد ملفات العملاء (بعد Monitor).
+الموافقة: Majed — Approved
+التحقق من الصحة: Anti-Bloat Gate PASS — ملف واحد بدلاً من اثنين. 0 مراجع متبقية لـ TeraAuditor.md في tera-system/ أو .opencode/. Git diff --check نظيف.
+المخاطر: منخفضة — تم الحفاظ على كل المحتوى من كلا الملفين، المراجع محدثة في ملفين.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/auditor.md
+2. git checkout -- tera-system/TeraPolicyMap.md
+3. git checkout -- tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md
+4. git checkout HEAD -- tera-system/TeraAuditor.md (استرجاع الملف المحذوف)
+```
+
+### SCP-2026-07-05-049 — إصلاح 3 مشاكل في مصدر الحقيقة TeraClientEngagement.md
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-049
+مصدر الطلب: Proactive System Stewardship (تحليل مصدر الحقيقة)
+نوع التغيير: System Maintenance / Anti-Bloat
+الملفات المعدلة:
+- tera-system/TeraClientEngagement.md
+
+الملخص:
+تصحيح 3 مشاكل هيكلية في ملف مصدر الحقيقة TeraClientEngagement.md بعد تحليل موازٍ للرنتايم:
+
+1. **إصلاح ترقيم §3.7 المكرر** — كان هناك قسمان برقم "### 3.7" (Delivery & Handover و Maintenance & Support):
+   - §3.7 Delivery & Handover (بقي)
+   - §3.7 Maintenance & Support ← §3.8 Maintenance & Support
+   - §3.8 Commercial Estimation Support ← §3.9 Commercial Estimation Support
+   - §3.8.1 Quotation Readiness Gate ← §3.9.1
+   - §3.8.2 Level 1 vs Level 2 Rule ← §3.9.2
+   النتيجة: 9 مجموعات متسلسلة (3.1 → 3.9) كما يصف العنوان
+
+2. **حذف علامة "(جديد)" من بروتوكولين معتمدين**:
+   - §3.2.7 Uncertainty Protocol — حذف "(جديد)" من العنوان
+   - §3.2.8 Consultation Response Protocol — حذف "(جديد)" من العنوان
+   البروتوكولان معتمدان ومستقران — العلامة المؤقتة لم تعد دقيقة
+
+3. **توحيد تنسيق عنوان §13**:
+   - من: `## §13. 📝 Self-Improvement & Gap Reporting`
+   - إلى: `## 13. Self-Improvement & Gap Reporting`
+   توافقاً مع نمط `## NUM. Title` المستخدم في باقي الأقسام (1-12)
+
+الموافقة: Majed — Approved (عبر الأمر "نفذ")
+التحقق من الصحة:
+- Anti-Bloat Gate ✅ — ملف واحد، إصلاحات مباشرة، لا إضافات
+- Policy Map Check ✅ — لا تغيير في مرجع TCEA (يبقى TeraClientEngagement.md)
+- Architecture Map Check ✅ — لا تغيير
+- No stale references ✅ — تم التحقق بـ grep: لا إشارات لـ §3.8 في أي ملف
+- No broken cross-references ✅ — Quotation Readiness Gate يُشار إليها بالاسم وليس الرقم
+- Runtime sync required: ❌ لا — الرنتايم لا يشير للأرقام المتغيرة (3.8، 3.9)
+
+المخاطر: معدومة — جميع التغييرات شكلية/ترقيمية، تم التحقق من عدم وجود مراجع للأرقام القديمة
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- tera-system/TeraClientEngagement.md
+```
+
+### SCP-2026-07-05-049 — Merge TeraDesignReviewer.md into design-reviewer.md (Phase 3: Dual-to-Single File)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-049
+مصدر الطلب: Majed (استكمال توحيد ملفات العملاء)
+نوع التغيير: Anti-Bloat / Architecture Simplification
+الملفات المعدلة:
+- .opencode/agents/design-reviewer.md (دمج محتوى TeraDesignReviewer.md بالكامل — 199←~390 سطراً)
+- tera-system/TeraDesignReviewer.md (حذف — بعد نقل المحتوى)
+- tera-system/design-system/DESIGN_REVIEW_STANDARDS.md (تحديث مرجع Source of Truth)
+- tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md (تحديث مرجع)
+الملخص: دمج ملف مصدر الحقيقة TeraDesignReviewer.md (258 سطراً) في ملف التنفيذ design-reviewer.md (199 سطراً) لينتج ملف واحد (~390 سطراً). تمت إضافة 11 محتوى من TeraDesignReviewer.md: الهوية الكاملة، الموقع في المنظومة، الغرض المفصّل مع 7 أدوار وظيفية، العلاقات مع 3 عملاء، شروط التفعيل، المراجع المعتمدة والمدخلات/المخرجات، الصلاحيات، الضوابط العربية للمعاينة البصرية، قواعد البروتوتايب بالعربية، مرجع التحسين المستمر. تم حذف TeraDesignReviewer.md وتحديث جميع المراجع. Phase 3 من توحيد ملفات العملاء (بعد Monitor و Auditor).
+الموافقة: Majed — Approved
+التحقق من الصحة: Anti-Bloat Gate PASS — ملف واحد بدلاً من اثنين. 0 مراجع متبقية لـ TeraDesignReviewer.md. Git diff --check نظيف.
+المخاطر: منخفضة — تم الحفاظ على كل المحتوى من كلا الملفين.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/design-reviewer.md
+2. git checkout -- tera-system/design-system/DESIGN_REVIEW_STANDARDS.md
+3. git checkout -- tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md
+4. git checkout HEAD -- tera-system/TeraDesignReviewer.md (استرجاع الملف المحذوف)
+```
+
+### SCP-2026-07-05-050 — Merge TeraApplicationBlueprint.md into application-blueprint.md (Phase 4: Dual-to-Single File)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-050
+مصدر الطلب: Majed (استكمال توحيد ملفات العملاء)
+نوع التغيير: Anti-Bloat / Architecture Simplification
+الملفات المعدلة:
+- .opencode/agents/application-blueprint.md (دمج محتوى TeraApplicationBlueprint.md بالكامل — 165←~450 سطراً)
+- tera-system/TeraApplicationBlueprint.md (حذف — بعد نقل المحتوى)
+- .opencode/agents/tera.md (تحديث مرجعين — إزالة TeraApplicationBlueprint.md من القائمة، تحديث المرجع في جدول الاستخدام)
+- tera-system/TeraAgent.md (تحديث مرجع — TeraApplicationBlueprint.md ← application-blueprint.md)
+- tera-system/TeraArchitectureMap.md (تحديث مرجع)
+- tera-system/TeraPreparationDocumentationGovernance.md (تحديث مرجع)
+- tera-system/TeraPolicyMap.md (تحديث مرجع — إزالة مسار المصدر)
+الملخص: دمج ملف مصدر الحقيقة TeraApplicationBlueprint.md (401 سطراً) في ملف التنفيذ application-blueprint.md (165 سطراً) لينتج ملف واحد (~450 سطراً). تمت إضافة 14 محتوى من TeraApplicationBlueprint.md: الهوية الكاملة بالعربية، الموقع في المنظومة، المسؤوليات الـ 10 مع الأدوار، العلاقات مع 5 عملاء، شروط التفعيل، قواعد التفعيل المتعدد، المراجع، الأدوات، المدخلات والمخرجات، القيود الإضافية، ممنوعات إضافية، المبادئ، بروتوكول Self-Verification، مرجع التحسين المستمر. تم حذف TeraApplicationBlueprint.md وتحديث 6 ملفات مرجعية. Phase 4 من توحيد ملفات العملاء (بعد Monitor, Auditor, DesignReviewer).
+الموافقة: Majed — Approved
+التحقق من الصحة: Anti-Bloat Gate PASS — ملف واحد بدلاً من اثنين. 0 مراجع متبقية لـ TeraApplicationBlueprint.md في الملفات النشطة. Git diff --check نظيف.
+المخاطر: منخفضة — تم الحفاظ على كل المحتوى من كلا الملفين.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/application-blueprint.md
+2. git checkout -- .opencode/agents/tera.md
+3. git checkout -- tera-system/TeraAgent.md
+4. git checkout -- tera-system/TeraArchitectureMap.md
+5. git checkout -- tera-system/TeraPreparationDocumentationGovernance.md
+6. git checkout -- tera-system/TeraPolicyMap.md
+7. git checkout HEAD -- tera-system/TeraApplicationBlueprint.md (استرجاع الملف المحذوف)
+```
+
+### SCP-2026-07-05-051 — Merge TeraClientEngagement.md into tera-client-engagement.md (Phase 5: Dual-to-Single File)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-051
+مصدر الطلب: Majed (استكمال توحيد ملفات العملاء)
+نوع التغيير: Anti-Bloat / Architecture Simplification
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (دمج محتوى TeraClientEngagement.md — 452←~520 سطراً + إضافة §12 و §13)
+- tera-system/TeraClientEngagement.md (حذف — بعد نقل المحتوى)
+- tera-system/TeraPolicyMap.md (تحديث مرجع مصدر الحقيقة)
+- .opencode/agents/tera.md (إزالة TeraClientEngagement.md من قائمة المراجع)
+- project-control/archive/SYSTEM_CHANGE_PROPOSAL_2026-07-02.md (أرشفة SCP قديم من جذر المنظومة)
+- project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-05-041.md (أرشفة SCP منفذ)
+- project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-05-042.md (أرشفة SCP منفذ)
+الملخص: دمج ملف مصدر الحقيقة TeraClientEngagement.md (974 سطراً، 13 قسماً) في ملف التنفيذ tera-client-engagement.md (452 سطراً، 10 أقسام). تم تحويل 10 مراجع خارجية `tera-system/TeraClientEngagement.md` إلى مراجع داخلية، وإزالة سطر System Reference، وإضافة §12 Client Document Library (مصفوفة تفعيل 24 نموذجاً) و §13 Self-Improvement & Gap Reporting. تم حذف TeraClientEngagement.md وتحديث TeraPolicyMap.md و tera.md. كما تمت أرشفة 3 SCPs قديمة منفذة. Phase 5 من توحيد ملفات العملاء (بعد Monitor, Auditor, DesignReviewer, ApplicationBlueprint).
+الموافقة: Majed — Approved
+التحقق من الصحة: Anti-Bloat Gate PASS — ملف واحد بدلاً من اثنين. 0 مراجع متبقية لـ TeraClientEngagement.md في الملفات النشطة. Git diff --check نظيف.
+المخاطر: متوسطة — TCEA هو أكبر عميل (974 سطراً مصدر)، لكن المحتوى الرئيسي كان موجوداً مسبقاً في ملف التنفيذ. تمت الإضافة الانتقائية للقسمين المفقودين فقط (Anti-Bloat).
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+2. git checkout -- tera-system/TeraPolicyMap.md
+3. git checkout -- .opencode/agents/tera.md
+4. git checkout HEAD -- tera-system/TeraClientEngagement.md (استرجاع الملف المحذوف)
+```
+
+### SCP-2026-07-05-052 — Merge TeraAgent.md into tera.md (Phase 6: Dual-to-Single File — Final Phase)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-052
+مصدر الطلب: Majed (استكمال توحيد ملفات العملاء — المرحلة الأخيرة)
+نوع التغيير: Anti-Bloat / Architecture Simplification
+الملفات المعدلة:
+- .opencode/agents/tera.md (دمج محتوى TeraAgent.md — إضافة §19 Final Rule + §20 Continuous Improvement; إعادة ترقيم §20→§21; تحديث frontmatter; ترقية المراجع الداخلية)
+- tera-system/TeraAgent.md (حذف — آخر ملف مصدر حقيقة مزدوج)
+- tera-system/TeraPolicyMap.md (تحديث 7 مراجع — tera-system/TeraAgent.md ← .opencode/agents/tera.md)
+- tera-system/TeraArchitectureMap.md (تحديث مرجع)
+- tera-system/TeraPreparationDocumentationGovernance.md (تحديث مرجع)
+- tera-system/TERA_USER_GUIDE.md (تحديث مرجع)
+- tera-system/TeraPreExecutionGate.md (تحديث مرجع)
+- tera-system/TeraSubAgents.md (تحديث مرجع)
+- tera-system/Tera_Project_Preparation_Files.md (تحديث مرجع)
+- tera-system/AGENT_GENERATION_TEMPLATE.md (تحديث مرجعين)
+- tera-system/runtime/MVP_DEFINITION_PROTOCOL.md (تحديث مرجعين)
+- tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md (تحديث مرجع)
+الملخص: آخر مرحلة من مشروع توحيد ملفات العملاء (Phase 6/6). تم دمج TeraAgent.md (1,401 سطراً، 39 قسماً، ~60KB) في .opencode/agents/tera.md (558 سطراً، 20 قسماً). أضيف §19 القاعدة النهائية (Final Rule) و §20 التحسين المستمر (Continuous Improvement) من TeraAgent.md، مع إعادة ترقيم §20 القديم إلى §21. تم تحديث frontmatter: إزالة System Reference، إضافة Source of Truth. تم تحديث 11 ملفاً مرجعياً (13 مرجعاً إجمالاً). تم حذف TeraAgent.md. بذلك أصبح كل عميل أساسي في المنظومة يتبع نمط ملف واحد: `.opencode/agents/AGENT.md` هو مصدر الحقيقة وملف التنفيذ معاً.
+الموافقة: Majed — Approved
+التحقق من الصحة: Anti-Bloat Gate PASS — ملف واحد بدلاً من اثنين (~87KB→~27KB محمل). 0 مراجع متبقية لـ TeraAgent.md في الملفات النشطة.
+المخاطر: عالية — TeraAgent.md كان أكثر ملف مرجعي في المنظومة (15+ ملفاً). تم تحديث جميع الملفات النشطة بشكل منهجي.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera.md
+2. git checkout -- tera-system/TeraPolicyMap.md
+3. git checkout -- tera-system/TeraArchitectureMap.md
+4. git checkout -- tera-system/TeraPreparationDocumentationGovernance.md
+5. git checkout -- tera-system/TERA_USER_GUIDE.md
+6. git checkout -- tera-system/TeraPreExecutionGate.md
+7. git checkout -- tera-system/TeraSubAgents.md
+8. git checkout -- tera-system/Tera_Project_Preparation_Files.md
+9. git checkout -- tera-system/AGENT_GENERATION_TEMPLATE.md
+10. git checkout -- tera-system/runtime/MVP_DEFINITION_PROTOCOL.md
+11. git checkout -- tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md
+12. git checkout HEAD -- tera-system/TeraAgent.md (استرجاع آخر ملف حقيقة مزدوج)
 ```

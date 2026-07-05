@@ -10,7 +10,7 @@ If this file conflicts with `.opencode/agents/tera.md`, the active runtime file 
 
 ## 1. Runtime Self-Sync Protocol
 
-`tera-system/TeraAgent.md` is the complete system reference.
+`.opencode/agents/tera.md` is the complete system reference.
 `.opencode/agents/tera.md` is the active runtime file.
 
 Sync `.opencode/agents/tera.md` when the system reference changes rules about:

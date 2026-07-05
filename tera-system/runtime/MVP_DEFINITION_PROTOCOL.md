@@ -131,7 +131,7 @@ This example shows how the protocol applies to the Material Request Management S
 
 - This protocol activates **automatically** whenever Tera enters Intake Collection Mode and collects candidate features.
 - Tera **must not** write a finalized `MVP Scope` in `01_APPLICATION_IDEA.md` without first running the classification process.
-- Tera **must** reference this protocol in the Application Discovery section of `TeraAgent.md`.
+- Tera **must** reference this protocol in the Application Discovery section of `.opencode/agents/tera.md`.
 - The classification **must** be visible to the user in the Application Understanding Summary.
 - The user may reclassify, but the default is Tera's analysis-based classification, not automatic MVP inclusion.
 
@@ -139,7 +139,7 @@ This example shows how the protocol applies to the Material Request Management S
 
 ## 9. References
 
-- `tera-system/TeraAgent.md` — Section 13: Application Discovery & Intake Dialogue
+- `.opencode/agents/tera.md` — Section 13: Application Discovery & Intake Dialogue
 - `project-inputs/01_APPLICATION_IDEA.md` — Section 7: MVP Scope (classified)
 - `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` — Section 6: Application Discovery Protocol
 - `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — Section: MVP Definition Classification Checklist
