@@ -23,6 +23,59 @@
 التحقق من الصحة: Validation Passed / Needs Follow-up
 المخاطر:
 ملاحظات الاسترجاع (Rollback):
+
+### SCP-2026-07-05-045 — TeraDesignReviewer Functional Awareness section (role awareness polish)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-045
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Documentation / Role Awareness / Runtime Polish
+الملفات المعدلة:
+- UPDATE: tera-system/TeraDesignReviewer.md
+الملخص:
+تمت إضافة قسم `TeraDesignReviewer Functional Awareness` في TeraDesignReviewer لتعزيز الوعي الوظيفي وحدود مراجعة التصميم قبل قسم التفعيل، مع صقل لغوي وتوضيح دور المراجعة مقابل القبول النهائي.
+الموافقة: Majed — Approved
+التحقق من الصحة: Pending
+المخاطر: منخفضة — لا تغيير في الصلاحيات أو السلوك التنفيذي، فقط توضيح تنظيمي.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة قسم `TeraDesignReviewer Functional Awareness` من `tera-system/TeraDesignReviewer.md`
+```
+
+### SCP-2026-07-05-042 — TeraAuditor Core Functional Roles section (role awareness polish)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-042
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Documentation / Role Awareness / Runtime Polish
+الملفات المعدلة:
+- UPDATE: tera-system/TeraAuditor.md
+الملخص:
+تمت إضافة قسم `Core Functional Roles` في TeraAuditor لتعزيز الوعي الوظيفي وحدود التدقيق قبل قسم المراجع المعتمدة، مع صقل لغوي وتخفيف تداخل الدور بين التدقيق والحوكمة والتوصية.
+الموافقة: Majed — Approved
+التحقق من الصحة: Pending
+المخاطر: منخفضة — لا تغيير في الصلاحيات أو السلوك التنفيذي، فقط توضيح تنظيمي.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة قسم `Core Functional Roles` من `tera-system/TeraAuditor.md`
+```
+
+### SCP-2026-07-05-043 — TeraAgent Core Functional Roles section (role awareness polish)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-043
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Documentation / Role Awareness / Runtime Polish
+الملفات المعدلة:
+- UPDATE: tera-system/TeraAgent.md
+الملخص:
+تمت إضافة قسم `Core Functional Roles` في بداية TeraAgent لتعزيز الوعي الوظيفي وحدود الصلاحية قبل الملفات المرجعية والمسؤوليات الأساسية، مع تنقيح لغوي وصياغة أكثر حوكمة.
+الموافقة: Majed — Approved
+التحقق من الصحة: Pending
+المخاطر: منخفضة — لا تغيير في الصلاحيات أو السلوك التنفيذي، فقط توضيح تنظيمي.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة قسم `Core Functional Roles` من `tera-system/TeraAgent.md`
 ```
 
 ### SCP-2026-07-05-042 — TCEA Core Functional Roles section (role awareness polish)
@@ -963,4 +1016,187 @@ TeraClientEngagement.md (مصدر الحقيقة) والـ §35 إلى TERA_RUNT
 2. استعادة الملفات المحذوفة من git
 3. إعادة المراجع في .opencode/agents/tera-client-engagement.md
 4. إعادة المراجع في TRAINING_GUIDE_TCEA.md و PROJECT_ACTIVITY_LOG.md
+```
+
+### SCP-2026-07-05-041 — تحديث TeraClientEngagement.md §11 لمطابقة TeraPricingPolicy.md v4.2
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-041
+مصدر الطلب: User Request (Majed) — بناءً على تحليل TeraSystemEvolutionAgent لقول TCEA "pricing isn't ready yet"
+نوع التغيير: Policy Conflict Resolution / Source of Truth Alignment
+الملفات المعدلة (1 file):
+- UPDATE: tera-system/TeraClientEngagement.md (إعادة كتابة §11 بالكامل)
+الملخص:
+تم تحديث §11 في TeraClientEngagement.md من "Pricing System (v0.1 — Draft — Calibration Required)"
+إلى "(v4.2 — معتمدة)" لمطابقة TeraPricingPolicy.md v4.2 المعتمدة فعلياً.
+
+التغييرات الرئيسية:
+1. **اللقب والحالة**: من "v0.1 Draft — Calibration Required" إلى "v4.2 — معتمدة"
+2. **المعادلة**: من "Feature Base Price × Complexity Factor + Risk Buffer + Margin" إلى معادلة v4.2 الكاملة (Interpolation, Multipliers, Risk Margin, Rush Premium, Min Profitable Price)
+3. **Rubric**: من 6 معايير (0-3) إلى 12 معياراً (0-5) بأوزان — Complexity Index
+4. **Base Price**: من "ساعات × 15-25 JOD" إلى Anchor Points باستيفاء خطي (0%=75 → 80%=2,400 JOD)
+5. **Minimum Price**: من "500-700 / 1,200 JOD" إلى Minimum Engagement Fee 100 JOD + Min Profitable Price (ساعات × 4 JOD)
+6. **Discovery**: من "50-100 JOD" إلى 35-500 JOD حسب حجم المشروع
+7. **Risk**: من "0%/+10%/+20%" إلى 4 مستويات (5%-20%) + Rush Premium منفصل
+8. **خطوات Level 2**: من 6 خطوات قديمة إلى 10 خطوات محدثة تشير للحاسبة والسياسة
+9. **خطة الدفع**: من نص حر إلى جدول منظم (3 مستويات)
+10. **الصيانة**: تحديث نطاق الاشتراك الشهري (20-300 JOD)
+11. **أضيف**: قالب الخطاب الرسمي الإلزامي، تفاصيل الضمان
+
+الموافقة: Majed — Approved (عبر الأمر "نفذ")
+التحقق من الصحة:
+- Anti-Bloat Gate ✅ — تعديل ملف موجود، لا ملفات جديدة
+- Policy Map Check ✅ — TeraPricingPolicy.md يبقى مصدر الحقيقة الوحيد للتسعير
+- Architecture Map Check ✅ — لا تغيير في أدوار المجلدات
+- No client-app contamination ✅ — الملف في tera-system/
+- No stale references ✅ — تمت إزالة جميع إشارات v0.1 Draft
+- No duplicated rules ✅ — §11 الآن ملخص متسق مع v4.2 وليس مصدراً بديلاً
+- Runtime sync required: ❌ لا — تعريف TCEA (.opencode/agents/tera-client-engagement.md) كان محدثاً أصلاً لـ v4.2
+
+المخاطر: منخفضة — §11 ملخص تشغيلي، والسياسة v4.2 كانت معتمدة ومستخدمة فعلاً
+ملاحظات الاسترجاع (Rollback):
+1. استعادة §11 من النسخة السابقة في git: `git checkout -- tera-system/TeraClientEngagement.md`
+2. لا ملفات أخرى متأثرة
+```
+
+### SCP-2026-07-05-042 — إضافة Consultation Response Protocol لموازنة دور TCEA بين الاستكشاف والاستشارة
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-042
+مصدر الطلب: Agent Gap (أبلغ عنها TCEA بنفسه) — المستشار يشعر بخلل في التوازن
+نوع التغيير: Agent Improvement / Process Protocol Addition
+الملفات المعدلة (2 files):
+- UPDATE: tera-system/TeraClientEngagement.md (إضافة §3.2.8 Consultation Response Protocol)
+- UPDATE: .opencode/agents/tera-client-engagement.md (تحديث §1 + إضافة §5.3)
+الملخص:
+تمت إضافة Consultation Response Protocol كبروتوكول ثالث في ملف المستشار بعد Self-Check و Uncertainty، لموازنة دور المستشار بين الاستكشاف (أسئلة) والاستشارة (تحليل وتوصيات).
+
+التغييرات الرئيسية:
+1. **المصدر** (TeraClientEngagement.md §3.2.8):
+   - بروتوكول استشاري متكامل: فهم مختصر ← اقتراحات ← مخاطر ← أسئلة متابعة ← تقسيم مرحلي
+   - قاعدة التوازن: Self-Check + Uncertainty = دفاعي, Consultation Response = هجومي — كلاهما إلزامي
+   - أمثلة توضيحية (بدون VS مع Consultation Response)
+   - حدود البروتوكول (لا إلغاء Gates، اقتراحات ≠ التزامات)
+
+2. **الرنتايم** (.opencode/agents/tera-client-engagement.md):
+   - تحديث §1 (Client Discovery Consultant): إضافة ذكر التحليل والتوصية والـ phase guidance
+   - إضافة §5.3 Consultation Response Protocol (5 عناصر + قاعدة التوازن + حدود)
+
+ما لم يتغير:
+- ✅ Self-Check Protocol باقٍ إلزامياً
+- ✅ Uncertainty Protocol باقٍ إلزامياً
+- ✅ جميع Gates الحوكمة (Discovery Coverage, Quotation, Handoff)
+- ✅ جميع حدود الصلاحية (لا اعتماد نهائي، لا تخطي)
+
+الموافقة: Majed — Approved (عبر الأمر "نفذ")
+التحقق من الصحة:
+- Anti-Bloat Gate ✅ — تعديل ملفين موجودين، لا ملفات جديدة
+- Policy Map Check ✅ — لا تغيير في مراجع السياسات
+- Architecture Map Check ✅ — لا تغيير في أدوار المجلدات
+- No client-app contamination ✅ — الملفات في tera-system/ و .opencode/agents/
+- Governance preserved ✅ — البروتوكولات الدفاعية باقية، Consultation Response يكملها ولا يلغيها
+- Runtime sync required: ❌ لا — التحديث مباشر في ملف الرنتايم
+
+المخاطر: منخفضة — البروتوكول الجديد لا يغير صلاحيات أو Gates، الاقتراحات لا تساوي اعتماداً
+ملاحظات الاسترجاع (Rollback):
+1. TeraClientEngagement.md: حذف §3.2.8 (Consultation Response Protocol)
+2. .opencode/agents/tera-client-engagement.md: حذف §5.3 + استعادة §1
+```
+
+### SCP-2026-07-05-043 — تنظيف ملف TCEA — إزالة التكرار والتعارض
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-043
+مصدر الطلب: User Request (Majed) — بعد فحص الحارس لوجود تكرار/تعارض
+نوع التغيير: System Maintenance / Anti-Bloat / Policy Conflict Resolution
+الملفات المعدلة (1 file):
+- UPDATE: .opencode/agents/tera-client-engagement.md (3 تعديلات)
+
+الملخص:
+تم تنظيف ملف TCEA من 3 مشاكل: تكرار بين §1 و §2، نقص الإشارة لـ Consultation Response
+في §3، وتعريف أداة التسعير في §6.
+
+التغييرات:
+1. **دمج §1 (Core Functional Roles) + §2 (مسؤولياتك الأساسية)** في جدول واحد ثنائي اللغة
+   بـ 9 أدوار موحّدة — إزالة التكرار والتقسيم المختلف بلغتين
+2. **إضافة Consultation Response Protocol** إلى تدفق العمل §3
+   — بعد الحوار الاستكشافي، سطر جديد يوجّه لتطبيق §5.3
+3. **تصحيح أداة التسعير في §6**:
+   - قبل: "باستخدام TeraPricingPolicy.md"
+   - بعد: "باستخدام TeraPricingCalculator.xlsx (حسب TeraPricingPolicy.md)"
+
+الموافقة: Majed — Approved (عبر الأمر "نفذ")
+التحقق من الصحة:
+- Anti-Bloat Gate ✅ — ملف واحد فقط، إزالة 15 سطراً مكرراً
+- Policy Map Check ✅ — لا تغيير في مراجع السياسات
+- Architecture Map Check ✅ — لا تغيير في أدوار المجلدات
+- No client-app contamination ✅ — الملف في .opencode/agents/
+- No stale references ✅ — جميع المراجع محدثة
+- No duplicated rules ✅ — §1/§2 الآن جدول واحد = لا تكرار
+- Runtime sync required: ❌ لا
+
+المخاطر: منخفضة جداً — تعديلات شكلية/تنظيمية فقط، لا تغيير في صلاحيات أو Gates
+ملاحظات الاسترجاع (Rollback):
+1. استعادة .opencode/agents/tera-client-engagement.md من git
+```
+
+### SCP-2026-07-05-046 — تصحيح 5 تضاربات هيكلية في ملف TCEA الرنتايم
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-046
+مصدر الطلب: Proactive System Stewardship (تحليل عميق)
+نوع التغيير: Anti-Bloat / System Maintenance
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md
+
+الملخص:
+تصحيح 5 مشاكل هيكلية في ملف TCEA الرنتايم بعد تحليل عميق للتضارب الذهني والتنفيذي:
+
+1. **إصلاح الترقيم** — تغيير §1 المكرر (الأدوار والمسؤوليات) إلى §2، ليصبح التسلسل:
+   §1 هويتك ← §2 الأدوار ← §3 تدفق العمل ← §4 Websearch ← §5 بروتوكولات ← ... §10
+
+2. **تحديث عنوان §5** — من "Self-Check & Uncertainty Protocols" إلى
+   "Mandatory Operating Protocols — بروتوكولات العمل الإلزامية"
+   (لأن القسم يحتوي 3 بروتوكولات: Self-Check + Uncertainty + Consultation Response)
+
+3. **توضيح مراجع §3** — إضافة ملاحظة في بداية §3:
+   "جميع الإشارات إلى أقسام مرقمة مثل (§3.2.7), (§3.3.2) وغيرها تشير إلى
+   TeraClientEngagement.md (مصدر الحقيقة)"
+   + توحيد مرجع Self-Check Protocol بإزالة اسم الملف الزائد (للاتساق مع بقية المراجع)
+
+4. **إزالة تكرار قاعدة 13 Domain** — كانت مذكورة في 3 مواضع (سطر 79، 107، 254):
+   - أُبقيَت في تدفق العمل (سطر 79) — مكانها الطبيعي
+   - أُزيلَت من القاعدة الإلزامية الإضافية (سطر 107)
+   - أُزيلَت من §8 (مصدر الأسئلة) — اختصار §8 لجملة واحدة فقط
+
+5. **إعادة تنظيم §9 (المصادر المرجعية)** — من قائمة مسطحة بـ 12 مرجعاً بدون ترتيب
+   إلى 4 فئات بأولويات واضحة:
+   - إلزامي قبل بدء العمل (4 مراجع)
+   - للتسعير عند إنتاج عرض سعر (مرجعان)
+   - مرجعي عند الحاجة (3 مراجع)
+   - قوالب للمراسلات والوثائق (3 مراجع)
+
+الموافقة: Majed — Approved (عبر الأمر "نفذ")
+التحقق من الصحة:
+- Anti-Bloat Gate ✅ — ملف واحد فقط، إزالة تكرار، لا ملفات جديدة
+- Policy Map Check ✅ — لا تغيير في مراجع السياسات أو مصدر الحقيقة
+- Architecture Map Check ✅ — لا تغيير في أدوار المجلدات
+- No client-app contamination ✅ — الملف في .opencode/agents/
+- No stale references ✅ — الملاحظة الجديدة في §3 توضح مصدر جميع المراجع
+- No duplicated rules ✅ — قاعدة 13 Domain الآن في موضع واحد فقط
+- Runtime sync required: ❌ لا — التغييرات في TCEA فقط، لا تؤثر على عملاء آخرين
+
+المخاطر: منخفضة جداً — تعديلات هيكلية/شكلية/تنظيمية فقط:
+- إصلاح ترقيم (لم يكن هناك مرجع داخلي لـ §2 من قبل لأنه لم يكن موجوداً)
+- تغيير عنوان §5 (لا يؤثر على محتوى البروتوكولات)
+- إضافة ملاحظة توضيحية (لا تغير سلوكاً)
+- إزالة تكرار (القاعدة لا تزال موجودة في موضعها الأصلي)
+- إعادة تنظيم §9 (جميع المراجع محفوظة، فقط إعادة ترتيب)
+
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
 ```
