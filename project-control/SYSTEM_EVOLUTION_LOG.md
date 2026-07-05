@@ -754,4 +754,38 @@ Git Audit Protocol يُحدد:
 4. TeraPolicyMap.md: حذف إدخال Auditor.
 5. AGENT_GAPS_LOG.md: حذف GAP-011.
 ```
+
+### SCP-2026-07-05-037 — TCEA Runtime Sync — Self-Check + Uncertainty + §35 (Runtime Gap from SCP-028)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-037
+مصدر الطلب: System Gap — اكتشفها حارس بعد أن أنتج TCEA ملفات Tamayuz بدون Self-Check / Uncertainty (نظامي، وليس تقصيراً من المستشار)
+نوع التغيير: Runtime Sync / Agent Process Fix
+الملفات المعدلة (1 file, 0 new):
+- UPDATE: .opencode/agents/tera-client-engagement.md (مزامنة الـ Runtime مع البروتوكولات المضافة في SCP-028)
+الملخص:
+تم اكتشاف فجوة نظامية: SCP-028 (GAP-005) أضاف Self-Check Protocol (§3.2.6) و Uncertainty Protocol (§3.2.7) إلى
+TeraClientEngagement.md (مصدر الحقيقة) والـ §35 إلى TERA_RUNTIME_TEMPLATES.md، لكن ملف runtime
+.tera-client-engagement.md لم يتم تحديثه — فالمستشار يعمل من Runtime قديم لا يذكره بهذه البروتوكولات.
+
+التغييرات في tera-client-engagement.md:
+1. §3 (تدفق العمل): إضافة 3 خطوات إلزامية — Self-Check لكل Domain، Uncertainty Protocol، واستخدام §35
+2. §5 (جديد): Self-Check & Uncertainty Protocols — ملخص تنفيذي للبروتوكولات مع القواعد الحاسمة
+3. §7 (الملفات): ربط DISCOVERY_COVERAGE_SUMMARY.md بـ §35
+4. §9 (المصادر): إضافة TERA_RUNTIME_TEMPLATES.md إلى قائمة المراجع
+5. §10 (تسعير): إعادة ترقيم (كان §9) بعد إضافة §5 الجديد
+6. Last Synced: تحديث من 2026-07-04 إلى 2026-07-05
+
+سبب عدم اكتشافها مبكراً: Tamayuz كان أول عميل حقيقي بعد SCP-028، فظهرت الفجوة فوراً في أول استخدام.
+الموافقة: Majed — Approved (شفهياً في جلسة العمل)
+التحقق من الصحة: Runtime file sections numbered 1→10, all internal references consistent.
+0 ملفات جديدة، 0 عملاء جدد، 0 MCPs.
+المخاطر: منخفضة — يضيف وعياً بالبروتوكولات الموجودة أصلاً في مصدر الحقيقة.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة الخطوات المضافة من §3 (أسطر 70-72)
+2. حذف §5 (Self-Check & Uncertainty Protocols) بالكامل
+3. إعادة ترقيم الأقسام: §6→§5, §7→§6, §8→§7, §9→§8, §10→§9
+4. إعادة Last Synced إلى 2026-07-04
+```
 ```
