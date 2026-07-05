@@ -239,3 +239,58 @@ Only then changes are implemented.
   5. رفع write من deny إلى ask للسماح ببناء البروتوتايب.
 - Status: Applied
 - Resolution Notes: تم تنفيذ جميع التحسينات عبر SCP-2026-07-04-033. تم إنشاء DESIGN_REVIEW_STANDARDS.md (9 أقسام)، تحديث TeraDesignReviewer.md (بروتوتايب + مساعدة بصرية + توكينز معمّق)، تحديث design-reviewer.md (write: ask + 4 بروتوكولات + Output format مطوّر)، وتحديث ENGINEERING_AGENT_RESPONSIBILITIES.md §11.
+
+## 2026-07-04 — Monitor — GAP-009
+
+- Title: **غياب صلاحية Bash/Git — لا يستطيع Monitor مقارنة Handback vs Git Diff رغم أن هذا مطلوب في تعريفه**
+- Agent: Monitor
+- Gap Type: Permission Gap / Process Gap
+- Issue: تعريف Monitor (سطر 62) يلزمه بـ "Cross-check Handback vs Git diff for each closed task"، لكن صلاحية `bash: deny` تمنعه من تشغيل أي أمر git. لا يستطيع:
+  1. تشغيل `git diff --name-only` لمقارنة الملفات المغيَّرة مع Handback
+  2. تشغيل `git log --oneline` لتتبع تاريخ التغييرات
+  3. تشغيل `git show --stat` لفحص الـ commits
+  4. تنفيذ أي أمر شل ضروري للتدقيق الفني
+- Impact on agent performance: يجعل البند الأساسي (Cross-check Handback vs Git Diff) غير قابل للتنفيذ. يبقى Monitor رقيباً وثائقياً فقط بدون قدرة على التحقق الفعلي من التطابق.
+- Suggested direction (optional): رفع `bash: deny` → `bash: ask` + إضافة Git Audit Protocol يحدد الأوامر المسموح بها (git diff, git log, git show — قراءة فقط).
+- Status: Applied
+- Resolution Notes: تم تنفيذ الحل عبر SCP-2026-07-04-034. تم رفع bash إلى ask في monitor.md، إضافة Git Audit Protocol مع قائمة الأوامر المسموح بها وانضباط ذاتي لقراءة فقط.
+
+## 2026-07-04 — Monitor — GAP-010
+
+- Title: **غياب Source of Truth وميثاق تدقيق لـ Monitor (رقيب) — لا دستور مكتوب، لا قواعد ثابتة، لا تدرج مرجعي، لا صلاحية رفض**
+- Agent: Monitor
+- Gap Type: Missing Capability / Process Gap / Documentation Gap
+- Issue: Monitor (رقيب) لا يملك Source of Truth نظامياً يحدد:
+  1. دستور عمله وقواعده الثابتة — يعمل باجتهاد شخصي.
+  2. تدرجاً هرمياً للمراجع (أي ملف يعلو أي ملف عند التعارض).
+  3. صلاحية رفض خطة معيبة — يوافق على انحرافات بدون تفويض واضح.
+  4. آلية تدقيق تراكمي — يعيد من الصفر في كل جلسة.
+  5. علاقته مع بقية العملاء في سياق التدقيق.
+  بالمقابل: DesignReviewer (ناقد) حصل على TeraDesignReviewer.md في SCP-032.
+- Impact on agent performance: يبقى Monitor عرضة للاجتهاد الشخصي، بدون دستور يلتزم به، وبدون صلاحية لرفض خطة معيبة — وهذا خطر على المنظومة لأنه دور حساس.
+- Suggested direction (optional): إنشاء `tera-system/TeraMonitor.md` يجمع: الهوية، الغرض، التدرج الهرمي للمراجع، القواعد السبعة الثابتة، صلاحية الرفض، العلاقات، والتحسين المستمر.
+- Status: Applied
+- Resolution Notes: تم تنفيذ الحل عبر SCP-2026-07-04-035. تم إنشاء TeraMonitor.md (8 أقسام) في tera-system/، تحديث monitor.md بإضافة System Reference واختصار What you do، تحديث ENGINEERING_AGENT_RESPONSIBILITIES.md §6، وتحديث TeraPolicyMap.md بإضافة إدخال Monitor.
+
+## 2026-07-05 — Auditor — GAP-011
+
+- Title: **غياب Source of Truth لـ Auditor (مدقق) — لا دستور مكتوب، لا منهجية تدقيق متدرجة، لا تدرج مرجعي، لا بروتوكول عدم يقين، لا آلية تراكم**
+- Agent: Auditor
+- Gap Type: Missing Capability / Process Gap / Documentation Gap
+- Issue: Auditor (مدقق) لا يملك Source of Truth نظامياً رغم أن كل عميل حوكمة آخر لديه:
+  - Monitor → TeraMonitor.md ✅
+  - DesignReviewer → TeraDesignReviewer.md ✅
+  - TCEA → TeraClientEngagement.md ✅
+  - **Auditor → ❌ لا يوجد**
+
+  الفجوات الناتجة:
+  1. لا دستور عمل مكتوب — قراراته اجتهادية بدون معايير واضحة.
+  2. لا منهجية تدقيق متدرجة — يبدأ من الصفر في كل دورة.
+  3. لا جدول تصنيف نتائج موحد — يستخدم 3 حالات فقط (PASS/NEEDS_FIX/BLOCKED) بدون DEFERRED.
+  4. لا بروتوكول عدم يقين — قد يخمن أو يتجاوز.
+  5. لا آلية تراكم — لا يبني على تدقيقات سابقة.
+  6. ENGINEERING_AGENT_RESPONSIBILITIES.md §5 تعريفه مختصر جداً (13 سطراً فقط).
+- Impact on agent performance: يضعف موثوقية واتساق تدقيقاته مع مرور الوقت. يمنعه من التراكم المعرفي. يجعله عرضة للاجتهاد الشخصي.
+- Suggested direction (optional): إنشاء `tera-system/TeraAuditor.md` كـ Source of Truth بـ 10 أقسام (الهوية، الموقع، الغرض، المراجع، منهجية 6 مراحل، جدول تصنيف، بروتوكول عدم يقين وبحث، تراكم، علاقات، تحسين مستمر). رفض AUDIT_TRAIL.md (استخدام PROJECT_ACTIVITY_LOG.md).
+- Status: Applied
+- Resolution Notes: تم تنفيذ الحل عبر SCP-2026-07-05-036. تم إنشاء TeraAuditor.md (10 أقسام) في tera-system/، تحديث auditor.md بإضافة System Reference + بروتوكول التراكم + تحديث Output Format (DEFERRED)، تحديث ENGINEERING_AGENT_RESPONSIBILITIES.md §5 (توسيع كامل: منهجية + تراكم + بروتوكول عدم يقين + مرجع TeraAuditor.md)، وتحديث TeraPolicyMap.md بإضافة إدخال Auditor.

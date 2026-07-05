@@ -639,3 +639,119 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 4. tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md: إعادة §11 للصيغة السابقة.
 5. AGENT_GAPS_LOG.md: حذف GAP-008.
 ```
+
+### SCP-2026-07-04-034 — Monitor (رقيب) — تمكين صلاحية Bash/Git للتدقيق
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-034
+مصدر الطلب: تقرير Monitor الذاتي + تحليل TeraSystemEvolutionAgent + موافقة Majed
+نوع التغيير: Permission Upgrade / Agent Capability Improvement
+الملفات المعدلة (3 files, 0 new):
+- UPDATE: .opencode/agents/monitor.md (bash: deny → ask, description محدّث, إضافة Git Audit Protocol)
+- UPDATE: project-control/AGENT_GAPS_LOG.md (إضافة GAP-009 كـ Applied)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم رفع صلاحية bash في monitor.md من deny إلى ask ليتمكن Monitor من تنفيذ
+بند "Cross-check Handback vs Git diff" المطلوب في تعريفه.
+
+التغيير الوحيد: bash: deny → bash: ask + إضافة Git Audit Protocol.
+
+Git Audit Protocol يُحدد:
+- الأوامر المسموح بها: git diff --name-only, git log --oneline, git show --stat (قراءة فقط)
+- الانضباط الذاتي: bash فقط لأوامر git read-only — أي أمر آخر يحتاج تبريراً صريحاً
+- التوثيق: تسجيل نتائج git diff في التقرير
+
+المقترحات المرفوضة (Anti-Bloat):
+- ❌ Compliance Auditor Skill (يقوم به Monitor نفسه)
+- ❌ Git MCP (غير ضروري — git يعمل عبر bash)
+- ❌ CI/CD تكامل (تضخم مبكر — لا Production ولا pipelines)
+
+الموافقة: Majed — "موافق"
+التحقق من الصحة: Anti-Bloat Gate PASS (لا ملفات جديدة).
+المخاطر: منخفضة — bash: ask = كل أمر يخضع لموافقة Majed.
+ملاحظات الاسترجاع (Rollback):
+1. .opencode/agents/monitor.md: إعادة bash: ask → bash: deny، حذف Git Audit Protocol.
+2. AGENT_GAPS_LOG.md: حذف GAP-009.
+```
+
+### SCP-2026-07-04-035 — Monitor (رقيب) — Source of Truth + ميثاق التدقيق + القواعد السبعة
+
+```text
+تاريخ: 2026-07-04
+معرف التغيير: SCP-2026-07-04-035
+مصدر الطلب: تقرير Monitor الذاتي + تحليل TeraSystemEvolutionAgent + موافقة Majed
+نوع التغيير: Source of Truth Creation / Agent Capability Improvement / Process Formalization
+الملفات المعدلة (6 files, 1 new):
+- CREATE: tera-system/TeraMonitor.md (Source of Truth — 8 أقسام)
+- UPDATE: .opencode/agents/monitor.md (إضافة System Reference + اختصار What you do بالإشارة للمصدر)
+- UPDATE: tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md (توسيع §6 — القواعد السبعة + صلاحية الرفض)
+- UPDATE: tera-system/TeraPolicyMap.md (إضافة إدخال Monitor audit framework)
+- UPDATE: project-control/AGENT_GAPS_LOG.md (إضافة GAP-010 كـ Applied)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم إنشاء TeraMonitor.md — Source of Truth لـ Monitor (رقيب) في tera-system/.
+يحتوي 8 أقسام تغطي:
+
+§1-3: الهوية، الموقع، الغرض
+§4: **المراجع المعتمدة (Reference Hierarchy)** — 8 مستويات من الدستور إلى سجل النشاط
+§5: **قواعد التدقيق السبعة الثابتة** (The 7 Immutable Audit Rules):
+    1. مطابقة الخطة  2. الترتيب والتبعيات  3. بوابة الهندسة
+    4. سجل الامتثال  5. Handback vs Git Diff  6. زحف النطاق  7. الانحراف المعماري
+§6: **صلاحية رفض الخطة** (Plan Rejection Authority) — 4 شروط واضحة
+§7: العلاقة مع بقية العملاء
+§8: مرجع التحسين المستمر
+
+تم رفض إنشاء MONITOR_CHARTER.md في project-control/ (موقع خطأ) و MONITOR_AUDIT_TRAIL.md
+(تضخم — التدقيق التراكمي يُسجل في PROJECT_ACTIVITY_LOG.md الموجود).
+الموافقة: Majed — "نفذ"
+التحقق من الصحة: Anti-Bloat Gate PASS (ملف جديد واحد في tera-system/ = نمط متسق مع TeraDesignReviewer.md).
+المخاطر: منخفضة — الميثاق يحدد صلاحية الرفض بـ 4 شروط فقط.
+ملاحظات الاسترجاع (Rollback):
+1. حذف tera-system/TeraMonitor.md.
+2. .opencode/agents/monitor.md: إزالة System Reference، إعادة What you do القديم.
+3. ENGINEERING_AGENT_RESPONSIBILITIES.md: إعادة §6 للصيغة السابقة.
+4. TeraPolicyMap.md: حذف إدخال Monitor.
+5. AGENT_GAPS_LOG.md: حذف GAP-010.
+
+### SCP-2026-07-05-036 — TeraAuditor.md — Source of Truth لـ Auditor (مدقق)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-036
+مصدر الطلب: تقرير Auditor الذاتي + تحليل TeraSystemEvolutionAgent + موافقة Majed
+نوع التغيير: Source of Truth Creation / Agent Capability Improvement / Policy Update
+الملفات المعدلة (6 files, 1 new):
+- CREATE: tera-system/TeraAuditor.md (Source of Truth — 10 أقسام)
+- UPDATE: .opencode/agents/auditor.md (إضافة System Reference + بروتوكول التراكم + تحديث Output Format)
+- UPDATE: tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md (توسيع §5: منهجية 6 مراحل + تراكم + بروتوكول عدم يقين + مرجع)
+- UPDATE: tera-system/TeraPolicyMap.md (إضافة إدخال Auditor audit framework)
+- UPDATE: project-control/AGENT_GAPS_LOG.md (إضافة GAP-011 كـ Applied)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
+الملخص:
+تم إنشاء TeraAuditor.md — Source of Truth لـ Auditor (مدقق) في tera-system/.
+يحتوي 10 أقسام تغطي:
+
+§1: الهوية — من أنا، ما لا أفعله أبداً
+§2: الموقع في المنظومة — مكاني في هرم Tera
+§3: الغرض — ما هي وظيفتي بالضبط
+§4: المراجع المعتمدة (Reference Hierarchy) — 7 مستويات من الدستور إلى سجلات المهام
+§5: منهجية التدقيق المتدرجة (6 مراحل) — استيعاب ← توثيق ← تدقيق هندسي ← مطابقة ← تقرير ← توصية
+§6: جدول تصنيف النتائج — PASS / NEEDS_FIX / BLOCKED / DEFERRED + معايير كل حالة
+§7: بروتوكول عدم اليقين والبحث — متى أتوقف، متى أطلب WebSearch/WebFetch
+§8: بروتوكول التراكم — بناءً على آخر تدقيق في PROJECT_ACTIVITY_LOG.md
+§9: العلاقة مع بقية العملاء — رقيب، ناقد، مهندس، TeraAgent
+§10: مرجع التحسين المستمر
+
+تم رفض إنشاء AUDIT_TRAIL.md (Anti-Bloat — التراكم يُسجل في PROJECT_ACTIVITY_LOG.md الموجود).
+الموافقة: Majed — Approved
+التحقق من الصحة: Anti-Bloat Gate PASS (ملف جديد واحد في tera-system/ = نمط متسق مع TeraMonitor.md و TeraDesignReviewer.md).
+المخاطر: منخفضة — لا تغيير في صلاحيات أو أدوار. TeraAuditor.md وثيقة دستورية فقط.
+ملاحظات الاسترجاع (Rollback):
+1. حذف tera-system/TeraAuditor.md.
+2. .opencode/agents/auditor.md: إزالة System Reference، إزالة بروتوكول التراكم، إعادة Output Format إلى PASS/NEEDS_FIX/BLOCKED.
+3. ENGINEERING_AGENT_RESPONSIBILITIES.md: إعادة §5 للصيغة السابقة (13 سطراً).
+4. TeraPolicyMap.md: حذف إدخال Auditor.
+5. AGENT_GAPS_LOG.md: حذف GAP-011.
+```
+```
