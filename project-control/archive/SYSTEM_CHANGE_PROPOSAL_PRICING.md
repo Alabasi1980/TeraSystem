@@ -19,7 +19,7 @@ Owner Improvement Request — System Enhancement
 
 ## Evidence
 - `tera-system/TeraClientEngagement.md` §11 (الأسطر 382-401): مبادئ فقط، لا نظام
-- `project-control/PRICING_SYSTEM_PLANNING.md`: التحليل الكامل للخيارات وأسعار السوق الأردني
+- `project-control/archive/PRICING_SYSTEM_PLANNING.md`: التحليل الكامل للخيارات وأسعار السوق الأردني
 - جلسة التخطيط مع Majed في 2026-07-03: تم الاتفاق على القرارات الاستراتيجية
 - مراجعة خبير أول في 2026-07-03: 10 ملاحظات تم دمجها
 - مراجعة خبير ثاني في 2026-07-03: 7 ملاحظات تم دمجها في هذا الـ Proposal

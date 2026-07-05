@@ -57,8 +57,8 @@ This creates:
 ```
 
 **Not modified** (historical records — safe):
-- `project-control/RESPONSE_TO_TEAM_REVIEW_SCP-2026-07-03-015.md`
-- `project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-03-016.md`
+- `project-control/archive/RESPONSE_TO_TEAM_REVIEW_SCP-2026-07-03-015.md`
+- `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-03-016.md`
 - `.opencode/agents/tera-software-designer.md` (already says "removed")
 
 ---

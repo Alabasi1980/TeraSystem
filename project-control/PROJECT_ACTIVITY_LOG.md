@@ -256,7 +256,7 @@
   - Project-type activation matrix (small/medium/ERP/SaaS)
   - Escalation Rules + Tool Restrictions in agent template
   - 10 governing rules enforced across all files
-  - Comprehensive final report in project-control/GOVERNANCE_LAYER_REPORT.md
+  - Comprehensive final report in project-control/archive/GOVERNANCE_LAYER_REPORT.md
 - Decision / Result: Agent governance is now fully documented. No new permanent agents added. No unnecessary MCPs. Bloat prevention built into every file. Ready for first real project test.
 - Next Action: Test governance layer on a real project (medium or ERP) to validate practical robustness.
 

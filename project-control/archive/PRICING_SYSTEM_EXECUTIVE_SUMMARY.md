@@ -130,5 +130,5 @@ Feature Base Price (ساعات Simple × سعر الساعة الداخلي)
 ---
 
 **المرجع التفصيلي:** `project-control/SYSTEM_CHANGE_PROPOSAL_PRICING.md` (292 سطراً)  
-**مرجع التخطيط:** `project-control/PRICING_SYSTEM_PLANNING.md`  
+**مرجع التخطيط:** `project-control/archive/PRICING_SYSTEM_PLANNING.md`  
 **تمت المراجعة من:** خبيرين مستقلين — دُمجت 17 ملاحظة

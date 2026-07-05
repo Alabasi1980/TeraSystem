@@ -458,7 +458,7 @@ Mandatory Coverage ≠ Mandatory Deep Interview
 
 - `project-control/AGENT_GAPS_LOG.md` — GAP-001 (الفجوة السابقة، تم حلها)
 - `project-control/SYSTEM_EVOLUTION_LOG.md` — سجل التغييرات السابقة
-- `project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-018.md` — إضافة Understanding Confirmation Gate
+- `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-018.md` — إضافة Understanding Confirmation Gate
 - `tera-system/TeraClientEngagement.md` — الملف المستهدف
 - `.opencode/agents/tera-client-engagement.md` — الملف التشغيلي المستهدف
 - `tera-system/TeraApplicationQuestionBank.md` — بنك الأسئلة المرجعي

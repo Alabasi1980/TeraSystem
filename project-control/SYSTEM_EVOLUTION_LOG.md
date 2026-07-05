@@ -25,6 +25,24 @@
 ملاحظات الاسترجاع (Rollback):
 ```
 
+### SCP-2026-07-05-042 — TCEA Core Functional Roles section (role awareness polish)
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-042
+مصدر الطلب: User Request (Majed)
+نوع التغيير: Agent Documentation / Role Awareness / Runtime Polish
+الملفات المعدلة:
+- UPDATE: .opencode/agents/tera-client-engagement.md
+الملخص:
+تمت إضافة قسم `Core Functional Roles` في بداية TCEA لتعزيز الوعي الوظيفي وحدود الصلاحية قبل قسم المسؤوليات الأساسية، مع تنقيح لغوي بسيط للنص.
+الموافقة: Majed — Approved
+التحقق من الصحة: Pending
+المخاطر: منخفضة — لا تغيير في الصلاحيات أو السلوك، فقط توضيح تنظيمي.
+ملاحظات الاسترجاع (Rollback):
+1. إزالة قسم `Core Functional Roles` من `.opencode/agents/tera-client-engagement.md`
+```
+
 ---
 
 ## سجل التغييرات
@@ -70,7 +88,7 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 - UPDATE: .opencode/agents/design-reviewer.md (إضافة مرجع السياسة في قائمة القراءة)
 - UPDATE: .opencode/agents/tera-client-engagement.md (إضافة مرجع السياسة في قائمة القراءة)
 - UPDATE: .opencode/agents/tera-system-evolution.md (إضافة مرجع السياسة في قائمة القراءة)
-- CREATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-03-017.md
+- CREATE: project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-03-017.md
 الملخص:
 إضافة سياسة التحسين المستمر (Continuous Improvement Policy) كسياسة رسمية في tera-system/.
 السياسة توجّه جميع العملاء الأساسيين إلى مراقبة فجوات المنظومة والإبلاغ عنها عبر AGENT_GAPS_LOG.md.
@@ -112,7 +130,7 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 - UPDATE: clients/CLIENT-alfares-maintenance/applications/APP-maintenance-requests/client-engagement/CLIENT_INTAKE.md
 - UPDATE: clients/CLIENT-alfares-maintenance/applications/APP-maintenance-requests/client-engagement/CLIENT_BRIEF.md
 - UPDATE: clients/CLIENT-alfares-maintenance/applications/APP-maintenance-requests/client-engagement/SCOPE_SUMMARY.md
-- CREATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-018.md
+- CREATE: project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-018.md
 الملخص:
 تم إصلاح فجوة TCEA التي كانت تسمح بالانتقال من Discovery إلى ملفات النطاق دون Understanding Confirmation Gate صريحة.
 أضيفت بوابة إلزامية داخل المرجع `TeraClientEngagement.md` وداخل runtime `.opencode/agents/tera-client-engagement.md` تمنع إنتاج CLIENT_BRIEF / SCOPE_SUMMARY / DRAFT_QUOTATION / TERA_HANDOFF_PACKAGE قبل تأكيد Majed للملخص.
@@ -146,7 +164,7 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 - CREATE: .opencode/agents/application-blueprint.md
 - UPDATE: .opencode/agents/tera-client-engagement.md
 - UPDATE: .opencode/agents/tera.md
-- CREATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-019.md
+- CREATE: project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-019.md
 - UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
 الملخص:
 تمت إضافة `ApplicationBlueprintAgent` كعميل جلسة رئيسي مستقل لمرحلة blueprinting فقط بين TCEA و TeraAgent formal preparation.
@@ -185,7 +203,7 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 - UPDATE: tera-system/runtime/TERA_RUNTIME_TEMPLATES.md
 - UPDATE: .opencode/agents/application-blueprint.md
 - UPDATE: project-control/AGENT_GAPS_LOG.md
-- CREATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-022.md
+- CREATE: project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-022.md
 - UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
 الملخص:
 تمت ترقية TeraClientEngagementAgent بإضافة إطار اكتشاف إلزامي من 13 مجالاً، مع Discovery Completeness Matrix داخل `DISCOVERY_COVERAGE_SUMMARY.md`، وDiscovery Coverage Gate، وQuotation Readiness Gate، وTera Handoff Readiness Gate.
@@ -223,7 +241,7 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 - UPDATE: .opencode/agents/monitor.md
 - UPDATE: .opencode/agents/design-reviewer.md
 - UPDATE: .opencode/agents/tera-software-designer.md
-- UPDATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-023.md
+- UPDATE: project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-023.md
 - UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
 الملخص:
 تم إنشاء ملف مركزي واحد `TERA_AGENT_CONDUCT.md` ليكون بوابة السلوك الإجباري للعملاء الأساسيين، ويحتوي على القواعد الحاسمة المشتركة، Pre-Action Gate، وقاعدة عدم اليقين، مع ربط مختصر بمسار Gap Reporting الرسمي.
@@ -411,7 +429,7 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 - UPDATE: tera-system/runtime/TERA_RUNTIME_TEMPLATES.md §35 (3 أعمدة جديدة)
 - UPDATE: .opencode/agents/monitor.md (Random Discovery Audit)
 - UPDATE: project-control/AGENT_GAPS_LOG.md (GAP-005 → Applied)
-- UPDATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-028.md
+- UPDATE: project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-028.md
 - UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
 الملخص:
 تم تطبيق 3 تحسينات نظامية بناءً على اعتراف TCEA بفجواته وبعد تحليل TeraSystemEvolutionAgent:
@@ -484,7 +502,7 @@ Hard Reset كامل للسجلات التاريخية داخل مساحة الن
 - UPDATE: tera-system/TeraSubAgents.md (3 تحديثات: سطر 94 + سطر 1014 + استبدال §6.9 بالكامل)
 - UPDATE: tera-system/TeraPreExecutionGate.md (تحديث reference + قاعدة التحضير)
 - UPDATE: tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md (4 تحديثات: Decision Matrix + Bad pattern + Escalation + Helper limits)
-- UPDATE: project-control/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-030.md
+- UPDATE: project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-04-030.md
 - UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md
 الملخص:
 إزالة كل reference لـ ExecutionPreparationAgent من الملفات النظامية (14 reference)
@@ -825,4 +843,124 @@ TeraClientEngagement.md (مصدر الحقيقة) والـ §35 إلى TERA_RUNT
 2. .opencode/agents/tera-client-engagement.md: إزالة الإشارات للقواعد الأربع من §§3, 7،
    إعادة Last Synced إلى 2026-07-05 (SCP-037).
 ```
+
+### SCP-2026-07-05-039 — تفعيل آلية التسعير v4.2 رسمياً لـ TCEA + أدوات التسعير
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-039
+مصدر الطلب: User Request (Majed) — اعتماد آلية التسعير لمستشار TCEA
+نوع التغيير: Policy Activation / Agent Workflow Upgrade / Tooling Deployment
+الملفات المعدلة (6 files, 4 new + 2 updates):
+- UPDATE: .opencode/agents/tera-client-engagement.md (إعادة كتابة §9 + §10 كاملة — ربط إلزامي بأدوات التسعير)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md (هذا الإدخال)
+- CREATE: project-control/TeraPricingCalculator.xlsx (حاسبة Excel — 6 أوراق عمل)
+- CREATE: project-control/TeraPriceQuoteTemplate.docx (قالب عرض سعر وورد احترافي)
+- CREATE: project-control/TRAINING_GUIDE_TCEA.md (دليل تدريب المستشار — 10 أقسام)
+- UPDATE: project-control/PRICING_SCORECARD_APPLICATION_MAWTHOOQ.md (تحديث إلى الأرقام الجديدة ~500 JOD)
+الملخص:
+تم تفعيل آلية التسعير TeraPricingPolicy.md v4.2 رسمياً لاستخدام TeraClientEngagementAgent.
+التغييرات الرئيسية:
+
+1. تعريف TCEA (.opencode/agents/tera-client-engagement.md):
+   - تحديث Section 9 (المصادر): من "v0.1 Draft" إلى "v4.2 — معتمدة — إلزامية لكل عرض سعر"
+   - إضافة جميع أدوات التسعير كمراجع إلزامية (حاسبة Excel، قالب Word، دليل التدريب، مثال تطبيقي)
+   - إعادة كتابة Section 10 (Pricing Workflow) بالكامل لتطابق آلية v4.2:
+     * 10.3: 14 حقل معلومات إلزامية قبل التسعير
+     * 10.4: 15 خطوة إلزامية للتسعير (Level 1→2→3)
+     * 10.5: جدول الأدوات المستخدمة
+     * 10.6: قائمة الاعتماد الإلزامية (15 سؤالاً — يجب الإجابة بـ "نعم" قبل إرسال أي عرض)
+     * 10.7: الأخطاء الممنوعة (مخالفات وعواقبها)
+     * 10.8: 8 قواعد صارمة
+
+2. أدوات التسعير الجديدة:
+   - TeraPricingCalculator.xlsx: حاسبة Excel بستة أوراق عمل، خلايا صفراء للإدخال فقط، قوائم منسدلة، معادلات تلقائية
+   - TeraPriceQuoteTemplate.docx: قالب عرض سعر احترافي (Word) بقسم التوقيع وشروط الدفع
+   - TRAINING_GUIDE_TCEA.md: دليل تدريب يغطي 10 أقسام (خطوات، أخطاء، أسئلة، قرارات)
+
+3. المثال التطبيقي:
+   - تحديث PRICING_SCORECARD_APPLICATION_MAWTHOOQ.md من 1,605 JOD إلى ~500 JOD
+   - التحقق: التجربة الفعلية على Mawthooq أعطت 497 JOD (فارق -3 JOD عن الهدف)
+
+4. فحص النطاق (Range Check):
+   - Anchor Points: 20%=170, 40%=350, 60%=700, 70%=1,400, 80%=2,400 — تصاعد سلس
+   - Add-ons: مخفضة من ×0.35-0.40 مع قاعدة تناسب (50%)
+   - التحليل المدفوع: مخفض إلى 35-500 JOD
+   - الدعم الشهري: مخفض إلى 20-300 JOD
+   - Min Fee: 100 JOD
+   - Internal Rate: 4 JOD/ساعة
+الموافقة: Majed — Approved (عبر التجربة المباشرة على مشروع Mawthooq)
+التحقق من الصحة: Anti-Bloat Gate ✅ — ملفات الأداة (Excel + Word) ليست ملفات system/policy بل أدوات تشغيلية.
+قائمة الاعتماد (15 سؤالاً) تمت إجابتها جميعاً بـ "نعم" على مشروع Mawthooq.
+المخاطر: منخفضة — TCEA لا يزال ينتج مسودات فقط، Majed يعتمد السعر النهائي.
+ملاحظات الاسترجاع (Rollback):
+1. .opencode/agents/tera-client-engagement.md: استعادة §9 و §10 من النسخة السابقة.
+2. حذف TeraPricingCalculator.xlsx من project-control/.
+3. حذف TeraPriceQuoteTemplate.docx من project-control/.
+4. حذف TRAINING_GUIDE_TCEA.md من project-control/.
+5. استعادة PRICING_SCORECARD_APPLICATION_MAWTHOOQ.md من النسخة السابقة.
+```
+
+### SCP-2026-07-05-040 — إلزام قالب الخطاب الرسمي letterhead-master-fixed-print.html لكل مراسلات الزبائن
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-040
+مصدر الطلب: User Request (Majed) — توحيد الهوية الرسمية في مراسلات الزبائن
+نوع التغيير: Policy Enforcement / Reference Addition
+الملفات المعدلة (3 files, 0 new):
+- UPDATE: .opencode/agents/tera-client-engagement.md (إضافة §9 مرجع، §10.5 أداة، §10.8 قاعدة، تحديث Level 3)
+- UPDATE: project-control/TRAINING_GUIDE_TCEA.md (إضافة أداة + قاعدة في الملخص)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md (هذا الإدخال)
+الملخص:
+تم إلزام استخدام قالب الخطاب الرسمي للمؤسسة (letterhead-master-fixed-print.html) لجميع المراسلات
+الرسمية مع الزبائن. تمت الإشارة إليه في:
+- تعريف TCEA: Section 9 (مرجع إلزامي)، Section 10.5 (أداة إلزامية)، Section 10.8 (قاعدة صارمة)
+- Training Guide: جدول الأدوات + الملخص النهائي
+الموافقة: Majed — Approved
+التحقق من الصحة: Anti-Bloat ✅ (0 ملفات جديدة)
+المخاطر: منخفضة
+ملاحظات الاسترجاع (Rollback):
+1. إزالة مرجع branding من Section 9 في tera-client-engagement.md
+2. إزالة سطر القالب من Section 10.5
+3. إزالة القاعدة من Section 10.8
+4. إزالة التحديث من TRAINING_GUIDE_TCEA.md
+```
+
+### SCP-2026-07-05-041 — تنظيف project-control/ وأرشفة الملفات التاريخية
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-041
+مصدر الطلب: User Request (Majed) — تنظيف وترتيب project-control/
+نوع التغيير: Anti-Bloat / Cleanup / Archival
+الملفات المعدلة:
+- DELETE: project-control/TeraPriceQuoteTemplate.docx (ملف القالب — تم الاستغناء عنه لصالح letterhead-master-fixed-print.html)
+- DELETE: project-control/PRICING_SCORECARD_REPORT_v2.md (مكرر — لا مراجع له)
+- DELETE: project-control/OPERATOR_AUTH_POLICY.md (مهمل — لا مراجع له)
+- MOVE → archive/: 25 ملفاً تاريخياً (جميع مقترحات SCP السابقة + ملفات تسعير قديمة + GOVERNANCE_LAYER_REPORT)
+- UPDATE: .opencode/agents/tera-client-engagement.md (إزالة مراجع .docx, توجيه إلى letterhead مباشرة)
+- UPDATE: project-control/TRAINING_GUIDE_TCEA.md (إزالة مراجع .docx, توجيه إلى letterhead مباشرة)
+- UPDATE: project-control/PROJECT_ACTIVITY_LOG.md (تحديث مسار GOVERNANCE_LAYER_REPORT)
+- UPDATE: project-control/SYSTEM_EVOLUTION_LOG.md (هذا الإدخال + تحديث مسارات SCP إلى archive/)
+- DELETE: project-preparation/ بالكامل (5 ملفات — كانت خاصة بتطبيق الفارس للصيانة المحذوف)
+- DELETE: tera-system/Foundation Logo and LetterHead/ (4 ملفات — مكررة في tera-workshop/client-templates/branding/)
+الملخص:
+تم تنظيف project-control/ بالكامل: 3 ملفات محذوفة، 25 ملفاً تاريخياً منقولة إلى archive/،
+وتحديث جميع المراجع في system files لتعكس المسارات الجديدة.
+ثم حذف project-preparation/ بالكامل (5 ملفات) بموافقة Majed — كانت كلها خاصة بتطبيق الفارس للصيانة الذي أُزيل.
+ثم حذف tera-system/Foundation Logo and LetterHead/ (~2.5MB) — مكرر في tera-workshop/client-templates/branding/.
+الآن:
+- project-control/ يحتوي على 20 ملفاً نشطاً (بدلاً من 48)
+- project-preparation/ أُزيل بالكامل
+- tera-system/ نظيف (31 مدخلاً نشطاً)
+- جميع الملفات التاريخية متوفرة في archive/
+الموافقة: Majed — Approved (project-control cleanup) + Direct instruction (project-preparation deletion)
+التحقق من الصحة: Anti-Bloat ✅ — 28 ملفاً أقل من قبل، لا تضخم، لا تكرار
+المخاطر: منخفضة — جميع المراجع محدّثة، لا مسارات مكسورة
+ملاحظات الاسترجاع (Rollback):
+1. إعادة الملفات من archive/ إلى project-control/
+2. استعادة الملفات المحذوفة من git
+3. إعادة المراجع في .opencode/agents/tera-client-engagement.md
+4. إعادة المراجع في TRAINING_GUIDE_TCEA.md و PROJECT_ACTIVITY_LOG.md
 ```
