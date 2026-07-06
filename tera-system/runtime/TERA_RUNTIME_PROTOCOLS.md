@@ -1323,10 +1323,12 @@ tera-system/TeraApplicationQuestionBank.md
 
 #### Phase 2: Opening Round
 
-Start with the essential questions from these core domains:
-- **Domain 1** (Administrative): Q1.1–Q1.8 (client, problem, goal)
-- **Domain 2** (Functional): Q2.1–Q2.7 (users, workflows, roles)
-- **Domain 4** (Technical): Q4.1–Q4.6 (stack, integrations, environment)
+Start with the essential questions from these core domains (الترقيم حسب `tera-system/client-helpers/tera-client-engagement-discovery-domains.md`):
+- **Domain 1** (Business & Goals): الأسئلة الأساسية (العميل، المشكلة، الهدف)
+- **Domain 2** (Users, Roles & Access): المستخدمون، الأدوار، الصلاحيات
+- **Domain 4** (Data & Content): البيانات، المحتوى، الهيكل
+
+> ملاحظة: الأسئلة في Question Bank (Q1.x, Q2.x, Q4.x) لا تزال تستخدم ترقيماً قديماً — الترقيم المعتمد للمجالات في discovery-domains.md. راجع المصدر الرسمي عند الحاجة.
 
 Keep this round to 5–7 focused questions maximum.
 

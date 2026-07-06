@@ -300,46 +300,6 @@ Until confirmed, I will not move to project preparation or implementation.
 
 ---
 
-## 13A. Discovery Coverage Summary
-
-Use this after understanding confirmation and before scope / quotation / handoff outputs in external client discovery managed by TCEA.
-
-```text
-DISCOVERY_COVERAGE_SUMMARY
-
-Client:
-Application:
-Project classification: Small / Medium / Large-Complex / Ambiguous
-Understanding confirmed by Majed: Yes / No
-
-| Domain | Status | Reason / Notes | Blocks Quotation? | Blocks Handoff? | Next Question | Assumption | Risk |
-|--------|--------|----------------|-------------------|-----------------|---------------|------------|------|
-| Business Context & Value | Complete / Partial / Missing / Deferred / Not Applicable |  | Yes / No | Yes / No |  |  | Low / Medium / High |
-| Integrations & APIs |  |  |  |  |  |  |  |
-| Users & Roles |  |  |  |  |  |  |  |
-| Workflow & Operations |  |  |  |  |  |  |  |
-| Scope & MVP |  |  |  |  |  |  |  |
-| Data & Content |  |  |  |  |  |  |  |
-| Notifications Engine |  |  |  |  |  |  |  |
-| Screens & UX |  |  |  |  |  |  |  |
-| Design & Branding |  |  |  |  |  |  |  |
-| Reports & Dashboards |  |  |  |  |  |  |  |
-| Technical, Hosting & Compliance |  |  |  |  |  |  |  |
-| Security & Audit |  |  |  |  |  |  |  |
-| Acceptance, Commercials & Warranty |  |  |  |  |  |  |  |
-
-Open blockers:
-Quotation blockers:
-Handoff blockers:
-
-Gate decision:
-- Ready for Scope / Needs More Discovery / Ready for Quotation / Ready for Handoff / Blocked
-
-Majed approval status:
-```
-
----
-
 ## 14. Research-Based Improvements Review
 
 Use after Domain Intelligence or external research changes, improves, or challenges the initial understanding.
@@ -1481,6 +1441,8 @@ It is produced by TCEA after completing the 13-domain discovery and before any s
 | Last Updated | YYYY-MM-DD |
 
 ## 2. Domain Coverage Matrix
+
+> الترقيم والتسمية حسب المصدر الرسمي: `tera-system/client-helpers/tera-client-engagement-discovery-domains.md`
 
 | # | Domain | Status | Reason if not Complete | Impact | Risk | Blocks Pricing? | Blocks Handoff? | **Source of Info** | **Confirmed by Majed?** | **Risk if Wrong** |
 |---|--------|--------|----------------------|--------|------|----------------|-----------------|--------------------|-------------------------|-------------------|

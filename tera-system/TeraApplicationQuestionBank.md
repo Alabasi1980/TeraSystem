@@ -18,21 +18,10 @@ Tera does not ask all questions. Tera selects the right questions at the right t
 
 This bank remains a **question source**, not a completeness contract by itself.
 
-TCEA must still evaluate mandatory discovery coverage across these 13 operating domains:
+**التعريف الرسمي والترقيم المعتمد للمجالات موجود في المصدر الرسمي:**
+`tera-system/client-helpers/tera-client-engagement-discovery-domains.md`
 
-1. Business Context & Value
-2. Integrations & APIs
-3. Users & Roles
-4. Workflow & Operations
-5. Scope & MVP
-6. Data & Content
-7. Notifications Engine
-8. Screens & UX
-9. Design & Branding
-10. Reports & Dashboards
-11. Technical, Hosting & Compliance
-12. Security & Audit
-13. Acceptance, Commercials & Warranty
+**ملاحظة حول الترقيم:** الترقيم المستخدم حالياً في أسئلة هذا الملف (Q1.x, Q2.x, ...) مبني على ترقيم سابق. للترقيم المعتمد الحالي، راجع `discovery-domains.md`. أسئلة هذا الملف سيتم إعادة ترقيمها لتتوافق مع المصدر الرسمي في تحديث لاحق.
 
 **Rule:**
 
