@@ -1,90 +1,164 @@
 # SYSTEM_CHANGE_PROPOSAL
 
-## SCP-2026-07-06-037
+## SCP-2026-07-06-083 — Agent Improvement Suggestions (AIS) Protocol
 
 ---
 
 ### Title
 
-إدراج `discovery-domains.md` في التحميل الإلزامي عند بداية Discovery (C.4 + D.1)
+إنشاء بروتوكول **Agent Improvement Suggestions (AIS)** — نظام اقتراحات تطوير العملاء من واقع العمل
 
 ### Request Type
 
-System Bug / Missing Reference — استيفاء ملاحظة هيئة التدقيق الخارجي
+New System Feature / Governance Enhancement — استجابة لتوصية هيئة التدقيق الخارجي + تحليل TeraSystemEvolutionAgent
 
 ### Problem
 
-الملف `tera-system/client-helpers/tera-client-engagement-discovery-domains.md` يُعرف نفسه كـ **المصدر الرسمي الوحيد** للمجالات الـ 13 (سطر 7-10)، ويأمر بقراءته عند بداية Discovery، لكن:
+حالياً، المنظومة تملك فقط `AGENT_GAPS_LOG.md` لتسجيل **المشاكل والفجوات** (شيء مكسور أو مفقود). لكن لا يوجد نظام يسمح للعملاء بتسجيل **تحسينات استباقية** مما يلاحظونه أثناء العمل:
 
-1. **جدول C.4 🟢 Required Now** في `.opencode/agents/tera-client-engagement.md` — تحت "بداية Discovery" — لا يدرجه. موجود فقط: `TeraApplicationQuestionBank.md` و `TeraClientPolicy.md`.
-2. **جدول D.1 Routing Table** — لا يحتوي على أي إدخال للمجالات الـ 13 أو `discovery-domains.md`.
+- مهارة يفتقدونها تتكرر عبر المشاريع
+- نمط متكرر يمكن توثيقه كـ Best Practice
+- تحسين في سير العمل يرفع الكفاءة دون أن يكون "خطأ" حالياً
+- غموض في التعليمات لم يمنع العمل لكنه أبطأه
+- فرصة لتحسين جودة المخرجات على المدى البعيد
 
 ### Evidence
 
-- **discovery-domains.md:7-10:** *"هذا الملف هو المصدر الوحيد المعتمد... اقرأه فقط عند بدء Discovery لعميل جديد"*
-- **tera-client-engagement.md:410-411:** قائمة Required Now عند Discovery تخلو من هذا الملف
-- **tera-client-engagement.md:554-578:** D.1 Routing Table لا يتضمن إدخالاً للمجالات الـ 13
-- **TeraPolicyMap.md:33:** يعترف بـ `discovery-domains.md` كـ "Canonical source for the 13 domains" — لكن الرنتايم لا يحمّله إلزامياً
+- **AGENT_GAPS_LOG.md** يركز على الفجوات الحادة (أخطاء، صلاحيات ناقصة، سياسات متضاربة) — ولا يصلح للتحسينات التراكمية
+- **TERA_CONTINUOUS_IMPROVEMENT_POLICY.md** §3 يشجع على ملاحظة فرص التحسين لكن لا يوفر آلية تسجيل منضبطة لها
+- **الهيئة الخارجية** اقترحت حلاً متكاملاً بآلية واضحة، قالب، وشروط تسجيل
+- **تحليل حارس** أكد أن إضافة Skill/Pattern types + قاعدة فاصلة GAP/AIS تجعل الحل أكمل
 
 ### Affected Files
 
-1. `.opencode/agents/tera-client-engagement.md` — جدول C.4 🟢 Required Now (سطر ~411)
-2. `.opencode/agents/tera-client-engagement.md` — جدول D.1 Routing Table (سطر ~554-578)
+#### إنشاء ملفين جديدين:
+
+1. `tera-system/AIS_PROTOCOL.md` — البروتوكول العام لجميع العملاء
+2. `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` — السجل المركزي للاقتراحات (مع قالب + أول إدخال ترحيبي)
+
+#### تعديل ملفات العملاء (إضافة قسم AIS):
+
+3. `.opencode/agents/tera.md` — TeraAgent
+4. `.opencode/agents/tera-client-engagement.md` — TCEA
+5. `.opencode/agents/tera-system-evolution.md` — حارس (إضافة مسؤولية المعالجة)
+6. `.opencode/agents/monitor.md` — Monitor
+7. `.opencode/agents/auditor.md` — Auditor
+8. `.opencode/agents/design-reviewer.md` — DesignReviewer
+9. `.opencode/agents/application-blueprint.md` — ABA
+10. `.opencode/agents/tera-software-designer.md` — SoftwareDesigner
+
+#### تعديل ملفات النظام:
+
+11. `tera-system/TeraPolicyMap.md` — إضافة إدخال AIS
+12. `tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md` — إضافة مرجع متبادل
 
 ### Proposed Change
 
-#### تعديل 1: إضافة discovery-domains.md إلى 🟢 Required Now — بداية Discovery
+#### الجزء 1 — إنشاء `tera-system/AIS_PROTOCOL.md`
 
-بعد السطر `| | \`tera-system/TeraClientPolicy.md\` | سياسة العميل — اقرأه قبل CLIENT_INTAKE.md |` — أضف:
+بروتوكول مستقل بذاته (وليس ضمن مجلد `governance/` جديد — توفيراً للطبقات) يتضمن:
 
-```markdown
-| | `tera-system/client-helpers/tera-client-engagement-discovery-domains.md` | المصدر الرسمي للمجالات الـ 13 — اقرأه قبل إنتاج DISCOVERY_COVERAGE_SUMMARY.md وقبل تقييم B.1 |
+1. **الغرض والنطاق**
+2. **ما يسمح باقتراحه** — قائمة الأنواع (بما فيها Skill Gap و Pattern Discovery من تحليل حارس)
+3. **ما يمنع اقتراحه** — قاعدة Anti-Bloat للاقتراحات
+4. **شروط التسجيل** — الشرط الـ 6 (Repeated Friction, Blocking Ambiguity, Quality Risk, Scope Risk, Missing Rule, Conflict, Client Confusion)
+5. **قاعدة Anti-Spam** — max 3 per task/session
+6. **قاعدة AIS ≠ GAP** — قاعدة فاصلة واضحة:
+   ```
+   GAP = يمنع التنفيذ الصحيح أو ينتج مخرجات خاطئة ← AGENT_GAPS_LOG.md
+   AIS = التنفيذ صحيح لكن يمكن أن يكون أفضل ← AGENT_IMPROVEMENT_SUGGESTIONS.md
+   ```
+7. **القالب الرسمي** (عربي + إنجليزي)
+8. **Status Lifecycle**: Proposed → Under Review → Approved for SCP → Rejected → Deferred → Implemented → Verified
+9. **دورة المعالجة**: عميل يُسجل → Majed يراجع أولياً → حارس يحلل → SCP → تنفيذ
+
+#### الجزء 2 — إنشاء `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md`
+
+سجل مركزي مع:
+- قواعد التسجيل
+- القالب الرسمي
+- إدخال ترحيبي يشرح النظام
+
+#### الجزء 3 — إضافة قسم AIS في كل ملف عميل (فقرة واحدة ثابتة)
+
+نص موحد (مع تكييف بسيط حسب دور العميل) يضاف في نهاية كل ملف عميل:
+
+```
+## Self-Improvement Suggestions (AIS)
+
+This agent may propose improvements to its own operating instructions
+or related system files when it detects repeated friction, ambiguity,
+missing rules, workflow weakness, or quality risks.
+
+Rules:
+- The agent must NOT modify itself or any governance file.
+- The agent must record structured suggestions only in:
+  `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md`
+- Each suggestion must include: observation, evidence, impact,
+  proposed improvement, suggested target file, severity, and task ID.
+- Maximum 3 suggestions per task/session unless a critical conflict is found.
+- Cosmetic wording changes are not allowed.
+
+The suggestion is NOT active. It requires review by Majed
+and formal implementation through TeraSystemEvolutionAgent (Hares).
 ```
 
-(اتباعاً لنمط الجدول: أول صف من Trigger "بداية Discovery" يذكر المسبب والصفوف التالية تترك الخلية الأولى فارغة)
+#### الجزء 4 — تعديل ملفي النظام
 
-#### تعديل 2: إضافة discovery-domains.md إلى D.1 Routing Table
+- **TeraPolicyMap.md**: إضافة إدخال:
+  ```
+  | Agent improvement suggestions | `tera-system/AIS_PROTOCOL.md` | `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` | Protocol + central log for agent self-improvement suggestions |
+  ```
 
-أضف السطر التالي في المكان المناسب (قبل إدخال B.1 Discovery Coverage Gate):
+- **TERA_CONTINUOUS_IMPROVEMENT_POLICY.md**: إضافة مرجع إلى AIS في §6 (العلاقة مع بقية المنظومة)
 
-```markdown
-| **13 Discovery Domains** — تحتاج تعريف/ترقيم/Blocking Rules للمجالات | `discovery-domains.md` | جدول المجالات الرسمي + قواعد Blocks Pricing / Blocks Handoff |
-```
+#### الجزء 5 — تعديل تعريف حارس (tera-system-evolution.md)
 
-(باستخدام الاسم المختصر `discovery-domains.md` لاتساقًا مع بقية إدخالات D.1)
+إضافة مسؤولية صريحة بأن حارس هو المسؤول عن:
+- مراجعة دورية لـ AGENT_IMPROVEMENT_SUGGESTIONS.md
+- تحليل وتصنيف الاقتراحات
+- تحويل المعتمد منها إلى SYSTEM_CHANGE_PROPOSAL
+- رفض أو تأجيل الضعيف منها
 
 ### Why This Is Necessary
 
-1. **الملف المصدر يأمر بقراءته** عند بداية Discovery لكن جدول التحميل لا يدرجه — هذا تناقض.
-2. **المحتوى تشغيلي مهم:** الترقيم الرسمي، الأسماء المعتمدة، Minimum Coverage، وقواعد الحجب (يحجب التسعير؟ يحجب الهاندوف؟) — هذه معلومات يحتاجها TCEA قبل إنتاج `DISCOVERY_COVERAGE_SUMMARY.md` وقبل تقييم `B.1 Discovery Coverage Gate`.
-3. **ملاحظة هيئة التدقيق الخارجي** — هذه هي الملاحظة الوحيدة المتبقية، وإغلاقها ينهي مراجعة التدقيق بالكامل.
-4. **TeraPolicyMap.md** يعترف به كـ "Canonical source" — الرنتايم يجب أن يعكس هذا.
+1. **سد فجوة نظامية**: العملاء يشاهدون أنماطاً يومياً — بدون نظام، تضيع هذه المعرفة.
+2. **استباقي لا تفاعلي**: GAPS تعالج ما انكسر. AIS يمنع الكسر قبل حدوثه.
+3. **تكامل مع الموجود**: لا يكرر GAPS_LOG ولا يتعارض معه — بل يكمله.
+4. **توصية الهيئة**: نظام مقترح من مدقق خارجي محايد — اعتماده يرفع نضج المنظومة.
+5. **تطوير تراكمي**: كل مشروع يغذي خبرة العملاء للمشروع التالي.
 
 ### Rejected Alternatives
 
-1. **تعديل discovery-domains.md لإزالة عبارة "اقرأني عند بداية Discovery"** — مرفوض لأن الملف فعلاً يحتاج قراءته في ذلك التوقيت. المشكلة في الرنتايم، لا في المصدر.
-2. **تحويله إلى Reference Only** — مرفوض لأنه ملف تشغيلي مهم يحتاجه TCEA قبل إنتاج مخرجات Discovery.
-3. **إضافته في C.4 فقط دون D.1** — D.1 هو نظام الملاحة الأساسي، وإغفاله يضعف فائدة الجدول.
+1. **دمج AIS في AGENT_GAPS_LOG.md** — مرفوض: يخلط بين الخلل والتحسين، ويجعل السجل غير قابل للتصفية.
+2. **السماح للعملاء بتعديل أنفسهم مباشرة** — مرفوض: يكسر الحوكمة.
+3. **إنشاء مجلد governance/** — مرفوض (مؤقتاً): طبقة إضافية بدون ضرورة حالية. البروتوكول في `tera-system/` كافٍ.
+4. **عدم وجود Anti-Spam** — مرفوض: يتحول إلى ضوضاء.
 
 ### Anti-Bloat Check
 
 | السؤال | الإجابة |
 |--------|---------|
-| ما المشكلة التي تحلها؟ | فجوة في جدول التحميل — ملف إلزامي غير مذكور |
-| لماذا لا يكفي تعديل ملف موجود؟ | التعديل هو في ملف موجود — إضافة سطرين لملف الرنتايم نفسه |
-| لماذا لا يكفي عميل موجود؟ | TCEA هو العميل المستهدف — التعديل في ملف تعريفه |
-| هل الإضافة ستقلل التعقيد أم تزيده؟ | **تقلل التعقيد** — تمنع TCEA من تخطي ملف إلزامي لأنه غير مذكور في الجدول |
-| هل يوجد أثر سلبي على استهلاك التوكنز؟ | لا — إضافة سطرين نص فقط |
-| هل توجد طريقة أصغر لتحقيق نفس الهدف؟ | لا — سطرين كافيان لحل الفجوة بالكامل |
+| ما المشكلة التي تحلها؟ | لا يوجد نظام للتحسينات الاستباقية — اقتراحات العملاء تضيع |
+| لماذا لا يكفي تعديل ملف موجود؟ | الحل أكبر من تعديل — يحتاج ملف بروتوكول + سجل + تحديث 10 عملاء |
+| لماذا لا يكفي عميل موجود؟ | النظام يشمل جميع العملاء — يحتاج بروتوكولاً مركزياً |
+| هل الإضافة ستقلل التعقيد أم تزيده؟ | **تقلل التعقيد التنظيمي** — تقنن ما كان يضيع كملاحظات متناثرة |
+| هل يوجد أثر سلبي على استهلاك التوكنز؟ | **هامشي جداً** — فقرة واحدة في نهاية كل عميل + ملفان جديدان صغيران |
+| هل توجد طريقة أصغر لتحقيق نفس الهدف؟ | تم تصغير الحل: لا مجلد جديد، قالب موحد، نص موحد للعملاء |
 
 ### Risk
 
-- **منخفض.** لا تغيير في المنطق أو السياسات. مجرد إضافة مرجعين في جداول موجودة.
-- إذا كان هناك تزامن رنتايم مطلوب لـ `.opencode/agents/tera.md` — الغالب لا، لأن `tera-client-engagement.md` هو ملف TCEA وليس `tera.md`.
+- **منخفض** — البروتوكول لا يغير صلاحيات ولا سياسات قائمة. الاقتراحات غير نافذة حتى تمر بـ SCP + موافقة.
+- **خطر الضوضاء** — يعالجه Anti-Spam + شرط Evidence + مراجعة Majed + رفض حارس للضعيف.
+- **خطر التضخم في ملفات العملاء** — فقرة واحدة بنص موحد، لا تضخم.
 
 ### Rollback Plan
 
-- إزالة السطرين المضافة من `.opencode/agents/tera-client-engagement.md` باستخدام edit.
+1. حذف `tera-system/AIS_PROTOCOL.md`
+2. حذف `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md`
+3. إزالة قسم AIS من ملفات العملاء العشرة
+4. إزالة إدخال TeraPolicyMap.md
+5. إزالة المرجع من TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
 
 ### Approval Required
 

@@ -452,7 +452,31 @@ project-control/AGENT_GAPS_LOG.md
 
 ---
 
-## 15. Self-Improvement Protocol
+## 15. Agent Improvement Suggestion (AIS) Processing
+
+TeraSystemEvolutionAgent (حارس) هو المسؤول عن معالجة اقتراحات AIS.
+
+### دورة المعالجة
+
+1. **مراجعة دورية**: اقرأ `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` عند طلب Majed أو عند وجود إدخالات جديدة.
+2. **تحليل كل اقتراح**: تحقق من صحة الملاحظة، وجود الدليل، ووضوح التحسين المقترح.
+3. **تصنيف الحالة**:
+   - `Approved for SCP` — مقبول ويحتاج SYSTEM_CHANGE_PROPOSAL
+   - `Rejected` — مرفوض مع سبب واضح
+   - `Deferred` — مؤجل لدورة لاحقة
+4. **للمقبول**: أنتج `SYSTEM_CHANGE_PROPOSAL` قبل أي تنفيذ.
+5. **بعد الموافقة**: نفّذ التعديل وسجّل في `SYSTEM_EVOLUTION_LOG.md`.
+6. **حدّث الحالة** في سجل AIS إلى `Implemented` / `Verified`.
+
+### القواعد
+
+- لا تعامل أي اقتراح AIS كقاعدة نافذة قبل الموافقة.
+- الاقتراحات التجميلية أو الضعيفة تُرفض فوراً.
+- يستطيع حارس نفسه تسجيل AIS عند الحاجة — لكن لا ينفذه بنفسه دون موافقة.
+
+---
+
+## 16. Self-Improvement Protocol
 
 اتبع `tera-system/TERA_AGENT_CONDUCT.md` و `tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md` كالمسار المركزي لسلوكك وإبلاغك عن أي فجوة تخصك.
 

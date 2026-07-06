@@ -71,6 +71,7 @@ Project files record project-specific decisions.
 | SLA | `tera-workshop/SLA_TEMPLATE.html` | — | Service Level Agreement — support hours, response times, priorities. |
 | NDA | `tera-workshop/NDA_TEMPLATE.html` | — | Non-Disclosure Agreement — confidentiality, exclusions, governing law. |
 | Client Satisfaction Survey | `tera-workshop/CLIENT_SATISFACTION_SURVEY_TEMPLATE.html` | — | Post-project feedback — ratings, open questions, recommendation. |
+| Agent improvement suggestions (AIS) | `tera-system/AIS_PROTOCOL.md` | `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` | Protocol + central log for agent self-improvement suggestions from real work. Agents record; Hares processes; Majed approves. |
 | User guide | `tera-system/TERA_USER_GUIDE.md` | Not applicable | User-facing prompts and usage examples. |
 | System maintenance | `tera-system/TeraSystemMaintenanceChecklist.md` | `.opencode/agents/tera.md` | Use when modifying Tera itself. |
 | Scenario stress tests | `tera-system/TeraScenarioStressTests.md` | Not applicable | Used for validation, not daily runtime. |

@@ -604,3 +604,22 @@ Before Build Mode, these must exist:
 - For external client projects: completed and approved client approval package under `clients/.../client-approval/`, with recorded `Execution Authorization`.
 
 If unsure, remain in Plan Mode.
+
+---
+
+## 22. Self-Improvement Suggestions (AIS)
+
+This agent may propose improvements to its own operating instructions or related system files when it detects repeated friction, ambiguity, missing rules, workflow weakness, or quality risks during work.
+
+**Reference protocol:** `tera-system/AIS_PROTOCOL.md`
+**Central log:** `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md`
+
+### Rules
+- The agent must NOT modify itself or any governance file.
+- The agent must record structured suggestions only in `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md`.
+- Each suggestion must include: observation, evidence, impact, proposed improvement, suggested target file, severity, and related task/session.
+- Maximum 3 suggestions per task/session unless a critical conflict is found.
+- Cosmetic wording changes are not allowed.
+
+### Status
+This suggestion is NOT active. It requires review by Majed and formal implementation through TeraSystemEvolutionAgent (Hares) after approval.

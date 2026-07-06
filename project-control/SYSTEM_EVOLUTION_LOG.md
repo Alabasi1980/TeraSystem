@@ -228,3 +228,41 @@
 - التحقق من الصحة: ✅ 0 مراجع قديمة لـ TeraClientEngagement.md
 - المخاطر: منخفض جداً
 - ملاحظات الاسترجاع (Rollback): `git checkout -- .opencode/agents/tera-client-engagement.md`
+
+---
+
+## SCP-2026-07-06-083 — إنشاء بروتوكول AIS (Agent Improvement Suggestions)
+
+- تاريخ: 2026-07-06
+- معرف التغيير: SCP-2026-07-06-083
+- مصدر الطلب: Auditor Report (توصية الهيئة الخارجية) + تحليل TeraSystemEvolutionAgent (حارس)
+- نوع التغيير: New Protocol + Agent Improvement
+- الملفات المنشأة:
+  - `tera-system/AIS_PROTOCOL.md` — البروتوكول العام
+  - `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` — السجل المركزي (مع أول إدخال ترحيبي)
+- الملفات المعدلة:
+  - `.opencode/agents/tera.md` — إضافة قسم AIS (§22)
+  - `.opencode/agents/tera-client-engagement.md` — إضافة قسم AIS (§F)
+  - `.opencode/agents/tera-system-evolution.md` — إضافة AIS Processing (§15) + إعادة ترقيم
+  - `.opencode/agents/monitor.md` — إضافة قسم AIS (§13)
+  - `.opencode/agents/auditor.md` — إضافة قسم AIS (§15)
+  - `.opencode/agents/design-reviewer.md` — إضافة قسم AIS (§15)
+  - `.opencode/agents/application-blueprint.md` — إضافة قسم AIS (§19)
+  - `.opencode/agents/tera-software-designer.md` — إضافة قسم AIS (§10)
+  - `tera-system/TeraPolicyMap.md` — إضافة إدخال AIS
+  - `tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md` — إضافة مراجع AIS
+- الملخص:
+  - تم إنشاء بروتوكول AIS يتيح لكل عميل اقتراح تحسينات ذاتية من واقع العمل
+  - 9 أنواع اقتراح (بما فيها Skill Gap و Pattern Discovery)
+  - شروط تسجيل صارمة + Anti-Spam (3 لكل مهمة) + قالب إلزامي مع Evidence
+  - قاعدة فاصلة واضحة: AIS ≠ GAP
+  - دورة معالجة: يسجل → Majed يراجع → حارس يحلل → SCP → تنفيذ
+  - قسم AIS أضيف لجميع العملاء الثمانية الأساسيين + مسؤولية معالجة AIS لتعريف حارس
+- الموافقة: Majed — Approved
+- التحقق من الصحة: ✅ git diff --check OK، Anti-Bloat Gate PASS، 0 stale references، 0 privilege expansion
+- المخاطر: منخفض — لا تغيير في صلاحيات أو سياسات قائمة. الاقتراحات غير نافذة حتى تمر بـ SCP + موافقة
+- ملاحظات الاسترجاع (Rollback):
+  1. حذف `tera-system/AIS_PROTOCOL.md`
+  2. حذف `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md`
+  3. إزالة أقسام AIS من ملفات العملاء الثمانية
+  4. إزالة إدخال TeraPolicyMap.md ومراجع TERA_CONTINUOUS_IMPROVEMENT_POLICY.md

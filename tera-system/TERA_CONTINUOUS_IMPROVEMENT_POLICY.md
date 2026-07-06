@@ -92,6 +92,9 @@
 | `TeraSystemEvolutionAgent` | المسؤول عن مراجعة ومعالجة الإدخالات في AGENT_GAPS_LOG.md |
 | `TeraPreExecutionGate.md` §2.5 | التذكير التشغيلي بقراءة هذه السياسة قبل التنفيذ |
 | `TeraPolicyMap.md` | يوثق هذه السياسة كمصدر حقيقة رسمي |
+| `tera-system/AIS_PROTOCOL.md` | بروتوكول AIS — آلية تسجيل وتحسين استباقية (مكملة لـ GAPS) |
+| `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` | السجل المركزي لاقتراحات AIS |
+| `TeraSystemEvolutionAgent` | المسؤول أيضاً عن معالجة اقتراحات AIS (مراجعة، تصنيف، تحويل لـ SCP) |
 
 ---
 
