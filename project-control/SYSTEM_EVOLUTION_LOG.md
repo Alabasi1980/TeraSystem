@@ -1233,6 +1233,48 @@ TeraClientEngagement.md (مصدر الحقيقة) والـ §35 إلى TERA_RUNT
 
 ملاحظات الاسترجاع (Rollback):
 1. git checkout -- .opencode/agents/tera-client-engagement.md
+2. git checkout -- project-control/SYSTEM_EVOLUTION_LOG.md
+```
+
+### SCP-2026-07-05-060 — TCEA: إضافة §2.1 Operating Modes — أوضاع العمل الصريحة
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-060
+مصدر الطلب: Audit body finding #9
+نوع التغيير: Operational Framing / Mode Enforcement
+
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إضافة §2.1 + تحديث §3 و §11)
+- project-control/SYSTEM_EVOLUTION_LOG.md (تسجيل هذا الإدخال)
+
+الملخص:
+إضافة 5 أوضاع عمل صريحة (Operating Modes) لتأطير جلسات TCEA ومنع النموذج من القفز بين المراحل:
+
+إضافة §2.1 — 5 Modes:
+- Mode A: Discovery & Scope (اكتشاف وتحليل النطاق)
+- Mode B: Pricing & Proposal (تسعير وعرض)
+- Mode C: Handoff Preparation (تجهيز تسليم)
+- Mode D: Execution Clarifications Only (توضيحات تنفيذ فقط)
+- Mode E: Delivery & Maintenance Docs (وثائق تسليم وصيانة)
+
+كل Mode يحدد: متى يبدأ، المخرجات الرئيسية، البروتوكولات النشطة، ما يمنع، شرط الخروج.
+
+تحديثات:
+1. §3 (تدفق العمل): إضافة تحذير "قبل البدء — حدّد وضع عملك من §2.1"
+2. §11 (Quality Gates): إضافة "المؤطرة بأوضاع العمل §2.1" إلى وصف الغرض
+
+قواعد جديدة:
+- في كل جلسة، حدّد الوضع الحالي أولاً قبل أي إجراء
+- لا تنفذ قواعد وضع آخر إلا إذا تم الانتقال إليه صراحة
+- القواعد العامة تنطبق على جميع الأوضاع — القواعد الخاصة بالوضع (مثل §10) لا تفعّل إلا في الوضع المخصّص
+
+الموافقة: Majed — Approved
+التحقق من الصحة: 5 Modes محددة بوضوح مع شروط خروج. لا تعارض مع البوابات §11. git diff --check سليم.
+المخاطر: منخفضة — تأطير إضافي يمنع القفز بين المراحل، لا تغيير في القواعد أو الصلاحيات.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+2. git checkout -- project-control/SYSTEM_EVOLUTION_LOG.md
 ```
 
 ### SCP-2026-07-05-054 — TCEA: إضافة Runtime Load Order + إزالة الاعتماد على الذاكرة الضمنية
@@ -1778,4 +1820,202 @@ TeraClientEngagement.md (مصدر الحقيقة) والـ §35 إلى TERA_RUNT
 المخاطر: منخفضة.
 ملاحظات الاسترجاع (Rollback):
 1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-058 — TCEA: تقليص تكرار قواعد التسعير — تحويل §10 من تنفيذي إلى توجيهي
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-058
+مصدر الطلب: Audit body finding #7
+نوع التغيير: Anti-Bloat / Drift Prevention / Operational Refactor
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة بناء §10 بالكامل + تحديث §11.4)
+- project-control/SYSTEM_EVOLUTION_LOG.md (تسجيل هذا الإدخال)
+
+الملخص:
+تقليص التكرار في §10 بإزالة 3 أقسام مكررة كلياً وتحويل القسم من تنفيذي (نسخ التفاصيل) إلى توجيهي (مراجع للمصادر الرسمية):
+
+إزالة:
+1. §10.3 القديم (14 بنداً لجاهزية النطاق — 5 بنود منها غير موجودة في السياسة §2)
+2. §10.4 القديم (15 خطوة Level 2 — مكررة في TRAINING_GUIDE_TCEA.md §3)
+3. §10.6 القديم (14 سؤال اعتماد — مكرر في TeraPricingPolicy.md §29 ودليل التدريب §8)
+4. §10.7 القديم (5 أخطاء — بند 3 مكرر داخلياً مع §10.8)
+5. §10.8 القديم (8 قواعد — منها 3 متداخلة مع TeraPricingPolicy.md §26)
+
+إنشاء:
+1. §10.3 شروط البدء والمنع (5 شروط بدء + 5 شروط منع — ترجع للسياسة §2)
+2. §10.4 المخرجات المطلوبة لكل Level (Level 2 يحيل إلى TRAINING_GUIDE_TCEA.md §3 و TeraPricingPolicy.md §29)
+3. §10.6 قواعد صارمة — خاصة بدور TCEA (7 قواعد فقط خاصة بالدور، لا تشمل القواعد العامة)
+
+تحديث:
+4. §11.4 (Quotation Readiness Gate) — استبدال المراجع إلى §10.3 بـ TeraPricingPolicy.md §2
+5. §10.1 — ضغط من 5 مبادئ إلى 3
+6. §10.5 — إعادة تسمية من "الأدوات المستخدمة" إلى "الأدوات والملفات المرجعية"
+
+الموافقة: Majed — Approved
+التحقق من الصحة: Anti-Bloat Gate PASS. جميع المراجع تؤدي للمصادر الرسمية. لا تكرار داخلي. git diff --check سليم.
+المخاطر: منخفضة — لا تغيير في القواعد أو الصلاحيات، فقط إزالة تكرار. جميع المراجع تؤدي إلى المصادر الرسمية بدلاً من نسخها.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+2. git checkout -- project-control/SYSTEM_EVOLUTION_LOG.md
+```
+
+### SCP-2026-07-05-059 — TCEA: توحيد المصطلحات والحالات — إضافة §9.6 Canonical Names & Statuses
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-059
+مصدر الطلب: Audit body finding #8
+نوع التغيير: Terminology Standardization / Reference Table
+
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إضافة §9.6 + تصحيح 13 مرجعاً)
+- project-control/SYSTEM_EVOLUTION_LOG.md (تسجيل هذا الإدخال)
+
+الملخص:
+إضافة جدول موحّد للأسماء والحالات الرسمية ضمن §9.6 لمنع تعدد المرادفات — وتصحيح جميع المراجع المخالفة في الملف:
+
+إضافة §9.6:
+1. جدول 1 — Canonical File Names: 9 ملفات رسمية + الأسماء الممنوعة سابقاً (مثل *Client Decision Register*)
+2. جدول 2 — Canonical Statuses: Draft / Pending Approval / Approved / Deferred / Conditional / Rejected
+3. قواعد: لا تستخدم أي حالة خارج القائمة للملفات وسجلات القرارات — الافتراضي Draft
+
+تصحيح 13 مرجعاً:
+1. §3: "Client Decision Register" → "CLIENT_DECISION_LOG.md" + "Not Finalized" → "Pending Approval"
+2. §7: أسماء ملفات بدون .md (5 ملفات) + "Pending" → "Pending Approval"
+3. §11.5: عنوان وقسم الاسم "Client Decision Register" → "CLIENT_DECISION_LOG.md"
+4. §11.5: 4 مرات "Not Finalized" → "Pending Approval"
+5. §11.6: "Pending" → "Pending Approval" + "Not Finalized" → "Pending Approval" (مرتين)
+6. §11.7: "Not Finalized" → "Pending Approval" (مرتين)
+
+الموافقة: Majed — Approved
+التحقق من الصحة: 0 حالة "Not Finalized" متبقية (ما عدا في §9.6 كاسم ممنوع سابقاً). 0 مرجع لـ "Client Decision Register" (ما عدا في §9.6 كاسم ممنوع). جميع أسماء الملفات الآن مع .md.
+المخاطر: منخفضة — توحيد تسميات فقط، لا تغيير في القواعد أو الصلاحيات.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+2. git checkout -- project-control/SYSTEM_EVOLUTION_LOG.md
+```
+
+### SCP-2026-07-05-061 — TCEA: ضبط Websearch Protocol — حماية النطاق من تلوث الويب
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-061
+مصدر الطلب: Audit body finding #10
+نوع التغيير: Scope Protection / Anti-Contamination
+
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة بناء §4 بالكامل — من 5 بنود إلى 4 أقسام)
+- project-control/SYSTEM_EVOLUTION_LOG.md (تسجيل هذا الإدخال)
+
+الملخص:
+إعادة بناء §4. Websearch Protocol من 5 بنود مختصرة إلى 4 أقسام تشغيلية بحواجز صارمة:
+
+إضافة:
+1. §4.1: الغرض الوحيد — تحسين الفهم، لا بناء النطاق
+2. §4.2: 4 قواعد صارمة لحماية النطاق
+   - Websearch لتحسين الفهم فقط — لا يدخل النطاق أو التسعير دون تأكيد Majed
+   - قسم "Research-Based Suggestions" إلزامي لعرض نتائج البحث
+   - لا تضخم المشروع بناءً على ممارسات شائعة من الويب
+   - الوسم الافتراضي لنتائج الويب هو [Research Hint] (§5.4)
+3. §4.3: مثال تطبيقي كامل في Mode A (Discovery) — يوضح التدفق من الويب → اقتراح → تأكيد → ترقية وسم
+4. §4.4: جدول ربط مع Source Tags (§5.4) — يوضح متى يرتقي كل وسم
+
+الموافقة: Majed — Approved
+التحقق من الصحة: 4 قواعد واضحة غير قابلة للتأويل. مرتبط بـ §5.4 (Source Tags) و §2.1 Mode A. git diff --check سليم.
+المخاطر: منخفضة — إضافة حواجز فقط، لا تغيير في الصلاحيات.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+2. git checkout -- project-control/SYSTEM_EVOLUTION_LOG.md
+```
+
+### SCP-2026-07-05-062 — TCEA: إضافة §5.5 Common AI Failure Traps — 10 أخطاء متكررة
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-062
+مصدر الطلب: Audit body finding #11
+نوع التغيير: Anti-Hallucination / Operational Guardrails
+
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إضافة §5.5 — 10 Failure Traps)
+- project-control/SYSTEM_EVOLUTION_LOG.md (تسجيل هذا الإدخال)
+
+الملخص:
+إضافة §5.5 Common AI Failure Traps — جدول من 10 أخطاء نموذجية مع حلولها:
+
+1. لا تحوّل اقتراحك إلى قرار
+2. لا تعتبر صمت Majed موافقة
+3. لا تملأ الفراغات الحساسة بتخمين
+4. لا تسعّر إذا كانت المعطيات ناقصة
+5. لا تعتمد على Websearch كنطاق معتمد
+6. لا تنتقل إلى Handoff إذا بقي ملف مصدر غير معتمد
+7. لا تكتب وثيقة رسمية بصياغة نهائية دون Approval State واضح
+8. لا تكرر الأسئلة التي تمت الإجابة عليها
+9. لا تطرح دفعة أسئلة طويلة غير مرتبة
+10. لا تخلط بين Fix و Change Request
+
+كل Trap يحدد: لماذا يحدث + ماذا تفعل بدلاً من ذلك + مرجع للبروتوكول المعني.
+القاعدة الذهبية: إذا كنت على وشك ارتكاب أي من هذه الأخطاء، توقف وارجع للبروتوكول.
+
+الموافقة: Majed — Approved
+التحقق من الصحة: 10 Traps مرتبطة ببروتوكولات موجودة (§5.2, §5.3, §5.4, §4.2, §9.6, §10.3, §10.6, §11.6). لا تكرار مع أقسام أخرى. git diff --check سليم.
+المخاطر: منخفضة — إضافة حواجز سلوكية فقط، لا تغيير في الصلاحيات.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+2. git checkout -- project-control/SYSTEM_EVOLUTION_LOG.md
+```
+
+### SCP-2026-07-05-063 — TCEA: إعادة التنظيم الهيكلي إلى 3 طبقات A/B/C
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-063
+مصدر الطلب: Audit body finding #12
+نوع التغيير: Structural Reorganization / Anti-Bloat
+
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة هيكلة كاملة — 881→896 سطراً)
+- project-control/SYSTEM_EVOLUTION_LOG.md (تسجيل هذا الإدخال)
+
+الملخص:
+إعادة تنظيم ملف TCEA من هيكل مسطّح (§1–§13) إلى 3 طبقات ببادئات A/B/C:
+
+A — Runtime Core (قلب التشغيل):
+- A.1 الهوية ← A.8 التسعير — كل ما يحتاجه TCEA لتنفيذ جلسة بالترتيب
+- A.3 Operating Modes أصبحت قبل A.4 Workflow (مكانها المنطقي — الوضع يحدد التدفق)
+
+B — Operational Gates (بوابات الجودة):
+- B.1–B.7 — جميع البوابات في قسم منفصل (كانت §11 داخل التدفق)
+- الفصل بين "ماذا أفعل" و"متى أتوقف" يمنع الخلط بين التدفق والشروط
+
+C — Reference Appendix (ملحقات مرجعية):
+- C.1 الملفات, C.2 الأسئلة, C.3 المصادر, C.4 Load Order, C.5 الأسماء الرسمية, C.6 مكتبة الوثائق, C.7 التحسين المستمر
+- مواد مرجعية لا تحتاج قراءة كاملة في كل جلسة
+
+تحديث 71 cross-reference داخلي من صيغة §N.N إلى A/B/C:
+- §5.1→A.6.1, §5.2→A.6.2, §5.3→A.6.3, §5.4→A.6.4, §5.5→A.6.5
+- §9.5→C.4, §9.6→C.5
+- §10.1→A.8.1, §10.2→A.8.2, §10.3→A.8.3, §10.4→A.8.4, §10.5→A.8.5, §10.6→A.8.6
+- §11.1→B.1, §11.2→B.2, §11.3→B.3, §11.4→B.4, §11.5→B.5, §11.6→B.6, §11.7→B.7
+- §2.1→A.3, §3→A.4, §4.2→A.5.2, §10→A.8, §11→B
+
+المراجع الخارجية (TeraPricingPolicy.md §2, §26, §29, TERA_RUNTIME_TEMPLATES.md §35, TRAINING_GUIDE_TCEA.md §3) بقيت كما هي.
+
+الموافقة: Majed — Approved
+التحقق من الصحة:
+- Anti-Bloat Gate ✅ — +15 سطور فقط (1.7% زيادة) بسبب إضافة العناوين الرئيسية للطبقات الثلاث وفقرات الوصف
+- Policy Map Check ✅ — لا تغيير في مراجع السياسات
+- Architecture Map Check ✅ — لا تغيير في أدوار المجلدات
+- No client-app contamination ✅ — الملف في .opencode/agents/
+- No stale references ✅ — صفر مراجع قديمة §N.N متبقية
+- No duplicated rules ✅ — جميع المحتويات محفوظة مرة واحدة فقط
+- Cross-reference completeness ✅ — 71 مرجعاً محدّثاً، صفر مراجع مكسورة
+
+المخاطر: منخفضة — إعادة هيكلة مع الحفاظ على كل المحتوى. لا تغيير في القواعد أو الصلاحيات.
+
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+2. git checkout -- project-control/SYSTEM_EVOLUTION_LOG.md
 ```
