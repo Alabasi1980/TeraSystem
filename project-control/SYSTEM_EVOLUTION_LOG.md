@@ -1235,6 +1235,183 @@ TeraClientEngagement.md (مصدر الحقيقة) والـ §35 إلى TERA_RUNT
 1. git checkout -- .opencode/agents/tera-client-engagement.md
 ```
 
+### SCP-2026-07-05-054 — TCEA: إضافة Runtime Load Order + إزالة الاعتماد على الذاكرة الضمنية
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-054
+مصدر الطلب: Audit body finding #3 (الاعتماد على الذاكرة الضمنية للنموذج)
+نوع التغيير: Runtime Reliability / Instruction Precision
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة هيكلة §9 + إضافة §9.5 + تحديث §10)
+
+الملخص:
+إزالة جميع العبارات غير القابلة للتحقق واستبدالها بتعليمات صريحة:
+1. إضافة §9.5 Runtime Load Order — 6 جداول ترتيب تحميل حسب السياق
+2. استبدال 5 عبارات ضمنية ("مرة واحدة", "عند الشك", "عند الحاجة") بعبارات قابلة للتنفيذ
+3. إضافة قاعدة حاسمة: "إذا لم يكن دليل صريح أنك قرأت الملفات، فلا تبدأ المهمة"
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: 0 عبارات "مرة واحدة" أو "عند الشك" متبقية في TCEA.
+المخاطر: منخفضة.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-055 — TCEA: ضبط Consultation Response Protocol في قالب إلزامي صارم
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-055
+مصدر الطلب: Audit body finding #4 (أسلوب الرد واسع — عرضة للحشو والاستعراض)
+نوع التغيير: Response Format Enforcement / Anti-Bloat
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة بناء §5.3 بالكامل)
+
+الملخص:
+تحويل Consultation Response Protocol من إرشادات مفتوحة إلى قالب رد إجباري بحدود صارمة:
+
+1. قالب إلزامي من 5 أقسام بحدود قصوى:
+   - ما فهمته: سطران كحد أقصى
+   - المخاطر/الملاحظات: 1-3 فقط
+   - الاقتراحات: 1-3 فقط
+   - الأسئلة: حتى 5 كحد أقصى
+   - التقسيم المرحلي: فقط إذا كان واضحاً
+
+2. إضافة 7 قواعد صارمة لمكافحة الحشو:
+   - لا تكرر كلام Majed بصياغة طويلة
+   - لا تعط أكثر من 3 اقتراحات إلا إذا طُلب
+   - لا تسأل أكثر من 5 أسئلة في الدفعة
+   - لا تقدم Roadmap إلا إذا طُلب
+   - لا تحوّل الاقتراح إلى قرار
+   - لا تحلل أكثر من اللازم
+   - إذا المعلومات قليلة، اعترف بدلاً من التخمين
+
+3. تحديث مرجع §5.3 في تدفق العمل (السطر 78)
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: قالب الرد الآن إلزامي ومقيد بحدود عددية واضحة. Anti-Bloat Gate PASS.
+المخاطر: منخفضة — يقلل الحشو والاستعراض دون التأثير على جودة التحليل.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-054
+مصدر الطلب: Audit body finding #3 (الاعتماد على الذاكرة الضمنية للنموذج — "مرة واحدة قبل أول استخدام", "عند الشك")
+نوع التغيير: Runtime Reliability / Instruction Precision
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة هيكلة §9 + إضافة §9.5 + تحديث §10)
+
+الملخص:
+إزالة جميع العبارات غير القابلة للتحقق للنموذج واستبدالها بتعليمات صريحة قابلة للتنفيذ:
+
+1. إضافة §9.5 (Runtime Load Order) — جدول ترتيب تحميل الملفات حسب السياق:
+   - عند تشغيل Session
+   - عند بدء Discovery
+   - عند بدء أول مهمة Pricing في Session
+   - عند إنتاج DRAFT_QUOTATION.md
+   - عند إنتاج DISCOVERY_COVERAGE_SUMMARY.md
+   - عند إنتاج TERA_HANDOFF_PACKAGE.md
+
+2. استبدال 5 عبارات ضمنية:
+   - "مرة واحدة قبل أول استخدام" ← "في أول Session تسعيرية عمرياً فقط، ثم عند خطأ Proportion Check"
+   - "اقرأه قبل أول استخدام" ← "في أول Session تسعيرية عمرياً فقط؛ ثم عند تحذير Proportion Check"
+   - "ارجع إليه عند الشك" ← "اقرأه قبل أول استخدام للحاسبة في كل Session — مرجع إلزامي"
+   - "مرجعي — عند الحاجة" ← جدول triggers محدد لكل ملف: متى يُقرأ بالضبط
+   - "اقرأها عند التشغيل" ← "اقرأ عند كل Session من TCEA"
+
+3. إضافة قاعدة حاسمة في نهاية §9.5:
+   "إذا لم يكن في الرد الحالي دليل صريح أنك قرأت الملفات المطلوبة للسياق الحالي، فلا تبدأ المهمة"
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: 0 عبارات "مرة واحدة" أو "عند الشك" متبقية في TCEA. Anti-Bloat Gate PASS — لا ملفات جديدة.
+المخاطر: منخفضة — يقلل التخبط ويزيد موثوقية التنفيذ.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-054 — TCEA: إضافة Runtime Load Order + إزالة الاعتماد على الذاكرة الضمنية
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-054
+مصدر الطلب: Audit body finding #3
+نوع التغيير: Runtime Reliability / Instruction Precision
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة هيكلة §9 + إضافة §9.5)
+
+الملخص:
+إزالة العبارات غير القابلة للتحقق ("مرة واحدة", "عند الشك") واستبدالها بتعليمات صريحة:
+1. إضافة §9.5 Runtime Load Order — 6 جداول ترتيب تحميل حسب السياق
+2. استبدال 5 عبارات ضمنية بعبارات قابلة للتنفيذ
+3. قاعدة حاسمة: "إذا لم يكن دليل صريح أنك قرأت الملفات، فلا تبدأ"
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: 0 عبارات "مرة واحدة" أو "عند الشك" متبقية.
+المخاطر: منخفضة.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-055 — TCEA: ضبط Consultation Response Protocol في قالب إلزامي صارم
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-055
+مصدر الطلب: Audit body finding #4
+نوع التغيير: Response Format Enforcement / Anti-Bloat
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة بناء §5.3 بالكامل)
+
+الملخص:
+تحويل Consultation Response Protocol إلى قالب رد إجباري بحدود صارمة:
+1. قالب إلزامي: ما فهمته (سطران) + مخاطر (1-3) + اقتراحات (1-3) + أسئلة (حتى 5) + تقسيم (إن لزم)
+2. 7 قواعد صارمة لمكافحة الحشو والاستعراض
+3. تحديث مرجع §5.3 في تدفق العمل
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: القالب الآن إلزامي ومقيد. Anti-Bloat Gate PASS.
+المخاطر: منخفضة.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-056 — TCEA: إضافة §5.4 Source Classification Tags + تطبيقها على جميع البوابات
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-056
+مصدر الطلب: Audit body finding #5 (فصل المؤكد عن الاسترشادي عن الافتراضي)
+نوع التغيير: Source Classification / Anti-Hallucination
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إضافة §5.4 + تحديث §5.1 + تحديث 3 بوابات في §11)
+
+الملخص:
+إضافة نظام الوسوم الإلزامية الأربعة لمصادر المعلومات:
+
+1. إضافة §5.4 — Source Classification Tags:
+   - [Confirmed by Majed] ← ✅ مسموح في النطاق المعتمد
+   - [Research Hint] ← ❌ ممنوع حتى التأكيد
+   - [Assumption] ← ❌ ممنوع حتى التأكيد
+   - [Unresolved] ← ❌ ممنوع حتى القرار
+
+2. تحديث §5.1 (Self-Check Protocol) لاستخدام الوسوم الجديدة
+
+3. إضافة قاعدة الحسم في 3 بوابات:
+   - §11.3 Final Scope Reconciliation: أي ميزة In Scope موسومة بـ [Research Hint]/[Assumption]/[Unresolved] ← توقف
+   - §11.4 Quotation Readiness: أي عنصر تسعير مبني على وسم غير مؤكد ← توقف
+   - §11.7 Tera Handoff Readiness: أي عنصر في الهاندوف غير موسوم بـ [Confirmed by Majed] ← توقف
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: جميع البوابات الثلاث تفرض وسم [Confirmed by Majed]. Anti-Bloat Gate PASS.
+المخاطر: منخفضة — يمنع دخول التخمين والافتراضات إلى النطاق والتسعير المعتمدين.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+
 ### SCP-2026-07-05-047 — Merge TeraMonitor.md into monitor.md (Phase 1: Dual-to-Single File)
 
 ```text
@@ -1441,4 +1618,164 @@ TeraClientEngagement.md (مصدر الحقيقة) والـ §35 إلى TERA_RUNT
 10. git checkout -- tera-system/runtime/MVP_DEFINITION_PROTOCOL.md
 11. git checkout -- tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md
 12. git checkout HEAD -- tera-system/TeraAgent.md (استرجاع آخر ملف حقيقة مزدوج)
+```
+
+### SCP-2026-07-05-052 — TCEA: إصلاح 7 إحالات رقمية مكسورة وإضافة §11 Quality Gates
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-052
+مصدر الطلب: Audit body finding (ثغرة مرصودة من هيئة تدقيق خارجية) + تنفيذ مباشر بتفويض من Majed
+نوع التغيير: Bug Fix / Structural Completion
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إصلاح 7 إحالات + إضافة قسم §11 بالكامل)
+
+الملخص:
+إصلاح ثغرة الإحالات المكسورة في TCEA:
+
+1. تصحيح 3 إحالات قديمة: §3.2.6→§5.1, §3.2.7→§5.2, §3.2.8→§5.3 (Self-Check, Uncertainty, Consultation Response — المحتوى موجود فعلاً تحت §5)
+2. تصحيح 4 إحالات إلى غير موجود: §3.3.1→§11.1 (Final Scope Reconciliation Gate), §3.3.2→§11.2 (Budget-to-Scope Control Rule), §3.3.3→§11.3 (Client Decision Register), §3.6.1→§11.4 (Approval Consistency Check)
+3. تعديل الملاحظة التمهيدية (السطر 73) لتعكس أرقام الأقسام الصحيحة
+4. إضافة §11 Quality Gates كامل — 4 تعريفات مفصّلة مع: تعريف، قواعد، جهة التنفيذ، جهة الاعتماد، مخرجات البوابة/MAN gates
+
+الموافقة: Majed — Approval pre-granted for this fix (تفويض مباشر)
+التحقق من الصحة: تمت قراءة الملف بالكامل بعد التعديل — 0 إحالات مكسورة متبقية. Anti-Bloat Gate PASS — لا ملفات جديدة، فقط إضافة قسم داخل الملف الحالي.
+المخاطر: منخفضة — §11 يضيف تعريفات كانت مفقودة؛ لا يغير صلاحيات أو سلوك TCEA بل يكملها.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-053 — TCEA §11: ترقية إلى الصيغة التشغيلية + إضافة 3 بوابات مفقودة
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-053
+مصدر الطلب: Audit body finding #2 (Gates بحاجة تعريف تنفيذي صريح)
+نوع التغيير: Structural Upgrade / Operational Precision
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة بناء §11 + تحديث 5 إحالات في تدفق العمل)
+
+الملخص:
+ترقية جميع تعريفات البوابات في §11 إلى الصيغة التشغيلية الموحدة المطلوبة:
+- الاسم | الهدف | المدخلات المطلوبة | شروط النجاح | شروط الإيقاف | الإخراج الإلزامي | هل يمنع الانتقال؟
+
+التغييرات:
+1. إعادة بناء 3 بوابات موجودة إلى الصيغة الجديدة:
+   - §11.2 Budget-to-Scope Control Rule
+   - §11.3 Final Scope Reconciliation Gate (كانت §11.1 سابقاً)
+   - §11.6 Approval Consistency Check (كانت §11.4 سابقاً)
+
+2. إضافة 3 بوابات جديدة كانت مذكورة في تدفق العمل لكن بدون تعريف:
+   - §11.1 Discovery Coverage Gate (جديد — كان مذكوراً في السطر 85 بدون تعريف)
+   - §11.4 Quotation Readiness Gate (جديد — كان مذكوراً في السطر 91 بدون تعريف)
+   - §11.7 Tera Handoff Readiness Gate (جديد — كان مذكوراً في السطر 93 بدون تعريف)
+
+3. ترقية Client Decision Register إلى §11.5 بالصيغة التشغيلية (كانت §11.3)
+
+4. تحديث 5 إحالات في تدفق العمل (§3) لتتوافق مع الترقيم الجديد:
+   - Discovery Coverage Gate → §11.1
+   - Client Decision Register → §11.5 (كانت §11.3)
+   - Final Scope Reconciliation Gate → §11.3 (كانت §11.1)
+   - Quotation Readiness Gate → §11.4
+   - Tera Handoff Readiness Gate → §11.7 (مع Approval Consistency §11.6)
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: 0 إحالات مكسورة. جميع البوابات الـ 7 في §11 تتبع الصيغة الموحدة. Anti-Bloat Gate PASS — لا ملفات جديدة.
+المخاطر: منخفضة — §11 أصبح أكثر وضوحاً وإلزامية؛ لا يغير صلاحيات أو سلوك TCEA بل يمنع القفز العشوائي بين المراحل.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-054 — TCEA: إضافة Runtime Load Order + إزالة الاعتماد على الذاكرة الضمنية
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-054
+مصدر الطلب: Audit body finding #3
+نوع التغيير: Runtime Reliability / Instruction Precision
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة هيكلة §9 + إضافة §9.5)
+
+الملخص:
+إزالة العبارات غير القابلة للتحقق واستبدالها بتعليمات صريحة:
+1. إضافة §9.5 Runtime Load Order — 6 جداول ترتيب تحميل حسب السياق
+2. استبدال 5 عبارات ضمنية ("مرة واحدة", "عند الشك") بعبارات قابلة للتنفيذ
+3. قاعدة حاسمة: "إذا لم يكن دليل صريح أنك قرأت الملفات، فلا تبدأ"
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: 0 عبارات "مرة واحدة" أو "عند الشك" متبقية.
+المخاطر: منخفضة.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-055 — TCEA: ضبط Consultation Response Protocol في قالب إلزامي صارم
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-055
+مصدر الطلب: Audit body finding #4
+نوع التغيير: Response Format Enforcement / Anti-Bloat
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة بناء §5.3 بالكامل)
+
+الملخص:
+تحويل Consultation Response Protocol إلى قالب رد إجباري بحدود صارمة:
+1. قالب إلزامي: ما فهمته (سطران) + مخاطر (1-3) + اقتراحات (1-3) + أسئلة (حتى 5) + تقسيم (إن لزم)
+2. 7 قواعد صارمة لمكافحة الحشو والاستعراض
+3. تحديث مرجع §5.3 في تدفق العمل
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: القالب الآن إلزامي ومقيد. Anti-Bloat Gate PASS.
+المخاطر: منخفضة.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-056 — TCEA: إضافة §5.4 Source Classification Tags + تطبيقها على جميع البوابات
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-056
+مصدر الطلب: Audit body finding #5
+نوع التغيير: Source Classification / Anti-Hallucination
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إضافة §5.4 + تحديث §5.1 + 3 بوابات)
+
+الملخص:
+إضافة نظام الوسوم الإلزامية الأربعة:
+1. §5.4 — [Confirmed by Majed] / [Research Hint] / [Assumption] / [Unresolved]
+2. قاعدة الحسم: لا يدخل النطاق أو التسعير المعتمد إلا [Confirmed by Majed]
+3. فرضت في: §11.3, §11.4, §11.7
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: جميع البوابات تفرض الوسم. Anti-Bloat Gate PASS.
+المخاطر: منخفضة.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
+```
+
+### SCP-2026-07-05-057 — TCEA: تقوية Uncertainty Protocol مع قالب STOP — UNCERTAINTY BLOCK
+
+```text
+تاريخ: 2026-07-05
+معرف التغيير: SCP-2026-07-05-057
+مصدر الطلب: Audit body finding #6
+نوع التغيير: Operational Enforcement / Anti-Hallucination
+الملفات المعدلة:
+- .opencode/agents/tera-client-engagement.md (إعادة بناء §5.2 + تحديث مرجع التدفق)
+
+الملخص:
+تحويل Uncertainty Protocol من مجرد "قل لا أعرف" إلى آلية توقف إجبارية بقالب صارم:
+1. إضافة قالب STOP — UNCERTAINTY BLOCK الإجباري (5 حقول)
+2. مثال تطبيقي مدمج
+3. آلية تطبيق: أخرج القالب ← ارفع لـ Majed ← سجّل ← لا تنتقل
+4. Websearch يبقى خطوة أولى قبل التوقف
+5. تحديث مرجع §5.2 في تدفق العمل
+
+الموافقة: Majed — Approval pre-granted
+التحقق من الصحة: القالب الإجباري يمنع النموذج من قول "لا أعرف" ثم المتابعة بصمت.
+المخاطر: منخفضة.
+ملاحظات الاسترجاع (Rollback):
+1. git checkout -- .opencode/agents/tera-client-engagement.md
 ```
