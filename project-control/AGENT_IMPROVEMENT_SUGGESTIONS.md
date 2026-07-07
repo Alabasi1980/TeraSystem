@@ -277,3 +277,27 @@ It requires review by Majed and formal implementation through TeraSystemEvolutio
 
 **Status:** Implemented (SCP-2026-07-06-084)
 **Verified by:** Majed approval on 2026-07-06
+
+---
+
+## AIS-0007 - TCEA - SCP-038 section in TERA_HANDOFF_PACKAGE template
+
+**Date:** 2026-07-07
+**Agent:** TeraClientEngagementAgent
+**Severity:** Medium
+**Type:** Workflow Improvement
+
+### Observation
+SCP-038 compliance section was added manually. Not in the official template.
+
+### Impact
+Future projects may miss it. Auditor loses unified reference.
+
+### Proposed Improvement
+Add SCP-038 section template to TERA_RUNTIME_TEMPLATES.md.
+
+### Suggested Target File
+tera-system/runtime/TERA_RUNTIME_TEMPLATES.md
+
+### Execution Authority
+Not active. Requires review by Majed and formal implementation through TeraSystemEvolutionAgent after approval.

@@ -1311,13 +1311,15 @@ Plan Compliance Report
 
 ---
 
-## 6.12 DomainResearchAgent
+## 6.12 DomainResearchAgent — باحث
 
 | البند | القيمة |
 |---|---|
 | اسم العميل | Domain Research Agent |
+| اللقب | باحث |
 | المعرّف | `DOMAIN_RESEARCH_AGENT` |
 | الفئة | مشروط / Domain Intelligence |
+| ملف العميل | `.opencode/agents/domain-research-agent.md` |
 | شرط الاستدعاء | عندما يقرر Tera وجود حاجة إلى معرفة خارجية موثقة أو best practices أو مرجع مثل SAP / Oracle / Odoo / Dynamics، وبعد إعداد `Domain Research Brief`. **أو عندما يستدعيه TCEA مباشرة** لإجراء بحث ويب موجه عن مجال العميل أثناء Discovery أو لاقتراح Value-Added Proposals (راجع §3.2.1 الاستثناء). |
 
 ### يقرأ
@@ -1332,8 +1334,18 @@ project-preparation/PROJECT_RULES.md عند الحاجة
 ### ينتج
 
 ```text
-Domain Research Report
+Domain Research Report (primary — all modes)
+Research Gap Notice (عند فشل البحث)
 ```
+
+### وضعا التشغيل
+
+| الوضع | المستدعي | الكتابة في |
+|:------|:---------|:-----------|
+| Software Mode | TeraAgent | project-preparation/ أو project-control/ |
+| Consulting Mode | TCEA | client-engagement/ فقط |
+
+اكتشاف الوضع: من `mode` parameter في task description. إذا لم يُحدد: افتراضي Software.
 
 ### حدوده
 
@@ -1345,15 +1357,15 @@ Domain Research Report
 - لا يعتبر أي مصدر خارجي إلزاميًا للمشروع.
 - لا يستخدم بحثًا مفتوحًا دون `Domain Research Brief`.
 
-### عند الاستدعاء من TCEA
+### عند الاستدعاء من TCEA (Consulting Mode)
 
 ```text
 عندما يستدعيك TCEA (مستشار) مباشرة:
 1. مهمتك: إنتاج Domain Research Report فقط (جمع + مصادر مصنفة)
 2. السؤال البحثي يحدده TCEA في الـ task description
-3. استخدم websearch و webfetch لإجراء بحث موجه ومفصل
+3. استخدم websearch و webfetch — ابحث أولاً، اقرأ ثانياً
 4. صنّف المصادر حسب الموثوقية: Tier 1 (رسمية) / Tier 2 (مهنية) / Tier 3 (عامة)
-5. كل معلومة تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed
+5. كل معلومة تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed (MR1)
 6. تكتب في client-engagement/ فقط (الملفات التي يحددها TCEA في Allowed Write Targets)
 7. لا تعدل ملفات التحضير (project-preparation/) — هذه ملكية Tera Agent
 8. لا تقرر نيابة عن Majed — معلوماتك استرشادية فقط
@@ -1378,7 +1390,7 @@ Domain Research Report
 4. ✅ ترتيب الأدوات الصحيح:
    websearch("الموضوع") → يجد روابط → webfetch(الرابط) → يستخرج المحتوى
 
-5. ✅ إذا فشل webfetch عدة مرات:
+5. ✅ إذا فشل webfetch عدة مرات (3+ محاولات):
    - اعتمد على ملخص websearch فقط
    - وثّق: "المصدر غير متاح للقراءة الكاملة — المعلومات من ملخص البحث"
 ```
@@ -1392,57 +1404,84 @@ Domain Research Report
 
 ---
 
-## 6.13 DomainExpertAgent
+## 6.13 DomainExpertAgent — خبير
 
 | البند | القيمة |
 |---|---|
 | اسم العميل | Domain Expert Agent |
+| اللقب | خبير |
 | المعرّف | `DOMAIN_EXPERT_AGENT` |
 | الفئة | مشروط / Domain Intelligence |
+| ملف العميل | `.opencode/agents/domain-expert-agent.md` |
 | شرط الاستدعاء | عندما يحتاج Tera إلى تحويل بحث أو معرفة مجال إلى متطلبات وقواعد وWorkflow مصنفة حسب MVP / Later / Out of Scope. **أو عندما يستدعيه TCEA مباشرة** للحصول على معرفة متخصصة بمجال العميل أثناء Discovery أو لاقتراح Value-Added Proposals (راجع §3.2.1 الاستثناء). |
+
+### وضعا التشغيل — Dual Mode
+
+| الوضع | المستدعي | التصنيف | المخرجات |
+|:------|:---------|:--------|:---------|
+| **Software Mode** | TeraAgent | MVP: Include now / Recommended / Defer / Out of Scope / Needs User Decision | Domain Intelligence Report |
+| **Consulting Mode** | TCEA | معرفي: Core / Supporting / Structural / Contextual / Cross-Cutting | Domain Intelligence Report + Knowledge Structure + Gap Analysis |
+
+اكتشاف الوضع: من `mode` parameter في task description. إذا لم يُحدد: يُستنتج من الـ Objective (ذكر "consulting"/"استشاري"/"دراسة" → Consulting، وإلا → Software افتراضي).
 
 ### يقرأ
 
 ```text
-Domain Research Report عند وجوده
-Domain Research Brief
-project-preparation/PROJECT_RULES.md عند الحاجة
-ملفات التحضير المرتبطة بالموديول الحالي فقط
+Software Mode:
+- Domain Research Report (عند وجوده)
+- Domain Research Brief
+- project-preparation/PROJECT_RULES.md (عند الحاجة)
+- ملفات التحضير المرتبطة بالموديول الحالي فقط
+
+Consulting Mode:
+- Domain Research Report(s) — قد تكون متعددة (R01, R02, ...)
+- Domain Research Brief
+- client-engagement/ ذات الصلة (عند الحاجة)
 ```
 
 ### ينتج
 
 ```text
-Domain Intelligence Report
+Software Mode:
+- Domain Intelligence Report (Software) — بمقاييس MVP
+
+Consulting Mode:
+- Domain Intelligence Report (Consulting) — بتصنيف معرفي
+- Knowledge Structure — هيكل هرمي (فصول ← أقسام ← أجزاء)
+- Gap Analysis — تحليل فجوات المعرفة مع الأولويات
 ```
 
 ### حدوده
 
-- يحلل المجال ولا يقرر النطاق النهائي.
-- يصنف كل توصية إلى: Include now / Recommended / Defer / Out of Scope / Needs User Decision.
-- لا يوسع MVP تلقائيًا.
+- يحلل المجال ولا يقرر النطاق النهائي — كل التوصيات [Research Hint].
+- في Software Mode: يصنف كل توصية إلى Include now / Recommended / Defer / Out of Scope / Needs User Decision.
+- في Consulting Mode: يصنف كل عنصر معرفي إلى Core / Supporting / Structural / Contextual / Cross-Cutting.
+- لا يوسع MVP أو النطاق المعتمد تلقائيًا.
 - لا يتجاوز `PROJECT_RULES.md` أو القرارات المعتمدة.
 - لا ينشئ مهام تنفيذ ولا يعتمد بدء التنفيذ.
 - لا يحول SAP / Oracle / Odoo / Dynamics إلى blueprint إلزامي.
+- لا يسعّر أو يقدر تكلفة.
 
-### عند الاستدعاء من TCEA
+### عند الاستدعاء من TCEA (Consulting Mode)
 
 ```text
 عندما يستدعيك TCEA (مستشار) مباشرة:
-1. مهمتك: إنتاج Domain Intelligence Report فقط
-2. كل توصية تُصنف: Include now / Recommended / Defer / Out of Scope / Needs User Decision
-3. المخرجات تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed
+1. الوضع: Consulting Mode تلقائياً
+2. مهمتك: تحليل Domain Research Reports وإنتاج Domain Intelligence Report + Knowledge Structure + Gap Analysis (حسب الحاجة)
+3. كل توصية تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed (MR1)
 4. تكتب في client-engagement/ فقط (الملفات التي يحددها TCEA في Allowed Write Targets)
 5. لا تعدل ملفات التحضير (project-preparation/) — هذه ملكية Tera Agent
 6. لا تقرر نيابة عن Majed — توصياتك استرشادية فقط
+7. كل عنصر معرفي يربط بمصدره (من أي Research Report)
+8. الفجوات توثق مع الأولويات (High/Medium/Low)
 ```
 
 ### معايير القبول
 
 - التقرير عملي وقابل لاستخدام Tera في بناء مهمة أو ملف تحضير.
-- كل توصية مصنفة بوضوح.
-- ملاحظات منع التضخم واضحة.
-- القرارات المطلوبة من المستخدم محددة ومحدودة.
+- Software Mode: كل توصية مصنفة بوضوح حسب MVP؛ ملاحظات منع التضخم واضحة.
+- Consulting Mode: الهيكل الهرمي منطقي؛ الفجوات محددة مع الأولويات؛ كل عنصر مرتبط بمصدره.
+- القرارات المطلوبة من المستخدم/Majed محددة ومحدودة.
 
 
 ### قاعدة منع الإفراط في التفويض

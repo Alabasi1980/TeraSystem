@@ -185,10 +185,12 @@ Source confidence:
 
 ---
 
-## 10. Domain Intelligence Report
+## 10. Domain Intelligence Report (Software Mode)
+
+Software Mode template — يُستخدم عندما يستدعي TeraAgent الـ DomainExpertAgent لتحليل مجال وتصنيفه حسب MVP.
 
 ```text
-Domain Intelligence Report
+Domain Intelligence Report (Software)
 
 Topic:
 Domain:
@@ -217,6 +219,137 @@ Needs User Decision:
 
 Anti-bloat notes:
 Tera decision recommendation:
+```
+
+---
+
+## 10.1 Domain Intelligence Report (Consulting Mode)
+
+Consulting Mode template — يُستخدم عندما يستدعي TCEA الـ DomainExpertAgent لتحليل مجال وإنتاجه بتصنيف معرفي.
+
+```text
+Domain Intelligence Report (Consulting)
+
+Topic:
+Domain:
+Mode: consulting
+Date:
+Requested by: TCEA — [client name if available]
+Sources Used:
+[R01, R02, ... or specific report titles]
+
+Domain Overview:
+[نظرة عامة على المجال ونطاقه]
+
+Core Processes:
+[العمليات الأساسية — جوهر المجال]
+- Process 1 [مصدر: R01]
+- Process 2 [مصدر: R02]
+
+Supporting Activities:
+[الأنشطة المساندة — تدعم العمليات الأساسية]
+- Activity 1 [مصدر: R01]
+
+Structural Elements:
+[العناصر الهيكلية والتنظيمية — أدوار، أقسام، هيكليات]
+- Element 1 [مصدر: R03]
+
+Contextual Knowledge:
+[المعلومات السياقية — تاريخ، اتجاهات، معلومات خلفية]
+- Knowledge 1 [مصدر: R02]
+
+Cross-Cutting Topics:
+[المواضيع العرضية — تمس عدّة أقسام]
+- Topic 1 [مصدر: R01, R02]
+
+Relationships & Dependencies:
+[العلاقات والترابطات بين العناصر]
+
+Risks & Considerations:
+[المخاطر والاعتبارات التي ظهرت من التحليل]
+
+---
+This report contains [Research Hint] information.
+Does NOT define scope, pricing, or commitments.
+```
+
+---
+
+## 10.2 Knowledge Structure (Consulting Mode)
+
+Consulting Mode template — هيكل هرمي للمعرفة (3 مستويات كحد أقصى)، يصنف كل عنصر حسب التصنيف المعرفي ويربطه بمصدره.
+
+```text
+Knowledge Structure
+
+Domain:
+Study Title:
+Date:
+Classification Key: [Core] Core Process / [Supp] Supporting Activity / [Str] Structural Element / [Ctx] Contextual Knowledge / [CC] Cross-Cutting
+
+1. [Chapter 1 Title — المعرف الأساسي في المجال]
+   1.1 [Section 1.1]
+       - [Part / Topic 1] — [Core/Supp/Str/Ctx/CC] — مصدر: [R01]
+       - [Part / Topic 2] — [Core/Supp/Str/Ctx/CC] — مصدر: [R02]
+   1.2 [Section 1.2]
+       - [Part / Topic] — [Core/Supp/Str/Ctx/CC] — مصدر: [R01]
+
+2. [Chapter 2 Title]
+   2.1 [Section 2.1]
+       - [Part / Topic] — [Core/Supp/Str/Ctx/CC] — مصدر: [R03]
+   2.2 [Section 2.2]
+       - [Part / Topic] — [Core/Supp/Str/Ctx/CC] — مصدر: [R01, R02]
+
+N. [Chapter N Title — المواضيع العرضية / المشتركة]
+   N.1 [Section N.1]
+       - [Part / Topic] — [CC] — مصدر: [R01, R02, R03]
+
+---
+
+Structural Notes:
+- Chapters follow logical domain progression: core processes → supporting → structural → contextual
+- Cross-cutting topics can be a separate chapter or distributed
+- Max depth: 3 levels (Chapter → Section → Part/Topic)
+- Every element references its source report
+```
+
+---
+
+## 10.3 Gap Analysis (Consulting Mode)
+
+Consulting Mode template — تحليل الفجوات في المعرفة بعد مقارنة جميع التقارير البحثية مع ما تحتاجه الدراسة.
+
+```text
+Gap Analysis
+
+Domain:
+Date:
+Sources analyzed: [R01, R02, ...]
+
+Coverage Summary:
+- Fully covered: [X]%
+- Partially covered: [Y]%
+- Missing: [Z]%
+
+| # | Topic / Element | Classification | Current Coverage | Gap Description | Priority | Suggested Research | Source |
+|:-:|:---------------|:-------------:|:----------------:|:---------------|:--------:|:-----------------|:------:|
+| 1 | [Topic name] | [Core/Supp/Str/Ctx/CC] | Covered / Partial / Missing | [وصف الفجوة] | H/M/L | [اقتراح بحث إضافي] | R01 |
+| 2 | [Topic name] | [Core/Supp/Str/Ctx/CC] | Covered / Partial / Missing | [وصف الفجوة] | H/M/L | [اقتراح بحث إضافي] | R02 |
+
+Priority Legend:
+- H (High): الفجوة تمنع إكمال الدراسة أو تؤثر على جودة المخرجات
+- M (Medium): الفجوة تؤثر على العمق ولكن يمكن تجاوزها مؤقتاً
+- L (Low): الفجوة في معلومات سياقية أو تكميلية
+
+Coverage Details:
+- Covered: المعلومة كاملة ومفهومة من المصادر
+- Partial: المعلومة موجودة لكنها ناقصة أو غير مؤكدة — يحتاج توثيقاً إضافياً
+- Missing: لا توجد معلومات — يحتاج بحثاً إضافياً أو استشارة عميل
+
+Recommended Next Actions:
+1. [إجراء مقترح للفجوات عالية الأولوية]
+2. [إجراء مقترح للفجوات متوسطة الأولوية]
+3. [إجراء مقترح للفجوات منخفضة الأولوية]
 ```
 
 ---

@@ -294,3 +294,20 @@ Only then changes are implemented.
 - Suggested direction (optional): إنشاء `tera-system/TeraAuditor.md` كـ Source of Truth بـ 10 أقسام (الهوية، الموقع، الغرض، المراجع، منهجية 6 مراحل، جدول تصنيف، بروتوكول عدم يقين وبحث، تراكم، علاقات، تحسين مستمر). رفض AUDIT_TRAIL.md (استخدام PROJECT_ACTIVITY_LOG.md).
 - Status: Applied
 - Resolution Notes: تم تنفيذ الحل عبر SCP-2026-07-05-036. تم إنشاء TeraAuditor.md (10 أقسام) في tera-system/، تحديث auditor.md بإضافة System Reference + بروتوكول التراكم + تحديث Output Format (DEFERRED)، تحديث ENGINEERING_AGENT_RESPONSIBILITIES.md §5 (توسيع كامل: منهجية + تراكم + بروتوكول عدم يقين + مرجع TeraAuditor.md)، وتحديث TeraPolicyMap.md بإضافة إدخال Auditor.
+
+## 2026-07-07 — DomainExpertAgent + DomainResearchAgent — GAP-012
+
+- Title: **DomainExpertAgent و DomainResearchAgent يفتقران لملفات تعريف مستقلة في `.opencode/agents/` مع Dual Mode (Software + Consulting)**
+- Agent: DomainExpertAgent, DomainResearchAgent
+- Gap Type: Missing Capability / Documentation Gap / Process Gap
+- Issue: تقييم TCEA (تم تحليله من حارس) كشف أن DomainExpertAgent موجود كإشارة فقط في TeraSubAgents.md §6.13 لكنه ليس عميلاً قابلاً للاستدعاء الفعلي. لا يوجد له ملف `.opencode/agents/domain-expert-agent.md` ولا ملف `domain-research-agent.md`. بالإضافة إلى ذلك:
+  1. كلاهما يدعم فقط Software Mode (تصنيف MVP) ولا يدعمان Consulting Mode (تصنيف معرفي) رغم أن TCEA يحتاجهم لاكتشاف Value-Added Proposals.
+  2. DomainExpertAgent Consulting Mode يحتاج Knowledge Structure + Gap Analysis كمخرجات إضافية.
+  3. DomainResearchAgent Consulting Mode يحتاج بروتوكول بحث مختلف (تقارير متعددة، ترتيب مصادر، معالجة أخطاء 404).
+  4. TeraSubAgents.md §6.12/§6.13 لا يذكران ملفات العملاء الجديدة ولا وضعي التشغيل.
+  5. TERA_RUNTIME_TEMPLATES.md §10 لا يحتوي قوالب Consulting Mode.
+  6. TERA_RUNTIME_PROTOCOLS.md §12 (D) لا يميز بين Software Mode و Consulting Mode.
+- Impact on agent performance: DomainExpertAgent و DomainResearchAgent غير جاهزين للاستدعاء الفعلي. TCEA لا يستطيع استخدامهما في Consulting Mode لاكتشاف الفرص التجارية. منظومة Tera لا تملك وكيل تحليل مجال متكامل.
+- Suggested direction (optional): إنشاء ملفات `.opencode/agents/domain-research-agent.md` و `domain-expert-agent.md` مع Dual Mode. تحديث TeraSubAgents.md §6.12/§6.13. تحديث TERA_RUNTIME_TEMPLATES.md §10. تحديث TERA_RUNTIME_PROTOCOLS.md §12(D). كلها ضمن SCP-2026-07-07-090.
+- Status: Applied
+- Resolution Notes: تم تنفيذ الحل عبر SCP-2026-07-07-090. تم إنشاء `.opencode/agents/domain-research-agent.md` و `domain-expert-agent.md` مع Dual Mode و Consulting Mode outputs. تم تحديث TeraSubAgents.md §6.12 و §6.13. تحديث TERA_RUNTIME_TEMPLATES.md و TERA_RUNTIME_PROTOCOLS.md جارٍ.

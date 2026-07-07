@@ -428,3 +428,42 @@
   1. tera-client-engagement.md: إزالة DomainResearchAgent من A.7 + A.7.1 + D.1
   2. TeraSubAgents.md: إزالة DomainResearchAgent من §3.2.1 + استرجاع §6.12 شرط الاستدعاء + إزالة "عند الاستدعاء من TCEA"
 
+---
+
+## SCP-2026-07-07-090 — DomainExpertAgent + DomainResearchAgent Dual Mode — إنشاء ملفات العملاء في `.opencode/agents/` مع وضعي التشغيل
+
+- تاريخ: 2026-07-07
+- معرف التغيير: SCP-2026-07-07-090
+- مصدر الطلب: تقييم TCEA لـ DomainExpertAgent — GAP-012
+- نوع التغيير: New Agent (2 files) + Policy Update + Protocol Change + Template Update
+- الملفات المعدلة:
+  - `.opencode/agents/domain-research-agent.md` — **جديد** — تعريف كامل مع Dual Mode (Software + Consulting)
+  - `.opencode/agents/domain-expert-agent.md` — **جديد** — تعريف كامل مع Dual Mode + Consulting outputs (Knowledge Structure, Gap Analysis)
+  - `tera-system/TeraSubAgents.md` — §6.12 (Dual Mode + Consulting Mode + ملف مرجعي) + §6.13 (Dual Mode + قوالب Consulting)
+  - `project-control/AGENT_GAPS_LOG.md` — GAP-012 (تم التطبيق)
+  - `project-control/SYSTEM_EVOLUTION_LOG.md` — هذا الإدخال
+- الملخص:
+  - **DomainResearchAgent** (باحث): ملف مستقل بـ 11 قسماً — هوية، مهمة، I/O، بروتوكول بحث خطوة بخطوة، تصنيف مصادر (Tier 1/2/3)، معالجة أخطاء 404/403/Timeout، Three-Tier Boundaries، معايير جودة، منع تضخم، AIS
+  - **DomainExpertAgent** (خبير): ملف مستقل بـ 12 قسماً — هوية، وضعا تشغيل (Software MVP + Consulting Knowledge)، Mission، مسؤوليات، تصنيفات، I/O تعتمد على الوضع، Pipeline كامل مع DomainResearchAgent، بناء هيكل هرمي 3 مستويات، تحليل فجوات، Three-Tier Boundaries، جودة، منع تضخم، AIS
+  - **Software Mode** (مشاريع برمجية — TeraAgent): Domain Intelligence Report مع تصنيف MVP (Include now / Recommended / Defer / Out of Scope / Needs User Decision)
+  - **Consulting Mode** (مشاريع استشارية — TCEA): Domain Intelligence Report (بتصنيف معرفي) + Knowledge Structure + Gap Analysis — مع تحليل فجوات وأولويات
+  - **اكتشاف الوضع تلقائي**: من `mode` parameter أو استنباط من الـ Objective
+  - **§6.12 TeraSubAgents.md**: تحديث كامل — إضافة ملف العميل، Dual Mode، Consulting Mode قواعد، معايير قبول محدثة
+  - **§6.13 TeraSubAgents.md**: تحديث كامل — إضافة ملف العميل، Dual Mode، Consulting Mode مخرجات، حدود Consulting، معايير قبول محددة لكل وضع
+  - **Pipeline**: DomainResearchAgent → DomainExpertAgent → TCEA → Majed → يدخل النطاق فقط بعد [Confirmed by Majed]
+  - Anti-Bloat: ملفان جديدان فقط (لا عملاء جدد — استخدمنا العملاء الموجودين بقدرات جديدة). Consulting Mode يضيف مخرجات فقط عند الحاجة (Gap Analysis + Knowledge Structure اختياريات)
+- الموافقة: Majed — Approved (توجيه مباشر، مع بحث مسبق وموافقة على Dual Mode)
+- التحقق من الصحة:
+  - ✅ Anti-Bloat Gate PASS — لا عملاء جدد، لا طبقات جديدة، استخدمنا العملاء الموجودين بقدرات جديدة
+  - ✅ Policy Map Check: PASS — لا تناقض مع TeraPolicyMap.md أو TeraClientPolicy.md أو TeraSubAgents.md
+  - ✅ Architecture Map Check: PASS — لا انحراف عن حدود المجلدات (client-engagement/ للـ TCEA، project-preparation/ للتطبيقات البرمجية)
+  - ✅ لا تلوث تطبيقات العملاء — لا تعديل لأي ملف في clients/
+  - ✅ لا توسع صلاحيات غير مبرر — كل عميل له صلاحياته المحددة (read-only افتراضياً، write للمخرجات فقط)
+  - ✅ Dual Mode يمنع خلط المسؤوليات — Software مع TeraAgent، Consulting مع TCEA
+- المخاطر: منخفض — العملاء موجودون مسبقاً في TeraSubAgents.md لكن بدون ملفات قابلة للاستدعاء. الترقية تضيف قدرات جديدة دون تغيير الصلاحيات الأساسية. Consulting Mode مخرجاتها [Research Hint] ولا تدخل النطاق دون تأكيد Majed (MR1)
+- ملاحظات الاسترجاع (Rollback):
+  1. حذف `.opencode/agents/domain-research-agent.md` و `domain-expert-agent.md`
+  2. استرجاع TeraSubAgents.md §6.12 و §6.13 إلى النسخة السابقة
+  3. إزالة GAP-012 من AGENT_GAPS_LOG.md
+  4. إزالة هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+

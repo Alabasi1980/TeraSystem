@@ -563,6 +563,8 @@ Majed يؤكد: "نحتاج مخزون ومبيعات فقط"
 | `FEATURE_LIST.md` | — | للمشاريع المتوسطة+ فقط |
 | `CLIENT_DECISION_LOG.md` | *Client Decision Register* | أول قرار يُتخذ |
 | `CHANGE_REQUEST_LOG.md` | — | أول Change Request |
+| `CLIENT_QA_RECORD.md` | — | أول جلسة اكتشاف — توثيق كل سؤال وجواب |
+| `GATE_COMPLIANCE_RECORD.md` | — | قبل Handoff — سجل بوابات الامتثال |
 | `DRAFT_QUOTATION.md` | — | عند Level 2 |
 | `TERA_HANDOFF_PACKAGE.md` | — | عند Tera Handoff |
 

@@ -822,9 +822,25 @@ Tera's response:
 #### D — Before Formal Preparation (traditional Domain Intelligence)
 
 After Client Discovery is complete but before formal preparation files are created:
+
+**Software Mode (TeraAgent):**
 - Use the full `DomainResearchAgent` + `DomainExpertAgent` pipeline if the project has significant domain complexity.
 - Write a formal `Domain Research Brief` using `TERA_RUNTIME_TEMPLATES.md`.
-- Classify every recommendation.
+- Classify every recommendation via Software Mode: Include now / Recommended / Defer / Out of Scope / Needs User Decision.
+- Output: Domain Intelligence Report (Software).
+
+**Consulting Mode (TCEA — Value-Added Discovery):**
+- Use the full `DomainResearchAgent` + `DomainExpertAgent` pipeline during Client Engagement Discovery or Value-Added Proposal preparation.
+- DomainResearchAgent produces Domain Research Report(s) with source tiering (Tier 1/2/3).
+- DomainExpertAgent produces: Domain Intelligence Report (Consulting) + Knowledge Structure + Gap Analysis.
+- Classification: Core Process / Supporting Activity / Structural Element / Contextual Knowledge / Cross-Cutting.
+- All outputs carry [Research Hint] — nothing enters scope without Majed confirmation (MR1).
+- Outputs written to `client-engagement/` only.
+
+**Mode Detection:**
+- If the task comes from TeraAgent → Software Mode (default).
+- If the task comes from TCEA → Consulting Mode.
+- If mode is ambiguous → examine the Objective: mention of "consulting", "study", "استشاري", "دراسة" → Consulting; otherwise → Software.
 
 ---
 
@@ -845,15 +861,32 @@ Decision rule:
 
 ### Required Process (for Deep Research)
 
-1. Tera identifies a valid Domain Intelligence trigger.
+#### Software Mode (TeraAgent)
+
+1. Tera (or TCEA) identifies a valid Domain Intelligence trigger.
 2. Tera writes a bounded Domain Research Brief using `TERA_RUNTIME_TEMPLATES.md`.
 3. Tera defines allowed sources, forbidden sources, depth, output limit, and excluded topics.
 4. Tera delegates research only if needed and only within the brief.
-5. DomainResearchAgent gathers source-grounded findings and records source tiers.
+5. DomainResearchAgent gathers source-grounded findings and records source tiers (Tier 1/2/3).
 6. DomainExpertAgent converts findings into practical requirements, rules, workflows, risks, and options.
 7. Tera classifies every recommendation as `Include now`, `Recommended`, `Defer`, `Out of Scope`, or `Needs User Decision`.
 8. Tera performs a domain anti-bloat reduction pass before updating preparation files or creating implementation tasks.
 9. Tera applies normal gates before execution.
+
+#### Consulting Mode (TCEA)
+
+1. TCEA identifies a Domain Intelligence trigger during Discovery or Value-Added Proposal preparation.
+2. TCEA writes a Domain Research Brief with clear research questions and scope.
+3. TCEA delegates research to DomainResearchAgent via `task` with `mode: consulting`.
+4. DomainResearchAgent performs web research, produces Domain Research Report(s) (R01, R02, ...) with source tiers.
+5. TCEA delegates analysis to DomainExpertAgent via `task` with `mode: consulting`, passing all Research Reports.
+6. DomainExpertAgent produces:
+   - Domain Intelligence Report (Consulting) — بتصنيف معرفي
+   - Knowledge Structure — هيكل هرمي
+   - Gap Analysis — تحليل فجوات (حسب الحاجة)
+7. TCEA reviews the outputs and presents findings to Majed with [Research Hint].
+8. Majed decides which findings enter scope ([Confirmed by Majed]).
+9. Only confirmed items enter project scope or Value-Added Proposal.
 
 ### Research Brief Rule
 

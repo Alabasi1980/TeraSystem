@@ -31,7 +31,7 @@
 | F13 | لوحة متابعة (Dashboard) — حالة الطلبات بالألوان مع إظهار الطلبات المتأخرة تلقائياً | 8 (Reports & Dashboards) | ✅ Approved | [Confirmed by Majed] | 1 |
 | F14 | تسليم الطلب (زر + تاريخ + اسم مسلّم) | 3 (Process & Workflow) | ✅ Approved | [Confirmed by Majed] | 1 |
 | F15 | Web Responsive (Chrome — كمبيوتر + جوال) | 10 (Technical) | ✅ Approved | [Confirmed by Majed] | 1 |
-| F16 | استضافة أردنية + دومين | 10 (Technical) | ✅ Approved | [Confirmed by Majed] | 1 |
+| F16 | استضافة على سيرفر الشركة الداخلي + رابط داخلي | 10 (Technical) | ✅ Approved | [Confirmed by Majed] | 1 |
 | F17 | نسخ احتياطي تلقائي | 10 (Technical) | ✅ Approved | [Confirmed by Majed] | 1 |
 | F18 | Logo/شعار الشركة في التصميم | 9 (Design & Branding) | ✅ Approved | [Confirmed by Majed] | 3 |
 | F19 | إجمالي التكلفة التقريبي (مواد + ساعات + مصاريف) | 4 (Data & Content) | ✅ Approved | بناءً على طلب العميل | 2 |
