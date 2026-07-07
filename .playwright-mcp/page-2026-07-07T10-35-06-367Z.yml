@@ -1,0 +1,239 @@
+- generic [ref=f88e3]:
+  - navigation [ref=f88e4]:
+    - generic [ref=f88e5]:
+      - generic [ref=f88e6]:
+        - img [ref=f88e7] [cursor=pointer]:
+          - generic [ref=f88e9]: P
+        - list [ref=f88e10]:
+          - listitem [ref=f88e11] [cursor=pointer]: Games
+          - listitem [ref=f88e12] [cursor=pointer]: PS5
+          - listitem [ref=f88e13] [cursor=pointer]: PS4
+          - listitem [ref=f88e14] [cursor=pointer]: PS VR2
+          - listitem [ref=f88e15] [cursor=pointer]: Subscriptions
+          - listitem [ref=f88e16] [cursor=pointer]: Hardware
+          - listitem [ref=f88e17] [cursor=pointer]: Mobile
+          - listitem [ref=f88e18] [cursor=pointer]: News
+          - listitem [ref=f88e19] [cursor=pointer]: Shop
+          - listitem [ref=f88e20] [cursor=pointer]: Support
+      - generic [ref=f88e21]:
+        - img [ref=f88e22] [cursor=pointer]
+        - img [ref=f88e24] [cursor=pointer]
+        - img [ref=f88e27] [cursor=pointer]
+  - generic [ref=f88e31]:
+    - generic [ref=f88e32]:
+      - heading "Discover all PS5 consoles and accessories" [level=1] [ref=f88e33]
+      - paragraph [ref=f88e34]: Experience lightning-fast loading with an ultra-high-speed SSD, deeper immersion with haptic feedback, adaptive triggers, and 3D Audio.
+      - generic [ref=f88e35]:
+        - button "Learn more" [ref=f88e36] [cursor=pointer]
+        - button "Watch trailer" [ref=f88e37] [cursor=pointer]
+    - generic:
+      - img "Discover all PS5 consoles and accessories"
+  - generic [ref=f88e39]:
+    - heading "Discover all PS5 consoles and accessories" [level=2] [ref=f88e40]
+    - paragraph [ref=f88e41]: Choose your console bundle, add accessories, and customize your setup.
+    - generic [ref=f88e42]:
+      - generic [ref=f88e43] [cursor=pointer]:
+        - img "PS5 Console" [ref=f88e44]
+        - text: PS5 Console
+      - generic [ref=f88e45] [cursor=pointer]:
+        - img "PS5 Digital Edition" [ref=f88e46]
+        - text: PS5 Digital Edition
+      - generic [ref=f88e47] [cursor=pointer]:
+        - img "PS5 Pro" [ref=f88e48]
+        - text: PS5 Pro
+      - generic [ref=f88e49] [cursor=pointer]:
+        - img "DualSense Controller" [ref=f88e50]
+        - text: DualSense Controller
+      - generic [ref=f88e51] [cursor=pointer]:
+        - img "Pulse 3D Headset" [ref=f88e52]
+        - text: Pulse 3D Headset
+  - generic [ref=f88e54]:
+    - heading "Great PS4 & PS5 games out now or coming soon" [level=2] [ref=f88e55]
+    - paragraph [ref=f88e56]: Explore the latest blockbusters, indie gems, and upcoming releases.
+    - generic [ref=f88e57]:
+      - generic [ref=f88e59] [cursor=pointer]:
+        - img "Marathon" [ref=f88e60]
+        - generic [ref=f88e61]: Pre-order
+        - generic [ref=f88e62]:
+          - heading "Marathon" [level=3] [ref=f88e63]
+          - text: PS5
+      - generic [ref=f88e65] [cursor=pointer]:
+        - img "God of War Ragnarök" [ref=f88e66]
+        - generic [ref=f88e67]: New
+        - generic [ref=f88e68]:
+          - heading "God of War Ragnarök" [level=3] [ref=f88e69]
+          - text: PS5
+      - generic [ref=f88e71] [cursor=pointer]:
+        - img "Horizon Forbidden West" [ref=f88e72]
+        - generic [ref=f88e73]:
+          - heading "Horizon Forbidden West" [level=3] [ref=f88e74]
+          - text: PS5 | PS4
+      - generic [ref=f88e76] [cursor=pointer]:
+        - img "The Last of Us Part I" [ref=f88e77]
+        - generic [ref=f88e78]: New
+        - generic [ref=f88e79]:
+          - heading "The Last of Us Part I" [level=3] [ref=f88e80]
+          - text: PS5
+      - generic [ref=f88e82] [cursor=pointer]:
+        - img "Spider-Man 2" [ref=f88e83]
+        - generic [ref=f88e84]: Coming Soon
+        - generic [ref=f88e85]:
+          - heading "Spider-Man 2" [level=3] [ref=f88e86]
+          - text: PS5
+      - generic [ref=f88e88] [cursor=pointer]:
+        - img "Gran Turismo 7" [ref=f88e89]
+        - generic [ref=f88e90]:
+          - heading "Gran Turismo 7" [level=3] [ref=f88e91]
+          - text: PS5 | PS4
+      - generic [ref=f88e93] [cursor=pointer]:
+        - img "Returnal" [ref=f88e94]
+        - generic [ref=f88e95]:
+          - heading "Returnal" [level=3] [ref=f88e96]
+          - text: PS5
+      - generic [ref=f88e98] [cursor=pointer]:
+        - 'img "Ratchet & Clank: Rift Apart" [ref=f88e99]'
+        - generic [ref=f88e100]:
+          - 'heading "Ratchet & Clank: Rift Apart" [level=3] [ref=f88e101]'
+          - text: PS5
+  - generic [ref=f88e104]:
+    - generic [ref=f88e105]:
+      - heading "Discover PlayStation Plus" [level=2] [ref=f88e106]
+      - paragraph [ref=f88e107]: Join millions of gamers and unlock monthly games, exclusive discounts, online multiplayer, and more.
+    - generic [ref=f88e108]:
+      - generic [ref=f88e109]:
+        - heading "Essential" [level=3] [ref=f88e110]
+        - list [ref=f88e111]:
+          - listitem [ref=f88e112]:
+            - generic [ref=f88e113]: ✓
+            - text: Online multiplayer
+          - listitem [ref=f88e114]:
+            - generic [ref=f88e115]: ✓
+            - text: 2 monthly games
+          - listitem [ref=f88e116]:
+            - generic [ref=f88e117]: ✓
+            - text: Exclusive discounts
+        - button "Learn more" [ref=f88e118] [cursor=pointer]
+      - generic [ref=f88e119]:
+        - heading "Extra" [level=3] [ref=f88e120]
+        - list [ref=f88e121]:
+          - listitem [ref=f88e122]:
+            - generic [ref=f88e123]: ✓
+            - text: Everything in Essential
+          - listitem [ref=f88e124]:
+            - generic [ref=f88e125]: ✓
+            - text: 400+ PS4 & PS5 games
+          - listitem [ref=f88e126]:
+            - generic [ref=f88e127]: ✓
+            - text: Ubisoft+ Classics
+        - button "Learn more" [ref=f88e128] [cursor=pointer]
+      - generic [ref=f88e129]:
+        - heading "Premium" [level=3] [ref=f88e130]
+        - list [ref=f88e131]:
+          - listitem [ref=f88e132]:
+            - generic [ref=f88e133]: ✓
+            - text: Everything in Extra
+          - listitem [ref=f88e134]:
+            - generic [ref=f88e135]: ✓
+            - text: Classics catalog
+          - listitem [ref=f88e136]:
+            - generic [ref=f88e137]: ✓
+            - text: Game trials
+          - listitem [ref=f88e138]:
+            - generic [ref=f88e139]: ✓
+            - text: Cloud streaming
+        - button "Learn more" [ref=f88e140] [cursor=pointer]
+    - button "Compare all plans" [ref=f88e142] [cursor=pointer]
+  - generic [ref=f88e144]:
+    - heading "Explore PlayStation Store" [level=2] [ref=f88e145]
+    - generic [ref=f88e146]:
+      - generic [ref=f88e147]:
+        - img "Latest Deals" [ref=f88e148]
+        - heading "Latest Deals" [level=3] [ref=f88e149]
+        - paragraph [ref=f88e150]: Save big on hundreds of games, add-ons, and more during our summer sale.
+        - button "Shop deals" [ref=f88e151] [cursor=pointer]
+      - generic [ref=f88e152]:
+        - img "Pre-orders" [ref=f88e153]
+        - heading "Pre-orders" [level=3] [ref=f88e154]
+        - paragraph [ref=f88e155]: Secure your copy of the most anticipated upcoming games before launch.
+        - button "Pre-order now" [ref=f88e156] [cursor=pointer]
+      - generic [ref=f88e157]:
+        - img "PS Plus Catalog" [ref=f88e158]
+        - heading "PS Plus Catalog" [level=3] [ref=f88e159]
+        - paragraph [ref=f88e160]: Explore 400+ PS5 and PS4 games included with your PlayStation Plus membership.
+        - button "Browse catalog" [ref=f88e161] [cursor=pointer]
+  - generic [ref=f88e164]:
+    - heading "Marathon" [level=2] [ref=f88e165]
+    - paragraph [ref=f88e166]: The next evolution of competitive gaming. Pre-order now and get exclusive in-game rewards at launch.
+    - button "Pre-order now" [ref=f88e167] [cursor=pointer]
+  - generic [ref=f88e169]:
+    - heading "30 Years of PlayStation" [level=2] [ref=f88e170]
+    - paragraph [ref=f88e171]: Celebrating three decades of innovation, unforgettable stories, and groundbreaking gaming experiences.
+    - button "Explore the legacy" [ref=f88e172] [cursor=pointer]
+  - generic [ref=f88e174]:
+    - heading "Latest news" [level=2] [ref=f88e175]
+    - paragraph [ref=f88e176]: Stay up to date with the latest announcements from PlayStation.
+    - generic [ref=f88e177]:
+      - generic [ref=f88e178] [cursor=pointer]:
+        - img "Marathon reveals new gameplay trailer" [ref=f88e179]
+        - generic [ref=f88e180]:
+          - text: Games
+          - heading "Marathon reveals new gameplay trailer" [level=3] [ref=f88e181]
+      - generic [ref=f88e182] [cursor=pointer]:
+        - img "PS5 system update 24.00 rolling out now" [ref=f88e183]
+        - generic [ref=f88e184]:
+          - text: System
+          - heading "PS5 system update 24.00 rolling out now" [level=3] [ref=f88e185]
+      - generic [ref=f88e186] [cursor=pointer]:
+        - img "PlayStation Plus monthly games for July" [ref=f88e187]
+        - generic [ref=f88e188]:
+          - text: PS Plus
+          - heading "PlayStation Plus monthly games for July" [level=3] [ref=f88e189]
+  - contentinfo [ref=f88e190]:
+    - generic [ref=f88e191]:
+      - generic [ref=f88e192]: PlayStation
+      - generic [ref=f88e193]:
+        - generic [ref=f88e194]:
+          - heading "Store" [level=4] [ref=f88e195]
+          - list [ref=f88e196]:
+            - listitem [ref=f88e197] [cursor=pointer]: PS5 Games
+            - listitem [ref=f88e198] [cursor=pointer]: PS4 Games
+            - listitem [ref=f88e199] [cursor=pointer]: PS VR2 Games
+            - listitem [ref=f88e200] [cursor=pointer]: Deals
+            - listitem [ref=f88e201] [cursor=pointer]: Pre-orders
+        - generic [ref=f88e202]:
+          - heading "Account" [level=4] [ref=f88e203]
+          - list [ref=f88e204]:
+            - listitem [ref=f88e205] [cursor=pointer]: Sign In
+            - listitem [ref=f88e206] [cursor=pointer]: Account Management
+            - listitem [ref=f88e207] [cursor=pointer]: Wallet
+            - listitem [ref=f88e208] [cursor=pointer]: Subscription
+        - generic [ref=f88e209]:
+          - heading "Support" [level=4] [ref=f88e210]
+          - list [ref=f88e211]:
+            - listitem [ref=f88e212] [cursor=pointer]: Support Center
+            - listitem [ref=f88e213] [cursor=pointer]: Manuals
+            - listitem [ref=f88e214] [cursor=pointer]: Warranty
+            - listitem [ref=f88e215] [cursor=pointer]: Returns
+        - generic [ref=f88e216]:
+          - heading "Social" [level=4] [ref=f88e217]
+          - list [ref=f88e218]:
+            - listitem [ref=f88e219] [cursor=pointer]: PlayStation Blog
+            - listitem [ref=f88e220] [cursor=pointer]: YouTube
+            - listitem [ref=f88e221] [cursor=pointer]: Twitter
+            - listitem [ref=f88e222] [cursor=pointer]: Instagram
+            - listitem [ref=f88e223] [cursor=pointer]: Facebook
+        - generic [ref=f88e224]:
+          - heading "About" [level=4] [ref=f88e225]
+          - list [ref=f88e226]:
+            - listitem [ref=f88e227] [cursor=pointer]: About SIE
+            - listitem [ref=f88e228] [cursor=pointer]: Careers
+            - listitem [ref=f88e229] [cursor=pointer]: Press
+            - listitem [ref=f88e230] [cursor=pointer]: Corporate
+      - generic [ref=f88e231]:
+        - generic [ref=f88e232]:
+          - generic [ref=f88e233] [cursor=pointer]: Terms of Service
+          - generic [ref=f88e234] [cursor=pointer]: Privacy Policy
+          - generic [ref=f88e235] [cursor=pointer]: Cookie Policy
+          - generic [ref=f88e236] [cursor=pointer]: Legal
+        - generic [ref=f88e237]: © 2026 Sony Interactive Entertainment Inc. All Rights Reserved.
+  - generic [ref=f88e238]: PlayStation Design System — Demo

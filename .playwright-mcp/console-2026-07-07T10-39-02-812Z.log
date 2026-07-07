@@ -1,0 +1,12 @@
+[  582431ms] [LOG] Test console output line 1 @ :1
+[  582431ms] [LOG] Test console output line 2 @ :2
+[  582431ms] [LOG] Arabic: مرحبا بالعالم @ :3
+[  619473ms] [LOG] === R13 Report === @ :1
+[  619473ms] [LOG] Section 1: Introduction @ :2
+[  619473ms] [LOG] This is the first paragraph. @ :3
+[  619473ms] [LOG]  @ :4
+[  619473ms] [LOG] Section 2: Details @ :5
+[  619473ms] [LOG] - Point 1 @ :6
+[  619473ms] [LOG] - Point 2 @ :7
+[  619473ms] [LOG] - Point 3 @ :8
+[  619473ms] [LOG] Arabic: مرحبا بالعالم @ :9

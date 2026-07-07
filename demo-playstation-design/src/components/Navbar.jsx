@@ -21,9 +21,11 @@ export default function Navbar() {
       <div className="flex items-center justify-between w-full max-w-[1440px] mx-auto">
         {/* Left: Logo */}
         <div className="flex items-center gap-6">
-          <span className="text-xl font-bold tracking-wider cursor-pointer">
-            🎮 PS
-          </span>
+          {/* PlayStation P-Logo */}
+          <svg className="w-8 h-8 cursor-pointer" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="18" fill="white" />
+            <text x="20" y="26" textAnchor="middle" fill="#0070d1" fontSize="20" fontWeight="700" fontFamily="Arial">P</text>
+          </svg>
 
           {/* Desktop Nav Links */}
           <ul className="hidden lg:flex items-center gap-5 ml-4">

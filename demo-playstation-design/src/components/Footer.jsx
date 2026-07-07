@@ -9,7 +9,7 @@ const linkGroups = [
   },
   {
     title: 'Support',
-    links: ['Support Center', 'Manualuals', 'Warranty', 'Returns'],
+    links: ['Support Center', 'Manuals', 'Warranty', 'Returns'],
   },
   {
     title: 'Social',

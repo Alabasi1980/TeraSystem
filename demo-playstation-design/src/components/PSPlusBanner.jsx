@@ -17,7 +17,7 @@ const tiers = [
 
 export default function PSPlusBanner() {
   return (
-    <section className="bg-[var(--color-surface-dark-elevated)] section-padding relative overflow-hidden">
+    <section className="bg-[var(--color-surface-dark-elevated)] py-12 md:py-16 relative overflow-hidden">
       {/* Gold gradient accent bar */}
       <div className="gold-gradient h-1.5 w-full absolute top-0 left-0" />
 

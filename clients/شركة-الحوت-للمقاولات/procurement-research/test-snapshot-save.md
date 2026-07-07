@@ -1,0 +1,1 @@
+- generic [ref=f117e394]: "This is a test report content in Arabic: مرحبا بالعالم Second line."

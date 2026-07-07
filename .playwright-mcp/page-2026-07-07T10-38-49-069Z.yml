@@ -1,0 +1,343 @@
+- generic [active] [ref=f103e1]:
+  - dialog "Our Cookies" [ref=f103e2]:
+    - generic [ref=f103e3]:
+      - link "Cookiebot by Usercentrics - opens in a new window" [ref=f103e7] [cursor=pointer]:
+        - /url: https://www.cookiebot.com/en/what-is-behind-powered-by-cookiebot/?utm_source=banner_cb&utm_medium=referral&utm_content=v2
+        - img [ref=f103e8]
+      - tabpanel "Consent" [ref=f103e35]:
+        - generic [ref=f103e37]:
+          - heading "Our Cookies" [level=2] [ref=f103e38]
+          - generic [ref=f103e39]:
+            - text: This website uses cookies to improve your experience. By continuing to use this website you are accepting our
+            - link "cookie policy" [ref=f103e40] [cursor=pointer]:
+              - /url: https://www.cips.org/cookie-policy
+            - text: .
+        - link "Cookie settings" [ref=f103e43] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f103e47]:
+        - button "Allow all cookies" [ref=f103e48] [cursor=pointer]
+        - button "Customise" [ref=f103e49] [cursor=pointer]: Customise
+  - img
+  - list:
+    - listitem:
+      - link "Skip to content" [ref=f103e51] [cursor=pointer]:
+        - /url: "#main"
+  - banner [ref=f103e52]:
+    - generic [ref=f103e53]:
+      - text: 
+      - generic [ref=f103e54]:
+        - link "CIPS Logo (Mobile version) CIPS Logo" [ref=f103e56] [cursor=pointer]:
+          - /url: /
+          - img "CIPS Logo (Mobile version)"
+          - generic [ref=f103e57]: CIPS Logo
+        - generic [ref=f103e59]:
+          - button "Search" [ref=f103e60] [cursor=pointer]:
+            - img
+            - generic [ref=f103e61]: Search
+          - link [ref=f103e62] [cursor=pointer]:
+            - /url: https://www.cips.org/cart
+            - img [ref=f103e63]: 
+          - link [ref=f103e65] [cursor=pointer]:
+            - /url: https://www.cips.org/login?from=%2Fintelligence-hub%2Fprocurement-fundamentals
+            - img [ref=f103e66]: 
+          - link "JOIN CIPS" [ref=f103e67] [cursor=pointer]:
+            - /url: https://www.cips.org/memberships/join
+            - generic [ref=f103e68]: JOIN CIPS
+          - button "Menu" [ref=f103e69] [cursor=pointer]:
+            - img
+            - generic [ref=f103e70]: Menu
+  - main [ref=f103e71]:
+    - generic [ref=f103e76]:
+      - link "Home-test" [ref=f103e77] [cursor=pointer]:
+        - /url: /
+        - navigation [ref=f103e78]
+        - generic [ref=f103e80]: Home-test
+      - generic [ref=f103e81]:
+        - link "Intelligence hub >" [ref=f103e82] [cursor=pointer]:
+          - /url: /intelligence-hub
+        - generic [ref=f103e83]: Procurement fundamentals >
+    - generic [ref=f103e86]:
+      - heading "Procurement fundamentals" [level=1] [ref=f103e90]
+      - generic [ref=f103e92]:
+        - generic [ref=f103e93]:
+          - paragraph [ref=f103e94]: Procurement is the process of acquiring goods, services, or works from an external source, which we call the procurement process. It involves all the activities required to obtain goods and services, including identifying needs, tendering, evaluating suppliers, negotiating contracts, and managing supplier relationships.
+          - paragraph [ref=f103e95]: Procurement is an essential part of an organisations supply chain management process. It helps organisations ensure that they have the right resources at the right time, in the right quantity, and at the right price to meet their operational needs and strategic objectives while also ensuring compliance with legal and ethical standards. Effective procurement can help organisations to operate effectively and efficiently, achieve cost savings, improve quality, and reduce supply chain risks.
+          - paragraph [ref=f103e96]: A good strategy should be flexible enough to adapt to changing circumstances and based on a thorough analysis of relevant data and information.
+          - heading "Explore the content shared and you can refer to the CIPS Glossary for the definitions of any terms used." [level=4] [ref=f103e97]:
+            - text: Explore the content shared and you can refer to the
+            - link "CIPS Glossary" [ref=f103e98] [cursor=pointer]:
+              - /url: /intelligence-hub/glossary-of-terms
+            - text: for the definitions of any terms used.
+        - paragraph [ref=f103e99]:
+          - img "Air cargo shipment being loaded onto a plane, representing global supply chain and logistics" [ref=f103e100]
+      - generic [ref=f103e101]:
+        - heading "Procurement fundamentals content resources" [level=2] [ref=f103e103]
+        - generic [ref=f103e104]:
+          - generic [ref=f103e105]:
+            - link "Big data in procurement" [ref=f103e106] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/big-data-in-procurement
+              - img [ref=f103e107]: 
+              - generic [ref=f103e108]: Big data in procurement
+            - link "Direct - Indirect" [ref=f103e109] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/direct-indirect
+              - img [ref=f103e110]: 
+              - generic [ref=f103e111]: Direct - Indirect
+            - link "eProcurement" [ref=f103e112] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/e-procurement
+              - img [ref=f103e113]: 
+              - generic [ref=f103e114]: eProcurement
+            - link "How to write a contract" [ref=f103e115] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/how-to-write-a-contract-for-procurement
+              - img [ref=f103e116]: 
+              - generic [ref=f103e117]: How to write a contract
+          - generic [ref=f103e118]:
+            - link "Procurement KPIs" [ref=f103e119] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/kpis
+              - img [ref=f103e120]: 
+              - generic [ref=f103e121]: Procurement KPIs
+            - link "Procurement policies" [ref=f103e122] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/procurement-policies
+              - img [ref=f103e123]: 
+              - generic [ref=f103e124]: Procurement policies
+            - link "Procurement process" [ref=f103e125] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/procurement-process
+              - img [ref=f103e126]: 
+              - generic [ref=f103e127]: Procurement process
+            - link "Procurement supply cycle" [ref=f103e128] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/procurement-supply-cycle
+              - img [ref=f103e129]: 
+              - generic [ref=f103e130]: Procurement supply cycle
+          - generic [ref=f103e131]:
+            - link "Public sector" [ref=f103e132] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/public-sector
+              - img [ref=f103e133]: 
+              - generic [ref=f103e134]: Public sector
+            - link "Socially responsible procurement" [ref=f103e135] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/socially-responsible-procurement
+              - img [ref=f103e136]: 
+              - generic [ref=f103e137]: Socially responsible procurement
+            - link "What is procurement" [ref=f103e138] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/what-is-procurement
+              - img [ref=f103e139]: 
+              - generic [ref=f103e140]: What is procurement
+            - link "Types of procurement" [ref=f103e141] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/types-of-procurement
+              - img [ref=f103e142]: 
+              - generic [ref=f103e143]: Types of procurement
+      - generic [ref=f103e147]:
+        - paragraph [ref=f103e148]:
+          - img "Circular diagram highlighting step one, specification, in the procurement cycle" [ref=f103e149]
+        - generic [ref=f103e150]:
+          - heading "Procurement and supply cycle" [level=3] [ref=f103e151]
+          - paragraph [ref=f103e152]: Our procurement cycle provides everything you need to know about the key steps for procuring goods or services. The procurement cycle will guide you through the procurement process and will support you every step of the way through your procurement life cycle.
+          - paragraph [ref=f103e153]:
+            - link "VIEW PROCUREMENT AND SUPPLY CYCLE" [ref=f103e154] [cursor=pointer]:
+              - /url: /intelligence-hub/member-only/procurement-strategy-development-guide
+              - generic [ref=f103e155]: VIEW PROCUREMENT AND SUPPLY CYCLE
+      - generic [ref=f103e158]:
+        - heading "Procurement fundamentals member only content" [level=2] [ref=f103e160]
+        - generic [ref=f103e161]:
+          - generic [ref=f103e162]:
+            - link "Purchase Requisition" [ref=f103e163] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/purchase-requisition
+              - img [ref=f103e164]: 
+              - generic [ref=f103e165]: Purchase Requisition
+            - link "Procurement Soft Skills" [ref=f103e166] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement-fundamentals/soft-skills
+              - img [ref=f103e167]: 
+              - generic [ref=f103e168]: Procurement Soft Skills
+          - generic [ref=f103e169]:
+            - link "Definitions of procurement and supply guide" [ref=f103e170] [cursor=pointer]:
+              - /url: /intelligence-hub/member-only/procurement-definitions-of-procurement-supply-guide
+              - img [ref=f103e171]: 
+              - generic [ref=f103e172]: Definitions of procurement and supply guide
+            - link "High performance procurement guide" [ref=f103e173] [cursor=pointer]:
+              - /url: /intelligence-hub/member-only/procurement-high-performance-purchasing-guide
+              - img [ref=f103e174]: 
+              - generic [ref=f103e175]: High performance procurement guide
+          - generic [ref=f103e176]:
+            - link "Single vs sole sourcing guide" [ref=f103e177] [cursor=pointer]:
+              - /url: /intelligence-hub/member-only/sourcing-single-vs-sole-sourcing-guide
+              - img [ref=f103e178]: 
+              - generic [ref=f103e179]: Single vs sole sourcing guide
+            - link "Global vs local sourcing guide" [ref=f103e180] [cursor=pointer]:
+              - /url: /intelligence-hub/member-only/sourcing-global-vs-local-sourcing-guide
+              - img [ref=f103e181]: 
+              - generic [ref=f103e182]: Global vs local sourcing guide
+      - generic [ref=f103e183]:
+        - heading "Watch our Procurement fundamentals playlist" [level=2] [ref=f103e184]
+        - iframe [ref=f103e187]:
+          - generic [active] [ref=f104e1]:
+            - generic "YouTube Video Player" [ref=f104e3]
+            - generic [ref=f104e5]:
+              - generic:
+                - generic:
+                  - button "Play video" [ref=f104e10] [cursor=pointer]
+                  - button "Hide player controls" [ref=f104e12] [cursor=pointer]
+                  - generic [ref=f104e14]:
+                    - generic [ref=f104e19]:
+                      - generic [ref=f104e20]:
+                        - 'link "10 Megatrends Building Procurement Strategies for the Decade Ahead: CIPS New England Chapter Webinar" [ref=f104e21] [cursor=pointer]':
+                          - /url: https://www.youtube.com/watch?v=L_zG7ve2Od8
+                        - link "CIPS" [ref=f104e22] [cursor=pointer]:
+                          - /url: /channel/UCRCdfo9dLxMNxcEnhBmX0YA
+                          - generic [ref=f104e23]: CIPS
+                      - generic [ref=f104e24]:
+                        - button [ref=f104e25] [cursor=pointer]
+                        - generic [ref=f104e27]:
+                          - generic: CIPS
+                          - generic: 34.7K subscribers
+                    - generic [ref=f104e28]:
+                      - button "Copy link" [ref=f104e31] [cursor=pointer]:
+                        - generic [ref=f104e35]:
+                          - img
+                      - link "Watch on YouTube" [ref=f104e42] [cursor=pointer]:
+                        - /url: https://www.youtube.com/watch?v=L_zG7ve2Od8
+                        - generic [ref=f104e45]:
+                          - text: Watch on
+                          - img [ref=f104e47]:
+                            - generic [ref=f104e49]:
+                              - img
+      - heading "More resources on this topic" [level=3] [ref=f103e191]
+      - generic [ref=f103e195]:
+        - generic [ref=f103e196]:
+          - group "1 / 4" [ref=f103e197]:
+            - generic [ref=f103e198]:
+              - img "ightbulb icon representing new ideas, innovation, and procurement learning resources" [ref=f103e199]
+              - generic [ref=f103e200]:
+                - heading "CIPS Templates" [level=2] [ref=f103e201]
+                - paragraph [ref=f103e202]: Explore the templates to help you save time and work smarter in your organisation.
+              - link "VIEW TEMPLATES" [ref=f103e204] [cursor=pointer]:
+                - /url: /intelligence-hub/templates
+                - generic: VIEW TEMPLATES
+          - group "2 / 4" [ref=f103e205]:
+            - generic [ref=f103e206]:
+              - img "Icon of two arrows in opposite directions symbolizing procurement processes and training" [ref=f103e207]
+              - generic [ref=f103e208]:
+                - heading "Procurement Skills Training" [level=2] [ref=f103e209]
+                - paragraph [ref=f103e210]: Accelerate your learning and keep your knowledge and expertise up to date with our procurement for beginners training courses.
+              - link "VIEW COURSES" [ref=f103e212] [cursor=pointer]:
+                - /url: /employers/people/procurement-training/beginners
+                - generic: VIEW COURSES
+          - group "3 / 4" [ref=f103e213]:
+            - generic [ref=f103e214]:
+              - img "Business team collaborating around a laptop during a procurement strategy session" [ref=f103e215]
+              - generic [ref=f103e216]:
+                - heading "Skills Gap Analysis" [level=2] [ref=f103e217]
+                - paragraph [ref=f103e218]: Accelerate your learning and keep your knowledge and expertise up to date with our Value Creation training courses.
+              - link "VIEW TOOLS" [ref=f103e220] [cursor=pointer]:
+                - /url: /employers/people/skills-assessment
+                - generic: VIEW TOOLS
+          - group "4 / 4" [ref=f103e221]:
+            - generic [ref=f103e222]:
+              - img "Two business professionals, a woman with curly hair and glasses and a bearded man, are sitting together in front of a laptop. The man is pointing toward the screen, appearing to explain or discuss content with the woman, who is listening carefully. The background features a brightly lit modern office interior with furniture visible through a circular, abstract blue and white digital overlay, suggesting a business health check or consultation." [ref=f103e223]
+              - generic [ref=f103e224]:
+                - heading "Procurement Health check" [level=2] [ref=f103e225]
+                - paragraph [ref=f103e226]: Transform your organisation's procurement and supply function. Take the first step with our free Procurement Health check
+              - generic [ref=f103e228] [cursor=pointer]:
+                - generic: Read More
+        - generic [ref=f103e229]:
+          - button "Previous slide" [disabled] [ref=f103e230]:
+            - img
+            - generic [ref=f103e231]: PREVIOUS
+            - generic [ref=f103e232]: Previous
+          - button "Next slide" [ref=f103e233] [cursor=pointer]:
+            - generic [ref=f103e234]: NEXT
+            - img
+            - generic [ref=f103e235]: Next
+  - contentinfo [ref=f103e236]:
+    - generic [ref=f103e238]:
+      - generic [ref=f103e239]:
+        - link "Contact us" [ref=f103e241] [cursor=pointer]:
+          - /url: /about-us/contact-us
+        - link "FAQs" [ref=f103e243] [cursor=pointer]:
+          - /url: /about-us/frequently-asked-questions
+        - link "MyCIPS" [ref=f103e245] [cursor=pointer]:
+          - /url: https://www.cips.org/profile
+        - link "About us" [ref=f103e247] [cursor=pointer]:
+          - /url: /about-us
+      - generic [ref=f103e248]:
+        - generic [ref=f103e249]:
+          - generic [ref=f103e251]:
+            - heading "People and careers" [level=2] [ref=f103e252]
+            - list [ref=f103e253]:
+              - listitem [ref=f103e254]:
+                - link "Work at CIPS" [ref=f103e255] [cursor=pointer]:
+                  - /url: /about-us/work-at-cips
+              - listitem [ref=f103e256]:
+                - link "Procurement & Supply Jobs" [ref=f103e257] [cursor=pointer]:
+                  - /url: https://jobs.cips.org/
+              - listitem [ref=f103e258]:
+                - link "Careers" [ref=f103e259] [cursor=pointer]:
+                  - /url: /careers
+              - listitem [ref=f103e260]:
+                - link "Professional Register" [ref=f103e261] [cursor=pointer]:
+                  - /url: /professional-register
+          - generic [ref=f103e263]:
+            - heading "Partners" [level=2] [ref=f103e264]
+            - list [ref=f103e265]:
+              - listitem [ref=f103e266]:
+                - link "Country partners" [ref=f103e267] [cursor=pointer]:
+                  - /url: /regional/country-partners
+              - listitem [ref=f103e268]:
+                - link "CIPS Foundation" [ref=f103e269] [cursor=pointer]:
+                  - /url: /about-us/cips-foundation
+              - listitem [ref=f103e270]:
+                - link "CIPS Content Partners" [ref=f103e271] [cursor=pointer]:
+                  - /url: /knowledge-and-insight/cips-official-knowledge-partners
+          - generic [ref=f103e273]:
+            - heading "More from us" [level=2] [ref=f103e274]
+            - list [ref=f103e275]:
+              - listitem [ref=f103e276]:
+                - link "CIPS News" [ref=f103e277] [cursor=pointer]:
+                  - /url: /about-us/news
+              - listitem [ref=f103e278]:
+                - link "Running a study centre" [ref=f103e279] [cursor=pointer]:
+                  - /url: /study-centres-operations
+              - listitem [ref=f103e280]:
+                - link "Become a study centre" [ref=f103e281] [cursor=pointer]:
+                  - /url: /study-centres
+              - listitem [ref=f103e282]:
+                - link "Sitemap" [ref=f103e283] [cursor=pointer]:
+                  - /url: /sitemap-guide
+        - generic [ref=f103e284]:
+          - generic [ref=f103e285]:
+            - link "LinkedIn" [ref=f103e286] [cursor=pointer]:
+              - /url: https://www.linkedin.com/school/cips
+              - img
+              - generic [ref=f103e287]: LinkedIn
+            - link "Facebook" [ref=f103e288] [cursor=pointer]:
+              - /url: https://www.facebook.com/OfficialCIPS
+              - img
+              - generic [ref=f103e289]: Facebook
+            - link "CIPS YouTube Changed" [ref=f103e290] [cursor=pointer]:
+              - /url: https://www.youtube.com/@cipsweb
+              - img
+              - generic [ref=f103e291]: CIPS YouTube Changed
+            - link "Instagram" [ref=f103e292] [cursor=pointer]:
+              - /url: https://www.instagram.com/cipsglobal/
+              - img
+              - generic [ref=f103e293]: Instagram
+          - link "+44 (0)345 880 1188" [ref=f103e294] [cursor=pointer]:
+            - /url: tel:+44 (0)345 880 1188
+      - generic [ref=f103e295]:
+        - link "CIPS Logo CIPS Logo" [ref=f103e296] [cursor=pointer]:
+          - /url: /
+          - img "CIPS Logo"
+          - generic [ref=f103e297]: CIPS Logo
+        - list [ref=f103e298]:
+          - listitem [ref=f103e299]:
+            - link "Privacy Statement" [ref=f103e300] [cursor=pointer]:
+              - /url: /about-us/terms-conditions/privacy-statement
+          - listitem [ref=f103e301]:
+            - link "Modern Slavery Statement" [ref=f103e302] [cursor=pointer]:
+              - /url: /about-us/governance
+          - listitem [ref=f103e303]:
+            - link "Cookie Policy Statement" [ref=f103e304] [cursor=pointer]:
+              - /url: https://www.cips.org/cookie-policy
+          - listitem [ref=f103e305]:
+            - link "Terms and Conditions" [ref=f103e306] [cursor=pointer]:
+              - /url: /about-us/terms-conditions
+        - paragraph [ref=f103e307]: © Copyright CIPS 2026
+  - iframe [ref=f103e308]:
+    

@@ -1,0 +1,389 @@
+- generic [active] [ref=f110e1]:
+  - dialog "Our Cookies" [ref=f110e2]:
+    - generic [ref=f110e3]:
+      - link "Cookiebot by Usercentrics - opens in a new window" [ref=f110e7] [cursor=pointer]:
+        - /url: https://www.cookiebot.com/en/what-is-behind-powered-by-cookiebot/?utm_source=banner_cb&utm_medium=referral&utm_content=v2
+        - img [ref=f110e8]
+      - tabpanel "Consent" [ref=f110e35]:
+        - generic [ref=f110e37]:
+          - heading "Our Cookies" [level=2] [ref=f110e38]
+          - generic [ref=f110e39]:
+            - text: This website uses cookies to improve your experience. By continuing to use this website you are accepting our
+            - link "cookie policy" [ref=f110e40] [cursor=pointer]:
+              - /url: https://www.cips.org/cookie-policy
+            - text: .
+        - link "Cookie settings" [ref=f110e43] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f110e47]:
+        - button "Allow all cookies" [ref=f110e48] [cursor=pointer]
+        - button "Customise" [ref=f110e49] [cursor=pointer]: Customise
+  - img
+  - list:
+    - listitem:
+      - link "Skip to content" [ref=f110e51] [cursor=pointer]:
+        - /url: "#main"
+  - banner [ref=f110e52]:
+    - generic [ref=f110e53]:
+      - text: 
+      - generic [ref=f110e54]:
+        - link "CIPS Logo (Mobile version) CIPS Logo" [ref=f110e56] [cursor=pointer]:
+          - /url: /
+          - img "CIPS Logo (Mobile version)"
+          - generic [ref=f110e57]: CIPS Logo
+        - generic [ref=f110e59]:
+          - button "Search" [ref=f110e60] [cursor=pointer]:
+            - img
+            - generic [ref=f110e61]: Search
+          - link [ref=f110e62] [cursor=pointer]:
+            - /url: https://www.cips.org/cart
+            - img [ref=f110e63]: 
+          - link [ref=f110e65] [cursor=pointer]:
+            - /url: https://www.cips.org/login?from=%2Fintelligence-hub%2Fcategory-management
+            - img [ref=f110e66]: 
+          - link "JOIN CIPS" [ref=f110e67] [cursor=pointer]:
+            - /url: https://www.cips.org/memberships/join
+            - generic [ref=f110e68]: JOIN CIPS
+          - button "Menu" [ref=f110e69] [cursor=pointer]:
+            - img
+            - generic [ref=f110e70]: Menu
+  - main [ref=f110e71]:
+    - generic [ref=f110e76]:
+      - link "Home-test" [ref=f110e77] [cursor=pointer]:
+        - /url: /
+        - navigation [ref=f110e78]
+        - generic [ref=f110e80]: Home-test
+      - generic [ref=f110e81]:
+        - link "Intelligence hub >" [ref=f110e82] [cursor=pointer]:
+          - /url: /intelligence-hub
+        - generic [ref=f110e83]: Category management >
+    - generic [ref=f110e89]:
+      - heading "Category management" [level=1] [ref=f110e90]
+      - paragraph [ref=f110e92]: Discover the basic principles and aims of category management.
+    - generic [ref=f110e95]:
+      - generic [ref=f110e96]:
+        - heading "What is category management?" [level=2] [ref=f110e97]
+        - paragraph [ref=f110e98]: Many organisations ask ‘what is category management?’.
+        - paragraph [ref=f110e99]: The answer is that category management is a powerful way of reimagining the way procurement works. It can be applied to almost every business and can make it more efficient and responsive
+        - paragraph [ref=f110e100]: Category management means grouping related products into categories. Each category is managed as its own business unit. Each category is then treated as an independent business unit with its own strategy and goals. This makes it possible to manage products in a more structured way where they can be aligned with the wider needs of the business.
+        - paragraph [ref=f110e101]: When it is done properly, category management can become a data-driven way of meeting customer demands and optimising the supply chain. In the long run, it can maximise consumer and organisational value.
+        - heading "Category Management Definition" [level=4] [ref=f110e102]
+        - paragraph [ref=f110e103]: The most widely used category management definition is that it is the process of dividing products into categories where they can be managed together
+      - generic [ref=f110e106]:
+        - heading "What value does it bring to organisations?" [level=2] [ref=f110e107]
+        - generic [ref=f110e108]:
+          - paragraph [ref=f110e109]: Category management brings clarity and focus to purchasing decisions.
+          - paragraph [ref=f110e110]: Grouping products into categories means that purchasing processes within each category can be streamlined. Decisions will also have more clarity behind them. This should make it easier to negotiate with new and existing suppliers.
+          - paragraph [ref=f110e111]: It involves understanding how category management principles work and the processes involved implementing them.
+      - generic [ref=f110e114]:
+        - heading "Starting the category management process" [level=2] [ref=f110e115]
+        - paragraph [ref=f110e116]: Every product and service, every category, has its own characteristics. It is important to note that no two businesses or organisations will operate in the same way.
+        - paragraph [ref=f110e117]: "That means the process of developing effective category management is going to be different for each use case. Despite this, there are some basic steps that most organisations can follow:"
+        - list [ref=f110e118]:
+          - listitem [ref=f110e119]:
+            - strong [ref=f110e120]: Define
+            - text: the category by clearly outlining the goods or services
+          - listitem [ref=f110e121]:
+            - strong [ref=f110e122]: Analyse
+            - text: spend patterns and market dynamics using internal data and external intelligence
+          - listitem [ref=f110e123]:
+            - strong [ref=f110e124]: Engage
+            - text: stakeholders to ensure alignment with wider business objectives
+          - listitem [ref=f110e125]:
+            - strong [ref=f110e126]: Develop and implement
+            - text: a sourcing strategy with measurable goals and clear value drivers
+          - listitem [ref=f110e127]:
+            - strong [ref=f110e128]: Review and improve
+            - text: performance through Key Performance Indicators (KPIs) and continuous supplier evaluation
+        - paragraph [ref=f110e129]: Shifting from a reactive purchasing approach to strategic category management means procurement becomes a proactive business partner and commercial enabler.
+      - generic [ref=f110e132]:
+        - heading "What are the principles of category management?" [level=2] [ref=f110e133]
+        - paragraph [ref=f110e134]: "The category management definition makes it clear how the business benefits can be felt across the entire organisation. It will now help to understand the three main principles that inform category management:"
+        - heading "1. Customer-centric focus" [level=4] [ref=f110e135]
+        - paragraph [ref=f110e136]: This is the key principle. Category management strategy needs to be closely coordinated with customer needs. Organisations that keep the customer at the centre of what they do will create better products and enjoy greater customer satisfaction.
+        - paragraph [ref=f110e137]: You should also use data as the basis for decision-making, for strategy adjustments and to predict market trends.
+        - heading "2. Cross-functional collaboration (engage and implement)" [level=4] [ref=f110e138]
+        - paragraph [ref=f110e139]: Successful category management relies on collaboration across business units. This focus works best with regular, joint meetings, brainstorming sessions and joint goals to unify efforts.
+        - heading "3. Insight-led strategy (analyse and review)" [level=4] [ref=f110e140]
+        - paragraph [ref=f110e141]: Using analytics, businesses can anticipate market shifts and refine strategies. Using advanced analytics tools will generate data that can be used to adjust strategies and refine the company’s risk profile.
+      - generic [ref=f110e144]:
+        - heading "Tools to make category management work" [level=2] [ref=f110e145]
+        - paragraph [ref=f110e146]: Successful category management relies on using tools that support strategic thinking, supplier evaluation, and data-driven decisions.
+        - paragraph [ref=f110e147]:
+          - text: The main tool is the
+          - strong [ref=f110e148]:
+            - link "CIPS Category Management Cycle" [ref=f110e149] [cursor=pointer]:
+              - /url: /intelligence-hub/category-management/cycle
+          - text: . It spans all stages from scoping to performance review and is designed to support strategic thinking while remaining practical and repeatable.
+        - paragraph [ref=f110e150]: "There are also supporting tools. These include:"
+        - list [ref=f110e151]:
+          - listitem [ref=f110e152]:
+            - strong [ref=f110e153]: Kraljic Matrix
+            - text: ": Helps prioritise categories by supply risk and business impact"
+          - listitem [ref=f110e154]:
+            - strong [ref=f110e155]: ABC Analysis
+            - text: ": Segments categories or suppliers by value and importance"
+          - listitem [ref=f110e156]:
+            - strong [ref=f110e157]: STEEPLED
+            - text: "Analysis: Assesses macro-environmental factors that may affect sourcing"
+          - listitem [ref=f110e158]:
+            - strong [ref=f110e159]: "eSourcing Tools:"
+            - text: Digital platforms that streamline sourcing and evaluation
+          - listitem [ref=f110e160]:
+            - strong [ref=f110e161]: "ERP and Procurement Systems:"
+            - text: Enable centralised data, contract visibility, and automation of workflows
+        - paragraph [ref=f110e162]: Together, these tools support procurement professionals in building robust, evidence led category strategies.
+      - generic [ref=f110e165]:
+        - 'heading "Real world examples: retail indirect services category management" [level=2] [ref=f110e166]'
+        - paragraph [ref=f110e167]: One example of category management in practice can be found in retail. In this sector, indirect services like cleaning, security, and waste management are often split across many suppliers and often serve different locations.
+        - paragraph [ref=f110e168]: By using category management principles, retailers can put these services into clearly defined categories. It can improve performance and reduce costs.
+        - paragraph [ref=f110e169]: Applying the category management principles supports consistency across store locations and strengthens supplier accountability. It also enables all progress towards sustainability and compliance goals to be carefully monitored.
+      - generic [ref=f110e172]:
+        - heading "Case study" [level=2] [ref=f110e173]
+        - paragraph [ref=f110e174]: A UK-based retailer applied this structure across its UK operations.
+        - paragraph [ref=f110e175]: Its supplier base was reduced by 35%, and it increased service level compliance by 22%. Indirect spend was cut by 12% in just 18 months.
+        - paragraph [ref=f110e176]: Success relied on consolidating categories and on working closely with store managers, legal, and ESG teams to embed both commercial and brand values into the sourcing strategies.
+      - generic [ref=f110e179]:
+        - heading "How it applies to retail" [level=2] [ref=f110e180]
+        - generic [ref=f110e181]:
+          - generic [ref=f110e182]:
+            - paragraph [ref=f110e183]:
+              - strong [ref=f110e184]: Category
+            - list [ref=f110e185]:
+              - listitem [ref=f110e186]: Facilities management
+              - listitem [ref=f110e187]: Security and safety
+              - listitem [ref=f110e188]: Store operations
+              - listitem [ref=f110e189]: Logistics support
+              - listitem [ref=f110e190]: Utilities
+              - listitem [ref=f110e191]: Professional services
+          - generic [ref=f110e192]:
+            - paragraph [ref=f110e193]:
+              - strong [ref=f110e194]: Subcategories
+            - list [ref=f110e195]:
+              - listitem [ref=f110e196]: Cleaning, Waste, Maintenance
+              - listitem [ref=f110e197]: Guarding, CCTV, Alarm Systems
+              - listitem [ref=f110e198]: Uniforms, Fixtures, Consumables
+              - listitem [ref=f110e199]: In-store Delivery, Stock Handling
+              - listitem [ref=f110e200]: Electricity, Water, Heating
+              - listitem [ref=f110e201]: Temp Staffing, Training, Compliance
+      - generic [ref=f110e204]:
+        - heading "Future trends in category management" [level=2] [ref=f110e205]
+        - paragraph [ref=f110e206]: As procurement becomes more strategic, category management is evolving to embrace data, digital tools, and ESG priorities.
+        - paragraph [ref=f110e207]: "Trends to watch:"
+        - list [ref=f110e208]:
+          - listitem [ref=f110e209]: AI-driven spend analysis and market forecasting
+          - listitem [ref=f110e210]: Integration of social value metrics into category plans
+          - listitem [ref=f110e211]: Agile category planning to reflect rapidly changing business environments
+        - paragraph [ref=f110e212]: For procurement functions aiming to drive impact, adopting the CIPS Category Management Cycle and the principles behind it remains essential.
+      - generic [ref=f110e214]:
+        - paragraph [ref=f110e215]:
+          - img "Icon of a light bulb, symbolizing creativity or idea generation" [ref=f110e216]
+        - generic [ref=f110e217]:
+          - heading "CIPS Templates" [level=3] [ref=f110e218]
+          - paragraph [ref=f110e219]: Explore the templates to help you save time and work smarter in your organisation.
+          - paragraph [ref=f110e220]:
+            - link "VIEW TEMPLATES" [ref=f110e221] [cursor=pointer]:
+              - /url: /intelligence-hub/templates
+              - generic [ref=f110e222]: VIEW TEMPLATES
+      - link "CIPS Category Management Cycle Our Category Management Cycle will help you to define an efficient category management process. Find out more about the Category Management Cycle" [ref=f110e226] [cursor=pointer]:
+        - /url: /intelligence-hub/category-management/cycle
+        - generic [ref=f110e227]:
+          - paragraph [ref=f110e228]: CIPS Category Management Cycle
+          - paragraph [ref=f110e229]: Our Category Management Cycle will help you to define an efficient category management process. Find out more about the Category Management Cycle
+      - generic [ref=f110e230]:
+        - heading "Category management key themes" [level=2] [ref=f110e232]
+        - generic [ref=f110e233]:
+          - generic [ref=f110e234]:
+            - link "Category management strategy" [ref=f110e235] [cursor=pointer]:
+              - /url: /intelligence-hub/category-management/strategy
+              - img [ref=f110e236]: 
+              - generic [ref=f110e237]: Category management strategy
+            - link "Benefits" [ref=f110e238] [cursor=pointer]:
+              - /url: /intelligence-hub/category-management/benefits
+              - img [ref=f110e239]: 
+              - generic [ref=f110e240]: Benefits
+            - link "Differences with strategic sourcing" [ref=f110e241] [cursor=pointer]:
+              - /url: /intelligence-hub/category-management/differences-with-strategic-sourcing
+              - img [ref=f110e242]: 
+              - generic [ref=f110e243]: Differences with strategic sourcing
+          - generic [ref=f110e244]:
+            - link "KPIs" [ref=f110e245] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement/kpis
+              - img [ref=f110e246]: 
+              - generic [ref=f110e247]: KPIs
+            - link "Soft Skills" [ref=f110e248] [cursor=pointer]:
+              - /url: /intelligence-hub/procurement-fundamentals/soft-skills
+              - img [ref=f110e249]: 
+              - generic [ref=f110e250]: Soft Skills
+      - generic [ref=f110e251]:
+        - heading "Listen on demand and get the latest practical insights from our panel of procurement and supply experts." [level=3] [ref=f110e252]
+        - iframe [ref=f110e254]:
+          - generic [active] [ref=f111e1]:
+            - generic "YouTube Video Player" [ref=f111e3]
+            - generic [ref=f111e5]:
+              - generic:
+                - generic:
+                  - button "Play video" [ref=f111e10] [cursor=pointer]
+                  - button "Hide player controls" [ref=f111e12] [cursor=pointer]
+                  - generic [ref=f111e14]:
+                    - generic [ref=f111e19]:
+                      - generic [ref=f111e20]:
+                        - 'link "Global Sourcing Insights: Category Management, Cornerstone to Procurement Success | CIPS" [ref=f111e21] [cursor=pointer]':
+                          - /url: https://www.youtube.com/watch?v=fiXG9__L2Vk
+                        - link "CIPS" [ref=f111e22] [cursor=pointer]:
+                          - /url: /channel/UCRCdfo9dLxMNxcEnhBmX0YA
+                          - generic [ref=f111e23]: CIPS
+                      - generic [ref=f111e24]:
+                        - button [ref=f111e25] [cursor=pointer]
+                        - generic [ref=f111e27]:
+                          - generic: CIPS
+                          - generic: 34.7K subscribers
+                    - generic [ref=f111e28]:
+                      - button "Share" [ref=f111e31] [cursor=pointer]:
+                        - generic [ref=f111e35]:
+                          - img
+                      - link "Watch on YouTube" [ref=f111e42] [cursor=pointer]:
+                        - /url: https://www.youtube.com/watch?v=fiXG9__L2Vk
+                        - generic [ref=f111e45]:
+                          - text: Watch on
+                          - img [ref=f111e47]:
+                            - generic [ref=f111e49]:
+                              - img
+      - generic [ref=f110e256]:
+        - link "Become a CIPS member Achieve your potential by becoming a member today. Whether you want to become a studying member or want to upgrade your membership to MCIPS, you’ll receive support and guidance whatever career level you’re at." [ref=f110e258] [cursor=pointer]:
+          - /url: https://www.cips.org/memberships/join
+          - generic [ref=f110e259]:
+            - paragraph [ref=f110e260]: Become a CIPS member
+            - paragraph [ref=f110e261]: Achieve your potential by becoming a member today. Whether you want to become a studying member or want to upgrade your membership to MCIPS, you’ll receive support and guidance whatever career level you’re at.
+        - img "A smiling woman in a dark top stands with her arms crossed, looking away and slightly up. She is framed by two large blue concentric circles and a vibrant blue background with radiating orange-dotted lines." [ref=f110e263]
+      - heading "Access the latest research, whitepapers and tools across a range of key procurement and supply topics" [level=3] [ref=f110e267]
+      - generic [ref=f110e268]:
+        - generic [ref=f110e269]:
+          - link "Category management This CIPS practice guide recognises the importance of category management within business. Category management as it applies to procurement and supply management (P&SM) can be defined as organising the resources of the procurement team in such a way as to focus externally onto the supply markets of an organisation." [ref=f110e271] [cursor=pointer]:
+            - /url: /intelligence-hub/member-only/category-management-guide
+            - generic [ref=f110e272]:
+              - paragraph [ref=f110e273]: Category management
+              - paragraph [ref=f110e274]: This CIPS practice guide recognises the importance of category management within business. Category management as it applies to procurement and supply management (P&SM) can be defined as organising the resources of the procurement team in such a way as to focus externally onto the supply markets of an organisation.
+          - link "The state of the art of category management This CIPS document covers the insights from research into category management within businesses in Australia. It focuses on the application of category management, the traits of managers, the breadth and depth of approaches from participants in the study." [ref=f110e276] [cursor=pointer]:
+            - /url: /intelligence-hub/member-only/category-management-state-of-the-art-guide
+            - generic [ref=f110e277]:
+              - paragraph [ref=f110e278]: The state of the art of category management
+              - paragraph [ref=f110e279]: This CIPS document covers the insights from research into category management within businesses in Australia. It focuses on the application of category management, the traits of managers, the breadth and depth of approaches from participants in the study.
+        - generic [ref=f110e280]:
+          - link "Pareto analysis and supply chain management The content in this paper offers an overview of Pareto analysis and how this then works with ABC classification as a method to classify your inventory." [ref=f110e282] [cursor=pointer]:
+            - /url: /intelligence-hub/member-only/operations-management-pareto-analysis-guide
+            - generic [ref=f110e283]:
+              - paragraph [ref=f110e284]: Pareto analysis and supply chain management
+              - paragraph [ref=f110e285]: The content in this paper offers an overview of Pareto analysis and how this then works with ABC classification as a method to classify your inventory.
+          - link "Strategic procurement There are many benefits to strategic procurement and when successfully implemented it can provide cost savings, mitigate supply risks, and improve your relationships with strategic suppliers. This document will provide you with an understanding of strategic procurement." [ref=f110e287] [cursor=pointer]:
+            - /url: /intelligence-hub/member-only/procurement-strategic-procurement-guide
+            - generic [ref=f110e288]:
+              - paragraph [ref=f110e289]: Strategic procurement
+              - paragraph [ref=f110e290]: There are many benefits to strategic procurement and when successfully implemented it can provide cost savings, mitigate supply risks, and improve your relationships with strategic suppliers. This document will provide you with an understanding of strategic procurement.
+      - generic [ref=f110e291]:
+        - heading "Expand your category management skills" [level=3] [ref=f110e292]
+        - generic [ref=f110e293]:
+          - paragraph [ref=f110e294]:
+            - img "Abstract illustration of a gear icon symbolizing process or system management, set against overlapping blue circles and dotted green arcs." [ref=f110e295]
+          - generic [ref=f110e296]:
+            - heading "Procurement Skills Training" [level=3] [ref=f110e297]
+            - paragraph [ref=f110e298]: Accelerate your learning and keep your knowledge and expertise up to date with our Category Management training courses.
+            - paragraph [ref=f110e299]:
+              - link "CATEGORY MANAGEMENT TRAINING" [ref=f110e300] [cursor=pointer]:
+                - /url: /employers/people/procurement-training/category-management
+                - generic [ref=f110e301]: CATEGORY MANAGEMENT TRAINING
+  - contentinfo [ref=f110e303]:
+    - generic [ref=f110e305]:
+      - generic [ref=f110e306]:
+        - link "Contact us" [ref=f110e308] [cursor=pointer]:
+          - /url: /about-us/contact-us
+        - link "FAQs" [ref=f110e310] [cursor=pointer]:
+          - /url: /about-us/frequently-asked-questions
+        - link "MyCIPS" [ref=f110e312] [cursor=pointer]:
+          - /url: https://www.cips.org/profile
+        - link "About us" [ref=f110e314] [cursor=pointer]:
+          - /url: /about-us
+      - generic [ref=f110e315]:
+        - generic [ref=f110e316]:
+          - generic [ref=f110e318]:
+            - heading "People and careers" [level=2] [ref=f110e319]
+            - list [ref=f110e320]:
+              - listitem [ref=f110e321]:
+                - link "Work at CIPS" [ref=f110e322] [cursor=pointer]:
+                  - /url: /about-us/work-at-cips
+              - listitem [ref=f110e323]:
+                - link "Procurement & Supply Jobs" [ref=f110e324] [cursor=pointer]:
+                  - /url: https://jobs.cips.org/
+              - listitem [ref=f110e325]:
+                - link "Careers" [ref=f110e326] [cursor=pointer]:
+                  - /url: /careers
+              - listitem [ref=f110e327]:
+                - link "Professional Register" [ref=f110e328] [cursor=pointer]:
+                  - /url: /professional-register
+          - generic [ref=f110e330]:
+            - heading "Partners" [level=2] [ref=f110e331]
+            - list [ref=f110e332]:
+              - listitem [ref=f110e333]:
+                - link "Country partners" [ref=f110e334] [cursor=pointer]:
+                  - /url: /regional/country-partners
+              - listitem [ref=f110e335]:
+                - link "CIPS Foundation" [ref=f110e336] [cursor=pointer]:
+                  - /url: /about-us/cips-foundation
+              - listitem [ref=f110e337]:
+                - link "CIPS Content Partners" [ref=f110e338] [cursor=pointer]:
+                  - /url: /knowledge-and-insight/cips-official-knowledge-partners
+          - generic [ref=f110e340]:
+            - heading "More from us" [level=2] [ref=f110e341]
+            - list [ref=f110e342]:
+              - listitem [ref=f110e343]:
+                - link "CIPS News" [ref=f110e344] [cursor=pointer]:
+                  - /url: /about-us/news
+              - listitem [ref=f110e345]:
+                - link "Running a study centre" [ref=f110e346] [cursor=pointer]:
+                  - /url: /study-centres-operations
+              - listitem [ref=f110e347]:
+                - link "Become a study centre" [ref=f110e348] [cursor=pointer]:
+                  - /url: /study-centres
+              - listitem [ref=f110e349]:
+                - link "Sitemap" [ref=f110e350] [cursor=pointer]:
+                  - /url: /sitemap-guide
+        - generic [ref=f110e351]:
+          - generic [ref=f110e352]:
+            - link "LinkedIn" [ref=f110e353] [cursor=pointer]:
+              - /url: https://www.linkedin.com/school/cips
+              - img
+              - generic [ref=f110e354]: LinkedIn
+            - link "Facebook" [ref=f110e355] [cursor=pointer]:
+              - /url: https://www.facebook.com/OfficialCIPS
+              - img
+              - generic [ref=f110e356]: Facebook
+            - link "CIPS YouTube Changed" [ref=f110e357] [cursor=pointer]:
+              - /url: https://www.youtube.com/@cipsweb
+              - img
+              - generic [ref=f110e358]: CIPS YouTube Changed
+            - link "Instagram" [ref=f110e359] [cursor=pointer]:
+              - /url: https://www.instagram.com/cipsglobal/
+              - img
+              - generic [ref=f110e360]: Instagram
+          - link "+44 (0)345 880 1188" [ref=f110e361] [cursor=pointer]:
+            - /url: tel:+44 (0)345 880 1188
+      - generic [ref=f110e362]:
+        - link "CIPS Logo CIPS Logo" [ref=f110e363] [cursor=pointer]:
+          - /url: /
+          - img "CIPS Logo"
+          - generic [ref=f110e364]: CIPS Logo
+        - list [ref=f110e365]:
+          - listitem [ref=f110e366]:
+            - link "Privacy Statement" [ref=f110e367] [cursor=pointer]:
+              - /url: /about-us/terms-conditions/privacy-statement
+          - listitem [ref=f110e368]:
+            - link "Modern Slavery Statement" [ref=f110e369] [cursor=pointer]:
+              - /url: /about-us/governance
+          - listitem [ref=f110e370]:
+            - link "Cookie Policy Statement" [ref=f110e371] [cursor=pointer]:
+              - /url: https://www.cips.org/cookie-policy
+          - listitem [ref=f110e372]:
+            - link "Terms and Conditions" [ref=f110e373] [cursor=pointer]:
+              - /url: /about-us/terms-conditions
+        - paragraph [ref=f110e374]: © Copyright CIPS 2026
+  - iframe [ref=f110e375]:
+    

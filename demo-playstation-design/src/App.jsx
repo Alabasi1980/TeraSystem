@@ -61,7 +61,7 @@ export default function App() {
             {consoles.map((item) => (
               <div
                 key={item.name}
-                className="bg-[var(--color-surface-card)] rounded-[var(--radius-md)] p-4 text-center cursor-pointer hover:shadow-lg transition-shadow"
+                className="bg-[var(--color-surface-card)] rounded-[var(--radius-md)] p-4 text-center cursor-pointer"
               >
                 <img
                   src={item.image}
@@ -174,7 +174,7 @@ export default function App() {
             {newsItems.map((item) => (
               <div
                 key={item.title}
-                className="bg-[var(--color-surface-card)] rounded-[var(--radius-md)] overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                className="bg-[var(--color-surface-card)] rounded-[var(--radius-md)] overflow-hidden cursor-pointer"
               >
                 <img
                   src={item.image}
