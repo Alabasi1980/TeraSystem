@@ -1,0 +1,3 @@
+[    1188ms] [LOG] in observer @ https://tms.oracle.com/main/prod/utag.sync.js:43
+[   15103ms] [LOG] EE: Page Peek Enabled @ https://static.atgsvcs.com/js/atgsvcs.js:101
+[   15111ms] [LOG] EE: Page Peek Enabled - 3 @ https://static.atgsvcs.com/js/atgsvcs.js:101

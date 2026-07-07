@@ -1,5 +1,3 @@
-Total messages: 3 (Errors: 0, Warnings: 0)
+# R06 Download Test
 
-[LOG] # R06 Test @ :7
-[LOG] This is a test line @ :7
-[LOG] Another line @ :7
+This is downloaded via navigate+route approach.

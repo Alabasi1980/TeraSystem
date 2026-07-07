@@ -1,0 +1,258 @@
+- generic [active] [ref=f56e1]:
+  - link [ref=f56e2] [cursor=pointer]:
+    - /url: "#"
+    - text: ___
+  - link "Skip to content" [ref=f56e4] [cursor=pointer]:
+    - /url: "#wp--skip-link--target"
+  - generic [ref=f56e5]:
+    - banner:
+      - generic [ref=f56e7]:
+        - link "Tipalti home page" [ref=f56e9] [cursor=pointer]:
+          - /url: https://tipalti.com/
+          - img "Tipalti logo" [ref=f56e10]
+        - navigation [ref=f56e19]:
+          - list [ref=f56e20]:
+            - listitem [ref=f56e21]:
+              - link "Products" [ref=f56e22] [cursor=pointer]:
+                - /url: /accounts-payable-software/
+            - listitem [ref=f56e23]:
+              - link "Solutions" [ref=f56e24] [cursor=pointer]:
+                - /url: /industries/
+            - listitem [ref=f56e25]:
+              - link "Resources" [ref=f56e26] [cursor=pointer]:
+                - /url: /resources/
+            - listitem [ref=f56e27]:
+              - link "Pricing" [ref=f56e28] [cursor=pointer]:
+                - /url: /pricing/
+            - listitem [ref=f56e29]:
+              - link "Company" [ref=f56e30] [cursor=pointer]:
+                - /url: /company/
+            - listitem [ref=f56e31]:
+              - button "Search" [ref=f56e32] [cursor=pointer]:
+                - generic: Search
+              - search [ref=f56e35]:
+                - textbox "Search" [ref=f56e36] [cursor=pointer]
+            - listitem [ref=f56e37]:
+              - link "opens new tab" [ref=f56e38] [cursor=pointer]:
+                - /url: https://hub.tipalti.com
+                - text: Log In
+        - button "Get Started - Opens popup form" [ref=f56e40] [cursor=pointer]: Get Started
+    - main [ref=f56e41]:
+      - generic [ref=f56e43]:
+        - heading "The page you are looking for doesn’t exist or has been moved" [level=1] [ref=f56e44]
+        - paragraph [ref=f56e45]: 404. Page not found
+        - button "Back to home page" [ref=f56e48] [cursor=pointer]
+    - contentinfo [ref=f56e49]:
+      - generic [ref=f56e50]:
+        - figure [ref=f56e52]:
+          - link "go to homepage" [ref=f56e53] [cursor=pointer]:
+            - /url: /
+            - img "tipalti logo" [ref=f56e54]
+        - heading "Finance automation that puts you in charge" [level=2] [ref=f56e56]
+        - generic [ref=f56e58]:
+          - button "Get Started" [ref=f56e60] [cursor=pointer]
+          - button "Log In (opens in a new tab)" [ref=f56e62] [cursor=pointer]:
+            - mark [ref=f56e63]: Log
+            - mark [ref=f56e64]: In
+        - generic [ref=f56e66]:
+          - paragraph [ref=f56e67]:
+            - strong [ref=f56e68]: Contact us
+          - paragraph [ref=f56e70]:
+            - strong [ref=f56e71]: General Inquiries
+          - paragraph [ref=f56e72]:
+            - link "contact@tipalti.com (opens in a new tab)" [ref=f56e73] [cursor=pointer]:
+              - /url: mailto:contact@tipalti.com
+              - text: contact@tipalti.com
+          - paragraph [ref=f56e74]:
+            - text: "US:"
+            - link "+1 800-305-3550 (opens in a new tab)" [ref=f56e75] [cursor=pointer]:
+              - /url: tel:+1 800-305-3550
+              - text: +1 800-305-3550
+          - paragraph [ref=f56e76]:
+            - text: "UK:"
+            - link "+44 (0)20 7846 8777 (opens in a new tab)" [ref=f56e77] [cursor=pointer]:
+              - /url: tel:+44-(0)20-7846-8777
+              - text: +44 (0)20 7846 8777
+          - paragraph [ref=f56e79]:
+            - strong [ref=f56e80]: Support
+          - paragraph [ref=f56e81]:
+            - link "+1 800-305-3550 (opens in a new tab)" [ref=f56e82] [cursor=pointer]:
+              - /url: tel:+1 800-305-3550
+              - text: +1 800-305-3550
+          - button "Raise a support request (opens in a new tab)" [ref=f56e85] [cursor=pointer]: Raise a support request
+      - generic [ref=f56e87]:
+        - generic [ref=f56e88]:
+          - heading "Products" [level=3] [ref=f56e89]
+          - list [ref=f56e91]:
+            - listitem [ref=f56e92]:
+              - link "AP Automation" [ref=f56e93] [cursor=pointer]:
+                - /url: /ap-automation/
+            - listitem [ref=f56e94]:
+              - link "Mass Payments" [ref=f56e95] [cursor=pointer]:
+                - /url: /mass-payments/
+            - listitem [ref=f56e96]:
+              - link "Procurement" [ref=f56e97] [cursor=pointer]:
+                - /url: /procurement/
+            - listitem [ref=f56e98]:
+              - link "Expense Management" [ref=f56e99] [cursor=pointer]:
+                - /url: /expense-management/
+            - listitem [ref=f56e100]:
+              - link "Connected Suite" [ref=f56e101] [cursor=pointer]:
+                - /url: /accounts-payable-software/
+        - generic [ref=f56e102]:
+          - heading "Capabilities" [level=3] [ref=f56e103]
+          - list [ref=f56e105]:
+            - listitem [ref=f56e106]:
+              - link "Overview" [ref=f56e107] [cursor=pointer]:
+                - /url: /accounts-payable-software/
+            - listitem [ref=f56e108]:
+              - link "Supplier Management" [ref=f56e109] [cursor=pointer]:
+                - /url: /ap-automation/supplier-management/
+            - listitem [ref=f56e110]:
+              - link "Invoice Management" [ref=f56e111] [cursor=pointer]:
+                - /url: /ap-automation/invoice-management/
+            - listitem [ref=f56e112]:
+              - link "PO Matching" [ref=f56e113] [cursor=pointer]:
+                - /url: /ap-automation/po-matching/
+            - listitem [ref=f56e114]:
+              - link "Self-Billing Invoices" [ref=f56e115] [cursor=pointer]:
+                - /url: /mass-payments/self-billing-invoice/
+            - listitem [ref=f56e116]:
+              - link "Payment Reconciliation" [ref=f56e117] [cursor=pointer]:
+                - /url: /ap-automation/automated-payment-reconciliation/
+            - listitem [ref=f56e118]:
+              - link "Global Payments" [ref=f56e119] [cursor=pointer]:
+                - /url: /ap-automation/global-payments/
+            - listitem [ref=f56e120]:
+              - link "Integrations" [ref=f56e121] [cursor=pointer]:
+                - /url: /integrations/
+        - generic [ref=f56e122]:
+          - heading "Why Tipalti" [level=3] [ref=f56e123]
+          - list [ref=f56e125]:
+            - listitem [ref=f56e126]:
+              - link "Overview" [ref=f56e127] [cursor=pointer]:
+                - /url: /why/
+            - listitem [ref=f56e128]:
+              - link "Benefits by Industry" [ref=f56e129] [cursor=pointer]:
+                - /url: /industries/
+            - listitem [ref=f56e130]:
+              - link "Benefits by Role" [ref=f56e131] [cursor=pointer]:
+                - /url: /why/#benefitsbyrole
+            - listitem [ref=f56e132]:
+              - link "Awards and Reviews" [ref=f56e133] [cursor=pointer]:
+                - /url: /company/reviews/
+            - listitem [ref=f56e134]:
+              - link "Customer Stories" [ref=f56e135] [cursor=pointer]:
+                - /url: /resources/customer-stories/
+        - generic [ref=f56e136]:
+          - heading "Platform" [level=3] [ref=f56e137]
+          - list [ref=f56e139]:
+            - listitem [ref=f56e140]:
+              - link "Finance AI" [ref=f56e141] [cursor=pointer]:
+                - /url: /accounts-payable-software/finance-ai/
+            - listitem [ref=f56e142]:
+              - link "Global" [ref=f56e143] [cursor=pointer]:
+                - /url: /accounts-payable-software/global/
+            - listitem [ref=f56e144]:
+              - link "Payment Fraud Detection" [ref=f56e145] [cursor=pointer]:
+                - /url: https://tipalti.com/accounts-payable-software/payment-fraud-detection/
+            - listitem [ref=f56e146]:
+              - link "Controls and Compliance" [ref=f56e147] [cursor=pointer]:
+                - /url: /accounts-payable-software/financial-compliance/
+            - listitem [ref=f56e148]:
+              - link "Money Services Business" [ref=f56e149] [cursor=pointer]:
+                - /url: /accounts-payable-software/money-services-business-msb/
+            - listitem [ref=f56e150]:
+              - link "Secure Cloud Infrastructure" [ref=f56e151] [cursor=pointer]:
+                - /url: /accounts-payable-software/cloud/
+        - generic [ref=f56e152]:
+          - heading "Resources" [level=3] [ref=f56e153]
+          - list [ref=f56e155]:
+            - listitem [ref=f56e156]:
+              - link "Learning Center" [ref=f56e157] [cursor=pointer]:
+                - /url: /resources/learn/
+            - listitem [ref=f56e158]:
+              - link "Blog" [ref=f56e159] [cursor=pointer]:
+                - /url: /blog/
+            - listitem [ref=f56e160]:
+              - link "For Partners" [ref=f56e161] [cursor=pointer]:
+                - /url: /resources/partners/
+            - listitem [ref=f56e162]:
+              - link "Support" [ref=f56e163] [cursor=pointer]:
+                - /url: /resources/support/
+            - listitem [ref=f56e164]:
+              - link "Pricing" [ref=f56e165] [cursor=pointer]:
+                - /url: /pricing/
+        - generic [ref=f56e166]:
+          - heading "Company" [level=3] [ref=f56e167]
+          - list [ref=f56e169]:
+            - listitem [ref=f56e170]:
+              - link "Overview" [ref=f56e171] [cursor=pointer]:
+                - /url: /company/
+            - listitem [ref=f56e172]:
+              - link "Careers" [ref=f56e173] [cursor=pointer]:
+                - /url: /company/careers/
+            - listitem [ref=f56e174]:
+              - link "Newsroom" [ref=f56e175] [cursor=pointer]:
+                - /url: /company/press/
+      - button "US flag US" [ref=f56e178]:
+        - img "US flag" [ref=f56e179]
+        - text: US
+        - img [ref=f56e180]
+      - list [ref=f56e184]:
+        - listitem [ref=f56e185]: © 2010–2026 Tipalti Inc.
+        - listitem [ref=f56e186]:
+          - link "Legal Agreements" [ref=f56e187] [cursor=pointer]:
+            - /url: /legal/
+        - listitem [ref=f56e188]:
+          - link "Privacy" [ref=f56e189] [cursor=pointer]:
+            - /url: /privacy/
+        - listitem [ref=f56e190]:
+          - link "Cookies Declaration" [ref=f56e191] [cursor=pointer]:
+            - /url: /privacy/cookies-declaration/
+        - listitem [ref=f56e192]:
+          - link "California Consumer Privacy Act (CCPA) Opt-Out Icon Your Privacy Choices" [ref=f56e193] [cursor=pointer]:
+            - /url: /privacy/privacy-center/
+            - img "California Consumer Privacy Act (CCPA) Opt-Out Icon" [ref=f56e195]
+            - text: Your Privacy Choices
+        - listitem [ref=f56e196]:
+          - link "Payer / Sender Rights" [ref=f56e197] [cursor=pointer]:
+            - /url: /privacy/payer-sender-rights/
+        - listitem [ref=f56e198]:
+          - link "Customer Assistance Policy" [ref=f56e199] [cursor=pointer]:
+            - /url: /legal/customer-assistance-policy/
+    - option "*Industry" [selected]
+    - option "Advertising/Marketing"
+    - option "Ad Tech/Affiliate/Influencer Network"
+    - option "Business/Consumer Services"
+    - option "eCommerce/Retail"
+    - option "Financial Services"
+    - option "Gaming"
+    - option "Healthcare, Pharmaceuticals, & Biotech"
+    - option "Manufacturing & Distribution"
+    - option "Media/Entertainment/Creator"
+    - option "Non-Profit"
+    - option "Online Marketplace"
+    - option "Online Services"
+    - option "Real Estate & Construction"
+    - option "Software/Technology"
+    - option "Other"
+    - option "*Company size" [selected]
+    - option "Under 10"
+    - option "10 to 49"
+    - option "50 to 499"
+    - option "500+"
+    - option "*Current ERP / Accounting System" [selected]
+    - option "NetSuite"
+    - option "Sage Intacct"
+    - option "QuickBooks"
+    - option "Xero"
+    - option "SAP Business One"
+    - option "Microsoft Dynamics BC"
+    - option "Microsoft Dynamics GP"
+    - option "Other SAP Versions"
+    - option "Other Microsoft Versions"
+    - option "Other Sage Versions"
+    - option "Other ERP"
+    - option "*Country" [selected]
+    - option "*State / Province" [selected]

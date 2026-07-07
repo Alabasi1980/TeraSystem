@@ -1,0 +1,51 @@
+- generic [active] [ref=f62e1]:
+  - banner [ref=f62e2]:
+    - button "Skip to content" [ref=f62e3] [cursor=pointer]:
+      - generic [ref=f62e5]: Skip to content
+    - button "Accessibility Feedback" [ref=f62e6] [cursor=pointer]:
+      - generic [ref=f62e8]: Accessibility Feedback
+    - generic [ref=f62e9]:
+      - link "Back to Bing search" [ref=f62e10] [cursor=pointer]:
+        - /url: /?FORM=Z9FD1
+        - heading "Back to Bing search" [level=1] [ref=f62e11]
+      - search [ref=f62e12]:
+        - button "Search" [ref=f62e15] [cursor=pointer]
+        - searchbox "Enter your search here - Search suggestions will show as you type" [ref=f62e16]: procurement internal control framework COSO construction company
+        - button "Search using an image" [ref=f62e19] [cursor=pointer]
+    - complementary "Account Rewards and Preferences" [ref=f62e21]:
+      - button "Microsoft Rewards"
+      - link "Sign in" [ref=f62e22] [cursor=pointer]:
+        - /url: javascript:void(0)
+        - generic "Sign in" [ref=f62e23]
+    - navigation "Search Filter" [ref=f62e24]:
+      - list [ref=f62e25]:
+        - listitem [ref=f62e26]:
+          - link "All" [ref=f62e27] [cursor=pointer]:
+            - /url: /?scope=web&FORM=HDRSC1
+        - listitem [ref=f62e28]:
+          - link "Search" [ref=f62e29] [cursor=pointer]:
+            - /url: /copilotsearch?q=procurement+internal+control+framework+COSO+construction+company&FORM=CSSCOP
+            - img [ref=f62e30]
+            - text: Search
+        - listitem [ref=f62e32]:
+          - link "Images" [ref=f62e33] [cursor=pointer]:
+            - /url: https://www.bing.com/ck/a?!&&p=10b0259ea13aef4c0ab979ae3a9d6cdaa9eaba18babaea37b0a60b3cfe29a778JmltdHM9MTc4MzM4MjQwMA&ptn=3&ver=2&hsh=4&fclid=03f8e50b-d7fe-64cb-08e7-f284d68265f6&u=a1L2ltYWdlcy9zZWFyY2g_cT1wcm9jdXJlbWVudCtpbnRlcm5hbCtjb250cm9sK2ZyYW1ld29yaytDT1NPK2NvbnN0cnVjdGlvbitjb21wYW55JkZPUk09SERSU0My&ntb=1
+        - listitem [ref=f62e34]:
+          - link "Videos" [ref=f62e35] [cursor=pointer]:
+            - /url: https://www.bing.com/ck/a?!&&p=925eaba4a76a26641f539873e98ff844ddcac91160401bbd207f7ff961253a86JmltdHM9MTc4MzM4MjQwMA&ptn=3&ver=2&hsh=4&fclid=03f8e50b-d7fe-64cb-08e7-f284d68265f6&u=a1L3ZpZGVvcy9zZWFyY2g_cT1wcm9jdXJlbWVudCtpbnRlcm5hbCtjb250cm9sK2ZyYW1ld29yaytDT1NPK2NvbnN0cnVjdGlvbitjb21wYW55JkZPUk09SERSU0Mz&ntb=1
+        - listitem [ref=f62e36]:
+          - link "Maps" [ref=f62e37] [cursor=pointer]:
+            - /url: https://www.bing.com/ck/a?!&&p=160bb80a01709f8bdb1183aac1f61099d07fe10f0a63214d3df8a19f9f8ceee1JmltdHM9MTc4MzM4MjQwMA&ptn=3&ver=2&hsh=4&fclid=03f8e50b-d7fe-64cb-08e7-f284d68265f6&u=a1L21hcHM_cT1wcm9jdXJlbWVudCtpbnRlcm5hbCtjb250cm9sK2ZyYW1ld29yaytDT1NPK2NvbnN0cnVjdGlvbitjb21wYW55JkZPUk09SERSU0M0&ntb=1
+        - listitem [ref=f62e38]:
+          - button "More" [ref=f62e39] [cursor=pointer]:
+            - img [ref=f62e41]
+            - text: More
+  - contentinfo [ref=f62e43]:
+    - generic [ref=f62e44]:
+      - list:
+        - listitem [ref=f62e45]:
+          - link "Privacy" [ref=f62e46] [cursor=pointer]:
+            - /url: https://www.bing.com/ck/a?!&&p=83107426cab87bd6f587a2b1d928fb3ccfcb221a5e42614c4ec1976ca34c9aceJmltdHM9MTc4MzM4MjQwMA&ptn=3&ver=2&hsh=4&fclid=03f8e50b-d7fe-64cb-08e7-f284d68265f6&u=a1aHR0cDovL2dvLm1pY3Jvc29mdC5jb20vZndsaW5rLz9MaW5rSWQ9NTIxODM5&ntb=1
+        - listitem [ref=f62e47]:
+          - link "Terms" [ref=f62e48] [cursor=pointer]:
+            - /url: https://www.bing.com/ck/a?!&&p=81aef7556acbbefaff4f7e9cc66b6d6a9c51d35662b16ba46f364bea2b0bc25dJmltdHM9MTc4MzM4MjQwMA&ptn=3&ver=2&hsh=4&fclid=03f8e50b-d7fe-64cb-08e7-f284d68265f6&u=a1aHR0cDovL2dvLm1pY3Jvc29mdC5jb20vZndsaW5rLz9MaW5rSUQ9MjQ2MzM4&ntb=1

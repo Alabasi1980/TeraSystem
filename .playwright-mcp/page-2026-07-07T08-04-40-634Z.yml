@@ -1,0 +1,5 @@
+- generic [active] [ref=f78e1]:
+  - heading "Access Denied" [level=1] [ref=f78e2]
+  - text: You don't have permission to access "http://www.netsuite.com/portal/resource/articles/accounting/three-way-matching.shtml" on this server.
+  - paragraph [ref=f78e3]: "Reference #18.4f398bd5.1783411480.7e4c3d9a"
+  - paragraph [ref=f78e4]: https://errors.edgesuite.net/18.4f398bd5.1783411480.7e4c3d9a

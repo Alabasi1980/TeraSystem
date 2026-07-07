@@ -1,0 +1,238 @@
+- generic [active] [ref=f51e1]:
+  - generic [ref=f51e2]:
+    - generic [ref=f51e4]:
+      - generic [ref=f51e5]:
+        - generic [ref=f51e6]:
+          - link "DuckDuckGo home" [ref=f51e7] [cursor=pointer]:
+            - /url: /
+            - generic [ref=f51e9]: DuckDuckGo
+          - generic [ref=f51e15]:
+            - combobox "Search privately" [ref=f51e17]: COSO internal control procurement construction best practices
+            - button "search" [ref=f51e19] [cursor=pointer]:
+              - img [ref=f51e20]
+        - generic [ref=f51e22]:
+          - generic [ref=f51e23]:
+            - generic [ref=f51e25]:
+              - banner [ref=f51e26]:
+                - img [ref=f51e27]
+                - paragraph [ref=f51e28]: Upgrade to our browser.
+              - generic [ref=f51e29]:
+                - generic [ref=f51e30]:
+                  - img [ref=f51e31]
+                  - generic [ref=f51e32]:
+                    - img [ref=f51e33]
+                    - img [ref=f51e34]
+                - paragraph [ref=f51e35]:
+                  - generic [ref=f51e36]:
+                    - text: Try the
+                    - strong [ref=f51e37]: DuckDuckGo Browser.
+                    - text: Fast. Free. Private.
+                - link "Download Browser" [ref=f51e38] [cursor=pointer]:
+                  - /url: https://duckduckgo.com/windows?origin=funnel_browser_searchresults__popover
+                  - img [ref=f51e39]
+                  - generic [ref=f51e41]: Download Browser
+              - paragraph [ref=f51e44]:
+                - generic [ref=f51e45]: Free
+            - button [ref=f51e47] [cursor=pointer]:
+              - img [ref=f51e48]
+          - button "Open menu" [ref=f51e50] [cursor=pointer]:
+            - generic [ref=f51e51]: Open menu
+            - img [ref=f51e52]
+      - navigation [ref=f51e58]:
+        - list [ref=f51e59]:
+          - listitem [ref=f51e60]:
+            - link "All" [ref=f51e61] [cursor=pointer]:
+              - /url: /?q=COSO+internal+control+procurement+construction+best+practices&ia=web
+              - img [ref=f51e62]
+              - text: All
+          - listitem [ref=f51e64]:
+            - link "Images" [ref=f51e65] [cursor=pointer]:
+              - /url: /?q=COSO+internal+control+procurement+construction+best+practices&ia=images&iax=images
+          - listitem [ref=f51e66]:
+            - link "Videos" [ref=f51e67] [cursor=pointer]:
+              - /url: /?q=COSO+internal+control+procurement+construction+best+practices&ia=videos&iax=videos
+          - listitem [ref=f51e68]:
+            - link "News" [ref=f51e69] [cursor=pointer]:
+              - /url: /?q=COSO+internal+control+procurement+construction+best+practices&ia=news&iar=news
+          - listitem [ref=f51e70]:
+            - link "Maps" [ref=f51e71] [cursor=pointer]:
+              - /url: /?q=COSO+internal+control+procurement+construction+best+practices&iaxm=maps
+        - list [ref=f51e72]:
+          - listitem [ref=f51e73]:
+            - link "Duck.ai" [ref=f51e75] [cursor=pointer]:
+              - /url: /?q=COSO+internal+control+procurement+construction+best+practices&ia=chat
+              - img [ref=f51e76]
+              - text: Duck.ai
+          - listitem [ref=f51e79]:
+            - button "Search Settings ✀" [ref=f51e81] [cursor=pointer]:
+              - img [ref=f51e82]
+              - generic [ref=f51e84]: Search Settings
+              - generic [ref=f51e87]: ✀
+    - navigation [ref=f51e94]:
+      - generic [ref=f51e97] [cursor=pointer]:
+        - generic [ref=f51e105]: Protected
+        - img [ref=f51e106]: ▼
+      - generic [ref=f51e110] [cursor=pointer]:
+        - generic [ref=f51e114]: All regions
+        - img [ref=f51e115]: ▼
+      - generic [ref=f51e119] [cursor=pointer]:
+        - generic [ref=f51e120]: "Safe search: moderate"
+        - img [ref=f51e121]: ▼
+      - generic [ref=f51e125] [cursor=pointer]:
+        - generic [ref=f51e126]: Any time
+        - img [ref=f51e127]: ▼
+    - list [ref=f51e130]:
+      - button "Close menu" [ref=f51e131] [cursor=pointer]:
+        - generic [ref=f51e132]: Close menu
+        - img [ref=f51e133]
+      - list [ref=f51e135]:
+        - listitem [ref=f51e136]: Search
+        - listitem [ref=f51e137]:
+          - link "Homepage" [ref=f51e138] [cursor=pointer]:
+            - /url: https://start.duckduckgo.com/
+        - listitem [ref=f51e139]:
+          - link "Themes" [ref=f51e140] [cursor=pointer]:
+            - /url: /settings#appearance
+        - listitem [ref=f51e141]:
+          - link "Settings" [ref=f51e142] [cursor=pointer]:
+            - /url: /settings
+      - list [ref=f51e143]:
+        - listitem [ref=f51e144]: Share Feedback
+        - listitem [ref=f51e145]:
+          - generic [ref=f51e148]:
+            - button "Positive feedback" [ref=f51e149] [cursor=pointer]:
+              - img [ref=f51e150]
+            - button "Negative feedback" [ref=f51e153] [cursor=pointer]:
+              - img [ref=f51e154]
+      - list [ref=f51e157]:
+        - listitem [ref=f51e158]: Downloads
+        - listitem [ref=f51e159]:
+          - link "iOS Browser" [ref=f51e160] [cursor=pointer]:
+            - /url: https://apps.apple.com/app/duckduckgo-private-browser/id663592361?platform=iphone&pt=866401&mt=8&ct=serp-atb-serp
+        - listitem [ref=f51e161]:
+          - link "Android Browser" [ref=f51e162] [cursor=pointer]:
+            - /url: https://play.google.com/store/apps/details?id=com.duckduckgo.mobile.android&referrer=utm_campaign%3Dserp-atb-serp%26origin%3Dfunnel_playstore_searchresults
+        - listitem [ref=f51e163]:
+          - link "Mac Browser" [ref=f51e164] [cursor=pointer]:
+            - /url: /mac?origin=funnel_browser_searchresults
+        - listitem [ref=f51e165]:
+          - link "Windows Browser" [ref=f51e166] [cursor=pointer]:
+            - /url: /windows?origin=funnel_browser_searchresults
+        - listitem [ref=f51e167]: Browser Extensions
+      - list [ref=f51e168]:
+        - listitem [ref=f51e169]: More From DuckDuckGo
+        - listitem [ref=f51e170]:
+          - generic [ref=f51e173]:
+            - button "Dismiss promotion" [ref=f51e174] [cursor=pointer]:
+              - img [ref=f51e175]
+            - generic [ref=f51e177]:
+              - paragraph [ref=f51e179]:
+                - img [ref=f51e180]
+                - text: Upgrade to our Private Browser
+              - paragraph [ref=f51e191]: Fast. Secure. Free.
+            - link "Download Browser" [ref=f51e192] [cursor=pointer]:
+              - /url: /windows
+              - img [ref=f51e193]
+              - text: Download Browser
+        - listitem [ref=f51e195]:
+          - link "Duck.ai" [ref=f51e196] [cursor=pointer]:
+            - /url: https://duck.ai
+        - listitem [ref=f51e197]:
+          - link "Email Protection" [ref=f51e198] [cursor=pointer]:
+            - /url: /email
+        - listitem [ref=f51e199]:
+          - link "Newsletter" [ref=f51e200] [cursor=pointer]:
+            - /url: /newsletter
+        - listitem [ref=f51e201]:
+          - link "Blog" [ref=f51e202] [cursor=pointer]:
+            - /url: /blog
+        - listitem [ref=f51e203]:
+          - link "Podcast" [ref=f51e204] [cursor=pointer]:
+            - /url: https://insideduckduckgo.substack.com/?showWelcome=true
+        - listitem [ref=f51e205]:
+          - link "Collaborations" [ref=f51e206] [cursor=pointer]:
+            - /url: /collaborations
+      - list [ref=f51e207]:
+        - listitem [ref=f51e208]: Learn More
+        - listitem [ref=f51e209]:
+          - link "What’s New" [ref=f51e210] [cursor=pointer]:
+            - /url: /updates
+        - listitem [ref=f51e211]:
+          - link "Compare Privacy" [ref=f51e212] [cursor=pointer]:
+            - /url: /compare-privacy
+        - listitem [ref=f51e213]:
+          - link "About Our Browser" [ref=f51e214] [cursor=pointer]:
+            - /url: /app
+        - listitem [ref=f51e215]:
+          - link "About DuckDuckGo" [ref=f51e216] [cursor=pointer]:
+            - /url: /about
+      - list [ref=f51e217]:
+        - listitem [ref=f51e218]: Other Resources
+        - listitem [ref=f51e219]:
+          - link "Help" [ref=f51e220] [cursor=pointer]:
+            - /url: /duckduckgo-help-pages
+        - listitem [ref=f51e221]:
+          - link "Community" [ref=f51e222] [cursor=pointer]:
+            - /url: https://www.reddit.com/r/duckduckgo/
+        - listitem [ref=f51e223]:
+          - link "Careers" [ref=f51e224] [cursor=pointer]:
+            - /url: /careers
+        - listitem [ref=f51e225]:
+          - link "Privacy Policy" [ref=f51e226] [cursor=pointer]:
+            - /url: /privacy
+        - listitem [ref=f51e227]:
+          - link "Terms of Service" [ref=f51e228] [cursor=pointer]:
+            - /url: /terms
+        - listitem [ref=f51e229]:
+          - link "Press Kit" [ref=f51e230] [cursor=pointer]:
+            - /url: /press
+        - listitem [ref=f51e231]:
+          - link "Advertise on Search" [ref=f51e232] [cursor=pointer]:
+            - /url: /duckduckgo-help-pages/company/advertise-on-duckduckgo-search
+  - generic [ref=f51e236]:
+    - generic [ref=f51e238]:
+      - img [ref=f51e239]
+      - generic [ref=f51e249]:
+        - heading "Introducing DuckDuckGo Collaborations" [level=3] [ref=f51e250]
+        - paragraph [ref=f51e251]: Expertly crafted products for people who give a duck about privacy.
+      - link "See More" [ref=f51e252] [cursor=pointer]:
+        - /url: https://duckduckgo.com/collaborations
+    - generic [ref=f51e254]:
+      - generic [ref=f51e255]:
+        - heading "Learn More" [level=3] [ref=f51e256]
+        - list [ref=f51e257]:
+          - listitem [ref=f51e258]:
+            - link "What's New" [ref=f51e259] [cursor=pointer]:
+              - /url: https://duckduckgo.com/updates
+          - listitem [ref=f51e260]:
+            - link "About Browser" [ref=f51e261] [cursor=pointer]:
+              - /url: https://duckduckgo.com/app
+          - listitem [ref=f51e262]:
+            - link "Compare Privacy" [ref=f51e263] [cursor=pointer]:
+              - /url: https://duckduckgo.com/compare-privacy
+          - listitem [ref=f51e264]:
+            - link "Help Pages" [ref=f51e265] [cursor=pointer]:
+              - /url: https://duckduckgo.com/duckduckgo-help-pages/
+      - generic [ref=f51e266]:
+        - heading "Get More" [level=3] [ref=f51e267]
+        - list [ref=f51e268]:
+          - listitem [ref=f51e269]:
+            - link "Email Protection" [ref=f51e270] [cursor=pointer]:
+              - /url: https://duckduckgo.com/email
+          - listitem [ref=f51e271]:
+            - generic [ref=f51e272]:
+              - link "Podcast" [ref=f51e274] [cursor=pointer]:
+                - /url: https://insideduckduckgo.substack.com/?showWelcome=true
+              - generic [ref=f51e275]:
+                - text: "&"
+                - link "Newsletter" [ref=f51e276] [cursor=pointer]:
+                  - /url: https://duckduckgo.com/newsletter
+          - listitem [ref=f51e277]:
+            - link "Collaborations" [ref=f51e278] [cursor=pointer]:
+              - /url: https://duckduckgo.com/collaborations
+  - generic [ref=f51e281]:
+    - generic [ref=f51e282]: Unfortunately, bots use DuckDuckGo too.
+    - generic [ref=f51e283]: Please complete the following challenge to confirm this search was made by a human.
+    - generic [ref=f51e284]: "Select all squares containing a duck:"
+    - button "Submit" [ref=f51e306] [cursor=pointer]
+  - button "Share Feedback" [ref=f51e310] [cursor=pointer]
