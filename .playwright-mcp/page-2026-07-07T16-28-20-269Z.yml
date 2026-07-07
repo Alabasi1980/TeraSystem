@@ -1,0 +1,178 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - complementary [ref=f1e4]:
+      - generic [ref=f1e6]:
+        - img [ref=f1e8]
+        - generic [ref=f1e10]:
+          - heading "منصة البيانات" [level=1] [ref=f1e11]
+          - paragraph [ref=f1e12]: Dynamic Dashboard
+      - navigation [ref=f1e13]:
+        - paragraph [ref=f1e14]: اللوحات
+        - list [ref=f1e15]:
+          - listitem [ref=f1e16]:
+            - button "لوحة العمليات" [ref=f1e17]:
+              - img [ref=f1e18]
+              - generic [ref=f1e20]: لوحة العمليات
+          - listitem [ref=f1e21]:
+            - button "إدارة المشاريع" [ref=f1e22]:
+              - img [ref=f1e23]
+              - generic [ref=f1e25]: إدارة المشاريع
+      - generic [ref=f1e27]:
+        - generic [ref=f1e28]: م
+        - generic [ref=f1e29]:
+          - paragraph [ref=f1e30]: ماجد السالم
+          - paragraph [ref=f1e31]: مدير النظام
+    - main [ref=f1e32]:
+      - generic [ref=f1e34]:
+        - generic [ref=f1e35]:
+          - heading "لوحة العمليات" [level=1] [ref=f1e36]
+          - paragraph [ref=f1e37]: نظرة شاملة على الأداء التشغيلي والمؤشرات الرئيسية
+        - generic [ref=f1e38]:
+          - generic [ref=f1e39]:
+            - img [ref=f1e40]
+            - generic [ref=f1e42]: الفلاتر العامة
+          - generic [ref=f1e43]:
+            - generic [ref=f1e44]:
+              - generic [ref=f1e45]: من
+              - textbox [ref=f1e46]: 2026-06-01
+            - generic [ref=f1e47]:
+              - generic [ref=f1e48]: إلى
+              - textbox [ref=f1e49]: 2026-07-07
+          - generic [ref=f1e50]:
+            - button "تطبيق" [ref=f1e51]
+            - button "تحديث" [ref=f1e52]:
+              - img [ref=f1e53]
+              - text: تحديث
+        - generic [ref=f1e55]:
+          - generic [ref=f1e56] [cursor=pointer]:
+            - generic [ref=f1e58]:
+              - img [ref=f1e60]
+              - generic [ref=f1e62]: إجمالي الإيرادات
+            - generic [ref=f1e63]: 2,847,500ريال
+            - generic [ref=f1e64]:
+              - generic [ref=f1e65]: ↑ 12.5%
+              - generic [ref=f1e66]: مقارنة بالشهر الماضي
+          - generic [ref=f1e67] [cursor=pointer]:
+            - generic [ref=f1e69]:
+              - img [ref=f1e71]
+              - generic [ref=f1e73]: المشاريع النشطة
+            - generic [ref=f1e74]: "24"
+            - generic [ref=f1e75]:
+              - generic [ref=f1e76]: ↑ 8.3%
+              - generic [ref=f1e77]: مقارنة بالربع الماضي
+          - generic [ref=f1e78] [cursor=pointer]:
+            - generic [ref=f1e80]:
+              - img [ref=f1e82]
+              - generic [ref=f1e84]: فريق العمل
+            - generic [ref=f1e85]: "186"
+            - generic [ref=f1e86]:
+              - generic [ref=f1e87]: ↑ 3 أعضاء جدد
+              - generic [ref=f1e88]: هذا الشهر
+          - generic [ref=f1e89] [cursor=pointer]:
+            - generic [ref=f1e91]:
+              - img [ref=f1e93]
+              - generic [ref=f1e95]: المهام المنجزة
+            - generic [ref=f1e96]: 1,423
+            - generic [ref=f1e97]:
+              - generic [ref=f1e98]: ↑ 94.2%
+              - generic [ref=f1e99]: من المستهدف الشهري
+        - generic [ref=f1e100]:
+          - generic [ref=f1e101]:
+            - heading "الاتجاه الشهري للإيرادات" [level=3] [ref=f1e102]
+            - generic [ref=f1e104]:
+              - img [ref=f1e105]:
+                - generic [ref=f1e109]:
+                  - generic [ref=f1e111]: يناير
+                  - generic [ref=f1e113]: فبراير
+                  - generic [ref=f1e115]: مارس
+                  - generic [ref=f1e117]: أبريل
+                  - generic [ref=f1e119]: مايو
+                  - generic [ref=f1e121]: يونيو
+                  - generic [ref=f1e123]: يوليو
+                  - generic [ref=f1e125]: أغسطس
+                  - generic [ref=f1e127]: سبتمبر
+                  - generic [ref=f1e129]: أكتوبر
+                  - generic [ref=f1e131]: نوفمبر
+                  - generic [ref=f1e133]: ديسمبر
+                - generic [ref=f1e135]:
+                  - generic [ref=f1e137]: 0K
+                  - generic [ref=f1e139]: 750K
+                  - generic [ref=f1e141]: 1500K
+                  - generic [ref=f1e143]: 2250K
+                  - generic [ref=f1e145]: 3000K
+              - list [ref=f1e151]:
+                - listitem [ref=f1e152]:
+                  - img [ref=f1e153]
+                  - text: الإيرادات
+                - listitem [ref=f1e155]:
+                  - img [ref=f1e156]
+                  - text: المستهدف
+          - generic [ref=f1e158]:
+            - heading "الإيرادات حسب الفئة" [level=3] [ref=f1e159]
+            - img [ref=f1e162]:
+              - generic [ref=f1e166]:
+                - generic [ref=f1e168]: مقاولات
+                - generic [ref=f1e170]: صيانة
+                - generic [ref=f1e172]: استشارات
+                - generic [ref=f1e174]: أخرى
+              - generic [ref=f1e176]:
+                - generic [ref=f1e178]: 0K
+                - generic [ref=f1e180]: 350K
+                - generic [ref=f1e182]: 700K
+                - generic [ref=f1e184]: 1050K
+                - generic [ref=f1e186]: 1400K
+        - generic [ref=f1e187]:
+          - heading "أحدث الحركات المالية" [level=2] [ref=f1e188]
+          - table [ref=f1e191]:
+            - rowgroup [ref=f1e192]:
+              - row "الرقم المرجعي العميل المشروع المبلغ الحالة التاريخ" [ref=f1e193]:
+                - columnheader "الرقم المرجعي" [ref=f1e194]
+                - columnheader "العميل" [ref=f1e195]
+                - columnheader "المشروع" [ref=f1e196]
+                - columnheader "المبلغ" [ref=f1e197]
+                - columnheader "الحالة" [ref=f1e198]
+                - columnheader "التاريخ" [ref=f1e199]
+            - rowgroup [ref=f1e200]:
+              - row "TXN-001 مجموعة الراجحي برج الأعمال 485,000 ريال مكتمل 2026-07-05" [ref=f1e201] [cursor=pointer]:
+                - cell "TXN-001" [ref=f1e202]
+                - cell "مجموعة الراجحي" [ref=f1e203]
+                - cell "برج الأعمال" [ref=f1e204]
+                - cell "485,000 ريال" [ref=f1e205]
+                - cell "مكتمل" [ref=f1e206]
+                - cell "2026-07-05" [ref=f1e207]
+              - row "TXN-002 أمانة الرياض تطوير طرق 320,000 ريال قيد المراجعة 2026-07-04" [ref=f1e208] [cursor=pointer]:
+                - cell "TXN-002" [ref=f1e209]
+                - cell "أمانة الرياض" [ref=f1e210]
+                - cell "تطوير طرق" [ref=f1e211]
+                - cell "320,000 ريال" [ref=f1e212]
+                - cell "قيد المراجعة" [ref=f1e213]
+                - cell "2026-07-04" [ref=f1e214]
+              - row "TXN-003 مستشفى الملك تجهيزات 175,000 ريال مكتمل 2026-07-03" [ref=f1e215] [cursor=pointer]:
+                - cell "TXN-003" [ref=f1e216]
+                - cell "مستشفى الملك" [ref=f1e217]
+                - cell "تجهيزات" [ref=f1e218]
+                - cell "175,000 ريال" [ref=f1e219]
+                - cell "مكتمل" [ref=f1e220]
+                - cell "2026-07-03" [ref=f1e221]
+              - row "TXN-004 شركة الأفق مجمع سكني 640,000 ريال قيد التنفيذ 2026-07-02" [ref=f1e222] [cursor=pointer]:
+                - cell "TXN-004" [ref=f1e223]
+                - cell "شركة الأفق" [ref=f1e224]
+                - cell "مجمع سكني" [ref=f1e225]
+                - cell "640,000 ريال" [ref=f1e226]
+                - cell "قيد التنفيذ" [ref=f1e227]
+                - cell "2026-07-02" [ref=f1e228]
+              - row "TXN-005 مؤسسة البناء جسور 210,000 ريال مكتمل 2026-07-01" [ref=f1e229] [cursor=pointer]:
+                - cell "TXN-005" [ref=f1e230]
+                - cell "مؤسسة البناء" [ref=f1e231]
+                - cell "جسور" [ref=f1e232]
+                - cell "210,000 ريال" [ref=f1e233]
+                - cell "مكتمل" [ref=f1e234]
+                - cell "2026-07-01" [ref=f1e235]
+              - row "TXN-006 مدينة المعرفة بنية تحتية 380,000 ريال قيد المراجعة 2026-06-30" [ref=f1e236] [cursor=pointer]:
+                - cell "TXN-006" [ref=f1e237]
+                - cell "مدينة المعرفة" [ref=f1e238]
+                - cell "بنية تحتية" [ref=f1e239]
+                - cell "380,000 ريال" [ref=f1e240]
+                - cell "قيد المراجعة" [ref=f1e241]
+                - cell "2026-06-30" [ref=f1e242]
+  - generic [ref=f1e243]: 350K
