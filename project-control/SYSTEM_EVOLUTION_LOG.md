@@ -266,3 +266,165 @@
   2. حذف `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md`
   3. إزالة أقسام AIS من ملفات العملاء الثمانية
   4. إزالة إدخال TeraPolicyMap.md ومراجع TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
+
+---
+
+## SCP-2026-07-06-084 — تنفيذ 3 اقتراحات AIS في تعريف حارس (AIS-0002, AIS-0003, AIS-0004)
+
+- تاريخ: 2026-07-06
+- معرف التغيير: SCP-2026-07-06-084
+- مصدر الطلب: AIS Suggestions — أول AIS يُنفَّذ بعد تفعيل البروتوكول
+- نوع التغيير: Agent Improvement (Self-Fix)
+- الملفات المعدلة:
+  - `.opencode/agents/tera-system-evolution.md` — 3 تعديلات
+  - `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` — تحديث حالة 3 اقتراحات
+- الملخص:
+  - **AIS-0002**: إصلاح ترقيم مكرر — §16 → §17 → §18 → §19
+  - **AIS-0003**: إضافة `AIS_PROTOCOL.md` و `AGENT_IMPROVEMENT_SUGGESTIONS.md` إلى §9 (الملفات المرجعية)
+  - **AIS-0004**: إضافة "AIS suggestion" كنوع طلب عاشر في §10 (Official Workflow)
+  - جميع الـ 3 اقتراحات حدثت حالتها إلى Implemented
+- الموافقة: Majed — Approved
+- التحقق من الصحة: ✅ git diff --check OK، Anti-Bloat Gate PASS
+- المخاطر: منخفض جداً — ملف واحد، ترقيم + سطرين
+- ملاحظات الاسترجاع (Rollback): `git checkout -- .opencode/agents/tera-system-evolution.md`
+
+---
+
+## SCP-2026-07-06-085 — Client Engagement Personas Framework (وعي TCEA بتنوع الزبائن)
+
+- تاريخ: 2026-07-06
+- معرف التغيير: SCP-2026-07-06-085
+- مصدر الطلب: User Request (Majed) — بناءً على خبرته مع زبائن متنوعين
+- نوع التغيير: Agent Capability Enhancement — إضافة وعي لـ TCEA بتنوع العملاء
+- الملفات المعدلة:
+  - `tera-system/client-helpers/tera-client-engagement-protocols.md` — إضافة A.9 Client Personas Framework
+  - `.opencode/agents/tera-client-engagement.md` — 3 إضافات
+- الملخص:
+  - **A.9 Client Personas Framework** في protocols.md: تعريف 4 أنماط (Visionary / Explorer / Uncertain / Guided)، آلية الكشف من أول 3-5 أجوبة، استراتيجية التكييف، المرونة المتحكم بها
+  - **A.0.1 Client Diversity Awareness** في tera-client-engagement.md: وعي لـ TCEA في بداية Discovery بأن الزبائن متنوعون
+  - **MR5 — Controlled Adaptation Rule** في Master Rules: يكيّف الأسلوب، لا يتجاوز الحوكمة
+  - تحديثات مساندة: عنوان A.6.0 (4→5 قواعد)، "كيف تستخدمها"، E Glossary، D.1 Routing Table، وصف protocols.md
+  - Anti-Bloat: لا ملفات جديدة، لا عملاء جدد، لا SDA، 4 أنماط فقط
+- الموافقة: Majed — Approved
+- التحقق من الصحة: ✅ Anti-Bloat Gate PASS، لا تناقض في السياسات، لا تلوث تطبيقات، لا توسع صلاحيات
+- المخاطر: منخفض — MR5 يضيف وعياً (لا يلغي أو يعدل سياسات أو بوابات قائمة)، المرونة محدّدة بـ "يكيّف الأسلوب، لا يتجاوز الحوكمة"
+- ملاحظات الاسترجاع (Rollback):
+  1. protocols.md: حذف A.9 بكامله
+  2. tera-client-engagement.md: حذف A.0.1 + MR5 من جدول A.6.0
+  3. إعادة عنوان A.6.0 إلى "القواعد الرئيسية الأربع"
+  4. إزالة سطر MR5 من "كيف تستخدمها" و E Glossary
+   5. إزالة سطر D.1 الخاص بـ A.9
+
+---
+
+## SCP-2026-07-06-086 — Future-Proof Discovery Rule (A.6.9) — توثيق معلومات توسعية خارج النطاق
+
+- تاريخ: 2026-07-06
+- معرف التغيير: SCP-2026-07-06-086
+- مصدر الطلب: AIS-0005 — TCEA (مستشار) بعد Discovery العمران + توجيه Majed
+- نوع التغيير: Protocol Change — إضافة بروتوكول اكتشاف توسعي لـ TCEA
+- الملفات المعدلة:
+  - `tera-system/client-helpers/tera-client-engagement-protocols.md` — إضافة A.6.9 Future-Proof Discovery Rule
+- الملخص:
+  - **A.6.9 Future-Proof Discovery Rule** في protocols.md: يتيح لـ TCEA جمع معلومات إضافية تتجاوز النطاق الحالي للعميل لبناء أساس قابل للتوسع مستقبلاً، مع 4 قواعد صارمة:
+    1. اكتشف أوسع من النطاق—لكن لا توسع النطاق
+    2. وسم `[Future-Proof Reference]` إلزامي للمعلومات الإضافية
+    3. توثيق منفصل في Future-Proof Notes خارج النطاق والتسعير
+    4. لا تدخل في النطاق ولا التسعير
+  - جدول علاقة مع القواعد الأخرى (MR1, MR4, A.5.2, A.6.5)
+  - قاعدة ذهبية: Future-Proof Discovery يكمل حوكمة النطاق—ولا ينتهكها
+  - Anti-Bloat: لا ملفات جديدة، لا عملاء جدد — قسم واحد في ملف موجود
+- الموافقة: Majed — Approved (عبر الموافقة على SCP)
+- التحقق من الصحة: ✅ Anti-Bloat Gate PASS، ✅ Policy Map Check PASS، ✅ Architecture Map Check PASS، ✅ لا تلوث تطبيقات، ✅ لا توسع صلاحيات، ✅ git diff --check نظيف
+- المخاطر: منخفض — البروتوكول يمنع صراحة دخول Future-Proof Notes في النطاق والتسعير، وقواعد MR1 و A.5.2 تبقى سارية وتتفوق
+- ملاحظات الاسترجاع (Rollback):
+  1. protocols.md: حذف القسم A.6.9 بكامله
+  2. إعادة الترقيم بعد A.6.8 مباشرة إلى A.9
+
+---
+
+## SCP-2026-07-06-087 — Commercial Value Discovery (MR6 + A.6.10) — الوعي التجاري والربحي للمنظومة
+
+- تاريخ: 2026-07-06
+- معرف التغيير: SCP-2026-07-06-087
+- مصدر الطلب: توجيه Majed — إضافة الوعي التجاري والربحي لمنظومة Tera
+- نوع التغيير: Agent Capability Enhancement — إضافة الوعي التجاري لـ TCEA
+- الملفات المعدلة:
+  - `.opencode/agents/tera-client-engagement.md` — تغييرات متعددة
+  - `tera-system/client-helpers/tera-client-engagement-protocols.md` — إضافة A.6.10
+  - `tera-system/TeraPolicyMap.md` — إضافة مدخلين
+- الملخص:
+  - **A.0:** تحديث "لا تفعل أبداً" — توضيح الفرق بين التوسيع الممنوع والاقتراح التجاري المطلوب
+  - **A.0.2 Commercial Awareness:** وعي تجاري جديد — TCEA هو الذراع التجاري والربحي للمنظومة
+  - **A.1 الهوية:** إضافة "أنت الذراع التجاري والربحي لمنظومة Tera"
+  - **A.2 الأدوار:** إضافة دور 10 — Commercial Value Proposer / مكتشف الفرص التجارية
+  - **A.4 التدفق:** إضافة خطوة استكشاف الفرص التجارية قبل التسعير
+  - **A.6.0 Master Rules:** إضافة MR6 — Commercial Value Discovery + تحديث كيف تستخدمها
+  - **A.7 الممنوع:** إضافة توضيح للفرق بين التوسيع والاقتراح التجاري
+  - **A.6.10 Value-Added Commercial Proposals Protocol:** بروتوكول كامل — الأنواع الثلاثة، القواعد الخمس، قالب العرض، العلاقات
+  - **A.6.9:** ربط Future-Proof Discovery بالقيمة التجارية — جدول مقارنة
+  - **D.1 Routing Table:** إضافة A.6.9 و A.6.10
+  - **TeraPolicyMap:** إضافة مدخلين — MR6 و A.6.10
+  - Anti-Bloat: لا ملفات جديدة، لا عملاء جدد — إضافات في ملفات موجودة
+- الموافقة: Majed — Approved
+- التحقق من الصحة: ✅ Anti-Bloat Gate PASS، ✅ Policy Map Check PASS، ✅ Architecture Map Check PASS، ✅ لا تلوث تطبيقات، ✅ لا توسع صلاحيات
+- المخاطر: منخفض — MR6 يوجّه للاقتراح وليس التوسيع، وقواعد MR1 و A.5.2 تبقى سارية وتتفوق على أي إضافة غير معتمدة
+- ملاحظات الاسترجاع (Rollback):
+  1. tera-client-engagement.md: حذف MR6 من A.6.0 + إزالة A.0.2 + إزالة الدور 10 + إزالة الخطوة من A.4 + إزالة التحديثات من A.0/A.1/A.7
+  2. protocols.md: حذف A.6.10 بكامله
+  3. TeraPolicyMap.md: إزالة مدخلي MR6 و A.6.10
+
+---
+
+## SCP-2026-07-06-088 — TCEA ↔ DomainExpertAgent Direct Invocation — تمكين مستشار من استدعاء خبير المجال
+
+- تاريخ: 2026-07-06
+- معرف التغيير: SCP-2026-07-06-088
+- مصدر الطلب: توجيه Majed — تمكين مستشار من استدعاء DomainExpertAgent مباشرة
+- نوع التغيير: Permission Change — استثناء حوكمة لاستدعاء عميل فرعي محدد
+- الملفات المعدلة:
+  - `.opencode/agents/tera-client-engagement.md` — A.7 المسموح/الممنوع + A.7.1 قواعد الاستدعاء + D.1 Routing Table
+  - `tera-system/TeraSubAgents.md` — §3.2.1 استثناء + §6.13 شرط الاستدعاء + قواعد عند الاستدعاء من TCEA
+- الملخص:
+  - **A.7 المسموح:** إضافة "استدعاء DomainExpertAgent" كصلاحية معتمدة
+  - **A.7 الممنوع:** استثناء DomainExpertAgent من قاعدة "لا تدير عملاء فرعيين"
+  - **A.7.1 قواعد الاستدعاء:** متى تستدعيه، كيف تستدعيه، الحدود الصارمة، الممنوع
+  - **§3.2.1 استثناء:** TCEA يملك صلاحية استدعاء DomainExpertAgent فقط — مع 5 شروط حوكمية
+  - **§6.13 شرط الاستدعاء:** تحديث ليشمل استدعاء TCEA المباشر
+  - **DomainExpertAgent حدود عند استدعاء TCEA:** 6 قواعد صارمة (Domain Intelligence Report فقط، [Research Hint]، client-engagement/ فقط)
+  - **D.1 Routing Table:** إضافة DomainExpertAgent
+  - Anti-Bloat: لا ملفات جديدة، لا عملاء جدد — تعديل صلاحيات في ملفات موجودة
+- الموافقة: Majed — Approved (توجيه مباشر)
+- التحقق من الصحة: ✅ Anti-Bloat Gate PASS، ✅ Policy Map Check PASS، ✅ Architecture Map Check PASS، ✅ لا تلوث تطبيقات، ✅ لا توسع صلاحيات غير مبرر (استثناء واحد محدد)، ✅ git diff --check نظيف
+- المخاطر: منخفض — الاستثناء محدود بـ DomainExpertAgent فقط، المخرجات تحمل [Research Hint] ولا تدخل النطاق دون تأكيد Majed (MR1)، كل استدعاء يُسجل
+- ملاحظات الاسترجاع (Rollback):
+  1. tera-client-engagement.md: إزالة A.7.1 + استرجاع A.7 المسموح/الممنوع + إزالة DomainExpertAgent من D.1
+  2. TeraSubAgents.md: إزالة الاستثناء من §3.2.1 + استرجاع §6.13 شرط الاستدعاء + إزالة "عند الاستدعاء من TCEA"
+
+---
+
+## SCP-2026-07-06-089 — TCEA ↔ DomainResearchAgent Direct Invocation — تمكين مستشار من استدعاء الباحث
+
+- تاريخ: 2026-07-06
+- معرف التغيير: SCP-2026-07-06-089
+- مصدر الطلب: توجيه Majed — إضافة DomainResearchAgent لاستكمال Pipeline البحث
+- نوع التغيير: Permission Change — توسيع استثناء حوكمة ليشمل الباحث
+- الملفات المعدلة:
+  - `.opencode/agents/tera-client-engagement.md` — A.7 المسموح/الممنوع + A.7.1 قواعد الاستدعاء + D.1 Routing Table
+  - `tera-system/TeraSubAgents.md` — §3.2.1 استثناء + §6.12 شرط الاستدعاء + قواعد عند الاستدعاء من TCEA
+- الملخص:
+  - **A.7 المسموح:** إضافة "استدعاء DomainResearchAgent" كصلاحية معتمدة
+  - **A.7 الممنوع:** استثناء DomainResearchAgent من قاعدة "لا تدير عملاء فرعيين"
+  - **A.7.1 قواعد الاستدعاء:** تحديث ليشمل كلا العميلين + Pipeline الكامل (بحث ← تحليل)
+  - **§3.2.1 استثناء:** TCEA يملك صلاحية استدعاء DomainResearchAgent + DomainExpertAgent — مع 6 شروط حوكمية
+  - **§6.12 شرط الاستدعاء:** تحديث ليشمل استدعاء TCEA المباشر
+  - **DomainResearchAgent حدود عند استدعاء TCEA:** 8 قواعد صارمة (Domain Research Report فقط، [Research Hint]، client-engagement/ فقط، websearch/webfetch مسموح)
+  - **D.1 Routing Table:** إضافة DomainResearchAgent
+  - Anti-Bloat: لا ملفات جديدة، لا عملاء جدد — تعديل صلاحيات في ملفات موجودة
+- الموافقة: Majed — Approved (توجيه مباشر)
+- التحقق من الصحة: ✅ Anti-Bloat Gate PASS، ✅ Policy Map Check PASS، ✅ Architecture Map Check PASS، ✅ لا تلوث تطبيقات، ✅ لا توسع صلاحيات غير مبرر (استثناءان محددان)، ✅ git diff --check نظيف
+- المخاطر: منخفض — الاستثناء محدود بـ DomainResearchAgent + DomainExpertAgent فقط، المخرجات تحمل [Research Hint] ولا تدخل النطاق دون تأكيد Majed (MR1)، كل استدعاء يُسجل
+- ملاحظات الاسترجاع (Rollback):
+  1. tera-client-engagement.md: إزالة DomainResearchAgent من A.7 + A.7.1 + D.1
+  2. TeraSubAgents.md: إزالة DomainResearchAgent من §3.2.1 + استرجاع §6.12 شرط الاستدعاء + إزالة "عند الاستدعاء من TCEA"
+

@@ -303,7 +303,9 @@ tera-system/TeraSystemMaintenanceChecklist.md
 tera-system/TeraPolicyMap.md
 tera-system/TeraArchitectureMap.md
 tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
+tera-system/AIS_PROTOCOL.md
 project-control/AGENT_GAPS_LOG.md
+project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md (عند معالجة AIS)
 ```
 
 ثم اقرأ فقط الملفات المرتبطة بالمشكلة أو الطلب. لا تفتح كل ملفات المنظومة بلا داعٍ إلا إذا كان الطلب صراحةً فحصاً شاملاً.
@@ -322,6 +324,7 @@ project-control/AGENT_GAPS_LOG.md
    - Owner improvement request
    - Client-app-derived system gap
    - Agent self-reported gap
+   - AIS suggestion
    - Proactive system stewardship finding
 
 2. قراءة الملفات المرجعية الإلزامية.
@@ -484,7 +487,7 @@ TeraSystemEvolutionAgent (حارس) هو المسؤول عن معالجة اقت
 
 ---
 
-## 16. Change Logging
+## 17. Change Logging
 
 كل تغيير منفذ يسجل في:
 
@@ -509,7 +512,7 @@ Rollback Notes:
 
 ---
 
-## 17. Allowed / Forbidden Examples
+## 18. Allowed / Forbidden Examples
 
 ### مسموح
 
@@ -533,7 +536,7 @@ Rollback Notes:
 
 ---
 
-## 18. Final Boundaries
+## 19. Final Boundaries
 
 - `tera-system/` هو مسؤوليتك الأولى والمستمرة.
 - أنت مسؤول عن المنظومة وعملائها الأساسيين، لا عن تنفيذ تطبيقات العملاء.

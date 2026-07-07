@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض سعر - شركة العمران الحديثة للمقاولات</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .print-table thead, .print-table tfoot { background: #fff; }
+        .print-table thead td, .print-table tfoot td, .print-table tbody td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .page-header, .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+
+        .page-header img, .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .document { padding: 0 var(--page-padding-x); }
+
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+        .doc__top strong { color: var(--ink); }
+
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+
+        .field {
+            display: flex;
+            gap: 2mm;
+            align-items: baseline;
+        }
+        .field__label { white-space: nowrap; font-weight: 700; }
+        .field__value {
+            flex: 1;
+            min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+
+        .doc__recipient { margin-top: 4mm; font-size: 10.3pt; line-height: 1.6; }
+        .doc__recipient p, .doc__body p { margin: 0 0 2.4mm; }
+
+        .doc__body { margin-top: 2mm; font-size: 10.7pt; }
+
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+        }
+
+        .doc__body h4 {
+            margin: 3.5mm 0 1.5mm;
+            font-size: 10.5pt;
+            break-after: avoid-page;
+        }
+
+        .doc__body ul {
+            margin: 0 0 2.4mm;
+            padding: 0 5mm 0 0;
+        }
+        .doc__body li { margin-bottom: 1.4mm; }
+
+        .no-break { break-inside: avoid-page; page-break-inside: avoid; }
+
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+
+        .sign-box { flex: 1; }
+        .sign-box__label { margin-bottom: 6mm; font-size: 10.2pt; font-weight: 700; }
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2mm 0;
+            font-size: 10pt;
+        }
+
+        .price-table th, .price-table td {
+            border: 1px solid var(--line);
+            padding: 1.5mm 2mm;
+            text-align: right;
+        }
+
+        .price-table th { background: var(--soft); font-weight: 700; }
+
+        .price-total {
+            font-size: 12pt;
+            font-weight: 700;
+            color: #1a56db;
+            text-align: center;
+            padding: 2mm;
+            background: #e0edfc;
+            border-radius: 4px;
+            margin: 2mm 0;
+        }
+
+        .highlight-box {
+            padding: 2mm 3mm;
+            background: #f0f7ff;
+            border-right: 3px solid #1a56db;
+            border-radius: 4px;
+            margin: 2mm 0;
+        }
+
+        @media print {
+            body { background: #fff; }
+            .print-page { width: 100%; min-height: 0; margin: 0; box-shadow: none; overflow: visible; }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="../../../../branding/header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="../../../../branding/footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/06</div>
+                <div><strong>الرقم:</strong> QTN-2026-001</div>
+            </div>
+
+            <div class="doc__chip">عرض سعر — Quotation</div>
+
+            <p class="doc__subject">الموضوع: عرض سعر المرحلة الأولى — منظومة إدارة طلبات المصنع</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">شركة العمران الحديثة للمقاولات</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">عناية:</span>
+                    <span class="field__value">م. سامر الخطيب — مدير المصنع</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المرجع:</span>
+                    <span class="field__value">خطاب تأكيد النطاق SCL-2026-002 + آلية العمل WFL-2026-001</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">نسخة إلى:</span>
+                    <span class="field__value">م. نادر العواملة — المدير التنفيذي</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة شركة العمران الحديثة للمقاولات المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+
+                <p>بناءً على سلسلة جلسات الاكتشاف والتحليل، وبعد اطلاعكم على خطاب تأكيد النطاق (SCL-2026-002) وخطاب آلية عمل التطبيق (WFL-2026-001)، وبناءً على موافقتكم المبدئية عليهما، يسرنا أن نقدم لكم عرض السعر الرسمي للمرحلة الأولى من مشروع <strong>«منظومة إدارة طلبات المصنع»</strong>.</p>
+
+                <!-- ===== 1. نطاق المرحلة الأولى ===== -->
+                <h3>أولاً: نطاق المرحلة الأولى — ما تشمله الخدمة</h3>
+
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th style="width:5%">#</th>
+                            <th style="width:35%">المكون</th>
+                            <th style="width:60%">التفاصيل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>دخول فردي</td><td>اسم مستخدم + كلمة سر لكل موظف، تسجيل دخول آمن</td></tr>
+                        <tr><td>2</td><td>3 أدوار صلاحيات</td><td>مدخل طلب / مشرف مصنع / مدير — مع عزل صلاحيات صارم</td></tr>
+                        <tr><td>3</td><td>إنشاء طلب</td><td>مع إرفاق مخططات/قياسات، رقم طلب فريد، تاريخ التسليم المطلوب، أولوية</td></tr>
+                        <tr><td>4</td><td>5 مراحل رئيسية</td><td>طلب جديد ← قيد التجهيز ← قيد التصنيع ← فحص الجودة ← تم التسليم</td></tr>
+                        <tr><td>5</td><td>حالة "معلق" مع أسباب</td><td>ناقص مخطط / ناقص مادة / بانتظار موافقة المشروع / بانتظار مقاس أو زيارة موقع</td></tr>
+                        <tr><td>6</td><td>تحديث حالة الطلب</td><td>مشرف المصنع يحدّث المرحلة يدوياً</td></tr>
+                        <tr><td>7</td><td>تسليم الطلب</td><td>زر تسليم + تاريخ واسم المسلّم</td></tr>
+                        <tr><td>8</td><td>لوحة متابعة (Dashboard)</td><td>جميع الطلبات بالألوان (🟢 جاهز / 🟡 معلق / 🔴 متأخر) مع إظهار الطلبات المتأخرة تلقائياً</td></tr>
+                        <tr><td>9</td><td>ساعات العمل</td><td>إجمالي ساعات الفريق على الطلب</td></tr>
+                        <tr><td>10</td><td>صرف مواد</td><td>الاسم، الكمية، التكلفة التقريبية</td></tr>
+                        <tr><td>11</td><td>مصاريف إضافية</td><td>خانة واحدة لأي تكلفة خارجية (دهان، نقل، شغل خارجي)</td></tr>
+                        <tr><td>12</td><td>إجمالي التكلفة التقريبي</td><td>حساب تلقائي: (مواد + ساعات + مصاريف)</td></tr>
+                        <tr><td>13</td><td>سجل إجراءات (Audit)</td><td>التاريخ + الوقت + اسم الموظف: إنشاء، تغيير حالة، تكلفة، تسليم</td></tr>
+                        <tr><td>14</td><td>واجهة متجاوبة</td><td>يعمل على Chrome (كمبيوتر + جوال)</td></tr>
+                        <tr><td>15</td><td>استضافة + دومين + نسخ احتياطي</td><td>استضافة أردنية (سوبرنوفا/بلانيت)، دومين باسم الشركة، نسخ احتياطي تلقائي</td></tr>
+                        <tr><td>16</td><td>شعار الشركة</td><td>استخدام اسم الشركة مؤقتاً إلى أن يتم تزويدنا بالشعار الرسمي</td></tr>
+                    </tbody>
+                </table>
+
+                <!-- ===== 2. السعر ===== -->
+                <h3>ثانياً: السعر</h3>
+
+                <div class="price-total">
+                    السعر الإجمالي للمرحلة الأولى: <strong>820 دينار أردني</strong> (فقط ثمانمائة وعشرون ديناراً أردنياً لا غير)
+                </div>
+
+                <div class="highlight-box">
+                    <strong>ماذا يشمل السعر:</strong>
+                    <ul style="margin: 1mm 0 0; padding: 0 4mm 0 0;">
+                        <li>تصميم وتطوير شامل لجميع المكونات الـ 16 أعلاه</li>
+                        <li>اختبار شامل (وظيفي، توافق متصفحات، Responsive)</li>
+                        <li>نشر على الاستضافة + إعداد الدومين + نسخ احتياطي تلقائي</li>
+                        <li>جلسة تدريب للمستخدمين + دليل استخدام مبسط</li>
+                        <li>ضمان 3 أشهر من تاريخ التسليم النهائي</li>
+                    </ul>
+                </div>
+
+                <!-- ===== 3. مدة التنفيذ ===== -->
+                <h3>ثالثاً: مدة التنفيذ المتوقعة</h3>
+                <p><strong>4 إلى 6 أسابيع</strong> من تاريخ توقيع الاتفاق واستلام الدفعة الأولى.</p>
+                <p>الجدول الزمني التقريبي:</p>
+                <ul>
+                    <li><strong>الأسبوع 1:</strong> تجهيز البنية التحتية، إعداد قاعدة البيانات، تصميم الواجهات</li>
+                    <li><strong>الأسبوع 2-3:</strong> تطوير نظام الدخول والصلاحيات، إنشاء الطلبات، المراحل والحالات</li>
+                    <li><strong>الأسبوع 3-4:</strong> تطوير التكاليف (مواد، ساعات، مصاريف)، لوحة المتابعة، سجل الإجراءات</li>
+                    <li><strong>الأسبوع 4-5:</strong> اختبار شامل، تجربة المستخدمين، تعديلات المراجعة</li>
+                    <li><strong>الأسبوع 5-6:</strong> نشر على الاستضافة، تدريب المستخدمين، تسليم النسخة النهائية</li>
+                </ul>
+
+                <!-- ===== 4. الضمان ===== -->
+                <h3>رابعاً: الضمان</h3>
+                <p><strong>مدة الضمان: 3 أشهر</strong> من تاريخ التسليم النهائي.</p>
+                <p><strong>يشمل الضمان:</strong></p>
+                <ul>
+                    <li>إصلاح الأخطاء البرمجية داخل النطاق المعتمد</li>
+                    <li>متابعة أي توقف في التطبيق</li>
+                    <li>مساعدة المستخدمين في المشاكل التقنية</li>
+                </ul>
+                <p><strong>لا يشمل الضمان:</strong></p>
+                <ul>
+                    <li>ميزات جديدة أو شاشات جديدة</li>
+                    <li>تغيير متطلبات النطاق بعد الاعتماد</li>
+                    <li>سوء استخدام من قبل المستخدمين</li>
+                    <li>مشاكل ناتجة عن بيانات خاطئة من العميل</li>
+                </ul>
+
+                <p><strong>توضيح مهم — مسؤولية إعدادات الاستضافة:</strong></p>
+                <ul>
+                    <li>✅ <strong>مشمول في الضمان:</strong> أي مشكلة تقنية ناتجة عن الكود البرمجي أو إعدادات الاستضافة التي قمنا بها نحن (مثلاً: إعداد قاعدة البيانات، إعداد النسخ الاحتياطي، تكوين الدومين).</li>
+                    <li>❌ <strong>غير مشمول في الضمان:</strong> أي مشكلة من شركة الاستضافة نفسها (مثلاً: توقف السيرفر، انقطاع الخدمة، مشاكل أمنية في البنية التحتية للمزود).</li>
+                </ul>
+
+                <!-- ===== 5. الدعم الشهري بعد الضمان ===== -->
+                <h3>خامساً: الدعم الشهري (اختياري — بعد انتهاء الضمان)</h3>
+                <p>بعد انتهاء الضمان (3 أشهر)، يمكن الاتفاق على باقة دعم شهري:</p>
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th style="width:25%">الباقة</th>
+                            <th style="width:25%">السعر الشهري</th>
+                            <th style="width:50%">ما تشمله</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>أساسية</td>
+                            <td><strong>30 JOD</strong></td>
+                            <td>إصلاح أخطاء، متابعة توقف، استجابة خلال 48 ساعة</td>
+                        </tr>
+                        <tr>
+                            <td>موسعة</td>
+                            <td><strong>50 JOD</strong></td>
+                            <td>أساسية + تعديلات بسيطة (نصوص، خيارات) + استجابة خلال 24 ساعة</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><em>ملاحظة: الميزات الجديدة أو الشاشات الجديدة لا تشملها باقات الدعم وتُسعّر بشكل مستقل.</em></p>
+
+                <!-- ===== 6. خطة الدفع ===== -->
+                <h3>سادساً: خطة الدفع</h3>
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th style="width:10%">#</th>
+                            <th style="width:45%">المرحلة</th>
+                            <th style="width:20%">النسبة</th>
+                            <th style="width:25%">المبلغ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>بداية العمل — بعد توقيع الاتفاق</td>
+                            <td>30%</td>
+                            <td><strong>246 JOD</strong></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>عند تجربة النسخة الأولى والتأكد من الميزات الأساسية</td>
+                            <td>40%</td>
+                            <td><strong>328 JOD</strong></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>عند التسليم النهائي بعد التدريب وقبول النسخة النهائية من قبل العميل</td>
+                            <td>30%</td>
+                            <td><strong>246 JOD</strong></td>
+                        </tr>
+                        <tr style="font-weight:700; background: var(--soft);">
+                            <td colspan="2">المجموع</td>
+                            <td>100%</td>
+                            <td><strong>820 JOD</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- ===== 7. البنود الاختيارية ===== -->
+                <h3>سابعاً: بنود اختيارية — يمكن إضافتها حالياً أو تأجيلها لمراحل لاحقة</h3>
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th style="width:40%">البند</th>
+                            <th style="width:20%">التكلفة التقديرية</th>
+                            <th style="width:40%">ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>إشعارات داخل النظام</td>
+                            <td>—</td>
+                            <td>مؤجلة لـ Phase 2 (يكفي التمييز البصري حالياً)</td>
+                        </tr>
+                        <tr>
+                            <td>تقرير التكلفة التفصيلي</td>
+                            <td>—</td>
+                            <td>مؤجل لـ Phase 2 (يكفي إجمالي التكلفة التقريبي)</td>
+                        </tr>
+                        <tr>
+                            <td>مقارنة تكلفة مخطط vs فعلي</td>
+                            <td>300–400 JOD</td>
+                            <td>Phase 2 — العميل مهتم بها بعد تراكم بيانات</td>
+                        </tr>
+                        <tr>
+                            <td>تفصيل ساعات العمال (كل عامل)</td>
+                            <td>400–500 JOD</td>
+                            <td>Phase 2 — بعد تثبيت نظام ساعات الإجمالي</td>
+                        </tr>
+                        <tr>
+                            <td>إشعارات واتساب</td>
+                            <td>400–600 JOD</td>
+                            <td>Phase 3 — مفيدة لكن غير مستعجلة</td>
+                        </tr>
+                        <tr>
+                            <td>لوحة تحكم متقدمة (تقارير ذكية)</td>
+                            <td>500–700 JOD</td>
+                            <td>Phase 3 — بعد تراكم بيانات كافية</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- ===== 8. النقاط المعلقة ===== -->
+                <h3>ثامناً: نقاط بحاجة تأكيد من قبلكم</h3>
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th style="width:35%">النقطة</th>
+                            <th style="width:65%">الوضع</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>الدومين</td>
+                            <td>ننتظر تأكيد الإدارة/IT: هل يوجد دومين حالي؟ الاسم المقترح: <strong>alomran-factory.com</strong>. لا نشتري جديداً إلا بعد موافقة الإدارة.</td>
+                        </tr>
+                        <tr>
+                            <td>مزود الاستضافة</td>
+                            <td>سنقوم بمقارنة الخيارات المتاحة (سوبرنوفا / بلانيت) وتزويدكم باسم المزود والتكلفة الشهرية/السنوية قبل الشراء. لا يتم الشراء إلا بعد موافقتكم.</td>
+                        </tr>
+                        <tr>
+                            <td>الشعار</td>
+                            <td>موجود — بانتظار تزويدنا بالملف من الإدارة/التسويق. إلى حينها، نستخدم اسم الشركة مؤقتاً.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- ===== 9. المراجعات ===== -->
+                <h3>تاسعاً: جولات المراجعة المشمولة</h3>
+                <p>يشمل العرض <strong>جولتَي مراجعة</strong> داخل النطاق المعتمد (مثلاً تعديل ألوان، إعادة ترتيب حقول، تغيير نصوص).</p>
+                <p>أي تعديل خارج النطاق أو بعد استهلاك جولتَي المراجعة يُعتبر <strong>طلب تغيير (Change Request)</strong> ويسعّر بشكل منفصل.</p>
+
+                <!-- ===== 10. أحكام عامة ===== -->
+                <h3>عاشراً: أحكام عامة</h3>
+                <ul>
+                    <li>هذا العرض ساري المفعول لمدة <strong>14 يوماً</strong> من تاريخه.</li>
+                    <li>جميع الأسعار بالدينار الأردني (JOD) ولا تشمل ضريبة المبيعات إن وجدت.</li>
+                    <li>تكلفة الاستضافة والدومين الشهرية/السنوية يتحملها العميل بشكل منفصل (تقديرياً 5–10 JOD شهرياً للاستضافة + 10–15 JOD سنوياً للدومين). سيتم إعلام العميل باسم المزود والتكلفة قبل الشراء، ولا يتم الشراء إلا بعد موافقته.</li>
+                    <li>أي تأخير في الدفع يوقف العمل دون اعتبار ذلك تأخيراً من جهة المنفذ.</li>
+                    <li>لا يتم تسليم صلاحيات الإنتاج أو الملفات النهائية قبل تسوية الدفعات المستحقة.</li>
+                    <li>جميع المراسلات الرسمية تكون عبر البريد الإلكتروني أو الخطابات الرسمية.</li>
+                </ul>
+
+                <p style="margin-top: 3mm;">نأمل أن ينال عرضنا هذا رضاكم، ونكون عند حسن ظنكم. للاستفسار أو طلب توضيح، نحن على استعداد تام.</p>
+
+                <p>وتفضلوا بقبول فائق الاحترام،</p>
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">جهة التنفيذ — Teranoo</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                    <div class="sign-box__line">التاريخ: .......................................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">العميل — شركة العمران الحديثة للمقاولات</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                    <div class="sign-box__line">التاريخ: .......................................</div>
+                    <div class="sign-box__line" style="margin-top:3mm;">الختم: .......................................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

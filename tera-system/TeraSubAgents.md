@@ -85,6 +85,21 @@ Sub-agents must not create, activate, modify, or delegate to other sub-agents un
 - لا يوزع العمل على Agent آخر مباشرة.
 - إذا ظهرت حاجة إلى تخصص إضافي أو مراجعة مستقلة، يرفع ذلك إلى Tera، وTera وحده يقرر.
 
+**الاستثناء الوحيد — TCEA ↔ DomainResearchAgent + DomainExpertAgent:**
+
+```text
+TCEA (مستشار) يملك صلاحية استدعاء DomainResearchAgent و DomainExpertAgent مباشرة — دون المرور بـ Tera Agent —
+للاستفادة من بحث وتحليل متخصص بمجال العميل أثناء Discovery أو عند اقتراح Value-Added Proposals.
+
+الشروط:
+1. DomainResearchAgent: بحث ويب موجه → ينتج Domain Research Report
+2. DomainExpertAgent: تحليل المعرفة → ينتج Domain Intelligence Report
+3. المخرجات تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed
+4. TCEA لا يدير أي من العميلين — يستدعيهما ويستلم النتيجة فقط
+5. كل استدعاء يُسجل في CLIENT_DECISION_LOG.md
+6. لا يجوز لـ TCEA استدعاء أي عميل فرعي آخر
+```
+
 ### 3.2.2 Model Capability Gate لا يستبدل العملاء المختصين
 
 `Model Capability Gate` is a Tera-side assessment only.
@@ -1303,7 +1318,7 @@ Plan Compliance Report
 | اسم العميل | Domain Research Agent |
 | المعرّف | `DOMAIN_RESEARCH_AGENT` |
 | الفئة | مشروط / Domain Intelligence |
-| شرط الاستدعاء | عندما يقرر Tera وجود حاجة إلى معرفة خارجية موثقة أو best practices أو مرجع مثل SAP / Oracle / Odoo / Dynamics، وبعد إعداد `Domain Research Brief` |
+| شرط الاستدعاء | عندما يقرر Tera وجود حاجة إلى معرفة خارجية موثقة أو best practices أو مرجع مثل SAP / Oracle / Odoo / Dynamics، وبعد إعداد `Domain Research Brief`. **أو عندما يستدعيه TCEA مباشرة** لإجراء بحث ويب موجه عن مجال العميل أثناء Discovery أو لاقتراح Value-Added Proposals (راجع §3.2.1 الاستثناء). |
 
 ### يقرأ
 
@@ -1330,6 +1345,44 @@ Domain Research Report
 - لا يعتبر أي مصدر خارجي إلزاميًا للمشروع.
 - لا يستخدم بحثًا مفتوحًا دون `Domain Research Brief`.
 
+### عند الاستدعاء من TCEA
+
+```text
+عندما يستدعيك TCEA (مستشار) مباشرة:
+1. مهمتك: إنتاج Domain Research Report فقط (جمع + مصادر مصنفة)
+2. السؤال البحثي يحدده TCEA في الـ task description
+3. استخدم websearch و webfetch لإجراء بحث موجه ومفصل
+4. صنّف المصادر حسب الموثوقية: Tier 1 (رسمية) / Tier 2 (مهنية) / Tier 3 (عامة)
+5. كل معلومة تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed
+6. تكتب في client-engagement/ فقط (الملفات التي يحددها TCEA في Allowed Write Targets)
+7. لا تعدل ملفات التحضير (project-preparation/) — هذه ملكية Tera Agent
+8. لا تقرر نيابة عن Majed — معلوماتك استرشادية فقط
+```
+
+### قواعد البحث الصارمة — تجنب أخطاء 404
+
+```text
+القاعدة الذهبية: ابحث أولاً، اقرأ ثانياً.
+
+1. ❌ لا تستخدم webfetch على روابط تخمينية مباشرة
+   ✅ استخدم websearch أولاً للعثور على الروابط الصحيحة والحديثة
+
+2. ❌ لا تفترض أن رابطاً قديماً لا يزال موجوداً
+   ✅ المواقع الكبرى (SAP, Oracle, Microsoft) تعيد هيكلة مواقعها باستمرار
+
+3. ✅ إذا أعطى webfetch خطأ (404, 403, timeout):
+   - لا تتوقف — ابحث عن مصدر بديل
+   - جرّب websearch بنفس الموضوع بكلمات مختلفة
+   - وثّق في التقرير: "الرابط الأصلي غير متاح — تم استخدام مصدر بديل"
+
+4. ✅ ترتيب الأدوات الصحيح:
+   websearch("الموضوع") → يجد روابط → webfetch(الرابط) → يستخرج المحتوى
+
+5. ✅ إذا فشل webfetch عدة مرات:
+   - اعتمد على ملخص websearch فقط
+   - وثّق: "المصدر غير متاح للقراءة الكاملة — المعلومات من ملخص البحث"
+```
+
 ### معايير القبول
 
 - التقرير مرتبط بالسؤال البحثي المحدد.
@@ -1346,7 +1399,7 @@ Domain Research Report
 | اسم العميل | Domain Expert Agent |
 | المعرّف | `DOMAIN_EXPERT_AGENT` |
 | الفئة | مشروط / Domain Intelligence |
-| شرط الاستدعاء | عندما يحتاج Tera إلى تحويل بحث أو معرفة مجال إلى متطلبات وقواعد وWorkflow مصنفة حسب MVP / Later / Out of Scope |
+| شرط الاستدعاء | عندما يحتاج Tera إلى تحويل بحث أو معرفة مجال إلى متطلبات وقواعد وWorkflow مصنفة حسب MVP / Later / Out of Scope. **أو عندما يستدعيه TCEA مباشرة** للحصول على معرفة متخصصة بمجال العميل أثناء Discovery أو لاقتراح Value-Added Proposals (راجع §3.2.1 الاستثناء). |
 
 ### يقرأ
 
@@ -1371,6 +1424,18 @@ Domain Intelligence Report
 - لا يتجاوز `PROJECT_RULES.md` أو القرارات المعتمدة.
 - لا ينشئ مهام تنفيذ ولا يعتمد بدء التنفيذ.
 - لا يحول SAP / Oracle / Odoo / Dynamics إلى blueprint إلزامي.
+
+### عند الاستدعاء من TCEA
+
+```text
+عندما يستدعيك TCEA (مستشار) مباشرة:
+1. مهمتك: إنتاج Domain Intelligence Report فقط
+2. كل توصية تُصنف: Include now / Recommended / Defer / Out of Scope / Needs User Decision
+3. المخرجات تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed
+4. تكتب في client-engagement/ فقط (الملفات التي يحددها TCEA في Allowed Write Targets)
+5. لا تعدل ملفات التحضير (project-preparation/) — هذه ملكية Tera Agent
+6. لا تقرر نيابة عن Majed — توصياتك استرشادية فقط
+```
 
 ### معايير القبول
 
