@@ -1,195 +1,73 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* ── Copper & Burgundy — Classic Premium Palette ── */
 @theme {
-  /* Fonts */
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', Arial, Helvetica, sans-serif;
-
-  /* Background colors */
-  --color-bg-page: #F5F0E8;
-  --color-bg-card: #FFFFFF;
-  --color-bg-card-warm: #FDF8F3;
-  --color-bg-sidebar: #2C1810;
-  --color-bg-sidebar-hover: #3C2418;
-  --color-bg-mocha: #8B7355;
-  --color-bg-mocha-light: #A0896E;
-  --color-bg-burgundy: #800020;
-
-  /* Text colors */
-  --color-text-primary: #2C1810;
-  --color-text-secondary: #6B5344;
-  --color-text-muted: #9C8C7E;
-  --color-text-light: #C4B5A5;
-  --color-text-on-dark: #F5F0E8;
-  --color-text-on-dark-muted: #C4B5A5;
-
-  /* Accent colors */
-  --color-accent-bronze: #CD7F32;
-  --color-accent-bronze-hover: #B8722A;
-  --color-accent-bronze-light: #E8A96A;
-  --color-accent-burgundy: #800020;
-  --color-accent-gold: #B8860B;
-
-  /* Chart colors */
-  --color-chart-bronze: #CD7F32;
-  --color-chart-orange: #D4876A;
-  --color-chart-olive: #6B8E4E;
-  --color-chart-gold: #B8860B;
-  --color-chart-mocha: #8B7355;
-  --color-chart-burgundy: #800020;
-  --color-chart-sage: #7A8B6E;
-  --color-chart-terracotta: #C4716E;
-
-  /* Semantic */
-  --color-success: #6B8E4E;
-  --color-warning: #D4876A;
-  --color-danger: #A04040;
-
-  /* Borders */
+  --color-*: initial;
+  --color-cream: #F5F0E8;
+  --color-cream-dark: #E8DCD0;
+  --color-mocha: #8B7355;
+  --color-mocha-light: #A0886A;
+  --color-mocha-dark: #6B5344;
+  --color-espresso: #2C1810;
+  --color-espresso-light: #3D2A1F;
+  --color-copper: #CD7F32;
+  --color-copper-light: #E09140;
+  --color-copper-dark: #B8722A;
+  --color-burgundy: #800020;
+  --color-burgundy-light: #A00028;
+  --color-olive: #6B8E4E;
+  --color-olive-light: #7DA55E;
+  --color-olive-dark: #55703C;
+  --color-orange-soft: #D4876A;
+  --color-orange-soft-light: #E09A80;
+  --color-golden-olive: #B8860B;
   --color-border: #E8DCD0;
-  --color-border-light: #F0E8E0;
+  --color-border-dark: #D4C4B4;
+
+  --font-sans: "Inter", "Noto Sans Arabic", system-ui, sans-serif;
+  --font-display: "Playfair Display", "Inter", serif;
 }
 
-/* Typography classes */
-.type-display-1 {
-  font-family: var(--font-display);
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
-}
-
-.type-display-2 {
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -0.3px;
-}
-
-.type-heading-1 {
-  font-family: var(--font-body);
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.type-heading-2 {
-  font-family: var(--font-body);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-.type-body {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.type-body-sm {
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.type-caption {
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-.type-kpi-value {
-  font-family: var(--font-display);
-  font-size: 36px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -1px;
-}
-
-.type-kpi-label {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.3;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-
-/* Layout utilities */
-.page-container {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.card-shadow {
-  box-shadow: 0 1px 3px rgba(44, 24, 16, 0.06), 0 1px 2px rgba(44, 24, 16, 0.04);
-}
-
-.card-shadow-hover:hover {
-  box-shadow: 0 4px 12px rgba(44, 24, 16, 0.1), 0 2px 4px rgba(44, 24, 16, 0.06);
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-.animate-fadeIn {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-.animate-slideUp {
-  animation: slideUp 0.5s ease-out forwards;
-}
-.animate-scaleIn {
-  animation: scaleIn 0.3s ease-out forwards;
-}
-
-/* Recharts */
-.recharts-default-tooltip {
-  border-radius: 8px !important;
-  border: 1px solid var(--color-border) !important;
-  box-shadow: 0 4px 12px rgba(44, 24, 16, 0.1) !important;
-}
-
+/* ── Base Styles ── */
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
-  font-family: var(--font-body);
-  background-color: var(--color-bg-page);
-  color: var(--color-text-primary);
-  -webkit-font-smoothing: antialiased;
+  direction: rtl;
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-espresso);
+  min-height: 100vh;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #E8DCD0;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: #8B7355;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6B5344;
+}
+
+/* ── Custom utility classes ── */
+.card-shadow {
+  box-shadow: 0 2px 8px rgba(44, 24, 16, 0.08),
+              0 4px 16px rgba(44, 24, 16, 0.04);
+}
+.card-shadow-hover:hover {
+  box-shadow: 0 4px 16px rgba(44, 24, 16, 0.12),
+              0 8px 32px rgba(44, 24, 16, 0.06);
+  transform: translateY(-2px);
+}
+.sidebar-shadow {
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
 }
