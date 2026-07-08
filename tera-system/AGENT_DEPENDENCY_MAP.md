@@ -1,0 +1,71 @@
+# AGENT_DEPENDENCY_MAP.md
+
+## الغرض
+خريطة العلاقات بين ملفات العملاء في `.opencode/agents/`. تساعد في:
+- تتبع أثر أي تعديل على عميل — ما الملفات الأخرى التي قد تتأثر
+- كشف المراجع المكسورة بعد التحديثات
+- تحديد ترتيب التعديل الآمن
+
+---
+
+## 🔗 خريطة العلاقات
+
+| Agent | يتم استدعاؤه بواسطة | يستدعي/يشير إلى | يقرأ من |
+|-------|-------------------|----------------|---------|
+| **tera.md** | — (الأب) | `ui-designer.md`, `engineering-agent.md`, `tera-software-designer.md`, `application-blueprint.md`, `domain-research-agent.md`, `domain-expert-agent.md` | `tera-system/*.md`, `project-preparation/`, `project-control/` |
+| **ui-designer.md** | `tera.md`, `tera-system-evolution.md` (للأغراض النظامية) | `design-reviewer.md` (ناقد يراجعه) | `28_UI_UX_GUIDELINES.md`, `tera-system/design-system/*.md` |
+| **engineering-agent.md** | `tera.md` | `ui-designer.md` (مصمم يسبقه)، `tera-software-designer.md` (يسبقه للمهام المعقدة) | `TECHNICAL_SPECIFICATION.md`, `28_UI_UX_GUIDELINES.md` |
+| **tera-software-designer.md** | `tera.md` | `engineering-agent.md` (ينفذ الـ Spec) | `project-preparation/*.md`, `28_UI_UX_GUIDELINES.md`, `PROJECT_RULES.md` |
+| **design-reviewer.md** | — (مستقل — يستدعيه Majed) | `TeraAgent`, `EngineeringAgent` (مراجعة مخرجاتهم) | `28_UI_UX_GUIDELINES.md`, `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md` |
+| **tera-client-engagement.md** | — (مستقل — يستدعيه Majed) | `domain-research-agent.md`, `domain-expert-agent.md`, `application-blueprint.md` | `tera-system/client-helpers/*.md`, `tera-system/TeraPricingPolicy.md` |
+| **application-blueprint.md** | `tera-client-engagement.md`, `tera.md` | `domain-research-agent.md`, `domain-expert-agent.md` | `project-preparation/`, `client-engagement/` |
+| **domain-research-agent.md** | `tera-client-engagement.md`, `tera.md`, `application-blueprint.md`, `tera-system-evolution.md` | `domain-expert-agent.md` (يسلم له للتحليل) | — (بحث خارجي) |
+| **domain-expert-agent.md** | `tera-client-engagement.md`, `tera.md`, `application-blueprint.md`, `tera-system-evolution.md` | — | `domain-research-agent.md` (Domain Research Report) |
+| **tera-system-evolution.md** | — (مستقل — يستدعيه Majed) | `ui-designer.md`, `domain-research-agent.md`, `domain-expert-agent.md` (للأغراض النظامية) | `tera-system/*.md`, `.opencode/agents/*.md` |
+| **auditor.md** | — (مستقل — يستدعيه Majed) | يراجع مخرجات `tera.md`, `engineering-agent.md` | `project-control/*.md`, `tera-system/*.md` |
+| **monitor.md** | — (مستقل — يستدعيه Majed) | يراجع مخرجات `tera.md`, `engineering-agent.md` | `project-control/*.md`, `tera-system/*.md` |
+
+---
+
+## 📏 ترتيب التعديل الآمن
+
+عند تعديل أي Agent، اتبع هذا التسلسل لتجنب كسر المراجع:
+
+```
+1. غيّر الملف الأساسي
+2. راجع AGENT_DEPENDENCY_MAP.md — من يشير لهذا الملف؟
+3. افتح كل ملف يشير إليه وتحقق من أن المراجع ما زالت صحيحة
+4. إذا وجدت مرجعاً مكسوراً → صححه
+5. سجل التغيير
+```
+
+### مثال: تعديل `ui-designer.md`
+```
+ui-designer.md
+  ↑ يشير إليه: tera.md (Section 8 — يستدعيه)
+  ↑ يشير إليه: design-reviewer.md (Section 11 — يقارن نفسه به)
+  ↑ يشير إليه: engineering-agent.md (Section 3 — يتكامل معه)
+  ↑ يشير إليه: tera-system-evolution.md (Section 7.1 — يستدعيه لأغراض نظامية)
+
+يجب فتح: tera.md + design-reviewer.md + engineering-agent.md + tera-system-evolution.md
+وتأكيد أن الإشارات ما زالت صحيحة بعد التعديل.
+```
+
+---
+
+## ⚠️ تنبيهات حجم الملف (حسب قاعدة 400 سطر)
+
+| Agent | الحجم (سطور) | الحالة |
+|-------|-------------|--------|
+| tera.md | ~700 | 🔴 يتجاوز 400 — يستحق تقسيم |
+| tera-client-engagement.md | ~737 | 🔴 يتجاوز (مقسّم بالفعل إلى helpers) |
+| design-reviewer.md | ~390 | 🟡 يقترب من الحد |
+| tera-system-evolution.md | ~600 | 🔴 يتجاوز 400 — يستحق تقسيم |
+| engineering-agent.md | ~320 | 🟢 تحت الحد |
+| ui-designer.md | ~322 | 🟢 تحت الحد |
+| domain-expert-agent.md | ~510 | 🔴 يتجاوز 400 |
+| domain-research-agent.md | ~360 | 🟢 تحت الحد |
+| tera-software-designer.md | ~229 | 🟢 تحت الحد |
+| application-blueprint.md | ~470 | 🔴 يتجاوز 400 |
+
+> **ملاحظة:** `tera.md` و `tera-client-engagement.md` لهما استثناء حتى 700 سطر حسب قاعدة حارس.

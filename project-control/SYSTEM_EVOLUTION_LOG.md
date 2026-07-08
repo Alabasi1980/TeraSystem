@@ -465,5 +465,186 @@
   1. حذف `.opencode/agents/domain-research-agent.md` و `domain-expert-agent.md`
   2. استرجاع TeraSubAgents.md §6.12 و §6.13 إلى النسخة السابقة
   3. إزالة GAP-012 من AGENT_GAPS_LOG.md
-  4. إزالة هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+   4. إزالة هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
 
+---
+
+## SCP-2026-07-07-091 — إضافة صلاحية استخدام DomainResearchAgent و DomainExpertAgent لـ ApplicationBlueprintAgent (مهندس)
+
+- تاريخ: 2026-07-07
+- معرف التغيير: SCP-2026-07-07-091
+- مصدر الطلب: طلب Majed المباشر — بعد تقييم Blueprint خارجي وتحديد فجوة Domain Depth لدى مهندس
+- نوع التغيير: Agent Permission Enhancement — إضافة صلاحية استدعاء عملاء فرعيين محددين
+- الملفات المعدلة:
+  - `.opencode/agents/application-blueprint.md` — إضافة `task: ask` في الصلاحيات + إضافة §20 (صلاحية استخدام Domain Agents مع قواعد وممنوعات)
+  - `tera-system/TeraSubAgents.md` §3.2.1 — توسيع الاستثناء من "TCEA فقط" إلى "TCEA + ApplicationBlueprintAgent" مع فصل شروط كل منهما
+  - `.opencode/agents/domain-research-agent.md` — إضافة §6.7 (عند الاستدعاء من مهندس — Software Mode) + تحديث Identity و Mode
+  - `.opencode/agents/domain-expert-agent.md` — إضافة §6.7 (عند الاستدعاء من مهندس — Software Mode) + تحديث Identity و Dual Mode
+- الملخص:
+  - مهندس (ApplicationBlueprintAgent) يملك الآن صلاحية استدعاء DomainResearchAgent و DomainExpertAgent مباشرة دون المرور بـ TeraAgent
+  - الوضع: Software Mode تلقائياً (تصنيف MVP — Include now / Recommended / Defer / Out of Scope / Needs User Decision)
+  - الكتابة: project-preparation/ فقط
+  - المخرجات: تحمل وسم [Research Hint] — لا تدخل blueprint دون تأكيد Majed
+  - التسجيل: في BLUEPRINT_DECISION_CANDIDATES.md أو BLUEPRINT_OPEN_QUESTIONS.md
+  - الحدود: لا يجوز لمهندس استدعاء أي عميل فرعي آخر غير هذين الاثنين
+  - نفس pattern الناجح لـ TCEA (SCP-088 + SCP-089) يُطبق على مهندس
+- الموافقة: Majed — Approved
+- التحقق من الصحة:
+  - ✅ Anti-Bloat Gate PASS — لا ملفات جديدة، لا عملاء جدد، لا طبقات جديدة
+  - ✅ Policy Map Check PASS — لا تناقض مع TeraPolicyMap.md (نمط مطبق مسبقاً لـ TCEA)
+  - ✅ Architecture Map Check PASS — project-preparation/ لمهندس، client-engagement/ لـ TCEA
+  - ✅ لا تلوث تطبيقات العملاء — لا تعديل لأي ملف في clients/
+  - ✅ لا توسع صلاحيات غير مبرر — استثناء محدد بعميلين فقط (DomainResearchAgent + DomainExpertAgent)
+  - ✅ git diff --check نظيف (لا أخطاء، فقط تحذيرات CRLF عادية)
+  - ✅ 0 مراجع قديمة لـ "الاستثناء الوحيد"
+- المخاطر: منخفض — نفس pattern المطبق لـ TCEA (SCP-088 + SCP-089). مهندس لا يملك صلاحية استدعاء أي عميل آخر غير domain agents. المخرجات [Research Hint] لا تدخل blueprint دون تأكيد Majed
+- ملاحظات الاسترجاع (Rollback):
+  1. application-blueprint.md: إزالة صلاحية `task` + إزالة §20
+  2. TeraSubAgents.md §3.2.1: استرجاع النص القديم "الاستثناء الوحيد — TCEA فقط"
+  3. domain-research-agent.md: إزالة §6.7 + استرجاع Identity و Mode
+  4. domain-expert-agent.md: إزالة §6.7 + استرجاع Identity و Dual Mode
+
+## SCP-2026-07-07-079 — حظر TeraAgent من كتابة أي كود برمجي (Hard Code Boundary)
+
+- تاريخ: 2026-07-07
+- معرف التغيير: SCP-2026-07-07-079
+- مصدر الطلب: Owner Improvement Request (Majed)
+- نوع التغيير: Agent Improvement / Policy Update
+- الملفات المعدلة:
+  - `.opencode/agents/tera.md` — 4 تعديلات: تقوية العبارة الافتتاحية، إضافة بند منع الكود في Section 9، إضافة Section 9.1 Code Boundary Rule كاملة، إضافة Code Writing Delegation Rule في Section 12
+- الملخص:
+  - تم تحويل TeraAgent من "not a direct implementation agent **by default**" إلى **"pure orchestrator — FORBIDDEN from writing any programming code"**
+  - تمت إضافة بند صريح في Section 9 يمنع TeraAgent من كتابة أي ملف برمجي (JS, TS, HTML, CSS, Python, SQL, shell scripts, infra config...إلخ)
+  - تمت إضافة Section 9.1 Code Boundary Rule مع جدول واضح: إيش مسموح يكتبه (ملفات .md للتوثيق والخطط والتقارير) وإيش ممنوع (كل ما يُنفَّذ أو يُجمَّع)
+  - تمت إضافة قاعدة تفويض صارمة: أي كود = EngineeringAgent أو UI Designer أو SoftwareDesigner
+  - تم تحديث Section 12 لتعزيز قاعدة "TeraAgent does not touch code files directly. Period."
+  - تم تحديث Last Synced إلى 2026-07-07
+- الموافقة: Majed — Approved
+- التحقق من الصحة: Validation Passed
+  - ✅ Anti-Bloat Gate PASS — ملف واحد معدّل، لا ملفات جديدة، لا عملاء جدد، لا طبقات جديدة
+  - ✅ Policy Map Check PASS — tera.md هو مصدر الحقيقة لهوية TeraAgent، لا تعارض
+  - ✅ Architecture Map Check PASS — لا تغيير في أدوار المجلدات أو حدود الطبقات
+  - ✅ No client-app contamination — tera.md ملف نظامي
+  - ✅ No unauthorized privilege expansion — تقييد وليس توسيع صلاحيات
+  - ✅ No stale/deprecated agent references
+  - ✅ No duplicated mandatory rules — القواعد الجديدة صافية، لا تكرار
+  - ✅ git diff --check PASS — لا أخطاء، فقط تحذيرات CRLF عادية على ويندوز
+- المخاطر: منخفض — تقييد سلوكي صريح فقط. لا تغيير في الصلاحيات التقنية. TeraAgent ما زال يملك write/edit/bash للملفات الإدارية (.md). الخطر الوحيد: TeraAgent قد "يحتج" على ملفات .md تحتوي pseudo-code — لكن القاعدة تحدد: ما يُنفَّذ أو يُجمَّع فقط هو الممنوع.
+- ملاحظات الاسترجاع (Rollback): `git checkout HEAD -- .opencode/agents/tera.md`
+
+## SCP-2026-07-07-080 — تقوية ناقد في معيار راحة العين ووضوح المحتوى
+
+- تاريخ: 2026-07-07
+- معرف التغيير: SCP-2026-07-07-080
+- مصدر الطلب: Owner Improvement Request (Majed)
+- نوع التغيير: Agent Improvement / Policy Update
+- الملفات المعدلة:
+  - `.opencode/agents/design-reviewer.md` — إضافة قاعدة صريحة لراحة العين ورفض التباين المزعج
+  - `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md` — إضافة §3.1 Visual Comfort & Readability Safety
+- الملخص:
+  - تم تعزيز ناقد بمعيار واضح يمنع الواجهات شبه البيضاء على شبه البيضاء، والنص الباهت على الخلفيات الفاتحة، والـ blur/opacity التي تضعف المقروئية
+  - تمت إضافة بند صريح يجعل أي عنصر يحتاج "تحديق" أو يسبب إجهادًا بصريًا فاشلًا في المراجعة
+  - تمت إضافة Checklist مستقل لراحة العين ووضوح المحتوى في معايير المراجعة
+- الموافقة: Majed — Approved
+- التحقق من الصحة: Validation Passed
+  - ✅ Anti-Bloat Gate PASS — تعديل موجه، بلا عملاء جدد ولا طبقات جديدة
+  - ✅ Policy Map Check PASS — يقوّي المعايير دون تعارض
+  - ✅ Architecture Map Check PASS — لا أثر على حدود المجلدات
+  - ✅ No client-app contamination
+  - ✅ No unauthorized privilege expansion
+  - ✅ No stale/deprecated agent references
+- المخاطر: منخفض — التغيير يزيد صرامة المراجعة البصرية وقد يرفع عدد الرفضات البصرية في البداية، لكنه يحسن الجودة النهائية
+- ملاحظات الاسترجاع (Rollback):
+  1. `.opencode/agents/design-reviewer.md` — إزالة القاعدة الصريحة المضافة
+  2. `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md` — حذف §3.1 المستحدثة
+
+## SCP-2026-07-07-081 — تشديد فحص المودالات والواجهات الشفافة عبر Screenshot فعلي
+
+- تاريخ: 2026-07-07
+- معرف التغيير: SCP-2026-07-07-081
+- مصدر الطلب: Owner Improvement Request (Majed)
+- نوع التغيير: Agent Improvement / Policy Update
+- الملفات المعدلة:
+  - `.opencode/agents/design-reviewer.md` — إضافة شرط Screenshot فعلي للمودالات/الشفافيات
+  - `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md` — إضافة قواعد فشل فوري عند ضعف القراءة أو تسرب الخلفية
+- الملخص:
+  - تم منع اعتماد Snapshot/ARIA وحدهما في حالات المودال والـ glassmorphism
+  - تمت إضافة قاعدة صريحة: إذا كان المحتوى مرئيًا لكنه غير مريح في Screenshot فعلي، فهو فشل
+  - تمت إضافة حالات فشل فوري للمحتوى الذي يحتاج تحديقًا أو يفتقر للفصل البصري
+- الموافقة: Majed — Approved
+- التحقق من الصحة: Validation Passed
+  - ✅ Anti-Bloat Gate PASS
+  - ✅ Policy Map Check PASS
+  - ✅ Architecture Map Check PASS
+  - ✅ No client-app contamination
+  - ✅ No unauthorized privilege expansion
+  - ✅ No stale/deprecated agent references
+- المخاطر: منخفض — يرفع صرامة الفحص البصري ويقلل قبول الواجهات المرهقة
+- ملاحظات الاسترجاع (Rollback):
+   1. `.opencode/agents/design-reviewer.md` — إزالة سطر شرط Screenshot الفعلي
+   2. `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md` — إزالة البنود الأربع المضافة في §3.1
+
+## SCP-2026-07-07-082 — إضافة معايير حيوية البروتوتايب (Vitality & Polish)
+
+- تاريخ: 2026-07-07
+- معرف التغيير: SCP-2026-07-07-082
+- مصدر الطلب: Owner Improvement Request (Majed)
+- نوع التغيير: Policy Update / Agent Improvement (4 ملفات)
+- الملفات المعدلة:
+  - `.opencode/agents/tera.md` — إضافة § UI Vitality & Polish Requirements (Checklist إلزامي لكل UI Task)
+  - `.opencode/agents/ui-designer.md` — تحويل Research Protocol من اختياري إلى إلزامي + إضافة Vitality Self-Check Gate + إعادة تعريف "prototype" كـ "تجربة كاملة"
+  - `.opencode/agents/design-reviewer.md` — إضافة بند فحص حيوية البروتوتايب وطاقته البصرية
+  - `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md` — إضافة §10 كامل Visual Vitality & Polish
+- الملخص:
+  - تم إلزام البحث عن References قبل أي مشروع UI (Dribbble/Awwwards + توثيق)
+  - تم إضافة Vitality Self-Check Gate للمصمم: 8 بنود إلزامية (Skeleton، Toast، Connection Status، Search، Empty States، Micro-animations، Realistic Data، حيوية)
+  - تم إضافة معيار في Tera: كل TASK-COD-* لواجهات يتضمن Vitality & Polish Checklist إلزامي
+  - تم إضافة بند فحص الحيوية في design-reviewer.md ومعايير DESIGN_REVIEW_STANDARDS.md
+  - تم وضع قاعدة: البروتوتايب البارد/الساكن = فشل مراجعة تلقائي
+  - تم إضافة خيار N/A (لا ينطبق) مع تبرير إجباري لكل بند في الـ Checklist لاستيعاب المهام الصغيرة
+  - تم ربط الـ Checklist بـ Pre-Execution Gate (فحص الوجود) و Post-Execution Review Gate (فحص الإكمال)
+  - تم توحيد صيغة الـ ✅ / N/A عبر الملفات الثلاثة (tera.md، ui-designer.md، DESIGN_REVIEW_STANDARDS.md)
+  - تم إضافة Vitality Verification إلى Output Format في design-reviewer.md §13 لإلزام ذكر الحيوية في التقارير
+- الموافقة: Majed — Approved
+- التحقق من الصحة: Validation Passed
+  - ✅ Anti-Bloat Gate PASS — تعديلات في ملفات موجودة، لا عملاء جدد ولا طبقات جديدة
+  - ✅ Policy Map Check PASS — الملفات الأربعة متسقة مع بعضها
+  - ✅ Architecture Map Check PASS — لا تغيير في حدود المجلدات
+  - ✅ No client-app contamination
+  - ✅ No unauthorized privilege expansion
+  - ✅ No stale/deprecated agent references
+- المخاطر: منخفض — سيرفع جودة البروتوتايب وقد يزيد وقت التنفيذ قليلاً، لكنه يمنع البروتوتايب "البارد"
+- ملاحظات الاسترجاع (Rollback):
+  1. `.opencode/agents/tera.md` — إزالة § UI Vitality & Polish Requirements
+  2. `.opencode/agents/ui-designer.md` — إعادة Research Protocol إلى "اختياري" + إزالة Vitality Self-Check Gate + إزالة §7.5
+   3. `.opencode/agents/design-reviewer.md` — إزالة بند فحص الحيوية
+   4. `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md` — حذف §10
+
+## SCP-2026-07-07-083 — تطوير حارس (صلاحيات + أدوات + خريطة تبعية)
+
+- تاريخ: 2026-07-07
+- معرف التغيير: SCP-2026-07-07-083
+- مصدر الطلب: Owner Improvement Request (Majed)
+- نوع التغيير: Agent Improvement / New Tool / New Reference File
+- الملفات المعدلة:
+  - `.opencode/agents/tera-system-evolution.md` — 5 إضافات (انظر الملخص)
+  - `tera-system/AGENT_DEPENDENCY_MAP.md` — ملف جديد
+- الملخص:
+  - **صلاحية `task`:** أُضيفت مع قيود واضحة — يمكن استدعاء domain-research-agent، ui-designer، general للأغراض النظامية فقط. ممنوع استدعاء TeraAgent أو TCEA أو مهندس لمهام تطبيقات العملاء.
+  - **قاعدة حجم الملف:** أُضيفت كواجب رقم 11 — أي ملف Agent يتجاوز 400 سطر يُقترح تقسيمه. استثناء لـ tera.md و tera-client-engagement.md حتى 700 سطر.
+  - **Agent Edit Quality Gate:** أُضيفت كواجب رقم 12 — 6 بنود تحقق قبل إغلاق أي تعديل على Agent.
+  - **SYSTEM_HEALTH_REPORT قالب:** أُضيفت كـ §13.3 في Output Formats لتوحيد تقارير الفحص الدوري.
+  - **AGENT_DEPENDENCY_MAP.md:** ملف جديد في tera-system/ يوثق العلاقات بين جميع العملاء الأساسيين — من يستدعي من، ومن يشير إلى من، وترتيب التعديل الآمن.
+- الموافقة: Majed — Approved
+- التحقق من الصحة: Validation Passed
+  - ✅ Anti-Bloat Gate PASS — ملف جديد واحد فقط (خريطة)، والباقي إضافات في ملف موجود
+  - ✅ Policy Map Check PASS — لا تعارض
+  - ✅ Architecture Map Check PASS — الملف الجديد تحت tera-system/
+  - ✅ No client-app contamination
+  - ✅ No unauthorized privilege expansion — صلاحية task مقيدة بقيود واضحة
+  - ✅ No stale/deprecated agent references
+  - ✅ File size checked — tera-system-evolution.md ~600 سطر (يتجاوز 400، مقرر تقسيمه لاحقاً)
+- المخاطر: منخفض
+- ملاحظات الاسترجاع (Rollback):
+  1. `.opencode/agents/tera-system-evolution.md` — إزالة الإضافات الخمس (باستثناء التعليمات الأصلية)
+  2. حذف `tera-system/AGENT_DEPENDENCY_MAP.md`

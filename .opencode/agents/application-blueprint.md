@@ -9,6 +9,7 @@ permission:
   write: ask
   bash: ask
   webfetch: ask
+  task: ask
   todowrite: allow
 ---
 
@@ -420,3 +421,36 @@ tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
 
 ### الحالة
 هذا الاقتراح غير نافذ. يتطلب مراجعة Majed وتنفيذاً رسمياً عبر TeraSystemEvolutionAgent (حارس) بعد الموافقة.
+
+---
+
+## 20. صلاحية استخدام Domain Research Agent و Domain Expert Agent
+
+لتعميق فهم المجال (Domain Depth) أثناء إنتاج blueprint، يملك مهندس صلاحية استدعاء:
+
+- `DomainResearchAgent` (باحث) — لجمع وتصنيف معلومات من المصادر الخارجية
+- `DomainExpertAgent` (خبير) — لتحليل المعرفة وإنتاج Domain Intelligence Report
+
+### 20.1 متى تستدعيهما؟
+
+- عندما يكون المجال غير مألوف لك (مقاولات، محاماة، BI، طب، تعليم...)
+- عندما يحتوي handoff على معلومات مجال عامة غير كافية لتوصية دقيقة
+- عندما تحتاج إلى فهم best practices، معايير الصناعة، أو تصنيف MVP لمتطلبات مجال معين
+- عندما يكون تقييم الثقة (Self-Verification) لأي قسم من blueprint **Medium** أو **Low** بسبب نقص المعرفة بالمجال
+
+### 20.2 قواعد الاستدعاء
+
+1. **الوضع:** Software Mode — لأن مهندس يعمل في سياق blueprinting، لا استشاري
+2. **Allowed Write Targets:** `project-preparation/` فقط — لأن مهندس ينتج في domain التحضير
+3. **المخرجات:** تحمل وسم `[Research Hint]` — لا تدخل الـ blueprint مباشرة دون تأكيد Majed
+4. **الاستدعاء:** عبر أداة `task` مع `subagent_type: "general"` و Objective واضح
+5. **التسلسل:** استدعِ DomainResearchAgent أولاً (جمع)، ثم DomainExpertAgent (تحليل) عند الحاجة
+6. **التسجيل:** سجل كل استدعاء في `project-preparation/BLUEPRINT_DECISION_CANDIDATES.md`
+
+### 20.3 الحدود (ممنوعات)
+
+- لا تستدعي domain agents لمجرد الكسل — استخدم `webfetch` أولاً للأسئلة البسيطة
+- لا تدخل [Research Hint] مباشرة في blueprint الأساسي — انتظر تأكيد Majed
+- لا تستدعي domain agents لأسئلة تنفيذية أو تقنية (هذه مهمة TeraAgent)
+- لا تستدعي domain agents لتقرر نيابة عن Majed — معلوماتك استرشادية فقط
+- لا تستدعي أي عميل فرعي آخر غير DomainResearchAgent و DomainExpertAgent

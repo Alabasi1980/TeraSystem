@@ -85,11 +85,23 @@ Sub-agents must not create, activate, modify, or delegate to other sub-agents un
 - لا يوزع العمل على Agent آخر مباشرة.
 - إذا ظهرت حاجة إلى تخصص إضافي أو مراجعة مستقلة، يرفع ذلك إلى Tera، وTera وحده يقرر.
 
-**الاستثناء الوحيد — TCEA ↔ DomainResearchAgent + DomainExpertAgent:**
+**الاستثناءات — TCEA + ApplicationBlueprintAgent ↔ DomainResearchAgent + DomainExpertAgent:**
 
 ```text
-TCEA (مستشار) يملك صلاحية استدعاء DomainResearchAgent و DomainExpertAgent مباشرة — دون المرور بـ Tera Agent —
-للاستفادة من بحث وتحليل متخصص بمجال العميل أثناء Discovery أو عند اقتراح Value-Added Proposals.
+TCEA (مستشار) و ApplicationBlueprintAgent (مهندس) يملكان صلاحية استدعاء
+DomainResearchAgent و DomainExpertAgent مباشرة — دون المرور بـ Tera Agent —
+لاستخدام متخصص لمعلومات المجال.
+
+TCEA ← Consulting Mode (أثناء Discovery)
+مهندس ← Software Mode (أثناء Blueprinting)
+```
+
+**عند الاستدعاء من TCEA (مستشار):**
+
+```text
+TCEA (مستشار) يملك صلاحية استدعاء DomainResearchAgent و DomainExpertAgent مباشرة —
+دون المرور بـ Tera Agent — للاستفادة من بحث وتحليل متخصص بمجال العميل
+أثناء Discovery أو عند اقتراح Value-Added Proposals.
 
 الشروط:
 1. DomainResearchAgent: بحث ويب موجه → ينتج Domain Research Report
@@ -98,6 +110,23 @@ TCEA (مستشار) يملك صلاحية استدعاء DomainResearchAgent و 
 4. TCEA لا يدير أي من العميلين — يستدعيهما ويستلم النتيجة فقط
 5. كل استدعاء يُسجل في CLIENT_DECISION_LOG.md
 6. لا يجوز لـ TCEA استدعاء أي عميل فرعي آخر
+```
+
+**عند الاستدعاء من ApplicationBlueprintAgent (مهندس):**
+
+```text
+مهندس (ApplicationBlueprintAgent) يملك صلاحية استدعاء DomainResearchAgent و DomainExpertAgent
+مباشرة — دون المرور بـ Tera Agent — لتعميق فهم المجال أثناء إنتاج APPLICATION_BLUEPRINT.md.
+
+الشروط:
+1. الوضع: Software Mode تلقائياً
+2. DomainResearchAgent: بحث ويب موجه → Domain Research Report
+3. DomainExpertAgent: تحليل وتحويل → Domain Intelligence Report (بتصنيف MVP)
+4. المخرجات تحمل وسم [Research Hint] — لا تدخل blueprint دون تأكيد Majed
+5. الكتابة في project-preparation/ فقط
+6. مهندس لا يدير أي من العميلين — يستدعيهما ويستلم النتيجة فقط
+7. كل استدعاء يُسجل في BLUEPRINT_DECISION_CANDIDATES.md أو BLUEPRINT_OPEN_QUESTIONS.md
+8. لا يجوز لمهندس استدعاء أي عميل فرعي آخر
 ```
 
 ### 3.2.2 Model Capability Gate لا يستبدل العملاء المختصين

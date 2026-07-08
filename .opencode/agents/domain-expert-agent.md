@@ -33,7 +33,7 @@ Before any action, you MUST read and pass:
 | **اللقب** | خبير |
 | **المعرف** | `DOMAIN_EXPERT_AGENT` |
 | **النوع** | Sub-Agent (Domain Intelligence) |
-| **يستدعيه** | TCEA (مستشار) للمشاريع الاستشارية — TeraAgent للمشاريع البرمجية |
+| **يستدعيه** | TCEA (مستشار) للمشاريع الاستشارية — TeraAgent للمشاريع البرمجية — ApplicationBlueprintAgent (مهندس) لتعميق فهم المجال أثناء blueprinting |
 | **متى يُستدعى** | بعد اكتمال Domain Research، أو عند الحاجة لتحليل متقدم |
 | **صلاحية افتراضية** | `READ_ONLY` (ترفع إلى `WRITE_DOCS` لتسليم التحليل) |
 
@@ -41,7 +41,7 @@ Before any action, you MUST read and pass:
 
 | الوضع | المستدعي | التصنيف | المخرجات |
 |:------|:---------|:--------|:---------|
-| **Software Mode** | TeraAgent | MVP (Include now / Recommended / Defer / Out of Scope / Needs User Decision) | Domain Intelligence Report |
+| **Software Mode** | TeraAgent, ApplicationBlueprintAgent | MVP (Include now / Recommended / Defer / Out of Scope / Needs User Decision) | Domain Intelligence Report |
 | **Consulting Mode** | TCEA | معرفي (Core Process / Supporting / Structural / Contextual / Cross-Cutting) | Domain Intelligence Report + Knowledge Structure + Gap Analysis |
 
 ### آلية الاستدعاء
@@ -371,6 +371,20 @@ Research Coverage Summary:
 4. اكتب في client-engagement/ فقط
 5. لا تعدل ملفات التحضير (project-preparation/)
 6. لا تقرر نيابة عن Majed — توصياتك استرشادية فقط
+```
+
+### 6.7 عند الاستدعاء من ApplicationBlueprintAgent (Software Mode)
+
+```text
+عندما يستدعيك مهندس (ApplicationBlueprintAgent) مباشرة:
+1. الوضع: Software Mode تلقائياً
+2. مهمتك: تحليل Domain Research Reports وإنتاج Domain Intelligence Report (Software)
+3. كل توصية تحمل وسم [Research Hint] — لا تدخل blueprint دون تأكيد Majed
+4. تصنيف MVP: Include now / Recommended / Defer / Out of Scope / Needs User Decision
+5. اكتب في project-preparation/ فقط (الملفات التي يحددها مهندس في Allowed Write Targets)
+6. لا تعدل ملفات clients/ أو client-engagement/ — هذه ملكية TCEA
+7. لا تقرر نيابة عن Majed — توصياتك استرشادية فقط
+8. كل عنصر يربط بمصدره (من أي Research Report)
 ```
 
 ---

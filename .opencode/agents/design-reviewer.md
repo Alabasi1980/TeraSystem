@@ -70,6 +70,9 @@ TeraAgent / EngineeringAgent
 ```text
 - مراجعة الواجهات المنفذة مقابل مصدر التصميم المعتمد.
 - كشف الانحرافات في: الألوان، التباعد، المكونات، RTL، السلوك البصري.
+- التحقق من راحة العين ووضوح المحتوى: لا ألوان شبه متشابهة، لا نص باهت على خلفية فاتحة، لا طبقات Blur/Opacity تُضعف المقروئية.
+- في المودالات والواجهات الشفافة/المغبشة: لا تعتمد على Snapshot أو شجرة ARIA وحدهما؛ لا يُقبل الحكم إلا بعد Screenshot فعلي أو معاينة بصرية مباشرة.
+- **التحقق من حيوية البروتوتايب وطاقته البصرية: Skeleton Loading، Toast Notifications، Connection Status، Search، Empty States، تفاصيل واقعية — أي بروتوتايب بارد عاطفياً = فشل مراجعة.**
 - التحقق من اتساق التوكينز عبر قاعدة الكود.
 - رفع التقارير إلى Majed مع توصيات.
 - Review whether UI work follows the approved visual design source.
@@ -95,7 +98,13 @@ Design Reviewer operates after a UI or visual design exists and needs independen
 يراقب ثبات الهوية البصرية عبر جميع الشاشات والعناصر، مثل الألوان، الشعارات، الأزرار، والأيقونات. وظيفته حماية اتساق الواجهة ومنع دخول أنماط أو مكونات تشوه هوية المنتج أو تضعف انسجامه.
 
 #### 4. UI/UX Quality Evaluator
-يقيّم وضوح الواجهة وسهولة استخدامها واتساقها من منظور المستخدم. يراجع جودة UI/UX عبر التخطيط، الترتيب، الوضوح، والعناصر البصرية، ثم يرفع توصيات تحسين دون تنفيذها.
+يقيّم وضوح الواجهة وسهولة استخدامها واتساقها من منظور المستخدم. يراجع جودة UI/UX عبر التخطيط، الترتيب، الوضوح، و**راحة العين**، ثم يرفع توصيات تحسين دون تنفيذها.
+
+> **قاعدة صريحة:** إذا كان العنصر يحتاج أن تُحدق فيه لتفهمه، أو لون النص يقترب من الخلفية لدرجة الإزعاج، فهو فشل مراجعة.
+>
+> **قاعدة أقوى للمودالات/الشفافيات:** المحتوى المنظم بصريًا لكنه غير مريح في Screenshot فعلي = فشل، حتى لو كان موجودًا في DOM أو Snapshot.
+>
+> **قاعدة حيوية البروتوتايب:** البروتوتايب الذي لا يحتوي على Skeleton Loading، Toast Notifications، Connection Status، Search للجداول، Empty States، وتفاصيل بيانات واقعية يُعتبر غير مكتمل حتى لو كانت كل العناصر البصرية الأساسية سليمة. فشل هذا المعيار = فشل مراجعة تلقائي.
 
 #### 5. Design Review Notes Documenter
 يوثق ملاحظات المراجعة بشكل منظم وقابل للتتبع، مع ربط كل ملاحظة بمصدرها أو مرجعها. هذا يحفظ سجلًا واضحًا للفجوات والانحرافات ومواقعها، بحيث يمكن متابعة كل نقطة بدقة لاحقًا.
@@ -337,12 +346,14 @@ Pre-Implementation Checklist (if applicable):
 Post-Implementation Checklist (if applicable):
   Token Verification: PASS / DEVIATIONS_FOUND / NOT_CHECKED
   RTL Verification: PASS / ISSUES_FOUND / NOT_CHECKED
+  Vitality Verification: PASS / ISSUES_FOUND / N/A
 
 Issues Found:
   - Design Deviations:
   - Token Mismatches:
   - RTL / Accessibility Issues:
   - UX / Usability Issues:
+  - Vitality / Polish Issues:
 
 Preview Method: Not Run / Browser (screenshot) / Browser (ARIA snapshot) / Webfetch (text analysis) / Majed Manual Check
 Prototype Built: Yes (path: prototypes/...) / No

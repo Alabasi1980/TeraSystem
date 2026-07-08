@@ -1,0 +1,36 @@
+- generic [ref=f1e5]:
+  - generic [ref=f1e12]:
+    - img [ref=f1e14]
+    - heading "منصة البيانات" [level=1] [ref=f1e19]
+    - paragraph [ref=f1e20]: لوحة تحكم ذكية لتحليل بيانات مؤسستك واتخاذ قرارات استراتيجية مبنية على المعلومات
+    - generic [ref=f1e21]:
+      - generic [ref=f1e22]: تحليل فوري
+      - generic [ref=f1e23]: تقارير ذكية
+      - generic [ref=f1e24]: لوحات مخصصة
+      - generic [ref=f1e25]: دعم متعدد
+  - generic [ref=f1e27]:
+    - generic [ref=f1e28]:
+      - generic [ref=f1e29]:
+        - heading "تسجيل الدخول" [level=2] [ref=f1e30]
+        - paragraph [ref=f1e31]: أهلاً بك في منصة البيانات
+      - generic [ref=f1e32]:
+        - generic [ref=f1e33]:
+          - generic [ref=f1e34]: اسم المستخدم
+          - generic [ref=f1e35]:
+            - img [ref=f1e36]
+            - textbox "أدخل اسم المستخدم" [ref=f1e39]
+        - generic [ref=f1e40]:
+          - generic [ref=f1e41]: كلمة المرور
+          - generic [ref=f1e42]:
+            - img [ref=f1e43]
+            - textbox "أدخل كلمة المرور" [ref=f1e46]
+            - button [ref=f1e47]:
+              - img [ref=f1e48]
+        - generic [ref=f1e51]:
+          - generic [ref=f1e52] [cursor=pointer]:
+            - checkbox "تذكرني" [ref=f1e53]
+            - generic [ref=f1e54]: تذكرني
+          - button "نسيت كلمة المرور؟" [ref=f1e55]
+        - button "تسجيل الدخول" [ref=f1e56]
+      - paragraph [ref=f1e57]: استخدم أي بيانات للدخول — هذا بروتوتايب تجريبي
+    - paragraph [ref=f1e58]: © Dynamic Dashboard Builder — جميع الحقوق محفوظة

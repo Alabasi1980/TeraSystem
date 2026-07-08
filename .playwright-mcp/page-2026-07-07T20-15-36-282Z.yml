@@ -1,0 +1,286 @@
+- generic [ref=f1e1]:
+  - generic [ref=f1e65]:
+    - complementary [ref=f1e66]:
+      - generic [ref=f1e68]:
+        - img [ref=f1e70]
+        - generic [ref=f1e75]: منصة البيانات
+      - navigation [ref=f1e76]:
+        - button "لوحة القيادة" [ref=f1e77]:
+          - img [ref=f1e78]
+          - generic [ref=f1e83]: لوحة القيادة
+        - button "التحليلات" [ref=f1e84]:
+          - img [ref=f1e85]
+          - generic [ref=f1e87]: التحليلات
+        - button "التقارير" [ref=f1e88]:
+          - img [ref=f1e90]
+          - generic [ref=f1e93]: التقارير
+        - button "العملاء" [ref=f1e94]:
+          - img [ref=f1e95]
+          - generic [ref=f1e100]: العملاء
+        - button "الإعدادات" [ref=f1e101]:
+          - img [ref=f1e102]
+          - generic [ref=f1e105]: الإعدادات
+      - button [ref=f1e106]:
+        - img [ref=f1e107]
+      - button "تسجيل الخروج" [ref=f1e110]:
+        - img [ref=f1e111]
+        - generic [ref=f1e114]: تسجيل الخروج
+    - main [ref=f1e115]:
+      - generic [ref=f1e116]:
+        - generic [ref=f1e117]:
+          - generic [ref=f1e119]: الرئيسية
+          - generic [ref=f1e120]:
+            - img [ref=f1e121]
+            - generic [ref=f1e123]: لوحة القيادة
+        - generic [ref=f1e124]:
+          - button [ref=f1e125]:
+            - img [ref=f1e126]
+          - button "3" [ref=f1e129]:
+            - img [ref=f1e130]
+            - generic [ref=f1e133]: "3"
+          - generic [ref=f1e134]:
+            - generic [ref=f1e135]:
+              - paragraph [ref=f1e136]: أحمد آل سعود
+              - paragraph [ref=f1e137]: مدير البيانات
+            - generic [ref=f1e138]: أ.س
+      - generic [ref=f1e139]:
+        - generic [ref=f1e140]:
+          - heading "لوحة القيادة" [level=1] [ref=f1e141]
+          - paragraph [ref=f1e142]: مرحباً بك في لوحة التحكم — نظرة شاملة على أداء المنشأة
+        - generic [ref=f1e143]:
+          - generic [ref=f1e144]:
+            - generic [ref=f1e145]:
+              - combobox [ref=f1e146] [cursor=pointer]:
+                - option "آخر ٧ أيام"
+                - option "آخر ٣٠ يوماً" [selected]
+                - option "آخر ٩٠ يوماً"
+                - option "هذا العام"
+                - option "مخصص"
+              - img
+            - generic [ref=f1e147]:
+              - combobox [ref=f1e148] [cursor=pointer]:
+                - option "جميع الفروع" [selected]
+                - option "الرياض"
+                - option "جدة"
+                - option "الدمام"
+                - option "مكة"
+                - option "المدينة"
+              - img
+            - generic [ref=f1e149]:
+              - combobox [ref=f1e150] [cursor=pointer]:
+                - option "جميع الحالات" [selected]
+                - option "مكتمل"
+                - option "قيد التنفيذ"
+                - option "معلق"
+                - option "ملغي"
+              - img
+          - button "تحديث" [ref=f1e151]:
+            - img [ref=f1e152]
+            - generic [ref=f1e157]: تحديث
+        - generic [ref=f1e158]:
+          - button "+12.5% 12,847,500ر.س إجمالي المبيعات" [active] [ref=f1e159]:
+            - generic [ref=f1e161]:
+              - img [ref=f1e163]
+              - generic [ref=f1e166]:
+                - img [ref=f1e167]
+                - generic [ref=f1e170]: +12.5%
+            - generic [ref=f1e171]: 12,847,500ر.س
+            - paragraph [ref=f1e172]: إجمالي المبيعات
+          - button "+8.3% 5,623,800ر.س صافي الإيراد" [ref=f1e173]:
+            - generic [ref=f1e175]:
+              - img [ref=f1e177]
+              - generic [ref=f1e180]:
+                - img [ref=f1e181]
+                - generic [ref=f1e184]: +8.3%
+            - generic [ref=f1e185]: 5,623,800ر.س
+            - paragraph [ref=f1e186]: صافي الإيراد
+          - button "+24.7% 2,847 العملاء الجدد" [ref=f1e187]:
+            - generic [ref=f1e189]:
+              - img [ref=f1e191]
+              - generic [ref=f1e194]:
+                - img [ref=f1e195]
+                - generic [ref=f1e198]: +24.7%
+            - generic [ref=f1e199]: 2,847
+            - paragraph [ref=f1e200]: العملاء الجدد
+          - button "3.2% 1,293 الطلبات النشطة" [ref=f1e201]:
+            - generic [ref=f1e203]:
+              - img [ref=f1e205]
+              - generic [ref=f1e209]:
+                - img [ref=f1e210]
+                - generic [ref=f1e213]: 3.2%
+            - generic [ref=f1e214]: 1,293
+            - paragraph [ref=f1e215]: الطلبات النشطة
+          - button "+5.1% 92.4% نسبة الإنجاز" [ref=f1e216]:
+            - generic [ref=f1e218]:
+              - img [ref=f1e220]
+              - generic [ref=f1e224]:
+                - img [ref=f1e225]
+                - generic [ref=f1e228]: +5.1%
+            - generic [ref=f1e229]: 92.4%
+            - paragraph [ref=f1e230]: نسبة الإنجاز
+          - button "+1.2% 4.8/5 معدل الرضا" [ref=f1e231]:
+            - generic [ref=f1e233]:
+              - img [ref=f1e235]
+              - generic [ref=f1e237]:
+                - img [ref=f1e238]
+                - generic [ref=f1e241]: +1.2%
+            - generic [ref=f1e242]: 4.8/5
+            - paragraph [ref=f1e243]: معدل الرضا
+        - generic [ref=f1e244]:
+          - generic [ref=f1e245]:
+            - heading "المبيعات الشهرية" [level=3] [ref=f1e246]
+            - application [ref=f1e249]:
+              - generic [ref=f1e272]:
+                - generic [ref=f1e273]:
+                  - generic [ref=f1e275]: يناير
+                  - generic [ref=f1e277]: مارس
+                  - generic [ref=f1e279]: مايو
+                  - generic [ref=f1e281]: يوليو
+                  - generic [ref=f1e283]: سبتمبر
+                  - generic [ref=f1e285]: ديسمبر
+                - generic [ref=f1e286]:
+                  - generic [ref=f1e288]: 0.0م
+                  - generic [ref=f1e290]: 0.4م
+                  - generic [ref=f1e292]: 0.8م
+                  - generic [ref=f1e294]: 1.2م
+                  - generic [ref=f1e296]: 1.6م
+          - generic [ref=f1e297]:
+            - heading "توزيع حسب الفئة" [level=3] [ref=f1e298]
+            - application [ref=f1e301]
+            - generic [ref=f1e302]:
+              - generic [ref=f1e305]: المنتجات الرقمية
+              - generic [ref=f1e308]: الاستشارات
+              - generic [ref=f1e311]: خدمات الصيانة
+              - generic [ref=f1e314]: الاشتراكات
+              - generic [ref=f1e317]: أخرى
+          - generic [ref=f1e318]:
+            - heading "مقارنة سنوية حسب الفرع" [level=3] [ref=f1e319]
+            - application [ref=f1e322]:
+              - generic [ref=f1e327]:
+                - generic [ref=f1e328]:
+                  - generic [ref=f1e330]: الرياض
+                  - generic [ref=f1e332]: جدة
+                  - generic [ref=f1e334]: الدمام
+                  - generic [ref=f1e336]: مكة
+                  - generic [ref=f1e338]: المدينة
+                - generic [ref=f1e339]:
+                  - generic [ref=f1e341]: 0.0م
+                  - generic [ref=f1e343]: 1.5م
+                  - generic [ref=f1e345]: 3.0م
+                  - generic [ref=f1e347]: 4.5م
+                  - generic [ref=f1e349]: 6.0م
+        - generic [ref=f1e350]:
+          - heading "آخر المعاملات" [level=3] [ref=f1e352]
+          - table [ref=f1e354]:
+            - rowgroup [ref=f1e355]:
+              - row "المعرف التاريخ العميل الفرع القيمة الحالة" [ref=f1e356]:
+                - columnheader "المعرف" [ref=f1e357]
+                - columnheader "التاريخ" [ref=f1e358]
+                - columnheader "العميل" [ref=f1e359]
+                - columnheader "الفرع" [ref=f1e360]
+                - columnheader "القيمة" [ref=f1e361]
+                - columnheader "الحالة" [ref=f1e362]
+            - rowgroup [ref=f1e363]:
+              - row "TRX-001 ٢٠٢٦-٠٧-٠٦ شركة الأفق الرياض ٢٨٤٬٥٠٠ ر.س مكتمل" [ref=f1e364]:
+                - cell "TRX-001" [ref=f1e365]
+                - cell "٢٠٢٦-٠٧-٠٦" [ref=f1e366]
+                - cell "شركة الأفق" [ref=f1e367]
+                - cell "الرياض" [ref=f1e368]
+                - cell "٢٨٤٬٥٠٠ ر.س" [ref=f1e369]
+                - cell "مكتمل" [ref=f1e370]:
+                  - generic [ref=f1e371]: مكتمل
+              - row "TRX-002 ٢٠٢٦-٠٧-٠٥ مجموعة النور جدة ١٥٦٬٠٠٠ ر.س مكتمل" [ref=f1e372]:
+                - cell "TRX-002" [ref=f1e373]
+                - cell "٢٠٢٦-٠٧-٠٥" [ref=f1e374]
+                - cell "مجموعة النور" [ref=f1e375]
+                - cell "جدة" [ref=f1e376]
+                - cell "١٥٦٬٠٠٠ ر.س" [ref=f1e377]
+                - cell "مكتمل" [ref=f1e378]:
+                  - generic [ref=f1e379]: مكتمل
+              - row "TRX-003 ٢٠٢٦-٠٧-٠٤ مؤسسة السلام الدمام ٤٢٣٬٠٠٠ ر.س قيد التنفيذ" [ref=f1e380]:
+                - cell "TRX-003" [ref=f1e381]
+                - cell "٢٠٢٦-٠٧-٠٤" [ref=f1e382]
+                - cell "مؤسسة السلام" [ref=f1e383]
+                - cell "الدمام" [ref=f1e384]
+                - cell "٤٢٣٬٠٠٠ ر.س" [ref=f1e385]
+                - cell "قيد التنفيذ" [ref=f1e386]:
+                  - generic [ref=f1e387]: قيد التنفيذ
+              - row "TRX-004 ٢٠٢٦-٠٧-٠٣ شركة التميز الرياض ٩٧٬٥٠٠ ر.س معلق" [ref=f1e388]:
+                - cell "TRX-004" [ref=f1e389]
+                - cell "٢٠٢٦-٠٧-٠٣" [ref=f1e390]
+                - cell "شركة التميز" [ref=f1e391]
+                - cell "الرياض" [ref=f1e392]
+                - cell "٩٧٬٥٠٠ ر.س" [ref=f1e393]
+                - cell "معلق" [ref=f1e394]:
+                  - generic [ref=f1e395]: معلق
+              - row "TRX-005 ٢٠٢٦-٠٧-٠٢ شركة الأفق مكة ٦١٢٬٠٠٠ ر.س مكتمل" [ref=f1e396]:
+                - cell "TRX-005" [ref=f1e397]
+                - cell "٢٠٢٦-٠٧-٠٢" [ref=f1e398]
+                - cell "شركة الأفق" [ref=f1e399]
+                - cell "مكة" [ref=f1e400]
+                - cell "٦١٢٬٠٠٠ ر.س" [ref=f1e401]
+                - cell "مكتمل" [ref=f1e402]:
+                  - generic [ref=f1e403]: مكتمل
+    - generic [ref=f1e478]:
+      - generic [ref=f1e479]:
+        - generic [ref=f1e480]:
+          - generic [ref=f1e481]:
+            - heading "إجمالي المبيعات" [level=2] [ref=f1e482]
+            - generic [ref=f1e483]:
+              - img [ref=f1e484]
+              - generic [ref=f1e487]: +12.5%
+          - paragraph [ref=f1e488]: إجمالي المبيعات لكافة الفروع خلال الفترة المحددة
+        - generic [ref=f1e489]:
+          - button [ref=f1e490]:
+            - img [ref=f1e491]
+          - button [ref=f1e496]:
+            - img [ref=f1e497]
+      - generic [ref=f1e500]:
+        - button "جدول تفصيلي" [ref=f1e501]:
+          - img [ref=f1e502]
+          - generic [ref=f1e504]: جدول تفصيلي
+        - button "تحليل رسومي" [ref=f1e505]:
+          - img [ref=f1e506]
+          - generic [ref=f1e508]: تحليل رسومي
+      - table [ref=f1e511]:
+        - rowgroup [ref=f1e512]:
+          - row "الفرع القيمة النسبة الحالة" [ref=f1e513]:
+            - columnheader "الفرع" [ref=f1e514]
+            - columnheader "القيمة" [ref=f1e515]
+            - columnheader "النسبة" [ref=f1e516]
+            - columnheader "الحالة" [ref=f1e517]
+        - rowgroup [ref=f1e518]:
+          - row "الرياض ٤٬٢٥٠٬٠٠٠ ر.س 33.1% ممتاز" [ref=f1e519]:
+            - cell "الرياض" [ref=f1e520]
+            - cell "٤٬٢٥٠٬٠٠٠ ر.س" [ref=f1e521]
+            - cell "33.1%" [ref=f1e522]
+            - cell "ممتاز" [ref=f1e523]:
+              - generic [ref=f1e524]: ممتاز
+          - row "جدة ٣٬٨٤٠٬٠٠٠ ر.س 29.9% ممتاز" [ref=f1e525]:
+            - cell "جدة" [ref=f1e526]
+            - cell "٣٬٨٤٠٬٠٠٠ ر.س" [ref=f1e527]
+            - cell "29.9%" [ref=f1e528]
+            - cell "ممتاز" [ref=f1e529]:
+              - generic [ref=f1e530]: ممتاز
+          - row "الدمام ٢٬١٢٠٬٠٠٠ ر.س 16.5% جيد" [ref=f1e531]:
+            - cell "الدمام" [ref=f1e532]
+            - cell "٢٬١٢٠٬٠٠٠ ر.س" [ref=f1e533]
+            - cell "16.5%" [ref=f1e534]
+            - cell "جيد" [ref=f1e535]:
+              - generic [ref=f1e536]: جيد
+          - row "مكة ١٬٤٨٥٬٠٠٠ ر.س 11.6% جيد" [ref=f1e537]:
+            - cell "مكة" [ref=f1e538]
+            - cell "١٬٤٨٥٬٠٠٠ ر.س" [ref=f1e539]
+            - cell "11.6%" [ref=f1e540]
+            - cell "جيد" [ref=f1e541]:
+              - generic [ref=f1e542]: جيد
+          - row "المدينة ١٬١٥٠٬٠٠٠ ر.س 8.9% متوسط" [ref=f1e543]:
+            - cell "المدينة" [ref=f1e544]
+            - cell "١٬١٥٠٬٠٠٠ ر.س" [ref=f1e545]
+            - cell "8.9%" [ref=f1e546]
+            - cell "متوسط" [ref=f1e547]:
+              - generic [ref=f1e548]: متوسط
+      - generic [ref=f1e549]:
+        - paragraph [ref=f1e550]: "آخر تحديث: ٦ يوليو ٢٠٢٦"
+        - button "تفاصيل أوسع ←" [ref=f1e551]
+  - generic [ref=f1e404]: 1.5م
