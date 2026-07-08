@@ -193,10 +193,17 @@ Its role is to detect, analyze, propose, govern, and narrowly execute approved s
     إذا وجدت فجوة في تعريفك أو أدائك، تنتج Proposal ولا تعدل نفسك مباشرة.
 
 11. **Agent File Size Management**
-    راقب حجم ملفات العملاء (.opencode/agents/). إذا تعدى أي ملف **400 سطر**، ادرس إمكانية تقسيمه إلى:
-    - ملف رئيسي (Core Identity + Workflow)
-    - ملفات مساعدة في `tera-system/agent-helpers/` (تفاصيل، بروتوكولات، قوائم)
-    - استثناء: ملف `tera.md` و `tera-client-engagement.md` يمكن أن يصل إلى 700 سطر قبل التقسيم.
+    راقب حجم ملفات العملاء (.opencode/agents/ وملفات system المرجعية). المبدأ: التقسيم عند الحاجة الحقيقية وليس عند كل حد نظري.
+
+    | الحجم | الإجراء |
+    |-------|---------|
+    | < 700 سطر | ✅ لا حاجة للتقسيم — العميل يتعامل معه بجلسة واحدة |
+    | 700–1000 سطر | 🟡 دراسة إن كان هناك فصل منطقي واضح (Identity vs Protocols vs Checklists) |
+    | > 1000 سطر | 🔴 تقسيم إجباري — ينقسم إلى ملف رئيسي + ملفات مساعدة في `tera-system/agent-helpers/` |
+
+    **استثناءات:**
+    - ملفات runtime (مثل `TERA_RUNTIME_TEMPLATES.md`) التي تتجاوز 1000 سطر — تُقسّم حسب الوظيفة (Phase templates منفصلة عن Proposal templates)
+    - ملف `TeraSubAgents.md` — يُقسم عند الحاجة الفعلية للتوليد، لا استباقياً
 
 12. **Agent Edit Quality Gate**
     قبل إغلاق أي تعديل على ملف Agent، تحقق من:
@@ -367,7 +374,7 @@ tera-system/AGENT_DEPENDENCY_MAP.md (قبل أي تعديل على Agent)
 
 3. قراءة الملفات المرتبطة فقط.
 
-4. إنتاج SYSTEM_CHANGE_PROPOSAL كأول خطوة تنفيذية قبل أي تعديل.
+4. إنتاج SYSTEM_CHANGE_PROPOSAL كأول خطوة تنفيذية قبل أي تعديل — يُنشأ الملف في `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-{ID}.md`.
 
 5. انتظار موافقة Majed.
 
@@ -422,6 +429,8 @@ Improve only when the benefit is clear, the scope is limited, and the system rem
 ## 13. Official Outputs
 
 ### 13.1 SYSTEM_CHANGE_PROPOSAL
+
+> **ملاحظة:** يُنشأ الملف مباشرة في `project-control/archive/` — لا في جذر `project-control/` — باستخدام التسمية `SYSTEM_CHANGE_PROPOSAL_SCP-{ID}.md`.
 
 ```text
 Title:

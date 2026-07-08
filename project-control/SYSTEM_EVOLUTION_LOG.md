@@ -648,3 +648,29 @@
 - ملاحظات الاسترجاع (Rollback):
   1. `.opencode/agents/tera-system-evolution.md` — إزالة الإضافات الخمس (باستثناء التعليمات الأصلية)
   2. حذف `tera-system/AGENT_DEPENDENCY_MAP.md`
+
+## SCP-2026-07-08-084 — صيانة ملف TeraAgent (ترتيب المحتوى + مرجع قديم)
+
+- تاريخ: 2026-07-08
+- معرف التغيير: SCP-2026-07-08-084
+- مصدر الطلب: Agent File Maintenance (مسح صحة ملفات العملاء)
+- نوع التغيير: Agent File Maintenance / Content Reorder / Stale Reference Fix
+- الملفات المعدلة:
+  - `.opencode/agents/tera.md` — 4 تغييرات (انظر الملخص)
+- الملخص:
+  - إصلاح مرجع قديم في السطر 178: `APPLICATION_PROPOSAL.html` من `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html` → `APPLICATION_PROPOSAL_TEMPLATE.md` من `tera-workshop/client-templates/commercial/APPLICATION_PROPOSAL_TEMPLATE.md` (كانت C-2 صححت PolicyMap لكن tera.md نسي)
+  - نقل القاعدة الصلبة CODE BOUNDARY (الجدول الكامل + خطوات التفويض + الإنفاذ) من §9.1 إلى أعلى الملف مباشرة بعد CONDUCT GATE — لأنها أهم قاعدة للعميل ويجب أن تكون أولاً
+  - تقليل التكرار: §9.1 أصبح مرجعاً قصيراً، و§12 Code Writing Delegation Rule أصبح خلاصة تشغيلية بدل التكرار الرابع
+  - حذف #5 المكرر من Authority Order (كان مطابقاً لـ #3) وأعيد ترقيم #6–#8 إلى #5–#7
+- الموافقة: Majed — Approved (خلال جلسة الصيانة، موافقة لكل ملف على حدة)
+- التحقق من الصحة: Validation Passed
+  - ✅ Anti-Bloat Gate PASS — انخفاض صافٍ في السطور (703 → 492)
+  - ✅ Policy Map Check PASS — المرجع المُصلح يطابق TeraPolicyMap.md
+  - ✅ Architecture Map Check PASS — لا تغيير في بنية المجلدات
+  - ✅ No client-app contamination
+  - ✅ No unauthorized privilege expansion
+  - ✅ No stale/deprecated agent references — تم التحقق بـ grep أن لا إشارة لـ `.html` متبقية
+  - ✅ File size: 492 سطر — تحت حد 700 (آمن)
+- المخاطر: منخفض — سلوك TeraAgent لم يتغير، فقط الترتيب ودقة المرجع
+- ملاحظات الاسترجاع (Rollback):
+  1. `git checkout HEAD -- .opencode/agents/tera.md`

@@ -53,19 +53,22 @@ ui-designer.md
 
 ---
 
-## ⚠️ تنبيهات حجم الملف (حسب قاعدة 400 سطر)
+## ⚠️ تنبيهات حجم الملف
 
-| Agent | الحجم (سطور) | الحالة |
+الجدول أدناه يستخدم القاعدة المحدّثة: < 700 = ✅, 700–1000 = 🟡 دراسة, > 1000 = 🔴 تقسيم إجباري.
+
+| الملف | الحجم (سطور) | الحالة |
 |-------|-------------|--------|
-| tera.md | ~700 | 🔴 يتجاوز 400 — يستحق تقسيم |
-| tera-client-engagement.md | ~737 | 🔴 يتجاوز (مقسّم بالفعل إلى helpers) |
-| design-reviewer.md | ~390 | 🟡 يقترب من الحد |
-| tera-system-evolution.md | ~600 | 🔴 يتجاوز 400 — يستحق تقسيم |
-| engineering-agent.md | ~320 | 🟢 تحت الحد |
-| ui-designer.md | ~322 | 🟢 تحت الحد |
-| domain-expert-agent.md | ~510 | 🔴 يتجاوز 400 |
-| domain-research-agent.md | ~360 | 🟢 تحت الحد |
-| tera-software-designer.md | ~229 | 🟢 تحت الحد |
-| application-blueprint.md | ~470 | 🔴 يتجاوز 400 |
+| `tera-system/TeraSubAgents.md` | 1,375 | 🔴 تقسيم إجباري (> 1000) |
+| `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` | 1,186 | 🔴 تقسيم إجباري (> 1000) |
+| `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` | 1,110 | 🔴 تقسيم إجباري (> 1000) |
+| `tera-client-engagement.md` | 564 | 🟢 < 700 — لا حاجة |
+| `tera.md` | 491 | 🟢 < 700 — لا حاجة |
+| `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` | 469 | 🟢 < 700 — لا حاجة |
+| `tera-system/TeraPreExecutionGate.md` | 563 | 🟢 < 700 — لا حاجة |
+| `tera-system-evolution.md` | 451 | 🟢 < 700 — لا حاجة |
+| `domain-expert-agent.md` | 398 | 🟢 < 700 — لا حاجة |
+| `application-blueprint.md` | 335 | 🟢 < 700 — لا حاجة |
+| باقي ملفات agents | 180–322 | 🟢 < 700 — لا حاجة |
 
-> **ملاحظة:** `tera.md` و `tera-client-engagement.md` لهما استثناء حتى 700 سطر حسب قاعدة حارس.
+**ملاحظة:** الملفات التي تتجاوز 700 سطر وقريبة من الحد (700–1000) ستتم دراستها عند الحاجة الفعلية للتعديل التالي.

@@ -55,27 +55,28 @@ Project files record project-specific decisions.
 | Monitor audit framework | `.opencode/agents/monitor.md` | `ENGINEERING_AGENT_RESPONSIBILITIES.md` | Governs the 7 immutable audit rules, reference hierarchy, plan rejection authority, and cumulative audit for plan-compliance checking. |
 | Auditor audit framework | `.opencode/agents/auditor.md` | `ENGINEERING_AGENT_RESPONSIBILITIES.md` | Governs the 6-stage graded audit methodology, results classification, uncertainty protocol, cumulative audit, and engineering governance review scope. |
 | Project UI/UX executable guide | `project-preparation/28_UI_UX_GUIDELINES.md` using `TERA_RUNTIME_TEMPLATES.md` Section 33 | `TASK_TEMPLATE.md`, `TeraPreExecutionGate.md` | Final executable visual design rules for EngineeringAgent; raw sources stay in `project-preparation/design-source/`. |
-| Application proposal template | `tera-workshop/APPLICATION_PROPOSAL_TEMPLATE.html` | `TERA_RUNTIME_TEMPLATES.md` (Section 26) | Self-contained HTML page, RTL, printable. Generated after Client Discovery before formal preparation. |
-| Scope of Work template | `tera-workshop/SCOPE_OF_WORK_TEMPLATE.html` | — | Formal SOW document — scope, deliverables, timeline, payment, assumptions, sign-off. Generated after proposal approval. |
-| Technical Proposal template | `tera-workshop/TECHNICAL_PROPOSAL_TEMPLATE.html` | — | Technical architecture, stack, hosting, security, testing, CI/CD. Generated after SOW approval. |
-| Change Request form | `tera-workshop/CHANGE_REQUEST_FORM.html` | — | Change management — description, impact analysis, revised estimates, approval. Used during execution. |
-| Software Services Agreement | `tera-workshop/SOFTWARE_SERVICES_AGREEMENT_TEMPLATE.html` | — | 18-section legal agreement covering scope, obligations, payment, IP, confidentiality, liability, termination. Arabic, Jordanian law. |
-| Quotation | `tera-workshop/QUOTATION_TEMPLATE.html` | — | Formal price quotation — items, totals, payment terms, sign-off. |
-| Meeting Report | `tera-workshop/MEETING_REPORT_TEMPLATE.html` | — | Meeting minutes — attendees, agenda, decisions, action items. |
-| Status Report | `tera-workshop/STATUS_REPORT_TEMPLATE.html` | — | Periodic status — progress, achievements, risks, next steps. |
-| Handover Report | `tera-workshop/HANDOVER_REPORT_TEMPLATE.html` | — | Delivery and acceptance — deliverables checklist, access info, sign-off. |
-| Completion Certificate | `tera-workshop/COMPLETION_CERTIFICATE_TEMPLATE.html` | — | Formal project completion certificate with seal and signatures. |
-| Client Intake Form | `tera-workshop/CLIENT_INTAKE_FORM.html` | — | Pre-interview questionnaire — company, project, goals, budget, tech. |
-| Project Charter | `tera-workshop/PROJECT_CHARTER_TEMPLATE.html` | — | Project initiation document — objectives, scope, team, risks, success criteria. |
-| User Persona Matrix | `tera-workshop/USER_PERSONA_MATRIX_TEMPLATE.html` | — | User roles and persona cards — goals, pain points, permissions, features. |
-| Gap Analysis | `tera-workshop/GAP_ANALYSIS_TEMPLATE.html` | — | As-is vs to-be analysis, gap identification, recommendations. |
-| Risk Register | `tera-workshop/RISK_REGISTER_TEMPLATE.html` | — | Risk tracking — impact, probability, mitigation, owner, status. |
-| SLA | `tera-workshop/SLA_TEMPLATE.html` | — | Service Level Agreement — support hours, response times, priorities. |
-| NDA | `tera-workshop/NDA_TEMPLATE.html` | — | Non-Disclosure Agreement — confidentiality, exclusions, governing law. |
-| Client Satisfaction Survey | `tera-workshop/CLIENT_SATISFACTION_SURVEY_TEMPLATE.html` | — | Post-project feedback — ratings, open questions, recommendation. |
+| Application proposal template | `tera-workshop/client-templates/commercial/APPLICATION_PROPOSAL_TEMPLATE.md` | `TERA_RUNTIME_TEMPLATES.md` (Section 26) | Formal proposal document. Generated after Client Discovery before formal preparation. |
+| Scope of Work template | `tera-workshop/client-templates/commercial/SCOPE_OF_WORK_TEMPLATE.md` | — | Formal SOW document — scope, deliverables, timeline, payment, assumptions, sign-off. Generated after proposal approval. |
+| Technical Proposal template | `tera-workshop/client-templates/commercial/TECHNICAL_PROPOSAL_TEMPLATE.md` | — | Technical architecture, stack, hosting, security, testing, CI/CD. Generated after SOW approval. |
+| Change Request form | `tera-workshop/client-templates/contractual/CHANGE_REQUEST_FORM.md` | — | Change management — description, impact analysis, revised estimates, approval. Used during execution. |
+| Software Services Agreement | `tera-workshop/client-templates/contractual/SOFTWARE_SERVICES_AGREEMENT_TEMPLATE.md` | — | 18-section legal agreement covering scope, obligations, payment, IP, confidentiality, liability, termination. Arabic, Jordanian law. |
+| Quotation | `tera-workshop/client-templates/commercial/QUOTATION_TEMPLATE.md` | — | Formal price quotation — items, totals, payment terms, sign-off. |
+| Meeting Report | `tera-workshop/client-templates/pre-contract/MEETING_REPORT_TEMPLATE.md` | — | Meeting minutes — attendees, agenda, decisions, action items. |
+| Status Report | `tera-workshop/client-templates/contractual/STATUS_REPORT_TEMPLATE.md` | — | Periodic status — progress, achievements, risks, next steps. |
+| Handover Report | `tera-workshop/client-templates/handover/HANDOVER_REPORT_TEMPLATE.md` | — | Delivery and acceptance — deliverables checklist, access info, sign-off. |
+| Completion Certificate | `tera-workshop/client-templates/handover/COMPLETION_CERTIFICATE_TEMPLATE.md` | — | Formal project completion certificate with seal and signatures. |
+| Client Intake Form | `tera-workshop/client-templates/pre-contract/CLIENT_INTAKE_FORM.md` | — | Pre-interview questionnaire — company, project, goals, budget, tech. |
+| Project Charter | `tera-workshop/client-templates/commercial/PROJECT_CHARTER_TEMPLATE.md` | — | Project initiation document — objectives, scope, team, risks, success criteria. |
+| User Persona Matrix | `tera-workshop/client-templates/pre-contract/USER_PERSONA_MATRIX_TEMPLATE.md` | — | User roles and persona cards — goals, pain points, permissions, features. |
+| Gap Analysis | `tera-workshop/client-templates/pre-contract/GAP_ANALYSIS_TEMPLATE.md` | — | As-is vs to-be analysis, gap identification, recommendations. |
+| Risk Register | `tera-workshop/client-templates/pre-contract/RISK_REGISTER_TEMPLATE.md` | — | Risk tracking — impact, probability, mitigation, owner, status. |
+| SLA | `tera-workshop/client-templates/contractual/SLA_TEMPLATE.md` | — | Service Level Agreement — support hours, response times, priorities. |
+| NDA | `tera-workshop/client-templates/pre-contract/NDA_TEMPLATE.md` | — | Non-Disclosure Agreement — confidentiality, exclusions, governing law. |
+| Client Satisfaction Survey | `tera-workshop/client-templates/handover/CLIENT_SATISFACTION_SURVEY_TEMPLATE.md` | — | Post-project feedback — ratings, open questions, recommendation. |
 | Agent improvement suggestions (AIS) | `tera-system/AIS_PROTOCOL.md` | `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` | Protocol + central log for agent self-improvement suggestions from real work. Agents record; Hares processes; Majed approves. |
 | User guide | `tera-system/TERA_USER_GUIDE.md` | Not applicable | User-facing prompts and usage examples. |
 | System maintenance | `tera-system/TeraSystemMaintenanceChecklist.md` | `.opencode/agents/tera.md` | Use when modifying Tera itself. |
+| Agent dependency map | `tera-system/AGENT_DEPENDENCY_MAP.md` | `tera-system/AGENT_DEPENDENCY_MAP.md` | Cross-references between agent files; safe edit order; file size alerts. Read before editing any agent file. |
 | Scenario stress tests | `tera-system/TeraScenarioStressTests.md` | Not applicable | Used for validation, not daily runtime. |
 | Client workspace guide | `clients/README.md` | Not applicable | Folder usage guide only; policies remain in `tera-system/`. |
 

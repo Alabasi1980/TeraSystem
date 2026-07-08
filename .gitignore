@@ -1,0 +1,22 @@
+# Playwright MCP logs and snapshots
+.playwright-mcp/
+
+# Screenshots (review artifacts)
+*.png
+
+# Node dependencies
+node_modules/
+
+# Build output
+dist/
+
+# IDE / editor
+.obsidian/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
