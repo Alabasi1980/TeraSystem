@@ -504,7 +504,6 @@ Majed يؤكد: "نحتاج مخزون ومبيعات فقط"
 | | `tera-system/TeraClientPolicy.md` | سياسة العميل — اقرأه قبل CLIENT_INTAKE.md |
 | | `tera-system/client-helpers/tera-client-engagement-discovery-domains.md` | المصدر الرسمي للمجالات الـ 13 — اقرأه قبل إنتاج DISCOVERY_COVERAGE_SUMMARY.md وقبل تقييم B.1 |
 | **بداية Pricing** (أول تسعير في Session) | `tera-system/TeraPricingPolicy.md` | سياسة التسعير — إلزامي لكل Session تسعيرية |
-| | `project-control/PRICING_SCORECARD_APPLICATION_MAWTHOOQ.md` | مثال تطبيقي — اقرأه قبل أول استخدام للحاسبة |
 
 ---
 
@@ -533,6 +532,7 @@ Majed يؤكد: "نحتاج مخزون ومبيعات فقط"
 | `project-control/TRAINING_GUIDE_TCEA.md` | عند ظهور تحذير Proportion Check (بعد أول Session) |
 | `tera-workshop/client-templates/branding/letterhead-master-fixed-print.html` | إذا احتجت التأكد من تنسيق معين في القالب |
 | `tera-workshop/client-templates/handover/` | إذا أردت تصفح القوالب المتاحة قبل الاختيار |
+| `project-control/PRICING_SCORECARD_APPLICATION_MAWTHOOQ.md` | **مثال فقط** — دراسة حالة لعميل سابق (MAWTHOOQ)، لا يُقرأ لعملاء جدد. راجعه فقط إذا أردت نموذجاً لبناء Scorecard لعميلك |
 
 ---
 

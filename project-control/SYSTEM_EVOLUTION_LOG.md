@@ -674,3 +674,76 @@
 - المخاطر: منخفض — سلوك TeraAgent لم يتغير، فقط الترتيب ودقة المرجع
 - ملاحظات الاسترجاع (Rollback):
   1. `git checkout HEAD -- .opencode/agents/tera.md`
+
+## SCP-2026-07-08-085 — صيانة TCEA (مرجع مُسَمّى خطأ)
+
+- تاريخ: 2026-07-08
+- معرف التغيير: SCP-2026-07-08-085
+- مصدر الطلب: Agent File Maintenance (مسح صحة ملفات العملاء)
+- نوع التغيير: Agent File Maintenance / Reference Categorization Fix
+- الملفات المعدلة:
+  - `.opencode/agents/tera-client-engagement.md` — نقل مرجع من Required Now إلى Reference Only
+- الملخص:
+  - السطر 507 كان يدرج `PRICING_SCORECARD_APPLICATION_MAWTHOOQ.md` (ملف خاص بعميل MAWTHOOQ) في جدول 🟢 Required Now — لكنه ملف خاص بعميل ويُوصف كـ "مثال تطبيقي"
+  - تم نقله إلى جدول 🔵 Reference Only مع وسم واضح: "مثال فقط — لا يُقرأ لعملاء جدد"
+- الموافقة: Majed — Approved
+- التحقق من الصحة: Validation Passed
+  - ✅ Anti-Bloat Gate PASS — لا تغيير في حجم الملف (737 سطر)
+  - ✅ Policy Map Check PASS — لا تعارض
+  - ✅ Architecture Map Check PASS
+  - ✅ No client-app contamination
+  - ✅ No unauthorized privilege expansion
+  - ✅ No stale/deprecated agent references — الملف المُشار إليه موجود فعلاً
+  - ✅ File size: 737 سطر — ضمن استثناء 700 (مقسّم فعلياً إلى 4 ملفات مساعدة)
+- المخاطر: منخفض
+- ملاحظات الاسترجاع (Rollback):
+  1. `git checkout HEAD -- .opencode/agents/tera-client-engagement.md`
+
+## SCP-2026-07-08-086 — صيانة مصمم (إبراز القواعد الصلبة أولاً)
+
+- تاريخ: 2026-07-08
+- معرف التغيير: SCP-2026-07-08-086
+- مصدر الطلب: Agent File Maintenance (مسح صحة ملفات العملاء)
+- نوع التغيير: Agent File Maintenance / Content Reorder
+- الملفات المعدلة:
+  - `.opencode/agents/ui-designer.md` — إدراج قسم "🔴 القواعد الصلبة" بعد §1
+- الملخص:
+  - القاعدتان الصلبتان (البحث الإلزامي + بوابة الحيوية) كانتا مدفونتين في §6 و §7.5
+  - أُضيف قسم ملخّص قوي مباشرة بعد §1 (من أنا) يحتوي الخلاصة + القائمة الكاملة لـ Vitality Self-Check
+  - التفاصيل الكاملة في §6 و §7.5 تبقى كما هي للسياق
+- الموافقة: Majed — Approved
+- التحقق من الصحة: Validation Passed
+  - ✅ Anti-Bloat Gate PASS — زيادة طفيفة في السطور (~354 سطر إجمالي) ضمن حد 700
+  - ✅ Policy Map Check PASS — لا تعارض
+  - ✅ Architecture Map Check PASS
+  - ✅ No client-app contamination
+  - ✅ No unauthorized privilege expansion
+  - ✅ No stale/deprecated agent references
+  - ✅ File size: ~354 سطر — تحت 700 (آمن)
+- المخاطر: منخفض
+- ملاحظات الاسترجاع (Rollback):
+  1. `git checkout HEAD -- .opencode/agents/ui-designer.md`
+
+## SCP-2026-07-08-087 — صيانة مهندس (ترتيب المحتوى: الهوية أولاً)
+
+- تاريخ: 2026-07-08
+- معرف التغيير: SCP-2026-07-08-087
+- مصدر الطلب: Agent File Maintenance
+- نوع التغيير: Agent File Maintenance / Content Reorder
+- الملفات المعدلة:
+  - `.opencode/agents/engineering-agent.md` — نقل §1 (من أنا) قبل شهادتي + الاقتباسات
+- الملخص:
+  - كانت شهادتي الدكتوراه والاقتباسات (السطور 25-35) تسبق §1 من أنا
+  - أُصلح الترتيب: CONDUCT GATE → §1 من أنا → شهادتي + quotes → §2 مبادئي الهندسية
+- الموافقة: Majed — Approved
+- التحقق من الصحة: Validation Passed
+  - ✅ Anti-Bloat Gate PASS — عدد السطور لم يتغير
+  - ✅ Policy Map Check PASS — لا تعارض
+  - ✅ Architecture Map Check PASS
+  - ✅ No client-app contamination
+  - ✅ No unauthorized privilege expansion
+  - ✅ No stale/deprecated agent references
+  - ✅ File size: ~340 سطر — تحت 700 (آمن)
+- المخاطر: منخفض
+- ملاحظات الاسترجاع (Rollback):
+  1. `git checkout HEAD -- .opencode/agents/engineering-agent.md`
