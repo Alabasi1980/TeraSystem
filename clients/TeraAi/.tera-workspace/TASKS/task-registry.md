@@ -68,8 +68,20 @@
 | 4 | النصوص الظاهرية | ⏳ مؤجلة (بعد Phase 3) |
 | 5 | حذف enterprise/, stats/, slack/, .github/, infra/, patches/ | ✅ commit 6f9c273 |
 
+---
+## المهمة 004: Phase 3.1 — إضافة TeraSystemContext Source
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ⏳ معلقة — تنتظر التنفيذ |
+| المسؤول | TeraAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/PLANS/03-phase3-context-source.md` |
+| الملف الجديد | `packages/core/src/system-context/tera-context.ts` |
+| التعديل | `packages/core/src/system-context/builtins.ts` (سطران) |
+
 ### ملاحظات هامة:
 - المشروع لا يزال يعمل (تم اختبار bun install + bun run dev بعد الحذف)
 - 5184 استبدال في 1253 ملف (Batch 3)
 - 42,362 سطر محذوفة (Batch 5)
-- بقي: Batch 4 (نصوص ظاهرية — مؤجلة)، ثم Phase 3 (core engine) |
+- بقي: Batch 4 (نصوص ظاهرية — مؤجلة)، Phase 3.1 (جاهز للتنفيذ) |
