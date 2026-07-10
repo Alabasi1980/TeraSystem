@@ -1,7 +1,7 @@
-{
-  "name": "opencode",
-  "displayName": "opencode",
-  "description": "opencode for VS Code",
+﻿{
+  "name": "tera-opencode-vscode",
+  "displayName": "TeraOpenCode",
+  "description": "TeraOpenCode for VS Code",
   "version": "1.17.18",
   "publisher": "sst-dev",
   "repository": {
@@ -106,3 +106,4 @@
     "@vscode/test-electron": "^2.5.2"
   }
 }
+
