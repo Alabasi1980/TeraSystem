@@ -65,10 +65,11 @@
 | 1 | Root package.json, README, حذف install/flake/sst.config | ✅ commit 6114f23 |
 | 2 | CLI binary rename (opencode → tera) | ✅ commit 00cb003 |
 | 3 | Scope @opencode-ai/ → @tera-system/ في 1286 ملف | ✅ commit a14c57f + fix 6372729 |
-| 4 | النصوص الظاهرية | ⏳ معلقة |
-| 5 | تنظيف الملفات | ⏳ معلقة |
+| 4 | النصوص الظاهرية | ⏳ مؤجلة (بعد Phase 3) |
+| 5 | حذف enterprise/, stats/, slack/, .github/, infra/, patches/ | ✅ commit 6f9c273 |
 
 ### ملاحظات هامة:
-- المشروع لا يزال يعمل بعد تغيير الـ scope (تم اختبار bun install + bun run dev)
-- 5184 استبدال في 1253 ملف
-- بقي: Batch 4 (نصوص ظاهرية) + Batch 5 (تنظيف) |
+- المشروع لا يزال يعمل (تم اختبار bun install + bun run dev بعد الحذف)
+- 5184 استبدال في 1253 ملف (Batch 3)
+- 42,362 سطر محذوفة (Batch 5)
+- بقي: Batch 4 (نصوص ظاهرية — مؤجلة)، ثم Phase 3 (core engine) |
