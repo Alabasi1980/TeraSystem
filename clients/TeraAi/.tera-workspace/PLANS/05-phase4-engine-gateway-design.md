@@ -2,7 +2,7 @@
 
 ## الملف: 05-phase4-engine-gateway-design.md
 ## المسار: .tera-workspace/PLANS/
-## الإصدار: 1.0
+## الإصدار: 1.1
 ## التاريخ: 2026-07-10
 ## الحالة: 🔵 Design Phase
 
@@ -137,16 +137,16 @@ TeraSystem Platform
 
 # التسلسل الزمني (Phase 4)
 
-| الخطوة | الوصف | المدة التقريبية |
-|---|---|---|
-| 4.1 | **تصميم Gateway API** — تحديد الواجهات بالتفصيل | 2-3 أيام |
-| 4.2 | **مراجعة التصميم** — مراجعة و approve قبل التنفيذ | 1 يوم |
-| 4.3 | **بناء Context API** — أول تكليف عبر IPC | 3-4 أيام |
-| 4.4 | **بناء Task/Result API** — التكليف والنتيجة | 3-4 أيام |
-| 4.5 | **بناء Approval API** — الموافقات | 2-3 أيام |
-| 4.6 | **تحويل read_tera_workspace لـ fallback** | 1 يوم |
-| 4.7 | **اختبارات وتوثيق** | 2-3 أيام |
-| 4.8 | **مراجعة Phase 4** — إغلاق المرحلة | 1 يوم |
+| الخطوة | الوصف | المدة التقريبية | الحالة |
+|---|---|---|---|
+| **4.0** | **TERA_GATEWAY_PROTOCOL_SPEC.md** — البروتوكول الرسمي | 2-3 أيام | ✅ مكتمل |
+| 4.1 | **مراجعة البروتوكول** — مراجعة و approve قبل التنفيذ | 1 يوم | 🔵 التالي |
+| 4.2 | **بناء Context API** — أول تكليف عبر stdio IPC | 3-4 أيام | 🔜 |
+| 4.3 | **بناء Task/Result API** — التكليف والنتيجة | 3-4 أيام | 🔜 |
+| 4.4 | **بناء Approval API** — الموافقات | 2-3 أيام | 🔜 |
+| 4.5 | **تحويل read_tera_workspace لـ fallback** | 1 يوم | 🔜 |
+| 4.6 | **اختبارات وتوثيق** | 2-3 أيام | 🔜 |
+| 4.7 | **مراجعة Phase 4** — إغلاق المرحلة | 1 يوم | 🔜 |
 
 **المجموع التقريبي:** 15-20 يوم عمل
 
@@ -156,14 +156,14 @@ TeraSystem Platform
 
 | # | البند |
 |---|---|
-| 1 | Gateway API مصمم ومراجع |
-| 2 | Context API يعمل عبر stdio IPC |
-| 3 | Task Assignment API يعمل |
-| 4 | ExecutionResult API يعمل |
-| 5 | Approval API يعمل |
-| 6 | read_tera_workspace يتحول لـ fallback |
-| 7 | لا يوجد Event Stream (مُؤجَّل) |
-| 8 | جميع Schemas تتضمن CommonFields |
+| 1 | TERA_GATEWAY_PROTOCOL_SPEC.md مكتوب ومراجع ✅ |
+| 2 | البروتوكول معتمد (contract_version, handshake, correlation_id, timeout, crash, sizing) |
+| 3 | Context API يعمل عبر stdio IPC |
+| 4 | Task Assignment API يعمل |
+| 5 | ExecutionResult API يعمل |
+| 6 | Approval API يعمل |
+| 7 | read_tera_workspace يتحول لـ fallback |
+| 8 | لا يوجد Event Stream (مُؤجَّل) |
 | 9 | اختبارات تكاملية تمر |
 | 10 | توثيق Gateway مكتمل |
 
@@ -182,3 +182,4 @@ TeraSystem Platform
 ---
 
 *هذه وثيقة تصميم — تُراجع قبل التنفيذ.*
+
