@@ -1,4 +1,4 @@
-﻿# سجل القرارات — تحويل OpenCode إلى TeraOpenCode
+﻿# سجل القرارات — TeraSystem: منصة حوكمة وتطوير التطبيقات
 ## ملف: decisions-log.md
 ## المسار: .tera-workspace/DECISIONS/
 ## التاريخ: 2026-07-10
@@ -77,4 +77,61 @@
 | المصدر | ماجد + المستشار الاستراتيجي |
 | القرار | قبل البدء بدمج TeraSystem في core/، يجب إنشاء TECHNOLOGY_PROFILE_EFFECT.md في tera-system/profiles/effect/ يوثق: إصدار Effect، الحزم، نمط الخدمات والـ Layers، نموذج الأخطاء، الاختبارات، الأساليب الممنوعة |
 | السبب | عملاء الذكاء ليسوا خبراء Effect تلقائياً؛ يجب توجيههم بملف معرفة قبل التعديل |
-| الحالة | معلق — ينفذ قبل المرحلة 3 من خطة الفصل |
+| الحالة | ✅ مكتمل — TECHNOLOGY_PROFILE_EFFECT.md أُنشئ و Phase 3.1 نُفذت بنجاح |
+
+---
+
+## قرار رقم 007: TeraSystem هي المنصة والـ Control Plane، TeraOpenCode محرك تنفيذ مركزي
+
+| الحقل | القيمة |
+|---|---|
+| التاريخ | 2026-07-10 (محدَّث 2026-07-10) |
+| المصدر | ماجد + المستشار الاستراتيجي + مراجعة خارجية |
+| القرار | TeraSystem هي المنتج والمنصة الأم و Control Plane. TeraOpenCode هو محرك تنفيذ برمجي مركزي واحد قابل للإصدار، يُستخدم من قبل المنصة ولا يُنسخ داخل المشاريع. مشاريع العملاء هي Workspaces مستقلة منفصلة عن مستودع كود المنصة. |
+| السبب | بناء شركة كبرى لإدارة وتطوير التطبيقات يتطلب: (1) منصة تملك العملاء والسياسات والجودة والذاكرة، (2) محرك تنفيذ منفصل قابل للاستبدال، (3) Workspaces مستقلة لكل عميل |
+| البدائل المرفوضة | 1. OpenCode كمنتج (سوق مزدحم، توسع محدود) 2. نسخ المحرك داخل كل مشروع (تضخم، صعوبة تحديث) 3. خلط بيانات العملاء مع كود المنصة (مشاكل أمنية وإصدار) |
+| المخاطر المحددة | 1. إعادة هيكلة الأدوات الحالية مستقبلاً 2. تحديد Engine Contract بدقة قبل التوسع 3. إدارة الإصدارات بين المنصة والمحرك |
+| الحالة | ✅ Approved — اعتمد من ماجد |
+
+### التوجيهات التنفيذية (7 نقاط — قيد المراجعة)
+
+| # | التوجيه | الحالة |
+|---|---|---|
+| 1 | TeraSystem هي المنصة الأم والـ Control Plane | ✅ Approved |
+| 2 | TeraOpenCode محرك تنفيذ مركزي واحد قابل للإصدار، لا يُنسخ داخل كل مشروع | ✅ Approved |
+| 3 | Workspaces وبيانات العملاء منفصلة عن مستودع كود المنصة | ✅ Approved |
+| 4 | توقف مؤقت لـ tera_list_tasks و tera_check_gates | ✅ Approved |
+| 5 | read_tera_workspace تبقى — Read-Only Adapter فقط | ✅ Approved |
+| 6 | لا يبدأ Config Bridge قبل Engine Contract المعتمد | ✅ Approved |
+| 7 | تُنشأ وثيقتان: Engine Contract + Roadmap | ✅ Approved |
+
+### أثر القرار على المشاريع الحالية
+
+| المشروع | التأثير |
+|---|---|
+| Phase 1-2 (Fork & Branding) | ✅ صحيحة — الفصل عن upstream ضروري |
+| Phase 3.1 (Context Source) | ✅ صحيحة — وعي الـ model بالسياسات |
+| Phase 3.2.1 (read_tera_workspace) | ✅ آمنة — للقراءة فقط، read-only adapter |
+| Phase 3.2.2-3 (list_tasks, check_gates) | ⏸️ معلقة — بعد Engine Contract المعتمد + بناء API |
+| Phase 3.3 (Config Bridge) | ⏸️ معلقة — بعد Engine Contract المعتمد |
+| Phase 4 (Engine Gateway) | ✅ Phase 3 مكتمل — Phase 4 مفتوح للتصميم |
+
+### ملاحظات المراجعة (2026-07-10) — تمت المعالجة
+
+تم تحديد النقاط التالية للمراجعة من ماجد قبل الاعتماد:
+
+1. **حالة الوثائق:** يجب أن تكون "Draft / Pending Approval" حتى الاعتماد الفعلي
+2. **تناقض .tera-workspace:** المحرك يقرأ فقط، لا يكتب — تم التوضيح في Engine Contract v1.1
+3. **Schemas:** تمت إضافة TaskAssignment, ExecutionResult, ApprovalRequest, EngineEvent, EngineError
+4. **Stateless:** المحرك Stateless مع Runtime Session مؤقتة — تم التوضيح
+5. **Sessions:** فصل Platform Session / Engine Runtime Session / Session Result — تم التوثيق
+6. **Task API:** Engine يُرسل ExecutionResult فقط، المنصة وحدها تغير Task State
+7. **Event Stream:** مُؤجَّل، Request/Response أولاً
+8. **Definition of Done:** تمت إضافة 12 بند لإغلاق Phase 3
+9. **Capability Envelope:** تمت الإضافة لكل مهمة
+10. **ملكية الكود:** العميل يملك، المحرك مخوّل بالتعديل
+
+---
+
+*هذه الوثيقة حية — تتحدث مع كل قرار جديد.*
+

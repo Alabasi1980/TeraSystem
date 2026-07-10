@@ -1,4 +1,4 @@
-# Phase 3.1 — Minimal TeraSystemContext Source
+﻿# Phase 3.1 — Minimal TeraSystemContext Source
 ## ملف: 03-phase3-context-source.md
 ## المسار: .tera-workspace/PLANS/
 ## التاريخ: 2026-07-10
@@ -67,21 +67,22 @@
 ```ts
 // packages/core/src/system-context/tera-context.ts
 
+export * as TeraSystemContext from "./tera-context"
+
 import { Effect, Schema } from "effect"
 import { SystemContext } from "./index"
-import { SystemContextRegistry } from "./registry"
 
 export const tera = SystemContext.make({
   key: SystemContext.Key.make("tera/system"),
   codec: Schema.toCodecJson(Schema.String),
   load: Effect.succeed([
-    `<tera-system>`,
-    `  TeraSystem governance is active for this workspace.`,
-    `  Governance files are located in:`,
-    `    - tera-system/`,
-    `    - project-control/`,
-    `    - .opencode/agents/`,
-    `</tera-system>`,
+    "<tera-system>",
+    "  TeraSystem governance is active for this workspace.",
+    "  Governance files:",
+    "    - tera-system/ (policies, architecture, checklists)",
+    "    - project-control/ (logs, gaps, proposals)",
+    "    - .opencode/agents/ (agent definitions)",
+    "</tera-system>",
   ].join("\n")),
   baseline: (text) => text,
   update: (_previous, text) => text,
@@ -90,20 +91,16 @@ export const tera = SystemContext.make({
 
 ### 4.3 التعديل في builtins.ts
 
-في نهاية `builtins.ts`، نضيف سطر تسجيل واحد:
+في `packages/core/src/system-context/builtins.ts`:
 
+1. أضف الاستيراد في أعلى الملف:
 ```ts
-yield* registry.register({
-  key: SystemContext.Key.make("tera/system"),
-  load: Effect.succeed(tera),
-})
+import { TeraSystemContext } from "./tera-context"
 ```
 
-ملاحظة: هذا يعني أن `Effect` و `Schema` يحتاجان إلى استيراد إضافي (إذا لم يكونا موجودين)، وسيكون الاستيراد كالتالي:
-
+2. أضف سطر التسجيل بعد تسجيل `core/builtins`:
 ```ts
-import { Effect, Schema } from "effect"
-import { SystemContext } from "./index"
+yield* registry.register({ key: SystemContext.Key.make("tera/system"), load: Effect.succeed(TeraSystemContext.tera) })
 ```
 
 ---
@@ -221,3 +218,5 @@ git subtree push --prefix=clients/TeraAi tera-opencode master
 ---
 
 *هذه الخطة قابلة للتنفيذ من TeraAgent مباشرة.*
+
+

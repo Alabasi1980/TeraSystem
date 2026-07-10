@@ -1,4 +1,4 @@
-﻿# سجل المهام — تحويل OpenCode إلى TeraOpenCode
+﻿# سجل المهام — بناء منصة TeraSystem
 ## ملف: task-registry.md
 ## المسار: .tera-workspace/TASKS/
 ## التاريخ: 2026-07-10
@@ -91,4 +91,31 @@
 - 5184 استبدال في 1253 ملف (Batch 3)
 - 42,362 سطر محذوفة (Batch 5)
 - Phase 3.1 ✅ — TeraSystemContext source مضاف للمشروع
-- بقي: Batch 4 (نصوص ظاهرية — مؤجلة)، ثم Phase 3.2 (أداة قراءة TeraSystem) |
+- بقي: Batch 4 (نصوص ظاهرية — مؤجلة)، ثم Phase 3.3 (Config Bridge)
+
+---
+
+## المهمة 005: Phase 3.2.1 — أداة `read_tera_workspace` ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ مكتملة |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/PLANS/04-phase3.2-tera-read-tool.md` |
+| الملف الجديد | `packages/core/src/tool/read-tera-workspace.ts` |
+| التعديل | `packages/core/src/tool/builtins.ts` (import + deps) |
+| الاسم | `read_tera_workspace` |
+| commit | `ee2888d` |
+
+### التحقق:
+- ✅ `bun install` — 2483 packages, no errors
+- ✅ `bun run typecheck` (packages/core) — no errors
+- ✅ TUI يبدأ بدون أخطاء
+- ✅ Git commit + push إلى كلا الـ remote
+- ⚠️ `tera --help` — مشكلة قديمة (من Phase 2) لا تؤثر على Phase 3.2
+
+### ملاحظات:
+- استُخدم `RelativePath.make()` بدلاً من `as any` لسلامة الأنواع
+- أُضيف `Effect.catchTag` لمعالجة أخطاء الصلاحيات (BlockedError, CorrectedError) بشكل صريح
+- التحقق من المسار يتم داخل `execute()` بدلاً من Schema (لعدم توفر `Schema.filter` في هذه النسخة من Effect)
