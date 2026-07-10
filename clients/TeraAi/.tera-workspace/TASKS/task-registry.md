@@ -69,19 +69,26 @@
 | 5 | حذف enterprise/, stats/, slack/, .github/, infra/, patches/ | ✅ commit 6f9c273 |
 
 ---
-## المهمة 004: Phase 3.1 — إضافة TeraSystemContext Source
+## المهمة 004: Phase 3.1 — إضافة TeraSystemContext Source ✅
 
 | الحقل | القيمة |
 |---|---|
-| الحالة | ⏳ معلقة — تنتظر التنفيذ |
+| الحالة | ✅ مكتملة |
 | المسؤول | TeraAgent |
 | الأولوية | عالية |
 | المرجع | `.tera-workspace/PLANS/03-phase3-context-source.md` |
 | الملف الجديد | `packages/core/src/system-context/tera-context.ts` |
 | التعديل | `packages/core/src/system-context/builtins.ts` (سطران) |
+| commit | `0461263` |
+
+### التحقق:
+- ✅ `bun install` — 2483 package, no errors
+- ✅ `bun run dev` — TUI يشتغل بدون أخطاء
+- ✅ commit + push إلى كلا الـ remote
 
 ### ملاحظات هامة:
-- المشروع لا يزال يعمل (تم اختبار bun install + bun run dev بعد الحذف)
+- المشروع لا يزال يعمل (تم اختبار bun install + bun run dev)
 - 5184 استبدال في 1253 ملف (Batch 3)
 - 42,362 سطر محذوفة (Batch 5)
-- بقي: Batch 4 (نصوص ظاهرية — مؤجلة)، Phase 3.1 (جاهز للتنفيذ) |
+- Phase 3.1 ✅ — TeraSystemContext source مضاف للمشروع
+- بقي: Batch 4 (نصوص ظاهرية — مؤجلة)، ثم Phase 3.2 (أداة قراءة TeraSystem) |
