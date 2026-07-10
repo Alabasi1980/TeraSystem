@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@tera-system/storybook",
   "private": true,
