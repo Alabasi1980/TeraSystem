@@ -8,6 +8,7 @@ import { InstructionContext } from "../instruction-context"
 import { SystemContextRegistry } from "./registry"
 import { FSUtil } from "../fs-util"
 import { Global } from "../global"
+import { TeraSystemContext } from "./tera-context"
 
 const builtIns = Layer.effectDiscard(
   Effect.gen(function* () {
@@ -40,6 +41,7 @@ const builtIns = Layer.effectDiscard(
     ])
 
     yield* registry.register({ key: SystemContext.Key.make("core/builtins"), load: Effect.succeed(context) })
+    yield* registry.register({ key: SystemContext.Key.make("tera/system"), load: Effect.succeed(TeraSystemContext.tera) })
   }),
 )
 
