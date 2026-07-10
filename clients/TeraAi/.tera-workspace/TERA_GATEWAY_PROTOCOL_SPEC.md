@@ -2,9 +2,9 @@
 
 ## الملف: TERA_GATEWAY_PROTOCOL_SPEC.md
 ## المسار: .tera-workspace/
-## الإصدار: 1.0
+## الإصدار: 1.1
 ## التاريخ: 2026-07-10
-## الحالة: ✅ Approved — المخرج الأول لـ Phase 4
+## الحالة: Draft — Pending Phase 4.1 Review
 ## مرجع: Engine Contract v1.2
 
 ---
@@ -17,6 +17,8 @@
 
 **النوع:** Request/Response via stdio (JSON Lines).
 
+**ملاحظة الحالة:** هذه وثيقة **Draft**. لا تُعتمد إلا بعد انتهاء مراجعة Phase 4.1.
+
 ---
 
 # 2. مبادئ التصميم
@@ -28,9 +30,9 @@
 | **JSON Lines** | كل رسالة = سطر واحد = JSON صالح |
 | **Framing واضح** | لا يوجد framing معقد — سطر واحد = رسالة |
 | **Correlation ID** | كل طلب له معرّف فريد يُعاد في الرد |
-| **Timeout** | كل طلب له حد أقصى زمني |
+| **Timeout + Grace Period** | انتهاء مهلة → إلغاء → فحص → kill |
 | **Crash Safety** | سلوك واضح عند انهيار المحرك |
-| **Minimal State** | المحرك Stateless — لا حالة بين الطلبات |
+| **Stateless (business)** | لا حالة أعمال دائمة — Runtime Session مؤقتة فقط |
 
 ---
 
@@ -58,9 +60,51 @@
 
 ---
 
-# 4. تنسيق الرسائل (Message Format)
+# 4. نموذج الحالة (State Model)
 
-## 4.1 البنية الأساسية
+## 4.1 ما يملكه المحرك وما لا يملكه
+
+```
+TeraOpenCode Engine:
+  ├── ❌ لا يملك durable business state
+  │     (لا سجل مهام، لا سجل قرارات، لا ذاكرة بين جلسات)
+  │
+  ├── ✅ يملك ephemeral runtime state أثناء عمر المهمة
+  │     (حالة التنفيذ الحالية، مؤقت، ينتهي عند النتيجة أو الإلغاء)
+  │
+  └── ❌ لا يملك أي حالة بعد إرسال TaskResult
+```
+
+## 4.2 الفرق الجوهري
+
+| البند | durable business state | ephemeral runtime state |
+|---|---|---|
+| **المالك** | TeraSystem فقط | TeraOpenCode (مؤقتاً) |
+| **المدة** | دائمة | عمر المهمة فقط |
+| **الأمثلة** | سجل المهام، القرارات، الجلسات | ملفات مؤقتة في الذاكرة، سياق المهمة |
+| **بعد المهمة** | يبقى في المنصة | يُمحى — لا أثر |
+
+## 4.3 دورة حياة الـ Runtime State
+
+```
+تبدأ: عند استلام TaskAssignment
+  │
+  ├── المحرك يحفظ context المهمة في الذاكرة
+  ├── المحرك يحفظ files المدخلة مؤقتاً
+  ├── المحرك يتتبع progress التنفيذ
+  │
+  └── تنتهي عند أحد:
+       ├── إرسال TaskResult (completed/failed/error/cancelled)
+       ├── انتهاء timeout
+       ├── استلام task.cancel
+       └── crash
+```
+
+---
+
+# 5. تنسيق الرسائل (Message Format)
+
+## 5.1 البنية الأساسية
 
 ```json
 {
@@ -78,7 +122,7 @@
 | `timestamp` | string | ✅ | ISO 8601 UTC |
 | `payload` | object | ✅ | محتوى الرسالة |
 
-## 4.2 أنواع الرسائل
+## 5.2 أنواع الرسائل
 
 | النوع | الاتجاه | الوصف |
 |---|---|---|
@@ -89,16 +133,16 @@
 
 ---
 
-# 5. Handshake — التأكيد الأولي
+# 6. Handshake — التأكيد الأولي
 
-## 5.1 التسلسل
+## 6.1 التسلسل
 
 ```
 Platform → Engine: HandshakeRequest
 Engine → Platform: HandshakeResponse
 ```
 
-## 5.2 HandshakeRequest
+## 6.2 HandshakeRequest
 
 ```json
 {
@@ -116,7 +160,7 @@ Engine → Platform: HandshakeResponse
 }
 ```
 
-## 5.3 HandshakeResponse (نجاح)
+## 6.3 HandshakeResponse (نجاح)
 
 ```json
 {
@@ -133,7 +177,7 @@ Engine → Platform: HandshakeResponse
 }
 ```
 
-## 5.4 HandshakeResponse (فشل)
+## 6.4 HandshakeResponse (فشل)
 
 ```json
 {
@@ -151,7 +195,7 @@ Engine → Platform: HandshakeResponse
 }
 ```
 
-## 5.5 قواعد Handshake
+## 6.5 قواعد Handshake
 
 ```
 1. المنصة تُرسل HandshakeRequest بعد تشغيل المحرك.
@@ -164,9 +208,9 @@ Engine → Platform: HandshakeResponse
 
 ---
 
-# 6. طرق الاتصال (Methods)
+# 7. طرق الاتصال (Methods)
 
-## 6.1 Context Request
+## 7.1 Context Request
 
 **الغرض:** المنصة تُرسل السياق للمحرك.
 
@@ -209,7 +253,7 @@ Engine → Platform: HandshakeResponse
 }
 ```
 
-## 6.2 Task Assignment
+## 7.2 Task Assignment
 
 **الغرض:** المنصة تُكلّف المحرك بمهمة.
 
@@ -235,7 +279,7 @@ Engine → Platform: HandshakeResponse
 }
 ```
 
-## 6.3 Task Result
+## 7.3 Task Result
 
 **الغرض:** المحرك يُرسل نتيجة تنفيذ المهمة.
 
@@ -248,7 +292,7 @@ Engine → Platform: HandshakeResponse
     "method": "task.result",
     "task_id": "t_abc123",
     "engine_runtime_session_id": "ers_abc123",
-    "status": "completed | failed | error | timeout | blocked",
+    "status": "completed | failed | error | timeout | blocked | cancelled | approval_timeout",
     "outputs": {
       "files_changed": ["src/components/LoginForm.tsx"],
       "files_created": ["src/components/LoginForm.tsx"],
@@ -266,7 +310,7 @@ Engine → Platform: HandshakeResponse
 }
 ```
 
-## 6.4 Approval Request
+## 7.4 Approval Request
 
 **الغرض:** المحرك يطلب موافقة على إجراء حساس.
 
@@ -310,9 +354,9 @@ Engine → Platform: HandshakeResponse
 
 ---
 
-# 7. Correlation ID Rules
+# 8. Correlation ID Rules
 
-## 7.1 تكوين المعرّف
+## 8.1 تكوين المعرّف
 
 ```
 corr_[prefix]_[timestamp]_[random]
@@ -323,7 +367,7 @@ corr_[prefix]_[timestamp]_[random]
   appr_20260710_143200_g7h8i9
 ```
 
-## 7.2 القواعد
+## 8.2 القواعد
 
 | القاعدة | الشرح |
 |---|---|
@@ -335,32 +379,51 @@ corr_[prefix]_[timestamp]_[random]
 
 ---
 
-# 8. Timeout Rules
+# 9. Timeout Rules
 
-## 8.1 المهل الزمنية
+## 9.1 المهل الزمنية
 
 | الإجراء | المهلة | عند الانتهاء |
 |---|---|---|
 | **Handshake** | 5 ثوانٍ | المنصة تُغلق العملية |
 | **Context** | 10 ثوانٍ | المحرك يُبلغ بخطأ timeout |
 | **Task Assignment** | يعتمد على المهمة | حسب deadline في TaskAssignment |
-| **Approval Request** | حسب response_deadline | المحرك يُكمل دون موافقة (يُسجل كـ blocked) |
+| **Approval Request** | حسب response_deadline | **الإجراء لا يُنفذ. المهمة تصبح blocked أو approval_timeout** |
 | **استجابة عامة** | 30 ثانية كحد أقصى | المنصة تُعيد المحاولة أو تُلغي |
 
-## 8.2 سلوك Timeout
+## 9.2 قاعدة Approval Timeout — حماية صارمة
 
 ```
-عند انتهاء المهلة:
-  1. المنصة تُسجّل الخطأ
-  2. تقرر: إعادة المحاولة / إلغاء المهمة / إخطار المستخدم
-  3. المحرك لا يُ executed أي شيء بعد انتهاء المهلة
+⚠️ قاعدة مطلقة: المحرك لا يكمل أي إجراء محمي بدون موافقة.
+
+عند انتهاء approval timeout:
+  1. الإجراء المحمي لا يُنفذ نهائياً
+  2. المحرك لا يتجاوز الـ Capability Envelope
+  3. المحرك يُرسل TaskResult بحالة "blocked" أو "approval_timeout"
+  4. المنصة تُسجّل الحدث وتُخطر المستخدم
+  5. لا يُسمح للمحرك باتخاذ بديل أو المتابعة بدون موافقة
+
+❌ ممنوع: المحرك يكمل دون موافقة ويُبلّغ بعدها
+❌ ممنوع: المحرك يُoclara أن الإجراء "ليس محمياً" ويتجاوز الـ Envelope
+✅ المطلوب: الإجراء يتوقف → المهمة تصبح blocked → المنصة تقرر
+```
+
+## 9.3 سلوك Timeout العام
+
+```
+عند انتهاء أي timeout:
+  1. المنصة تُرسل task.cancel
+  2. المنصة تنتظر grace period (5 ثوانٍ)
+  3. إذا لم يتوقف المحرك → المنصة تقتل child process (SIGTERM، ثم SIGKILL بعد 3 ثوانٍ)
+  4. المنصة تُقيّم الحالة وتُخطر المستخدم
+  5. لا تُرسل أي طلب آخر للمحرك حتى إعادة التشغيل
 ```
 
 ---
 
-# 9. Cancellation
+# 10. Cancellation
 
-## 9.1 إلغاء المهمة
+## 10.1 إلغاء المهمة (من المنصة)
 
 ```json
 {
@@ -375,7 +438,7 @@ corr_[prefix]_[timestamp]_[random]
 }
 ```
 
-## 9.2 سلوك الإلغاء
+## 10.2 سلوك الإلغاء
 
 ```
 1. المنصة تُرسل task.cancel
@@ -385,11 +448,30 @@ corr_[prefix]_[timestamp]_[random]
 5. إذا كان هناك ملفات معدّلة جزئياً → المحرك يُبلغ بها في outputs.files_changed
 ```
 
+## 10.3 Grace Period + Force Kill
+
+```
+عند إرسال task.cancel:
+  │
+  ├── المنصة تُرسل task.cancel عبر stdin
+  │
+  ├── المنصة تنتظر grace period = 5 ثوانٍ
+  │     │
+  │     ├── المحرك أرسل task.result خلال Grace Period → قبول
+  │     │
+  │     └── المحرك لم يُرسل → المنصة تقتل العملية:
+  │           1. SIGTERM (إشعار بلطف)
+  │           2. انتظار 3 ثوانٍ
+  │           3. SIGKILL (قتل قسري)
+  │
+  └── المنصة تُقيّم الحالة وتُخطر المستخدم
+```
+
 ---
 
-# 10. Crash / Restart Behavior
+# 11. Crash / Restart Behavior
 
-## 10.1 انهيار المحرك (Engine Crash)
+## 11.1 انهيار المحرك (Engine Crash)
 
 ```
 عند انهيار المحرك (exit code != 0 أو قطع stdout):
@@ -402,49 +484,87 @@ corr_[prefix]_[timestamp]_[random]
   4. لا تُرسل أي طلب آخر للمحرك المنهار
 ```
 
-## 10.2 إعادة التشغيل (Engine Restart)
+## 11.2 إعادة التشغيل (Engine Restart)
 
 ```
 عند إعادة تشغيل المحرك:
   1. المنصة تُرسل HandshakeRequest جديد
   2. المحرك الجديد يتحقق من contract_version
   3. إذا كان هناك مهمة جارية:
-     - المحرك لا يعرف بها (Stateless)
+     - المحرك لا يعرف بها ( Stateless business — لا حالة أعمال دائمة )
      - المنصة تُعيد تقييم الحالة
      - المنصة تُرسل task.assign جديد إذا كان مطلوباً
 ```
 
-## 10.3 لا State بين الجلسات
-
-```
-المحرك لا يحتفظ بأي حالة بين طلب وآخر.
-كل طلب مستقل و.self-contained.
-المنصة هي الجهة الوحيدة التي تملك تاريخ التنفيذ.
-```
-
 ---
 
-# 11. Message Size Limits
+# 12. Message Size Limits (موحد)
 
-## 11.1 الحد الأقصى للرسائل
+**القاعدة الموحدة:** جميع الأحجام بالبايت، وتُحذف الرسائل الأكبر.
 
-| نوع الرسالة | الحد الأقصى |
-|---|---|
-| HandshakeRequest | 4 KB |
-| HandshakeResponse | 4 KB |
-| Context | 1 MB |
-| TaskAssignment | 64 KB |
-| TaskResult | 256 KB |
-| ApprovalRequest | 16 KB |
-| ApprovalResponse | 4 KB |
-| Notification | 16 KB |
-| Error | 16 KB |
+| نوع الرسالة | الحد الأقصى (بايت) | الحد الأقصى (مقروء) |
+|---|---|---|
+| HandshakeRequest | 4,096 | 4 KB |
+| HandshakeResponse | 4,096 | 4 KB |
+| ContextRequest | 1,048,576 | 1 MB |
+| ContextResponse | 4,096 | 4 KB |
+| TaskAssignment | 65,536 | 64 KB |
+| TaskResult | 262,144 | 256 KB |
+| ApprovalRequest | 16,384 | 16 KB |
+| ApprovalResponse | 4,096 | 4 KB |
+| task.cancel | 4,096 | 4 KB |
+| Error | 16,384 | 16 KB |
 
-## 11.2 تمرير الملفات الكبيرة
+**القواعد:**
+- أي رسالة تتجاوز الحد الأقصى → **تُرفض ولا تُرسل**
+- إذا كان المحتوى أكبر → استخدم File Reference بدلاً من الإدراج
+- stderr logs ليس لها حد أقصى (لكن يُنصح بالاعتدال)
 
-**المشكلة:** لا يُسمح بإدراج محتوى ملفات كبيرة داخل JSON.
+## 12.1 File References — حماية صارمة
 
-**الحل:** تمرير الملفات كمراجع (references) بدلاً من إدراجها:
+### البنية
+
+```json
+{
+  "path": "src/components/LoginForm.tsx",
+  "reference": "src/components/LoginForm.tsx"
+}
+```
+
+### القواعد الأمنية (إلزامية)
+
+```
+1. canonicalization:
+   - المسار يُحوّل إلىcanonical path قبل أي استخدام
+   - مثال: src/../src/foo.ts → src/foo.ts
+
+2. منع absolute paths:
+   - لا يُسمح بمسارات مطلقة (C:\..., /home/...)
+   - كل مسار يجب أن يكون نسبياً من Workspace Root
+
+3. منع directory traversal:
+   - لا يُسمح بـ "../" في أي مسار
+   - مثال: ../../etc/passwd → ❌ مرفوض
+
+4. منع symlink escape:
+   - إذا كان الملف symlink → يُتحقق أن الهدف داخل Workspace
+   - symlink يشير خارج Workspace → ❌ مرفوض
+
+5. تطابق workspace_id:
+   - الـ reference يجب أن يتوافق مع workspace_id في الطلب
+   - مثال: إذا كان workspace_id = "ws_abc123" → المسار داخل ws_abc123/
+
+6. فحص Capability Envelope:
+   - قبل قراءة أي ملف → فحص ضد allowed_read_paths
+   - قبل كتابة أي ملف → فحص ضد allowed_write_paths
+   - الملف في forbidden_paths → ❌ مرفوض دائماً
+
+7. لا inline content للملفات الكبيرة:
+   - ملف > 64KB → يُمرّر كـ reference فقط
+   - ملف < 64KB → يمكن إدراجه كـ inline_content (اختياري)
+```
+
+### مثال كامل
 
 ```json
 {
@@ -453,24 +573,18 @@ corr_[prefix]_[timestamp]_[random]
     "files": [
       {
         "path": "src/components/LoginForm.tsx",
-        "reference": "file://ws_abc123/src/components/LoginForm.tsx"
+        "reference": "src/components/LoginForm.tsx"
       }
     ]
   }
 }
 ```
 
-**القواعد:**
-- `reference` = مسار نسبي من Workspace Root
-- المحرك يقرأ الملف من المسار مباشرة (لا نسخة في JSON)
-- إذا كان الملف كبيراً جداً (>1MB) → يُمرّر كـ `reference` دائماً
-- إذا كان الملف صغيراً (<64KB) → يمكن إدراجه كـ `inline_content` (اختياري)
-
 ---
 
-# 12. Error Handling
+# 13. Error Handling
 
-## 12.1 تنسيق الخطأ
+## 13.1 تنسيق الخطأ
 
 ```json
 {
@@ -491,7 +605,7 @@ corr_[prefix]_[timestamp]_[random]
 }
 ```
 
-## 12.2 قواعد الأخطاء
+## 13.2 قواعد الأخطاء
 
 | القاعدة | الشرح |
 |---|---|
@@ -502,9 +616,9 @@ corr_[prefix]_[timestamp]_[random]
 
 ---
 
-# 13. stderr Logging
+# 14. stderr Logging
 
-## 13.1 ما يذهب لـ stderr
+## 14.1 ما يذهب لـ stderr
 
 ```
 ✅ stderr:
@@ -521,7 +635,7 @@ corr_[prefix]_[timestamp]_[random]
   - Prints عادية
 ```
 
-## 13.2 تنسيق stderr (اختياري)
+## 14.2 تنسيق stderr (اختياري)
 
 ```
 [2026-07-10T14:30:00.000Z] [INFO] Engine started
@@ -533,21 +647,22 @@ corr_[prefix]_[timestamp]_[random]
 
 ---
 
-# 14. جدول الطريقة الكامل
+# 15. جدول الطريقة الكامل
 
 ```
-1. Platform يشغّل TeraOpenCode كـ child process
-2. Platform يُرسل HandshakeRequest
-3. Engine يرد بـ HandshakeResponse
-4. Platform يُرسل ContextRequest
-5. Engine يرد بـ ContextResponse
-6. Platform يُرسل TaskAssignment
-7. Engine يبدأ Runtime Session
-8. Engine يرفض أي إجراء يتجاوز Capability Envelope
-9. Engine يُرسل ApprovalRequest إذا احتاج موافقة
+1.  Platform يشغّل TeraOpenCode كـ child process
+2.  Platform يُرسل HandshakeRequest
+3.  Engine يرد بـ HandshakeResponse
+4.  Platform يُرسل ContextRequest
+5.  Engine يرد بـ ContextResponse
+6.  Platform يُرسل TaskAssignment
+7.  Engine يبدأ Runtime Session (ephemeral state تبدأ)
+8.  Engine يرفض أي إجراء يتجاوز Capability Envelope
+9.  Engine يُرسل ApprovalRequest إذا احتاج موافقة
+    ⚠️ Engine ينتظر ApprovalResponse — لا يكمل بدون موافقة
 10. Platform يرد بـ ApprovalResponse
 11. Engine يُكمل التنفيذ
-12. Engine يُرسل TaskResult
+12. Engine يُرسل TaskResult (ephemeral state تنتهي)
 13. Platform يستقبل النتيجة
 14. Platform يُطبّق Gates والموافقات
 15. Platform يُغير Task State
@@ -557,7 +672,7 @@ corr_[prefix]_[timestamp]_[random]
 
 ---
 
-# 15. الأحداث المستقبلية (Future Events)
+# 16. الأحداث المستقبلية (Future Events)
 
 **مُؤجَّل** — لا يُنفَّذ في Phase 4.
 
@@ -578,7 +693,7 @@ corr_[prefix]_[timestamp]_[random]
 
 ---
 
-# 16. ملخص الطرق
+# 17. ملخص الطرق
 
 | الطريقة | الاتجاه | تحتاج رد؟ | الحالة |
 |---|---|---|---|
@@ -587,12 +702,21 @@ corr_[prefix]_[timestamp]_[random]
 | `task.assign` | P→E | ❌ (الرد = task.result) | Phase 4 |
 | `task.result` | E→P | ❌ (رد على task.assign) | Phase 4 |
 | `task.cancel` | P→E | ❌ (notification) | Phase 4 |
-| `approval.request` | E→P | ✅ نعم | Phase 4 |
+| `approval.request` | E→P | ✅ نعم (إلزامي) | Phase 4 |
 | `approval.response` | P→E | ❌ (رد على approval.request) | Phase 4 |
 | `engine.progress` | E→P | ❌ (notification) | مستقبل |
 | `gate.check` | P→E | ✅ نعم | Phase 6 |
 
 ---
 
-*هذه وثيقة **Approved v1.0** — البروتوكول الرسمي لـ Tera Gateway.*
-*آخر تحديث: 2026-07-10.*
+# 18. ملخص التعديلات (Changelog)
+
+| الإصدار | التعديل |
+|---|---|
+| v1.0 | النسخة الأولى |
+| v1.1 | إضافة: ephemeral runtime state model، approval timeout protection (لا يكمل بدون موافقة)، timeout → cancel → grace period → kill، File Reference protection (canonicalization, no absolute, no ../, no symlink, workspace_id match, envelope check)، توحيد message size limits، حالة Draft — Pending Review |
+
+---
+
+*هذه وثيقة **Draft v1.1** — الحالة: **Pending Phase 4.1 Review**.*
+*لا تُعتمد إلا بعد انتهاء المراجعة والموافقة.*

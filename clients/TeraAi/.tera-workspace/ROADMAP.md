@@ -167,13 +167,13 @@
 | cancellation | إلغاء المهمة برسالة وحيدة |
 | crash/restart | سلوك عند انهيار المحرك |
 | حجم الرسائل | حد أقصى + تمرير الملفات الكبيرة كمراجع |
-|传输 | stdio (Phase 4-5) → localhost HTTP (Phase 6+) |
+|Transport | stdio (Phase 4-5) → localhost HTTP (Phase 6+) |
 
 ### مراحل التنفيذ
 
 | الخطوة | الوصف | الحالة |
 |---|---|---|
-| 4.0 | **TERA_GATEWAY_PROTOCOL_SPEC.md** — البروتوكول الرسمي | 🔵 التالي |
+| 4.0 | **TERA_GATEWAY_PROTOCOL_SPEC.md — البروتوكول الرسمي (Draft v1.1 — Pending Phase 4.1 Review)
 | 4.1 | تصميم Gateway API بالتفصيل | 🔜 |
 | 4.2 | مراجعة التصميم + approve | 🔜 |
 | 4.3 | بناء Context API عبر stdio IPC | 🔜 |
@@ -305,3 +305,4 @@
 
 *هذه الخريطة **v1.2 Approved** — اعتمد من ماجد.*
 *آخر تحديث: 2026-07-10.*
+
