@@ -22,6 +22,7 @@
 | **domain-research-agent.md** | `tera-client-engagement.md`, `tera.md`, `application-blueprint.md`, `tera-system-evolution.md` | `domain-expert-agent.md` (يسلم له للتحليل) | — (بحث خارجي) |
 | **domain-expert-agent.md** | `tera-client-engagement.md`, `tera.md`, `application-blueprint.md`, `tera-system-evolution.md` | — | `domain-research-agent.md` (Domain Research Report) |
 | **tera-system-evolution.md** | — (مستقل — يستدعيه Majed) | `ui-designer.md`, `domain-research-agent.md`, `domain-expert-agent.md` (للأغراض النظامية) | `tera-system/*.md`, `.opencode/agents/*.md` |
+| **tera-strategic-advisor.md** | — (مستقل — يستدعيه Majed فقط) | لا يستدعي عملاء ولا يديرهم؛ قد يوصي Majed بالرجوع إلى TeraAgent أو حارس أو غيرهم | ملفات وسياقات القرار فقط، مصادر خارجية عند الحاجة |
 | **auditor.md** | — (مستقل — يستدعيه Majed) | يراجع مخرجات `tera.md`, `engineering-agent.md` | `project-control/*.md`, `tera-system/*.md` |
 | **monitor.md** | — (مستقل — يستدعيه Majed) | يراجع مخرجات `tera.md`, `engineering-agent.md` | `project-control/*.md`, `tera-system/*.md` |
 
@@ -67,6 +68,7 @@ ui-designer.md
 | `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` | 469 | 🟢 < 700 — لا حاجة |
 | `tera-system/TeraPreExecutionGate.md` | 563 | 🟢 < 700 — لا حاجة |
 | `tera-system-evolution.md` | 451 | 🟢 < 700 — لا حاجة |
+| `tera-strategic-advisor.md` | 314 | 🟢 < 700 — لا حاجة |
 | `domain-expert-agent.md` | 398 | 🟢 < 700 — لا حاجة |
 | `application-blueprint.md` | 335 | 🟢 < 700 — لا حاجة |
 | باقي ملفات agents | 180–322 | 🟢 < 700 — لا حاجة |

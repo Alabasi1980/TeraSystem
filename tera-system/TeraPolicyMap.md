@@ -20,6 +20,7 @@ Project files record project-specific decisions.
 | Topic | Source of truth | Runtime summary allowed in | Notes |
 |---|---|---|---|
 | Tera identity and authority | `.opencode/agents/tera.md` | `.opencode/agents/tera.md` | Runtime must stay compact. |
+| Owner strategic advisory | `.opencode/agents/tera-strategic-advisor.md` | Not applicable | Independent advisor for Majed only. Advice is not approval or execution authorization. |
 | Core agent conduct gate | `tera-system/TERA_AGENT_CONDUCT.md` | `.opencode/agents/*.md` | Short runtime reference only. Do not duplicate the conduct rules in each agent file. |
 | Runtime authority order | `.opencode/agents/tera.md` | Not applicable | Active runtime wins until conflict is corrected. |
 | Operating model overview | `.opencode/agents/tera.md` (Section 36) | Not applicable | Merged from Tera Operating Model.md (now deprecated). |

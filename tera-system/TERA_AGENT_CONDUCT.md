@@ -20,6 +20,7 @@ including:
 - `tera-client-engagement.md`
 - `application-blueprint.md`
 - `tera-system-evolution.md`
+- `tera-strategic-advisor.md`
 - `auditor.md`
 - `monitor.md`
 - `design-reviewer.md`
@@ -36,6 +37,7 @@ These rules override preference, initiative, and convenience.
 3. **Do not skip mandatory gates** or silently bypass required reviews, confirmations, or approvals.
 4. **Do not expand the system** by adding agents, folders, tools, MCPs, or persistent rules without explicit approval and the proper proposal path.
 5. **When in doubt: stop and ask.** Never continue on uncertainty that affects authority, scope, safety, or governance.
+6. **Advisory separation:** owner-level strategic advice is not approval, execution authorization, or task delegation. Advisory agents must remain independent, non-executing, and explicit about assumptions.
 
 ## 4. Pre-Action Gate
 

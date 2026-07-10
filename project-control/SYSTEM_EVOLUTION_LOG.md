@@ -747,3 +747,62 @@
 - المخاطر: منخفض
 - ملاحظات الاسترجاع (Rollback):
   1. `git checkout HEAD -- .opencode/agents/engineering-agent.md`
+
+---
+
+## SCP-2026-07-10-091 — إضافة Tera Strategic Advisor كعميل استشاري استراتيجي مستقل
+
+- Date: 2026-07-10
+- Change ID: SCP-2026-07-10-091
+- Request Source: Majed approval of `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-10-091.md`
+- Change Type: New owner-level advisory agent + compact system map updates
+- Files Changed:
+  - `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-10-091.md` — مقترح التغيير المعتمد
+  - `.opencode/agents/tera-strategic-advisor.md` — **جديد** — تعريف العميل الاستشاري الاستراتيجي المستقل
+  - `tera-system/TERA_AGENT_CONDUCT.md` — إضافة مرجع مختصر للعميل + قاعدة فصل الاستشارة عن الموافقة/التنفيذ
+  - `tera-system/TeraPolicyMap.md` — إضافة مصدر حقيقة لـ Owner strategic advisory
+  - `tera-system/TeraArchitectureMap.md` — إضافة طبقة Strategic advisory and decision support + خطوة اختيارية قبل Project Intake
+  - `tera-system/AGENT_DEPENDENCY_MAP.md` — إضافة العميل الجديد إلى خريطة الاعتماد وتنبيه الحجم
+  - `project-control/SYSTEM_EVOLUTION_LOG.md` — هذا الإدخال
+- Summary:
+  - تم إنشاء `Tera Strategic Advisor` كعميل رئيسي مستقل يستدعيه Majed مباشرة فقط.
+  - العملاء الآخرون يستطيعون التوصية بالرجوع إليه، لكن لا يستدعونه ولا يتصرفون باسمه.
+  - الصلاحيات التزمت بالموافقة: `read/glob/grep/webfetch: allow`, `bash: ask`, `edit/write: deny`.
+  - لا يوجد مجلد `advisory-reports/` ولم تُمنح أي صلاحية كتابة تقارير.
+  - الملف يفرض Evidence-before-final-recommendation للقرارات عالية الأثر، Confidence Level، وقاعدة المعلومات الناقصة.
+- Approval: Majed — Approved explicitly on 2026-07-10 with constraints: no `advisory-reports/`, no edit/write permissions, stop after summary.
+- Validation:
+  - ✅ Anti-Bloat Gate PASS — ملف عميل واحد + تحديثات خرائط مختصرة فقط؛ لا مجلد تقارير.
+  - ✅ Consistency with Dependency Map — تم تحديث `AGENT_DEPENDENCY_MAP.md`.
+  - ✅ Policy Map Check PASS — تم تحديث `TeraPolicyMap.md` بمصدر الحقيقة.
+  - ✅ Architecture Map Check PASS — تم تحديث `TeraArchitectureMap.md` بطبقة اختيارية قبل التنفيذ.
+  - ✅ No client-app contamination — لا تعديل في تطبيقات العملاء.
+  - ✅ No unauthorized privilege expansion — `edit: deny`, `write: deny`.
+  - ✅ File size below split threshold — `tera-strategic-advisor.md` = 310 سطر (< 700).
+  - ✅ `git diff --check` PASS — لا أخطاء؛ ظهرت تحذيرات CRLF عادية في ويندوز.
+- Risk: منخفض — العميل استشاري فقط، لا تنفيذ ولا إدارة ولا موافقة. الخطر الرئيسي هو التباس الاسم مع TCEA، وتم تقليله باستخدام لقب "المستشار الاستراتيجي" بدلاً من "مستشار" فقط.
+- Rollback Notes:
+  1. حذف `.opencode/agents/tera-strategic-advisor.md`.
+  2. إزالة إدخالاته من `TERA_AGENT_CONDUCT.md`, `TeraPolicyMap.md`, `TeraArchitectureMap.md`, و `AGENT_DEPENDENCY_MAP.md`.
+  3. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` عند الحاجة.
+
+### Post-Review Permission Amendment — 2026-07-10
+
+- Request Source: Majed review after implementation.
+- Files Changed:
+  - `.opencode/agents/tera-strategic-advisor.md`
+  - `tera-system/AGENT_DEPENDENCY_MAP.md`
+  - `project-control/SYSTEM_EVOLUTION_LOG.md`
+- Summary:
+  - Added `websearch: allow` so the advisor can perform current external search for alternatives, open-source adoption, repository health, releases, issues, and community signals.
+  - Added `task: deny` so the prohibition on invoking sub-agents is enforced technically, not only textually.
+  - Added a short explicit note that specialist work must be recommended to Majed; Majed decides whether another agent is invoked.
+- Validation:
+  - ✅ No edit/write permission granted.
+  - ✅ No `advisory-reports/` folder created.
+  - ✅ No sub-agent invocation authority; `task: deny` added.
+  - ✅ File size still below split threshold — `tera-strategic-advisor.md` = 314 سطر (< 700).
+- Rollback Notes:
+  1. Remove `websearch: allow` and `task: deny` from `.opencode/agents/tera-strategic-advisor.md`.
+  2. Remove the added sub-agent invocation note from `.opencode/agents/tera-strategic-advisor.md`.
+  3. Restore `AGENT_DEPENDENCY_MAP.md` line count to previous value if needed.

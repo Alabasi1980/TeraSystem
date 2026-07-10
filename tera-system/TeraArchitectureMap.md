@@ -11,6 +11,7 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | Layer | Responsibility | Main files/folders |
 |---|---|---|
 | Identity and authority | Defines Tera role, authority, runtime order, decision ownership, and core agent conduct gate | `.opencode/agents/tera.md`, `TERA_AGENT_CONDUCT.md` |
+| Strategic advisory and decision support | Helps Majed evaluate whether a decision, project, fork, or direction is right before execution; advisory only, no approval or execution authority | `.opencode/agents/tera-strategic-advisor.md` |
 | Project intake | Captures raw idea, technical context, missing information, and readiness | `TeraProjectIntakePolicy.md`, `project-inputs/` |
 | Client engagement and approval | Manages client profile, contacts, approval package, and change control | `TeraClient*.md`, `clients/` |
 | Application blueprinting | Converts confirmed client handoff into a high-level internal application blueprint before formal preparation | `.opencode/agents/application-blueprint.md`, `project-preparation/APPLICATION_BLUEPRINT.md`, `project-preparation/draft-seeds/` |
@@ -41,6 +42,7 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 
 ```text
 Client / User Idea
+-> Owner Strategic Advisory when requested
 -> Project Intake
 -> Client Discovery and Approval Package when external client
 -> Application Blueprinting when required
