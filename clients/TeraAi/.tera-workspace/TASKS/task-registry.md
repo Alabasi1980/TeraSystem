@@ -5,37 +5,49 @@
 
 ---
 
-## المهمة 001: فحص المشروع والتأكد من التشغيل
+## المهمة 001: فحص المشروع والتأكد من التشغيل ✅
 
 | الحقل | القيمة |
 |---|---|
-| الحالة | ⏳ معلقة — تنتظر TeraAgent |
+| الحالة | ✅ مكتملة |
 | المسؤول | TeraAgent |
 | الأولوية | عالية |
 | الوصف | تشغيل bun install والتأكد أن المشروع يشتغل حالياً قبل أي تعديل |
-| التفاصيل | في الخطوات أدناه |
-| متى تبدأ | فور إعلان المستشار الاستراتيجي بدء التنفيذ |
 
-### الخطوات:
-1. تشغيل `bun install` من جذر المشروع
-2. تشغيل `bun run dev` من packages/opencode
-3. تسجيل النتيجة (نجاح/فشل وأي أخطاء)
-4. git add . && git commit -m "chore: verify project runs before fork"
+### النتيجة:
+| الخطوة | النتيجة |
+|---|---|
+| تثبيت Bun | ✅ Bun v1.3.14 مثبت |
+| تشغيل bun install | ✅ 4196 حزمة — نجاح |
+| تشغيل bun run dev | ✅ الـ TUI بدأ واستمر في العمل |
+| حفظ التغييرات | ✅ commit b936f5c — .tera-workspace/ مضاف للـ git |
 
-### معيار النجاح:
-- bun install بدون أخطاء
-- dev server يبدأ ويستقبل اتصالاً
+### ملاحظات:
+- Bun لم يكن مثبتاً مسبقاً — تم تثبيته عبر npm install -g bun
+- الـ git repo الرئيسي هو TeraSystem (وليس TeraAi/)
+- المشكلة: "husky: .git can't be found" وهذا متوقع لأننا في subfolder
 
 ---
 
-## المهمة 002: إنشاء مستودع git مستقل
+## المهمة 002: إنشاء مستودع git مستقل ✅
 
 | الحقل | القيمة |
 |---|---|
-| الحالة | ⏳ معلقة |
+| الحالة | ✅ مكتملة |
 | المسؤول | TeraAgent |
 | الأولوية | عالية |
-| ملاحظة | تبدأ بعد إكمال المهمة 001 |
+
+### النتيجة:
+
+| الخطوة | التفاصيل |
+|---|---|
+| استخراج التاريخ | `git subtree split` — 117 commit من تاريخ OpenCode |
+| مستودع GitHub | **https://github.com/Alabasi1980/TeraOpenCode** |
+| النوع | Public |
+| الوصف | TeraOpenCode — Fork of OpenCode AI Coding Agent. Standalone engine for TeraSystem. |
+| الفرع | `master` (من `tera-opencode-extracted`) |
+| TAG | `fork-baseline-v1.17.18` — علامة نقطة الفصل |
+| Remote | `tera-opencode` → https://github.com/Alabasi1980/TeraOpenCode.git |
 
 ---
 
