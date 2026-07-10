@@ -119,3 +119,51 @@
 - استُخدم `RelativePath.make()` بدلاً من `as any` لسلامة الأنواع
 - أُضيف `Effect.catchTag` لمعالجة أخطاء الصلاحيات (BlockedError, CorrectedError) بشكل صريح
 - التحقق من المسار يتم داخل `execute()` بدلاً من Schema (لعدم توفر `Schema.filter` في هذه النسخة من Effect)
+
+---
+
+## المهمة 006: TASK-COD-001 — Phase 4.2 Context API Prototype ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ Accepted with external follow-up issue |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `project-control/tasks/TASK-COD-001.md` |
+| الملفات الجديدة | `packages/opencode/src/gateway/protocol.ts`, `packages/opencode/src/gateway/stdio.ts`, `packages/opencode/src/cli/cmd/gateway.ts`, `packages/opencode/test/gateway/context-api.test.ts` |
+| التعديل | `packages/opencode/src/index.ts` |
+
+### التحقق:
+
+- ✅ `bun test test/gateway/context-api.test.ts` — 7/7 passed
+- ⚠️ `bun run typecheck` — يفشل بسبب `src/plugin/index.ts` خارج نطاق المهمة، مسجل في `project-control/ISSUES_AND_GAPS.md` كـ GAP-0001
+
+### ملاحظات:
+
+- التنفيذ محدود بـ Handshake + ContextRequest + ContextResponse فقط.
+- لا يوجد Task API أو Approval API أو Event Stream أو Config Bridge.
+- Gateway يعلن `supported_methods: ["context"]` فقط.
+
+---
+
+## المهمة 007: TASK-COD-FIX-001 — Fix plugin type mismatch ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ Accepted / Closed |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/TASKS/TASK-COD-FIX-001.md` |
+| الملف المعدل | `packages/opencode/src/plugin/index.ts` |
+| السبب | إصلاح فشل `bun run typecheck` الناتج عن اختلاف أنواع plugins خارجية مبنية على `@opencode-ai/plugin` مع الأنواع المحلية `@tera-system/plugin` |
+
+### التحقق:
+
+- ✅ `bun run typecheck` من `packages/opencode` — PASS
+- ✅ `bun test test/gateway/context-api.test.ts` — 7/7 passed
+
+### ملاحظات:
+
+- الإصلاح ضيق في ملف واحد فقط.
+- لا توجد dependencies جديدة.
+- تم حل GAP-0001.

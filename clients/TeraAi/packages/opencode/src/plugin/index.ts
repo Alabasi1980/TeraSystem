@@ -70,8 +70,8 @@ function internalPlugins(flags: RuntimeFlags.Info): PluginInstance[] {
         experimentalWebSockets: experimentalWebSocketsEnabled({ enabled: flags.experimentalWebSockets }),
       }),
     CopilotAuthPlugin,
-    GitlabAuthPlugin,
-    PoeAuthPlugin,
+    compatiblePlugin(GitlabAuthPlugin),
+    compatiblePlugin(PoeAuthPlugin),
     CloudflareWorkersAuthPlugin,
     CloudflareAIGatewayAuthPlugin,
     AzureAuthPlugin,
@@ -83,6 +83,20 @@ function internalPlugins(flags: RuntimeFlags.Info): PluginInstance[] {
 
 function isServerPlugin(value: unknown): value is PluginInstance {
   return typeof value === "function"
+}
+
+function compatiblePlugin(value: unknown): PluginInstance {
+  if (!isServerPlugin(value)) throw new TypeError("Plugin export is not a function")
+
+  return async (input, options) => {
+    const hooks = await value(input, options)
+    if (!isHooks(hooks)) throw new TypeError("Plugin hooks export is not an object")
+    return hooks
+  }
+}
+
+function isHooks(value: unknown): value is Hooks {
+  return Boolean(value) && typeof value === "object"
 }
 
 function getServerPlugin(value: unknown) {
