@@ -1,8 +1,8 @@
-import { describe, expect } from "bun:test"
+﻿import { describe, expect } from "bun:test"
 import { Effect } from "effect"
-import { Credential } from "@opencode-ai/core/credential"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { Integration } from "@opencode-ai/core/integration"
+import { Credential } from "@tera-system/core/credential"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { Integration } from "@tera-system/core/integration"
 import { testEffect } from "./lib/effect"
 
 const it = testEffect(LayerNode.compile(Credential.node))

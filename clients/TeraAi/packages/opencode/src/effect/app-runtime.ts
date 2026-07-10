@@ -1,18 +1,18 @@
-import { Layer, ManagedRuntime } from "effect"
+﻿import { Layer, ManagedRuntime } from "effect"
 import { attach } from "./run-service"
-import * as Observability from "@opencode-ai/core/observability"
+import * as Observability from "@tera-system/core/observability"
 
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { Database } from "@opencode-ai/core/database/database"
+import { FSUtil } from "@tera-system/core/fs-util"
+import { Database } from "@tera-system/core/database/database"
 import { Auth } from "@/auth"
 import { Account } from "@/account/account"
 import { Config } from "@/config/config"
 import { Git } from "@/git"
-import { Ripgrep } from "@opencode-ai/core/ripgrep"
+import { Ripgrep } from "@tera-system/core/ripgrep"
 import { Storage } from "@/storage/storage"
 import { Snapshot } from "@/snapshot"
 import { Plugin } from "@/plugin"
-import { ModelsDev } from "@opencode-ai/core/models-dev"
+import { ModelsDev } from "@tera-system/core/models-dev"
 import { Provider } from "@/provider/provider"
 import { ProviderAuth } from "@/provider/auth"
 import { Agent } from "@/agent/agent"
@@ -46,14 +46,14 @@ import { Worktree } from "@/worktree"
 import { Installation } from "@/installation"
 import { ShareNext } from "@/share/share-next"
 import { SessionShare } from "@/share/session"
-import { Npm } from "@opencode-ai/core/npm"
-import { memoMap } from "@opencode-ai/core/effect/memo-map"
+import { Npm } from "@tera-system/core/npm"
+import { memoMap } from "@tera-system/core/effect/memo-map"
 import { BackgroundJob } from "@/background/job"
 import { RuntimeFlags } from "@/effect/runtime-flags"
 import { EventV2Bridge } from "@/event-v2-bridge"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import { AppNodeBuilderV1 } from "./app-node-builder-v1"
-import { SessionProjector } from "@opencode-ai/core/session/projector"
+import { SessionProjector } from "@tera-system/core/session/projector"
 
 export const AppLayer = AppNodeBuilderV1.build(
   LayerNode.group([
@@ -111,7 +111,7 @@ export const AppLayer = AppNodeBuilderV1.build(
 const rt = ManagedRuntime.make(AppLayer, { memoMap })
 type Runtime = Pick<typeof rt, "runSync" | "runPromise" | "runPromiseExit" | "runFork" | "runCallback" | "dispose">
 
-/** Services provided by AppRuntime — i.e. what an Effect run via AppRuntime.runPromise can yield. */
+/** Services provided by AppRuntime â€” i.e. what an Effect run via AppRuntime.runPromise can yield. */
 export type AppServices = ManagedRuntime.ManagedRuntime.Services<typeof rt>
 const wrap = (effect: Parameters<typeof rt.runSync>[0]) => attach(effect as never) as never
 

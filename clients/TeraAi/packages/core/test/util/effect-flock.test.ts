@@ -1,15 +1,15 @@
-import { describe, expect } from "bun:test"
+﻿import { describe, expect } from "bun:test"
 import { spawn } from "child_process"
 import fs from "fs/promises"
 import path from "path"
 import os from "os"
 import { Cause, Effect, Exit } from "effect"
 import { testEffect } from "../lib/effect"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { EffectFlock } from "@opencode-ai/core/util/effect-flock"
-import { Global } from "@opencode-ai/core/global"
-import { Hash } from "@opencode-ai/core/util/hash"
+import { AppNodeBuilder } from "@tera-system/core/effect/app-node-builder"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { EffectFlock } from "@tera-system/core/util/effect-flock"
+import { Global } from "@tera-system/core/global"
+import { Hash } from "@tera-system/core/util/hash"
 
 function lock(dir: string, key: string) {
   return path.join(dir, Hash.fast(key) + ".lock")

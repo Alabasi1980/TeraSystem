@@ -1,9 +1,9 @@
-import { Database } from "bun:sqlite"
+﻿import { Database } from "bun:sqlite"
 import { mkdir, symlink } from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { afterEach, expect, spyOn, test } from "bun:test"
-import { isZedTerminal, offsetToPosition, resolveZedDbPath, resolveZedSelection } from "@opencode-ai/tui/editor-zed"
+import { isZedTerminal, offsetToPosition, resolveZedDbPath, resolveZedSelection } from "@tera-system/tui/editor-zed"
 import { tmpdir } from "../../fixture/fixture"
 
 const originalZedTerm = process.env.ZED_TERM
@@ -68,11 +68,11 @@ test("offsetToPosition converts Zed offsets to 1-based editor positions", () => 
   expect(offsetToPosition("one\ntwo\nthree", 4)).toEqual({ line: 2, character: 1 })
   expect(offsetToPosition("one\ntwo\nthree", 6)).toEqual({ line: 2, character: 3 })
   expect(offsetToPosition("one\ntwo\nthree", 100)).toEqual({ line: 3, character: 6 })
-  expect(offsetToPosition("Ж\nabc", utf8ByteOffset("Ж\nabc", "Ж\nabc".indexOf("a")))).toEqual({
+  expect(offsetToPosition("ذ–\nabc", utf8ByteOffset("ذ–\nabc", "ذ–\nabc".indexOf("a")))).toEqual({
     line: 2,
     character: 1,
   })
-  expect(offsetToPosition("😀\nabc", utf8ByteOffset("😀\nabc", "😀\nabc".indexOf("a")))).toEqual({
+  expect(offsetToPosition("ًںک€\nabc", utf8ByteOffset("ًںک€\nabc", "ًںک€\nabc".indexOf("a")))).toEqual({
     line: 2,
     character: 1,
   })
@@ -174,7 +174,7 @@ test("resolveZedSelection returns all active editor selections sorted by offset"
 
 test("resolveZedSelection converts Zed UTF-8 byte offsets to string offsets", async () => {
   await using tmp = await tmpdir()
-  const contents = "a\nЖЖЖЖЖЖЖЖЖЖ\nb\nTARGET\nz"
+  const contents = "a\nذ–ذ–ذ–ذ–ذ–ذ–ذ–ذ–ذ–ذ–\nb\nTARGET\nz"
   const start = contents.indexOf("TARGET")
   const fixture = await writeZedFixture(tmp.path, {
     contents,
@@ -202,12 +202,12 @@ test("resolveZedSelection converts Zed UTF-8 byte offsets to string offsets", as
 
 test("resolveZedSelection handles non-ASCII text inside the selected range", async () => {
   await using tmp = await tmpdir()
-  const contents = "a\npre\nвыбор\nz"
-  const start = contents.indexOf("выбор")
+  const contents = "a\npre\nذ²ر‹ذ±ذ¾ر€\nz"
+  const start = contents.indexOf("ذ²ر‹ذ±ذ¾ر€")
   const fixture = await writeZedFixture(tmp.path, {
     contents,
     selectionStart: utf8ByteOffset(contents, start),
-    selectionEnd: utf8ByteOffset(contents, start + "выбор".length),
+    selectionEnd: utf8ByteOffset(contents, start + "ذ²ر‹ذ±ذ¾ر€".length),
   })
 
   expect(await resolveZedSelection(fixture.dbPath, tmp.path)).toEqual({
@@ -217,7 +217,7 @@ test("resolveZedSelection handles non-ASCII text inside the selected range", asy
       source: "zed",
       ranges: [
         {
-          text: "выбор",
+          text: "ذ²ر‹ذ±ذ¾ر€",
           selection: {
             start: { line: 3, character: 1 },
             end: { line: 3, character: 6 },
@@ -230,7 +230,7 @@ test("resolveZedSelection handles non-ASCII text inside the selected range", asy
 
 test("resolveZedSelection handles emoji before the selected range", async () => {
   await using tmp = await tmpdir()
-  const contents = "😀\nTARGET\nz"
+  const contents = "ًںک€\nTARGET\nz"
   const start = contents.indexOf("TARGET")
   const fixture = await writeZedFixture(tmp.path, {
     contents,
@@ -258,7 +258,7 @@ test("resolveZedSelection handles emoji before the selected range", async () => 
 
 test("resolveZedSelection handles reversed Zed byte offsets", async () => {
   await using tmp = await tmpdir()
-  const contents = "a\nЖЖЖ\nTARGET\nz"
+  const contents = "a\nذ–ذ–ذ–\nTARGET\nz"
   const start = contents.indexOf("TARGET")
   const fixture = await writeZedFixture(tmp.path, {
     contents,

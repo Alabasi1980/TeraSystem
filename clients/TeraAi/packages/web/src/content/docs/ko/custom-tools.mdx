@@ -1,33 +1,33 @@
----
+﻿---
 title: Custom Tools
 description: Create tools the LLM can call in OpenCode.
 ---
 
-custom tool은 대화 중 LLM이 호출할 수 있도록 사용자가 직접 만든 함수입니다. `read`, `write`, `bash` 같은 OpenCode의 [built-in tools](/docs/tools)와 함께 동작합니다.
+custom toolى‌€ ëŒ€ي™” ى¤‘ LLMى‌´ يک¸ى¶œي•  ىˆک ى‍ˆëڈ„ë،‌ ى‚¬ىڑ©ى‍گê°€ ى§پى ‘ ë§Œë“  ي•¨ىˆکى‍…ë‹ˆë‹¤. `read`, `write`, `bash` ê°™ى‌€ OpenCodeى‌ک [built-in tools](/docs/tools)ى™€ ي•¨ê»ک ëڈ™ى‍‘ي•©ë‹ˆë‹¤.
 
 ---
 
-## 도구 만들기
+## ëڈ„êµ¬ ë§Œë“¤ê¸°
 
-tool은 **TypeScript** 또는 **JavaScript** 파일로 정의합니다. 다만 tool 정의에서 호출하는 스크립트는 **어떤 언어든** 사용할 수 있습니다. 즉, TypeScript/JavaScript는 tool 정의 자체에만 필요합니다.
-
----
-
-### 위치
-
-tool은 다음 위치에 둘 수 있습니다.
-
-- 프로젝트의 `.opencode/tools/` 디렉토리(로컬)
-- `~/.config/opencode/tools/` 디렉토리(전역)
+toolى‌€ **TypeScript** ëکگëٹ” **JavaScript** يŒŒى‌¼ë،œ ى •ى‌کي•©ë‹ˆë‹¤. ë‹¤ë§Œ tool ى •ى‌کى—گى„œ يک¸ى¶œي•کëٹ” ىٹ¤يپ¬ë¦½يٹ¸ëٹ” **ى–´ë–¤ ى–¸ى–´ë“ ** ى‚¬ىڑ©ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤. ى¦‰, TypeScript/JavaScriptëٹ” tool ى •ى‌ک ى‍گى²´ى—گë§Œ ي•„ىڑ”ي•©ë‹ˆë‹¤.
 
 ---
 
-### 구조
+### ىœ„ى¹ک
 
-tool을 가장 쉽게 만드는 방법은 타입 안정성과 validation을 제공하는 `tool()` helper를 사용하는 것입니다.
+toolى‌€ ë‹¤ى‌Œ ىœ„ى¹کى—گ ë‘ک ىˆک ى‍ˆىٹµë‹ˆë‹¤.
+
+- ي”„ë،œى ‌يٹ¸ى‌ک `.opencode/tools/` ë””ë ‰ي† ë¦¬(ë،œى»¬)
+- `~/.config/opencode/tools/` ë””ë ‰ي† ë¦¬(ى „ى—­)
+
+---
+
+### êµ¬ى،°
+
+toolى‌„ ê°€ى‍¥ ى‰½ê²Œ ë§Œë“œëٹ” ë°©ë²•ى‌€ يƒ€ى‍… ى•ˆى •ى„±ê³¼ validationى‌„ ى œê³µي•کëٹ” `tool()` helperë¥¼ ى‚¬ىڑ©ي•کëٹ” ê²ƒى‍…ë‹ˆë‹¤.
 
 ```ts title=".opencode/tools/database.ts" {1}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Query the project database",
@@ -41,16 +41,16 @@ export default tool({
 })
 ```
 
-**파일 이름**이 **tool 이름**이 됩니다. 위 예시는 `database` tool을 생성합니다.
+**يŒŒى‌¼ ى‌´ë¦„**ى‌´ **tool ى‌´ë¦„**ى‌´ ëگ©ë‹ˆë‹¤. ىœ„ ىکˆى‹œëٹ” `database` toolى‌„ ىƒ‌ى„±ي•©ë‹ˆë‹¤.
 
 ---
 
-#### 파일 하나에 여러 tool 정의
+#### يŒŒى‌¼ ي•کë‚کى—گ ى—¬ëں¬ tool ى •ى‌ک
 
-하나의 파일에서 여러 tool을 export할 수도 있습니다. 각 export는 **별도의 tool**이 되며 이름은 **`<filename>_<exportname>`** 형식을 사용합니다.
+ي•کë‚کى‌ک يŒŒى‌¼ى—گى„œ ى—¬ëں¬ toolى‌„ exportي•  ىˆکëڈ„ ى‍ˆىٹµë‹ˆë‹¤. ê°پ exportëٹ” **ë³„ëڈ„ى‌ک tool**ى‌´ ëگکë©° ى‌´ë¦„ى‌€ **`<filename>_<exportname>`** يک•ى‹‌ى‌„ ى‚¬ىڑ©ي•©ë‹ˆë‹¤.
 
 ```ts title=".opencode/tools/math.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export const add = tool({
   description: "Add two numbers",
@@ -75,18 +75,18 @@ export const multiply = tool({
 })
 ```
 
-이 경우 `math_add`, `math_multiply` 두 tool이 생성됩니다.
+ى‌´ ê²½ىڑ° `math_add`, `math_multiply` ë‘گ toolى‌´ ىƒ‌ى„±ëگ©ë‹ˆë‹¤.
 
 ---
 
-#### 기본 도구와 이름 충돌
+#### ê¸°ë³¸ ëڈ„êµ¬ى™€ ى‌´ë¦„ ى¶©ëڈŒ
 
-커스텀 도구는 도구 이름으로 식별됩니다. 커스텀 도구가 기본 도구와 같은 이름을 사용하면 커스텀 도구가 우선순위를 갖습니다.
+ى»¤ىٹ¤ي…€ ëڈ„êµ¬ëٹ” ëڈ„êµ¬ ى‌´ë¦„ىœ¼ë،œ ى‹‌ë³„ëگ©ë‹ˆë‹¤. ى»¤ىٹ¤ي…€ ëڈ„êµ¬ê°€ ê¸°ë³¸ ëڈ„êµ¬ى™€ ê°™ى‌€ ى‌´ë¦„ى‌„ ى‚¬ىڑ©ي•کë©´ ى»¤ىٹ¤ي…€ ëڈ„êµ¬ê°€ ىڑ°ى„ ىˆœىœ„ë¥¼ ê°–ىٹµë‹ˆë‹¤.
 
-예를 들어, 이 파일은 기본 `bash` 도구를 대체합니다:
+ىکˆë¥¼ ë“¤ى–´, ى‌´ يŒŒى‌¼ى‌€ ê¸°ë³¸ `bash` ëڈ„êµ¬ë¥¼ ëŒ€ى²´ي•©ë‹ˆë‹¤:
 
 ```ts title=".opencode/tools/bash.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Restricted bash wrapper",
@@ -100,14 +100,14 @@ export default tool({
 ```
 
 :::note
-의도적으로 기본 도구를 대체하려는 경우가 아니라면 고유한 이름을 사용하는 것이 좋습니다. 도구를 오버라이드하지 않고 비활성화만 하려면 [permissions](/docs/permissions)를 사용하세요.
+ى‌کëڈ„ى پىœ¼ë،œ ê¸°ë³¸ ëڈ„êµ¬ë¥¼ ëŒ€ى²´ي•کë ¤ëٹ” ê²½ىڑ°ê°€ ى•„ë‹ˆë‌¼ë©´ ê³ ىœ ي•œ ى‌´ë¦„ى‌„ ى‚¬ىڑ©ي•کëٹ” ê²ƒى‌´ ى¢‹ىٹµë‹ˆë‹¤. ëڈ„êµ¬ë¥¼ ىک¤ë²„ë‌¼ى‌´ë“œي•کى§€ ى•ٹê³  ë¹„ي™œى„±ي™”ë§Œ ي•کë ¤ë©´ [permissions](/docs/permissions)ë¥¼ ى‚¬ىڑ©ي•کى„¸ىڑ”.
 :::
 
 ---
 
-### 인자
+### ى‌¸ى‍گ
 
-인자 타입은 `tool.schema`로 정의할 수 있습니다. `tool.schema`는 [Zod](https://zod.dev) 기반입니다.
+ى‌¸ى‍گ يƒ€ى‍…ى‌€ `tool.schema`ë،œ ى •ى‌کي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤. `tool.schema`ëٹ” [Zod](https://zod.dev) ê¸°ë°کى‍…ë‹ˆë‹¤.
 
 ```ts "tool.schema"
 args: {
@@ -115,7 +115,7 @@ args: {
 }
 ```
 
-[Zod](https://zod.dev)를 직접 import해서 일반 객체를 반환하는 방식도 사용할 수 있습니다.
+[Zod](https://zod.dev)ë¥¼ ى§پى ‘ importي•´ى„œ ى‌¼ë°ک ê°‌ى²´ë¥¼ ë°کي™کي•کëٹ” ë°©ى‹‌ëڈ„ ى‚¬ىڑ©ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤.
 
 ```ts {6}
 import { z } from "zod"
@@ -136,10 +136,10 @@ export default {
 
 ### Context
 
-tool은 현재 세션의 context 정보를 전달받습니다.
+toolى‌€ يک„ى‍¬ ى„¸ى…کى‌ک context ى •ë³´ë¥¼ ى „ë‹¬ë°›ىٹµë‹ˆë‹¤.
 
 ```ts title=".opencode/tools/project.ts" {8}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Get project information",
@@ -152,18 +152,18 @@ export default tool({
 })
 ```
 
-세션 작업 디렉토리는 `context.directory`를 사용하세요.
-git worktree 루트는 `context.worktree`를 사용하세요.
+ى„¸ى…ک ى‍‘ى—… ë””ë ‰ي† ë¦¬ëٹ” `context.directory`ë¥¼ ى‚¬ىڑ©ي•کى„¸ىڑ”.
+git worktree ë£¨يٹ¸ëٹ” `context.worktree`ë¥¼ ى‚¬ىڑ©ي•کى„¸ىڑ”.
 
 ---
 
-## 예시
+## ىکˆى‹œ
 
-### Python으로 tool 작성
+### Pythonىœ¼ë،œ tool ى‍‘ى„±
 
-tool은 원하는 언어로 작성할 수 있습니다. 아래는 Python으로 두 숫자를 더하는 예시입니다.
+toolى‌€ ى›گي•کëٹ” ى–¸ى–´ë،œ ى‍‘ى„±ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤. ى•„ë‍کëٹ” Pythonىœ¼ë،œ ë‘گ ىˆ«ى‍گë¥¼ ëچ”ي•کëٹ” ىکˆى‹œى‍…ë‹ˆë‹¤.
 
-먼저 Python 스크립트로 tool을 만듭니다.
+ë¨¼ى € Python ىٹ¤يپ¬ë¦½يٹ¸ë،œ toolى‌„ ë§Œë“­ë‹ˆë‹¤.
 
 ```python title=".opencode/tools/add.py"
 import sys
@@ -173,10 +173,10 @@ b = int(sys.argv[2])
 print(a + b)
 ```
 
-그다음 이 스크립트를 호출하는 tool 정의를 만듭니다.
+ê·¸ë‹¤ى‌Œ ى‌´ ىٹ¤يپ¬ë¦½يٹ¸ë¥¼ يک¸ى¶œي•کëٹ” tool ى •ى‌کë¥¼ ë§Œë“­ë‹ˆë‹¤.
 
 ```ts title=".opencode/tools/python-add.ts" {10}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 import path from "path"
 
 export default tool({
@@ -193,4 +193,4 @@ export default tool({
 })
 ```
 
-여기서는 Python 스크립트를 실행하기 위해 [`Bun.$`](https://bun.com/docs/runtime/shell) 유틸리티를 사용합니다.
+ى—¬ê¸°ى„œëٹ” Python ىٹ¤يپ¬ë¦½يٹ¸ë¥¼ ى‹¤ي–‰ي•کê¸° ىœ„ي•´ [`Bun.$`](https://bun.com/docs/runtime/shell) ىœ ي‹¸ë¦¬ي‹°ë¥¼ ى‚¬ىڑ©ي•©ë‹ˆë‹¤.

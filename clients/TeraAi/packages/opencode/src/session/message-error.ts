@@ -1,5 +1,5 @@
-import { Schema } from "effect"
-import { NamedError } from "@opencode-ai/core/util/error"
+﻿import { Schema } from "effect"
+import { NamedError } from "@tera-system/core/util/error"
 
 export const OutputLengthError = NamedError.create("MessageOutputLengthError", {})
 

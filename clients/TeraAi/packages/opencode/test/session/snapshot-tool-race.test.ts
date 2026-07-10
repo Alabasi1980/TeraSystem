@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Reproducer for snapshot race condition with instant tool execution.
  *
  * When the mock LLM returns a tool call response instantly, the AI SDK
@@ -13,23 +13,23 @@
  */
 import { expect } from "bun:test"
 import { Effect, Layer } from "effect"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import fs from "fs/promises"
 import path from "path"
 import { Session } from "@/session/session"
 import { SessionPrompt } from "../../src/session/prompt"
 import { SessionSummary } from "../../src/session/summary"
 import { MessageV2 } from "../../src/session/message-v2"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
-import { Database } from "@opencode-ai/core/database/database"
-import { SessionProjector } from "@opencode-ai/core/session/projector"
+import { SessionV1 } from "@tera-system/core/v1/session"
+import { Database } from "@tera-system/core/database/database"
+import { SessionProjector } from "@tera-system/core/session/projector"
 import { provideTmpdirServer } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
 import { TestLLMServer } from "../lib/llm-server"
 
 import { LSP } from "@/lsp/lsp"
 import { MCP } from "../../src/mcp"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
 import { RuntimeFlags } from "@/effect/runtime-flags"
 
 const mcp = Layer.succeed(
@@ -175,7 +175,7 @@ it.live("tool execution produces non-empty session diff (snapshot race)", () =>
       expect(tool?.state.status).toBe("completed")
       if (!user) throw new Error("Expected user message")
 
-      // Poll for the turn diff — summarize() is fire-and-forget.
+      // Poll for the turn diff â€” summarize() is fire-and-forget.
       let diff: Array<{ file?: string }> = []
       for (let i = 0; i < 50; i++) {
         diff = yield* summary.diff({ sessionID: session.id, messageID: user.info.id })

@@ -1,5 +1,5 @@
-{
-  "name": "@opencode-ai/session-ui",
+﻿{
+  "name": "@tera-system/session-ui",
   "version": "1.17.18",
   "private": true,
   "type": "module",
@@ -35,9 +35,9 @@
   },
   "dependencies": {
     "@kobalte/core": "catalog:",
-    "@opencode-ai/core": "workspace:*",
-    "@opencode-ai/sdk": "workspace:*",
-    "@opencode-ai/ui": "workspace:*",
+    "@tera-system/core": "workspace:*",
+    "@tera-system/sdk": "workspace:*",
+    "@tera-system/ui": "workspace:*",
     "@pierre/diffs": "catalog:",
     "@shikijs/stream": "catalog:",
     "@shikijs/transformers": "3.9.2",
@@ -65,3 +65,4 @@
     "strip-ansi": "7.1.2"
   }
 }
+

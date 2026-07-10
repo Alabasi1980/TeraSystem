@@ -1,4 +1,4 @@
-# OpenCode V2 Effect Plugin API
+﻿# OpenCode V2 Effect Plugin API
 
 The Effect plugin API grants plugins two in-process capabilities:
 
@@ -10,7 +10,7 @@ The public server client will be exposed separately. It is intentionally not par
 ## Defining A Plugin
 
 ```ts
-import { define } from "@opencode-ai/plugin/v2/effect"
+import { define } from "@tera-system/plugin/v2/effect"
 import { Effect } from "effect"
 
 export const Plugin = define({

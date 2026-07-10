@@ -1,9 +1,9 @@
-export * as Credential from "./credential"
+﻿export * as Credential from "./credential"
 
 import { asc, eq } from "drizzle-orm"
 import { Context, Effect, Layer, Schema } from "effect"
-import { Credential } from "@opencode-ai/schema/credential"
-import { Integration } from "@opencode-ai/schema/integration"
+import { Credential } from "@tera-system/schema/credential"
+import { Integration } from "@tera-system/schema/integration"
 import { Database } from "./database/database"
 import { makeGlobalNode } from "./effect/app-node"
 import { CredentialTable } from "./credential/sql"

@@ -1,6 +1,6 @@
-import { Location } from "@opencode-ai/core/location"
-import { Project } from "@opencode-ai/core/project"
-import { AbsolutePath } from "@opencode-ai/core/schema"
+﻿import { Location } from "@tera-system/core/location"
+import { Project } from "@tera-system/core/project"
+import { AbsolutePath } from "@tera-system/core/schema"
 import { Effect, Layer } from "effect"
 import { tmpdir } from "./tmpdir"
 

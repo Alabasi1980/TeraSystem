@@ -1,4 +1,4 @@
-import { base64Encode } from "@opencode-ai/core/util/encode"
+﻿import { base64Encode } from "@tera-system/core/util/encode"
 import { expect, test, type Page } from "@playwright/test"
 import {
   assistantMessage,

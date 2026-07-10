@@ -1,11 +1,11 @@
-import { Schema } from "effect"
+﻿import { Schema } from "effect"
 import { SessionID } from "./schema"
 
-import { NonNegativeInt } from "@opencode-ai/core/schema"
+import { NonNegativeInt } from "@tera-system/core/schema"
 import { MessageError } from "./message-error"
 import { AuthError, OutputLengthError } from "./message-error"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
 export { AuthError, OutputLengthError } from "./message-error"
 
 export const ToolCall = Schema.Struct({

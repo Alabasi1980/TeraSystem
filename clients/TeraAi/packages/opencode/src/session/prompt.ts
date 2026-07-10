@@ -1,7 +1,7 @@
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { PermissionV1 } from "@opencode-ai/core/v1/permission"
+﻿import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { PermissionV1 } from "@tera-system/core/v1/permission"
 import path from "path"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
+import { SessionV1 } from "@tera-system/core/v1/session"
 import os from "os"
 import { SessionID, MessageID, PartID } from "./schema"
 import { MessageV2 } from "./message-v2"
@@ -16,28 +16,28 @@ import { SessionCompaction } from "./compaction"
 import { SystemPrompt } from "./system"
 import { Instruction } from "./instruction"
 import { Plugin } from "../plugin"
-import { MAX_STEPS_PROMPT } from "@opencode-ai/core/session/runner/max-steps"
+import { MAX_STEPS_PROMPT } from "@tera-system/core/session/runner/max-steps"
 import { ToolRegistry } from "@/tool/registry"
 import { MCP } from "../mcp"
 import { LSP } from "@/lsp/lsp"
 import { ulid } from "ulid"
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
 import * as Stream from "effect/Stream"
 import { Command } from "../command"
 import { pathToFileURL, fileURLToPath } from "url"
 import { Config } from "@/config/config"
 import { ConfigMarkdown } from "@/config/markdown"
 import { SessionSummary } from "./summary"
-import { NamedError } from "@opencode-ai/core/util/error"
+import { NamedError } from "@tera-system/core/util/error"
 import { SessionProcessor } from "./processor"
 import { Tool } from "@/tool/tool"
 import { Permission } from "@/permission"
 import { SessionStatus } from "./status"
 import { LLM } from "./llm"
-import { Shell } from "@opencode-ai/core/shell"
+import { Shell } from "@tera-system/core/shell"
 import { ShellID } from "@/tool/shell/id"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+import { FSUtil } from "@tera-system/core/fs-util"
 import { Truncate } from "@/tool/truncate"
 import { Image } from "@/image/image"
 import { decodeDataUrl } from "@/util/data-url"
@@ -48,14 +48,14 @@ import { TaskTool, type TaskPromptOps } from "@/tool/task"
 import { SessionRunState } from "./run-state"
 import { RuntimeFlags } from "@/effect/runtime-flags"
 import { EventV2Bridge } from "@/event-v2-bridge"
-import { Database } from "@opencode-ai/core/database/database"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { ProviderV2 } from "@opencode-ai/core/provider"
+import { Database } from "@tera-system/core/database/database"
+import { ModelV2 } from "@tera-system/core/model"
+import { ProviderV2 } from "@tera-system/core/provider"
 import { eq } from "drizzle-orm"
-import { SessionTable } from "@opencode-ai/core/session/sql"
+import { SessionTable } from "@tera-system/core/session/sql"
 import { SessionReminders } from "./reminders"
 import { SessionTools } from "./tools"
-import { LLMEvent } from "@opencode-ai/llm"
+import { LLMEvent } from "@tera-system/llm"
 
 // @ts-ignore
 globalThis.AI_SDK_LOG_WARNINGS = false
@@ -1296,7 +1296,7 @@ const layer = Layer.effect(
             if (finished && !handle.message.error) {
               // Surface any content-filter finish (e.g. Anthropic stop_reason:
               // refusal) as an error. These turns may have produced no visible
-              // output at all — previously the session went idle silently — or
+              // output at all â€” previously the session went idle silently â€” or
               // partial text that was cut off by the provider's filter.
               if (handle.message.finish === "content-filter") {
                 handle.message.error = new SessionV1.ContentFilterError({
@@ -1541,7 +1541,7 @@ export const CommandInput = Schema.Struct({
   arguments: Schema.String,
   command: Schema.String,
   variant: Schema.optional(Schema.String),
-  // Inlined (no identifier annotation) to keep the original SDK output — the
+  // Inlined (no identifier annotation) to keep the original SDK output â€” the
   // PromptInput call site below references FilePartInput by ref via the
   // Schema export in message-v2.ts.
   parts: Schema.optional(

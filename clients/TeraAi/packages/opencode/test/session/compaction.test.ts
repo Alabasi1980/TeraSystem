@@ -1,7 +1,7 @@
-import { afterEach, describe, expect, mock, test } from "bun:test"
-import { ConfigV1 } from "@opencode-ai/core/v1/config/config"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
-import { Database } from "@opencode-ai/core/database/database"
+﻿import { afterEach, describe, expect, mock, test } from "bun:test"
+import { ConfigV1 } from "@tera-system/core/v1/config/config"
+import { SessionV1 } from "@tera-system/core/v1/session"
+import { Database } from "@tera-system/core/database/database"
 import { EventV2Bridge } from "@/event-v2-bridge"
 import { APICallError } from "ai"
 import { Cause, Deferred, Effect, Exit, Fiber, Layer, Schema } from "effect"
@@ -17,22 +17,22 @@ import { MessageV2 } from "../../src/session/message-v2"
 import { MessageID, PartID, SessionID } from "../../src/session/schema"
 import { SessionStatus } from "../../src/session/status"
 import { SessionSummary } from "../../src/session/summary"
-import { SessionV2 } from "@opencode-ai/core/session"
-import { SessionExecution } from "@opencode-ai/core/session/execution"
-import { SessionProjector } from "@opencode-ai/core/session/projector"
+import { SessionV2 } from "@tera-system/core/session"
+import { SessionExecution } from "@tera-system/core/session/execution"
+import { SessionProjector } from "@tera-system/core/session/projector"
 
 import { Provider } from "@/provider/provider"
 import * as SessionProcessorModule from "../../src/session/processor"
 import { ProviderTest } from "../fake/provider"
 import { testEffect } from "../lib/effect"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
 import { TestConfig } from "../fixture/config"
 import { RuntimeFlags } from "@/effect/runtime-flags"
-import { LLMEvent, Usage } from "@opencode-ai/llm"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+import { LLMEvent, Usage } from "@tera-system/llm"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
+import { AppNodeBuilder } from "@tera-system/core/effect/app-node-builder"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 
 const summary = Layer.succeed(
   SessionSummary.Service,
@@ -438,7 +438,7 @@ describe("session.compaction.isOverflow", () => {
     ),
   )
 
-  // ─── Bug reproduction tests ───────────────────────────────────────────
+  // â”€â”€â”€ Bug reproduction tests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // These tests demonstrate that when limit.input is set, isOverflow()
   // does not subtract any headroom for the next model response. This means
   // compaction only triggers AFTER we've already consumed the full input
@@ -451,7 +451,7 @@ describe("session.compaction.isOverflow", () => {
   // Open PRs: #6875, #12924
 
   it.live(
-    "BUG: no headroom when limit.input is set — compaction should trigger near boundary but does not",
+    "BUG: no headroom when limit.input is set â€” compaction should trigger near boundary but does not",
     provideTmpdirInstance(() =>
       Effect.gen(function* () {
         const compact = yield* SessionCompaction.Service
@@ -460,14 +460,14 @@ describe("session.compaction.isOverflow", () => {
 
         // We've used 198K tokens total. Only 2K under the input limit.
         // On the next turn, the full conversation (198K) becomes input,
-        // plus the model needs room to generate output — this WILL overflow.
+        // plus the model needs room to generate output â€” this WILL overflow.
         const tokens = { input: 180_000, output: 15_000, reasoning: 0, cache: { read: 3_000, write: 0 } }
         // count = 180K + 3K + 15K = 198K
         // usable = limit.input = 200K (no output subtracted!)
-        // 198K > 200K = false → no compaction triggered
+        // 198K > 200K = false â†’ no compaction triggered
 
-        // WITHOUT limit.input: usable = 200K - 32K = 168K, and 198K > 168K = true ✓
-        // WITH limit.input: usable = 200K, and 198K > 200K = false ✗
+        // WITHOUT limit.input: usable = 200K - 32K = 168K, and 198K > 168K = true âœ“
+        // WITH limit.input: usable = 200K, and 198K > 200K = false âœ—
 
         // With 198K used and only 2K headroom, the next turn will overflow.
         // Compaction MUST trigger here.
@@ -481,23 +481,23 @@ describe("session.compaction.isOverflow", () => {
     provideTmpdirInstance(() =>
       Effect.gen(function* () {
         const compact = yield* SessionCompaction.Service
-        // Same model but without limit.input — uses context - output instead
+        // Same model but without limit.input â€” uses context - output instead
         const model = createModel({ context: 200_000, output: 32_000 })
 
         // Same token usage as above
         const tokens = { input: 180_000, output: 15_000, reasoning: 0, cache: { read: 3_000, write: 0 } }
         // count = 198K
         // usable = context - output = 200K - 32K = 168K
-        // 198K > 168K = true → compaction correctly triggered
+        // 198K > 168K = true â†’ compaction correctly triggered
 
         const result = yield* compact.isOverflow({ tokens, model })
-        expect(result).toBe(true) // ← Correct: headroom is reserved
+        expect(result).toBe(true) // â†گ Correct: headroom is reserved
       }),
     ),
   )
 
   it.live(
-    "BUG: asymmetry — limit.input model allows 30K more usage before compaction than equivalent model without it",
+    "BUG: asymmetry â€” limit.input model allows 30K more usage before compaction than equivalent model without it",
     provideTmpdirInstance(() =>
       Effect.gen(function* () {
         const compact = yield* SessionCompaction.Service
@@ -505,13 +505,13 @@ describe("session.compaction.isOverflow", () => {
         const withInputLimit = createModel({ context: 200_000, input: 200_000, output: 32_000 })
         const withoutInputLimit = createModel({ context: 200_000, output: 32_000 })
 
-        // 170K total tokens — well above context-output (168K) but below input limit (200K)
+        // 170K total tokens â€” well above context-output (168K) but below input limit (200K)
         const tokens = { input: 166_000, output: 10_000, reasoning: 0, cache: { read: 5_000, write: 0 } }
 
         const withLimit = yield* compact.isOverflow({ tokens, model: withInputLimit })
         const withoutLimit = yield* compact.isOverflow({ tokens, model: withoutInputLimit })
 
-        // Both models have identical real capacity — they should agree:
+        // Both models have identical real capacity â€” they should agree:
         expect(withLimit).toBe(true) // should compact (170K leaves no room for 32K output)
         expect(withoutLimit).toBe(true) // correctly compacts (170K > 168K)
       }),
@@ -1286,7 +1286,7 @@ describe("session.compaction.process", () => {
     "silently drops reasoning-delta arriving without prior reasoning-start",
     () => {
       // Regression: PR initially auto-created a reasoning Part for orphan deltas (no preceding
-      // reasoning-start). Reverted to match dev — drop silently. Pinned here so any future
+      // reasoning-start). Reverted to match dev â€” drop silently. Pinned here so any future
       // change to processor.ts reasoning-delta handling triggers this test.
       const stub = llm()
       stub.push(

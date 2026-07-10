@@ -1,8 +1,8 @@
-import { Schema, Struct } from "effect"
-import { ProjectV2 } from "@opencode-ai/core/project"
+﻿import { Schema, Struct } from "effect"
+import { ProjectV2 } from "@tera-system/core/project"
 import type { InstanceContext } from "@/project/instance-context"
-import { WorkspaceV2 } from "@opencode-ai/core/workspace"
-import type { DeepMutable } from "@opencode-ai/core/schema"
+import { WorkspaceV2 } from "@tera-system/core/workspace"
+import type { DeepMutable } from "@tera-system/core/schema"
 
 export const WorkspaceInfo = Schema.Struct({
   id: WorkspaceV2.ID,

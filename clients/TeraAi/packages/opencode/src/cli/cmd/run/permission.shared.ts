@@ -1,11 +1,11 @@
-// Pure state machine for the permission UI.
+﻿// Pure state machine for the permission UI.
 //
 // Lives outside the JSX component so it can be tested independently. The
 // machine has three stages:
 //
-//   permission → initial view with Allow once / Always / Reject options
-//   always     → confirmation step (Confirm / Cancel)
-//   reject     → text input for rejection message
+//   permission â†’ initial view with Allow once / Always / Reject options
+//   always     â†’ confirmation step (Confirm / Cancel)
+//   reject     â†’ text input for rejection message
 //
 // permissionRun() is the main transition: given the current state and the
 // selected option, it returns a new state and optionally a PermissionReply
@@ -13,7 +13,7 @@
 //
 // permissionInfo() extracts display info (icon, title, lines, diff) from
 // the request, delegating to tool.ts for tool-specific formatting.
-import type { PermissionRequest } from "@opencode-ai/sdk/v2"
+import type { PermissionRequest } from "@tera-system/sdk/v2"
 import type { PermissionReply } from "./types"
 import { toolPath, toolPermissionInfo } from "./tool"
 
@@ -102,7 +102,7 @@ export function permissionInfo(request: PermissionRequest): PermissionInfo {
     const raw = text(meta.parentDir) || text(meta.filepath) || pats[0] || ""
     const dir = raw.includes("*") ? raw.slice(0, raw.indexOf("*")).replace(/[\\/]+$/, "") : raw
     return {
-      icon: "←",
+      icon: "â†گ",
       title: `Access external directory ${toolPath(dir, { home: true })}`,
       lines: pats.map((item) => `- ${item}`),
     }
@@ -110,14 +110,14 @@ export function permissionInfo(request: PermissionRequest): PermissionInfo {
 
   if (request.permission === "doom_loop") {
     return {
-      icon: "⟳",
+      icon: "âں³",
       title: "Continue after repeated failures",
       lines: ["This keeps the session running despite repeated failures."],
     }
   }
 
   return {
-    icon: "⚙",
+    icon: "âڑ™",
     title: `Call tool ${request.permission}`,
     lines: [`Tool: ${request.permission}`],
   }

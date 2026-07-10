@@ -1,4 +1,4 @@
----
+﻿---
 title: Complementos
 description: Escriba sus propios complementos para extender OpenCode.
 ---
@@ -22,13 +22,13 @@ Coloque los archivos JavaScript o TypeScript en el directorio del complemento.
 - `.opencode/plugins/` - Complementos a nivel de proyecto
 - `~/.config/opencode/plugins/` - Complementos globales
 
-Los archivos en estos directorios se cargan automáticamente al inicio.
+Los archivos en estos directorios se cargan automأ،ticamente al inicio.
 
 ---
 
 ### Desde npm
 
-Especifique paquetes npm en su archivo de configuración.
+Especifique paquetes npm en su archivo de configuraciأ³n.
 
 ```json title="opencode.json"
 {
@@ -43,11 +43,11 @@ Explore los complementos disponibles en el [ecosistema](/docs/ecosystem#plugins)
 
 ---
 
-### Cómo se instalan los complementos
+### Cأ³mo se instalan los complementos
 
-Los **complementos npm** se instalan automáticamente usando Bun al inicio. Los paquetes y sus dependencias se almacenan en caché en `~/.cache/opencode/node_modules/`.
+Los **complementos npm** se instalan automأ،ticamente usando Bun al inicio. Los paquetes y sus dependencias se almacenan en cachأ© en `~/.cache/opencode/node_modules/`.
 
-**Los complementos locales** se cargan directamente desde el directorio de complementos. Para usar paquetes externos, debe crear un `package.json` dentro de su directorio de configuración (consulte [Dependencias](#dependencies)), o publicar el complemento en npm y [agregarlo a su configuración](/docs/config#plugins).
+**Los complementos locales** se cargan directamente desde el directorio de complementos. Para usar paquetes externos, debe crear un `package.json` dentro de su directorio de configuraciأ³n (consulte [Dependencias](#dependencies)), o publicar el complemento en npm y [agregarlo a su configuraciأ³n](/docs/config#plugins).
 
 ---
 
@@ -55,25 +55,25 @@ Los **complementos npm** se instalan automáticamente usando Bun al inicio. Los 
 
 Los complementos se cargan desde todas las fuentes y todos los enlaces se ejecutan en secuencia. El orden de carga es:
 
-1. Configuración global (`~/.config/opencode/opencode.json`)
-2. Configuración del proyecto (`opencode.json`)
+1. Configuraciأ³n global (`~/.config/opencode/opencode.json`)
+2. Configuraciأ³n del proyecto (`opencode.json`)
 3. Directorio global de complementos (`~/.config/opencode/plugins/`)
 4. Directorio de complementos del proyecto (`.opencode/plugins/`)
 
-Los paquetes npm duplicados con el mismo nombre y versión se cargan una vez. Sin embargo, un complemento local y un complemento npm con nombres similares se cargan por separado.
+Los paquetes npm duplicados con el mismo nombre y versiأ³n se cargan una vez. Sin embargo, un complemento local y un complemento npm con nombres similares se cargan por separado.
 
 ---
 
 ## Crear un complemento
 
-Un complemento es un módulo **JavaScript/TypeScript** que exporta uno o más complementos.
-funciones. Cada función recibe un objeto de contexto y devuelve un objeto de enlace.
+Un complemento es un mأ³dulo **JavaScript/TypeScript** que exporta uno o mأ،s complementos.
+funciones. Cada funciأ³n recibe un objeto de contexto y devuelve un objeto de enlace.
 
 ---
 
 ### Dependencias
 
-Los complementos locales y las herramientas personalizadas pueden utilizar paquetes npm externos. Agregue un `package.json` a su directorio de configuración con las dependencias que necesita.
+Los complementos locales y las herramientas personalizadas pueden utilizar paquetes npm externos. Agregue un `package.json` a su directorio de configuraciأ³n con las dependencias que necesita.
 
 ```json title=".opencode/package.json"
 {
@@ -101,7 +101,7 @@ export const MyPlugin = async (ctx) => {
 
 ---
 
-### Estructura básica
+### Estructura bأ،sica
 
 ```js title=".opencode/plugins/example.js"
 export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
@@ -113,11 +113,11 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 }
 ```
 
-La función del complemento recibe:
+La funciأ³n del complemento recibe:
 
-- `project`: La información actual del proyecto.
+- `project`: La informaciأ³n actual del proyecto.
 - `directory`: El directorio de trabajo actual.
-- `worktree`: La ruta del árbol de trabajo de git.
+- `worktree`: La ruta del أ،rbol de trabajo de git.
 - `client`: Un cliente SDK opencode para interactuar con la IA.
 - `$`: [shell API](https://bun.com/docs/runtime/shell) de Bun para ejecutar comandos.
 
@@ -128,7 +128,7 @@ La función del complemento recibe:
 Para los complementos TypeScript, puede importar tipos desde el paquete de complementos:
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -141,7 +141,7 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ### Eventos
 
-Los complementos pueden suscribirse a eventos como se ve a continuación en la sección Ejemplos. Aquí hay una lista de los diferentes eventos disponibles.
+Los complementos pueden suscribirse a eventos como se ve a continuaciأ³n en la secciأ³n Ejemplos. Aquأ­ hay una lista de los diferentes eventos disponibles.
 
 #### Eventos de comando
 
@@ -152,7 +152,7 @@ Los complementos pueden suscribirse a eventos como se ve a continuación en la s
 - `file.edited`
 - `file.watcher.updated`
 
-#### Eventos de instalación
+#### Eventos de instalaciأ³n
 
 - `installation.updated`
 
@@ -177,7 +177,7 @@ Los complementos pueden suscribirse a eventos como se ve a continuación en la s
 
 - `server.connected`
 
-#### Eventos de sesión
+#### Eventos de sesiأ³n
 
 - `session.created`
 - `session.compacted`
@@ -211,7 +211,7 @@ Los complementos pueden suscribirse a eventos como se ve a continuación en la s
 
 ## Ejemplos
 
-A continuación se muestran algunos ejemplos de complementos que puede utilizar para ampliar opencode.
+A continuaciأ³n se muestran algunos ejemplos de complementos que puede utilizar para ampliar opencode.
 
 ---
 
@@ -232,15 +232,15 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 }
 ```
 
-Estamos usando `osascript` para ejecutar AppleScript en macOS. Aquí lo estamos usando para enviar notificaciones.
+Estamos usando `osascript` para ejecutar AppleScript en macOS. Aquأ­ lo estamos usando para enviar notificaciones.
 
 :::note
-Si está utilizando la aplicación de escritorio OpenCode, puede enviar notificaciones del sistema automáticamente cuando una respuesta esté lista o cuando se produzca un error en una sesión.
+Si estأ، utilizando la aplicaciأ³n de escritorio OpenCode, puede enviar notificaciones del sistema automأ،ticamente cuando una respuesta estأ© lista o cuando se produzca un error en una sesiأ³n.
 :::
 
 ---
 
-### Protección .env
+### Protecciأ³n .env
 
 Evite que opencode lea archivos `.env`:
 
@@ -260,7 +260,7 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 ### Inyectar variables de entorno
 
-Inyecte variables de entorno en toda la ejecución del shell (herramientas de inteligencia artificial y terminales de usuario):
+Inyecte variables de entorno en toda la ejecuciأ³n del shell (herramientas de inteligencia artificial y terminales de usuario):
 
 ```javascript title=".opencode/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
@@ -277,10 +277,10 @@ export const InjectEnvPlugin = async () => {
 
 ### Herramientas personalizadas
 
-Los complementos también pueden agregar herramientas personalizadas a opencode:
+Los complementos tambiأ©n pueden agregar herramientas personalizadas a opencode:
 
 ```ts title=".opencode/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@opencode-ai/plugin"
+import { type Plugin, tool } from "@tera-system/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -300,13 +300,13 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-El ayudante `tool` crea una herramienta personalizada a la que opencode puede llamar. Toma una función de esquema Zod y devuelve una definición de herramienta con:
+El ayudante `tool` crea una herramienta personalizada a la que opencode puede llamar. Toma una funciأ³n de esquema Zod y devuelve una definiciأ³n de herramienta con:
 
-- `description`: Qué hace la herramienta
+- `description`: Quأ© hace la herramienta
 - `args`: Esquema Zod para los argumentos de la herramienta.
-- `execute`: Función que se ejecuta cuando se llama a la herramienta
+- `execute`: Funciأ³n que se ejecuta cuando se llama a la herramienta
 
-Sus herramientas personalizadas estarán disponibles para opencode junto con las herramientas integradas.
+Sus herramientas personalizadas estarأ،n disponibles para opencode junto con las herramientas integradas.
 
 :::note
 Si una herramienta de complemento utiliza el mismo nombre que una herramienta integrada, la herramienta de complemento tiene prioridad.
@@ -331,16 +331,16 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-Niveles: `debug`, `info`, `warn`, `error`. Consulte la [documentación del SDK](https://opencode.ai/docs/sdk) para obtener más detalles.
+Niveles: `debug`, `info`, `warn`, `error`. Consulte la [documentaciأ³n del SDK](https://opencode.ai/docs/sdk) para obtener mأ،s detalles.
 
 ---
 
-### Hooks de compactación
+### Hooks de compactaciأ³n
 
-Personalice el contexto incluido cuando se compacta una sesión:
+Personalice el contexto incluido cuando se compacta una sesiأ³n:
 
 ```ts title=".opencode/plugins/compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -359,12 +359,12 @@ Include any state that should persist across compaction:
 }
 ```
 
-El hook `experimental.session.compacting` se activa antes de que LLM genere un resumen de continuación. Úselo para inyectar contexto específico del dominio que el mensaje de compactación predeterminado omitiría.
+El hook `experimental.session.compacting` se activa antes de que LLM genere un resumen de continuaciأ³n. أڑselo para inyectar contexto especأ­fico del dominio que el mensaje de compactaciأ³n predeterminado omitirأ­a.
 
-También puede reemplazar completamente el mensaje de compactación configurando `output.prompt`:
+Tambiأ©n puede reemplazar completamente el mensaje de compactaciأ³n configurando `output.prompt`:
 
 ```ts title=".opencode/plugins/custom-compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -386,4 +386,4 @@ Format as a structured prompt that a new agent can use to resume work.
 }
 ```
 
-Cuando se configura `output.prompt`, reemplaza completamente el mensaje de compactación predeterminado. En este caso, se ignora la matriz `output.context`.
+Cuando se configura `output.prompt`, reemplaza completamente el mensaje de compactaciأ³n predeterminado. En este caso, se ignora la matriz `output.context`.

@@ -1,7 +1,7 @@
-import { cmd } from "./cmd"
+﻿import { cmd } from "./cmd"
 import * as prompts from "@clack/prompts"
 import { UI } from "../ui"
-import { Global } from "@opencode-ai/core/global"
+import { Global } from "@tera-system/core/global"
 import path from "path"
 import fs from "fs/promises"
 import { Filesystem } from "@/util/filesystem"
@@ -14,7 +14,7 @@ import { effectCmd } from "../effect-cmd"
 type AgentMode = "all" | "primary" | "subagent"
 
 // Permission keys (not raw tool names). Multiple tools can map to a single
-// permission — e.g. write/edit/apply_patch all gate on `edit` — so we configure
+// permission â€” e.g. write/edit/apply_patch all gate on `edit` â€” so we configure
 // agents at the permission level to match how the runtime actually enforces it.
 const AVAILABLE_PERMISSIONS = [
   "bash",
@@ -183,7 +183,7 @@ const AgentCreateCommand = effectCmd({
         mode = modeResult
       }
 
-      // Build permissions config — deny anything not explicitly selected.
+      // Build permissions config â€” deny anything not explicitly selected.
       const permissions: Record<string, "deny"> = {}
       for (const permission of AVAILABLE_PERMISSIONS) {
         if (!selected.includes(permission)) {

@@ -1,5 +1,5 @@
-import type { SnapshotFileDiff, VcsFileDiff } from "@opencode-ai/sdk/v2"
-import type { Message } from "@opencode-ai/sdk/v2/client"
+﻿import type { SnapshotFileDiff, VcsFileDiff } from "@tera-system/sdk/v2"
+import type { Message } from "@tera-system/sdk/v2/client"
 
 type Diff = SnapshotFileDiff | VcsFileDiff
 

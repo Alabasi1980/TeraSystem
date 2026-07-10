@@ -1,5 +1,5 @@
-import { afterEach, expect, test } from "bun:test"
-import type { ToolPart } from "@opencode-ai/sdk/v2"
+﻿import { afterEach, expect, test } from "bun:test"
+import type { ToolPart } from "@tera-system/sdk/v2"
 import { RGBA, SyntaxStyle } from "@opentui/core"
 import { MockTreeSitterClient, createTestRenderer, type TestRenderer } from "@opentui/core/testing"
 import { RunScrollbackStream } from "@/cli/cmd/run/scrollback.surface"
@@ -119,7 +119,7 @@ test("turn summary starts at the left edge", async () => {
 
     const commits = claim(out.renderer)
     try {
-      expect(renderRows(commits.at(-1)!)[0]).toBe("▣ Build · Little Frank · 2.2s")
+      expect(renderRows(commits.at(-1)!)[0]).toBe("â–£ Build آ· Little Frank آ· 2.2s")
     } finally {
       destroy(commits)
     }
@@ -326,8 +326,8 @@ test("renders todo and question summaries without boilerplate footer copy", asyn
     {
       title: "# Todos",
       include: [
-        "[✓] List files under `run/`",
-        "[•] Count functions in each `run/` file",
+        "[âœ“] List files under `run/`",
+        "[â€¢] Count functions in each `run/` file",
         "[ ] Mark each tracking item complete",
       ],
       exclude: ["Updating", "todos completed"],
@@ -453,7 +453,7 @@ test("inserts spacers for new visible groups", async () => {
     try {
       expect(commits).toHaveLength(2)
       expect(renderCommit(commits[0]!).trim()).toBe("")
-      expect(renderCommit(commits[1]!).trim()).toBe("› use subagent to explore run.ts")
+      expect(renderCommit(commits[1]!).trim()).toBe("â€؛ use subagent to explore run.ts")
     } finally {
       destroy(commits)
     }
@@ -488,7 +488,7 @@ test("inserts spacers for new visible groups", async () => {
     try {
       expect(commits).toHaveLength(2)
       expect(renderCommit(commits[0]!).trim()).toBe("")
-      expect(renderCommit(commits[1]!).replace(/ +/g, " ").trim()).toBe('✱ Glob "**/run.ts"')
+      expect(renderCommit(commits[1]!).replace(/ +/g, " ").trim()).toBe('âœ± Glob "**/run.ts"')
     } finally {
       destroy(commits)
     }
@@ -501,7 +501,7 @@ test("inserts spacers for new visible groups", async () => {
 // flush race is fixed. The reasoning commit is delivered as a `<code>`
 // renderable with `filetype="markdown"`, `streaming=true`, and
 // `drawUnstyledText=false`. On Windows the first paragraph of the reasoning
-// body (here `_Thinking:_ **Plan**`) is dropped from the committed rows —
+// body (here `_Thinking:_ **Plan**`) is dropped from the committed rows â€”
 // the failing assertion shows only `Say hello.` survives, while Linux
 // (where `useThread` is forced off in `@opentui/core/testing`) and macOS
 // both pass.
@@ -512,17 +512,17 @@ test("inserts spacers for new visible groups", async () => {
 //   2. `RunScrollbackStream.writeStreaming` sets `renderable.content = ...`
 //      while `streaming=true`. `CodeRenderable.set content` short-circuits
 //      (does NOT call `textBuffer.setText`) when streaming, drawUnstyledText
-//      is false, and a filetype is set — it relies on the next
+//      is false, and a filetype is set â€” it relies on the next
 //      `startHighlight()` cycle to populate the buffer.
 //   3. `ScrollbackSurface.settle()` renders the surface, kicks the
-//      highlight via `renderSelf` → `startHighlight`, waits on
+//      highlight via `renderSelf` â†’ `startHighlight`, waits on
 //      `highlightingDone`, and re-renders. With `MockTreeSitterClient`
 //      returning `{highlights: []}`, the final branch (`else
 //      this.textBuffer.setText(content)`) populates the buffer and
 //      `_shouldRenderTextBuffer = true`.
 //   4. `flushActive` then commits rows `[0, surface.height - 1)` during
 //      streaming. On Windows the committed rows are blank for the first
-//      paragraph — suggesting the height/text-buffer state is observed
+//      paragraph â€” suggesting the height/text-buffer state is observed
 //      before/after the highlight resolution in a way that drops rows on
 //      that platform.
 //
@@ -560,7 +560,7 @@ test.skipIf(process.platform === "win32")(
       take()
 
       const output = lines.join("\n")
-      expect(output).toContain("› Hello you")
+      expect(output).toContain("â€؛ Hello you")
       expect(output).toContain("Say hello.")
       expect(output).toContain("Hello.")
     } finally {
@@ -754,7 +754,7 @@ test("inserts a spacer before the next tool after completed multiline bash outpu
     take()
 
     const output = lines.join("\n")
-    expect(output).toContain('total 4\n\n✱ Glob "**/*tool*" in src/cli/cmd')
+    expect(output).toContain('total 4\n\nâœ± Glob "**/*tool*" in src/cli/cmd')
   } finally {
     out.scrollback.destroy()
   }
@@ -846,8 +846,8 @@ test("does not double-space before completed bash output when inline tool header
     take()
 
     const output = lines.join("\n")
-    expect(output).toContain('✱ Grep "tool" in src/cli/cmd/run\n\ndemo.ts')
-    expect(output).not.toContain('✱ Grep "tool" in src/cli/cmd/run\n\n\ndemo.ts')
+    expect(output).toContain('âœ± Grep "tool" in src/cli/cmd/run\n\ndemo.ts')
+    expect(output).not.toContain('âœ± Grep "tool" in src/cli/cmd/run\n\n\ndemo.ts')
   } finally {
     out.scrollback.destroy()
   }
@@ -978,7 +978,7 @@ test("renders plain errors with one blank line before and after the error block"
     take()
 
     const output = lines.join("\n")
-    expect(output).toContain("› /fmt error\n\ndemo error event")
+    expect(output).toContain("â€؛ /fmt error\n\ndemo error event")
     expect(output).toContain("demo error event\n\nnext line")
     expect(output).not.toContain("demo error event\n\n\nnext line")
   } finally {

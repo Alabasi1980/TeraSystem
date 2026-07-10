@@ -1,6 +1,6 @@
-{
+﻿{
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@opencode-ai/client",
+  "name": "@tera-system/client",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -15,8 +15,8 @@
     "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
-    "@opencode-ai/schema": "workspace:*",
-    "@opencode-ai/protocol": "workspace:*"
+    "@tera-system/schema": "workspace:*",
+    "@tera-system/protocol": "workspace:*"
   },
   "peerDependencies": {
     "effect": "4.0.0-beta.83"
@@ -28,12 +28,13 @@
   },
   "devDependencies": {
     "@effect/platform-node": "catalog:",
-    "@opencode-ai/core": "workspace:*",
-    "@opencode-ai/httpapi-codegen": "workspace:*",
-    "@opencode-ai/server": "workspace:*",
+    "@tera-system/core": "workspace:*",
+    "@tera-system/httpapi-codegen": "workspace:*",
+    "@tera-system/server": "workspace:*",
     "@tsconfig/bun": "catalog:",
     "@types/bun": "catalog:",
     "@typescript/native-preview": "catalog:",
     "effect": "catalog:"
   }
 }
+

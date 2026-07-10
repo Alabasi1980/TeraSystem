@@ -1,4 +1,4 @@
-import type { AssistantMessage, Part, Provider, UserMessage } from "@opencode-ai/sdk/v2"
+﻿import type { AssistantMessage, Part, Provider, UserMessage } from "@tera-system/sdk/v2"
 import { Locale } from "./locale"
 import * as Model from "./model"
 
@@ -78,7 +78,7 @@ export function formatAssistantHeader(
 
   const modelName = Model.name(providers, msg.providerID, msg.modelID)
 
-  return `## Assistant (${Locale.titlecase(msg.agent)} · ${modelName}${duration ? ` · ${duration}` : ""})\n\n`
+  return `## Assistant (${Locale.titlecase(msg.agent)} آ· ${modelName}${duration ? ` آ· ${duration}` : ""})\n\n`
 }
 
 export function formatPart(part: Part, options: TranscriptOptions): string {

@@ -1,4 +1,4 @@
-export * as ProjectDirectories from "./directories"
+﻿export * as ProjectDirectories from "./directories"
 
 import { and, asc, desc, eq, isNotNull, isNull, ne, or } from "drizzle-orm"
 import { Context, Effect, Layer, Schema } from "effect"
@@ -7,7 +7,7 @@ import { makeGlobalNode } from "../effect/app-node"
 import { AbsolutePath, optional } from "../schema"
 import { ProjectSchema } from "./schema"
 import { ProjectDirectoryTable } from "./sql"
-import type { EffectDrizzleSqlite } from "@opencode-ai/effect-drizzle-sqlite"
+import type { EffectDrizzleSqlite } from "@tera-system/effect-drizzle-sqlite"
 
 export interface Directory {
   readonly directory: AbsolutePath

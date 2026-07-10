@@ -1,4 +1,4 @@
-export * as PermissionSaved from "./saved"
+﻿export * as PermissionSaved from "./saved"
 
 import { eq } from "drizzle-orm"
 import { Context, Effect, Layer, Schema } from "effect"
@@ -6,7 +6,7 @@ import { Database } from "../database/database"
 import { makeGlobalNode } from "../effect/app-node"
 import { ProjectV2 } from "../project"
 import { PermissionTable } from "./sql"
-import { PermissionSaved } from "@opencode-ai/schema/permission-saved"
+import { PermissionSaved } from "@tera-system/schema/permission-saved"
 
 export const ID = PermissionSaved.ID
 export type ID = typeof ID.Type

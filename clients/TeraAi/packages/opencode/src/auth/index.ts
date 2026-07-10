@@ -1,9 +1,9 @@
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+﻿import { LayerNode } from "@tera-system/core/effect/layer-node"
 import path from "path"
 import { Effect, Layer, Record, Result, Schema, Context } from "effect"
-import { NonNegativeInt } from "@opencode-ai/core/schema"
-import { Global } from "@opencode-ai/core/global"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+import { NonNegativeInt } from "@tera-system/core/schema"
+import { Global } from "@tera-system/core/global"
+import { FSUtil } from "@tera-system/core/fs-util"
 
 export const OAUTH_DUMMY_KEY = "opencode-oauth-dummy-key"
 

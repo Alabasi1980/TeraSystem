@@ -1,6 +1,6 @@
-import { describe, expect } from "bun:test"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+﻿import { describe, expect } from "bun:test"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { FSUtil } from "@tera-system/core/fs-util"
 import { Effect, Layer } from "effect"
 import path from "path"
 import { resetDatabase } from "../fixture/db"
@@ -289,7 +289,7 @@ describe("provider HttpApi", () => {
         method: 0,
         headers,
       })
-      // method 0 (api-key style) — authorize() resolves with no further
+      // method 0 (api-key style) â€” authorize() resolves with no further
       // redirect; #26474 changed the wire format to JSON `null` so clients
       // can `.json()` parse uniformly instead of getting an empty body
       // that throws.

@@ -1,4 +1,4 @@
-# LLM Package Guide
+﻿# LLM Package Guide
 
 ## Effect
 
@@ -46,7 +46,7 @@ const response = yield * LLMClient.generate(request)
 
 `LLM.request(...)` builds an `LLMRequest`. `LLMClient.generate(...)` reads the executable route carried by `request.model.route`, builds the provider-native body, asks the route's transport for a real `HttpClientRequest.HttpClientRequest`, sends it through `RequestExecutor.Service`, parses the provider stream into common `LLMEvent`s, and finally returns an `LLMResponse`.
 
-Use `LLMClient.stream(request)` when callers want incremental `LLMEvent`s. Use `LLMClient.generate(request)` when callers want those same events collected into an `LLMResponse`. Use `LLMClient.prepare<Body>(request)` to compile a request through the route pipeline without sending it — the optional `Body` type argument narrows `.body` to the route's native shape (e.g. `prepare<OpenAIChatBody>(...)` returns a `PreparedRequestOf<OpenAIChatBody>`). The runtime body is identical; the generic is a type-level assertion.
+Use `LLMClient.stream(request)` when callers want incremental `LLMEvent`s. Use `LLMClient.generate(request)` when callers want those same events collected into an `LLMResponse`. Use `LLMClient.prepare<Body>(request)` to compile a request through the route pipeline without sending it â€” the optional `Body` type argument narrows `.body` to the route's native shape (e.g. `prepare<OpenAIChatBody>(...)` returns a `PreparedRequestOf<OpenAIChatBody>`). The runtime body is identical; the generic is a type-level assertion.
 
 Filter or narrow `LLMEvent` streams with `LLMEvent.is.*` (camelCase guards, e.g. `events.filter(LLMEvent.is.toolCall)`). The kebab-case `LLMEvent.guards["tool-call"]` form also works but prefer `is.*` in new code.
 
@@ -54,10 +54,10 @@ Filter or narrow `LLMEvent` streams with `LLMEvent.is.*` (camelCase guards, e.g.
 
 A route is the registered, runnable composition of four orthogonal pieces:
 
-- **`Protocol`** (`src/route/protocol.ts`) — semantic API contract. Owns request body construction (`body.from`), the body schema (`body.schema`), the streaming-event schema (`stream.event`), and the event-to-`LLMEvent` state machine (`stream.step`). `Route.make(...)` validates and JSON-encodes the body from `body.schema` and decodes frames with `stream.event`. Examples: `OpenAIChat.protocol`, `OpenAIResponses.protocol`, `AnthropicMessages.protocol`, `Gemini.protocol`, `BedrockConverse.protocol`.
-- **`Endpoint`** (`src/route/endpoint.ts`) — URL construction. The host, path, and route query live on the endpoint. `Endpoint.path("/chat/completions", { baseURL })` is the common case; pass a function for paths that embed the model id or a body field (e.g. `Endpoint.path(({ body }) => `/model/${body.modelId}/converse-stream`)`).
-- **`Auth`** (`src/route/auth.ts`) — per-request transport authentication. Provider facades configure credentials onto the route before model selection, usually via `Auth.bearer(apiKey)` or `Auth.header(name, apiKey)`. Routes that need per-request signing (Bedrock SigV4, future Vertex IAM, Azure AAD) implement `Auth` as a function that signs the body and merges signed headers into the result.
-- **`Framing`** (`src/route/framing.ts`) — bytes → frames. SSE (`Framing.sse`) is shared; Bedrock keeps its AWS event-stream framing as a typed `Framing<object>` value alongside its protocol.
+- **`Protocol`** (`src/route/protocol.ts`) â€” semantic API contract. Owns request body construction (`body.from`), the body schema (`body.schema`), the streaming-event schema (`stream.event`), and the event-to-`LLMEvent` state machine (`stream.step`). `Route.make(...)` validates and JSON-encodes the body from `body.schema` and decodes frames with `stream.event`. Examples: `OpenAIChat.protocol`, `OpenAIResponses.protocol`, `AnthropicMessages.protocol`, `Gemini.protocol`, `BedrockConverse.protocol`.
+- **`Endpoint`** (`src/route/endpoint.ts`) â€” URL construction. The host, path, and route query live on the endpoint. `Endpoint.path("/chat/completions", { baseURL })` is the common case; pass a function for paths that embed the model id or a body field (e.g. `Endpoint.path(({ body }) => `/model/${body.modelId}/converse-stream`)`).
+- **`Auth`** (`src/route/auth.ts`) â€” per-request transport authentication. Provider facades configure credentials onto the route before model selection, usually via `Auth.bearer(apiKey)` or `Auth.header(name, apiKey)`. Routes that need per-request signing (Bedrock SigV4, future Vertex IAM, Azure AAD) implement `Auth` as a function that signs the body and merges signed headers into the result.
+- **`Framing`** (`src/route/framing.ts`) â€” bytes â†’ frames. SSE (`Framing.sse`) is shared; Bedrock keeps its AWS event-stream framing as a typed `Framing<object>` value alongside its protocol.
 
 Compose them via `Route.make(...)`:
 
@@ -76,9 +76,9 @@ export const route = Route.make({
 
 Route defaults are request-shaping defaults such as `headers`, `limits`, `generation`, `providerOptions`, and `http`. Endpoint host/query belongs on the route endpoint. Selected `Model` values carry only model id, provider id, and the configured route value. Model capability/catalog metadata lives outside this package; protocol support is enforced by request lowering and typed `LLMError`s.
 
-The four-axis decomposition is the reason DeepSeek, TogetherAI, Cerebras, Baseten, Fireworks, and DeepInfra all reuse `OpenAIChat.protocol` verbatim — each provider deployment is a 5-15 line `Route.make(...)` call instead of a 300-400 line route clone. Bug fixes in one protocol propagate to every consumer of that protocol in a single commit.
+The four-axis decomposition is the reason DeepSeek, TogetherAI, Cerebras, Baseten, Fireworks, and DeepInfra all reuse `OpenAIChat.protocol` verbatim â€” each provider deployment is a 5-15 line `Route.make(...)` call instead of a 300-400 line route clone. Bug fixes in one protocol propagate to every consumer of that protocol in a single commit.
 
-When a provider ships a non-HTTP transport (OpenAI's WebSocket Responses backend, hypothetical bidirectional streaming APIs), the seam is `Transport` — `WebSocketTransport.jsonTransport.with(...)` constructs an IO template whose `prepare` receives the route endpoint/auth at compile time, builds a WebSocket URL and message, and whose `frames` yields decoded text from the socket. Same protocol and endpoint source, different transport.
+When a provider ships a non-HTTP transport (OpenAI's WebSocket Responses backend, hypothetical bidirectional streaming APIs), the seam is `Transport` â€” `WebSocketTransport.jsonTransport.with(...)` constructs an IO template whose `prepare` receives the route endpoint/auth at compile time, builds a WebSocket URL and message, and whose `frames` yields decoded text from the socket. Same protocol and endpoint source, different transport.
 
 ### URL Construction
 
@@ -108,7 +108,7 @@ Keep provider facades small and explicit:
 - Put provider-specific setup on `.configure(...)`; do not add `model(id, overrides)` as a duplicate construction path.
 - Export lower-level `routes` arrays separately only when advanced internal wiring needs them.
 - Prefer `apiKey` as provider-specific sugar and `auth` as the explicit override; keep them mutually exclusive in provider option types with `ProviderAuthOption`.
-- Resolve `apiKey` → `Auth` with `AuthOptions.bearer(options, "<PROVIDER>_API_KEY")` (it honors an explicit `auth` override and falls back to `Auth.config(envVar)` so missing keys surface a typed `Authentication` error rather than a runtime crash).
+- Resolve `apiKey` â†’ `Auth` with `AuthOptions.bearer(options, "<PROVIDER>_API_KEY")` (it honors an explicit `auth` override and falls back to `Auth.config(envVar)` so missing keys surface a typed `Authentication` error rather than a runtime crash).
 - Use separate top-level facades for products with different required setup, such as `CloudflareAIGateway` and `CloudflareWorkersAI`.
 
 `Provider.make(...)` remains available for simple static provider definitions, but new built-in providers should prefer plain configured facades unless a helper removes real duplication without adding runtime behavior.
@@ -126,7 +126,7 @@ packages/llm/src/
     index.ts                barrel
   llm.ts                    request constructors and convenience helpers
   route/
-    index.ts                @opencode-ai/llm/route advanced barrel
+    index.ts                @tera-system/llm/route advanced barrel
     client.ts               Route.make + LLMClient.prepare/stream/generate
     executor.ts             RequestExecutor service + transport error mapping
     protocol.ts             Protocol type + Protocol.make
@@ -136,7 +136,7 @@ packages/llm/src/
     framing.ts              Framing type + Framing.sse
     transport/              transport implementations
       index.ts              Transport type + HttpTransport / WebSocketTransport namespaces
-      http.ts               HttpTransport.httpJson — POST + framing
+      http.ts               HttpTransport.httpJson â€” POST + framing
       websocket.ts          WebSocketTransport.json + WebSocketExecutor service
   protocols/
     shared.ts               ProviderShared toolkit used inside protocol impls
@@ -162,12 +162,12 @@ The dependency arrow points down: `providers/*.ts` files import protocol routes 
 
 `ProviderShared` exports a small toolkit used inside protocol implementations to keep them focused on provider-native shapes:
 
-- `joinText(parts)` — joins an array of `TextPart` (or anything with a `.text`) with newlines. Use this anywhere a protocol flattens text content into a single string for a provider field.
-- `parseToolInput(route, name, raw)` — Schema-decodes a tool-call argument string with the canonical "Invalid JSON input for `<route>` tool call `<name>`" error message. Treats empty input as `{}`.
-- `parseJson(route, raw, message)` — generic JSON-via-Schema decode for non-tool bodies.
-- `eventError(route, message, ...)` — typed `InvalidProviderOutput` constructor for stream-time decode failures.
-- `validateWith(decoder)` — maps Schema decode errors to `InvalidRequest`. `Route.make(...)` uses this for body validation; lower-level routes can reuse it.
-- `matchToolChoice(provider, choice, branches)` — branches over `LLMRequest["toolChoice"]` for provider-specific lowering.
+- `joinText(parts)` â€” joins an array of `TextPart` (or anything with a `.text`) with newlines. Use this anywhere a protocol flattens text content into a single string for a provider field.
+- `parseToolInput(route, name, raw)` â€” Schema-decodes a tool-call argument string with the canonical "Invalid JSON input for `<route>` tool call `<name>`" error message. Treats empty input as `{}`.
+- `parseJson(route, raw, message)` â€” generic JSON-via-Schema decode for non-tool bodies.
+- `eventError(route, message, ...)` â€” typed `InvalidProviderOutput` constructor for stream-time decode failures.
+- `validateWith(decoder)` â€” maps Schema decode errors to `InvalidRequest`. `Route.make(...)` uses this for body validation; lower-level routes can reuse it.
+- `matchToolChoice(provider, choice, branches)` â€” branches over `LLMRequest["toolChoice"]` for provider-specific lowering.
 
 If you find yourself copying a 3-to-5-line snippet between two protocols, lift it into `ProviderShared` next to these helpers rather than duplicating.
 
@@ -212,7 +212,7 @@ const get_weather = tool({
   success: Schema.Struct({ temperature: Schema.Number, condition: Schema.String }),
   execute: ({ city }) =>
     Effect.gen(function* () {
-      // city: string  — typed from parameters Schema
+      // city: string  â€” typed from parameters Schema
       const data = yield* WeatherApi.fetch(city)
       return { temperature: data.temp, condition: data.cond }
       // return type checked against success Schema
@@ -248,7 +248,7 @@ Errors must be expressed as `ToolFailure`. The runtime catches it and emits a `t
 Provider-defined / hosted tools (Anthropic `web_search` / `code_execution` / `web_fetch`, OpenAI Responses `web_search_call` / `file_search_call` / `code_interpreter_call` / `mcp_call` / `local_shell_call` / `image_generation_call` / `computer_use_call`) pass through the runtime untouched:
 
 - Routes surface the model's call as a `tool-call` event with `providerExecuted: true`, and the provider's result as a matching `tool-result` event with `providerExecuted: true`.
-- Callers detect `providerExecuted` on `tool-call` and **skip local dispatch** — no handler is invoked and no `tool-error` is raised for "unknown tool". The provider already executed it.
+- Callers detect `providerExecuted` on `tool-call` and **skip local dispatch** â€” no handler is invoked and no `tool-error` is raised for "unknown tool". The provider already executed it.
 - Callers that continue should retain both events in explicit history when the protocol requires it. Anthropic encodes them back as `server_tool_use` + `web_search_tool_result` (or `code_execution_tool_result` / `web_fetch_tool_result`) blocks; OpenAI Responses callers typically use `previous_response_id` instead of resending hosted-tool items.
 
 Add provider-defined tools to `request.tools` (no runtime entry needed). The matching route must know how to lower the tool definition into the provider-native shape; right now Anthropic accepts `web_search` / `code_execution` / `web_fetch` and OpenAI Responses accepts the hosted tool names listed above.

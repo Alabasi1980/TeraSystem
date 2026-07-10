@@ -1,5 +1,5 @@
-/// <reference path="../env.d.ts" />
-import { tool } from "@opencode-ai/plugin"
+﻿/// <reference path="../env.d.ts" />
+import { tool } from "@tera-system/plugin"
 async function githubFetch(endpoint: string, options: RequestInit = {}) {
   const response = await fetch(`https://api.github.com${endpoint}`, {
     ...options,

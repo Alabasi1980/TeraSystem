@@ -1,16 +1,16 @@
-import { createMemo, createEffect, on, onCleanup, For, Show } from "solid-js"
+﻿import { createMemo, createEffect, on, onCleanup, For, Show } from "solid-js"
 import type { JSX } from "solid-js"
 import { useSync } from "@/context/sync"
-import { checksum } from "@opencode-ai/core/util/encode"
-import { findLast } from "@opencode-ai/core/util/array"
+import { checksum } from "@tera-system/core/util/encode"
+import { findLast } from "@tera-system/core/util/array"
 import { same } from "@/utils/same"
-import { Icon } from "@opencode-ai/ui/icon"
-import { Accordion } from "@opencode-ai/ui/accordion"
-import { StickyAccordionHeader } from "@opencode-ai/ui/sticky-accordion-header"
-import { File } from "@opencode-ai/session-ui/file"
-import { Markdown } from "@opencode-ai/session-ui/markdown"
-import { ScrollView } from "@opencode-ai/ui/scroll-view"
-import type { Message, Part, UserMessage } from "@opencode-ai/sdk/v2/client"
+import { Icon } from "@tera-system/ui/icon"
+import { Accordion } from "@tera-system/ui/accordion"
+import { StickyAccordionHeader } from "@tera-system/ui/sticky-accordion-header"
+import { File } from "@tera-system/session-ui/file"
+import { Markdown } from "@tera-system/session-ui/markdown"
+import { ScrollView } from "@tera-system/ui/scroll-view"
+import type { Message, Part, UserMessage } from "@tera-system/sdk/v2/client"
 import { useLanguage } from "@/context/language"
 import { useProviders } from "@/hooks/use-providers"
 import { useSDK } from "@/context/sdk"
@@ -70,7 +70,7 @@ function RawMessage(props: {
         <Accordion.Trigger>
           <div class="flex items-center justify-between gap-2 w-full">
             <div class="min-w-0 truncate">
-              {props.message.role} <span class="text-text-base">• {props.message.id}</span>
+              {props.message.role} <span class="text-text-base">â€¢ {props.message.id}</span>
             </div>
             <div class="flex items-center gap-3">
               <div class="shrink-0 text-12-regular text-text-weak">{props.time(props.message.time.created)}</div>
@@ -164,13 +164,13 @@ export function SessionContextTab() {
 
   const providerLabel = createMemo(() => {
     const c = ctx()
-    if (!c) return "—"
+    if (!c) return "â€”"
     return c.providerLabel
   })
 
   const modelLabel = createMemo(() => {
     const c = ctx()
-    if (!c) return "—"
+    if (!c) return "â€”"
     return c.modelLabel
   })
 
@@ -199,7 +199,7 @@ export function SessionContextTab() {
   }
 
   const stats = [
-    { label: "context.stats.session", value: () => info()?.title ?? params.id ?? "—" },
+    { label: "context.stats.session", value: () => info()?.title ?? params.id ?? "â€”" },
     { label: "context.stats.messages", value: () => counts().all.toLocaleString(language.intl()) },
     { label: "context.stats.provider", value: providerLabel },
     { label: "context.stats.model", value: modelLabel },

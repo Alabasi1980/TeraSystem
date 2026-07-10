@@ -1,9 +1,9 @@
-export * as PluginV2 from "./plugin"
+﻿export * as PluginV2 from "./plugin"
 
 import { makeLocationNode } from "./effect/app-node"
 import { Context, Deferred, Effect, Exit, Layer, Scope } from "effect"
-import type { Plugin as PluginRuntime } from "@opencode-ai/plugin/v2/effect"
-import { Plugin } from "@opencode-ai/schema/plugin"
+import type { Plugin as PluginRuntime } from "@tera-system/plugin/v2/effect"
+import { Plugin } from "@tera-system/schema/plugin"
 import { AgentV2 } from "./agent"
 import { AISDK } from "./aisdk"
 import { Catalog } from "./catalog"

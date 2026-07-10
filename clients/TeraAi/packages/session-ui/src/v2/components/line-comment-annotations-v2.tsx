@@ -1,4 +1,4 @@
-import { type SelectedLineRange } from "@pierre/diffs"
+﻿import { type SelectedLineRange } from "@pierre/diffs"
 import { Show, type Accessor, type JSX } from "solid-js"
 import {
   createLineCommentAnnotations,
@@ -8,9 +8,9 @@ import {
   type LineCommentShape,
   type LineCommentStateProps,
 } from "../../components/line-comment-annotations"
-import { useI18n } from "@opencode-ai/ui/context/i18n"
+import { useI18n } from "@tera-system/ui/context/i18n"
 import { cloneSelectedLineRange, formatSelectedLineLabel } from "../../pierre/selection-bridge"
-import { LineCommentEditorV2, LineCommentV2 } from "@opencode-ai/ui/v2/line-comment-v2"
+import { LineCommentEditorV2, LineCommentV2 } from "@tera-system/ui/v2/line-comment-v2"
 
 type LineCommentControllerV2Props<T extends LineCommentShape> = {
   comments: Accessor<T[]>

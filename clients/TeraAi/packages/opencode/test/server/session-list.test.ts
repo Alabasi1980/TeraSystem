@@ -1,14 +1,14 @@
-import { afterEach, describe, expect } from "bun:test"
+﻿import { afterEach, describe, expect } from "bun:test"
 import { Effect } from "effect"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { Database } from "@opencode-ai/core/database/database"
-import { SessionProjector } from "@opencode-ai/core/session/projector"
+import { AppNodeBuilder } from "@tera-system/core/effect/app-node-builder"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { Database } from "@tera-system/core/database/database"
+import { SessionProjector } from "@tera-system/core/session/projector"
 import { Session as SessionNs } from "@/session/session"
 import { disposeAllInstances, provideInstance, TestInstance } from "../fixture/fixture"
 import { mkdir } from "fs/promises"
 import path from "path"
-import { SessionTable } from "@opencode-ai/core/session/sql"
+import { SessionTable } from "@tera-system/core/session/sql"
 import { eq } from "drizzle-orm"
 import { testEffect } from "../lib/effect"
 import { RuntimeFlags } from "@/effect/runtime-flags"
@@ -123,7 +123,7 @@ describe("session.list", () => {
 
         const created = yield* withSession({ title: "separator" }).pipe(provideInstance(dir))
 
-        // A forward-slash query (e.g. from the SDK/HTTP layer) must still find it —
+        // A forward-slash query (e.g. from the SDK/HTTP layer) must still find it â€”
         // this is the regression: backslash-stored vs forward-slash-queried.
         const forwardIDs = (yield* SessionNs.Service.use((session) =>
           session.list({ directory: dir.replaceAll("\\", "/") }),

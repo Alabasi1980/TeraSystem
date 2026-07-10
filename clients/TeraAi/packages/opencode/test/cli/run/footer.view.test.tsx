@@ -1,11 +1,11 @@
-/** @jsxImportSource @opentui/solid */
+﻿/** @jsxImportSource @opentui/solid */
 import { expect, test } from "bun:test"
 import { BoxRenderable, RGBA, type RootRenderable } from "@opentui/core"
 import { testRender, useRenderer } from "@opentui/solid"
 import { createSignal } from "solid-js"
 import { createDefaultOpenTuiKeymap } from "@opentui/keymap/opentui"
-import type { QuestionRequest } from "@opencode-ai/sdk/v2"
-import { OpencodeKeymapProvider, registerOpencodeKeymap } from "@opencode-ai/tui/keymap"
+import type { QuestionRequest } from "@tera-system/sdk/v2"
+import { OpencodeKeymapProvider, registerOpencodeKeymap } from "@tera-system/tui/keymap"
 import {
   RUN_COMMAND_PANEL_ROWS,
   RUN_SUBAGENT_PANEL_ROWS,
@@ -410,8 +410,8 @@ test("direct command panel renders grouped command palette", async () => {
     expect(frame).toContain("Skills")
     expect(frame).toContain("/skills")
     expect(frame.match(/\bAgent\b/g)?.length).toBe(1)
-    expect(frame).not.toContain("┌")
-    expect(frame).not.toContain("┃")
+    expect(frame).not.toContain("â”Œ")
+    expect(frame).not.toContain("â”ƒ")
     expect(frame).not.toContain("/internal")
     expect(frame).not.toContain("Choose model for future turns")
     expect(frame).not.toContain("Cycle reasoning effort for future turns")
@@ -495,7 +495,7 @@ test("direct skill panel truncates long descriptions from the end", async () => 
 
     expect(frame).toContain("terminal-control")
     expect(frame).toContain("Control and test terminal applications")
-    expect(frame).not.toMatch(/application(?:…|\.\.\.)ocess/)
+    expect(frame).not.toMatch(/application(?:â€¦|\.\.\.)ocess/)
   } finally {
     app.renderer.destroy()
   }
@@ -633,8 +633,8 @@ test("direct subagent panel renders active subagents", async () => {
     expect(frame).toContain("Inspect auth flow")
     expect(frame).toContain("Write migration plan")
     expect(frame).toContain("done")
-    expect(frame).not.toContain("┌")
-    expect(frame).not.toContain("┃")
+    expect(frame).not.toContain("â”Œ")
+    expect(frame).not.toContain("â”ƒ")
     expectPaletteList(list, 0)
     expect(rows).toBe(8)
   } finally {
@@ -670,8 +670,8 @@ test("direct queued prompt panel renders pending prompt actions", async () => {
     expect(frame).toContain("Queued prompts")
     expect(frame).toContain("fix the auth test")
     expect(frame).toContain("queued")
-    expect(frame).not.toContain("┌")
-    expect(frame).not.toContain("┃")
+    expect(frame).not.toContain("â”Œ")
+    expect(frame).not.toContain("â”ƒ")
     expectPaletteList(list, 0)
   } finally {
     app.renderer.destroy()
@@ -696,8 +696,8 @@ test.skip("direct footer recreates the frame across command panel transitions", 
       app.mockInput.pressKey("c", { ctrl: true })
       await app.renderOnce()
       expect(app.captureCharFrame()).not.toContain("Commands")
-      expect(app.captureCharFrame()).not.toContain("┃")
-      expect(app.captureCharFrame()).not.toContain("█")
+      expect(app.captureCharFrame()).not.toContain("â”ƒ")
+      expect(app.captureCharFrame()).not.toContain("â–ˆ")
     }
   } finally {
     app.cleanup()
@@ -1008,7 +1008,7 @@ test("direct footer shows editable prompts and additional queued work while runn
     expect(frame).toContain("ctrl+x down subagents")
     expect(frame).toContain("ctrl+p cmd")
     expect(frame).toContain("a-model-name-long-enough-to-force-responsive-truncation")
-    expect(frame).toContain("subagents · ctrl+p cmd")
+    expect(frame).toContain("subagents آ· ctrl+p cmd")
     expect(frame).not.toContain("1 agent")
     expect(statusline.backgroundColor.toInts()).toEqual(tinted)
     expect(mode.backgroundColor.toInts()).toEqual(accent)
@@ -1044,7 +1044,7 @@ test("direct footer separates a lone context hint from model and command hint", 
     const frame = app.captureCharFrame()
 
     expect(frame).toContain("GPT-5")
-    expect(frame).toContain("xhigh · ctrl+x down subagents · ctrl+p cmd")
+    expect(frame).toContain("xhigh آ· ctrl+x down subagents آ· ctrl+p cmd")
     expect(frame).not.toContain("ctrl+b background")
     expect(frame).not.toContain("queued")
   } finally {
@@ -1072,7 +1072,7 @@ test("direct footer hides the subagent hint when only completed subagents remain
     const frame = app.captureCharFrame()
 
     expect(frame).toContain("GPT-5")
-    expect(frame).toContain("xhigh · ctrl+p cmd")
+    expect(frame).toContain("xhigh آ· ctrl+p cmd")
     expect(frame).not.toContain("ctrl+x down subagents")
   } finally {
     app.cleanup()
@@ -1098,14 +1098,14 @@ test("direct footer omits interrupt key hint when interrupt is unbound", async (
 
 test("direct footer shows full usage metadata when room is available", async () => {
   const app = await renderFooter({
-    state: { usage: "159.6K (16%) · $4.23" },
+    state: { usage: "159.6K (16%) آ· $4.23" },
   })
 
   try {
     await app.renderOnce()
     const frame = app.captureCharFrame()
 
-    expect(frame).toContain("159.6K (16%) · $4.23")
+    expect(frame).toContain("159.6K (16%) آ· $4.23")
   } finally {
     app.cleanup()
   }
@@ -1169,7 +1169,7 @@ test("direct question body separates single-select checkmark from label", async 
     await app.renderOnce()
 
     expect(replies).toHaveLength(1)
-    expect(app.captureCharFrame()).toContain("Product ✓")
+    expect(app.captureCharFrame()).toContain("Product âœ“")
   } finally {
     app.renderer.destroy()
   }
@@ -1325,8 +1325,8 @@ test("direct model panel renders current model selector", async () => {
     expect(frame).toContain("current")
     expect(frame).toContain("GPT Free")
     expect(frame).toContain("Free")
-    expect(frame).not.toContain("┌")
-    expect(frame).not.toContain("┃")
+    expect(frame).not.toContain("â”Œ")
+    expect(frame).not.toContain("â”ƒ")
     expect(frame).not.toContain("Old Model")
     expectPaletteList(list, 2)
   } finally {
@@ -1366,8 +1366,8 @@ test("direct variant panel renders current variant selector", async () => {
     expect(frame).toContain("high")
     expect(frame).toContain("minimal")
     expect(frame).toContain("current")
-    expect(frame).not.toContain("┌")
-    expect(frame).not.toContain("┃")
+    expect(frame).not.toContain("â”Œ")
+    expect(frame).not.toContain("â”ƒ")
     expectPaletteList(list, 1)
   } finally {
     app.renderer.destroy()

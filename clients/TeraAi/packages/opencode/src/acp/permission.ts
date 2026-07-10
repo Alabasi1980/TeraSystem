@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   AgentSideConnection,
   PermissionOption,
   RequestPermissionResponse,
@@ -6,7 +6,7 @@ import type {
   ToolCallLocation,
   ToolCallUpdate,
 } from "@agentclientprotocol/sdk"
-import type { Event, OpencodeClient } from "@opencode-ai/sdk/v2"
+import type { Event, OpencodeClient } from "@tera-system/sdk/v2"
 import { applyPatch } from "diff"
 import { exists, readText } from "@/util/filesystem"
 import type { ACPSession } from "./session"

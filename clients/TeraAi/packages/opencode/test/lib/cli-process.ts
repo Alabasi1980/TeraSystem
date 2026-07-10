@@ -1,13 +1,13 @@
-// Subprocess test harness for the opencode CLI. Spawns the real binary against
+﻿// Subprocess test harness for the opencode CLI. Spawns the real binary against
 // a TestLLMServer running in-process at a random port, with full env isolation.
 //
 // This is the missing test tier: in-process tests can't catch bugs that span
-// argv parsing → server boot → SDK call → event consumption → exit code (like
+// argv parsing â†’ server boot â†’ SDK call â†’ event consumption â†’ exit code (like
 // the original /event race or #27371's invalid-model hang).
 //
 // Configuration flows through opencode's built-in test affordances:
 //   - OPENCODE_CONFIG_CONTENT      : provider config inline, no files to find
-//   - OPENCODE_TEST_HOME           : pins os.homedir() → tmpdir
+//   - OPENCODE_TEST_HOME           : pins os.homedir() â†’ tmpdir
 //   - OPENCODE_DISABLE_PROJECT_CONFIG : skip walking up for opencode.json
 //   - OPENCODE_PURE                : skip external plugin discovery + install
 //   - OPENCODE_DISABLE_AUTOUPDATE / AUTOCOMPACT / MODELS_FETCH : no background work
@@ -16,12 +16,12 @@
 // Today only `opencode.run` is fully wired. The shape supports adding more
 // builders (`opencode.serve(opts)`, `opencode.acp(opts)`, `opencode.auth(...)`)
 // without changing the fixture. Long-lived commands like `serve` will need a
-// different return shape — see the TODO at the bottom of OpencodeCli.
+// different return shape â€” see the TODO at the bottom of OpencodeCli.
 import { test, type TestOptions } from "bun:test"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { AppProcess } from "@opencode-ai/core/process"
+import { FSUtil } from "@tera-system/core/fs-util"
+import { AppNodeBuilder } from "@tera-system/core/effect/app-node-builder"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { AppProcess } from "@tera-system/core/process"
 import { Deferred, Duration, Effect, Layer, Queue, Schedule, Scope, Stream } from "effect"
 import { FetchHttpClient, HttpClient } from "effect/unstable/http"
 import { ChildProcess } from "effect/unstable/process"
@@ -103,7 +103,7 @@ export type RunOpts = SpawnOpts & {
   readonly extraArgs?: string[]
 }
 
-// `opencode serve` is a long-lived process — it never exits on its own.
+// `opencode serve` is a long-lived process â€” it never exits on its own.
 // `serve(opts)` therefore returns a handle inside the caller's Scope: the
 // subprocess is killed when the scope closes (test end), and the URL the
 // server actually bound to (port 0 means OS-assigned) is parsed off stdout.
@@ -112,19 +112,19 @@ export type ServeOpts = SpawnOpts & {
   readonly hostname?: string
   readonly extraArgs?: string[]
   // How long to wait for the "listening on http://..." line before failing.
-  // Default 15s — startup is dominated by bun's transpile + plugin init, not
+  // Default 15s â€” startup is dominated by bun's transpile + plugin init, not
   // the actual listen() call.
   readonly readyTimeoutMs?: number
 }
 
 export type ServeHandle = {
   // Full URL the server is bound to, e.g. "http://127.0.0.1:54321". Use this
-  // as the base for HTTP requests in tests — never assume the port.
+  // as the base for HTTP requests in tests â€” never assume the port.
   readonly url: string
   readonly hostname: string
   readonly port: number
   // Sends SIGTERM. The scope finalizer also calls this, so tests rarely need
-  // to invoke it directly — useful for tests that assert exit behavior.
+  // to invoke it directly â€” useful for tests that assert exit behavior.
   readonly kill: () => void
   // Resolves with the exit code once the process exits. Bun returns a number.
   readonly exited: Promise<number>
@@ -184,7 +184,7 @@ export type CliFixture = {
 
 // Provisions a TestLLMServer + tmpdir + spawn helper and invokes fn. Cleans
 // up the tmpdir on scope exit. TestLLMServer.layer is provided internally so
-// the caller doesn't need to wire it up — the fixture's lifetime is tied to
+// the caller doesn't need to wire it up â€” the fixture's lifetime is tied to
 // the surrounding Scope.
 export function withCliFixture<A, E>(
   fn: (input: CliFixture) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>,
@@ -208,7 +208,7 @@ export function withCliFixture<A, E>(
       const start = Date.now()
       const timeoutMs = opts?.timeoutMs ?? 30_000
       // stdin: "ignore" so the child doesn't see a piped stdin and block
-      // on `Bun.stdin.text()` (see src/cli/cmd/run.ts — non-TTY stdin is
+      // on `Bun.stdin.text()` (see src/cli/cmd/run.ts â€” non-TTY stdin is
       // consumed as the prompt). The old Process.run wrapper defaulted to
       // ignore; ChildProcess.make defaults to pipe, so we set it explicitly.
       const command = ChildProcess.make("bun", ["run", "--conditions=browser", cliEntry, ...args], {
@@ -220,7 +220,7 @@ export function withCliFixture<A, E>(
       // Pass timeout to appProc.run rather than wrapping with
       // Effect.timeoutOrElse externally: AppProcess.run is itself scoped, so
       // its built-in timeout triggers the acquireRelease kill finalizer
-      // inside cross-spawn-spawner *before* surfacing the AppProcessError —
+      // inside cross-spawn-spawner *before* surfacing the AppProcessError â€”
       // guaranteeing the child is dead by the time the test continues.
       // External timeoutOrElse interrupts the run fiber but races the
       // scope close, which can leak the child past the test boundary.
@@ -313,7 +313,7 @@ export function withCliFixture<A, E>(
 
     const serve = Effect.fn("opencode.serve")(function* (opts?: ServeOpts) {
       const argv = ["serve"]
-      // Default port 0 — let the OS pick a free port, parse the actual one
+      // Default port 0 â€” let the OS pick a free port, parse the actual one
       // off stdout. Hard-coded ports flake under parallel tests.
       argv.push("--port", String(opts?.port ?? 0))
       if (opts?.hostname) argv.push("--hostname", opts.hostname)
@@ -390,7 +390,7 @@ export function withCliFixture<A, E>(
       if (opts?.cwd) argv.push("--cwd", opts.cwd)
       if (opts?.extraArgs) argv.push(...opts.extraArgs)
 
-      // Acquire the subprocess. Release ends stdin (clean shutdown — ACP exits
+      // Acquire the subprocess. Release ends stdin (clean shutdown â€” ACP exits
       // on stdin EOF) and falls back to SIGTERM if it doesn't exit promptly.
       // Either way we await proc.exited so the test scope doesn't leak.
       const proc = yield* Effect.acquireRelease(
@@ -449,7 +449,7 @@ export function withCliFixture<A, E>(
 
       return {
         // `proc.stdin.write` returns `number | Promise<number>`. The promise
-        // form is the backpressure signal — if we don't await it, rapid
+        // form is the backpressure signal â€” if we don't await it, rapid
         // successive sends can interleave under pipe-buffer-full conditions
         // and corrupt the ndjson framing.
         send: (msg: object) =>
@@ -493,7 +493,7 @@ function normalizeLines(value: string) {
 }
 
 // Convenience for the common assertion pattern. Dumps stderr/stdout when
-// the exit code doesn't match — saves debugging time on CI failures.
+// the exit code doesn't match â€” saves debugging time on CI failures.
 function expectExit(result: RunResult, expected: number, label = "opencode") {
   if (result.exitCode === expected) return
   const tail = (s: string, n: number) => (s.length > n ? "..." + s.slice(-n) : s)
@@ -507,14 +507,14 @@ function expectExit(result: RunResult, expected: number, label = "opencode") {
 }
 
 // `cliIt.live(name, fixture => effect)` is the same as
-// `it.live(name, () => withCliFixture(fixture))` — one fewer nesting level at
+// `it.live(name, () => withCliFixture(fixture))` â€” one fewer nesting level at
 // every call site. Use this for any test that needs the opencode CLI fixture.
 //
-// Subprocess tests must run against the real clock — a TestClock-paused
+// Subprocess tests must run against the real clock â€” a TestClock-paused
 // environment can't drive a child process. If you need `.only` or `.skip`, fall
 // back to `it.live` + `withCliFixture` directly.
 // Body's R is `Scope.Scope | never` so tests can yield* scope-requiring
-// resources (e.g. `opencode.serve`) without an extra `Effect.scoped` wrapper —
+// resources (e.g. `opencode.serve`) without an extra `Effect.scoped` wrapper â€”
 // `withCliFixture`'s outer scope is the natural lifetime.
 export const cliIt = {
   live: <A, E>(

@@ -1,5 +1,5 @@
-import type { PermissionV1 } from "@opencode-ai/core/v1/permission"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+﻿import type { PermissionV1 } from "@tera-system/core/v1/permission"
+import { FSUtil } from "@tera-system/core/fs-util"
 // CLI entry point for `opencode run` and `opencode --mini`.
 //
 // Handles three modes:
@@ -22,7 +22,7 @@ import { UI } from "../ui"
 import { effectCmd } from "../effect-cmd"
 import { EOL } from "os"
 import { Filesystem } from "@/util/filesystem"
-import { createOpencodeClient, type OpencodeClient, type ToolPart } from "@opencode-ai/sdk/v2"
+import { createOpencodeClient, type OpencodeClient, type ToolPart } from "@tera-system/sdk/v2"
 import { FormatError, FormatUnknownError } from "../error"
 import { INTERACTIVE_INPUT_ERROR, resolveInteractiveStdin } from "./run/runtime.stdin"
 
@@ -110,14 +110,14 @@ async function toolError(part: ToolPart) {
     const { toolInlineInfo } = await import("./run/tool")
     const next = toolInlineInfo(part)
     inline({
-      icon: "✗",
+      icon: "âœ—",
       title: `${next.title} failed`,
       ...(next.description && { description: next.description }),
     })
     return
   } catch {
     inline({
-      icon: "✗",
+      icon: "âœ—",
       title: `${part.tool} failed`,
     })
   }
@@ -130,7 +130,7 @@ export const RunCommand = effectCmd({
   // default path runs an in-process server and needs the project instance.
   instance: (args) => !args.attach,
   // For --dir without --attach, load instance for the resolved target dir.
-  // The handler also chdirs (preserving the legacy order: chdir → file resolution).
+  // The handler also chdirs (preserving the legacy order: chdir â†’ file resolution).
   directory: (args) => (args.dir && !args.attach ? path.resolve(process.cwd(), args.dir) : process.cwd()),
   builder: (yargs: Argv) =>
     yargs
@@ -707,7 +707,7 @@ export const RunCommand = effectCmd({
               toggles.get("start") !== true
             ) {
               UI.empty()
-              UI.println(`> ${event.properties.info.agent} · ${event.properties.info.modelID}`)
+              UI.println(`> ${event.properties.info.agent} آ· ${event.properties.info.modelID}`)
               UI.empty()
               toggles.set("start", true)
             }

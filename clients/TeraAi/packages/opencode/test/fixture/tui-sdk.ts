@@ -1,5 +1,5 @@
-import type { GlobalEvent } from "@opencode-ai/sdk/v2"
-import type { EventSource } from "@opencode-ai/tui/context/sdk"
+﻿import type { GlobalEvent } from "@tera-system/sdk/v2"
+import type { EventSource } from "@tera-system/tui/context/sdk"
 
 export const worktree = "/tmp/opencode"
 export const directory = `${worktree}/packages/opencode`

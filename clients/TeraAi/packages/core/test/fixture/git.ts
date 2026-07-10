@@ -1,9 +1,9 @@
-import { execFile } from "child_process"
+﻿import { execFile } from "child_process"
 import fs from "fs/promises"
 import path from "path"
 import { promisify } from "util"
 import { pathToFileURL } from "url"
-import { Repository } from "@opencode-ai/core/repository"
+import { Repository } from "@tera-system/core/repository"
 
 const exec = promisify(execFile)
 

@@ -1,5 +1,5 @@
-import { PermissionV1 } from "@opencode-ai/core/v1/permission"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+﻿import { PermissionV1 } from "@tera-system/core/v1/permission"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import { expect } from "bun:test"
 import { Effect } from "effect"
 import { Agent } from "../../src/agent/agent"
@@ -35,7 +35,7 @@ it.instance("subagent permissions take precedence over parent agent restrictions
     expect(generalAgent).toBeDefined()
     // Sanity: the plan agent itself blocks edit. (Note: `write` and
     // `apply_patch` route through the `edit` permission at the runtime
-    // tool layer — see Permission.disabled / EDIT_TOOLS.)
+    // tool layer â€” see Permission.disabled / EDIT_TOOLS.)
     expect(Permission.evaluate("edit", "/some/file.ts", planAgent!.permission).action).toBe("deny")
 
     const parentSessionPermission: PermissionV1.Ruleset = []

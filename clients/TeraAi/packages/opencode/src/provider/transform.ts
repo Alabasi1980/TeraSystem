@@ -1,8 +1,8 @@
-import type { ModelMessage, ToolResultPart } from "ai"
+﻿import type { ModelMessage, ToolResultPart } from "ai"
 import { mergeDeep, unique } from "remeda"
 import type { JSONSchema7 } from "@ai-sdk/provider"
 import type * as Provider from "./provider"
-import type * as ModelsDev from "@opencode-ai/core/models-dev"
+import type * as ModelsDev from "@tera-system/core/models-dev"
 import { iife } from "@/util/iife"
 
 type Modality = NonNullable<ModelsDev.Model["modalities"]>["input"][number]
@@ -298,7 +298,7 @@ function normalizeMessages(
         const filteredContent = msg.content.filter((part: any) => part.type !== "reasoning")
 
         // Include reasoning_content | reasoning_details directly on the message for all assistant messages.
-        // Always set the field even when empty — some providers (e.g. DeepSeek) may return empty
+        // Always set the field even when empty â€” some providers (e.g. DeepSeek) may return empty
         // reasoning_content which still needs to be sent back in subsequent requests.
         return {
           ...msg,
@@ -1277,7 +1277,7 @@ export function smallOptions(model: Provider.Model) {
 }
 
 // Maps model ID prefix to provider slug used in providerOptions.
-// Example: "amazon/nova-2-lite" → "bedrock"
+// Example: "amazon/nova-2-lite" â†’ "bedrock"
 const SLUG_OVERRIDES: Record<string, string> = {
   amazon: "bedrock",
 }

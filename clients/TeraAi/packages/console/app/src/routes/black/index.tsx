@@ -1,10 +1,10 @@
-import { A, createAsync, query, useSearchParams } from "@solidjs/router"
+﻿import { A, createAsync, query, useSearchParams } from "@solidjs/router"
 import { Title } from "@solidjs/meta"
 import { createMemo, createSignal, For, Match, onMount, Show, Switch } from "solid-js"
 import { PlanIcon, plans } from "./common"
 import { useI18n } from "~/context/i18n"
 import { useLanguage } from "~/context/language"
-import { Resource } from "@opencode-ai/console-resource"
+import { Resource } from "@tera-system/console-resource"
 
 const getPaused = query(async () => {
   "use server"
@@ -115,7 +115,7 @@ export default function Black() {
         </Show>
         <Show when={!paused()}>
           <p data-slot="fine-print" style={{ "view-transition-name": "fine-print" }}>
-            {i18n.t("black.finePrint.beforeTerms")} ·{" "}
+            {i18n.t("black.finePrint.beforeTerms")} آ·{" "}
             <A href={language.route("/legal/terms-of-service")}>{i18n.t("black.finePrint.terms")}</A>
           </p>
         </Show>

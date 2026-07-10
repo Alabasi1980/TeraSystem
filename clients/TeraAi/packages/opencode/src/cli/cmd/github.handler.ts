@@ -1,4 +1,4 @@
-import path from "path"
+﻿import path from "path"
 import { exec } from "child_process"
 import { Filesystem } from "@/util/filesystem"
 import * as prompts from "@clack/prompts"
@@ -17,7 +17,7 @@ import type {
   PullRequestEvent,
 } from "@octokit/webhooks-types"
 import { UI } from "../ui"
-import { ModelsDev } from "@opencode-ai/core/models-dev"
+import { ModelsDev } from "@tera-system/core/models-dev"
 import { InstanceRef } from "@/effect/instance-ref"
 import { SessionShare } from "@/share/session"
 import { Session } from "@/session/session"
@@ -26,7 +26,7 @@ import { MessageID, PartID } from "../../session/schema"
 import { Provider } from "@/provider/provider"
 import { MessageV2 } from "../../session/message-v2"
 import { EventV2Bridge } from "@/event-v2-bridge"
-import { EventV2 } from "@opencode-ai/core/event"
+import { EventV2 } from "@tera-system/core/event"
 import { SessionPrompt } from "@/session/prompt"
 import { Git } from "@/git"
 import { setTimeout as sleep } from "node:timers/promises"
@@ -605,7 +605,7 @@ export const githubRun = Effect.fn("Cli.github.run")(function* (args: { event?: 
         const { dirty, uncommittedChanges, switched } = await branchIsDirty(head, branch)
         if (switched) {
           // Agent switched branches (likely created its own branch/PR).
-          // Don't push the stale infrastructure branch — just comment.
+          // Don't push the stale infrastructure branch â€” just comment.
           await createComment(`${response}${footer({ image: true })}`)
           await removeReaction(commentType)
         } else if (dirty) {
@@ -1275,7 +1275,7 @@ export const githubRun = Effect.fn("Cli.github.run")(function* (args: { event?: 
     async function createPR(base: string, branch: string, title: string, body: string): Promise<number | null> {
       console.log("Creating pull request...")
 
-      // Check if an open PR already exists for this head→base combination
+      // Check if an open PR already exists for this headâ†’base combination
       // This handles the case where the agent created a PR via gh pr create during its run
       try {
         const existing = await withRetry(() =>

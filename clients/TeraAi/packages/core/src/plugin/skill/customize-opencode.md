@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Built-in skill. Name and description are registered in code at
   packages/core/src/plugin/skill.ts
   and CUSTOMIZE_OPENCODE_SKILL_DESCRIPTION). The body below becomes the
@@ -13,8 +13,8 @@ is wrong. The shapes below cover the common surface area, but they are a
 
 ## Full schema reference
 
-The authoritative list of every config option — with field types, enums,
-defaults, and descriptions — lives in the published JSON Schema:
+The authoritative list of every config option â€” with field types, enums,
+defaults, and descriptions â€” lives in the published JSON Schema:
 
 **<https://opencode.ai/config.json>**
 
@@ -301,8 +301,8 @@ model: anthropic/claude-sonnet-4-6
 (command body in markdown: the prompt opencode runs, with $ARGUMENTS for the user's input)
 ```
 
-- `template` is the command body — everything below the frontmatter — and is required: it is the prompt opencode runs when the command is invoked. Do not also put a `template:` key in the frontmatter.
-- `$ARGUMENTS` is replaced with everything the user typed after the command; `$1`, `$2`, … pull individual positional arguments.
+- `template` is the command body â€” everything below the frontmatter â€” and is required: it is the prompt opencode runs when the command is invoked. Do not also put a `template:` key in the frontmatter.
+- `$ARGUMENTS` is replaced with everything the user typed after the command; `$1`, `$2`, â€¦ pull individual positional arguments.
 - Optional: `description`, `agent`, `model`, `variant`, `subtask`.
 
 ## Plugins
@@ -328,7 +328,7 @@ function, not a plain object literal, and the function returns an object
 (return `{}` if there is nothing to register).
 
 ```ts
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export default (async ({ client, project, directory, $ }) => {
   return {
@@ -449,4 +449,4 @@ When a user's config is broken and opencode won't start, these env vars help:
   hatches above so they can edit from inside opencode without breaking their
   session.
 - After saving any config change, remind the user to quit and restart opencode
-  — running sessions keep using the already-loaded config.
+  â€” running sessions keep using the already-loaded config.

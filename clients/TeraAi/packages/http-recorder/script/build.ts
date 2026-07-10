@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+﻿#!/usr/bin/env bun
 import { $ } from "bun"
 import { readdir, rm } from "node:fs/promises"
 
@@ -12,7 +12,7 @@ const build = await Bun.build({
   format: "esm",
   packages: "external",
 })
-if (!build.success) throw new AggregateError(build.logs, "Failed to build @opencode-ai/http-recorder")
+if (!build.success) throw new AggregateError(build.logs, "Failed to build @tera-system/http-recorder")
 
 const publicFiles = new Set(["index.js", "index.d.ts", "effect.d.ts", "socket.d.ts", "types.d.ts"])
 await Promise.all(

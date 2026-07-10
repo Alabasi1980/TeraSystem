@@ -1,4 +1,4 @@
-import type { OpenCodeEventEncoded } from "@opencode-ai/protocol/groups/event"
+﻿import type { OpenCodeEventEncoded } from "@tera-system/protocol/groups/event"
 
 export type JsonValue =
   | null

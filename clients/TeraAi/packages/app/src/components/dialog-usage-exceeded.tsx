@@ -1,7 +1,7 @@
-import { usePlatform } from "@/context/platform"
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Dialog } from "@opencode-ai/ui/dialog"
+﻿import { usePlatform } from "@/context/platform"
+import { Button } from "@tera-system/ui/button"
+import { useDialog } from "@tera-system/ui/context/dialog"
+import { Dialog } from "@tera-system/ui/dialog"
 import { JSX } from "solid-js"
 
 export type DialogGoUpsellProps = {

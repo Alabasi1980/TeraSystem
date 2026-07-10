@@ -1,4 +1,4 @@
-import type { BoxRenderable, TextareaRenderable, ScrollBoxRenderable } from "@opentui/core"
+﻿import type { BoxRenderable, TextareaRenderable, ScrollBoxRenderable } from "@opentui/core"
 import { pathToFileURL } from "bun"
 import fuzzysort from "fuzzysort"
 import path from "path"
@@ -22,7 +22,7 @@ import type { PromptInfo } from "../../prompt/history"
 import { useFrecency } from "../../prompt/frecency"
 import { useBindings, useCommandSlashes, useOpencodeModeStack } from "../../keymap"
 import { displayCharAt, mentionTriggerIndex } from "../../prompt/display"
-import type { FileSystemEntry } from "@opencode-ai/sdk/v2"
+import type { FileSystemEntry } from "@tera-system/sdk/v2"
 
 function removeLineRange(input: string) {
   const hashIndex = input.lastIndexOf("#")

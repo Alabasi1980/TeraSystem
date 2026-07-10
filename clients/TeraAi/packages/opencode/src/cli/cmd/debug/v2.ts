@@ -1,9 +1,9 @@
-import { EOL } from "os"
+﻿import { EOL } from "os"
 import { Effect } from "effect"
-import { Catalog } from "@opencode-ai/core/catalog"
-import { LocationServiceMap, locationServiceMapLayer } from "@opencode-ai/core/location-services"
-import { Location } from "@opencode-ai/core/location"
-import { AbsolutePath } from "@opencode-ai/core/schema"
+import { Catalog } from "@tera-system/core/catalog"
+import { LocationServiceMap, locationServiceMapLayer } from "@tera-system/core/location-services"
+import { Location } from "@tera-system/core/location"
+import { AbsolutePath } from "@tera-system/core/schema"
 import { effectCmd } from "../../effect-cmd"
 
 export const V2Command = effectCmd({

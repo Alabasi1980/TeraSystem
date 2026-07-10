@@ -1,20 +1,20 @@
-import { afterEach, describe, expect } from "bun:test"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+﻿import { afterEach, describe, expect } from "bun:test"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import { Effect, Layer } from "effect"
 import { HttpClientResponse } from "effect/unstable/http"
 import { eq } from "drizzle-orm"
-import { Database } from "@opencode-ai/core/database/database"
+import { Database } from "@tera-system/core/database/database"
 
 import { Session } from "@/session/session"
 import { SessionPaths } from "../../src/server/routes/instance/httpapi/groups/session"
 import { SyncPaths } from "../../src/server/routes/instance/httpapi/groups/sync"
 import { MessageID, PartID } from "../../src/session/schema"
-import { PartTable } from "@opencode-ai/core/session/sql"
+import { PartTable } from "@tera-system/core/session/sql"
 import { resetDatabase } from "../fixture/db"
 import { disposeAllInstances, TestInstance } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
 import { httpApiLayer, requestInDirectory } from "./httpapi-layer"
 
 const it = testEffect(Layer.mergeAll(LayerNode.compile(LayerNode.group([Session.node, Database.node])), httpApiLayer))
@@ -122,7 +122,7 @@ describe("schema-rejection wire shape", () => {
   )
 
   it.instance(
-    "rejected request body never echoes back unbounded — message is capped",
+    "rejected request body never echoes back unbounded â€” message is capped",
     // Defense against DoS-amplification + secret-echo: Effect's Issue formatter
     // dumps the rejected `actual` verbatim. A multi-MB invalid array would
     // become a multi-MB 400 response and log line. Cap kicks in around 1KB.
@@ -137,7 +137,7 @@ describe("schema-rejection wire shape", () => {
         })
         const body = yield* text(res)
         expect(res.status).toBe(400)
-        // 1 KB cap + small JSON envelope ≈ <2 KB — never tens of KB.
+        // 1 KB cap + small JSON envelope â‰ˆ <2 KB â€” never tens of KB.
         expect(body.length).toBeLessThan(2 * 1024)
         const parsed = JSON.parse(body)
         expect(parsed.data.message).not.toContain(huge)
@@ -158,7 +158,7 @@ describe("schema-rejection wire shape", () => {
         expect(res.headers["content-type"] ?? "").toContain("application/json")
         const parsed = JSON.parse(body)
         expect(parsed).toMatchObject({ name: "BadRequest", data: { kind: "Body" } })
-        // Field path in data.message — what made this PR worth shipping.
+        // Field path in data.message â€” what made this PR worth shipping.
         expect(parsed.data.message).toMatch(/output/)
       }),
     { config: { formatter: false, lsp: false } },

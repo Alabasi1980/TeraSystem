@@ -1,4 +1,4 @@
-// Demo mode for testing direct interactive mode without a real SDK.
+﻿// Demo mode for testing direct interactive mode without a real SDK.
 //
 // Enabled with `--demo`. Intercepts prompt submissions and generates synthetic
 // SDK events that feed through the real reducer and footer pipeline. This
@@ -7,15 +7,15 @@
 // the initial interactive message to trigger a preview immediately.
 //
 // Slash commands:
-//   /permission [kind] → triggers a permission request variant
-//   /question [kind]   → triggers a question request variant
-//   /fmt <kind>   → emits a specific tool/text type (text, reasoning, bash,
+//   /permission [kind] â†’ triggers a permission request variant
+//   /question [kind]   â†’ triggers a question request variant
+//   /fmt <kind>   â†’ emits a specific tool/text type (text, reasoning, bash,
 //                   write, edit, patch, task, todo, question, error, mix)
 //
 // Demo mode also handles permission and question replies locally, completing
 // or failing the synthetic tool parts as appropriate.
 import path from "path"
-import type { Event, ToolPart } from "@opencode-ai/sdk/v2"
+import type { Event, ToolPart } from "@tera-system/sdk/v2"
 import { createSessionData, reduceSessionData, type SessionData } from "./session-data"
 import { writeSessionOutput } from "./stream"
 import type { FooterApi, PermissionReply, QuestionReject, QuestionReply, RunPrompt, StreamCommit } from "./types"
@@ -94,7 +94,7 @@ const SAMPLE_TABLE = [
   "| Kind | Example | Notes |",
   "| --- | --- | --- |",
   "| Pipe | `A\\|B` | Escaped pipes should stay in one cell |",
-  "| Unicode | `漢字` | Wide characters should remain aligned |",
+  "| Unicode | `و¼¢ه­—` | Wide characters should remain aligned |",
   "| Wrap | `LongTokenWithoutNaturalBreaks_1234567890` | Useful for width stress |",
   "| Status | done | Final row should still appear after idle |",
 ].join("\n")

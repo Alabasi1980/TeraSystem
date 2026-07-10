@@ -1,9 +1,9 @@
-import { TextAttributes, type ScrollBoxRenderable } from "@opentui/core"
+﻿import { TextAttributes, type ScrollBoxRenderable } from "@opentui/core"
 import { useKeyboard, useTerminalDimensions } from "@opentui/solid"
 import { createSignal, For, Show } from "solid-js"
 import { getScrollAcceleration } from "../util/scroll"
 import { useClipboard } from "../context/clipboard"
-import { InstallationVersion } from "@opencode-ai/core/installation/version"
+import { InstallationVersion } from "@tera-system/core/installation/version"
 import { useExit } from "../context/exit"
 import { describeOS, describeTerminal } from "../util/system"
 
@@ -49,7 +49,7 @@ export function ErrorComponent(props: { error: Error; reset: () => void; mode?: 
   }
 
   const actions = [
-    { key: "c", label: () => (copied() ? "✓ Copied" : "Copy report"), copy: true, onUse: copyReport },
+    { key: "c", label: () => (copied() ? "âœ“ Copied" : "Copy report"), copy: true, onUse: copyReport },
     { key: "r", label: () => "Restart", onUse: props.reset },
     { key: "q", label: () => "Quit", onUse: () => exit() },
   ]
@@ -170,7 +170,7 @@ export function ErrorComponent(props: { error: Error; reset: () => void; mode?: 
           borderColor={colors.borderSubtle}
           title=" Stack trace "
           titleColor={colors.muted}
-          bottomTitle=" ↑↓ scroll "
+          bottomTitle=" â†‘â†“ scroll "
           bottomTitleAlignment="right"
           paddingLeft={1}
           paddingRight={1}
@@ -189,7 +189,7 @@ export function ErrorComponent(props: { error: Error; reset: () => void; mode?: 
           <box flexDirection="column" alignItems="center" flexShrink={0}>
             <text fg={colors.muted}>
               {copied()
-                ? "Report copied — paste it into a new GitHub issue."
+                ? "Report copied â€” paste it into a new GitHub issue."
                 : "Copy the report and open a GitHub issue to help us fix this."}
             </text>
             <text fg={colors.muted}>opencode {InstallationVersion}</text>

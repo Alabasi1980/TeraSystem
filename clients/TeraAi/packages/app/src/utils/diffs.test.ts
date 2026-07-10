@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test"
-import type { SnapshotFileDiff } from "@opencode-ai/sdk/v2"
-import type { Message } from "@opencode-ai/sdk/v2/client"
+﻿import { describe, expect, test } from "bun:test"
+import type { SnapshotFileDiff } from "@tera-system/sdk/v2"
+import type { Message } from "@tera-system/sdk/v2/client"
 import { diffs, message } from "./diffs"
 
 const item = {

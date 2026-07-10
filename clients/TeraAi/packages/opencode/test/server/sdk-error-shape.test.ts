@@ -1,5 +1,5 @@
-/**
- * Regression tests for the SDK error shape — the v2 SDK's `throwOnError: true`
+﻿/**
+ * Regression tests for the SDK error shape â€” the v2 SDK's `throwOnError: true`
  * path used to throw raw values (empty strings or POJOs from JSON-decoded
  * error bodies). The TUI catches those and `e.message`/`e.stack` are
  * undefined, so users see `[object Object]` or a blank crash.
@@ -8,7 +8,7 @@
  * extracted from the response body, plus `.status` and `.body` attached.
  */
 import { afterEach, describe, expect, test } from "bun:test"
-import { createOpencodeClient } from "@opencode-ai/sdk/v2"
+import { createOpencodeClient } from "@tera-system/sdk/v2"
 import { Server } from "../../src/server/server"
 import { disposeAllInstances, tmpdir } from "../fixture/fixture"
 import { resetDatabase } from "../fixture/db"

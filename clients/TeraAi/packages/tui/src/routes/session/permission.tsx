@@ -1,10 +1,10 @@
-import { createStore } from "solid-js/store"
+﻿import { createStore } from "solid-js/store"
 import { dirname } from "node:path"
 import { createMemo, For, Match, Show, Switch } from "solid-js"
 import { Portal, useRenderer, useTerminalDimensions, type JSX } from "@opentui/solid"
 import type { TextareaRenderable } from "@opentui/core"
 import { useTheme, selectedForeground } from "../../context/theme"
-import type { PermissionRequest } from "@opencode-ai/sdk/v2"
+import type { PermissionRequest } from "@tera-system/sdk/v2"
 import { useSDK } from "../../context/sdk"
 import { SplitBorder } from "../../ui/border"
 import { useSync } from "../../context/sync"
@@ -200,7 +200,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
               const raw = props.request.metadata?.filepath
               const filepath = typeof raw === "string" ? raw : ""
               return {
-                icon: "→",
+                icon: "â†’",
                 title: `Edit ${pathFormatter.format(filepath)}`,
                 body: <EditBody request={props.request} />,
               }
@@ -210,7 +210,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
               const raw = data.filePath
               const filePath = typeof raw === "string" ? raw : ""
               return {
-                icon: "→",
+                icon: "â†’",
                 title: `Read ${pathFormatter.format(filePath)}`,
                 body: (
                   <Show when={filePath}>
@@ -225,7 +225,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
             if (permission === "glob") {
               const pattern = typeof data.pattern === "string" ? data.pattern : ""
               return {
-                icon: "✱",
+                icon: "âœ±",
                 title: `Glob "${pattern}"`,
                 body: (
                   <Show when={pattern}>
@@ -240,7 +240,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
             if (permission === "grep") {
               const pattern = typeof data.pattern === "string" ? data.pattern : ""
               return {
-                icon: "✱",
+                icon: "âœ±",
                 title: `Grep "${pattern}"`,
                 body: (
                   <Show when={pattern}>
@@ -256,7 +256,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
               const raw = data.path
               const dir = typeof raw === "string" ? raw : ""
               return {
-                icon: "→",
+                icon: "â†’",
                 title: `List ${pathFormatter.format(dir)}`,
                 body: (
                   <Show when={dir}>
@@ -292,7 +292,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                 body: (
                   <Show when={desc}>
                     <box paddingLeft={1}>
-                      <text fg={theme.text}>{"◉ " + desc}</text>
+                      <text fg={theme.text}>{"â—‰ " + desc}</text>
                     </box>
                   </Show>
                 ),
@@ -317,7 +317,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
             if (permission === "websearch") {
               const query = typeof data.query === "string" ? data.query : ""
               return {
-                icon: "◈",
+                icon: "â—ˆ",
                 title: `${webSearchProviderLabel(data.provider)} "${query}"`,
                 body: (
                   <Show when={query}>
@@ -342,7 +342,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
               const patterns = (props.request.patterns ?? []).filter((p): p is string => typeof p === "string")
 
               return {
-                icon: "←",
+                icon: "â†گ",
                 title: `Access external directory ${dir}`,
                 body: (
                   <Show when={patterns.length > 0}>
@@ -359,7 +359,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
 
             if (permission === "doom_loop") {
               return {
-                icon: "⟳",
+                icon: "âں³",
                 title: "Continue after repeated failures",
                 body: (
                   <box paddingLeft={1}>
@@ -370,7 +370,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
             }
 
             return {
-              icon: "⚙",
+              icon: "âڑ™",
               title: `Call tool ${permission}`,
               body: (
                 <box paddingLeft={1}>
@@ -385,7 +385,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
           const header = () => (
             <box flexDirection="column" gap={0}>
               <box flexDirection="row" gap={1} flexShrink={0}>
-                <text fg={theme.warning}>{"△"}</text>
+                <text fg={theme.warning}>{"â–³"}</text>
                 <text fg={theme.text}>Permission required</text>
               </box>
               <box flexDirection="row" gap={1} paddingLeft={2} flexShrink={0}>
@@ -479,7 +479,7 @@ function RejectPrompt(props: { onConfirm: (message: string) => void; onCancel: (
     >
       <box gap={1} paddingLeft={1} paddingRight={3} paddingTop={1} paddingBottom={1}>
         <box flexDirection="row" gap={1} paddingLeft={1}>
-          <text fg={theme.error}>{"△"}</text>
+          <text fg={theme.error}>{"â–³"}</text>
           <text fg={theme.text}>Reject permission</text>
         </box>
         <box paddingLeft={1}>
@@ -650,7 +650,7 @@ function Prompt<const T extends Record<string, string>>(props: {
           when={props.header}
           fallback={
             <box flexDirection="row" gap={1} paddingLeft={1} flexShrink={0}>
-              <text fg={theme.warning}>{"△"}</text>
+              <text fg={theme.warning}>{"â–³"}</text>
               <text fg={theme.text}>{props.title}</text>
             </box>
           }
@@ -700,7 +700,7 @@ function Prompt<const T extends Record<string, string>>(props: {
             </text>
           </Show>
           <text fg={theme.text}>
-            {"⇆"} <span style={{ fg: theme.textMuted }}>select</span>
+            {"â‡†"} <span style={{ fg: theme.textMuted }}>select</span>
           </text>
           <text fg={theme.text}>
             enter <span style={{ fg: theme.textMuted }}>confirm</span>

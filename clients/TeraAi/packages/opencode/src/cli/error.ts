@@ -1,4 +1,4 @@
-import { NamedError } from "@opencode-ai/core/util/error"
+﻿import { NamedError } from "@tera-system/core/util/error"
 import { errorFormat } from "@/util/error"
 import { isRecord } from "@/util/record"
 
@@ -114,7 +114,7 @@ export function FormatError(input: unknown): string | undefined {
     const issues = configIssues(configInvalid)
     return [
       `Configuration is invalid${path && path !== "config" ? ` at ${path}` : ""}` + (message ? `: ${message}` : ""),
-      ...issues.map((issue) => "↳ " + issue.message + " " + issue.path.join(".")),
+      ...issues.map((issue) => "â†³ " + issue.message + " " + issue.path.join(".")),
     ].join("\n")
   }
 

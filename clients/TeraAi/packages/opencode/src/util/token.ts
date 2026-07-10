@@ -1,1 +1,1 @@
-export { Token, estimate } from "@opencode-ai/core/util/token"
+﻿export { Token, estimate } from "@tera-system/core/util/token"

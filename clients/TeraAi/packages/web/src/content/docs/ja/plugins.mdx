@@ -1,34 +1,34 @@
----
-title: プラグイン
-description: OpenCode を拡張する独自のプラグインを作成します。
----
-
-プラグインを使用すると、さまざまなイベントにフックして動作をカスタマイズすることで OpenCode を拡張できます。プラグインを作成して、新しい機能を追加したり、外部サービスと統合したり、OpenCode のデフォルトの動作を変更したりできます。
-
-たとえば、コミュニティによって作成された [plugins](/docs/ecosystem#plugins) をチェックしてください。
-
+﻿---
+title: مƒ—مƒ©م‚°م‚¤مƒ³
+description: OpenCode م‚’و‹،ه¼µمپ™م‚‹ç‹¬è‡ھمپ®مƒ—مƒ©م‚°م‚¤مƒ³م‚’ن½œوˆگمپ—مپ¾مپ™م€‚
 ---
 
-## プラグインの使用
+مƒ—مƒ©م‚°م‚¤مƒ³م‚’ن½؟ç”¨مپ™م‚‹مپ¨م€پمپ•مپ¾مپ–مپ¾مپھم‚¤مƒ™مƒ³مƒˆمپ«مƒ•مƒƒم‚¯مپ—مپ¦ه‹•ن½œم‚’م‚«م‚¹م‚؟مƒ‍م‚¤م‚؛مپ™م‚‹مپ“مپ¨مپ§ OpenCode م‚’و‹،ه¼µمپ§مپچمپ¾مپ™م€‚مƒ—مƒ©م‚°م‚¤مƒ³م‚’ن½œوˆگمپ—مپ¦م€پو–°مپ—مپ„و©ںèƒ½م‚’è؟½هٹ مپ—مپںم‚ٹم€په¤–éƒ¨م‚µمƒ¼مƒ“م‚¹مپ¨çµ±هگˆمپ—مپںم‚ٹم€پOpenCode مپ®مƒ‡مƒ•م‚©مƒ«مƒˆمپ®ه‹•ن½œم‚’ه¤‰و›´مپ—مپںم‚ٹمپ§مپچمپ¾مپ™م€‚
 
-プラグインをロードするには 2 つの方法があります。
+مپںمپ¨مپˆمپ°م€پم‚³مƒںمƒ¥مƒ‹مƒ†م‚£مپ«م‚ˆمپ£مپ¦ن½œوˆگمپ•م‚Œمپں [plugins](/docs/ecosystem#plugins) م‚’مƒپم‚§مƒƒم‚¯مپ—مپ¦مپڈمپ مپ•مپ„م€‚
 
 ---
 
-### ローカルファイルから
+## مƒ—مƒ©م‚°م‚¤مƒ³مپ®ن½؟ç”¨
 
-JavaScript または TypeScript ファイルをプラグインディレクトリに配置します。
-
-- `.opencode/plugins/` - プロジェクトレベルのプラグイン
-- `~/.config/opencode/plugins/` - グローバルプラグイン
-
-これらのディレクトリ内のファイルは起動時に自動的にロードされます。
+مƒ—مƒ©م‚°م‚¤مƒ³م‚’مƒ­مƒ¼مƒ‰مپ™م‚‹مپ«مپ¯ 2 مپ¤مپ®و–¹و³•مپŒمپ‚م‚ٹمپ¾مپ™م€‚
 
 ---
 
-### npm から
+### مƒ­مƒ¼م‚«مƒ«مƒ•م‚،م‚¤مƒ«مپ‹م‚‰
 
-設定ファイルで npm パッケージを指定します。
+JavaScript مپ¾مپںمپ¯ TypeScript مƒ•م‚،م‚¤مƒ«م‚’مƒ—مƒ©م‚°م‚¤مƒ³مƒ‡م‚£مƒ¬م‚¯مƒˆمƒھمپ«é…چç½®مپ—مپ¾مپ™م€‚
+
+- `.opencode/plugins/` - مƒ—مƒ­م‚¸م‚§م‚¯مƒˆمƒ¬مƒ™مƒ«مپ®مƒ—مƒ©م‚°م‚¤مƒ³
+- `~/.config/opencode/plugins/` - م‚°مƒ­مƒ¼مƒگمƒ«مƒ—مƒ©م‚°م‚¤مƒ³
+
+مپ“م‚Œم‚‰مپ®مƒ‡م‚£مƒ¬م‚¯مƒˆمƒھه†…مپ®مƒ•م‚،م‚¤مƒ«مپ¯èµ·ه‹•و™‚مپ«è‡ھه‹•çڑ„مپ«مƒ­مƒ¼مƒ‰مپ•م‚Œمپ¾مپ™م€‚
+
+---
+
+### npm مپ‹م‚‰
+
+è¨­ه®ڑمƒ•م‚،م‚¤مƒ«مپ§ npm مƒ‘مƒƒم‚±مƒ¼م‚¸م‚’وŒ‡ه®ڑمپ—مپ¾مپ™م€‚
 
 ```json title="opencode.json"
 {
@@ -37,43 +37,43 @@ JavaScript または TypeScript ファイルをプラグインディレクトリ
 }
 ```
 
-通常の npm パッケージとスコープ指定された npm パッケージの両方がサポートされています。
+é€ڑه¸¸مپ® npm مƒ‘مƒƒم‚±مƒ¼م‚¸مپ¨م‚¹م‚³مƒ¼مƒ—وŒ‡ه®ڑمپ•م‚Œمپں npm مƒ‘مƒƒم‚±مƒ¼م‚¸مپ®ن¸،و–¹مپŒم‚µمƒ‌مƒ¼مƒˆمپ•م‚Œمپ¦مپ„مپ¾مپ™م€‚
 
 [ecosystem](/docs/ecosystem#plugins).
 
 ---
 
-### プラグインのインストール
+### مƒ—مƒ©م‚°م‚¤مƒ³مپ®م‚¤مƒ³م‚¹مƒˆمƒ¼مƒ«
 
-**npm プラグイン** は、起動時に Bun を使用して自動的にインストールされます。パッケージとその依存関係は `~/.cache/opencode/node_modules/` にキャッシュされます。
+**npm مƒ—مƒ©م‚°م‚¤مƒ³** مپ¯م€پèµ·ه‹•و™‚مپ« Bun م‚’ن½؟ç”¨مپ—مپ¦è‡ھه‹•çڑ„مپ«م‚¤مƒ³م‚¹مƒˆمƒ¼مƒ«مپ•م‚Œمپ¾مپ™م€‚مƒ‘مƒƒم‚±مƒ¼م‚¸مپ¨مپ‌مپ®ن¾‌ه­کé–¢ن؟‚مپ¯ `~/.cache/opencode/node_modules/` مپ«م‚­مƒ£مƒƒم‚·مƒ¥مپ•م‚Œمپ¾مپ™م€‚
 
-**ローカルプラグイン**は、プラグインディレクトリから直接ロードされます。外部パッケージを使用するには、config ディレクトリ内に `package.json` を作成するか ([Dependency](#dependencies) を参照)、プラグインを npm に公開して [config](/docs/config#plugins) に追加する必要があります。
-
----
-
-### ロード順序
-
-プラグインはすべてのソースからロードされ、すべてのフックが順番に実行されます。ロード順序は次のとおりです。
-
-1. グローバル設定 (`~/.config/opencode/opencode.json`)
-2. プロジェクト設定 (`opencode.json`)
-3. グローバルプラグインディレクトリ (`~/.config/opencode/plugins/`)
-4. プロジェクトプラグインディレクトリ (`.opencode/plugins/`)
-
-同じ名前とバージョンを持つ重複した npm パッケージは 1 回ロードされます。ただし、似た名前のローカルプラグインと npm プラグインは両方とも別々にロードされます。
+**مƒ­مƒ¼م‚«مƒ«مƒ—مƒ©م‚°م‚¤مƒ³**مپ¯م€پمƒ—مƒ©م‚°م‚¤مƒ³مƒ‡م‚£مƒ¬م‚¯مƒˆمƒھمپ‹م‚‰ç›´وژ¥مƒ­مƒ¼مƒ‰مپ•م‚Œمپ¾مپ™م€‚ه¤–éƒ¨مƒ‘مƒƒم‚±مƒ¼م‚¸م‚’ن½؟ç”¨مپ™م‚‹مپ«مپ¯م€پconfig مƒ‡م‚£مƒ¬م‚¯مƒˆمƒھه†…مپ« `package.json` م‚’ن½œوˆگمپ™م‚‹مپ‹ ([Dependency](#dependencies) م‚’هڈ‚ç…§)م€پمƒ—مƒ©م‚°م‚¤مƒ³م‚’ npm مپ«ه…¬é–‹مپ—مپ¦ [config](/docs/config#plugins) مپ«è؟½هٹ مپ™م‚‹ه؟…è¦پمپŒمپ‚م‚ٹمپ¾مپ™م€‚
 
 ---
 
-## プラグインを作成する
+### مƒ­مƒ¼مƒ‰é †ه؛ڈ
 
-プラグインは、1 つ以上のプラグインをエクスポートする **JavaScript/TypeScript モジュール**です。
-各関数はコンテキストオブジェクトを受け取り、フックオブジェクトを返します。
+مƒ—مƒ©م‚°م‚¤مƒ³مپ¯مپ™مپ¹مپ¦مپ®م‚½مƒ¼م‚¹مپ‹م‚‰مƒ­مƒ¼مƒ‰مپ•م‚Œم€پمپ™مپ¹مپ¦مپ®مƒ•مƒƒم‚¯مپŒé †ç•ھمپ«ه®ںè،Œمپ•م‚Œمپ¾مپ™م€‚مƒ­مƒ¼مƒ‰é †ه؛ڈمپ¯و¬،مپ®مپ¨مپٹم‚ٹمپ§مپ™م€‚
+
+1. م‚°مƒ­مƒ¼مƒگمƒ«è¨­ه®ڑ (`~/.config/opencode/opencode.json`)
+2. مƒ—مƒ­م‚¸م‚§م‚¯مƒˆè¨­ه®ڑ (`opencode.json`)
+3. م‚°مƒ­مƒ¼مƒگمƒ«مƒ—مƒ©م‚°م‚¤مƒ³مƒ‡م‚£مƒ¬م‚¯مƒˆمƒھ (`~/.config/opencode/plugins/`)
+4. مƒ—مƒ­م‚¸م‚§م‚¯مƒˆمƒ—مƒ©م‚°م‚¤مƒ³مƒ‡م‚£مƒ¬م‚¯مƒˆمƒھ (`.opencode/plugins/`)
+
+هگŒمپکهگچه‰چمپ¨مƒگمƒ¼م‚¸مƒ§مƒ³م‚’وŒپمپ¤é‡چè¤‡مپ—مپں npm مƒ‘مƒƒم‚±مƒ¼م‚¸مپ¯ 1 ه›‍مƒ­مƒ¼مƒ‰مپ•م‚Œمپ¾مپ™م€‚مپںمپ مپ—م€پن¼¼مپںهگچه‰چمپ®مƒ­مƒ¼م‚«مƒ«مƒ—مƒ©م‚°م‚¤مƒ³مپ¨ npm مƒ—مƒ©م‚°م‚¤مƒ³مپ¯ن¸،و–¹مپ¨م‚‚هˆ¥م€…مپ«مƒ­مƒ¼مƒ‰مپ•م‚Œمپ¾مپ™م€‚
 
 ---
 
-### 依存関係
+## مƒ—مƒ©م‚°م‚¤مƒ³م‚’ن½œوˆگمپ™م‚‹
 
-ローカルプラグインとカスタムツールは外部の npm パッケージを使用できます。必要な依存関係を含む `package.json` を config ディレクトリに追加します。
+مƒ—مƒ©م‚°م‚¤مƒ³مپ¯م€پ1 مپ¤ن»¥ن¸ٹمپ®مƒ—مƒ©م‚°م‚¤مƒ³م‚’م‚¨م‚¯م‚¹مƒ‌مƒ¼مƒˆمپ™م‚‹ **JavaScript/TypeScript مƒ¢م‚¸مƒ¥مƒ¼مƒ«**مپ§مپ™م€‚
+هگ„é–¢و•°مپ¯م‚³مƒ³مƒ†م‚­م‚¹مƒˆم‚ھمƒ–م‚¸م‚§م‚¯مƒˆم‚’هڈ—مپ‘هڈ–م‚ٹم€پمƒ•مƒƒم‚¯م‚ھمƒ–م‚¸م‚§م‚¯مƒˆم‚’è؟”مپ—مپ¾مپ™م€‚
+
+---
+
+### ن¾‌ه­کé–¢ن؟‚
+
+مƒ­مƒ¼م‚«مƒ«مƒ—مƒ©م‚°م‚¤مƒ³مپ¨م‚«م‚¹م‚؟مƒ مƒ„مƒ¼مƒ«مپ¯ه¤–éƒ¨مپ® npm مƒ‘مƒƒم‚±مƒ¼م‚¸م‚’ن½؟ç”¨مپ§مپچمپ¾مپ™م€‚ه؟…è¦پمپھن¾‌ه­کé–¢ن؟‚م‚’هگ«م‚€ `package.json` م‚’ config مƒ‡م‚£مƒ¬م‚¯مƒˆمƒھمپ«è؟½هٹ مپ—مپ¾مپ™م€‚
 
 ```json title=".opencode/package.json"
 {
@@ -83,7 +83,7 @@ JavaScript または TypeScript ファイルをプラグインディレクトリ
 }
 ```
 
-OpenCode は起動時に `bun install` を実行してこれらをインストールします。プラグインとツールはそれらをインポートできるようになります。
+OpenCode مپ¯èµ·ه‹•و™‚مپ« `bun install` م‚’ه®ںè،Œمپ—مپ¦مپ“م‚Œم‚‰م‚’م‚¤مƒ³م‚¹مƒˆمƒ¼مƒ«مپ—مپ¾مپ™م€‚مƒ—مƒ©م‚°م‚¤مƒ³مپ¨مƒ„مƒ¼مƒ«مپ¯مپ‌م‚Œم‚‰م‚’م‚¤مƒ³مƒ‌مƒ¼مƒˆمپ§مپچم‚‹م‚ˆمپ†مپ«مپھم‚ٹمپ¾مپ™م€‚
 
 ```ts title=".opencode/plugins/my-plugin.ts"
 import { escape } from "shescape"
@@ -101,7 +101,7 @@ export const MyPlugin = async (ctx) => {
 
 ---
 
-### 基本構造
+### هں؛وœ¬و§‹é€ 
 
 ```js title=".opencode/plugins/example.js"
 export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
@@ -113,22 +113,22 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 }
 ```
 
-プラグイン関数は以下を受け取ります。
+مƒ—مƒ©م‚°م‚¤مƒ³é–¢و•°مپ¯ن»¥ن¸‹م‚’هڈ—مپ‘هڈ–م‚ٹمپ¾مپ™م€‚
 
-- `project`: 現在のプロジェクト情報。
-- `directory`: 現在の作業ディレクトリ。
-- `worktree`: git ワークツリーのパス。
-- `client`: AI と対話するための OpenCode SDK クライアント。
-- `$`: Bun の [コマンドを実行するためのシェル API](https://bun.com/docs/runtime/shell)。
+- `project`: çڈ¾هœ¨مپ®مƒ—مƒ­م‚¸م‚§م‚¯مƒˆوƒ…ه ±م€‚
+- `directory`: çڈ¾هœ¨مپ®ن½œو¥­مƒ‡م‚£مƒ¬م‚¯مƒˆمƒھم€‚
+- `worktree`: git مƒ¯مƒ¼م‚¯مƒ„مƒھمƒ¼مپ®مƒ‘م‚¹م€‚
+- `client`: AI مپ¨ه¯¾è©±مپ™م‚‹مپںم‚پمپ® OpenCode SDK م‚¯مƒ©م‚¤م‚¢مƒ³مƒˆم€‚
+- `$`: Bun مپ® [م‚³مƒ‍مƒ³مƒ‰م‚’ه®ںè،Œمپ™م‚‹مپںم‚پمپ®م‚·م‚§مƒ« API](https://bun.com/docs/runtime/shell)م€‚
 
 ---
 
-### TypeScript のサポート
+### TypeScript مپ®م‚µمƒ‌مƒ¼مƒˆ
 
-TypeScript プラグインの場合、プラグインパッケージから型をインポートできます。
+TypeScript مƒ—مƒ©م‚°م‚¤مƒ³مپ®ه ´هگˆم€پمƒ—مƒ©م‚°م‚¤مƒ³مƒ‘مƒƒم‚±مƒ¼م‚¸مپ‹م‚‰ه‍‹م‚’م‚¤مƒ³مƒ‌مƒ¼مƒˆمپ§مپچمپ¾مپ™م€‚
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -139,45 +139,45 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ---
 
-### イベント
+### م‚¤مƒ™مƒ³مƒˆ
 
-以下の「例」セクションに示すように、プラグインはイベントをサブスクライブできます。利用可能なさまざまなイベントのリストは次のとおりです。
+ن»¥ن¸‹مپ®م€Œن¾‹م€چم‚»م‚¯م‚·مƒ§مƒ³مپ«ç¤؛مپ™م‚ˆمپ†مپ«م€پمƒ—مƒ©م‚°م‚¤مƒ³مپ¯م‚¤مƒ™مƒ³مƒˆم‚’م‚µمƒ–م‚¹م‚¯مƒ©م‚¤مƒ–مپ§مپچمپ¾مپ™م€‚هˆ©ç”¨هڈ¯èƒ½مپھمپ•مپ¾مپ–مپ¾مپھم‚¤مƒ™مƒ³مƒˆمپ®مƒھم‚¹مƒˆمپ¯و¬،مپ®مپ¨مپٹم‚ٹمپ§مپ™م€‚
 
-#### コマンドイベント
+#### م‚³مƒ‍مƒ³مƒ‰م‚¤مƒ™مƒ³مƒˆ
 
 - `command.executed`
 
-#### ファイルイベント
+#### مƒ•م‚،م‚¤مƒ«م‚¤مƒ™مƒ³مƒˆ
 
 - `file.edited`
 - `file.watcher.updated`
 
-#### インストールイベント
+#### م‚¤مƒ³م‚¹مƒˆمƒ¼مƒ«م‚¤مƒ™مƒ³مƒˆ
 
 - `installation.updated`
 
-#### LSPイベント
+#### LSPم‚¤مƒ™مƒ³مƒˆ
 
 - `lsp.client.diagnostics`
 - `lsp.updated`
 
-#### メッセージイベント
+#### مƒ،مƒƒم‚»مƒ¼م‚¸م‚¤مƒ™مƒ³مƒˆ
 
 - `message.part.removed`
 - `message.part.updated`
 - `message.removed`
 - `message.updated`
 
-#### 許可イベント
+#### è¨±هڈ¯م‚¤مƒ™مƒ³مƒˆ
 
 - `permission.asked`
 - `permission.replied`
 
-#### サーバーイベント
+#### م‚µمƒ¼مƒگمƒ¼م‚¤مƒ™مƒ³مƒˆ
 
 - `server.connected`
 
-#### セッションイベント
+#### م‚»مƒƒم‚·مƒ§مƒ³م‚¤مƒ™مƒ³مƒˆ
 
 - `session.created`
 - `session.compacted`
@@ -188,20 +188,20 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 - `session.status`
 - `session.updated`
 
-#### ToDo イベント
+#### ToDo م‚¤مƒ™مƒ³مƒˆ
 
 - `todo.updated`
 
-#### シェルイベント
+#### م‚·م‚§مƒ«م‚¤مƒ™مƒ³مƒˆ
 
 - `shell.env`
 
-#### ツールイベント
+#### مƒ„مƒ¼مƒ«م‚¤مƒ™مƒ³مƒˆ
 
 - `tool.execute.after`
 - `tool.execute.before`
 
-#### TUIイベント
+#### TUIم‚¤مƒ™مƒ³مƒˆ
 
 - `tui.prompt.append`
 - `tui.command.execute`
@@ -209,15 +209,15 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ---
 
-## 例
+## ن¾‹
 
-ここでは、OpenCode を拡張するために使用できるプラグインの例をいくつか示します。
+مپ“مپ“مپ§مپ¯م€پOpenCode م‚’و‹،ه¼µمپ™م‚‹مپںم‚پمپ«ن½؟ç”¨مپ§مپچم‚‹مƒ—مƒ©م‚°م‚¤مƒ³مپ®ن¾‹م‚’مپ„مپڈمپ¤مپ‹ç¤؛مپ—مپ¾مپ™م€‚
 
 ---
 
-### 通知を送信する
+### é€ڑçں¥م‚’é€پن؟،مپ™م‚‹
 
-特定のイベントが発生したときに通知を送信します。
+ç‰¹ه®ڑمپ®م‚¤مƒ™مƒ³مƒˆمپŒç™؛ç”ںمپ—مپںمپ¨مپچمپ«é€ڑçں¥م‚’é€پن؟،مپ—مپ¾مپ™م€‚
 
 ```js title=".opencode/plugins/notification.js"
 export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
@@ -232,17 +232,17 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 }
 ```
 
-macOS 上で AppleScript を実行するために `osascript` を使用しています。ここでは通知を送信するために使用しています。
+macOS ن¸ٹمپ§ AppleScript م‚’ه®ںè،Œمپ™م‚‹مپںم‚پمپ« `osascript` م‚’ن½؟ç”¨مپ—مپ¦مپ„مپ¾مپ™م€‚مپ“مپ“مپ§مپ¯é€ڑçں¥م‚’é€پن؟،مپ™م‚‹مپںم‚پمپ«ن½؟ç”¨مپ—مپ¦مپ„مپ¾مپ™م€‚
 
 :::note
-組み込みツールと同じ名前のプラグインツールを使用すると、プラグインツールが優先されます。
+çµ„مپ؟è¾¼مپ؟مƒ„مƒ¼مƒ«مپ¨هگŒمپکهگچه‰چمپ®مƒ—مƒ©م‚°م‚¤مƒ³مƒ„مƒ¼مƒ«م‚’ن½؟ç”¨مپ™م‚‹مپ¨م€پمƒ—مƒ©م‚°م‚¤مƒ³مƒ„مƒ¼مƒ«مپŒه„ھه…ˆمپ•م‚Œمپ¾مپ™م€‚
 :::
 
 ---
 
-### ロギング
+### مƒ­م‚®مƒ³م‚°
 
-構造化ログには `console.log` の代わりに `client.app.log()` を使用します。
+و§‹é€ هŒ–مƒ­م‚°مپ«مپ¯ `console.log` مپ®ن»£م‚ڈم‚ٹمپ« `client.app.log()` م‚’ن½؟ç”¨مپ—مپ¾مپ™م€‚
 
 ```ts title=".opencode/plugins/my-plugin.ts"
 export const MyPlugin = async ({ client }) => {
@@ -257,16 +257,16 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-レベル: `debug`、`info`、`warn`、`error`。詳細については、[SDK ドキュメント](https://opencode.ai/docs/sdk) を参照してください。
+مƒ¬مƒ™مƒ«: `debug`م€پ`info`م€پ`warn`م€پ`error`م€‚è©³ç´°مپ«مپ¤مپ„مپ¦مپ¯م€پ[SDK مƒ‰م‚­مƒ¥مƒ،مƒ³مƒˆ](https://opencode.ai/docs/sdk) م‚’هڈ‚ç…§مپ—مپ¦مپڈمپ مپ•مپ„م€‚
 
 ---
 
-### 圧縮フック
+### هœ§ç¸®مƒ•مƒƒم‚¯
 
-セッションが圧縮されたときに含まれるコンテキストをカスタマイズします。
+م‚»مƒƒم‚·مƒ§مƒ³مپŒهœ§ç¸®مپ•م‚Œمپںمپ¨مپچمپ«هگ«مپ¾م‚Œم‚‹م‚³مƒ³مƒ†م‚­م‚¹مƒˆم‚’م‚«م‚¹م‚؟مƒ‍م‚¤م‚؛مپ—مپ¾مپ™م€‚
 
 ```ts title=".opencode/plugins/compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -285,12 +285,12 @@ Include any state that should persist across compaction:
 }
 ```
 
-`experimental.session.compacting` フックは、LLM が継続概要を生成する前に起動します。これを使用して、デフォルトの圧縮プロンプトでは見逃されるドメイン固有のコンテキストを挿入します。
+`experimental.session.compacting` مƒ•مƒƒم‚¯مپ¯م€پLLM مپŒç¶™ç¶ڑو¦‚è¦پم‚’ç”ںوˆگمپ™م‚‹ه‰چمپ«èµ·ه‹•مپ—مپ¾مپ™م€‚مپ“م‚Œم‚’ن½؟ç”¨مپ—مپ¦م€پمƒ‡مƒ•م‚©مƒ«مƒˆمپ®هœ§ç¸®مƒ—مƒ­مƒ³مƒ—مƒˆمپ§مپ¯è¦‹é€ƒمپ•م‚Œم‚‹مƒ‰مƒ،م‚¤مƒ³ه›؛وœ‰مپ®م‚³مƒ³مƒ†م‚­م‚¹مƒˆم‚’وŒ؟ه…¥مپ—مپ¾مپ™م€‚
 
-`output.prompt` を設定することで、圧縮プロンプトを完全に置き換えることもできます。
+`output.prompt` م‚’è¨­ه®ڑمپ™م‚‹مپ“مپ¨مپ§م€پهœ§ç¸®مƒ—مƒ­مƒ³مƒ—مƒˆم‚’ه®Œه…¨مپ«ç½®مپچوڈ›مپˆم‚‹مپ“مپ¨م‚‚مپ§مپچمپ¾مپ™م€‚
 
 ```ts title=".opencode/plugins/custom-compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -312,13 +312,13 @@ Format as a structured prompt that a new agent can use to resume work.
 }
 ```
 
-`output.prompt` を設定すると、デフォルトの圧縮プロンプトが完全に置き換えられます。この場合、`output.context` 配列は無視されます。
+`output.prompt` م‚’è¨­ه®ڑمپ™م‚‹مپ¨م€پمƒ‡مƒ•م‚©مƒ«مƒˆمپ®هœ§ç¸®مƒ—مƒ­مƒ³مƒ—مƒˆمپŒه®Œه…¨مپ«ç½®مپچوڈ›مپˆم‚‰م‚Œمپ¾مپ™م€‚مپ“مپ®ه ´هگˆم€پ`output.context` é…چهˆ—مپ¯ç„،è¦–مپ•م‚Œمپ¾مپ™م€‚
 
 ---
 
-### .env の保護
+### .env مپ®ن؟‌è­·
 
-OpenCode が `.env` ファイルを読み取らないようにします。
+OpenCode مپŒ `.env` مƒ•م‚،م‚¤مƒ«م‚’èھ­مپ؟هڈ–م‚‰مپھمپ„م‚ˆمپ†مپ«مپ—مپ¾مپ™م€‚
 
 ```javascript title=".opencode/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
@@ -334,9 +334,9 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 ---
 
-### 環境変数を挿入する
+### ç’°ه¢ƒه¤‰و•°م‚’وŒ؟ه…¥مپ™م‚‹
 
-すべてのシェル実行 (AI ツールとユーザーターミナル) に環境変数を挿入します。
+مپ™مپ¹مپ¦مپ®م‚·م‚§مƒ«ه®ںè،Œ (AI مƒ„مƒ¼مƒ«مپ¨مƒ¦مƒ¼م‚¶مƒ¼م‚؟مƒ¼مƒںمƒٹمƒ«) مپ«ç’°ه¢ƒه¤‰و•°م‚’وŒ؟ه…¥مپ—مپ¾مپ™م€‚
 
 ```javascript title=".opencode/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
@@ -351,12 +351,12 @@ export const InjectEnvPlugin = async () => {
 
 ---
 
-### カスタムツール
+### م‚«م‚¹م‚؟مƒ مƒ„مƒ¼مƒ«
 
-プラグインは OpenCode にカスタムツールを追加することもできます。
+مƒ—مƒ©م‚°م‚¤مƒ³مپ¯ OpenCode مپ«م‚«م‚¹م‚؟مƒ مƒ„مƒ¼مƒ«م‚’è؟½هٹ مپ™م‚‹مپ“مپ¨م‚‚مپ§مپچمپ¾مپ™م€‚
 
 ```ts title=".opencode/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@opencode-ai/plugin"
+import { type Plugin, tool } from "@tera-system/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -376,19 +376,19 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-`tool` ヘルパーは、OpenCode が呼び出すことができるカスタムツールを作成します。 Zod スキーマ関数を受け取り、次のようなツール定義を返します。
+`tool` مƒکمƒ«مƒ‘مƒ¼مپ¯م€پOpenCode مپŒه‘¼مپ³ه‡؛مپ™مپ“مپ¨مپŒمپ§مپچم‚‹م‚«م‚¹م‚؟مƒ مƒ„مƒ¼مƒ«م‚’ن½œوˆگمپ—مپ¾مپ™م€‚ Zod م‚¹م‚­مƒ¼مƒ‍é–¢و•°م‚’هڈ—مپ‘هڈ–م‚ٹم€پو¬،مپ®م‚ˆمپ†مپھمƒ„مƒ¼مƒ«ه®ڑç¾©م‚’è؟”مپ—مپ¾مپ™م€‚
 
-- `description`: ツールの機能
-- `args`: ツールの引数の Zod スキーマ
-- `execute`: ツールが呼び出されたときに実行される関数
+- `description`: مƒ„مƒ¼مƒ«مپ®و©ںèƒ½
+- `args`: مƒ„مƒ¼مƒ«مپ®ه¼•و•°مپ® Zod م‚¹م‚­مƒ¼مƒ‍
+- `execute`: مƒ„مƒ¼مƒ«مپŒه‘¼مپ³ه‡؛مپ•م‚Œمپںمپ¨مپچمپ«ه®ںè،Œمپ•م‚Œم‚‹é–¢و•°
 
-カスタムツールは、組み込みツールと並行して OpenCode で使用できます。
+م‚«م‚¹م‚؟مƒ مƒ„مƒ¼مƒ«مپ¯م€پçµ„مپ؟è¾¼مپ؟مƒ„مƒ¼مƒ«مپ¨ن¸¦è،Œمپ—مپ¦ OpenCode مپ§ن½؟ç”¨مپ§مپچمپ¾مپ™م€‚
 
 ---
 
-### ロギング
+### مƒ­م‚®مƒ³م‚°
 
-構造化ログには `client.app.log()` の代わりに `console.log` を使用します。
+و§‹é€ هŒ–مƒ­م‚°مپ«مپ¯ `client.app.log()` مپ®ن»£م‚ڈم‚ٹمپ« `console.log` م‚’ن½؟ç”¨مپ—مپ¾مپ™م€‚
 
 ```ts title=".opencode/plugins/my-plugin.ts"
 export const MyPlugin = async ({ client }) => {
@@ -403,16 +403,16 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-レベル: `debug`、`info`、`warn`、`error`。詳細については、[SDK ドキュメント](https://opencode.ai/docs/sdk) を参照してください。
+مƒ¬مƒ™مƒ«: `debug`م€پ`info`م€پ`warn`م€پ`error`م€‚è©³ç´°مپ«مپ¤مپ„مپ¦مپ¯م€پ[SDK مƒ‰م‚­مƒ¥مƒ،مƒ³مƒˆ](https://opencode.ai/docs/sdk) م‚’هڈ‚ç…§مپ—مپ¦مپڈمپ مپ•مپ„م€‚
 
 ---
 
-### 圧縮フック
+### هœ§ç¸®مƒ•مƒƒم‚¯
 
-セッションが圧縮されたときに含まれるコンテキストをカスタマイズします。
+م‚»مƒƒم‚·مƒ§مƒ³مپŒهœ§ç¸®مپ•م‚Œمپںمپ¨مپچمپ«هگ«مپ¾م‚Œم‚‹م‚³مƒ³مƒ†م‚­م‚¹مƒˆم‚’م‚«م‚¹م‚؟مƒ‍م‚¤م‚؛مپ—مپ¾مپ™م€‚
 
 ```ts title=".opencode/plugins/compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -431,12 +431,12 @@ Include any state that should persist across compaction:
 }
 ```
 
-`experimental.session.compacting` フックは、LLM が継続概要を生成する前に起動します。これを使用して、デフォルトの圧縮プロンプトでは見逃されるドメイン固有のコンテキストを挿入します。
+`experimental.session.compacting` مƒ•مƒƒم‚¯مپ¯م€پLLM مپŒç¶™ç¶ڑو¦‚è¦پم‚’ç”ںوˆگمپ™م‚‹ه‰چمپ«èµ·ه‹•مپ—مپ¾مپ™م€‚مپ“م‚Œم‚’ن½؟ç”¨مپ—مپ¦م€پمƒ‡مƒ•م‚©مƒ«مƒˆمپ®هœ§ç¸®مƒ—مƒ­مƒ³مƒ—مƒˆمپ§مپ¯è¦‹é€ƒمپ•م‚Œم‚‹مƒ‰مƒ،م‚¤مƒ³ه›؛وœ‰مپ®م‚³مƒ³مƒ†م‚­م‚¹مƒˆم‚’وŒ؟ه…¥مپ—مپ¾مپ™م€‚
 
-`output.prompt` を設定することで、圧縮プロンプトを完全に置き換えることもできます。
+`output.prompt` م‚’è¨­ه®ڑمپ™م‚‹مپ“مپ¨مپ§م€پهœ§ç¸®مƒ—مƒ­مƒ³مƒ—مƒˆم‚’ه®Œه…¨مپ«ç½®مپچوڈ›مپˆم‚‹مپ“مپ¨م‚‚مپ§مپچمپ¾مپ™م€‚
 
 ```ts title=".opencode/plugins/custom-compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -458,4 +458,4 @@ Format as a structured prompt that a new agent can use to resume work.
 }
 ```
 
-`output.prompt` を設定すると、デフォルトの圧縮プロンプトが完全に置き換えられます。この場合、`output.context` 配列は無視されます。
+`output.prompt` م‚’è¨­ه®ڑمپ™م‚‹مپ¨م€پمƒ‡مƒ•م‚©مƒ«مƒˆمپ®هœ§ç¸®مƒ—مƒ­مƒ³مƒ—مƒˆمپŒه®Œه…¨مپ«ç½®مپچوڈ›مپˆم‚‰م‚Œمپ¾مپ™م€‚مپ“مپ®ه ´هگˆم€پ`output.context` é…چهˆ—مپ¯ç„،è¦–مپ•م‚Œمپ¾مپ™م€‚

@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test"
+﻿import { expect, test } from "bun:test"
 import { mkdtemp, rm } from "node:fs/promises"
 import { join, resolve, sep } from "node:path"
 
@@ -20,7 +20,7 @@ async function bundleInputs() {
   const entrypoint = join(temporary, "index.ts")
   const metafile = join(temporary, "meta.json")
   try {
-    await Bun.write(entrypoint, 'export * from "@opencode-ai/sdk-next"')
+    await Bun.write(entrypoint, 'export * from "@tera-system/sdk-next"')
     const child = Bun.spawn(
       [
         process.execPath,

@@ -1,8 +1,8 @@
-import { Tag } from "@opencode-ai/ui/v2/badge-v2"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { TextInputV2 } from "@opencode-ai/ui/v2/text-input-v2"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
+﻿import { Tag } from "@tera-system/ui/v2/badge-v2"
+import { Icon as IconV2 } from "@tera-system/ui/v2/icon"
+import { IconButtonV2 } from "@tera-system/ui/v2/icon-button-v2"
+import { TextInputV2 } from "@tera-system/ui/v2/text-input-v2"
+import { useDialog } from "@tera-system/ui/context/dialog"
 import fuzzysort from "fuzzysort"
 import { type Component, For, Show, createMemo } from "solid-js"
 import { createStore } from "solid-js/store"
@@ -111,7 +111,7 @@ export const SettingsServersV2: Component = () => {
                         <span class="settings-v2-servers-name">{serverName(item)}</span>
                         <span class="settings-v2-servers-meta">
                           <Show when={health()?.version}>v{health()?.version}</Show>
-                          <Show when={health()?.version && item.type === "http"}> • </Show>
+                          <Show when={health()?.version && item.type === "http"}> â€¢ </Show>
                           <Show
                             when={item.type === "http" && item.http.username}
                             fallback={<Show when={item.type === "http"}>{language.t("server.row.noUsername")}</Show>}

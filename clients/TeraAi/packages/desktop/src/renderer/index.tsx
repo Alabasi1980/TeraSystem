@@ -1,4 +1,4 @@
-// @refresh reload
+﻿// @refresh reload
 
 import {
   ACCEPTED_FILE_EXTENSIONS,
@@ -13,8 +13,8 @@ import {
   ServerConnection,
   useCommand,
   useWslServers,
-} from "@opencode-ai/app"
-import type { UpdaterState } from "@opencode-ai/app/updater"
+} from "@tera-system/app"
+import type { UpdaterState } from "@tera-system/app/updater"
 import * as Sentry from "@sentry/solid"
 import type { AsyncStorage } from "@solid-primitives/storage"
 import { createMemoryHistory, MemoryRouter, type BaseRouterProps } from "@solidjs/router"
@@ -27,8 +27,8 @@ import { DesktopFirstLaunchOnboarding } from "./onboarding"
 import { resetZoom, setPinchZoomEnabled, webviewZoom, zoomIn, zoomOut } from "./webview-zoom"
 import { availableStartupServer, readyWslConnections } from "./wsl/connections"
 import "./styles.css"
-import { Splash } from "@opencode-ai/ui/logo"
-import { useTheme } from "@opencode-ai/ui/theme/context"
+import { Splash } from "@tera-system/ui/logo"
+import { useTheme } from "@tera-system/ui/theme/context"
 
 const root = document.getElementById("root")
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {

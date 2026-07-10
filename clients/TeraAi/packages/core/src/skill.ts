@@ -1,9 +1,9 @@
-export * as SkillV2 from "./skill"
+﻿export * as SkillV2 from "./skill"
 
 import { makeLocationNode } from "./effect/app-node"
 import path from "path"
 import { Context, Effect, Layer, Schema, Types } from "effect"
-import { Skill } from "@opencode-ai/schema/skill"
+import { Skill } from "@tera-system/schema/skill"
 import { AgentV2 } from "./agent"
 import { ConfigMarkdown } from "./config/markdown"
 import { FSUtil } from "./fs-util"

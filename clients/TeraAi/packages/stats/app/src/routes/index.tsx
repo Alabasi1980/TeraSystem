@@ -1,6 +1,6 @@
-import "./index.css"
+﻿import "./index.css"
 import { Link, Meta, Title } from "@solidjs/meta"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
+import { ProviderIcon } from "@tera-system/ui/provider-icon"
 import { geoEquirectangular, geoPath } from "d3-geo"
 import { scaleSqrt } from "d3-scale"
 import countryCodesSource from "i18n-iso-countries/codes.json?raw"
@@ -20,7 +20,7 @@ import {
   type SessionCostEntry,
   type TokenCostEntry,
   type UsagePoint,
-} from "@opencode-ai/stats-core/domain/home"
+} from "@tera-system/stats-core/domain/home"
 import { createAsync, query } from "@solidjs/router"
 import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show, type JSX } from "solid-js"
 import { getRequestEvent } from "solid-js/web"
@@ -364,7 +364,7 @@ function SectionBridge(props: { label: string; href: string }) {
       <span>{i18n.t("bridge.learnMore")}</span>
       <i />
       <strong>{props.label}</strong>
-      <b>▸</b>
+      <b>â–¸</b>
     </a>
   )
 }
@@ -1620,14 +1620,14 @@ function formatMarketRange(data: MarketDay[], fallback: string) {
   const start = marketDateParts(first).start
   const end = marketDateParts(last).end
   if (start === end) return formatMarketDateLabel(start)
-  return `${start} ${new Date().getFullYear()} → ${end} ${new Date().getFullYear()}`
+  return `${start} ${new Date().getFullYear()} â†’ ${end} ${new Date().getFullYear()}`
 }
 
 function formatMarketDateLabel(label: string) {
   const parts = marketDateParts(label)
   const year = new Date().getFullYear()
   if (parts.start === parts.end) return `${parts.start} ${year}`
-  return `${parts.start} ${year} → ${parts.end} ${year}`
+  return `${parts.start} ${year} â†’ ${parts.end} ${year}`
 }
 
 function marketDateParts(label: string) {

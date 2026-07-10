@@ -1,6 +1,6 @@
-/** @jsxImportSource @opentui/solid */
-import type { TuiPlugin, TuiPluginApi, TuiRouteCurrent } from "@opencode-ai/plugin/tui"
-import type { SnapshotFileDiff, VcsFileDiff } from "@opencode-ai/sdk/v2"
+﻿/** @jsxImportSource @opentui/solid */
+import type { TuiPlugin, TuiPluginApi, TuiRouteCurrent } from "@tera-system/plugin/tui"
+import type { SnapshotFileDiff, VcsFileDiff } from "@tera-system/sdk/v2"
 import {
   TextAttributes,
   type BorderSides,

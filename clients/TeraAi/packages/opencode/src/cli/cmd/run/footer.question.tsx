@@ -1,4 +1,4 @@
-// Question UI body for the direct-mode footer.
+﻿// Question UI body for the direct-mode footer.
 //
 // Renders inside the footer when the reducer pushes a FooterView of type
 // "question". Supports single-question and multi-question flows:
@@ -16,7 +16,7 @@
 import type { TextareaRenderable } from "@opentui/core"
 import { useKeyboard, useTerminalDimensions } from "@opentui/solid"
 import { For, Show, createEffect, createMemo, createSignal } from "solid-js"
-import type { QuestionRequest } from "@opencode-ai/sdk/v2"
+import type { QuestionRequest } from "@tera-system/sdk/v2"
 import {
   createQuestionBodyState,
   questionConfirm,
@@ -405,11 +405,11 @@ export function RunQuestionBody(props: {
                               <text
                                 fg={active() ? props.theme.highlight : hit() ? props.theme.success : props.theme.text}
                               >
-                                {info()?.multiple ? `[${hit() ? "✓" : " "}] ${item.label}` : item.label}
+                                {info()?.multiple ? `[${hit() ? "âœ“" : " "}] ${item.label}` : item.label}
                               </text>
                             </box>
                             <Show when={!info()?.multiple}>
-                              <text fg={props.theme.success}>{hit() ? " ✓" : ""}</text>
+                              <text fg={props.theme.success}>{hit() ? " âœ“" : ""}</text>
                             </Show>
                           </box>
                           <box paddingLeft={3}>
@@ -453,12 +453,12 @@ export function RunQuestionBody(props: {
                             fg={other() ? props.theme.highlight : picked() ? props.theme.success : props.theme.text}
                           >
                             {info()?.multiple
-                              ? `[${picked() ? "✓" : " "}] Type your own answer`
+                              ? `[${picked() ? "âœ“" : " "}] Type your own answer`
                               : "Type your own answer"}
                           </text>
                         </box>
                         <Show when={!info()?.multiple}>
-                          <text fg={props.theme.success}>{picked() ? " ✓" : ""}</text>
+                          <text fg={props.theme.success}>{picked() ? " âœ“" : ""}</text>
                         </Show>
                       </box>
                       <Show
@@ -550,12 +550,12 @@ export function RunQuestionBody(props: {
             >
               <Show when={!single()}>
                 <text fg={props.theme.text}>
-                  {"⇆"} <span style={{ fg: props.theme.muted }}>tab</span>
+                  {"â‡†"} <span style={{ fg: props.theme.muted }}>tab</span>
                 </text>
               </Show>
               <Show when={!confirm()}>
                 <text fg={props.theme.text}>
-                  {"↑↓"} <span style={{ fg: props.theme.muted }}>select</span>
+                  {"â†‘â†“"} <span style={{ fg: props.theme.muted }}>select</span>
                 </text>
               </Show>
               <text fg={props.theme.text}>

@@ -1,4 +1,4 @@
-# V2 Schema Changelog
+﻿# V2 Schema Changelog
 
 ## 2026-06-26: Add Finite Session History
 
@@ -162,7 +162,7 @@ Affected schema:
 
 - Core-owned typed tool registry contract.
 - Canonical tool output content and structured settlement schemas.
-- Canonical tagged tool file sources in `@opencode-ai/llm`.
+- Canonical tagged tool file sources in `@tera-system/llm`.
 - Durable tool called, progress, success, and failure events and projected assistant-tool states.
 
 Change:

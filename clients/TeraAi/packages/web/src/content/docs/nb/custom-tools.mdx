@@ -1,15 +1,15 @@
----
-title: Egendefinerte verktøy
-description: Lag verktøy som LLM kan kalle inn OpenCode.
----
-
-Egendefinerte verktøy er funksjoner du oppretter som LLM kan kalle under samtaler. De fungerer sammen med OpenCode sine [innebygde verktøy](/docs/tools) som `read`, `write` og `bash`.
-
+﻿---
+title: Egendefinerte verktأ¸y
+description: Lag verktأ¸y som LLM kan kalle inn OpenCode.
 ---
 
-## Opprette et verktøy
+Egendefinerte verktأ¸y er funksjoner du oppretter som LLM kan kalle under samtaler. De fungerer sammen med OpenCode sine [innebygde verktأ¸y](/docs/tools) som `read`, `write` og `bash`.
 
-Verktøy er definert som **TypeScript**- eller **JavaScript**-filer. Verktøydefinisjonen kan imidlertid påkalle skript skrevet på **alle språk** - TypeScript eller JavaScript brukes bare for selve verktøydefinisjonen.
+---
+
+## Opprette et verktأ¸y
+
+Verktأ¸y er definert som **TypeScript**- eller **JavaScript**-filer. Verktأ¸ydefinisjonen kan imidlertid pأ¥kalle skript skrevet pأ¥ **alle sprأ¥k** - TypeScript eller JavaScript brukes bare for selve verktأ¸ydefinisjonen.
 
 ---
 
@@ -17,17 +17,17 @@ Verktøy er definert som **TypeScript**- eller **JavaScript**-filer. Verktøydef
 
 De kan defineres:
 
-- Lokalt ved å plassere dem i `.opencode/tools/`-katalogen til prosjektet ditt.
-- Eller globalt, ved å plassere dem i `~/.config/opencode/tools/`.
+- Lokalt ved أ¥ plassere dem i `.opencode/tools/`-katalogen til prosjektet ditt.
+- Eller globalt, ved أ¥ plassere dem i `~/.config/opencode/tools/`.
 
 ---
 
 ### Struktur
 
-Den enkleste måten å lage verktøy på er å bruke `tool()`-hjelperen som gir typesikkerhet og validering.
+Den enkleste mأ¥ten أ¥ lage verktأ¸y pأ¥ er أ¥ bruke `tool()`-hjelperen som gir typesikkerhet og validering.
 
 ```ts title=".opencode/tools/database.ts" {1}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Query the project database",
@@ -41,16 +41,16 @@ export default tool({
 })
 ```
 
-**filnavnet** blir **verktøynavnet**. Ovennevnte oppretter et `database`-verktøy.
+**filnavnet** blir **verktأ¸ynavnet**. Ovennevnte oppretter et `database`-verktأ¸y.
 
 ---
 
-#### Flere verktøy per fil
+#### Flere verktأ¸y per fil
 
-Du kan også eksportere flere verktøy fra en enkelt fil. Hver eksport blir **et separat verktøy** med navnet **`<filename>_<exportname>`**:
+Du kan ogsأ¥ eksportere flere verktأ¸y fra en enkelt fil. Hver eksport blir **et separat verktأ¸y** med navnet **`<filename>_<exportname>`**:
 
 ```ts title=".opencode/tools/math.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export const add = tool({
   description: "Add two numbers",
@@ -75,18 +75,18 @@ export const multiply = tool({
 })
 ```
 
-Dette lager to verktøy: `math_add` og `math_multiply`.
+Dette lager to verktأ¸y: `math_add` og `math_multiply`.
 
 ---
 
-#### Navnekollisjoner med innebygde verktøy
+#### Navnekollisjoner med innebygde verktأ¸y
 
-Egendefinerte verktøy er nøklet etter verktøynavn. Hvis et egendefinert verktøy bruker samme navn som et innebygd verktøy, vil det egendefinerte verktøyet ha forrang.
+Egendefinerte verktأ¸y er nأ¸klet etter verktأ¸ynavn. Hvis et egendefinert verktأ¸y bruker samme navn som et innebygd verktأ¸y, vil det egendefinerte verktأ¸yet ha forrang.
 
-For eksempel erstatter denne filen det innebygde `bash`-verktøyet:
+For eksempel erstatter denne filen det innebygde `bash`-verktأ¸yet:
 
 ```ts title=".opencode/tools/bash.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Restricted bash wrapper",
@@ -100,14 +100,14 @@ export default tool({
 ```
 
 :::note
-Foretrekk unike navn med mindre du med vilje ønsker å erstatte et innebygd verktøy. Hvis du vil deaktivere et innebygd verktøy, men ikke overstyre det, bruk [tillatelser](/docs/permissions).
+Foretrekk unike navn med mindre du med vilje أ¸nsker أ¥ erstatte et innebygd verktأ¸y. Hvis du vil deaktivere et innebygd verktأ¸y, men ikke overstyre det, bruk [tillatelser](/docs/permissions).
 :::
 
 ---
 
 ### Argumenter
 
-Du kan bruke `tool.schema`, som bare er [Zod](https://zod.dev), for å definere argumenttyper.
+Du kan bruke `tool.schema`, som bare er [Zod](https://zod.dev), for أ¥ definere argumenttyper.
 
 ```ts "tool.schema"
 args: {
@@ -115,7 +115,7 @@ args: {
 }
 ```
 
-Du kan også importere [Zod](https://zod.dev) direkte og returnere et vanlig objekt:
+Du kan ogsأ¥ importere [Zod](https://zod.dev) direkte og returnere et vanlig objekt:
 
 ```ts {6}
 import { z } from "zod"
@@ -136,10 +136,10 @@ export default {
 
 ### Kontekst
 
-Verktøy mottar kontekst om gjeldende økt:
+Verktأ¸y mottar kontekst om gjeldende أ¸kt:
 
 ```ts title=".opencode/tools/project.ts" {8}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Get project information",
@@ -152,18 +152,18 @@ export default tool({
 })
 ```
 
-Bruk `context.directory` for øktens arbeidskatalog.
+Bruk `context.directory` for أ¸ktens arbeidskatalog.
 Bruk `context.worktree` for git-arbeidstreet.
 
 ---
 
 ## Eksempler
 
-### Skrive et verktøy i Python
+### Skrive et verktأ¸y i Python
 
-Du kan skrive verktøyene dine på hvilket som helst språk du vil. Her er et eksempel som legger til to tall ved hjelp av Python.
+Du kan skrive verktأ¸yene dine pأ¥ hvilket som helst sprأ¥k du vil. Her er et eksempel som legger til to tall ved hjelp av Python.
 
-Først lager du verktøyet som et Python-skript:
+Fأ¸rst lager du verktأ¸yet som et Python-skript:
 
 ```python title=".opencode/tools/add.py"
 import sys
@@ -173,10 +173,10 @@ b = int(sys.argv[2])
 print(a + b)
 ```
 
-Lag deretter verktøydefinisjonen som påkaller den:
+Lag deretter verktأ¸ydefinisjonen som pأ¥kaller den:
 
 ```ts title=".opencode/tools/python-add.ts" {10}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 import path from "path"
 
 export default tool({
@@ -193,4 +193,4 @@ export default tool({
 })
 ```
 
-Her bruker vi [`Bun.$`](https://bun.com/docs/runtime/shell)-verktøyet for å kjøre Python-skriptet.
+Her bruker vi [`Bun.$`](https://bun.com/docs/runtime/shell)-verktأ¸yet for أ¥ kjأ¸re Python-skriptet.

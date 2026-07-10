@@ -1,28 +1,28 @@
-export * as TuiConfig from "./tui"
+﻿export * as TuiConfig from "./tui"
 
 import path from "path"
 import { mergeDeep, unique } from "remeda"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+import { AppNodeBuilder } from "@tera-system/core/effect/app-node-builder"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import { Cause, Context, Effect, Fiber, Layer } from "effect"
 import { ConfigParse } from "@/config/parse"
 import * as ConfigPaths from "@/config/paths"
 import { migrateTuiConfig } from "./tui-migrate"
 import { resolveHostAttentionSoundPaths } from "./tui-host-attention"
-import { Flag } from "@opencode-ai/core/flag/flag"
-import { isRecord } from "@opencode-ai/tui/util/record"
-import { Global } from "@opencode-ai/core/global"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+import { Flag } from "@tera-system/core/flag/flag"
+import { isRecord } from "@tera-system/tui/util/record"
+import { Global } from "@tera-system/core/global"
+import { FSUtil } from "@tera-system/core/fs-util"
 import { CurrentWorkingDirectory } from "./tui-cwd"
 import { ConfigPlugin } from "@/config/plugin"
-import { TuiKeybind } from "@opencode-ai/tui/config/keybind"
-import { InstallationLocal, InstallationVersion } from "@opencode-ai/core/installation/version"
-import { makeRuntime } from "@opencode-ai/core/effect/runtime"
+import { TuiKeybind } from "@tera-system/tui/config/keybind"
+import { InstallationLocal, InstallationVersion } from "@tera-system/core/installation/version"
+import { makeRuntime } from "@tera-system/core/effect/runtime"
 import { Filesystem } from "@/util/filesystem"
 import { ConfigVariable } from "@/config/variable"
-import { Npm } from "@opencode-ai/core/npm"
+import { Npm } from "@tera-system/core/npm"
 import { FormatError, FormatUnknownError } from "@/cli/error"
-import { TuiConfig } from "@opencode-ai/tui/config"
+import { TuiConfig } from "@tera-system/tui/config"
 
 export const Info = TuiConfig.Info
 export type Info = TuiConfig.Info
@@ -119,7 +119,7 @@ const loadState = Effect.fn("TuiConfig.loadState")(function* (ctx: { directory: 
       return yield* resolvePlugins(validated, configFilepath)
     }).pipe(
       // catchCause (not tapErrorCause + orElseSucceed) because JSONC parsing and validation
-      // can sync-throw — those become defects, which orElseSucceed wouldn't catch.
+      // can sync-throw â€” those become defects, which orElseSucceed wouldn't catch.
       Effect.catchCause((cause) =>
         Effect.logWarning("skipping invalid tui config", {
           path: configFilepath,
@@ -130,8 +130,8 @@ const loadState = Effect.fn("TuiConfig.loadState")(function* (ctx: { directory: 
 
   const loadFile = (filepath: string): Effect.Effect<Info> =>
     Effect.gen(function* () {
-      // Silent-swallow non-NotFound read errors (perms, EISDIR, IO) → log + skip.
-      // Matches how parse/schema/plugin failures in load() are handled — every
+      // Silent-swallow non-NotFound read errors (perms, EISDIR, IO) â†’ log + skip.
+      // Matches how parse/schema/plugin failures in load() are handled â€” every
       // broken-config path degrades gracefully rather than crashing TUI startup.
       const text = yield* afs.readFileStringSafe(filepath).pipe(
         Effect.catchCause((cause) =>
@@ -238,7 +238,7 @@ const layer = Layer.effect(
           .install(dir, {
             add: [
               {
-                name: "@opencode-ai/plugin",
+                name: "@tera-system/plugin",
                 version: InstallationLocal ? undefined : InstallationVersion,
               },
             ],

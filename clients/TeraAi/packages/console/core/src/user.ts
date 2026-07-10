@@ -1,4 +1,4 @@
-import { z } from "zod"
+﻿import { z } from "zod"
 import { and, eq, getTableColumns, isNull, sql } from "drizzle-orm"
 import { fn } from "./util/fn"
 import { Database } from "./drizzle"
@@ -139,7 +139,7 @@ export namespace User {
             .then((rows) => rows[0]),
         )
 
-        const { InviteEmail } = await import("@opencode-ai/console-mail/InviteEmail.jsx")
+        const { InviteEmail } = await import("@tera-system/console-mail/InviteEmail.jsx")
         await AWS.sendEmail({
           to: email,
           subject: `You've been invited to join the ${emailInfo.workspaceName} workspace on OpenCode`,

@@ -1,6 +1,6 @@
-import { FileIcon } from "@opencode-ai/ui/file-icon"
-import "@opencode-ai/ui/v2/file-tree-v2.css"
-import { getDirectory, getFilename } from "@opencode-ai/core/util/path"
+﻿import { FileIcon } from "@tera-system/ui/file-icon"
+import "@tera-system/ui/v2/file-tree-v2.css"
+import { getDirectory, getFilename } from "@tera-system/core/util/path"
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
 import { kindChange, kindLabel, type Kind } from "@/components/file-tree-v2"
 import { normalizePath } from "@/pages/session/v2/review-diff-kinds"
@@ -36,7 +36,7 @@ export function applyFileListKeyDown(
 
 // Flat variant of FileTreeV2 for filtered results: reuses its data-component and
 // row data-slots on purpose so file-tree-v2.css styles both. data-highlighted has
-// no CSS of its own — it folds into data-selected below and only exists as the
+// no CSS of its own â€” it folds into data-selected below and only exists as the
 // scrollIntoView query hook.
 export function SessionFileListV2(props: {
   files: readonly string[]

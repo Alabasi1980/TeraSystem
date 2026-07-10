@@ -1,5 +1,5 @@
-import { LocalContext } from "@/util/local-context"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+﻿import { LocalContext } from "@/util/local-context"
+import { FSUtil } from "@tera-system/core/fs-util"
 import type * as Project from "./project"
 
 export interface InstanceContext {

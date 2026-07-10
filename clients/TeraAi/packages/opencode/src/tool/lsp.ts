@@ -1,4 +1,4 @@
-import { Effect, Schema } from "effect"
+﻿import { Effect, Schema } from "effect"
 import * as Tool from "./tool"
 import path from "path"
 import { LSP } from "@/lsp/lsp"
@@ -6,7 +6,7 @@ import DESCRIPTION from "./lsp.txt"
 import { InstanceState } from "@/effect/instance-state"
 import { pathToFileURL } from "url"
 import { assertExternalDirectoryEffect } from "./external-directory"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+import { FSUtil } from "@tera-system/core/fs-util"
 
 const operations = [
   "goToDefinition",

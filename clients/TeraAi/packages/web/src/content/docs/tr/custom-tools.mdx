@@ -1,33 +1,33 @@
----
-title: Özel Araçlar
-description: LLM'un opencode'da çağırabileceği araçları birleştirebilir.
----
-
-Özel araçlar, LLM'un konuşmalar sırasında arayabileceği, oluşturduğunuz işlevlerdir. opencode'un [built-in tools](/docs/tools) ile birlikte `read`, `write` ve `bash` gibi çalışırlar.
-
+﻿---
+title: أ–zel Araأ§lar
+description: LLM'un opencode'da أ§aؤںؤ±rabileceؤںi araأ§larؤ± birleإںtirebilir.
 ---
 
-## Araç oluşturma
+أ–zel araأ§lar, LLM'un konuإںmalar sؤ±rasؤ±nda arayabileceؤںi, oluإںturduؤںunuz iإںlevlerdir. opencode'un [built-in tools](/docs/tools) ile birlikte `read`, `write` ve `bash` gibi أ§alؤ±إںؤ±rlar.
 
-Araçlar **TypeScript** veya **JavaScript** dosyaları olarak tanımlanır. Ancak araç tanımı **herhangi bir dilde** yazılmış komut dosyalarını çağırabilir; TypeScript veya JavaScript yalnızca araç tanımının kendisi için kullanılır.
+---
+
+## Araأ§ oluإںturma
+
+Araأ§lar **TypeScript** veya **JavaScript** dosyalarؤ± olarak tanؤ±mlanؤ±r. Ancak araأ§ tanؤ±mؤ± **herhangi bir dilde** yazؤ±lmؤ±إں komut dosyalarؤ±nؤ± أ§aؤںؤ±rabilir; TypeScript veya JavaScript yalnؤ±zca araأ§ tanؤ±mؤ±nؤ±n kendisi iأ§in kullanؤ±lؤ±r.
 
 ---
 
 ### Konum
 
-Bunlar tanımlanabilir:
+Bunlar tanؤ±mlanabilir:
 
-- Yerel olarak bunları projenizin `.opencode/tools/` dizinine yerleştirerek.
-- Veya küresel olarak bunları `~/.config/opencode/tools/` içine yerleştirerek.
+- Yerel olarak bunlarؤ± projenizin `.opencode/tools/` dizinine yerleإںtirerek.
+- Veya kأ¼resel olarak bunlarؤ± `~/.config/opencode/tools/` iأ§ine yerleإںtirerek.
 
 ---
 
-### Yapı
+### Yapؤ±
 
-Araç oluşturmanın en kolay yolu, tür güvenliği ve doğrulama sağlayan `tool()` yardımcısını kullanmaktır.
+Araأ§ oluإںturmanؤ±n en kolay yolu, tأ¼r gأ¼venliؤںi ve doؤںrulama saؤںlayan `tool()` yardؤ±mcؤ±sؤ±nؤ± kullanmaktؤ±r.
 
 ```ts title=".opencode/tools/database.ts" {1}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Query the project database",
@@ -41,16 +41,16 @@ export default tool({
 })
 ```
 
-**dosya adı**, **araç adı** olur. Yukarıdakiler bir `database` aracı oluşturur.
+**dosya adؤ±**, **araأ§ adؤ±** olur. Yukarؤ±dakiler bir `database` aracؤ± oluإںturur.
 
 ---
 
-#### Dosya başına birden fazla araç
+#### Dosya baإںؤ±na birden fazla araأ§
 
-Ayrıca tek bir dosyadan birden fazla aracı dışa aktarabilirsiniz. Her dışa aktarma, **`<filename>_<exportname>`** adıyla **ayrı bir araç** haline gelir:
+Ayrؤ±ca tek bir dosyadan birden fazla aracؤ± dؤ±إںa aktarabilirsiniz. Her dؤ±إںa aktarma, **`<filename>_<exportname>`** adؤ±yla **ayrؤ± bir araأ§** haline gelir:
 
 ```ts title=".opencode/tools/math.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export const add = tool({
   description: "Add two numbers",
@@ -75,18 +75,18 @@ export const multiply = tool({
 })
 ```
 
-Bu iki araç oluşturur: `math_add` ve `math_multiply`.
+Bu iki araأ§ oluإںturur: `math_add` ve `math_multiply`.
 
 ---
 
-#### Yerleşik araçlarla ad çakışmaları
+#### Yerleإںik araأ§larla ad أ§akؤ±إںmalarؤ±
 
-Özel araçlar, araç adına göre anahtarlanır. Özel bir araç yerleşik bir araçla aynı adı kullanıyorsa, özel araç önceliklidir.
+أ–zel araأ§lar, araأ§ adؤ±na gأ¶re anahtarlanؤ±r. أ–zel bir araأ§ yerleإںik bir araأ§la aynؤ± adؤ± kullanؤ±yorsa, أ¶zel araأ§ أ¶nceliklidir.
 
-Örneğin, bu dosya yerleşik `bash` aracının yerini alır:
+أ–rneؤںin, bu dosya yerleإںik `bash` aracؤ±nؤ±n yerini alؤ±r:
 
 ```ts title=".opencode/tools/bash.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Restricted bash wrapper",
@@ -100,14 +100,14 @@ export default tool({
 ```
 
 :::note
-Kasıtlı olarak yerleşik bir aracı değiştirmek istemiyorsanız benzersiz adları tercih edin. Yerleşik bir aracı devre dışı bırakmak ancak geçersiz kılmak istemiyorsanız [izinleri](/docs/permissions) kullanın.
+Kasؤ±tlؤ± olarak yerleإںik bir aracؤ± deؤںiإںtirmek istemiyorsanؤ±z benzersiz adlarؤ± tercih edin. Yerleإںik bir aracؤ± devre dؤ±إںؤ± bؤ±rakmak ancak geأ§ersiz kؤ±lmak istemiyorsanؤ±z [izinleri](/docs/permissions) kullanؤ±n.
 :::
 
 ---
 
-### Argümanlar
+### Argأ¼manlar
 
-Bağımsız değişken türlerini tanımlamak için yalnızca [Zod](https://zod.dev) olan `tool.schema` öğesini kullanabilirsiniz.
+Baؤںؤ±msؤ±z deؤںiإںken tأ¼rlerini tanؤ±mlamak iأ§in yalnؤ±zca [Zod](https://zod.dev) olan `tool.schema` أ¶ؤںesini kullanabilirsiniz.
 
 ```ts "tool.schema"
 args: {
@@ -115,7 +115,7 @@ args: {
 }
 ```
 
-Ayrıca [Zod](https://zod.dev) öğesini doğrudan içe aktarabilir ve düz bir nesne döndürebilirsiniz:
+Ayrؤ±ca [Zod](https://zod.dev) أ¶ؤںesini doؤںrudan iأ§e aktarabilir ve dأ¼z bir nesne dأ¶ndأ¼rebilirsiniz:
 
 ```ts {6}
 import { z } from "zod"
@@ -134,12 +134,12 @@ export default {
 
 ---
 
-### Bağlam
+### Baؤںlam
 
-Araçlar geçerli oturumla ilgili bağlamı alır:
+Araأ§lar geأ§erli oturumla ilgili baؤںlamؤ± alؤ±r:
 
 ```ts title=".opencode/tools/project.ts" {8}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Get project information",
@@ -152,18 +152,18 @@ export default tool({
 })
 ```
 
-Oturum çalışma dizisi için `context.directory` kullanın.
-Git çalışma ağacı kökü için `context.worktree` kullanın.
+Oturum أ§alؤ±إںma dizisi iأ§in `context.directory` kullanؤ±n.
+Git أ§alؤ±إںma aؤںacؤ± kأ¶kأ¼ iأ§in `context.worktree` kullanؤ±n.
 
 ---
 
-## Örnekler
+## أ–rnekler
 
-### Python ile araç yazma
+### Python ile araأ§ yazma
 
-Araçlarınızı dilediğiniz dilde yazabilirsiniz. İşte Python kullanarak iki sayıyı toplayan bir örnek.
+Araأ§larؤ±nؤ±zؤ± dilediؤںiniz dilde yazabilirsiniz. ؤ°إںte Python kullanarak iki sayؤ±yؤ± toplayan bir أ¶rnek.
 
-Öncelikle aracı bir Python betiği olarak oluşturun:
+أ–ncelikle aracؤ± bir Python betiؤںi olarak oluإںturun:
 
 ```python title=".opencode/tools/add.py"
 import sys
@@ -173,10 +173,10 @@ b = int(sys.argv[2])
 print(a + b)
 ```
 
-Ardından onu çağıran araç tanımını oluşturun:
+Ardؤ±ndan onu أ§aؤںؤ±ran araأ§ tanؤ±mؤ±nؤ± oluإںturun:
 
 ```ts title=".opencode/tools/python-add.ts" {10}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 import path from "path"
 
 export default tool({
@@ -193,4 +193,4 @@ export default tool({
 })
 ```
 
-Burada Python betiğini çalıştırmak için [`Bun.$`](https://bun.com/docs/runtime/shell) yardımcı programını kullanıyoruz.
+Burada Python betiؤںini أ§alؤ±إںtؤ±rmak iأ§in [`Bun.$`](https://bun.com/docs/runtime/shell) yardؤ±mcؤ± programؤ±nؤ± kullanؤ±yoruz.

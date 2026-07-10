@@ -1,11 +1,11 @@
-// Permission UI body for the direct-mode footer.
+﻿// Permission UI body for the direct-mode footer.
 //
 // Renders inside the footer when the reducer pushes a FooterView of type
 // "permission". Uses a three-stage state machine (permission.shared.ts):
 //
-//   permission → shows the request with Allow once / Always / Reject buttons
-//   always     → confirmation step before granting permanent access
-//   reject     → text field for the rejection message
+//   permission â†’ shows the request with Allow once / Always / Reject buttons
+//   always     â†’ confirmation step before granting permanent access
+//   reject     â†’ text field for the rejection message
 //
 // Keyboard: left/right to select, enter to confirm, esc to reject.
 // The diff view (when available) uses the same diff component as scrollback
@@ -14,7 +14,7 @@
 import type { TextareaRenderable } from "@opentui/core"
 import { useKeyboard, useTerminalDimensions } from "@opentui/solid"
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from "solid-js"
-import type { PermissionRequest } from "@opencode-ai/sdk/v2"
+import type { PermissionRequest } from "@tera-system/sdk/v2"
 import {
   createPermissionBodyState,
   permissionAlwaysLines,
@@ -268,7 +268,7 @@ export function RunPermissionBody(props: {
         flexShrink={0}
       >
         <box flexDirection="row" gap={1} paddingLeft={1}>
-          <text fg={state().stage === "reject" ? props.theme.error : props.theme.warning}>△</text>
+          <text fg={state().stage === "reject" ? props.theme.error : props.theme.warning}>â–³</text>
           <text fg={props.theme.text}>{title()}</text>
         </box>
         <Switch>
@@ -455,7 +455,7 @@ export function RunPermissionBody(props: {
           >
             <box flexDirection="row" gap={2} flexShrink={0}>
               <text fg={props.theme.text}>
-                {"⇆"} <span style={{ fg: props.theme.muted }}>select</span>
+                {"â‡†"} <span style={{ fg: props.theme.muted }}>select</span>
               </text>
               <text fg={props.theme.text}>
                 enter <span style={{ fg: props.theme.muted }}>confirm</span>

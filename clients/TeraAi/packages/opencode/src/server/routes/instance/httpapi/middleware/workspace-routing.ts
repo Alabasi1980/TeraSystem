@@ -1,4 +1,4 @@
-import { WorkspaceV2 } from "@opencode-ai/core/workspace"
+﻿import { WorkspaceV2 } from "@tera-system/core/workspace"
 import type { Target } from "@/control-plane/types"
 import { Workspace } from "@/control-plane/workspace"
 import { WorkspaceAdapterRuntime } from "@/control-plane/workspace-adapter-runtime"
@@ -7,7 +7,7 @@ import { HttpApiProxy } from "./proxy"
 import * as Fence from "@/server/shared/fence"
 import { getWorkspaceRouteSessionID, isLocalWorkspaceRoute, workspaceProxyURL } from "@/server/shared/workspace-routing"
 import { NotFoundError } from "@/storage/storage"
-import { Flag } from "@opencode-ai/core/flag/flag"
+import { Flag } from "@tera-system/core/flag/flag"
 import { Context, Data, Effect, Layer, Option, Schema } from "effect"
 import { HttpClient, HttpServerRequest, HttpServerResponse } from "effect/unstable/http"
 import { HttpApiMiddleware } from "effect/unstable/httpapi"
@@ -17,7 +17,7 @@ import { InvalidRequestError } from "../errors"
 // Query fields this middleware reads from the URL. Spread into every
 // endpoint query schema in groups that apply WorkspaceRoutingMiddleware,
 // otherwise HttpApi rejects requests carrying these params with 400.
-// HttpApiMiddleware in effect-smol cannot declare query params today —
+// HttpApiMiddleware in effect-smol cannot declare query params today â€”
 // remove this once upstream supports middleware-declared query schemas.
 export const WorkspaceRoutingQueryFields = {
   directory: Schema.optional(Schema.String),

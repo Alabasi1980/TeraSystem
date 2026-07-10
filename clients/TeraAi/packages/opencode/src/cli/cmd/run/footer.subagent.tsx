@@ -1,9 +1,9 @@
-/** @jsxImportSource @opentui/solid */
+﻿/** @jsxImportSource @opentui/solid */
 import type { ScrollBoxRenderable } from "@opentui/core"
 import { useKeyboard } from "@opentui/solid"
-import { registerOpencodeSpinner } from "@opencode-ai/tui/component/register-spinner"
+import { registerOpencodeSpinner } from "@tera-system/tui/component/register-spinner"
 import { Show, createMemo, indexArray } from "solid-js"
-import { SPINNER_FRAMES } from "@opencode-ai/tui/component/spinner"
+import { SPINNER_FRAMES } from "@tera-system/tui/component/spinner"
 import { RunEntryContent, separatorRows } from "./scrollback.writer"
 import type { FooterSubagentDetail, FooterSubagentTab, RunDiffStyle } from "./types"
 import type { RunFooterTheme, RunTheme } from "./theme"
@@ -30,18 +30,18 @@ function statusColor(theme: RunFooterTheme, status: FooterSubagentTab["status"])
 
 function statusIcon(status: FooterSubagentTab["status"]) {
   if (status === "completed") {
-    return "●"
+    return "â—ڈ"
   }
 
   if (status === "cancelled") {
-    return "○"
+    return "â—‹"
   }
 
   if (status === "error") {
-    return "◍"
+    return "â—چ"
   }
 
-  return "◔"
+  return "â—”"
 }
 
 export function RunFooterSubagentBody(props: {

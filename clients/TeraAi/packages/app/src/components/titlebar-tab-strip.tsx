@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createResource, createRoot, For, onCleanup, onMount } from "solid-js"
+﻿import { createEffect, createMemo, createResource, createRoot, For, onCleanup, onMount } from "solid-js"
 import { createResizeObserver } from "@solid-primitives/resize-observer"
 import { DragDropProvider, PointerSensor } from "@dnd-kit/solid"
 import { isSortable, useSortable } from "@dnd-kit/solid/sortable"
@@ -14,7 +14,7 @@ import { useLanguage } from "@/context/language"
 import { useCommand } from "@/context/command"
 import { useTabs } from "@/context/tabs"
 import { createTabPromptState } from "@/context/prompt"
-import { base64Encode } from "@opencode-ai/core/util/encode"
+import { base64Encode } from "@tera-system/core/util/encode"
 import { canStartTabDrag, isTabCloseTarget } from "./titlebar-tab-gesture"
 
 function SessionTabSlot(props: {

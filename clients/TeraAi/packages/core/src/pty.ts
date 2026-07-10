@@ -1,9 +1,9 @@
-export * as Pty from "./pty"
+﻿export * as Pty from "./pty"
 
 import { makeLocationNode } from "./effect/app-node"
 import type { Disp, Proc } from "#pty"
 import { Context, Effect, Layer, Schema, Types } from "effect"
-import { Pty } from "@opencode-ai/schema/pty"
+import { Pty } from "@tera-system/schema/pty"
 import { Config } from "./config"
 import { EventV2 } from "./event"
 import { Location } from "./location"

@@ -1,12 +1,12 @@
-import { TextField } from "@opencode-ai/ui/text-field"
+﻿import { TextField } from "@tera-system/ui/text-field"
 import * as Sentry from "@sentry/solid"
-import { Logo } from "@opencode-ai/ui/logo"
-import { Button } from "@opencode-ai/ui/button"
+import { Logo } from "@tera-system/ui/logo"
+import { Button } from "@tera-system/ui/button"
 import { Component, createSignal, onMount, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import { usePlatform } from "@/context/platform"
 import { useLanguage } from "@/context/language"
-import { Icon } from "@opencode-ai/ui/icon"
+import { Icon } from "@tera-system/ui/icon"
 import { errorDescriptionKey } from "./error-description"
 
 export type InitError = {
@@ -15,7 +15,7 @@ export type InitError = {
 }
 
 type Translator = ReturnType<typeof useLanguage>["t"]
-const CHAIN_SEPARATOR = "\n" + "─".repeat(40) + "\n"
+const CHAIN_SEPARATOR = "\n" + "â”€".repeat(40) + "\n"
 
 function isIssue(value: unknown): value is { message: string; path: string[] } {
   if (!value || typeof value !== "object") return false
@@ -126,7 +126,7 @@ function formatInitError(error: InitError, t: Translator): string {
     }
     case "ConfigInvalidError": {
       const issues = Array.isArray(data.issues)
-        ? data.issues.filter(isIssue).map((issue) => "↳ " + issue.message + " " + issue.path.join("."))
+        ? data.issues.filter(isIssue).map((issue) => "â†³ " + issue.message + " " + issue.path.join("."))
         : []
       const message = typeof data.message === "string" ? data.message : ""
       const path = typeof data.path === "string" ? data.path : json(data.path)

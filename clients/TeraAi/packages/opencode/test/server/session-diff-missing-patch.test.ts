@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Regression test for the same bug class as #26574 (sibling of #26566 and
  * #26553). The Desktop app calls GET /session/<id>/diff; before #26574
  * the response was Schema-encoded against `Snapshot.FileDiff` with
@@ -11,15 +11,15 @@
  * asserts that GET /session/<id>/diff returns 200 with empty data.
  */
 import { afterEach, describe, expect } from "bun:test"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import { Effect, Layer } from "effect"
 import { SessionPaths } from "@/server/routes/instance/httpapi/groups/session"
 import { Session } from "@/session/session"
 import { Storage } from "@/storage/storage"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
+import { SessionV1 } from "@tera-system/core/v1/session"
 import { MessageID } from "@/session/schema"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
 import { resetDatabase } from "../fixture/db"
 import { disposeAllInstances, TestInstance } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"

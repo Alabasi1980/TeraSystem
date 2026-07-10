@@ -1,33 +1,33 @@
----
-title: 自定义工具
-description: 创建 LLM 可在 opencode 中调用的工具。
----
-
-自定义工具是你创建的函数，LLM 可以在对话过程中调用它们。它们与 opencode 的[内置工具](/docs/tools)（如 `read`、`write` 和 `bash`）协同工作。
-
+﻿---
+title: è‡ھه®ڑن¹‰ه·¥ه…·
+description: هˆ›ه»؛ LLM هڈ¯هœ¨ opencode ن¸­è°ƒç”¨çڑ„ه·¥ه…·م€‚
 ---
 
-## 创建工具
-
-工具以 **TypeScript** 或 **JavaScript** 文件的形式定义。不过，工具定义可以调用**任何语言**编写的脚本——TypeScript 或 JavaScript 仅用于工具定义本身。
+è‡ھه®ڑن¹‰ه·¥ه…·وک¯ن½ هˆ›ه»؛çڑ„ه‡½و•°ï¼ŒLLM هڈ¯ن»¥هœ¨ه¯¹è¯‌è؟‡ç¨‹ن¸­è°ƒç”¨ه®ƒن»¬م€‚ه®ƒن»¬ن¸ژ opencode çڑ„[ه†…ç½®ه·¥ه…·](/docs/tools)ï¼ˆه¦‚ `read`م€پ`write` ه’Œ `bash`ï¼‰هچڈهگŒه·¥ن½œم€‚
 
 ---
 
-### 位置
+## هˆ›ه»؛ه·¥ه…·
 
-工具可以在以下位置定义：
-
-- 本地定义：将工具文件放在项目的 `.opencode/tools/` 目录中。
-- 全局定义：将工具文件放在 `~/.config/opencode/tools/` 中。
+ه·¥ه…·ن»¥ **TypeScript** وˆ– **JavaScript** و–‡ن»¶çڑ„ه½¢ه¼ڈه®ڑن¹‰م€‚ن¸چè؟‡ï¼Œه·¥ه…·ه®ڑن¹‰هڈ¯ن»¥è°ƒç”¨**ن»»ن½•è¯­è¨€**ç¼–ه†™çڑ„è„ڑوœ¬â€”â€”TypeScript وˆ– JavaScript ن»…ç”¨ن؛ژه·¥ه…·ه®ڑن¹‰وœ¬è؛«م€‚
 
 ---
 
-### 结构
+### ن½چç½®
 
-创建工具最简单的方式是使用 `tool()` 辅助函数，它提供类型安全和参数校验。
+ه·¥ه…·هڈ¯ن»¥هœ¨ن»¥ن¸‹ن½چç½®ه®ڑن¹‰ï¼ڑ
+
+- وœ¬هœ°ه®ڑن¹‰ï¼ڑه°†ه·¥ه…·و–‡ن»¶و”¾هœ¨é،¹ç›®çڑ„ `.opencode/tools/` ç›®ه½•ن¸­م€‚
+- ه…¨ه±€ه®ڑن¹‰ï¼ڑه°†ه·¥ه…·و–‡ن»¶و”¾هœ¨ `~/.config/opencode/tools/` ن¸­م€‚
+
+---
+
+### ç»“و‍„
+
+هˆ›ه»؛ه·¥ه…·وœ€ç®€هچ•çڑ„و–¹ه¼ڈوک¯ن½؟ç”¨ `tool()` è¾…هٹ©ه‡½و•°ï¼Œه®ƒوڈگن¾›ç±»ه‍‹ه®‰ه…¨ه’Œهڈ‚و•°و ،éھŒم€‚
 
 ```ts title=".opencode/tools/database.ts" {1}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Query the project database",
@@ -41,16 +41,16 @@ export default tool({
 })
 ```
 
-**文件名**即为**工具名称**。上面的示例创建了一个名为 `database` 的工具。
+**و–‡ن»¶هگچ**هچ³ن¸؛**ه·¥ه…·هگچç§°**م€‚ن¸ٹé‌¢çڑ„ç¤؛ن¾‹هˆ›ه»؛ن؛†ن¸€ن¸ھهگچن¸؛ `database` çڑ„ه·¥ه…·م€‚
 
 ---
 
-#### 单文件多工具
+#### هچ•و–‡ن»¶ه¤ڑه·¥ه…·
 
-你也可以从单个文件中导出多个工具。每个导出都会成为**一个独立的工具**，命名格式为 **`<filename>_<exportname>`**：
+ن½ ن¹ںهڈ¯ن»¥ن»ژهچ•ن¸ھو–‡ن»¶ن¸­ه¯¼ه‡؛ه¤ڑن¸ھه·¥ه…·م€‚و¯ڈن¸ھه¯¼ه‡؛éƒ½ن¼ڑوˆگن¸؛**ن¸€ن¸ھç‹¬ç«‹çڑ„ه·¥ه…·**ï¼Œه‘½هگچو ¼ه¼ڈن¸؛ **`<filename>_<exportname>`**ï¼ڑ
 
 ```ts title=".opencode/tools/math.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export const add = tool({
   description: "Add two numbers",
@@ -75,18 +75,18 @@ export const multiply = tool({
 })
 ```
 
-这会创建两个工具：`math_add` 和 `math_multiply`。
+è؟™ن¼ڑهˆ›ه»؛ن¸¤ن¸ھه·¥ه…·ï¼ڑ`math_add` ه’Œ `math_multiply`م€‚
 
 ---
 
-#### 与内置工具的名称冲突
+#### ن¸ژه†…ç½®ه·¥ه…·çڑ„هگچç§°ه†²çھپ
 
-自定义工具通过工具名称进行索引。如果自定义工具使用了与内置工具相同的名称，则优先使用自定义工具。
+è‡ھه®ڑن¹‰ه·¥ه…·é€ڑè؟‡ه·¥ه…·هگچç§°è؟›è،Œç´¢ه¼•م€‚ه¦‚و‍œè‡ھه®ڑن¹‰ه·¥ه…·ن½؟ç”¨ن؛†ن¸ژه†…ç½®ه·¥ه…·ç›¸هگŒçڑ„هگچç§°ï¼Œهˆ™ن¼که…ˆن½؟ç”¨è‡ھه®ڑن¹‰ه·¥ه…·م€‚
 
-例如，这个文件取代了内置的bash工具：
+ن¾‹ه¦‚ï¼Œè؟™ن¸ھو–‡ن»¶هڈ–ن»£ن؛†ه†…ç½®çڑ„bashه·¥ه…·ï¼ڑ
 
 ```ts title=".opencode/tools/bash.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Restricted bash wrapper",
@@ -100,14 +100,14 @@ export default tool({
 ```
 
 :::note
-除非你有意替换内置工具，否则最好用独特的名字。如果你想禁用内置工具但不想覆盖它，使用 [权限](/docs/permissions).
+é™¤é‌‍ن½ وœ‰و„ڈو›؟وچ¢ه†…ç½®ه·¥ه…·ï¼Œهگ¦هˆ™وœ€ه¥½ç”¨ç‹¬ç‰¹çڑ„هگچه­—م€‚ه¦‚و‍œن½ وƒ³ç¦پç”¨ه†…ç½®ه·¥ه…·ن½†ن¸چوƒ³è¦†ç›–ه®ƒï¼Œن½؟ç”¨ [و‌ƒé™گ](/docs/permissions).
 :::
 
 ---
 
-### 参数
+### هڈ‚و•°
 
-你可以使用 `tool.schema`（即 [Zod](https://zod.dev)）来定义参数类型。
+ن½ هڈ¯ن»¥ن½؟ç”¨ `tool.schema`ï¼ˆهچ³ [Zod](https://zod.dev)ï¼‰و‌¥ه®ڑن¹‰هڈ‚و•°ç±»ه‍‹م€‚
 
 ```ts "tool.schema"
 args: {
@@ -115,7 +115,7 @@ args: {
 }
 ```
 
-你也可以直接导入 [Zod](https://zod.dev) 并返回一个普通对象：
+ن½ ن¹ںهڈ¯ن»¥ç›´وژ¥ه¯¼ه…¥ [Zod](https://zod.dev) ه¹¶è؟”ه›‍ن¸€ن¸ھو™®é€ڑه¯¹è±،ï¼ڑ
 
 ```ts {6}
 import { z } from "zod"
@@ -134,12 +134,12 @@ export default {
 
 ---
 
-### 上下文
+### ن¸ٹن¸‹و–‡
 
-工具会接收当前会话的上下文信息：
+ه·¥ه…·ن¼ڑوژ¥و”¶ه½“ه‰چن¼ڑè¯‌çڑ„ن¸ٹن¸‹و–‡ن؟،وپ¯ï¼ڑ
 
 ```ts title=".opencode/tools/project.ts" {8}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Get project information",
@@ -152,18 +152,18 @@ export default tool({
 })
 ```
 
-使用 `context.directory` 获取会话的工作目录。
-使用 `context.worktree` 获取 git worktree 根目录。
+ن½؟ç”¨ `context.directory` èژ·هڈ–ن¼ڑè¯‌çڑ„ه·¥ن½œç›®ه½•م€‚
+ن½؟ç”¨ `context.worktree` èژ·هڈ– git worktree و ¹ç›®ه½•م€‚
 
 ---
 
-## 示例
+## ç¤؛ن¾‹
 
-### 用 Python 编写工具
+### ç”¨ Python ç¼–ه†™ه·¥ه…·
 
-你可以使用任何语言编写工具。以下示例展示了如何用 Python 实现两数相加。
+ن½ هڈ¯ن»¥ن½؟ç”¨ن»»ن½•è¯­è¨€ç¼–ه†™ه·¥ه…·م€‚ن»¥ن¸‹ç¤؛ن¾‹ه±•ç¤؛ن؛†ه¦‚ن½•ç”¨ Python ه®‍çژ°ن¸¤و•°ç›¸هٹ م€‚
 
-首先，创建一个 Python 脚本作为工具：
+é¦–ه…ˆï¼Œهˆ›ه»؛ن¸€ن¸ھ Python è„ڑوœ¬ن½œن¸؛ه·¥ه…·ï¼ڑ
 
 ```python title=".opencode/tools/add.py"
 import sys
@@ -173,10 +173,10 @@ b = int(sys.argv[2])
 print(a + b)
 ```
 
-然后创建调用该脚本的工具定义：
+ç„¶هگژهˆ›ه»؛è°ƒç”¨è¯¥è„ڑوœ¬çڑ„ه·¥ه…·ه®ڑن¹‰ï¼ڑ
 
 ```ts title=".opencode/tools/python-add.ts" {10}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 import path from "path"
 
 export default tool({
@@ -193,4 +193,4 @@ export default tool({
 })
 ```
 
-这里我们使用 [`Bun.$`](https://bun.com/docs/runtime/shell) 工具函数来运行 Python 脚本。
+è؟™é‡Œوˆ‘ن»¬ن½؟ç”¨ [`Bun.$`](https://bun.com/docs/runtime/shell) ه·¥ه…·ه‡½و•°و‌¥è؟گè،Œ Python è„ڑوœ¬م€‚

@@ -1,4 +1,4 @@
-// Footer layout
+﻿// Footer layout
 //
 // Renders the footer region as a compact vertical stack:
 //   1. Single-line composer or active footer body
@@ -10,8 +10,8 @@
 /** @jsxImportSource @opentui/solid */
 import { useTerminalDimensions } from "@opentui/solid"
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onCleanup } from "solid-js"
-import { registerOpencodeSpinner } from "@opencode-ai/tui/component/register-spinner"
-import { createColors, createFrames } from "@opencode-ai/tui/ui/spinner"
+import { registerOpencodeSpinner } from "@tera-system/tui/component/register-spinner"
+import { createColors, createFrames } from "@tera-system/tui/ui/spinner"
 import {
   RUN_SUBAGENT_PANEL_ROWS,
   RunCommandMenuBody,
@@ -34,7 +34,7 @@ import {
   useBindings,
   useKeymapSelector,
   type OpenTuiKeymap,
-} from "@opencode-ai/tui/keymap"
+} from "@tera-system/tui/keymap"
 import type {
   FooterPromptRoute,
   FooterQueuedPrompt,
@@ -487,7 +487,7 @@ export function RunFooterView(props: RunFooterViewProps) {
       return { key: command(), label: "cmd" }
     }
   })
-  const sectionSeparator = () => <span style={{ fg: theme().muted }}>· </span>
+  const sectionSeparator = () => <span style={{ fg: theme().muted }}>آ· </span>
 
   createEffect(() => {
     props.onRequestExit?.(composer.requestExit)
@@ -651,7 +651,7 @@ export function RunFooterView(props: RunFooterViewProps) {
                       ? undefined
                       : {
                           ...EMPTY_BORDER,
-                          vertical: "█",
+                          vertical: "â–ˆ",
                         }
                   }
                 >
@@ -923,7 +923,7 @@ export function RunFooterView(props: RunFooterViewProps) {
           borderColor={theme().highlight}
           customBorderChars={{
             ...EMPTY_BORDER,
-            vertical: "┃",
+            vertical: "â”ƒ",
           }}
         >
           <RunFooterSubagentBody

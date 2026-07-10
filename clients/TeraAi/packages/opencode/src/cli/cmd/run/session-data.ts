@@ -1,4 +1,4 @@
-// Core reducer for direct interactive mode.
+﻿// Core reducer for direct interactive mode.
 //
 // Takes raw SDK events and produces two outputs:
 //   - StreamCommit[]: append-only scrollback entries (text, tool, error, etc.)
@@ -24,7 +24,7 @@
 //   `data.questions`. The footer shows whichever is first. When a reply
 //   event arrives, the queue entry is removed and the footer falls back
 //   to the next pending request or to the prompt view.
-import type { Event, Part, PermissionRequest, QuestionRequest, ToolPart } from "@opencode-ai/sdk/v2"
+import type { Event, Part, PermissionRequest, QuestionRequest, ToolPart } from "@tera-system/sdk/v2"
 import * as Locale from "@/util/locale"
 import { toolView } from "./tool"
 import type { FooterOutput, FooterPatch, FooterView, StreamCommit } from "./types"
@@ -55,15 +55,15 @@ type SessionCommit = StreamCommit
 // - ids:    parts and error keys we've already committed (dedup guard)
 // - tools:  tool parts we've emitted a "start" for but not yet completed
 // - call:   tool call inputs, keyed by msg:call, for enriching permission views
-// - role:   message ID → "assistant" | "user", learned from message.updated
-// - msg:    part ID → message ID
-// - part:   part ID → "assistant" | "reasoning" (text parts only)
-// - text:   part ID → full accumulated text so far
-// - sent:   part ID → byte offset of last flushed text (for incremental output)
-// - visible: part ID → rendered text for an active part after display transforms
+// - role:   message ID â†’ "assistant" | "user", learned from message.updated
+// - msg:    part ID â†’ message ID
+// - part:   part ID â†’ "assistant" | "reasoning" (text parts only)
+// - text:   part ID â†’ full accumulated text so far
+// - sent:   part ID â†’ byte offset of last flushed text (for incremental output)
+// - visible: part ID â†’ rendered text for an active part after display transforms
 // - end:    part IDs whose time.end has arrived (part is finished)
-// - shell:  shell call ID → chosen transcript source for direct shell calls
-// - echo:   message ID → bash outputs to strip from the next assistant chunk
+// - shell:  shell call ID â†’ chosen transcript source for direct shell calls
+// - echo:   message ID â†’ bash outputs to strip from the next assistant chunk
 type ShellCall = {
   source: "shell" | "tool"
   command?: string
@@ -154,7 +154,7 @@ function formatUsage(
     limit && limit > 0 ? `${Locale.number(total)} (${Math.round((total / limit) * 100)}%)` : Locale.number(total)
 
   if (typeof cost === "number" && cost > 0) {
-    return `${text} · ${money.format(cost)}`
+    return `${text} آ· ${money.format(cost)}`
   }
 
   return text
@@ -764,12 +764,12 @@ export function flushInterrupted(data: SessionData, commits: SessionCommit[]) {
 // footer updates. Called once per event from the stream transport's watch loop.
 //
 // Event handling follows the SDK event types:
-//   message.updated      → learn role, flush buffered parts, track usage
-//   message.part.delta   → accumulate text, flush if ready
-//   message.part.updated → handle text/reasoning/tool state transitions
-//   permission.*         → manage the permission queue, drive footer view
-//   question.*           → manage the question queue, drive footer view
-//   session.error        → emit error scrollback entry
+//   message.updated      â†’ learn role, flush buffered parts, track usage
+//   message.part.delta   â†’ accumulate text, flush if ready
+//   message.part.updated â†’ handle text/reasoning/tool state transitions
+//   permission.*         â†’ manage the permission queue, drive footer view
+//   question.*           â†’ manage the question queue, drive footer view
+//   session.error        â†’ emit error scrollback entry
 export function reduceSessionData(input: SessionDataInput): SessionDataOutput {
   const commits: SessionCommit[] = []
   const data = input.data

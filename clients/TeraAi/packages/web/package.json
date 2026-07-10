@@ -1,5 +1,5 @@
-{
-  "name": "@opencode-ai/web",
+﻿{
+  "name": "@tera-system/web",
   "type": "module",
   "license": "MIT",
   "version": "1.17.18",
@@ -42,3 +42,4 @@
     "typescript": "catalog:"
   }
 }
+

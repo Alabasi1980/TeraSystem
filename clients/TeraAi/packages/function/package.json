@@ -1,5 +1,5 @@
-{
-  "name": "@opencode-ai/function",
+﻿{
+  "name": "@tera-system/function",
   "version": "1.17.18",
   "$schema": "https://json.schemastore.org/package.json",
   "private": true,
@@ -18,3 +18,4 @@
     "jose": "6.0.11"
   }
 }
+

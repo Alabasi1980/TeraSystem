@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test"
-import type { Event } from "@opencode-ai/sdk/v2"
+﻿import { describe, expect, test } from "bun:test"
+import type { Event } from "@tera-system/sdk/v2"
 import { entryBody } from "@/cli/cmd/run/entry.body"
 import {
   bootstrapSubagentCalls,
@@ -399,7 +399,7 @@ describe("run subagent data", () => {
 
     expect(snapshot.tabs).toEqual([expect.objectContaining({ sessionID: "child-1", status: "running" })])
     expect(visible(snapshot.details["child-1"]?.commits ?? [])).toEqual([
-      "› Inspect footer tabs",
+      "â€؛ Inspect footer tabs",
       "_Thinking:_ planning next steps",
       "$ git status --short",
       "hello world",
@@ -478,7 +478,7 @@ describe("run subagent data", () => {
     ).toBe(true)
 
     expect(visible(snapshotSubagentData(data).details["child-1"]?.commits ?? [])).toEqual([
-      "› Inspect footer tabs",
+      "â€؛ Inspect footer tabs",
       "_Thinking:_ planning next steps",
       "hello world",
     ])

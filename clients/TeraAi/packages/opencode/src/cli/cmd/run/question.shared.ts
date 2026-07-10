@@ -1,19 +1,19 @@
-// Pure state machine for the question UI.
+﻿// Pure state machine for the question UI.
 //
 // Supports both single-question and multi-question flows. Single questions
 // submit immediately on selection. Multi-question flows use tabs and a
 // final confirmation step.
 //
 // State transitions:
-//   questionSelect  → picks an option (single: submits, multi: toggles/advances)
-//   questionSave    → saves custom text input
-//   questionMove    → arrow key navigation through options
-//   questionSetTab  → tab navigation between questions
-//   questionSubmit  → builds the final QuestionReply with all answers
+//   questionSelect  â†’ picks an option (single: submits, multi: toggles/advances)
+//   questionSave    â†’ saves custom text input
+//   questionMove    â†’ arrow key navigation through options
+//   questionSetTab  â†’ tab navigation between questions
+//   questionSubmit  â†’ builds the final QuestionReply with all answers
 //
 // Custom answers: if a question has custom=true, an extra "Type your own
 // answer" option appears. Selecting it enters editing mode with a text field.
-import type { QuestionInfo, QuestionRequest } from "@opencode-ai/sdk/v2"
+import type { QuestionInfo, QuestionRequest } from "@tera-system/sdk/v2"
 import type { QuestionReject, QuestionReply } from "./types"
 
 export type QuestionBodyState = {
@@ -333,8 +333,8 @@ export function questionHint(request: QuestionRequest, state: QuestionBodyState)
 
   const info = questionInfo(request, state)
   if (questionSingle(request)) {
-    return `↑↓ select   enter ${info?.multiple ? "toggle" : "submit"}   esc dismiss`
+    return `â†‘â†“ select   enter ${info?.multiple ? "toggle" : "submit"}   esc dismiss`
   }
 
-  return `⇆ tab   ↑↓ select   enter ${info?.multiple ? "toggle" : "confirm"}   esc dismiss`
+  return `â‡† tab   â†‘â†“ select   enter ${info?.multiple ? "toggle" : "confirm"}   esc dismiss`
 }

@@ -1,5 +1,5 @@
-import { createSimpleContext } from "@opencode-ai/ui/context"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
+﻿import { createSimpleContext } from "@tera-system/ui/context"
+import { useDialog } from "@tera-system/ui/context/dialog"
 import { type Accessor, createEffect, createMemo, onCleanup, onMount } from "solid-js"
 import { createStore } from "solid-js/store"
 import { makeEventListener } from "@solid-primitives/event-listener"
@@ -178,18 +178,18 @@ export function matchKeybind(keybinds: Keybind[], event: KeyboardEvent): boolean
 function displayKeybindParts(kb: Keybind, t?: (key: KeyLabel) => string) {
   const parts: string[] = []
 
-  if (kb.ctrl) parts.push(IS_MAC ? "⌃" : keyText("common.key.ctrl", t))
-  if (kb.alt) parts.push(IS_MAC ? "⌥" : keyText("common.key.alt", t))
-  if (kb.shift) parts.push(IS_MAC ? "⇧" : keyText("common.key.shift", t))
-  if (kb.meta) parts.push(IS_MAC ? "⌘" : keyText("common.key.meta", t))
+  if (kb.ctrl) parts.push(IS_MAC ? "âŒƒ" : keyText("common.key.ctrl", t))
+  if (kb.alt) parts.push(IS_MAC ? "âŒ¥" : keyText("common.key.alt", t))
+  if (kb.shift) parts.push(IS_MAC ? "â‡§" : keyText("common.key.shift", t))
+  if (kb.meta) parts.push(IS_MAC ? "âŒک" : keyText("common.key.meta", t))
 
   if (!kb.key) return parts
 
   const keys: Record<string, string> = {
-    arrowup: "↑",
-    arrowdown: "↓",
-    arrowleft: "←",
-    arrowright: "→",
+    arrowup: "â†‘",
+    arrowdown: "â†“",
+    arrowleft: "â†گ",
+    arrowright: "â†’",
     comma: ",",
     plus: "+",
   }

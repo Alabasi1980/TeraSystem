@@ -1,5 +1,5 @@
-{
-  "name": "@opencode-ai/desktop",
+﻿{
+  "name": "@tera-system/desktop",
   "private": true,
   "version": "1.17.18",
   "type": "module",
@@ -36,8 +36,8 @@
   "devDependencies": {
     "@actions/artifact": "4.0.0",
     "@lydell/node-pty": "catalog:",
-    "@opencode-ai/app": "workspace:*",
-    "@opencode-ai/ui": "workspace:*",
+    "@tera-system/app": "workspace:*",
+    "@tera-system/ui": "workspace:*",
     "@sentry/solid": "catalog:",
     "@sentry/vite-plugin": "catalog:",
     "@solid-primitives/i18n": "2.2.1",
@@ -74,3 +74,4 @@
     "@parcel/watcher-win32-x64": "2.5.1"
   }
 }
+

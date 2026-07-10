@@ -1,10 +1,10 @@
-import path from "path"
+﻿import path from "path"
 import { fileURLToPath } from "url"
 
-import { Flag } from "@opencode-ai/core/flag/flag"
-import { Global } from "@opencode-ai/core/global"
+import { Flag } from "@tera-system/core/flag/flag"
+import { Global } from "@tera-system/core/global"
 import { Filesystem } from "@/util/filesystem"
-import { Flock } from "@opencode-ai/core/util/flock"
+import { Flock } from "@tera-system/core/util/flock"
 
 import { parsePluginSpecifier, pluginSource } from "./shared"
 

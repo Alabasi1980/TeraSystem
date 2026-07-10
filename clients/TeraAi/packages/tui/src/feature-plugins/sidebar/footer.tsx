@@ -1,4 +1,4 @@
-import type { TuiPlugin, TuiPluginApi } from "@opencode-ai/plugin/tui"
+﻿import type { TuiPlugin, TuiPluginApi } from "@tera-system/plugin/tui"
 import type { BuiltinTuiPlugin } from "../builtins"
 import { createMemo, Show } from "solid-js"
 import { abbreviateHome } from "../../runtime"
@@ -42,7 +42,7 @@ function View(props: { api: TuiPluginApi; sessionID: string }) {
           gap={1}
         >
           <text flexShrink={0} fg={theme().text}>
-            ⬖
+            â¬–
           </text>
           <box flexGrow={1} gap={1}>
             <box flexDirection="row" justifyContent="space-between">
@@ -50,7 +50,7 @@ function View(props: { api: TuiPluginApi; sessionID: string }) {
                 <b>Getting started</b>
               </text>
               <text fg={theme().textMuted} onMouseDown={() => props.api.kv.set("dismissed_getting_started", true)}>
-                ✕
+                âœ•
               </text>
             </box>
             <text fg={theme().textMuted}>OpenCode includes free models so you can start immediately.</text>
@@ -69,7 +69,7 @@ function View(props: { api: TuiPluginApi; sessionID: string }) {
         <span style={{ fg: theme().text }}>{path().name}</span>
       </text>
       <text fg={theme().textMuted}>
-        <span style={{ fg: theme().success }}>•</span> <b>Open</b>
+        <span style={{ fg: theme().success }}>â€¢</span> <b>Open</b>
         <span style={{ fg: theme().text }}>
           <b>Code</b>
         </span>{" "}

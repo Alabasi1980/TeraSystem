@@ -1,5 +1,5 @@
-import { AwsClient } from "aws4fetch"
-import { lazy } from "@opencode-ai/core/util/lazy"
+﻿import { AwsClient } from "aws4fetch"
+import { lazy } from "@tera-system/core/util/lazy"
 
 export namespace Storage {
   export interface Adapter {

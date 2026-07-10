@@ -1,11 +1,11 @@
-# @opencode-ai/llm
+﻿# @tera-system/llm
 
 Schema-first LLM core for opencode. One typed request, response, event, and tool language; provider quirks live in adapters, not in calling code.
 
 ```ts
 import { Effect } from "effect"
-import { LLM, LLMClient } from "@opencode-ai/llm"
-import { OpenAI } from "@opencode-ai/llm/providers"
+import { LLM, LLMClient } from "@tera-system/llm"
+import { OpenAI } from "@tera-system/llm/providers"
 
 const model = OpenAI.configure({ apiKey: process.env.OPENAI_API_KEY }).responses("gpt-4o-mini")
 
@@ -22,26 +22,26 @@ const program = Effect.gen(function* () {
 })
 ```
 
-Run `LLMClient.stream(request)` instead of `generate` when you want incremental `LLMEvent`s. The event stream is provider-neutral — same shape across OpenAI Chat, OpenAI Responses, Anthropic Messages, Gemini, Bedrock Converse, and any OpenAI-compatible deployment.
+Run `LLMClient.stream(request)` instead of `generate` when you want incremental `LLMEvent`s. The event stream is provider-neutral â€” same shape across OpenAI Chat, OpenAI Responses, Anthropic Messages, Gemini, Bedrock Converse, and any OpenAI-compatible deployment.
 
 ## Public API
 
-- **`LLM.request({...})`** — build a provider-neutral `LLMRequest`. Accepts ergonomic inputs (`system: string`, `prompt: string`) that normalize into the canonical Schema classes.
-- **`LLM.generate` / `LLM.stream`** — re-exported from `LLMClient` for one-import use.
-- **`Message.user(...)` / `Message.assistant(...)` / `Message.tool(...)`** — message constructors from the canonical schema model.
-- **`Model.make(...)` / `ToolCallPart.make(...)` / `ToolResultPart.make(...)` / `ToolDefinition.make(...)`** — model and tool-related constructors from the canonical schema model.
-- **`LLMClient.prepare(request)`** — compile a request through protocol body construction, validation, and HTTP preparation without sending. Useful for inspection and testing.
-- **`LLMEvent.is.*`** — typed guards (`is.textDelta`, `is.toolCall`, `is.finish`, …) for filtering streams.
+- **`LLM.request({...})`** â€” build a provider-neutral `LLMRequest`. Accepts ergonomic inputs (`system: string`, `prompt: string`) that normalize into the canonical Schema classes.
+- **`LLM.generate` / `LLM.stream`** â€” re-exported from `LLMClient` for one-import use.
+- **`Message.user(...)` / `Message.assistant(...)` / `Message.tool(...)`** â€” message constructors from the canonical schema model.
+- **`Model.make(...)` / `ToolCallPart.make(...)` / `ToolResultPart.make(...)` / `ToolDefinition.make(...)`** â€” model and tool-related constructors from the canonical schema model.
+- **`LLMClient.prepare(request)`** â€” compile a request through protocol body construction, validation, and HTTP preparation without sending. Useful for inspection and testing.
+- **`LLMEvent.is.*`** â€” typed guards (`is.textDelta`, `is.toolCall`, `is.finish`, â€¦) for filtering streams.
 
 ## Caching
 
-Prompt caching is **on by default**. Every `LLMRequest` resolves to `cache: "auto"` unless the caller opts out with `cache: "none"`. Each protocol translates `CacheHint`s to its wire format (`cache_control` on Anthropic, `cachePoint` on Bedrock; OpenAI and Gemini do implicit caching server-side and don't need inline markers — auto is a no-op there).
+Prompt caching is **on by default**. Every `LLMRequest` resolves to `cache: "auto"` unless the caller opts out with `cache: "none"`. Each protocol translates `CacheHint`s to its wire format (`cache_control` on Anthropic, `cachePoint` on Bedrock; OpenAI and Gemini do implicit caching server-side and don't need inline markers â€” auto is a no-op there).
 
 ### Auto placement
 
-`"auto"` places three breakpoints — last tool definition, last system part, latest user message. The last-user-message boundary is the load-bearing detail: in a tool-use loop, a single user turn expands into many assistant/tool round-trips, all sharing that prefix. Caching at that boundary lets every intra-turn API call hit.
+`"auto"` places three breakpoints â€” last tool definition, last system part, latest user message. The last-user-message boundary is the load-bearing detail: in a tool-use loop, a single user turn expands into many assistant/tool round-trips, all sharing that prefix. Caching at that boundary lets every intra-turn API call hit.
 
-The math justifies the default: Anthropic's 5-minute cache write is 1.25× base, read is 0.1×, so a single reuse within 5 minutes already wins. One-shot completions below the per-model minimum-cacheable-token threshold silently no-op on the wire, so the worst case is harmless.
+The math justifies the default: Anthropic's 5-minute cache write is 1.25أ— base, read is 0.1أ—, so a single reuse within 5 minutes already wins. One-shot completions below the per-model minimum-cacheable-token threshold silently no-op on the wire, so the worst case is harmless.
 
 ### Opting out
 
@@ -61,7 +61,7 @@ cache: {
   tools?: boolean,
   system?: boolean,
   messages?: "latest-user-message" | "latest-assistant" | { tail: number },
-  ttlSeconds?: number,         // ≥ 3600 → 1h on Anthropic/Bedrock; else 5m
+  ttlSeconds?: number,         // â‰¥ 3600 â†’ 1h on Anthropic/Bedrock; else 5m
 }
 ```
 
@@ -95,7 +95,7 @@ Normalized cache usage is read back into `response.usage.cacheReadInputTokens` a
 Provider facades configure endpoint/auth/deployment details first, then expose model selectors that take only a model or deployment id. The selected model carries the executable route value used at runtime.
 
 ```ts
-import { OpenAI, CloudflareAIGateway } from "@opencode-ai/llm/providers"
+import { OpenAI, CloudflareAIGateway } from "@tera-system/llm/providers"
 
 const openai = OpenAI.configure({ apiKey: process.env.OPENAI_API_KEY }).responses("gpt-4o-mini")
 const gateway = CloudflareAIGateway.configure({
@@ -110,9 +110,9 @@ Included providers: OpenAI, Anthropic, Google (Gemini), Amazon Bedrock, Azure Op
 
 Three escape hatches in order of stability:
 
-1. **`generation`** — portable knobs (`maxTokens`, `temperature`, `topP`, `topK`, penalties, seed, stop).
-2. **`providerOptions: { <provider>: {...} }`** — typed-at-the-facade provider-specific knobs (OpenAI `promptCacheKey`, Anthropic `thinking`, Gemini `thinkingConfig`, OpenRouter routing).
-3. **`http: { body, headers, query }`** — last-resort serializable overlays merged into the final HTTP request. Reach for this only when a stable typed path doesn't yet exist.
+1. **`generation`** â€” portable knobs (`maxTokens`, `temperature`, `topP`, `topK`, penalties, seed, stop).
+2. **`providerOptions: { <provider>: {...} }`** â€” typed-at-the-facade provider-specific knobs (OpenAI `promptCacheKey`, Anthropic `thinking`, Gemini `thinkingConfig`, OpenRouter routing).
+3. **`http: { body, headers, query }`** â€” last-resort serializable overlays merged into the final HTTP request. Reach for this only when a stable typed path doesn't yet exist.
 
 Route/provider defaults are overridden by request-level values for each axis.
 
@@ -126,6 +126,6 @@ This package is built on Effect. Public methods return `Effect` or `Stream`; pro
 
 ## See also
 
-- `AGENTS.md` — architecture, route construction, contributor guide
-- `example/tutorial.ts` — runnable end-to-end walkthrough
-- `test/provider/*.test.ts` — fixture-first protocol tests; `*.recorded.test.ts` files cover live cassettes
+- `AGENTS.md` â€” architecture, route construction, contributor guide
+- `example/tutorial.ts` â€” runnable end-to-end walkthrough
+- `test/provider/*.test.ts` â€” fixture-first protocol tests; `*.recorded.test.ts` files cover live cassettes

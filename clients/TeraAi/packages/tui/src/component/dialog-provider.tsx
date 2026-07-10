@@ -1,4 +1,4 @@
-import { createMemo, createSignal, onMount, Show } from "solid-js"
+﻿import { createMemo, createSignal, onMount, Show } from "solid-js"
 import { useSync } from "../context/sync"
 import { map, pipe, sortBy } from "remeda"
 import { DialogSelect } from "../ui/dialog-select"
@@ -8,7 +8,7 @@ import { DialogPrompt } from "../ui/dialog-prompt"
 import { Link } from "../ui/link"
 import { useTheme } from "../context/theme"
 import { TextAttributes } from "@opentui/core"
-import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@opencode-ai/sdk/v2"
+import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@tera-system/sdk/v2"
 import { DialogModel } from "./dialog-model"
 import { useToast } from "../ui/toast"
 import { isConsoleManagedProvider } from "../util/provider-origin"
@@ -141,7 +141,7 @@ export function createDialogProviderOptions() {
           description: provider.description,
           footer: consoleManaged ? sync.data.console_state.activeOrgName : undefined,
           category: provider.category,
-          gutter: connected && onboarded() ? () => <text fg={theme.success}>✓</text> : undefined,
+          gutter: connected && onboarded() ? () => <text fg={theme.success}>âœ“</text> : undefined,
           async onSelect() {
             if (consoleManaged) return
 

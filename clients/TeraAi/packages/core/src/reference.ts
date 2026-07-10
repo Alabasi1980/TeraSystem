@@ -1,8 +1,8 @@
-export * as Reference from "./reference"
+﻿export * as Reference from "./reference"
 
 import { makeLocationNode } from "./effect/app-node"
 import { Context, Effect, Layer, Scope, Types } from "effect"
-import { Reference } from "@opencode-ai/schema/reference"
+import { Reference } from "@tera-system/schema/reference"
 import { Global } from "./global"
 import { EventV2 } from "./event"
 import { Repository } from "./repository"

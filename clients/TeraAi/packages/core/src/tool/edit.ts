@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Model-facing V2 exact-edit leaf. Relative paths resolve within the active
  * Location. Absolute paths inside that Location are accepted, while explicit
  * absolute external paths retain mutation capability through a separate
@@ -6,8 +6,8 @@
  */
 export * as EditTool from "./edit"
 
-import { ToolFailure } from "@opencode-ai/llm"
-import { FileDiff } from "@opencode-ai/schema/file-diff"
+import { ToolFailure } from "@tera-system/llm"
+import { FileDiff } from "@tera-system/schema/file-diff"
 import { createTwoFilesPatch, diffLines } from "diff"
 import { Effect, Layer, Schema } from "effect"
 import { makeLocationNode } from "../effect/app-node"

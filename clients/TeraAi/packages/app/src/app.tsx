@@ -1,18 +1,18 @@
-import "@/index.css"
+﻿import "@/index.css"
 import * as Sentry from "@sentry/solid"
-import { I18nProvider } from "@opencode-ai/ui/context"
-import { DialogProvider } from "@opencode-ai/ui/context/dialog"
-import { FileComponentProvider } from "@opencode-ai/ui/context/file"
-import { MarkedProvider } from "@opencode-ai/ui/context/marked"
-import { File } from "@opencode-ai/session-ui/file"
-import { Font } from "@opencode-ai/ui/font"
-import { Splash } from "@opencode-ai/ui/logo"
-import { ThemeProvider } from "@opencode-ai/ui/theme/context"
+import { I18nProvider } from "@tera-system/ui/context"
+import { DialogProvider } from "@tera-system/ui/context/dialog"
+import { FileComponentProvider } from "@tera-system/ui/context/file"
+import { MarkedProvider } from "@tera-system/ui/context/marked"
+import { File } from "@tera-system/session-ui/file"
+import { Font } from "@tera-system/ui/font"
+import { Splash } from "@tera-system/ui/logo"
+import { ThemeProvider } from "@tera-system/ui/theme/context"
 import { MetaProvider } from "@solidjs/meta"
 import { type BaseRouterProps, Navigate, Route, Router, useNavigate, useParams, useSearchParams } from "@solidjs/router"
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query"
 import { Effect } from "effect"
-import { base64Encode } from "@opencode-ai/core/util/encode"
+import { base64Encode } from "@tera-system/core/util/encode"
 import {
   type Component,
   createEffect,
@@ -82,7 +82,7 @@ const SessionRoute = () => {
   }
 
   // When the new layout is enabled, the legacy new-session route (/:dir/session with no id)
-  // is replaced by a draft at /new-session?draftId=…
+  // is replaced by a draft at /new-session?draftId=â€¦
   createEffect(() => {
     if (!settings.general.newLayoutDesigns()) return
     if (params.id || search.draftId) return

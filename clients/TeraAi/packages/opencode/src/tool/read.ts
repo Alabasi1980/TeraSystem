@@ -1,8 +1,8 @@
-import { Effect, Option, Schema, Scope, Stream } from "effect"
-import { NonNegativeInt } from "@opencode-ai/core/schema"
+﻿import { Effect, Option, Schema, Scope, Stream } from "effect"
+import { NonNegativeInt } from "@tera-system/core/schema"
 import * as path from "path"
 import * as Tool from "./tool"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+import { FSUtil } from "@tera-system/core/fs-util"
 import { LSP } from "@/lsp/lsp"
 import DESCRIPTION from "./read.txt"
 import { InstanceState } from "@/effect/instance-state"
@@ -20,7 +20,7 @@ const SUPPORTED_IMAGE_MIMES = new Set(["image/jpeg", "image/png", "image/gif", "
 
 class ReadStop extends Schema.TaggedErrorClass<ReadStop>()("ReadStop", {}) {}
 
-// `offset` and `limit` were originally `z.coerce.number()` — the runtime
+// `offset` and `limit` were originally `z.coerce.number()` â€” the runtime
 // coercion was useful when the tool was called from a shell but serves no
 // purpose in the LLM tool-call path (the model emits typed JSON). The JSON
 // Schema output is identical (`type: "number"`), so the LLM view is
@@ -139,7 +139,7 @@ export const ReadTool = Tool.define<
       const raw: string[] = []
       const flags = { bytes: 0, count: 0, cut: false, more: false, done: false }
 
-      // Note: prefer manual TextDecoder over Stream.decodeText — when the source stream
+      // Note: prefer manual TextDecoder over Stream.decodeText â€” when the source stream
       // ends without flushing, decodeText drops the final unterminated line. We also
       // avoid Stream.runForEachWhile (it currently swallows the final unterminated
       // line of the upstream splitLines pipeline) and use a tagged error to stop the

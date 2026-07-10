@@ -1,9 +1,9 @@
-import { Effect } from "effect"
+﻿import { Effect } from "effect"
 import { effectCmd } from "../effect-cmd"
 import { Session } from "@/session/session"
 import { NotFoundError } from "@/storage/storage"
-import { Database } from "@opencode-ai/core/database/database"
-import { SessionTable } from "@opencode-ai/core/session/sql"
+import { Database } from "@tera-system/core/database/database"
+import { SessionTable } from "@tera-system/core/session/sql"
 import { Project } from "@/project/project"
 import { InstanceRef } from "@/effect/instance-ref"
 
@@ -296,23 +296,23 @@ export function displayStats(stats: SessionStats, toolLimit?: number, modelLimit
     const availableWidth = width - 1
     const paddingNeeded = availableWidth - label.length - value.length
     const padding = Math.max(0, paddingNeeded)
-    return `│${label}${" ".repeat(padding)}${value} │`
+    return `â”‚${label}${" ".repeat(padding)}${value} â”‚`
   }
 
   // Overview section
-  console.log("┌────────────────────────────────────────────────────────┐")
-  console.log("│                       OVERVIEW                         │")
-  console.log("├────────────────────────────────────────────────────────┤")
+  console.log("â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”گ")
+  console.log("â”‚                       OVERVIEW                         â”‚")
+  console.log("â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤")
   console.log(renderRow("Sessions", stats.totalSessions.toLocaleString()))
   console.log(renderRow("Messages", stats.totalMessages.toLocaleString()))
   console.log(renderRow("Days", stats.days.toString()))
-  console.log("└────────────────────────────────────────────────────────┘")
+  console.log("â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”ک")
   console.log()
 
   // Cost & Tokens section
-  console.log("┌────────────────────────────────────────────────────────┐")
-  console.log("│                    COST & TOKENS                       │")
-  console.log("├────────────────────────────────────────────────────────┤")
+  console.log("â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”گ")
+  console.log("â”‚                    COST & TOKENS                       â”‚")
+  console.log("â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤")
   const cost = isNaN(stats.totalCost) ? 0 : stats.totalCost
   const costPerDay = isNaN(stats.costPerDay) ? 0 : stats.costPerDay
   const tokensPerSession = isNaN(stats.tokensPerSession) ? 0 : stats.tokensPerSession
@@ -325,7 +325,7 @@ export function displayStats(stats: SessionStats, toolLimit?: number, modelLimit
   console.log(renderRow("Output", formatNumber(stats.totalTokens.output)))
   console.log(renderRow("Cache Read", formatNumber(stats.totalTokens.cache.read)))
   console.log(renderRow("Cache Write", formatNumber(stats.totalTokens.cache.write)))
-  console.log("└────────────────────────────────────────────────────────┘")
+  console.log("â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”ک")
   console.log()
 
   // Model Usage section
@@ -333,23 +333,23 @@ export function displayStats(stats: SessionStats, toolLimit?: number, modelLimit
     const sortedModels = Object.entries(stats.modelUsage).sort(([, a], [, b]) => b.messages - a.messages)
     const modelsToDisplay = modelLimit === Infinity ? sortedModels : sortedModels.slice(0, modelLimit)
 
-    console.log("┌────────────────────────────────────────────────────────┐")
-    console.log("│                      MODEL USAGE                       │")
-    console.log("├────────────────────────────────────────────────────────┤")
+    console.log("â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”گ")
+    console.log("â”‚                      MODEL USAGE                       â”‚")
+    console.log("â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤")
 
     for (const [model, usage] of modelsToDisplay) {
-      console.log(`│ ${model.padEnd(54)} │`)
+      console.log(`â”‚ ${model.padEnd(54)} â”‚`)
       console.log(renderRow("  Messages", usage.messages.toLocaleString()))
       console.log(renderRow("  Input Tokens", formatNumber(usage.tokens.input)))
       console.log(renderRow("  Output Tokens", formatNumber(usage.tokens.output)))
       console.log(renderRow("  Cache Read", formatNumber(usage.tokens.cache.read)))
       console.log(renderRow("  Cache Write", formatNumber(usage.tokens.cache.write)))
       console.log(renderRow("  Cost", `$${usage.cost.toFixed(4)}`))
-      console.log("├────────────────────────────────────────────────────────┤")
+      console.log("â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤")
     }
     // Remove last separator and add bottom border
     process.stdout.write("\x1B[1A") // Move up one line
-    console.log("└────────────────────────────────────────────────────────┘")
+    console.log("â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”ک")
   }
   console.log()
 
@@ -358,16 +358,16 @@ export function displayStats(stats: SessionStats, toolLimit?: number, modelLimit
     const sortedTools = Object.entries(stats.toolUsage).sort(([, a], [, b]) => b - a)
     const toolsToDisplay = toolLimit ? sortedTools.slice(0, toolLimit) : sortedTools
 
-    console.log("┌────────────────────────────────────────────────────────┐")
-    console.log("│                      TOOL USAGE                        │")
-    console.log("├────────────────────────────────────────────────────────┤")
+    console.log("â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”گ")
+    console.log("â”‚                      TOOL USAGE                        â”‚")
+    console.log("â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤")
 
     const maxCount = Math.max(...toolsToDisplay.map(([, count]) => count))
     const totalToolUsage = Object.values(stats.toolUsage).reduce((a, b) => a + b, 0)
 
     for (const [tool, count] of toolsToDisplay) {
       const barLength = Math.max(1, Math.floor((count / maxCount) * 20))
-      const bar = "█".repeat(barLength)
+      const bar = "â–ˆ".repeat(barLength)
       const percentage = ((count / totalToolUsage) * 100).toFixed(1)
 
       const maxToolLength = 18
@@ -376,9 +376,9 @@ export function displayStats(stats: SessionStats, toolLimit?: number, modelLimit
 
       const content = ` ${toolName} ${bar.padEnd(20)} ${count.toString().padStart(3)} (${percentage.padStart(4)}%)`
       const padding = Math.max(0, width - content.length - 1)
-      console.log(`│${content}${" ".repeat(padding)} │`)
+      console.log(`â”‚${content}${" ".repeat(padding)} â”‚`)
     }
-    console.log("└────────────────────────────────────────────────────────┘")
+    console.log("â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”ک")
   }
   console.log()
 }

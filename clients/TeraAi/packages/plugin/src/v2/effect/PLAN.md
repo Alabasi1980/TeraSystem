@@ -1,4 +1,4 @@
-# V2 Plugin System Implementation Plan
+﻿# V2 Plugin System Implementation Plan
 
 ## Status
 
@@ -7,8 +7,8 @@ This document describes the agreed target design for the V2 plugin system. It is
 ## Goals
 
 - Internal and external plugins use the same public plugin API.
-- Effect plugins import `@opencode-ai/plugin/v2/effect`, not `@opencode-ai/core`.
-- Public domain values use generated `@opencode-ai/sdk` types.
+- Effect plugins import `@tera-system/plugin/v2/effect`, not `@tera-system/core`.
+- Public domain values use generated `@tera-system/sdk` types.
 - Core may retain branded IDs, decoded Effect schemas, and internal service types.
 - Plugins may register replayable domain transforms and runtime hooks imperatively during setup.
 - Registrations are scoped, independently disposable, ordered, and removable.
@@ -226,10 +226,10 @@ The initial implementation should evolve the existing generic `State` helper rat
 
 ```text
 base state
-→ replay active transforms in order
-→ core domain finalization
-→ commit effective state
-→ publish updated event
+â†’ replay active transforms in order
+â†’ core domain finalization
+â†’ commit effective state
+â†’ publish updated event
 ```
 
 No cross-domain transform or transaction API is included.
@@ -267,10 +267,10 @@ For catalog transforms:
 
 ```text
 models.dev
-→ config provider overrides
-→ built-in provider normalization
-→ user catalog transforms
-→ catalog finalization
+â†’ config provider overrides
+â†’ built-in provider normalization
+â†’ user catalog transforms
+â†’ catalog finalization
 ```
 
 This replaces the current distinction between setup-installed State transforms and catalog hooks invoked from the catalog finalizer.
@@ -283,11 +283,11 @@ Plugin boot runs in an internal registration batch.
 
 ```text
 begin batch
-→ initialize plugins sequentially
-→ register transforms and hooks
-→ collect affected domains
-→ rebuild each affected domain once
-→ end batch
+â†’ initialize plugins sequentially
+â†’ register transforms and hooks
+â†’ collect affected domains
+â†’ rebuild each affected domain once
+â†’ end batch
 ```
 
 Registration itself is not staged per plugin. If setup fails, closing the plugin's child scope removes every registration made before the failure.
@@ -424,7 +424,7 @@ The Effect implementation remains the canonical runtime. Promise and embedding w
 
 ### 1. Define Public Contracts
 
-- Define `PluginHost` domain capabilities in `@opencode-ai/plugin/v2/effect`.
+- Define `PluginHost` domain capabilities in `@tera-system/plugin/v2/effect`.
 - Define SDK-typed editors for agent, catalog, command, integration, reference, skill, and tool.
 - Define typed runtime hook maps per domain.
 - Define `Registration`.

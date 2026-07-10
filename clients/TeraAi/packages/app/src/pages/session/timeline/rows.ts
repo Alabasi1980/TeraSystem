@@ -1,6 +1,6 @@
-import { parseCommentNote, readCommentMetadata } from "@/utils/comment-note"
-import { AssistantMessage, Part, SessionStatus, SnapshotFileDiff, UserMessage } from "@opencode-ai/sdk/v2"
-import { groupParts, renderable, type PartGroup } from "@opencode-ai/session-ui/message-part"
+﻿import { parseCommentNote, readCommentMetadata } from "@/utils/comment-note"
+import { AssistantMessage, Part, SessionStatus, SnapshotFileDiff, UserMessage } from "@tera-system/sdk/v2"
+import { groupParts, renderable, type PartGroup } from "@tera-system/session-ui/message-part"
 import { TimelineRow, type SummaryDiff } from "./timeline-row"
 
 export { TimelineRow, type SummaryDiff } from "./timeline-row"

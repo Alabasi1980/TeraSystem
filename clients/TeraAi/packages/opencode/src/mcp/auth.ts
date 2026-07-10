@@ -1,10 +1,10 @@
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+﻿import { LayerNode } from "@tera-system/core/effect/layer-node"
 import path from "path"
-import { serviceUse } from "@opencode-ai/core/effect/service-use"
-import { Global } from "@opencode-ai/core/global"
+import { serviceUse } from "@tera-system/core/effect/service-use"
+import { Global } from "@tera-system/core/global"
 import { Effect, Layer, Context, Option, Schema } from "effect"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { EffectFlock } from "@opencode-ai/core/util/effect-flock"
+import { FSUtil } from "@tera-system/core/fs-util"
+import { EffectFlock } from "@tera-system/core/util/effect-flock"
 
 export const Tokens = Schema.Struct({
   accessToken: Schema.mutableKey(Schema.String),

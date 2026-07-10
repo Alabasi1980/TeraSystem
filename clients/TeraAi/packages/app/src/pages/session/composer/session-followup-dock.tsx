@@ -1,8 +1,8 @@
-import { For, Show, createMemo } from "solid-js"
+﻿import { For, Show, createMemo } from "solid-js"
 import { createStore } from "solid-js/store"
-import { Button } from "@opencode-ai/ui/button"
-import { DockTray } from "@opencode-ai/ui/dock-surface"
-import { IconButton } from "@opencode-ai/ui/icon-button"
+import { Button } from "@tera-system/ui/button"
+import { DockTray } from "@tera-system/ui/dock-surface"
+import { IconButton } from "@tera-system/ui/icon-button"
 import { useLanguage } from "@/context/language"
 
 export function SessionFollowupDock(props: {

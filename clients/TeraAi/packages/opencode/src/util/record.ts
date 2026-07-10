@@ -1,1 +1,1 @@
-export * from "@opencode-ai/tui/util/record"
+﻿export * from "@tera-system/tui/util/record"

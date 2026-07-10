@@ -1,4 +1,4 @@
-import { execFile, spawn } from "node:child_process"
+﻿import { execFile, spawn } from "node:child_process"
 import { readFile, rm } from "node:fs/promises"
 import { platform, release, tmpdir } from "node:os"
 import path from "node:path"
@@ -97,7 +97,7 @@ let copyMethod: Promise<(text: string) => Promise<void>> | undefined
 
 function getCopyMethod() {
   return (copyMethod ??= (async () => {
-    const { which } = await import("@opencode-ai/core/util/which")
+    const { which } = await import("@tera-system/core/util/which")
     const native = copyCommand(platform(), Boolean(process.env.WAYLAND_DISPLAY), (name) => Boolean(which(name)))
     if (native?.[0] === "osascript") {
       return async (text: string) => {

@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, mock, test } from "bun:test"
+﻿import { beforeAll, describe, expect, mock, test } from "bun:test"
 import type { AsyncStorage } from "@solid-primitives/storage"
 import { createEffect, createRoot } from "solid-js"
 import { ServerScope } from "@/utils/server-scope"
@@ -23,7 +23,7 @@ beforeAll(async () => {
     useLocation: () => ({ pathname: "", query: {} }),
     useNavigate: () => () => undefined,
   }))
-  mock.module("@opencode-ai/ui/context", () => ({
+  mock.module("@tera-system/ui/context", () => ({
     createSimpleContext: () => ({
       use: () => undefined,
       provider: () => undefined,

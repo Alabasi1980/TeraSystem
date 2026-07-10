@@ -1,9 +1,9 @@
-import { afterEach, expect } from "bun:test"
+﻿import { afterEach, expect } from "bun:test"
 import { existsSync } from "node:fs"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
 import { Cause, Effect, Exit, Fiber } from "effect"
 import { bootstrap as cliBootstrap } from "../../src/cli/bootstrap"
 import { InstanceBootstrap } from "../../src/project/bootstrap"
@@ -18,7 +18,7 @@ const it = testEffect(
   ]),
 )
 
-// InstanceBootstrap must run before any code touches the instance —
+// InstanceBootstrap must run before any code touches the instance â€”
 // originally tracked by PRs #25389 and #25449, now a permanent
 // invariant. The plugin config hook writes a marker file; the test
 // bodies deliberately avoid Plugin/config directly. The marker only

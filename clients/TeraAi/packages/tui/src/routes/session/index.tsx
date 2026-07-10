@@ -1,4 +1,4 @@
-import {
+﻿import {
   batch,
   createContext,
   createEffect,
@@ -36,7 +36,7 @@ import type {
   TextPart,
   ReasoningPart,
   SessionStatus,
-} from "@opencode-ai/sdk/v2"
+} from "@tera-system/sdk/v2"
 import { useLocal } from "../../context/local"
 import { Locale } from "../../util/locale"
 import { webSearchProviderLabel } from "../../util/tool-display"
@@ -1509,7 +1509,7 @@ function AssistantMessage(props: { message: AssistantMessage; parts: Part[]; las
                 )
               }
             >
-              <span style={{ fg: theme.textMuted }}> · </span>
+              <span style={{ fg: theme.textMuted }}> آ· </span>
               {backgroundShortcut()}
               <span style={{ fg: theme.textMuted }}> background</span>
             </Show>
@@ -1543,15 +1543,15 @@ function AssistantMessage(props: { message: AssistantMessage; parts: Part[]; las
                       : local.agent.color(props.message.agent),
                 }}
               >
-                ▣{" "}
+                â–£{" "}
               </span>{" "}
               <span style={{ fg: theme.text }}>{Locale.titlecase(props.message.mode)}</span>
-              <span style={{ fg: theme.textMuted }}> · {model()}</span>
+              <span style={{ fg: theme.textMuted }}> آ· {model()}</span>
               <Show when={duration()}>
-                <span style={{ fg: theme.textMuted }}> · {Locale.duration(duration())}</span>
+                <span style={{ fg: theme.textMuted }}> آ· {Locale.duration(duration())}</span>
               </Show>
               <Show when={props.message.error?.name === "MessageAbortedError"}>
-                <span style={{ fg: theme.textMuted }}> · interrupted</span>
+                <span style={{ fg: theme.textMuted }}> آ· interrupted</span>
               </Show>
             </text>
           </box>
@@ -1666,7 +1666,7 @@ function ReasoningHeader(props: {
           </Show>
           <Show when={props.duration}>
             <span>
-              {props.title ? " · " : ""}
+              {props.title ? " آ· " : ""}
               {props.duration}
             </span>
           </Show>
@@ -1805,7 +1805,7 @@ function GenericTool(props: ToolProps) {
     <Show
       when={props.output && ctx.showGenericToolOutput()}
       fallback={
-        <InlineTool icon="⚙" pending="Writing command..." complete={true} part={props.part}>
+        <InlineTool icon="âڑ™" pending="Writing command..." complete={true} part={props.part}>
           {props.tool} {input(props.input)}
         </InlineTool>
       }
@@ -2120,7 +2120,7 @@ function Write(props: ToolProps) {
       </Match>
       <Match when={true}>
         <InlineTool
-          icon="←"
+          icon="â†گ"
           pending="Preparing write..."
           complete={stringValue(props.input.filePath)}
           part={props.part}
@@ -2135,7 +2135,7 @@ function Write(props: ToolProps) {
 function Glob(props: ToolProps) {
   const pathFormatter = usePathFormatter()
   return (
-    <InlineTool icon="✱" pending="Finding files..." complete={stringValue(props.input.pattern)} part={props.part}>
+    <InlineTool icon="âœ±" pending="Finding files..." complete={stringValue(props.input.pattern)} part={props.part}>
       Glob "{stringValue(props.input.pattern)}"{" "}
       <Show when={stringValue(props.input.path)}>in {pathFormatter.format(stringValue(props.input.path))} </Show>
       <Show when={numberValue(props.metadata.count)}>
@@ -2159,7 +2159,7 @@ function Read(props: ToolProps) {
   return (
     <>
       <InlineTool
-        icon="→"
+        icon="â†’"
         pending="Reading file..."
         complete={stringValue(props.input.filePath)}
         spinner={isRunning()}
@@ -2171,7 +2171,7 @@ function Read(props: ToolProps) {
         {(filepath) => (
           <box paddingLeft={3}>
             <text paddingLeft={3} fg={theme.textMuted}>
-              ↳ Loaded {pathFormatter.format(filepath)}
+              â†³ Loaded {pathFormatter.format(filepath)}
             </text>
           </box>
         )}
@@ -2183,7 +2183,7 @@ function Read(props: ToolProps) {
 function Grep(props: ToolProps) {
   const pathFormatter = usePathFormatter()
   return (
-    <InlineTool icon="✱" pending="Searching content..." complete={stringValue(props.input.pattern)} part={props.part}>
+    <InlineTool icon="âœ±" pending="Searching content..." complete={stringValue(props.input.pattern)} part={props.part}>
       Grep "{stringValue(props.input.pattern)}"{" "}
       <Show when={stringValue(props.input.path)}>in {pathFormatter.format(stringValue(props.input.path))} </Show>
       <Show when={numberValue(props.metadata.matches)}>
@@ -2203,7 +2203,7 @@ function WebFetch(props: ToolProps) {
 
 function WebSearch(props: ToolProps) {
   return (
-    <InlineTool icon="◈" pending="Searching web..." complete={stringValue(props.input.query)} part={props.part}>
+    <InlineTool icon="â—ˆ" pending="Searching web..." complete={stringValue(props.input.query)} part={props.part}>
       {webSearchProviderLabel(props.metadata.provider)} "{stringValue(props.input.query)}"{" "}
       <Show when={numberValue(props.metadata.numResults)}>({numberValue(props.metadata.numResults)} results)</Show>
     </InlineTool>
@@ -2270,17 +2270,17 @@ function Task(props: ToolProps) {
 
     const retrying = retry()
     if (isRunning() && retrying) {
-      content.push(`↳ ${formatSubagentRetry(retrying.attempt, Locale.truncate(retrying.message, 80))}`)
+      content.push(`â†³ ${formatSubagentRetry(retrying.attempt, Locale.truncate(retrying.message, 80))}`)
     } else if (isRunning() && tools().length > 0) {
       if (current()) {
         const state = current()!.state
         const title = state.status === "running" || state.status === "completed" ? state.title : undefined
-        content.push(`↳ ${Locale.titlecase(current()!.tool)} ${title}`)
-      } else content.push(`↳ ${formatSubagentToolcalls(tools().length)}`)
+        content.push(`â†³ ${Locale.titlecase(current()!.tool)} ${title}`)
+      } else content.push(`â†³ ${formatSubagentToolcalls(tools().length)}`)
     }
 
     if (!isRunning() && props.part.state.status === "completed") {
-      content.push(`↳ ${formatCompletedSubagentDetail(tools().length, Locale.duration(duration()))}`)
+      content.push(`â†³ ${formatCompletedSubagentDetail(tools().length, Locale.duration(duration()))}`)
     }
 
     return content.join("\n")
@@ -2288,7 +2288,7 @@ function Task(props: ToolProps) {
 
   return (
     <InlineTool
-      icon={props.part.state.status === "completed" ? "✓" : "│"}
+      icon={props.part.state.status === "completed" ? "âœ“" : "â”‚"}
       separate={true}
       color={retry() ? theme.error : undefined}
       spinner={isRunning()}
@@ -2313,16 +2313,16 @@ export function formatSubagentToolcalls(count: number) {
 }
 
 export function formatSubagentTitle(agent: string, description: string, background: boolean) {
-  return `${agent} Task${background ? " (background)" : ""} — ${description}`
+  return `${agent} Task${background ? " (background)" : ""} â€” ${description}`
 }
 
 export function formatSubagentRetry(attempt: number, message: string) {
-  return `Retrying (attempt ${attempt}) · ${message}`
+  return `Retrying (attempt ${attempt}) آ· ${message}`
 }
 
 export function formatCompletedSubagentDetail(toolcalls: number, duration: string) {
   if (toolcalls === 0) return duration
-  return `${formatSubagentToolcalls(toolcalls)} · ${duration}`
+  return `${formatSubagentToolcalls(toolcalls)} آ· ${duration}`
 }
 
 type ExecuteCall = { tool: string; status: "running" | "completed" | "error"; input?: Record<string, unknown> }
@@ -2352,7 +2352,7 @@ function Execute(props: ToolProps) {
     const lines = ["execute"]
     for (const call of calls()) {
       const args = input(call.input ?? {})
-      lines.push(`↳ ${call.tool}${args ? ` ${args}` : ""}${call.status === "error" ? " (failed)" : ""}`)
+      lines.push(`â†³ ${call.tool}${args ? ` ${args}` : ""}${call.status === "error" ? " (failed)" : ""}`)
     }
     return lines.join("\n")
   })
@@ -2360,7 +2360,7 @@ function Execute(props: ToolProps) {
   return (
     <>
       <InlineTool
-        icon={hasRuntimeError() ? "✗" : props.part.state.status === "completed" ? "✓" : "│"}
+        icon={hasRuntimeError() ? "âœ—" : props.part.state.status === "completed" ? "âœ“" : "â”‚"}
         color={hasRuntimeError() ? theme.error : undefined}
         spinner={isLoading()}
         pending="execute"
@@ -2374,7 +2374,7 @@ function Execute(props: ToolProps) {
           <For each={outputPreview().split("\n")}>
             {(line, index) => (
               <text paddingLeft={3} fg={theme.error}>
-                {index() === 0 ? "↳ " : "  "}
+                {index() === 0 ? "â†³ " : "  "}
                 {line}
               </text>
             )}
@@ -2404,7 +2404,7 @@ function Edit(props: ToolProps) {
   return (
     <Switch>
       <Match when={stringValue(props.metadata.diff) !== undefined}>
-        <BlockTool title={"← Edit " + pathFormatter.format(stringValue(props.input.filePath))} part={props.part}>
+        <BlockTool title={"â†گ Edit " + pathFormatter.format(stringValue(props.input.filePath))} part={props.part}>
           <box paddingLeft={1}>
             <diff
               diff={diffContent()}
@@ -2430,7 +2430,7 @@ function Edit(props: ToolProps) {
         </BlockTool>
       </Match>
       <Match when={true}>
-        <InlineTool icon="←" pending="Preparing edit..." complete={stringValue(props.input.filePath)} part={props.part}>
+        <InlineTool icon="â†گ" pending="Preparing edit..." complete={stringValue(props.input.filePath)} part={props.part}>
           Edit {pathFormatter.format(stringValue(props.input.filePath))} {input({ replaceAll: props.input.replaceAll })}
         </InlineTool>
       </Match>
@@ -2480,8 +2480,8 @@ function ApplyPatch(props: ToolProps) {
   function title(file: { type: string; relativePath: string; filePath: string; deletions: number }) {
     if (file.type === "delete") return "# Deleted " + file.relativePath
     if (file.type === "add") return "# Created " + file.relativePath
-    if (file.type === "move") return "# Moved " + pathFormatter.format(file.filePath) + " → " + file.relativePath
-    return "← Patched " + file.relativePath
+    if (file.type === "move") return "# Moved " + pathFormatter.format(file.filePath) + " â†’ " + file.relativePath
+    return "â†گ Patched " + file.relativePath
   }
 
   return (
@@ -2527,7 +2527,7 @@ function TodoWrite(props: ToolProps) {
       </Match>
       <Match when={true}>
         <InlineTool
-          icon="⚙"
+          icon="âڑ™"
           pending="Updating todos..."
           failure="Todo update failed"
           complete={false}
@@ -2568,7 +2568,7 @@ function Question(props: ToolProps) {
         </BlockTool>
       </Match>
       <Match when={true}>
-        <InlineTool icon="→" pending="Asking questions..." complete={count()} part={props.part}>
+        <InlineTool icon="â†’" pending="Asking questions..." complete={count()} part={props.part}>
           Asked {count()} question{count() !== 1 ? "s" : ""}
         </InlineTool>
       </Match>
@@ -2578,7 +2578,7 @@ function Question(props: ToolProps) {
 
 function Skill(props: ToolProps) {
   return (
-    <InlineTool icon="→" pending="Loading skill..." complete={stringValue(props.input.name)} part={props.part}>
+    <InlineTool icon="â†’" pending="Loading skill..." complete={stringValue(props.input.name)} part={props.part}>
       Skill "{stringValue(props.input.name)}"
     </InlineTool>
   )

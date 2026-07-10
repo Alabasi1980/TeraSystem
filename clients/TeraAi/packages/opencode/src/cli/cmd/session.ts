@@ -1,4 +1,4 @@
-import type { Argv } from "yargs"
+﻿import type { Argv } from "yargs"
 import { Effect } from "effect"
 import { cmd } from "./cmd"
 import { effectCmd, fail } from "../effect-cmd"
@@ -6,13 +6,13 @@ import { Session } from "@/session/session"
 import { SessionID } from "../../session/schema"
 import { UI } from "../ui"
 import { Locale } from "@/util/locale"
-import { Flag } from "@opencode-ai/core/flag/flag"
+import { Flag } from "@tera-system/core/flag/flag"
 import { Filesystem } from "@/util/filesystem"
 import { Process } from "@/util/process"
 import { NotFoundError } from "@/storage/storage"
 import { EOL } from "os"
 import path from "path"
-import { which } from "@opencode-ai/core/util/which"
+import { which } from "@tera-system/core/util/which"
 
 function pagerCmd(): string[] {
   const lessOptions = ["-R", "-S"]
@@ -123,7 +123,7 @@ function formatSessionTable(sessions: Session.Info[]): string {
 
   const header = `Session ID${" ".repeat(maxIdWidth - 10)}  Title${" ".repeat(maxTitleWidth - 5)}  Updated`
   lines.push(header)
-  lines.push("─".repeat(header.length))
+  lines.push("â”€".repeat(header.length))
   for (const session of sessions) {
     const truncatedTitle = Locale.truncate(session.title, maxTitleWidth)
     const timeStr = Locale.todayTimeOrDateTime(session.time.updated)

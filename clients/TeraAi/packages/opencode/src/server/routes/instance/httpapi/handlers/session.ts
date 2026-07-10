@@ -1,6 +1,6 @@
-import { PermissionV1 } from "@opencode-ai/core/v1/permission"
+﻿import { PermissionV1 } from "@tera-system/core/v1/permission"
 import { Agent } from "@/agent/agent"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
+import { SessionV1 } from "@tera-system/core/v1/session"
 import { EventV2Bridge } from "@/event-v2-bridge"
 import { Command } from "@/command"
 import { Permission } from "@/permission"
@@ -15,7 +15,7 @@ import { SessionStatus } from "@/session/status"
 import { SessionSummary } from "@/session/summary"
 import { Todo } from "@/session/todo"
 import { MessageID, PartID, SessionID } from "@/session/schema"
-import { NamedError } from "@opencode-ai/core/util/error"
+import { NamedError } from "@tera-system/core/util/error"
 import { Cause, Effect, Option, Schema, Scope } from "effect"
 import * as Stream from "effect/Stream"
 import { InstanceState } from "@/effect/instance-state"
@@ -251,10 +251,10 @@ export const sessionHandlers = HttpApiBuilder.group(InstanceHttpApi, "session", 
       return true
     })
 
-    // share/unshare errors aren't all client-induced — storage and network
+    // share/unshare errors aren't all client-induced â€” storage and network
     // failures from SessionShare are real possibilities. Map to a typed 500
     // (matches the legacy route behavior which routed any failure through
-    // ErrorMiddleware → NamedError.Unknown 500) instead of blanket-mapping
+    // ErrorMiddleware â†’ NamedError.Unknown 500) instead of blanket-mapping
     // every failure to a 400 BadRequest.
     const share = Effect.fn("SessionHttpApi.share")(function* (ctx: { params: { sessionID: SessionID } }) {
       yield* requireSession(ctx.params.sessionID)

@@ -1,8 +1,8 @@
-import { afterEach, expect } from "bun:test"
+﻿import { afterEach, expect } from "bun:test"
 import { $ } from "bun"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { FSUtil } from "@tera-system/core/fs-util"
 import fs from "fs/promises"
 import path from "path"
 import { Effect, Fiber, Layer } from "effect"
@@ -292,10 +292,10 @@ it.instance(
   withTrackedSnapshot(({ tmp, snapshot, before }) =>
     Effect.gen(function* () {
       const unicodeFiles = [
-        { path: fwd(tmp.path, "文件.txt"), content: "chinese content" },
-        { path: fwd(tmp.path, "🚀rocket.txt"), content: "emoji content" },
-        { path: fwd(tmp.path, "café.txt"), content: "accented content" },
-        { path: fwd(tmp.path, "файл.txt"), content: "cyrillic content" },
+        { path: fwd(tmp.path, "و–‡ن»¶.txt"), content: "chinese content" },
+        { path: fwd(tmp.path, "ًںڑ€rocket.txt"), content: "emoji content" },
+        { path: fwd(tmp.path, "cafأ©.txt"), content: "accented content" },
+        { path: fwd(tmp.path, "ر„ذ°ذ¹ذ».txt"), content: "cyrillic content" },
       ]
       yield* Effect.all(
         unicodeFiles.map((file) => write(file.path, file.content)),
@@ -316,8 +316,8 @@ it.instance.skip(
   Effect.gen(function* () {
     const tmp = yield* bootstrap()
     const snapshot = yield* Snapshot.Service
-    const chineseFile = fwd(tmp.path, "文件.txt")
-    const cyrillicFile = fwd(tmp.path, "файл.txt")
+    const chineseFile = fwd(tmp.path, "و–‡ن»¶.txt")
+    const cyrillicFile = fwd(tmp.path, "ر„ذ°ذ¹ذ».txt")
     yield* write(chineseFile, "original chinese")
     yield* write(cyrillicFile, "original cyrillic")
     const before = yield* snapshot.track()
@@ -338,8 +338,8 @@ it.instance(
   "unicode filenames in subdirectories",
   withTrackedSnapshot(({ tmp, snapshot, before }) =>
     Effect.gen(function* () {
-      yield* mkdirp(`${tmp.path}/目录/подкаталог`)
-      const deepFile = fwd(tmp.path, "目录", "подкаталог", "文件.txt")
+      yield* mkdirp(`${tmp.path}/ç›®ه½•/ذ؟ذ¾ذ´ذ؛ذ°ر‚ذ°ذ»ذ¾ذ³`)
+      const deepFile = fwd(tmp.path, "ç›®ه½•", "ذ؟ذ¾ذ´ذ؛ذ°ر‚ذ°ذ»ذ¾ذ³", "و–‡ن»¶.txt")
       yield* write(deepFile, "deep unicode content")
       const patch = yield* snapshot.patch(before)
       expect(patch.files).toContain(deepFile)
@@ -914,8 +914,8 @@ it.instance(
     yield* mkdirp(`${tmp.path}/mix`)
     yield* Effect.all(
       [
-        ...mod.map((file, i) => write(file, `before-${ids[i]}-é\n🙂\nline`)),
-        ...del.map((file, i) => write(file, `gone-${ids[i]}\n你好`)),
+        ...mod.map((file, i) => write(file, `before-${ids[i]}-أ©\nًں™‚\nline`)),
+        ...del.map((file, i) => write(file, `gone-${ids[i]}\nن½ ه¥½`)),
         ...bin.map((file, i) => write(file, new Uint8Array([0, i, 255, i % 251]))),
       ],
       { concurrency: "unbounded" },
@@ -924,8 +924,8 @@ it.instance(
     expect(before).toBeTruthy()
     yield* Effect.all(
       [
-        ...mod.map((file, i) => write(file, `after-${ids[i]}-é\n🚀\nline`)),
-        ...add.map((file, i) => write(file, `new-${ids[i]}\nこんにちは`)),
+        ...mod.map((file, i) => write(file, `after-${ids[i]}-أ©\nًںڑ€\nline`)),
+        ...add.map((file, i) => write(file, `new-${ids[i]}\nمپ“م‚“مپ«مپ،مپ¯`)),
         ...bin.map((file, i) => write(file, new Uint8Array([9, i, 8, i % 251]))),
         ...del.map((file) => rm(file)),
       ],
@@ -939,8 +939,8 @@ it.instance(
     for (let i = 0; i < ids.length; i++) {
       const m = map.get(fwd("mix", `${ids[i]}-mod.txt`))
       expect(m).toBeDefined()
-      expect(m!.patch).toContain(`-before-${ids[i]}-é`)
-      expect(m!.patch).toContain(`+after-${ids[i]}-é`)
+      expect(m!.patch).toContain(`-before-${ids[i]}-أ©`)
+      expect(m!.patch).toContain(`+after-${ids[i]}-أ©`)
       expect(m!.status).toBe("modified")
       const d = map.get(fwd("mix", `${ids[i]}-del.txt`))
       expect(d).toBeDefined()

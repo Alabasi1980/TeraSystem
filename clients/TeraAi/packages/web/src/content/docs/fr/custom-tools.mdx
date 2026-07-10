@@ -1,33 +1,33 @@
----
-title: Outils personnalisés
-description: Créez des outils que le LLM peut appeler dans opencode.
----
-
-Les outils personnalisés sont des fonctions que vous créez et que le LLM peut appeler pendant les conversations. Ils fonctionnent avec les [outils intégrés](/docs/tools) de opencode comme `read`, `write` et `bash`.
-
+﻿---
+title: Outils personnalisأ©s
+description: Crأ©ez des outils que le LLM peut appeler dans opencode.
 ---
 
-## Création d'un outil
+Les outils personnalisأ©s sont des fonctions que vous crأ©ez et que le LLM peut appeler pendant les conversations. Ils fonctionnent avec les [outils intأ©grأ©s](/docs/tools) de opencode comme `read`, `write` et `bash`.
 
-Les outils sont définis sous forme de fichiers **TypeScript** ou **JavaScript**. Cependant, la définition de l'outil peut appeler des scripts écrits dans **n'importe quel langage** : TypeScript ou JavaScript n'est utilisé que pour la définition de l'outil elle-même.
+---
+
+## Crأ©ation d'un outil
+
+Les outils sont dأ©finis sous forme de fichiers **TypeScript** ou **JavaScript**. Cependant, la dأ©finition de l'outil peut appeler des scripts أ©crits dans **n'importe quel langage** : TypeScript ou JavaScript n'est utilisأ© que pour la dأ©finition de l'outil elle-mأھme.
 
 ---
 
 ### Emplacement
 
-Ils peuvent être définis :
+Ils peuvent أھtre dأ©finis :
 
-- Localement en les plaçant dans le répertoire `.opencode/tools/` de votre projet.
-- Ou globalement, en les plaçant dans `~/.config/opencode/tools/`.
+- Localement en les plaأ§ant dans le rأ©pertoire `.opencode/tools/` de votre projet.
+- Ou globalement, en les plaأ§ant dans `~/.config/opencode/tools/`.
 
 ---
 
 ### Structure
 
-Le moyen le plus simple de créer des outils est d'utiliser l'assistant `tool()` qui fournit la sécurité et la validation de type.
+Le moyen le plus simple de crأ©er des outils est d'utiliser l'assistant `tool()` qui fournit la sأ©curitأ© et la validation de type.
 
 ```ts title=".opencode/tools/database.ts" {1}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Query the project database",
@@ -41,16 +41,16 @@ export default tool({
 })
 ```
 
-Le **nom de fichier** devient le **nom de l'outil**. Ce qui précède crée un outil `database`.
+Le **nom de fichier** devient le **nom de l'outil**. Ce qui prأ©cأ¨de crأ©e un outil `database`.
 
 ---
 
 #### Plusieurs outils par fichier
 
-Vous pouvez également exporter plusieurs outils à partir d'un seul fichier. Chaque exportation devient **un outil distinct** portant le nom **`<filename>_<exportname>`** :
+Vous pouvez أ©galement exporter plusieurs outils أ  partir d'un seul fichier. Chaque exportation devient **un outil distinct** portant le nom **`<filename>_<exportname>`** :
 
 ```ts title=".opencode/tools/math.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export const add = tool({
   description: "Add two numbers",
@@ -75,13 +75,13 @@ export const multiply = tool({
 })
 ```
 
-Cela crée deux outils : `math_add` et `math_multiply`.
+Cela crأ©e deux outils : `math_add` et `math_multiply`.
 
 ---
 
 ### Arguments
 
-Vous pouvez utiliser `tool.schema`, qui est simplement [Zod](https://zod.dev), pour définir les types d'arguments.
+Vous pouvez utiliser `tool.schema`, qui est simplement [Zod](https://zod.dev), pour dأ©finir les types d'arguments.
 
 ```ts "tool.schema"
 args: {
@@ -89,7 +89,7 @@ args: {
 }
 ```
 
-Vous pouvez également importer [Zod](https://zod.dev) directement et renvoyer un objet simple :
+Vous pouvez أ©galement importer [Zod](https://zod.dev) directement et renvoyer un objet simple :
 
 ```ts {6}
 import { z } from "zod"
@@ -110,10 +110,10 @@ export default {
 
 ### Contexte
 
-Les outils reçoivent le contexte de la session en cours :
+Les outils reأ§oivent le contexte de la session en cours :
 
 ```ts title=".opencode/tools/project.ts" {8}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Get project information",
@@ -126,18 +126,18 @@ export default tool({
 })
 ```
 
-Utilisez `context.directory` pour le répertoire de travail de la session.
+Utilisez `context.directory` pour le rأ©pertoire de travail de la session.
 Utilisez `context.worktree` pour la racine du worktree git.
 
 ---
 
 ## Exemples
 
-### Écrire un outil en Python
+### أ‰crire un outil en Python
 
-Vous pouvez écrire vos outils dans le langage de votre choix. Voici un exemple qui ajoute deux nombres à l'aide de Python.
+Vous pouvez أ©crire vos outils dans le langage de votre choix. Voici un exemple qui ajoute deux nombres أ  l'aide de Python.
 
-Tout d'abord, créez l'outil en tant que script Python :
+Tout d'abord, crأ©ez l'outil en tant que script Python :
 
 ```python title=".opencode/tools/add.py"
 import sys
@@ -147,10 +147,10 @@ b = int(sys.argv[2])
 print(a + b)
 ```
 
-Créez ensuite la définition d'outil qui l'invoque :
+Crأ©ez ensuite la dأ©finition d'outil qui l'invoque :
 
 ```ts title=".opencode/tools/python-add.ts" {10}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 import path from "path"
 
 export default tool({
@@ -167,4 +167,4 @@ export default tool({
 })
 ```
 
-Ici, nous utilisons l'utilitaire [`Bun.$`](https://bun.com/docs/runtime/shell) pour exécuter le script Python.
+Ici, nous utilisons l'utilitaire [`Bun.$`](https://bun.com/docs/runtime/shell) pour exأ©cuter le script Python.

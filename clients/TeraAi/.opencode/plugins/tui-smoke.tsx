@@ -1,9 +1,9 @@
-/** @jsxImportSource @opentui/solid */
+﻿/** @jsxImportSource @opentui/solid */
 import { useTerminalDimensions, type JSX } from "@opentui/solid"
 import { useBindings, useKeymapSelector } from "@opentui/keymap/solid"
 import { RGBA, VignetteEffect, type KeyEvent, type Renderable } from "@opentui/core"
 import { createBindingLookup, type BindingConfig } from "@opentui/keymap/extras"
-import type { TuiPlugin, TuiPluginApi, TuiPluginMeta, TuiPluginModule, TuiSlotPlugin } from "@opencode-ai/plugin/tui"
+import type { TuiPlugin, TuiPluginApi, TuiPluginMeta, TuiPluginModule, TuiSlotPlugin } from "@tera-system/plugin/tui"
 
 const tabs = ["overview", "counter", "help"]
 const command = {
@@ -223,7 +223,7 @@ const host = (api: TuiPluginApi, input: Cfg, skin: Skin) => {
         <b>{input.label} host overlay</b>
       </text>
       <text fg={skin.muted}>Using api.ui.dialog stack with built-in backdrop</text>
-      <text fg={skin.muted}>esc closes · depth {api.ui.dialog.depth}</text>
+      <text fg={skin.muted}>esc closes آ· depth {api.ui.dialog.depth}</text>
       <box flexDirection="row" gap={1}>
         <Btn txt="close" run={() => api.ui.dialog.clear()} skin={skin} on />
       </box>
@@ -540,8 +540,8 @@ const Screen = (props: {
               <text fg={skin.text}>Route: {props.route.screen}</text>
               <text fg={skin.muted}>plugin state: {props.meta.state}</text>
               <text fg={skin.muted}>
-                first: {props.meta.state === "first" ? "yes" : "no"} · updated:{" "}
-                {props.meta.state === "updated" ? "yes" : "no"} · loads: {props.meta.load_count}
+                first: {props.meta.state === "first" ? "yes" : "no"} آ· updated:{" "}
+                {props.meta.state === "updated" ? "yes" : "no"} آ· loads: {props.meta.load_count}
               </text>
               <text fg={skin.muted}>plugin source: {props.meta.source}</text>
               <text fg={skin.muted}>source: {value.source}</text>
@@ -571,7 +571,7 @@ const Screen = (props: {
                 {shortcuts().screen_local} local stack | {shortcuts().screen_host} host stack
               </text>
               <text fg={skin.muted}>
-                local open: {shortcuts().local_push} push nested · {shortcuts().local_pop} close
+                local open: {shortcuts().local_push} push nested آ· {shortcuts().local_pop} close
               </text>
               <text fg={skin.muted}>{shortcuts().screen_home} returns home</text>
             </box>
@@ -626,7 +626,7 @@ const Screen = (props: {
           </text>
           <text fg={skin.muted}>Plugin-owned stack depth: {value.local}</text>
           <text fg={skin.muted}>
-            {shortcuts().local_push} push nested · {shortcuts().local_pop} pop/close
+            {shortcuts().local_push} push nested آ· {shortcuts().local_pop} pop/close
           </text>
           <box flexDirection="row" gap={1}>
             <Btn txt="push" run={push} skin={skin} on />
@@ -691,7 +691,7 @@ const Modal = (props: {
           <text fg={skin.muted}>{shortcuts().modal} modal command</text>
           <text fg={skin.muted}>{shortcuts().screen} screen command</text>
           <text fg={skin.muted}>
-            {shortcuts().modal_accept} opens screen · {shortcuts().modal_close} closes
+            {shortcuts().modal_accept} opens screen آ· {shortcuts().modal_close} closes
           </text>
           <box flexDirection="row" gap={1}>
             <Btn
@@ -755,7 +755,7 @@ const home = (api: TuiPluginApi, input: Cfg) => ({
       const hint = (
         <box flexShrink={0} flexDirection="row" gap={1}>
           <text fg={skin.muted}>
-            <span style={{ fg: skin.accent }}>•</span> smoke home prompt
+            <span style={{ fg: skin.accent }}>â€¢</span> smoke home prompt
           </text>
         </box>
       )
@@ -850,7 +850,7 @@ const block = (input: Cfg, order: number, title: string, text: string): TuiSlotP
           </text>
           <text fg={skin.text}>{text}</text>
           <text fg={skin.muted}>
-            {input.label} order {order} · session {value.session_id.slice(0, 8)}
+            {input.label} order {order} آ· session {value.session_id.slice(0, 8)}
           </text>
         </box>
       )

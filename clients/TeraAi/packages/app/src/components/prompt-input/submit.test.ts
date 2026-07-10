@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, mock, test } from "bun:test"
+﻿import { beforeAll, beforeEach, describe, expect, mock, test } from "bun:test"
 import type { Prompt } from "@/context/prompt"
 
 let createPromptSubmit: typeof import("./submit").createPromptSubmit
@@ -84,19 +84,19 @@ beforeAll(async () => {
     useSearchParams: () => [search, () => undefined],
   }))
 
-  mock.module("@opencode-ai/sdk/v2/client", () => ({
+  mock.module("@tera-system/sdk/v2/client", () => ({
     createOpencodeClient: (input: { directory: string }) => {
       createdClients.push(input.directory)
       return clientFor(input.directory)
     },
   }))
 
-  mock.module("@opencode-ai/ui/toast", () => ({
+  mock.module("@tera-system/ui/toast", () => ({
     Toast: { Region: () => null },
     showToast: () => 0,
   }))
 
-  mock.module("@opencode-ai/core/util/encode", () => ({
+  mock.module("@tera-system/core/util/encode", () => ({
     base64Encode: (value: string) => value,
   }))
 

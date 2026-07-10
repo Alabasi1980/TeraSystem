@@ -1,4 +1,4 @@
-import { Schema } from "effect"
+﻿import { Schema } from "effect"
 import {
   AbsolutePath,
   DateTimeUtcFromMillis,
@@ -7,7 +7,7 @@ import {
   PositiveInt,
   RelativePath,
   statics,
-} from "@opencode-ai/schema/schema"
+} from "@tera-system/schema/schema"
 
 export { AbsolutePath, DateTimeUtcFromMillis, NonNegativeInt, optional, PositiveInt, RelativePath, statics }
 
@@ -20,7 +20,7 @@ export { AbsolutePath, DateTimeUtcFromMillis, NonNegativeInt, optional, Positive
  * version gates the object branch on `extends object` (which `unknown` does
  * not) so `unknown` passes through untouched.
  *
- * Primitive bailout matches upstream — without it, branded strings like
+ * Primitive bailout matches upstream â€” without it, branded strings like
  * `string & Brand<"SessionID">` fall into the object branch and get their
  * prototype methods walked.
  *
@@ -40,7 +40,7 @@ export type DeepMutable<T> = T extends string | number | boolean | bigint | symb
         : T
 
 /**
- * Nominal wrapper for scalar types. The class itself is a valid schema —
+ * Nominal wrapper for scalar types. The class itself is a valid schema â€”
  * pass it directly to `Schema.decode`, `Schema.decodeEffect`, etc.
  *
  * Overrides `~type.make` on the derived `Schema.Opaque` so `Schema.Schema.Type`

@@ -1,4 +1,4 @@
-import {
+﻿import {
   ServerConnection,
   useLayout,
   useProviders,
@@ -6,7 +6,7 @@ import {
   useServerSDK,
   useServerSync,
   useTabs,
-} from "@opencode-ai/app"
+} from "@tera-system/app"
 import { onMount, startTransition } from "solid-js"
 
 export function DesktopFirstLaunchOnboarding(props: { initialUrl: string; onLoaded: () => void }) {

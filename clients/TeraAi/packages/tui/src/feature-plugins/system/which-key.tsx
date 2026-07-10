@@ -1,10 +1,10 @@
-/** @jsxImportSource @opentui/solid */
+﻿/** @jsxImportSource @opentui/solid */
 import { RGBA, TextAttributes, type KeyEvent, type Renderable } from "@opentui/core"
 import { useTerminalDimensions } from "@opentui/solid"
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
 import { useBindings, useKeymapSelector } from "../../keymap"
 import type { ActiveKey } from "@opentui/keymap"
-import type { TuiPlugin, TuiPluginApi } from "@opencode-ai/plugin/tui"
+import type { TuiPlugin, TuiPluginApi } from "@tera-system/plugin/tui"
 import type { BuiltinTuiPlugin } from "../builtins"
 
 const command = {
@@ -416,9 +416,9 @@ function WhichKeyPanel(props: {
                   fallback={
                     <box flexShrink={0}>
                       <text wrapMode="none">
-                        <span style={{ fg: upActive() ? look().text : look().muted }}>↑</span>
+                        <span style={{ fg: upActive() ? look().text : look().muted }}>â†‘</span>
                         <span style={{ fg: look().muted }}> </span>
-                        <span style={{ fg: downActive() ? look().text : look().muted }}>↓</span>
+                        <span style={{ fg: downActive() ? look().text : look().muted }}>â†“</span>
                       </text>
                     </box>
                   }

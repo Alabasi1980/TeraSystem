@@ -1,8 +1,8 @@
-export * as DatabaseMigration from "./migration"
+﻿export * as DatabaseMigration from "./migration"
 
 import { sql } from "drizzle-orm"
 import { Effect, Semaphore } from "effect"
-import type { EffectDrizzleSqlite } from "@opencode-ai/effect-drizzle-sqlite"
+import type { EffectDrizzleSqlite } from "@tera-system/effect-drizzle-sqlite"
 import { migrations } from "./migration.gen"
 import schema from "./schema.gen"
 

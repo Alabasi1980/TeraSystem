@@ -1,4 +1,4 @@
-import { runtimeModules as keymapRuntimeModules } from "@opentui/keymap/runtime-modules"
+﻿import { runtimeModules as keymapRuntimeModules } from "@opentui/keymap/runtime-modules"
 import { ensureRuntimePluginSupport } from "@opentui/solid/runtime-plugin-support/configure"
 import {
   type TuiDispose,
@@ -10,13 +10,13 @@ import {
   type TuiPluginStatus,
   type TuiSlotPlugin,
   type TuiTheme,
-} from "@opencode-ai/plugin/tui"
+} from "@tera-system/plugin/tui"
 import path from "path"
 import { fileURLToPath } from "url"
 import { TuiConfig } from "@/config/tui"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { errorData, errorMessage } from "@opencode-ai/tui/util/error"
-import { isRecord } from "@opencode-ai/tui/util/record"
+import { AppNodeBuilder } from "@tera-system/core/effect/app-node-builder"
+import { errorData, errorMessage } from "@tera-system/tui/util/error"
+import { isRecord } from "@tera-system/tui/util/record"
 import { resolveHostAttentionSoundPaths } from "@/config/tui-host-attention"
 import {
   readPackageThemes,
@@ -29,20 +29,20 @@ import {
 import { PluginLoader } from "@/plugin/loader"
 import { PluginMeta } from "@/plugin/meta"
 import { installPlugin as installModulePlugin, patchPluginConfig, readPluginManifest } from "@/plugin/install"
-import { hasTheme, upsertTheme } from "@opencode-ai/tui/context/theme"
-import { Global } from "@opencode-ai/core/global"
+import { hasTheme, upsertTheme } from "@tera-system/tui/context/theme"
+import { Global } from "@tera-system/core/global"
 import { Filesystem } from "@/util/filesystem"
 import { Process } from "@/util/process"
-import { Flock } from "@opencode-ai/core/util/flock"
-import { Flag } from "@opencode-ai/core/flag/flag"
+import { Flock } from "@tera-system/core/util/flock"
+import { Flag } from "@tera-system/core/flag/flag"
 import { internalTuiPlugins, type InternalTuiPlugin } from "./internal"
-import type { HostPluginApi, HostSlots } from "@opencode-ai/tui/plugin/slots"
+import type { HostPluginApi, HostSlots } from "@tera-system/tui/plugin/slots"
 import { ConfigPlugin } from "@/config/plugin"
-import { ConfigPluginV1 } from "@opencode-ai/core/v1/config/plugin"
-import { createCommandShim } from "@opencode-ai/tui/plugin/command-shim"
+import { ConfigPluginV1 } from "@tera-system/core/v1/config/plugin"
+import { createCommandShim } from "@tera-system/tui/plugin/command-shim"
 import { RuntimeFlags } from "@/effect/runtime-flags"
 import { Effect } from "effect"
-import { createPluginRuntime, type PluginRuntime, type TuiPluginHost } from "@opencode-ai/tui/plugin/runtime"
+import { createPluginRuntime, type PluginRuntime, type TuiPluginHost } from "@tera-system/tui/plugin/runtime"
 
 ensureRuntimePluginSupport({ additional: keymapRuntimeModules })
 

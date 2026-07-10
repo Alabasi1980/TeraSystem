@@ -1,4 +1,4 @@
-import type { Workspace } from "@opencode-ai/sdk/v2"
+﻿import type { Workspace } from "@tera-system/sdk/v2"
 import { useDialog } from "../ui/dialog"
 import { DialogSelect, type DialogSelectOption } from "../ui/dialog-select"
 import { useProject } from "../context/project"
@@ -46,7 +46,7 @@ export function DialogWorkspaceList() {
           value: { workspace },
           footer: workspace.type,
           details: expanded[workspace.id] && workspace.directory ? [workspace.directory] : undefined,
-          gutter: () => <text fg={status === "connected" ? theme.success : theme.error}>●</text>,
+          gutter: () => <text fg={status === "connected" ? theme.success : theme.error}>â—ڈ</text>,
         }
       }),
   )

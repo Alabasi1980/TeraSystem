@@ -1,4 +1,4 @@
-import {
+﻿import {
   BoxRenderable,
   RGBA,
   TextareaRenderable,
@@ -14,7 +14,7 @@ import { registerOpencodeSpinner } from "../register-spinner"
 import path from "path"
 import { fileURLToPath } from "url"
 import { useLocal } from "../../context/local"
-import { Flag } from "@opencode-ai/core/flag/flag"
+import { Flag } from "@tera-system/core/flag/flag"
 import { tint, useTheme } from "../../context/theme"
 import { EmptyBorder, SplitBorder } from "../../ui/border"
 import { useTuiPaths, useTuiTerminalEnvironment } from "../../context/runtime"
@@ -37,7 +37,7 @@ import { usePromptStash } from "../../prompt/stash"
 import { DialogStash } from "../dialog-stash"
 import { type AutocompleteRef, Autocomplete } from "./autocomplete"
 import { useRenderer, useTerminalDimensions, type JSX } from "@opentui/solid"
-import type { AssistantMessage, FilePart, UserMessage } from "@opencode-ai/sdk/v2"
+import type { AssistantMessage, FilePart, UserMessage } from "@tera-system/sdk/v2"
 import { Locale } from "../../util/locale"
 import { errorMessage } from "../../util/error"
 import { formatDuration } from "../../util/format"
@@ -930,7 +930,7 @@ export function Prompt(props: PromptProps) {
     // input's native onSubmit racing another dispatch). Without this guard,
     // a second call slips past the empty-input check before the first call
     // clears `store.prompt.input`, then awaits its own `session.create` and
-    // ultimately reads the now-empty store — sending a phantom empty prompt
+    // ultimately reads the now-empty store â€” sending a phantom empty prompt
     // to a freshly created session.
     if (submitting) return false
     submitting = true
@@ -1351,7 +1351,7 @@ export function Prompt(props: PromptProps) {
           borderColor={borderHighlight()}
           customBorderChars={{
             ...SplitBorder.customBorderChars,
-            bottomLeft: "╹",
+            bottomLeft: "â•¹",
           }}
         >
           <box
@@ -1449,7 +1449,7 @@ export function Prompt(props: PromptProps) {
                       </Show>
                       <Show when={store.mode === "normal"}>
                         <box flexDirection="row" gap={1}>
-                          <text fg={fadeColor(theme.textMuted, modelMetaAlpha())}>·</text>
+                          <text fg={fadeColor(theme.textMuted, modelMetaAlpha())}>آ·</text>
                           <text
                             flexShrink={0}
                             fg={fadeColor(leader() ? theme.textMuted : theme.text, modelMetaAlpha())}
@@ -1458,7 +1458,7 @@ export function Prompt(props: PromptProps) {
                           </text>
                           <text fg={fadeColor(theme.textMuted, modelMetaAlpha())}>{currentProviderLabel()}</text>
                           <Show when={showVariant()}>
-                            <text fg={fadeColor(theme.textMuted, variantMetaAlpha())}>·</text>
+                            <text fg={fadeColor(theme.textMuted, variantMetaAlpha())}>آ·</text>
                             <text>
                               <span style={{ fg: fadeColor(theme.warning, variantMetaAlpha()), bold: true }}>
                                 {local.model.variant.current()}
@@ -1485,7 +1485,7 @@ export function Prompt(props: PromptProps) {
           borderColor={borderHighlight()}
           customBorderChars={{
             ...EmptyBorder,
-            vertical: theme.backgroundElement.a !== 0 ? "╹" : " ",
+            vertical: theme.backgroundElement.a !== 0 ? "â•¹" : " ",
           }}
         >
           <box
@@ -1496,7 +1496,7 @@ export function Prompt(props: PromptProps) {
               theme.backgroundElement.a !== 0
                 ? {
                     ...EmptyBorder,
-                    horizontal: "▀",
+                    horizontal: "â–€",
                   }
                 : {
                     ...EmptyBorder,
@@ -1516,7 +1516,7 @@ export function Prompt(props: PromptProps) {
               >
                 <box flexShrink={0} flexDirection="row" gap={1}>
                   <box marginLeft={1}>
-                    <Show when={kv.get("animations_enabled", true)} fallback={<text fg={theme.textMuted}>[⋯]</text>}>
+                    <Show when={kv.get("animations_enabled", true)} fallback={<text fg={theme.textMuted}>[â‹¯]</text>}>
                       <spinner color={spinnerDef().color} frames={spinnerDef().frames} interval={40} />
                     </Show>
                   </box>
@@ -1652,7 +1652,7 @@ export function Prompt(props: PromptProps) {
                     <Match when={usage()}>
                       {(item) => (
                         <text fg={theme.textMuted} wrapMode="none">
-                          {[item().context, item().cost].filter(Boolean).join(" · ")}
+                          {[item().context, item().cost].filter(Boolean).join(" آ· ")}
                         </text>
                       )}
                     </Match>

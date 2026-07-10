@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+﻿import { describe, expect, test } from "bun:test"
 import { realpathSync } from "node:fs"
 import { mkdtemp, rm } from "node:fs/promises"
 import { join, resolve, sep } from "node:path"
@@ -12,7 +12,7 @@ const server = resolve(import.meta.dir, "../../server")
 
 describe("public import boundaries", () => {
   test("isolates each public entrypoint", async () => {
-    const root = await bundleInputs("@opencode-ai/client", "browser")
+    const root = await bundleInputs("@tera-system/client", "browser")
 
     expect(within(root, effect)).toEqual([])
     expect(within(root, schema)).toEqual([])
@@ -20,7 +20,7 @@ describe("public import boundaries", () => {
     expect(within(root, core)).toEqual([])
     expect(within(root, server)).toEqual([])
 
-    const network = await bundleInputs("@opencode-ai/client/effect", "browser")
+    const network = await bundleInputs("@tera-system/client/effect", "browser")
 
     expect(within(network, effect).length).toBeGreaterThan(0)
     expect(within(network, schema).length).toBeGreaterThan(0)

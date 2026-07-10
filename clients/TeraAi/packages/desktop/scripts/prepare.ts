@@ -1,5 +1,5 @@
-#!/usr/bin/env bun
-import { Script } from "@opencode-ai/script"
+﻿#!/usr/bin/env bun
+import { Script } from "@tera-system/script"
 
 await import("./prebuild")
 

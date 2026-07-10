@@ -1,4 +1,4 @@
-import { Database } from "bun:sqlite"
+﻿import { Database } from "bun:sqlite"
 import { drizzle } from "drizzle-orm/bun-sqlite"
 import * as Context from "effect/Context"
 import * as Effect from "effect/Effect"
@@ -17,7 +17,7 @@ import { Sqlite } from "./sqlite"
 
 const ATTR_DB_SYSTEM_NAME = "db.system.name"
 
-const TypeId = "~@opencode-ai/core/database/SqliteBun" as const
+const TypeId = "~@tera-system/core/database/SqliteBun" as const
 type TypeId = typeof TypeId
 
 interface SqliteClient extends Client.SqlClient {

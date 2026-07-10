@@ -1,8 +1,8 @@
-import { For, Show } from "solid-js"
-import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2"
-import { Icon } from "@opencode-ai/ui/icon"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { getFilename } from "@opencode-ai/core/util/path"
+﻿import { For, Show } from "solid-js"
+import { MenuV2 } from "@tera-system/ui/v2/menu-v2"
+import { Icon } from "@tera-system/ui/icon"
+import { Icon as IconV2 } from "@tera-system/ui/v2/icon"
+import { getFilename } from "@tera-system/core/util/path"
 import { useLanguage } from "@/context/language"
 
 export function PromptWorkspaceSelector(props: {

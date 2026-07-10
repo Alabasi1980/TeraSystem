@@ -1,5 +1,5 @@
-import type { APIEvent } from "@solidjs/start/server"
-import { Resource } from "@opencode-ai/console-resource"
+﻿import type { APIEvent } from "@solidjs/start/server"
+import { Resource } from "@tera-system/console-resource"
 import { LOCALE_HEADER, cookie, localeFromRequest, route, tag } from "~/lib/language"
 
 const dataPath = "/data"

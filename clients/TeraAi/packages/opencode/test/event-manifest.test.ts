@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test"
-import { SessionEvent } from "@opencode-ai/core/session/event"
-import { EventManifest as SchemaEventManifest } from "@opencode-ai/schema/event-manifest"
+﻿import { describe, expect, test } from "bun:test"
+import { SessionEvent } from "@tera-system/core/session/event"
+import { EventManifest as SchemaEventManifest } from "@tera-system/schema/event-manifest"
 import { Todo } from "@/session/todo"
 import { EventManifest } from "@/event-manifest"
 

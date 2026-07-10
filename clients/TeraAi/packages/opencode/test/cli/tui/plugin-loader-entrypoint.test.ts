@@ -1,4 +1,4 @@
-import { expect, spyOn, test } from "bun:test"
+﻿import { expect, spyOn, test } from "bun:test"
 import fs from "fs/promises"
 import path from "path"
 import { pathToFileURL } from "url"
@@ -6,7 +6,7 @@ import { tmpdir } from "../../fixture/fixture"
 import { createTuiPluginApi } from "../../fixture/tui-plugin"
 import { createTuiResolvedConfig } from "../../fixture/tui-runtime"
 import { TuiConfig } from "../../../src/config/tui"
-import { Npm } from "@opencode-ai/core/npm"
+import { Npm } from "@tera-system/core/npm"
 
 const { TuiPluginRuntime } = await import("../../../src/plugin/tui/runtime")
 

@@ -1,10 +1,10 @@
-import path from "path"
+﻿import path from "path"
 import { NodeFileSystem } from "@effect/platform-node"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { FSUtil } from "@tera-system/core/fs-util"
 import { describe, expect, test } from "bun:test"
 import { Effect, FileSystem, Layer } from "effect"
-import { Global } from "@opencode-ai/core/global"
+import { Global } from "@tera-system/core/global"
 import {
   createVariantRuntime,
   cycleVariant,
@@ -142,10 +142,10 @@ describe("run variant shared", () => {
   })
 
   test("formats model labels", () => {
-    expect(formatModelLabel(model, undefined)).toBe("gpt-5 · openai")
-    expect(formatModelLabel(model, "high")).toBe("gpt-5 · openai · high")
-    expect(formatModelLabel(model, undefined, providers)).toBe("GPT-5 · OpenAI")
-    expect(formatModelLabel(model, "high", providers)).toBe("GPT-5 · OpenAI · high")
+    expect(formatModelLabel(model, undefined)).toBe("gpt-5 آ· openai")
+    expect(formatModelLabel(model, "high")).toBe("gpt-5 آ· openai آ· high")
+    expect(formatModelLabel(model, undefined, providers)).toBe("GPT-5 آ· OpenAI")
+    expect(formatModelLabel(model, "high", providers)).toBe("GPT-5 آ· OpenAI آ· high")
   })
 
   test("picks the latest matching variant from raw session messages", () => {

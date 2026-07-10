@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   createEffect,
   createMemo,
@@ -30,31 +30,31 @@ import {
   Todo,
   QuestionAnswer,
   QuestionInfo,
-} from "@opencode-ai/sdk/v2"
+} from "@tera-system/sdk/v2"
 import { useData } from "../context"
-import { useFileComponent } from "@opencode-ai/ui/context/file"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { type UiI18n, useI18n } from "@opencode-ai/ui/context/i18n"
+import { useFileComponent } from "@tera-system/ui/context/file"
+import { useDialog } from "@tera-system/ui/context/dialog"
+import { type UiI18n, useI18n } from "@tera-system/ui/context/i18n"
 import { BasicTool, GenericTool } from "./basic-tool"
-import { Accordion } from "@opencode-ai/ui/accordion"
-import { StickyAccordionHeader } from "@opencode-ai/ui/sticky-accordion-header"
-import { Collapsible } from "@opencode-ai/ui/collapsible"
-import { FileIcon } from "@opencode-ai/ui/file-icon"
-import { Icon } from "@opencode-ai/ui/icon"
+import { Accordion } from "@tera-system/ui/accordion"
+import { StickyAccordionHeader } from "@tera-system/ui/sticky-accordion-header"
+import { Collapsible } from "@tera-system/ui/collapsible"
+import { FileIcon } from "@tera-system/ui/file-icon"
+import { Icon } from "@tera-system/ui/icon"
 import { ToolErrorCard } from "./tool-error-card"
-import { Checkbox } from "@opencode-ai/ui/checkbox"
-import { DiffChanges } from "@opencode-ai/ui/diff-changes"
+import { Checkbox } from "@tera-system/ui/checkbox"
+import { DiffChanges } from "@tera-system/ui/diff-changes"
 import { Markdown } from "./markdown"
-import { ImagePreview } from "@opencode-ai/ui/image-preview"
-import { getDirectory as _getDirectory, getFilename } from "@opencode-ai/core/util/path"
-import { checksum } from "@opencode-ai/core/util/encode"
-import { Tooltip } from "@opencode-ai/ui/tooltip"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { TooltipV2 } from "@opencode-ai/ui/v2/tooltip-v2"
-import { Spinner } from "@opencode-ai/ui/spinner"
-import { TextShimmer } from "@opencode-ai/ui/text-shimmer"
+import { ImagePreview } from "@tera-system/ui/image-preview"
+import { getDirectory as _getDirectory, getFilename } from "@tera-system/core/util/path"
+import { checksum } from "@tera-system/core/util/encode"
+import { Tooltip } from "@tera-system/ui/tooltip"
+import { IconButton } from "@tera-system/ui/icon-button"
+import { Icon as IconV2 } from "@tera-system/ui/v2/icon"
+import { IconButtonV2 } from "@tera-system/ui/v2/icon-button-v2"
+import { TooltipV2 } from "@tera-system/ui/v2/tooltip-v2"
+import { Spinner } from "@tera-system/ui/spinner"
+import { TextShimmer } from "@tera-system/ui/text-shimmer"
 import { AnimatedCountList } from "./tool-count-summary"
 import { ToolStatusTitle } from "./tool-status-title"
 import { patchFiles } from "./apply-patch-file"
@@ -350,7 +350,7 @@ function getDirectory(path: string | undefined) {
   return relativizeProjectPath(_getDirectory(path), data.directory)
 }
 
-import type { IconProps } from "@opencode-ai/ui/icon"
+import type { IconProps } from "@tera-system/ui/icon"
 import { normalize, resolveFileDiff } from "./session-diff"
 
 export type ToolInfo = {

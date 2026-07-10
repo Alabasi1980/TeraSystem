@@ -1,6 +1,6 @@
-import { createConnection } from "net"
+﻿import { createConnection } from "net"
 import { createServer } from "http"
-import { OauthCallbackPage } from "@opencode-ai/core/oauth/page"
+import { OauthCallbackPage } from "@tera-system/core/oauth/page"
 import { OAUTH_CALLBACK_PORT, OAUTH_CALLBACK_PATH, parseRedirectUri } from "./oauth-provider"
 
 const OAUTH_CALLBACK_HOST = "127.0.0.1"
@@ -17,7 +17,7 @@ interface PendingAuth {
 
 let server: ReturnType<typeof createServer> | undefined
 const pendingAuths = new Map<string, PendingAuth>()
-// Reverse index: mcpName → oauthState, so cancelPending(mcpName) can
+// Reverse index: mcpName â†’ oauthState, so cancelPending(mcpName) can
 // find the right entry in pendingAuths (which is keyed by oauthState).
 const mcpNameToState = new Map<string, string>()
 

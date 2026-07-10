@@ -1,4 +1,4 @@
-import type { Auth } from "@/auth"
+﻿import type { Auth } from "@/auth"
 import type { Provider } from "@/provider/provider"
 import { ProviderTransform } from "@/provider/transform"
 import { errorMessage } from "@/util/error"
@@ -15,8 +15,8 @@ import {
   toDefinitions,
   type JsonSchema,
   type LLMEvent,
-} from "@opencode-ai/llm"
-import type { LLMClientShape } from "@opencode-ai/llm/route"
+} from "@tera-system/llm"
+import type { LLMClientShape } from "@tera-system/llm/route"
 import { LLMNative } from "./native-request"
 
 export type RuntimeStatus =
@@ -76,7 +76,7 @@ export function stream(input: StreamInput): StreamResult {
   const current = statusWithFetch(input, fetch)
   if (current.type === "unsupported") return current
 
-  // Integration point with @opencode-ai/llm: native-request lowers session data
+  // Integration point with @tera-system/llm: native-request lowers session data
   // into an LLMRequest, then LLMClient handles route selection and transport.
   //
   // ProviderTransform.providerOptions builds AI-SDK-shaped options for the
@@ -84,7 +84,7 @@ export function stream(input: StreamInput): StreamResult {
   // keys via OpenAIOptions.* (store, reasoningEffort, reasoningSummary,
   // include, textVerbosity, promptCacheKey). Both sides intentionally use
   // OpenAI's official wire field names, so this is identity, not translation
-  // — if a field ever needs to differ between the two surfaces, the
+  // â€” if a field ever needs to differ between the two surfaces, the
   // translation belongs here, not split across both packages.
   const tools = nativeTools(input.tools, input)
   const request = LLMNative.request({
@@ -171,7 +171,7 @@ export function nativeTools(tools: Record<string, Tool>, input: Pick<StreamInput
     Object.entries(tools).map(([name, item]) => [
       name,
       // Tool execution remains opencode-owned. The native runtime only adapts
-      // the @opencode-ai/llm tool call back into the AI SDK Tool.execute shape.
+      // the @tera-system/llm tool call back into the AI SDK Tool.execute shape.
       NativeTool.make({
         description: item.description ?? "",
         jsonSchema: nativeSchema(item.inputSchema),

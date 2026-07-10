@@ -1,7 +1,7 @@
-import { Component, createSignal, startTransition } from "solid-js"
-import { Dialog } from "@opencode-ai/ui/v2/dialog-v2"
-import { TabsV2 } from "@opencode-ai/ui/v2/tabs-v2"
-import { Icon } from "@opencode-ai/ui/icon"
+﻿import { Component, createSignal, startTransition } from "solid-js"
+import { Dialog } from "@tera-system/ui/v2/dialog-v2"
+import { TabsV2 } from "@tera-system/ui/v2/tabs-v2"
+import { Icon } from "@tera-system/ui/icon"
 import { useLanguage } from "@/context/language"
 import { usePlatform } from "@/context/platform"
 import { SettingsGeneralV2 } from "./general"
@@ -10,7 +10,7 @@ import { SettingsProvidersV2 } from "./providers"
 import { SettingsModelsV2 } from "./models"
 import "./settings-v2.css"
 import { SettingsServersV2 } from "./servers"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
+import { useDialog } from "@tera-system/ui/context/dialog"
 
 export const DialogSettings: Component<{
   sessionID?: string

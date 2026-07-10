@@ -1,4 +1,4 @@
-export * as SessionV1 from "./session"
+﻿export * as SessionV1 from "./session"
 
 import { Schema } from "effect"
 import { NonNegativeInt } from "../schema"
@@ -43,7 +43,7 @@ export {
   ToolStateRunning,
   User,
   WithParts,
-} from "@opencode-ai/schema/session-v1"
+} from "@tera-system/schema/session-v1"
 
 export const OutputLengthError = NamedError.create("MessageOutputLengthError", {})
 export const AuthError = NamedError.create("ProviderAuthError", { providerID: Schema.String, message: Schema.String })

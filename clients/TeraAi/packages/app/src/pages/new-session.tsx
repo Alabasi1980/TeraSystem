@@ -1,10 +1,10 @@
-import { Show, createEffect, createMemo, createResource, createSignal, onCleanup, untrack } from "solid-js"
+﻿import { Show, createEffect, createMemo, createResource, createSignal, onCleanup, untrack } from "solid-js"
 import { createStore } from "solid-js/store"
 import { Portal } from "solid-js/web"
 import { useSearchParams } from "@solidjs/router"
-import { Tooltip } from "@opencode-ai/ui/tooltip"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { TooltipV2 } from "@opencode-ai/ui/v2/tooltip-v2"
+import { Tooltip } from "@tera-system/ui/tooltip"
+import { Icon as IconV2 } from "@tera-system/ui/v2/icon"
+import { TooltipV2 } from "@tera-system/ui/v2/tooltip-v2"
 import { NewSessionDesignView } from "@/components/session"
 import { PromptInput } from "@/components/prompt-input"
 import { StatusPopoverV2 } from "@/components/status-popover"
@@ -37,7 +37,7 @@ const providerTipExitDuration = 250
 
 /**
  * The `/new-session` draft page. Unlike `session.tsx`, this only renders the prompt
- * composer for a brand-new session — no terminal, review pane, file tree, or message
+ * composer for a brand-new session â€” no terminal, review pane, file tree, or message
  * timeline. Submitting promotes the draft into a real session (see prompt-input/submit).
  */
 export default function NewSessionPage() {

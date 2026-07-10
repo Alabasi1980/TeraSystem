@@ -1,4 +1,4 @@
----
+﻿---
 title: Herramientas personalizadas
 description: Cree herramientas que LLM pueda llamar en opencode.
 ---
@@ -9,25 +9,25 @@ Las herramientas personalizadas son funciones que usted crea y que el LLM puede 
 
 ## Crear una herramienta
 
-Las herramientas se definen como archivos **TypeScript** o **JavaScript**. Sin embargo, la definición de la herramienta puede invocar secuencias de comandos escritas en **cualquier idioma**: TypeScript o JavaScript solo se utilizan para la definición de la herramienta en sí.
+Las herramientas se definen como archivos **TypeScript** o **JavaScript**. Sin embargo, la definiciأ³n de la herramienta puede invocar secuencias de comandos escritas en **cualquier idioma**: TypeScript o JavaScript solo se utilizan para la definiciأ³n de la herramienta en sأ­.
 
 ---
 
-### Ubicación
+### Ubicaciأ³n
 
 Se pueden definir:
 
-- Localmente colocándolos en el directorio `.opencode/tools/` de tu proyecto.
-- O de forma global, colocándolos en `~/.config/opencode/tools/`.
+- Localmente colocأ،ndolos en el directorio `.opencode/tools/` de tu proyecto.
+- O de forma global, colocأ،ndolos en `~/.config/opencode/tools/`.
 
 ---
 
 ### Estructura
 
-La forma más sencilla de crear herramientas es utilizar el asistente `tool()` que proporciona seguridad de tipos y validación.
+La forma mأ،s sencilla de crear herramientas es utilizar el asistente `tool()` que proporciona seguridad de tipos y validaciأ³n.
 
 ```ts title=".opencode/tools/database.ts" {1}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Query the project database",
@@ -45,12 +45,12 @@ El **nombre de archivo** se convierte en el **nombre de la herramienta**. Lo ant
 
 ---
 
-#### Múltiples herramientas por archivo
+#### Mأ؛ltiples herramientas por archivo
 
-También puede exportar varias herramientas desde un solo archivo. Cada exportación se convierte en **una herramienta independiente** con el nombre **`<filename>_<exportname>`**:
+Tambiأ©n puede exportar varias herramientas desde un solo archivo. Cada exportaciأ³n se convierte en **una herramienta independiente** con el nombre **`<filename>_<exportname>`**:
 
 ```ts title=".opencode/tools/math.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export const add = tool({
   description: "Add two numbers",
@@ -81,12 +81,12 @@ Esto crea dos herramientas: `math_add` y `math_multiply`.
 
 #### Colisiones de nombres con herramientas integradas
 
-Las herramientas personalizadas están codificadas por el nombre de la herramienta. Si una herramienta personalizada utiliza el mismo nombre que una herramienta integrada, la herramienta personalizada tiene prioridad.
+Las herramientas personalizadas estأ،n codificadas por el nombre de la herramienta. Si una herramienta personalizada utiliza el mismo nombre que una herramienta integrada, la herramienta personalizada tiene prioridad.
 
 Por ejemplo, este archivo reemplaza la herramienta `bash` integrada:
 
 ```ts title=".opencode/tools/bash.ts"
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Restricted bash wrapper",
@@ -100,7 +100,7 @@ export default tool({
 ```
 
 :::note
-Prefiera nombres únicos a menos que intencionalmente desee reemplazar una herramienta integrada. Si desea deshabilitar una herramienta integrada pero no anularla, use [permisos](/docs/permissions).
+Prefiera nombres أ؛nicos a menos que intencionalmente desee reemplazar una herramienta integrada. Si desea deshabilitar una herramienta integrada pero no anularla, use [permisos](/docs/permissions).
 :::
 
 ---
@@ -115,7 +115,7 @@ args: {
 }
 ```
 
-También puedes importar [Zod](https://zod.dev) directamente y devolver un objeto simple:
+Tambiأ©n puedes importar [Zod](https://zod.dev) directamente y devolver un objeto simple:
 
 ```ts {6}
 import { z } from "zod"
@@ -136,10 +136,10 @@ export default {
 
 ### Contexto
 
-Las herramientas reciben contexto sobre la sesión actual:
+Las herramientas reciben contexto sobre la sesiأ³n actual:
 
 ```ts title=".opencode/tools/project.ts" {8}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 
 export default tool({
   description: "Get project information",
@@ -152,8 +152,8 @@ export default tool({
 })
 ```
 
-Utilice `context.directory` para el directorio de trabajo de la sesión.
-Utilice `context.worktree` para la raíz del árbol de trabajo de git.
+Utilice `context.directory` para el directorio de trabajo de la sesiأ³n.
+Utilice `context.worktree` para la raأ­z del أ،rbol de trabajo de git.
 
 ---
 
@@ -161,7 +161,7 @@ Utilice `context.worktree` para la raíz del árbol de trabajo de git.
 
 ### Escribir una herramienta en Python
 
-Puede escribir sus herramientas en cualquier idioma que desee. Aquí hay un ejemplo que suma dos números usando Python.
+Puede escribir sus herramientas en cualquier idioma que desee. Aquأ­ hay un ejemplo que suma dos nأ؛meros usando Python.
 
 Primero, cree la herramienta como un script de Python:
 
@@ -173,10 +173,10 @@ b = int(sys.argv[2])
 print(a + b)
 ```
 
-Luego cree la definición de herramienta que la invoca:
+Luego cree la definiciأ³n de herramienta que la invoca:
 
 ```ts title=".opencode/tools/python-add.ts" {10}
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@tera-system/plugin"
 import path from "path"
 
 export default tool({
@@ -193,4 +193,4 @@ export default tool({
 })
 ```
 
-Aquí estamos usando la utilidad [`Bun.$`](https://bun.com/docs/runtime/shell) para ejecutar el script Python.
+Aquأ­ estamos usando la utilidad [`Bun.$`](https://bun.com/docs/runtime/shell) para ejecutar el script Python.

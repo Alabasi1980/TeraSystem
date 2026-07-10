@@ -1,7 +1,7 @@
-import { PermissionV1 } from "@opencode-ai/core/v1/permission"
-import { ConfigV1 } from "@opencode-ai/core/v1/config/config"
+﻿import { PermissionV1 } from "@tera-system/core/v1/permission"
+import { ConfigV1 } from "@tera-system/core/v1/config/config"
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "bun:test"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
+import { SessionV1 } from "@tera-system/core/v1/session"
 import path from "path"
 import { tool, type ModelMessage } from "ai"
 import { Cause, Effect, Exit, Fiber, Layer, Stream } from "effect"
@@ -9,10 +9,10 @@ import { InstanceRef } from "../../src/effect/instance-ref"
 import { HttpClientRequest, HttpClientResponse } from "effect/unstable/http"
 import z from "zod"
 import { LLM } from "../../src/session/llm"
-import { LLMClient, RequestExecutor } from "@opencode-ai/llm/route"
+import { LLMClient, RequestExecutor } from "@tera-system/llm/route"
 import { Provider } from "@/provider/provider"
 import { ProviderTransform } from "@/provider/transform"
-import { ModelsDev } from "@opencode-ai/core/models-dev"
+import { ModelsDev } from "@tera-system/core/models-dev"
 
 import { testEffect } from "../lib/effect"
 import type { Agent } from "../../src/agent/agent"
@@ -22,11 +22,11 @@ import { RuntimeFlags } from "@/effect/runtime-flags"
 import { Permission } from "@/permission"
 import { LLMAISDK } from "@/session/llm/ai-sdk"
 import { Session as SessionNs } from "@/session/session"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { LayerNodePlatform } from "@opencode-ai/core/effect/app-node-platform"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
+import { AppNodeBuilder } from "@tera-system/core/effect/app-node-builder"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { LayerNodePlatform } from "@tera-system/core/effect/app-node-platform"
 
 type ConfigModel = NonNullable<NonNullable<ConfigV1.Info["provider"]>[string]["models"]>[string]
 
@@ -387,7 +387,7 @@ describe("session.llm.ai-sdk adapter", () => {
 
   test("reuses adapter state cleanly across streams once finish has fired", async () => {
     // adapterState() is meant to be per-stream, but the only thing finish currently clears
-    // is toolNames — step, text counters, and the current text/reasoning IDs all leak
+    // is toolNames â€” step, text counters, and the current text/reasoning IDs all leak
     // forward. A caller that reuses a state across two streams sees text-1/reasoning-1/
     // step index 1 on the second stream's first events. The test pins the intended
     // contract: after finish, the same state can be reused and starts fresh.
@@ -450,7 +450,7 @@ describe("session.llm.ai-sdk adapter", () => {
 
   // Anthropic emits cache write counts in providerMetadata.anthropic.cacheCreationInputTokens
   // rather than usage.inputTokenDetails.cacheWriteTokens. Session.getUsage falls back to the
-  // metadata path — but only if the adapter preserves providerMetadata on step-finish.
+  // metadata path â€” but only if the adapter preserves providerMetadata on step-finish.
   test("preserves providerMetadata on step-finish so Anthropic cache writes survive getUsage", async () => {
     const events = await adapt([
       {

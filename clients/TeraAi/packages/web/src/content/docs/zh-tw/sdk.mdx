@@ -1,58 +1,58 @@
----
+﻿---
 title: SDK
-description: opencode 伺服器的型別安全 JS 用戶端。
+description: opencode ن¼؛وœچه™¨çڑ„ه‍‹هˆ¥ه®‰ه…¨ JS ç”¨وˆ¶ç«¯م€‚
 ---
 
 import config from "../../../../config.mjs"
 export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
 
-opencode JS/TS SDK 提供了一個型別安全的用戶端，用於與伺服器進行互動。
-您可以用它來建構整合方案，並以程式化方式控制 opencode。
+opencode JS/TS SDK وڈگن¾›ن؛†ن¸€ه€‹ه‍‹هˆ¥ه®‰ه…¨çڑ„ç”¨وˆ¶ç«¯ï¼Œç”¨و–¼èˆ‡ن¼؛وœچه™¨é€²è،Œن؛’ه‹•م€‚
+و‚¨هڈ¯ن»¥ç”¨ه®ƒن¾†ه»؛و§‹و•´هگˆو–¹و،ˆï¼Œن¸¦ن»¥ç¨‹ه¼ڈهŒ–و–¹ه¼ڈوژ§هˆ¶ opencodeم€‚
 
-[了解更多](/docs/server)關於伺服器的運作原理。如需範例，請查看社群建構的[專案](/docs/ecosystem#projects)。
+[ن؛†è§£و›´ه¤ڑ](/docs/server)é—œو–¼ن¼؛وœچه™¨çڑ„éپ‹ن½œهژںçگ†م€‚ه¦‚éœ€ç¯„ن¾‹ï¼Œè«‹وں¥çœ‹ç¤¾ç¾¤ه»؛و§‹çڑ„[ه°ˆو،ˆ](/docs/ecosystem#projects)م€‚
 
 ---
 
-## 安裝
+## ه®‰è£‌
 
-從 npm 安裝 SDK：
+ه¾‍ npm ه®‰è£‌ SDKï¼ڑ
 
 ```bash
-npm install @opencode-ai/sdk
+npm install @tera-system/sdk
 ```
 
 ---
 
-## 建立用戶端
+## ه»؛ç«‹ç”¨وˆ¶ç«¯
 
-建立一個 opencode 實例：
+ه»؛ç«‹ن¸€ه€‹ opencode ه¯¦ن¾‹ï¼ڑ
 
 ```javascript
-import { createOpencode } from "@opencode-ai/sdk"
+import { createOpencode } from "@tera-system/sdk"
 
 const { client } = await createOpencode()
 ```
 
-這會同時啟動伺服器和用戶端。
+é€™وœƒهگŒو™‚ه•ںه‹•ن¼؛وœچه™¨ه’Œç”¨وˆ¶ç«¯م€‚
 
-#### 選項
+#### éپ¸é …
 
-| 選項       | 型別          | 描述                       | 預設值      |
+| éپ¸é …       | ه‍‹هˆ¥          | وڈڈè؟°                       | é گè¨­ه€¼      |
 | ---------- | ------------- | -------------------------- | ----------- |
-| `hostname` | `string`      | 伺服器主機名稱             | `127.0.0.1` |
-| `port`     | `number`      | 伺服器連接埠               | `4096`      |
-| `signal`   | `AbortSignal` | 用於取消操作的中止訊號     | `undefined` |
-| `timeout`  | `number`      | 伺服器啟動逾時時間（毫秒） | `5000`      |
-| `config`   | `Config`      | 設定物件                   | `{}`        |
+| `hostname` | `string`      | ن¼؛وœچه™¨ن¸»و©ںهگچç¨±             | `127.0.0.1` |
+| `port`     | `number`      | ن¼؛وœچه™¨é€£وژ¥هں                | `4096`      |
+| `signal`   | `AbortSignal` | ç”¨و–¼هڈ–و¶ˆو“چن½œçڑ„ن¸­و­¢è¨ٹè™ں     | `undefined` |
+| `timeout`  | `number`      | ن¼؛وœچه™¨ه•ںه‹•é€¾و™‚و™‚é–“ï¼ˆو¯«ç§’ï¼‰ | `5000`      |
+| `config`   | `Config`      | è¨­ه®ڑç‰©ن»¶                   | `{}`        |
 
 ---
 
-## 設定
+## è¨­ه®ڑ
 
-您可以傳入一個設定物件來自訂行為。實例仍然會讀取您的 `opencode.json`，但您可以透過內嵌方式覆寫或新增設定：
+و‚¨هڈ¯ن»¥ه‚³ه…¥ن¸€ه€‹è¨­ه®ڑç‰©ن»¶ن¾†è‡ھè¨‚è،Œç‚؛م€‚ه¯¦ن¾‹ن»چç„¶وœƒè®€هڈ–و‚¨çڑ„ `opencode.json`ï¼Œن½†و‚¨هڈ¯ن»¥é€ڈéپژه…§هµŒو–¹ه¼ڈè¦†ه¯«وˆ–و–°ه¢‍è¨­ه®ڑï¼ڑ
 
 ```javascript
-import { createOpencode } from "@opencode-ai/sdk"
+import { createOpencode } from "@tera-system/sdk"
 
 const opencode = await createOpencode({
   hostname: "127.0.0.1",
@@ -67,45 +67,45 @@ console.log(`Server running at ${opencode.server.url}`)
 opencode.server.close()
 ```
 
-## 僅用戶端模式
+## هƒ…ç”¨وˆ¶ç«¯و¨،ه¼ڈ
 
-如果您已經有一個正在執行的 opencode 實例，可以建立一個用戶端實例來連線：
+ه¦‚و‍œو‚¨ه·²ç¶“وœ‰ن¸€ه€‹و­£هœ¨هں·è،Œçڑ„ opencode ه¯¦ن¾‹ï¼Œهڈ¯ن»¥ه»؛ç«‹ن¸€ه€‹ç”¨وˆ¶ç«¯ه¯¦ن¾‹ن¾†é€£ç·ڑï¼ڑ
 
 ```javascript
-import { createOpencodeClient } from "@opencode-ai/sdk"
+import { createOpencodeClient } from "@tera-system/sdk"
 
 const client = createOpencodeClient({
   baseUrl: "http://localhost:4096",
 })
 ```
 
-#### 選項
+#### éپ¸é …
 
-| 選項            | 型別       | 描述                         | 預設值                  |
+| éپ¸é …            | ه‍‹هˆ¥       | وڈڈè؟°                         | é گè¨­ه€¼                  |
 | --------------- | ---------- | ---------------------------- | ----------------------- |
-| `baseUrl`       | `string`   | 伺服器 URL                   | `http://localhost:4096` |
-| `fetch`         | `function` | 自訂 fetch 實作              | `globalThis.fetch`      |
-| `parseAs`       | `string`   | 回應解析方式                 | `auto`                  |
-| `responseStyle` | `string`   | 回傳風格：`data` 或 `fields` | `fields`                |
-| `throwOnError`  | `boolean`  | 拋出錯誤而非回傳錯誤         | `false`                 |
+| `baseUrl`       | `string`   | ن¼؛وœچه™¨ URL                   | `http://localhost:4096` |
+| `fetch`         | `function` | è‡ھè¨‚ fetch ه¯¦ن½œ              | `globalThis.fetch`      |
+| `parseAs`       | `string`   | ه›‍و‡‰è§£و‍گو–¹ه¼ڈ                 | `auto`                  |
+| `responseStyle` | `string`   | ه›‍ه‚³é¢¨و ¼ï¼ڑ`data` وˆ– `fields` | `fields`                |
+| `throwOnError`  | `boolean`  | و‹‹ه‡؛éŒ¯èھ¤è€Œé‌‍ه›‍ه‚³éŒ¯èھ¤         | `false`                 |
 
 ---
 
-## 型別
+## ه‍‹هˆ¥
 
-SDK 包含所有 API 型別的 TypeScript 定義。您可以直接匯入它們：
+SDK هŒ…هگ«و‰€وœ‰ API ه‍‹هˆ¥çڑ„ TypeScript ه®ڑç¾©م€‚و‚¨هڈ¯ن»¥ç›´وژ¥هŒ¯ه…¥ه®ƒه€‘ï¼ڑ
 
 ```typescript
-import type { Session, Message, Part } from "@opencode-ai/sdk"
+import type { Session, Message, Part } from "@tera-system/sdk"
 ```
 
-所有型別均根據伺服器的 OpenAPI 規範產生，可在<a href={typesUrl}>型別檔案</a>中查看。
+و‰€وœ‰ه‍‹هˆ¥ه‌‡و ¹و“ڑن¼؛وœچه™¨çڑ„ OpenAPI è¦ڈç¯„ç”¢ç”ںï¼Œهڈ¯هœ¨<a href={typesUrl}>ه‍‹هˆ¥وھ”و،ˆ</a>ن¸­وں¥çœ‹م€‚
 
 ---
 
-## 錯誤處理
+## éŒ¯èھ¤è™•çگ†
 
-SDK 可能會拋出錯誤，您可以捕捉並處理這些錯誤：
+SDK هڈ¯èƒ½وœƒو‹‹ه‡؛éŒ¯èھ¤ï¼Œو‚¨هڈ¯ن»¥وچ•وچ‰ن¸¦è™•çگ†é€™ن؛›éŒ¯èھ¤ï¼ڑ
 
 ```typescript
 try {
@@ -117,11 +117,11 @@ try {
 
 ---
 
-## 結構化輸出
+## çµگو§‹هŒ–è¼¸ه‡؛
 
-您可以透過指定帶有 JSON Schema 的 `format` 來請求模型回傳結構化的 JSON 輸出。模型會使用 `StructuredOutput` 工具回傳符合您 Schema 的經過驗證的 JSON。
+و‚¨هڈ¯ن»¥é€ڈéپژوŒ‡ه®ڑه¸¶وœ‰ JSON Schema çڑ„ `format` ن¾†è«‹و±‚و¨،ه‍‹ه›‍ه‚³çµگو§‹هŒ–çڑ„ JSON è¼¸ه‡؛م€‚و¨،ه‍‹وœƒن½؟ç”¨ `StructuredOutput` ه·¥ه…·ه›‍ه‚³ç¬¦هگˆو‚¨ Schema çڑ„ç¶“éپژé©—è­‰çڑ„ JSONم€‚
 
-### 基本用法
+### هں؛وœ¬ç”¨و³•
 
 ```typescript
 const result = await client.session.prompt({
@@ -152,26 +152,26 @@ console.log(result.data.info.structured_output)
 // { company: "Anthropic", founded: 2021, products: ["Claude", "Claude API"] }
 ```
 
-### 輸出格式型別
+### è¼¸ه‡؛و ¼ه¼ڈه‍‹هˆ¥
 
-| 型別          | 描述                                    |
+| ه‍‹هˆ¥          | وڈڈè؟°                                    |
 | ------------- | --------------------------------------- |
-| `text`        | 預設值。標準文字回應（無結構化輸出）    |
-| `json_schema` | 回傳符合所提供 Schema 的經過驗證的 JSON |
+| `text`        | é گè¨­ه€¼م€‚و¨™و؛–و–‡ه­—ه›‍و‡‰ï¼ˆç„،çµگو§‹هŒ–è¼¸ه‡؛ï¼‰    |
+| `json_schema` | ه›‍ه‚³ç¬¦هگˆو‰€وڈگن¾› Schema çڑ„ç¶“éپژé©—è­‰çڑ„ JSON |
 
-### JSON Schema 格式
+### JSON Schema و ¼ه¼ڈ
 
-使用 `type: 'json_schema'` 時，需提供以下欄位：
+ن½؟ç”¨ `type: 'json_schema'` و™‚ï¼Œéœ€وڈگن¾›ن»¥ن¸‹و¬„ن½چï¼ڑ
 
-| 欄位         | 型別            | 描述                                  |
+| و¬„ن½چ         | ه‍‹هˆ¥            | وڈڈè؟°                                  |
 | ------------ | --------------- | ------------------------------------- |
-| `type`       | `'json_schema'` | 必填。指定 JSON Schema 模式           |
-| `schema`     | `object`        | 必填。定義輸出結構的 JSON Schema 物件 |
-| `retryCount` | `number`        | 選填。驗證重試次數（預設值：2）       |
+| `type`       | `'json_schema'` | ه؟…ه،«م€‚وŒ‡ه®ڑ JSON Schema و¨،ه¼ڈ           |
+| `schema`     | `object`        | ه؟…ه،«م€‚ه®ڑç¾©è¼¸ه‡؛çµگو§‹çڑ„ JSON Schema ç‰©ن»¶ |
+| `retryCount` | `number`        | éپ¸ه،«م€‚é©—è­‰é‡چè©¦و¬،و•¸ï¼ˆé گè¨­ه€¼ï¼ڑ2ï¼‰       |
 
-### 錯誤處理
+### éŒ¯èھ¤è™•çگ†
 
-如果模型在所有重試後仍無法產生有效的結構化輸出，回應中會包含 `StructuredOutputError`：
+ه¦‚و‍œو¨،ه‍‹هœ¨و‰€وœ‰é‡چè©¦ه¾Œن»چç„،و³•ç”¢ç”ںوœ‰و•ˆçڑ„çµگو§‹هŒ–è¼¸ه‡؛ï¼Œه›‍و‡‰ن¸­وœƒهŒ…هگ« `StructuredOutputError`ï¼ڑ
 
 ```typescript
 if (result.data.info.error?.name === "StructuredOutputError") {
@@ -180,30 +180,30 @@ if (result.data.info.error?.name === "StructuredOutputError") {
 }
 ```
 
-### 最佳實務
+### وœ€ن½³ه¯¦ه‹™
 
-1. **在 Schema 屬性中提供清晰的描述**，幫助模型理解需要擷取的資料
-2. **使用 `required`** 指定哪些欄位必須存在
-3. **保持 Schema 簡潔** — 複雜的巢狀 Schema 可能會讓模型更難正確填充
-4. **設定合適的 `retryCount`** — 對於複雜 Schema 可增加重試次數，對於簡單 Schema 可減少
+1. **هœ¨ Schema ه±¬و€§ن¸­وڈگن¾›و¸…و™°çڑ„وڈڈè؟°**ï¼Œه¹«هٹ©و¨،ه‍‹çگ†è§£éœ€è¦پو“·هڈ–çڑ„è³‡و–™
+2. **ن½؟ç”¨ `required`** وŒ‡ه®ڑه“ھن؛›و¬„ن½چه؟…é ˆه­کهœ¨
+3. **ن؟‌وŒپ Schema ç°،و½”** â€” è¤‡é›œçڑ„ه·¢ç‹€ Schema هڈ¯èƒ½وœƒè®“و¨،ه‍‹و›´é›£و­£ç¢؛ه،«ه……
+4. **è¨­ه®ڑهگˆéپ©çڑ„ `retryCount`** â€” ه°چو–¼è¤‡é›œ Schema هڈ¯ه¢‍هٹ é‡چè©¦و¬،و•¸ï¼Œه°چو–¼ç°،ه–® Schema هڈ¯و¸›ه°‘
 
 ---
 
 ## API
 
-SDK 透過型別安全的用戶端公開所有伺服器 API。
+SDK é€ڈéپژه‍‹هˆ¥ه®‰ه…¨çڑ„ç”¨وˆ¶ç«¯ه…¬é–‹و‰€وœ‰ن¼؛وœچه™¨ APIم€‚
 
 ---
 
 ### Global
 
-| 方法              | 描述                     | 回應                                 |
+| و–¹و³•              | وڈڈè؟°                     | ه›‍و‡‰                                 |
 | ----------------- | ------------------------ | ------------------------------------ |
-| `global.health()` | 檢查伺服器健康狀態和版本 | `{ healthy: true, version: string }` |
+| `global.health()` | وھ¢وں¥ن¼؛وœچه™¨هپ¥ه؛·ç‹€و…‹ه’Œç‰ˆوœ¬ | `{ healthy: true, version: string }` |
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
 const health = await client.global.health()
@@ -214,17 +214,17 @@ console.log(health.data.version)
 
 ### App
 
-| 方法           | 描述               | 回應                                        |
+| و–¹و³•           | وڈڈè؟°               | ه›‍و‡‰                                        |
 | -------------- | ------------------ | ------------------------------------------- |
-| `app.log()`    | 寫入一筆日誌       | `boolean`                                   |
-| `app.agents()` | 列出所有可用的代理 | <a href={typesUrl}><code>Agent[]</code></a> |
+| `app.log()`    | ه¯«ه…¥ن¸€ç­†و—¥èھŒ       | `boolean`                                   |
+| `app.agents()` | هˆ—ه‡؛و‰€وœ‰هڈ¯ç”¨çڑ„ن»£çگ† | <a href={typesUrl}><code>Agent[]</code></a> |
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
-// 寫入一筆日誌
+// ه¯«ه…¥ن¸€ç­†و—¥èھŒ
 await client.app.log({
   body: {
     service: "my-app",
@@ -233,7 +233,7 @@ await client.app.log({
   },
 })
 
-// 列出可用的代理
+// هˆ—ه‡؛هڈ¯ç”¨çڑ„ن»£çگ†
 const agents = await client.app.agents()
 ```
 
@@ -241,14 +241,14 @@ const agents = await client.app.agents()
 
 ### Project
 
-| 方法                | 描述         | 回應                                          |
+| و–¹و³•                | وڈڈè؟°         | ه›‍و‡‰                                          |
 | ------------------- | ------------ | --------------------------------------------- |
-| `project.list()`    | 列出所有專案 | <a href={typesUrl}><code>Project[]</code></a> |
-| `project.current()` | 取得當前專案 | <a href={typesUrl}><code>Project</code></a>   |
+| `project.list()`    | هˆ—ه‡؛و‰€وœ‰ه°ˆو،ˆ | <a href={typesUrl}><code>Project[]</code></a> |
+| `project.current()` | هڈ–ه¾—ç•¶ه‰چه°ˆو،ˆ | <a href={typesUrl}><code>Project</code></a>   |
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
 // List all projects
@@ -262,16 +262,16 @@ const currentProject = await client.project.current()
 
 ### Path
 
-| 方法         | 描述         | 回應                                     |
+| و–¹و³•         | وڈڈè؟°         | ه›‍و‡‰                                     |
 | ------------ | ------------ | ---------------------------------------- |
-| `path.get()` | 取得當前路徑 | <a href={typesUrl}><code>Path</code></a> |
+| `path.get()` | هڈ–ه¾—ç•¶ه‰چè·¯ه¾‘ | <a href={typesUrl}><code>Path</code></a> |
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
-// 取得當前路徑資訊
+// هڈ–ه¾—ç•¶ه‰چè·¯ه¾‘è³‡è¨ٹ
 const pathInfo = await client.path.get()
 ```
 
@@ -279,14 +279,14 @@ const pathInfo = await client.path.get()
 
 ### Config
 
-| 方法                 | 描述                 | 回應                                                                                                  |
+| و–¹و³•                 | وڈڈè؟°                 | ه›‍و‡‰                                                                                                  |
 | -------------------- | -------------------- | ----------------------------------------------------------------------------------------------------- |
-| `config.get()`       | 取得設定資訊         | <a href={typesUrl}><code>Config</code></a>                                                            |
-| `config.providers()` | 列出供應商和預設模型 | `{ providers: `<a href={typesUrl}><code>Provider[]</code></a>`, default: { [key: string]: string } }` |
+| `config.get()`       | هڈ–ه¾—è¨­ه®ڑè³‡è¨ٹ         | <a href={typesUrl}><code>Config</code></a>                                                            |
+| `config.providers()` | هˆ—ه‡؛ن¾›و‡‰ه•†ه’Œé گè¨­و¨،ه‍‹ | `{ providers: `<a href={typesUrl}><code>Provider[]</code></a>`, default: { [key: string]: string } }` |
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
 const config = await client.config.get()
@@ -298,31 +298,31 @@ const { providers, default: defaults } = await client.config.providers()
 
 ### Sessions
 
-| 方法                                                       | 描述                           | 備註                                                                                                                                                                                           |
+| و–¹و³•                                                       | وڈڈè؟°                           | ه‚™è¨»                                                                                                                                                                                           |
 | ---------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `session.list()`                                           | 列出工作階段                   | 回傳 <a href={typesUrl}><code>Session[]</code></a>                                                                                                                                             |
-| `session.get({ path })`                                    | 取得工作階段                   | 回傳 <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
-| `session.children({ path })`                               | 列出子工作階段                 | 回傳 <a href={typesUrl}><code>Session[]</code></a>                                                                                                                                             |
-| `session.create({ body })`                                 | 建立工作階段                   | 回傳 <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
-| `session.delete({ path })`                                 | 刪除工作階段                   | 回傳 `boolean`                                                                                                                                                                                 |
-| `session.update({ path, body })`                           | 更新工作階段屬性               | 回傳 <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
-| `session.init({ path, body })`                             | 分析應用程式並建立 `AGENTS.md` | 回傳 `boolean`                                                                                                                                                                                 |
-| `session.abort({ path })`                                  | 中止正在執行的工作階段         | 回傳 `boolean`                                                                                                                                                                                 |
-| `session.share({ path })`                                  | 分享工作階段                   | 回傳 <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
-| `session.unshare({ path })`                                | 取消分享工作階段               | 回傳 <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
-| `session.summarize({ path, body })`                        | 摘要工作階段                   | 回傳 `boolean`                                                                                                                                                                                 |
-| `session.messages({ path })`                               | 列出工作階段中的訊息           | 回傳 `{ info: `<a href={typesUrl}><code>Message</code></a>`, parts: `<a href={typesUrl}><code>Part[]</code></a>`}[]`                                                                           |
-| `session.message({ path })`                                | 取得訊息詳情                   | 回傳 `{ info: `<a href={typesUrl}><code>Message</code></a>`, parts: `<a href={typesUrl}><code>Part[]</code></a>`}`                                                                             |
-| `session.prompt({ path, body })`                           | 傳送提示訊息                   | `body.noReply: true` 回傳 UserMessage（僅注入上下文）。預設回傳帶有 AI 回應的 <a href={typesUrl}><code>AssistantMessage</code></a>。支援透過 `body.outputFormat` 使用[結構化輸出](#結構化輸出) |
-| `session.command({ path, body })`                          | 向工作階段傳送指令             | 回傳 `{ info: `<a href={typesUrl}><code>AssistantMessage</code></a>`, parts: `<a href={typesUrl}><code>Part[]</code></a>`}`                                                                    |
-| `session.shell({ path, body })`                            | 執行 shell 指令                | 回傳 <a href={typesUrl}><code>AssistantMessage</code></a>                                                                                                                                      |
-| `session.revert({ path, body })`                           | 還原訊息                       | 回傳 <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
-| `session.unrevert({ path })`                               | 恢復已還原的訊息               | 回傳 <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
-| `postSessionByIdPermissionsByPermissionId({ path, body })` | 回覆權限請求                   | 回傳 `boolean`                                                                                                                                                                                 |
+| `session.list()`                                           | هˆ—ه‡؛ه·¥ن½œéڑژو®µ                   | ه›‍ه‚³ <a href={typesUrl}><code>Session[]</code></a>                                                                                                                                             |
+| `session.get({ path })`                                    | هڈ–ه¾—ه·¥ن½œéڑژو®µ                   | ه›‍ه‚³ <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
+| `session.children({ path })`                               | هˆ—ه‡؛ه­گه·¥ن½œéڑژو®µ                 | ه›‍ه‚³ <a href={typesUrl}><code>Session[]</code></a>                                                                                                                                             |
+| `session.create({ body })`                                 | ه»؛ç«‹ه·¥ن½œéڑژو®µ                   | ه›‍ه‚³ <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
+| `session.delete({ path })`                                 | هˆھé™¤ه·¥ن½œéڑژو®µ                   | ه›‍ه‚³ `boolean`                                                                                                                                                                                 |
+| `session.update({ path, body })`                           | و›´و–°ه·¥ن½œéڑژو®µه±¬و€§               | ه›‍ه‚³ <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
+| `session.init({ path, body })`                             | هˆ†و‍گو‡‰ç”¨ç¨‹ه¼ڈن¸¦ه»؛ç«‹ `AGENTS.md` | ه›‍ه‚³ `boolean`                                                                                                                                                                                 |
+| `session.abort({ path })`                                  | ن¸­و­¢و­£هœ¨هں·è،Œçڑ„ه·¥ن½œéڑژو®µ         | ه›‍ه‚³ `boolean`                                                                                                                                                                                 |
+| `session.share({ path })`                                  | هˆ†ن؛«ه·¥ن½œéڑژو®µ                   | ه›‍ه‚³ <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
+| `session.unshare({ path })`                                | هڈ–و¶ˆهˆ†ن؛«ه·¥ن½œéڑژو®µ               | ه›‍ه‚³ <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
+| `session.summarize({ path, body })`                        | و‘کè¦په·¥ن½œéڑژو®µ                   | ه›‍ه‚³ `boolean`                                                                                                                                                                                 |
+| `session.messages({ path })`                               | هˆ—ه‡؛ه·¥ن½œéڑژو®µن¸­çڑ„è¨ٹوپ¯           | ه›‍ه‚³ `{ info: `<a href={typesUrl}><code>Message</code></a>`, parts: `<a href={typesUrl}><code>Part[]</code></a>`}[]`                                                                           |
+| `session.message({ path })`                                | هڈ–ه¾—è¨ٹوپ¯è©³وƒ…                   | ه›‍ه‚³ `{ info: `<a href={typesUrl}><code>Message</code></a>`, parts: `<a href={typesUrl}><code>Part[]</code></a>`}`                                                                             |
+| `session.prompt({ path, body })`                           | ه‚³é€پوڈگç¤؛è¨ٹوپ¯                   | `body.noReply: true` ه›‍ه‚³ UserMessageï¼ˆهƒ…و³¨ه…¥ن¸ٹن¸‹و–‡ï¼‰م€‚é گè¨­ه›‍ه‚³ه¸¶وœ‰ AI ه›‍و‡‰çڑ„ <a href={typesUrl}><code>AssistantMessage</code></a>م€‚و”¯وڈ´é€ڈéپژ `body.outputFormat` ن½؟ç”¨[çµگو§‹هŒ–è¼¸ه‡؛](#çµگو§‹هŒ–è¼¸ه‡؛) |
+| `session.command({ path, body })`                          | هگ‘ه·¥ن½œéڑژو®µه‚³é€پوŒ‡ن»¤             | ه›‍ه‚³ `{ info: `<a href={typesUrl}><code>AssistantMessage</code></a>`, parts: `<a href={typesUrl}><code>Part[]</code></a>`}`                                                                    |
+| `session.shell({ path, body })`                            | هں·è،Œ shell وŒ‡ن»¤                | ه›‍ه‚³ <a href={typesUrl}><code>AssistantMessage</code></a>                                                                                                                                      |
+| `session.revert({ path, body })`                           | é‚„هژںè¨ٹوپ¯                       | ه›‍ه‚³ <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
+| `session.unrevert({ path })`                               | وپ¢ه¾©ه·²é‚„هژںçڑ„è¨ٹوپ¯               | ه›‍ه‚³ <a href={typesUrl}><code>Session</code></a>                                                                                                                                               |
+| `postSessionByIdPermissionsByPermissionId({ path, body })` | ه›‍è¦†و¬ٹé™گè«‹و±‚                   | ه›‍ه‚³ `boolean`                                                                                                                                                                                 |
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
 // Create and manage sessions
@@ -355,26 +355,26 @@ await client.session.prompt({
 
 ### Files
 
-| 方法                      | 描述                 | 回應                                                                                |
+| و–¹و³•                      | وڈڈè؟°                 | ه›‍و‡‰                                                                                |
 | ------------------------- | -------------------- | ----------------------------------------------------------------------------------- |
-| `find.text({ query })`    | 搜尋檔案中的文字     | 包含 `path`、`lines`、`line_number`、`absolute_offset`、`submatches` 的比對物件陣列 |
-| `find.files({ query })`   | 按名稱尋找檔案和目錄 | `string[]`（路徑）                                                                  |
-| `find.symbols({ query })` | 尋找工作區符號       | <a href={typesUrl}><code>Symbol[]</code></a>                                        |
-| `file.read({ query })`    | 讀取檔案             | `{ type: "raw" \| "patch", content: string }`                                       |
-| `file.status({ query? })` | 取得已追蹤檔案的狀態 | <a href={typesUrl}><code>File[]</code></a>                                          |
+| `find.text({ query })`    | وگœه°‹وھ”و،ˆن¸­çڑ„و–‡ه­—     | هŒ…هگ« `path`م€پ`lines`م€پ`line_number`م€پ`absolute_offset`م€پ`submatches` çڑ„و¯”ه°چç‰©ن»¶é™£هˆ— |
+| `find.files({ query })`   | وŒ‰هگچç¨±ه°‹و‰¾وھ”و،ˆه’Œç›®éŒ„ | `string[]`ï¼ˆè·¯ه¾‘ï¼‰                                                                  |
+| `find.symbols({ query })` | ه°‹و‰¾ه·¥ن½œهچ€ç¬¦è™ں       | <a href={typesUrl}><code>Symbol[]</code></a>                                        |
+| `file.read({ query })`    | è®€هڈ–وھ”و،ˆ             | `{ type: "raw" \| "patch", content: string }`                                       |
+| `file.status({ query? })` | هڈ–ه¾—ه·²è؟½è¹¤وھ”و،ˆçڑ„ç‹€و…‹ | <a href={typesUrl}><code>File[]</code></a>                                          |
 
-`find.files` 支援以下選填的查詢欄位：
+`find.files` و”¯وڈ´ن»¥ن¸‹éپ¸ه،«çڑ„وں¥è©¢و¬„ن½چï¼ڑ
 
-- `type`：`"file"` 或 `"directory"`
-- `directory`：覆寫搜尋的專案根目錄
-- `limit`：最大結果數（1–200）
+- `type`ï¼ڑ`"file"` وˆ– `"directory"`
+- `directory`ï¼ڑè¦†ه¯«وگœه°‹çڑ„ه°ˆو،ˆو ¹ç›®éŒ„
+- `limit`ï¼ڑوœ€ه¤§çµگو‍œو•¸ï¼ˆ1â€“200ï¼‰
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
-// 搜尋和讀取檔案
+// وگœه°‹ه’Œè®€هڈ–وھ”و،ˆ
 const textResults = await client.find.text({
   query: { pattern: "function.*opencode" },
 })
@@ -396,24 +396,24 @@ const content = await client.file.read({
 
 ### TUI
 
-| 方法                           | 描述               | 回應      |
+| و–¹و³•                           | وڈڈè؟°               | ه›‍و‡‰      |
 | ------------------------------ | ------------------ | --------- |
-| `tui.appendPrompt({ body })`   | 向提示詞追加文字   | `boolean` |
-| `tui.openHelp()`               | 開啟說明對話框     | `boolean` |
-| `tui.openSessions()`           | 開啟工作階段選擇器 | `boolean` |
-| `tui.openThemes()`             | 開啟主題選擇器     | `boolean` |
-| `tui.openModels()`             | 開啟模型選擇器     | `boolean` |
-| `tui.submitPrompt()`           | 送出當前提示詞     | `boolean` |
-| `tui.clearPrompt()`            | 清除提示詞         | `boolean` |
-| `tui.executeCommand({ body })` | 執行指令           | `boolean` |
-| `tui.showToast({ body })`      | 顯示 Toast 通知    | `boolean` |
+| `tui.appendPrompt({ body })`   | هگ‘وڈگç¤؛è©‍è؟½هٹ و–‡ه­—   | `boolean` |
+| `tui.openHelp()`               | é–‹ه•ںèھھوکژه°چè©±و،†     | `boolean` |
+| `tui.openSessions()`           | é–‹ه•ںه·¥ن½œéڑژو®µéپ¸و“‡ه™¨ | `boolean` |
+| `tui.openThemes()`             | é–‹ه•ںن¸»é،Œéپ¸و“‡ه™¨     | `boolean` |
+| `tui.openModels()`             | é–‹ه•ںو¨،ه‍‹éپ¸و“‡ه™¨     | `boolean` |
+| `tui.submitPrompt()`           | é€په‡؛ç•¶ه‰چوڈگç¤؛è©‍     | `boolean` |
+| `tui.clearPrompt()`            | و¸…é™¤وڈگç¤؛è©‍         | `boolean` |
+| `tui.executeCommand({ body })` | هں·è،ŒوŒ‡ن»¤           | `boolean` |
+| `tui.showToast({ body })`      | é،¯ç¤؛ Toast é€ڑçں¥    | `boolean` |
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
-// 控制 TUI 介面
+// وژ§هˆ¶ TUI ن»‹é‌¢
 await client.tui.appendPrompt({
   body: { text: "Add this to prompt" },
 })
@@ -427,13 +427,13 @@ await client.tui.showToast({
 
 ### Auth
 
-| 方法                | 描述         | 回應      |
+| و–¹و³•                | وڈڈè؟°         | ه›‍و‡‰      |
 | ------------------- | ------------ | --------- |
-| `auth.set({ ... })` | 設定驗證憑證 | `boolean` |
+| `auth.set({ ... })` | è¨­ه®ڑé©—è­‰و†‘è­‰ | `boolean` |
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
 await client.auth.set({
@@ -446,13 +446,13 @@ await client.auth.set({
 
 ### Events
 
-| 方法                | 描述                 | 回應                 |
+| و–¹و³•                | وڈڈè؟°                 | ه›‍و‡‰                 |
 | ------------------- | -------------------- | -------------------- |
-| `event.subscribe()` | 伺服器傳送的事件串流 | 伺服器傳送的事件串流 |
+| `event.subscribe()` | ن¼؛وœچه™¨ه‚³é€پçڑ„ن؛‹ن»¶ن¸²وµپ | ن¼؛وœچه™¨ه‚³é€پçڑ„ن؛‹ن»¶ن¸²وµپ |
 
 ---
 
-#### 範例
+#### ç¯„ن¾‹
 
 ```javascript
 // Listen to real-time events

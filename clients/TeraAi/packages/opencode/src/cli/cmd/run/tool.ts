@@ -1,21 +1,21 @@
-// Per-tool display rules shared across `opencode run` output paths.
+﻿// Per-tool display rules shared across `opencode run` output paths.
 //
 // Each known tool (bash, edit, write, task, etc.) has a ToolRule that controls
 // five display hooks:
 //
-//   view       → visibility policy for progress/final scrollback entries and
+//   view       â†’ visibility policy for progress/final scrollback entries and
 //                whether completed finals can render as structured snapshots
-//   run        → inline summary for the non-interactive `run` command output
-//   scroll     → text formatting for start/progress/final scrollback entries
-//   permission → display info for the permission UI (icon, title, diff)
-//   snap       → structured snapshot (code block, diff, task card) for rich
+//   run        â†’ inline summary for the non-interactive `run` command output
+//   scroll     â†’ text formatting for start/progress/final scrollback entries
+//   permission â†’ display info for the permission UI (icon, title, diff)
+//   snap       â†’ structured snapshot (code block, diff, task card) for rich
 //                scrollback entries
 //
 // Tools not in TOOL_RULES get fallback formatting.
 import os from "os"
 import path from "path"
 import stripAnsi from "strip-ansi"
-import type { ToolPart } from "@opencode-ai/sdk/v2"
+import type { ToolPart } from "@tera-system/sdk/v2"
 import type * as Tool from "@/tool/tool"
 import type { ApplyPatchTool } from "@/tool/apply_patch"
 import type { ShellTool as BashTool } from "@/tool/shell"
@@ -202,10 +202,10 @@ function span(state: ToolDict): string {
 function fail(ctx: ToolFrame): string {
   const error = toolError(ctx)
   if (error) {
-    return `✖ ${ctx.name} failed: ${error}`
+    return `âœ– ${ctx.name} failed: ${error}`
   }
 
-  return `✖ ${ctx.name} failed`
+  return `âœ– ${ctx.name} failed`
 }
 
 function toolError(ctx: ToolFrame): string {
@@ -224,10 +224,10 @@ function toolError(ctx: ToolFrame): string {
 function fallbackStart(ctx: ToolFrame): string {
   const extra = info(ctx.input)
   if (!extra) {
-    return `⚙ ${ctx.name}`
+    return `âڑ™ ${ctx.name}`
   }
 
-  return `⚙ ${ctx.name} ${extra}`
+  return `âڑ™ ${ctx.name} ${extra}`
 }
 
 function fallbackFinal(ctx: ToolFrame): string {
@@ -244,7 +244,7 @@ function fallbackFinal(ctx: ToolFrame): string {
     return `${ctx.name} completed`
   }
 
-  return `${ctx.name} completed · ${time}`
+  return `${ctx.name} completed آ· ${time}`
 }
 
 export function toolPath(input?: string, opts: { home?: boolean } = {}): string {
@@ -276,7 +276,7 @@ function fallbackInline(ctx: ToolFrame): ToolInline {
   const title = text(ctx.state.title) || (Object.keys(ctx.input).length > 0 ? JSON.stringify(ctx.input) : "Unknown")
 
   return {
-    icon: "⚙",
+    icon: "âڑ™",
     title: `${ctx.name} ${title}`,
   }
 }
@@ -290,9 +290,9 @@ function runGlob(p: ToolProps<typeof GlobTool>): ToolInline {
   const title = `Glob "${p.input.pattern ?? ""}"`
   const suffix = root ? `in ${toolPath(root)}` : ""
   const matches = p.metadata.count
-  const description = matches === undefined ? suffix : `${suffix}${suffix ? " · " : ""}${count(matches, "match")}`
+  const description = matches === undefined ? suffix : `${suffix}${suffix ? " آ· " : ""}${count(matches, "match")}`
   return {
-    icon: "✱",
+    icon: "âœ±",
     title,
     ...(description && { description }),
   }
@@ -303,9 +303,9 @@ function runGrep(p: ToolProps<typeof GrepTool>): ToolInline {
   const title = `Grep "${p.input.pattern ?? ""}"`
   const suffix = root ? `in ${toolPath(root)}` : ""
   const matches = p.metadata.matches
-  const description = matches === undefined ? suffix : `${suffix}${suffix ? " · " : ""}${count(matches, "match")}`
+  const description = matches === undefined ? suffix : `${suffix}${suffix ? " آ· " : ""}${count(matches, "match")}`
   return {
-    icon: "✱",
+    icon: "âœ±",
     title,
     ...(description && { description }),
   }
@@ -314,7 +314,7 @@ function runGrep(p: ToolProps<typeof GrepTool>): ToolInline {
 function runList(p: ToolProps): ToolInline {
   const dir = text(dict(p.input).path)
   return {
-    icon: "→",
+    icon: "â†’",
     title: dir ? `List ${toolPath(dir)}` : "List",
   }
 }
@@ -323,7 +323,7 @@ function runRead(p: ToolProps<typeof ReadTool>): ToolInline {
   const file = toolPath(p.input.filePath)
   const description = info(p.frame.input, ["filePath"]) || undefined
   return {
-    icon: "→",
+    icon: "â†’",
     title: `Read ${file}`,
     ...(description && { description }),
   }
@@ -331,7 +331,7 @@ function runRead(p: ToolProps<typeof ReadTool>): ToolInline {
 
 function runWrite(p: ToolProps<typeof WriteTool>): ToolInline {
   return {
-    icon: "←",
+    icon: "â†گ",
     title: `Write ${toolPath(p.input.filePath)}`,
     mode: "block",
     body: p.frame.status === "completed" ? text(p.frame.state.output) : undefined,
@@ -348,7 +348,7 @@ function runWebfetch(p: ToolProps<typeof WebFetchTool>): ToolInline {
 
 function runEdit(p: ToolProps<typeof EditTool>): ToolInline {
   return {
-    icon: "←",
+    icon: "â†گ",
     title: `Edit ${toolPath(p.input.filePath)}`,
     mode: "block",
     body: p.metadata.diff,
@@ -358,7 +358,7 @@ function runEdit(p: ToolProps<typeof EditTool>): ToolInline {
 function runWebSearch(p: ToolProps<typeof WebSearchTool>): ToolInline {
   const title = webSearchProviderLabel(p.metadata.provider)
   return {
-    icon: "◈",
+    icon: "â—ˆ",
     title: p.input.query ? `${title} "${p.input.query}"` : title,
   }
 }
@@ -366,7 +366,7 @@ function runWebSearch(p: ToolProps<typeof WebSearchTool>): ToolInline {
 function runTask(p: ToolProps<typeof TaskTool>): ToolInline {
   const kind = Locale.titlecase(p.input.subagent_type || "unknown")
   const desc = p.input.description
-  const icon = p.frame.status === "error" ? "✗" : p.frame.status === "running" ? "•" : "✓"
+  const icon = p.frame.status === "error" ? "âœ—" : p.frame.status === "running" ? "â€¢" : "âœ“"
   return {
     icon,
     title: desc || `${kind} Task`,
@@ -386,7 +386,7 @@ function runTodo(p: ToolProps<typeof TodoWriteTool>): ToolInline {
           return []
         }
 
-        const mark = item.status === "completed" ? "[✓]" : item.status === "in_progress" ? "[•]" : "[ ]"
+        const mark = item.status === "completed" ? "[âœ“]" : item.status === "in_progress" ? "[â€¢]" : "[ ]"
         return [`${mark} ${body}`]
       })
       .join("\n"),
@@ -395,7 +395,7 @@ function runTodo(p: ToolProps<typeof TodoWriteTool>): ToolInline {
 
 function runSkill(p: ToolProps<typeof SkillTool>): ToolInline {
   return {
-    icon: "→",
+    icon: "â†’",
     title: `Skill "${p.input.name ?? ""}"`,
   }
 }
@@ -418,14 +418,14 @@ function runPatch(p: ToolProps<typeof ApplyPatchTool>): ToolInline {
 function runQuestion(p: ToolProps<typeof QuestionTool>): ToolInline {
   const total = list(p.frame.input.questions).length
   return {
-    icon: "→",
+    icon: "â†’",
     title: `Asked ${total} question${total === 1 ? "" : "s"}`,
   }
 }
 
 function runInvalid(p: ToolProps<typeof InvalidTool>): ToolInline {
   return {
-    icon: "✗",
+    icon: "âœ—",
     title: text(p.frame.state.title) || "Invalid Tool",
     mode: "block",
     body: p.frame.status === "completed" ? text(p.frame.state.output) : undefined,
@@ -465,14 +465,14 @@ function lspTitle(
 
 function runLsp(p: ToolProps<typeof LspTool>): ToolInline {
   return {
-    icon: "→",
+    icon: "â†’",
     title: text(p.frame.state.title) || lspTitle(p.input),
   }
 }
 
 function runPlanExit(p: ToolProps<typeof PlanExitTool>): ToolInline {
   return {
-    icon: "→",
+    icon: "â†’",
     title: text(p.frame.state.title) || "Switching to build agent",
     mode: "block",
     body: p.frame.status === "completed" ? text(p.frame.state.output) : undefined,
@@ -678,17 +678,17 @@ function scrollBashFinal(p: ToolProps<typeof BashTool>): string {
       return "bash completed"
     }
 
-    return `bash completed · ${time}`
+    return `bash completed آ· ${time}`
   }
 
-  return `bash completed (exit ${code})${time ? ` · ${time}` : ""}`
+  return `bash completed (exit ${code})${time ? ` آ· ${time}` : ""}`
 }
 
 function scrollReadStart(p: ToolProps<typeof ReadTool>): string {
   const file = toolPath(p.input.filePath)
   const extra = info(p.frame.input, ["filePath"])
   const tail = extra ? ` ${extra}` : ""
-  return `→ Read ${file}${tail}`.trim()
+  return `â†’ Read ${file}${tail}`.trim()
 }
 
 function scrollWriteStart(_: ToolProps<typeof WriteTool>): string {
@@ -717,7 +717,7 @@ function patchLine(file: PatchFile): string {
   }
 
   if (type === "move") {
-    return `→ Moved ${toolPath(from)} → ${rel || toolPath(file.movePath)}`
+    return `â†’ Moved ${toolPath(from)} â†’ ${rel || toolPath(file.movePath)}`
   }
 
   return `~ Patched ${rel || toolPath(from)}`
@@ -735,7 +735,7 @@ function scrollPatchFinal(p: ToolProps<typeof ApplyPatchTool>): string {
       return "patch"
     }
 
-    return `patch · ${time}`
+    return `patch آ· ${time}`
   }
 
   const show_updates = !files.some((file) => file?.type && file.type !== "update")
@@ -800,7 +800,7 @@ function scrollTodoFinal(p: ToolProps<typeof TodoWriteTool>): string {
       return "0 todos"
     }
 
-    return `0 todos · ${time}`
+    return `0 todos آ· ${time}`
   }
 
   const doneN = items.filter((item) => item.status === "completed").length
@@ -821,7 +821,7 @@ function scrollTodoFinal(p: ToolProps<typeof TodoWriteTool>): string {
     tail.push(time)
   }
 
-  return tail.join(" · ")
+  return tail.join(" آ· ")
 }
 
 function scrollQuestionStart(_: ToolProps<typeof QuestionTool>): string {
@@ -837,7 +837,7 @@ function scrollQuestionFinal(p: ToolProps<typeof QuestionTool>): string {
       return "0 questions"
     }
 
-    return `0 questions · ${time}`
+    return `0 questions آ· ${time}`
   }
 
   const rows: string[] = []
@@ -856,16 +856,16 @@ function scrollQuestionFinal(p: ToolProps<typeof QuestionTool>): string {
 }
 
 function scrollLspStart(p: ToolProps<typeof LspTool>): string {
-  return `→ ${lspTitle(p.input)}`
+  return `â†’ ${lspTitle(p.input)}`
 }
 
 function scrollSkillStart(p: ToolProps<typeof SkillTool>): string {
-  return `→ Skill "${p.input.name ?? ""}"`
+  return `â†’ Skill "${p.input.name ?? ""}"`
 }
 
 function scrollGlobStart(p: ToolProps<typeof GlobTool>): string {
   const pattern = p.input.pattern ?? ""
-  const head = pattern ? `✱ Glob "${pattern}"` : "✱ Glob"
+  const head = pattern ? `âœ± Glob "${pattern}"` : "âœ± Glob"
   const dir = p.input.path ?? ""
   if (!dir) {
     return head
@@ -880,7 +880,7 @@ function scrollGlobFinal(p: ToolProps<typeof GlobTool>): string {
 
 function scrollGrepStart(p: ToolProps<typeof GrepTool>): string {
   const pattern = p.input.pattern ?? ""
-  const head = pattern ? `✱ Grep "${pattern}"` : "✱ Grep"
+  const head = pattern ? `âœ± Grep "${pattern}"` : "âœ± Grep"
   const dir = p.input.path ?? ""
   if (!dir) {
     return head
@@ -892,10 +892,10 @@ function scrollGrepStart(p: ToolProps<typeof GrepTool>): string {
 function scrollListStart(p: ToolProps): string {
   const dir = text(dict(p.input).path)
   if (!dir) {
-    return "→ List"
+    return "â†’ List"
   }
 
-  return `→ List ${toolPath(dir)}`
+  return `â†’ List ${toolPath(dir)}`
 }
 
 function scrollWebfetchStart(p: ToolProps<typeof WebFetchTool>): string {
@@ -911,17 +911,17 @@ function scrollWebSearchStart(p: ToolProps<typeof WebSearchTool>): string {
   const title = webSearchProviderLabel(p.metadata.provider)
   const query = p.input.query ?? ""
   if (!query) {
-    return `◈ ${title}`
+    return `â—ˆ ${title}`
   }
 
-  return `◈ ${title} "${query}"`
+  return `â—ˆ ${title} "${query}"`
 }
 
 function permEdit(p: ToolPermissionProps<typeof EditTool>): ToolPermissionInfo {
   const input = p.input as { filePath?: string; filepath?: string; diff?: string }
   const file = input.filePath || input.filepath || p.patterns[0] || ""
   return {
-    icon: "→",
+    icon: "â†’",
     title: `Edit ${toolPath(file, { home: true })}`,
     lines: [],
     diff: p.metadata.diff ?? input.diff,
@@ -932,7 +932,7 @@ function permEdit(p: ToolPermissionProps<typeof EditTool>): ToolPermissionInfo {
 function permRead(p: ToolPermissionProps<typeof ReadTool>): ToolPermissionInfo {
   const file = p.input.filePath || p.patterns[0] || ""
   return {
-    icon: "→",
+    icon: "â†’",
     title: `Read ${toolPath(file, { home: true })}`,
     lines: file ? [`Path: ${toolPath(file, { home: true })}`] : [],
   }
@@ -941,7 +941,7 @@ function permRead(p: ToolPermissionProps<typeof ReadTool>): ToolPermissionInfo {
 function permGlob(p: ToolPermissionProps<typeof GlobTool>): ToolPermissionInfo {
   const pattern = p.input.pattern || p.patterns[0] || ""
   return {
-    icon: "✱",
+    icon: "âœ±",
     title: `Glob "${pattern}"`,
     lines: pattern ? [`Pattern: ${pattern}`] : [],
   }
@@ -950,7 +950,7 @@ function permGlob(p: ToolPermissionProps<typeof GlobTool>): ToolPermissionInfo {
 function permGrep(p: ToolPermissionProps<typeof GrepTool>): ToolPermissionInfo {
   const pattern = p.input.pattern || p.patterns[0] || ""
   return {
-    icon: "✱",
+    icon: "âœ±",
     title: `Grep "${pattern}"`,
     lines: pattern ? [`Pattern: ${pattern}`] : [],
   }
@@ -959,7 +959,7 @@ function permGrep(p: ToolPermissionProps<typeof GrepTool>): ToolPermissionInfo {
 function permList(p: ToolPermissionProps): ToolPermissionInfo {
   const dir = text(dict(p.input).path) || p.patterns[0] || ""
   return {
-    icon: "→",
+    icon: "â†’",
     title: `List ${toolPath(dir, { home: true })}`,
     lines: dir ? [`Path: ${toolPath(dir, { home: true })}`] : [],
   }
@@ -980,7 +980,7 @@ function permTask(p: ToolPermissionProps<typeof TaskTool>): ToolPermissionInfo {
   return {
     icon: "#",
     title: `${Locale.titlecase(type)} Task`,
-    lines: desc ? [`◉ ${desc}`] : [],
+    lines: desc ? [`â—‰ ${desc}`] : [],
   }
 }
 
@@ -997,7 +997,7 @@ function permWebSearch(p: ToolPermissionProps<typeof WebSearchTool>): ToolPermis
   const query = p.input.query || ""
   const title = webSearchProviderLabel(p.metadata.provider)
   return {
-    icon: "◈",
+    icon: "â—ˆ",
     title: query ? `${title} "${query}"` : title,
     lines: query ? [`Query: ${query}`] : [],
   }
@@ -1009,7 +1009,7 @@ function permLsp(p: ToolPermissionProps<typeof LspTool>): ToolPermissionInfo {
   const char = typeof p.input.character === "number" ? p.input.character : undefined
   const pos = line !== undefined && char !== undefined ? `${line}:${char}` : undefined
   return {
-    icon: "→",
+    icon: "â†’",
     title: lspTitle(p.input, { home: true }),
     lines: [
       ...(p.input.operation ? [`Operation: ${p.input.operation}`] : []),

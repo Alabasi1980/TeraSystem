@@ -1,10 +1,10 @@
-import type { WorkspaceV2 } from "@opencode-ai/core/workspace"
-import { Flag } from "@opencode-ai/core/flag/flag"
+﻿import type { WorkspaceV2 } from "@tera-system/core/workspace"
+import { Flag } from "@tera-system/core/flag/flag"
 import { Effect, Scope } from "effect"
 
 /**
  * Scoped override for `Flag.OPENCODE_WORKSPACE_ID`. Saves the previous value
- * on entry and restores it via finalizer when the surrounding scope closes —
+ * on entry and restores it via finalizer when the surrounding scope closes â€”
  * preserves the original try/finally semantics regardless of test outcome.
  */
 export function withFixedWorkspaceID(id: WorkspaceV2.ID): Effect.Effect<void, never, Scope.Scope> {

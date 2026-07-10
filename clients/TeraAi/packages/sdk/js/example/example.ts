@@ -1,4 +1,4 @@
-import { createOpencodeClient, createOpencodeServer } from "@opencode-ai/sdk"
+﻿import { createOpencodeClient, createOpencodeServer } from "@tera-system/sdk"
 import { pathToFileURL } from "bun"
 
 const server = await createOpencodeServer()

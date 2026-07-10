@@ -1,4 +1,4 @@
-import { useTerminalDimensions } from "@opentui/solid"
+﻿import { useTerminalDimensions } from "@opentui/solid"
 import { TextAttributes } from "@opentui/core"
 import { createMemo, createResource, createSignal, onMount, Show } from "solid-js"
 import path from "path"
@@ -16,7 +16,7 @@ import { useCommandShortcut } from "../keymap"
 import { useProject } from "../context/project"
 import { Spinner } from "./spinner"
 import { DialogWorkspaceFileChanges } from "./dialog-workspace-file-changes"
-import type { ProjectDirectories } from "@opencode-ai/sdk/v2"
+import type { ProjectDirectories } from "@tera-system/sdk/v2"
 import { useRoute } from "../context/route"
 
 export type MoveSessionSelection = { type: "directory"; directory: string; subdirectory: boolean } | { type: "new" }

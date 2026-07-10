@@ -1,9 +1,9 @@
----
+﻿---
 title: Programtillegg
-description: Skriv dine egne programtillegg for å utvide OpenCode.
+description: Skriv dine egne programtillegg for أ¥ utvide OpenCode.
 ---
 
-Plugins lar deg utvide OpenCode ved å koble til ulike hendelser og tilpasse atferd. Du kan lage plugins for å legge til nye funksjoner, integrere med eksterne tjenester eller endre standardoppførselen til OpenCode.
+Plugins lar deg utvide OpenCode ved أ¥ koble til ulike hendelser og tilpasse atferd. Du kan lage plugins for أ¥ legge til nye funksjoner, integrere med eksterne tjenester eller endre standardoppfأ¸rselen til OpenCode.
 
 For eksempler, sjekk ut [plugins](/docs/ecosystem#plugins) opprettet av fellesskapet.
 
@@ -11,7 +11,7 @@ For eksempler, sjekk ut [plugins](/docs/ecosystem#plugins) opprettet av fellessk
 
 ## Bruk av en plugin
 
-Det er to måter å laste inn plugins.
+Det er to mأ¥ter أ¥ laste inn plugins.
 
 ---
 
@@ -19,7 +19,7 @@ Det er to måter å laste inn plugins.
 
 Plasser JavaScript- eller TypeScript-filer i plugin-katalogen.
 
-- `.opencode/plugins/` - Programtillegg på prosjektnivå
+- `.opencode/plugins/` - Programtillegg pأ¥ prosjektnivأ¥
 - `~/.config/opencode/plugins/` - Globale plugins
 
 Filer i disse katalogene lastes automatisk ved oppstart.
@@ -37,9 +37,9 @@ Spesifiser npm-pakker i konfigurasjonsfilen.
 }
 ```
 
-Både vanlige og scoped npm-pakker støttes.
+Bأ¥de vanlige og scoped npm-pakker stأ¸ttes.
 
-Bla gjennom tilgjengelige plugins i [økosystemet](/docs/ecosystem#plugins).
+Bla gjennom tilgjengelige plugins i [أ¸kosystemet](/docs/ecosystem#plugins).
 
 ---
 
@@ -47,20 +47,20 @@ Bla gjennom tilgjengelige plugins i [økosystemet](/docs/ecosystem#plugins).
 
 **npm-plugins** installeres automatisk ved hjelp av Bun ved oppstart. Pakker og deres avhengigheter er bufret i `~/.cache/opencode/node_modules/`.
 
-**Lokale plugins** lastes direkte fra plugin-katalogen. For å bruke eksterne pakker, må du opprette en `package.json` i konfigurasjonskatalogen din (se [Dependencies](#dependencies)), eller publisere plugin-en til npm og [legg den til i konfigurasjonen din](/docs/config#plugins).
+**Lokale plugins** lastes direkte fra plugin-katalogen. For أ¥ bruke eksterne pakker, mأ¥ du opprette en `package.json` i konfigurasjonskatalogen din (se [Dependencies](#dependencies)), eller publisere plugin-en til npm og [legg den til i konfigurasjonen din](/docs/config#plugins).
 
 ---
 
-### Lasterekkefølge
+### Lasterekkefأ¸lge
 
-Plugins lastes inn fra alle kilder og alle kroker kjøres i rekkefølge. Lastrekkefølgen er:
+Plugins lastes inn fra alle kilder og alle kroker kjأ¸res i rekkefأ¸lge. Lastrekkefأ¸lgen er:
 
 1. Global konfigurasjon (`~/.config/opencode/opencode.json`)
 2. Prosjektkonfigurasjon (`opencode.json`)
 3. Global plugin-katalog (`~/.config/opencode/plugins/`)
 4. Prosjektpluginkatalog (`.opencode/plugins/`)
 
-Dupliserte npm-pakker med samme navn og versjon lastes inn én gang. Imidlertid lastes en lokal plugin og en npm plugin med lignende navn begge separat.
+Dupliserte npm-pakker med samme navn og versjon lastes inn أ©n gang. Imidlertid lastes en lokal plugin og en npm plugin med lignende navn begge separat.
 
 ---
 
@@ -73,7 +73,7 @@ funksjoner. Hver funksjon mottar et kontekstobjekt og returnerer et krokobjekt.
 
 ### Avhengigheter
 
-Lokale plugins og tilpassede verktøy kan bruke eksterne npm-pakker. Legg til en `package.json` til konfigurasjonskatalogen med avhengighetene du trenger.
+Lokale plugins og tilpassede verktأ¸y kan bruke eksterne npm-pakker. Legg til en `package.json` til konfigurasjonskatalogen med avhengighetene du trenger.
 
 ```json title=".opencode/package.json"
 {
@@ -83,7 +83,7 @@ Lokale plugins og tilpassede verktøy kan bruke eksterne npm-pakker. Legg til en
 }
 ```
 
-OpenCode kjører `bun install` ved oppstart for å installere disse. Programtilleggene og verktøyene dine kan deretter importere dem.
+OpenCode kjأ¸rer `bun install` ved oppstart for أ¥ installere disse. Programtilleggene og verktأ¸yene dine kan deretter importere dem.
 
 ```ts title=".opencode/plugins/my-plugin.ts"
 import { escape } from "shescape"
@@ -119,16 +119,16 @@ Plugin-funksjonen mottar:
 - `directory`: Gjeldende arbeidskatalog.
 - `worktree`: Git-arbeidstrebanen.
 - `client`: En OpenCode SDK klient for samhandling med AI.
-- `$`: Buns [shell API](https://bun.com/docs/runtime/shell) for å utføre kommandoer.
+- `$`: Buns [shell API](https://bun.com/docs/runtime/shell) for أ¥ utfأ¸re kommandoer.
 
 ---
 
-### TypeScript-støtte
+### TypeScript-stأ¸tte
 
 For TypeScript-plugins kan du importere typer fra plugin-pakken:
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -141,7 +141,7 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ### Hendelser
 
-Plugins kan abonnere på hendelser som vist nedenfor i Eksempler-delen. Her er en liste over de forskjellige hendelsene som er tilgjengelige.
+Plugins kan abonnere pأ¥ hendelser som vist nedenfor i Eksempler-delen. Her er en liste over de forskjellige hendelsene som er tilgjengelige.
 
 #### Kommandohendelser
 
@@ -196,7 +196,7 @@ Plugins kan abonnere på hendelser som vist nedenfor i Eksempler-delen. Her er e
 
 - `shell.env`
 
-#### Verktøyhendelser
+#### Verktأ¸yhendelser
 
 - `tool.execute.after`
 - `tool.execute.before`
@@ -211,13 +211,13 @@ Plugins kan abonnere på hendelser som vist nedenfor i Eksempler-delen. Her er e
 
 ## Eksempler
 
-Her er noen eksempler på plugins du kan bruke for å utvide OpenCode.
+Her er noen eksempler pأ¥ plugins du kan bruke for أ¥ utvide OpenCode.
 
 ---
 
 ### Send varsler
 
-Send varsler når visse hendelser inntreffer:
+Send varsler nأ¥r visse hendelser inntreffer:
 
 ```js title=".opencode/plugins/notification.js"
 export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
@@ -232,17 +232,17 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 }
 ```
 
-Vi bruker `osascript` for å kjøre AppleScript på macOS. Her bruker vi den til å sende varsler.
+Vi bruker `osascript` for أ¥ kjأ¸re AppleScript pأ¥ macOS. Her bruker vi den til أ¥ sende varsler.
 
 :::note
-Hvis du bruker OpenCode-skrivebordsappen, kan den sende systemvarsler automatisk når et svar er klart eller når en økt feiler.
+Hvis du bruker OpenCode-skrivebordsappen, kan den sende systemvarsler automatisk nأ¥r et svar er klart eller nأ¥r en أ¸kt feiler.
 :::
 
 ---
 
 ### .env-beskyttelse
 
-Hindre OpenCode fra å lese `.env` filer:
+Hindre OpenCode fra أ¥ lese `.env` filer:
 
 ```javascript title=".opencode/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
@@ -258,9 +258,9 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 ---
 
-### Injiser miljøvariabler
+### Injiser miljأ¸variabler
 
-Injiser miljøvariabler i all shell-utførelse (AI-verktøy og brukerterminaler):
+Injiser miljأ¸variabler i all shell-utfأ¸relse (AI-verktأ¸y og brukerterminaler):
 
 ```javascript title=".opencode/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
@@ -275,12 +275,12 @@ export const InjectEnvPlugin = async () => {
 
 ---
 
-### Egendefinerte verktøy
+### Egendefinerte verktأ¸y
 
-Plugins kan også legge til egendefinerte verktøy til OpenCode:
+Plugins kan ogsأ¥ legge til egendefinerte verktأ¸y til OpenCode:
 
 ```ts title=".opencode/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@opencode-ai/plugin"
+import { type Plugin, tool } from "@tera-system/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -300,16 +300,16 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-`tool`-hjelperen lager et tilpasset verktøy som OpenCode kan kalle. Den tar en Zod-skjemafunksjon og returnerer en verktøydefinisjon med:
+`tool`-hjelperen lager et tilpasset verktأ¸y som OpenCode kan kalle. Den tar en Zod-skjemafunksjon og returnerer en verktأ¸ydefinisjon med:
 
-- `description`: Hva verktøyet gjør
-- `args`: Zod-skjema for verktøyets argumenter
-  - `execute`: Funksjon som kjører når verktøyet kalles
+- `description`: Hva verktأ¸yet gjأ¸r
+- `args`: Zod-skjema for verktأ¸yets argumenter
+  - `execute`: Funksjon som kjأ¸rer nأ¥r verktأ¸yet kalles
 
-Dine egendefinerte verktøy vil være tilgjengelige for OpenCode sammen med innebygde verktøy.
+Dine egendefinerte verktأ¸y vil vأ¦re tilgjengelige for OpenCode sammen med innebygde verktأ¸y.
 
 :::note
-Hvis et plugin-verktøy bruker samme navn som et innebygd verktøy, vil plugin-verktøyet ha forrang.
+Hvis et plugin-verktأ¸y bruker samme navn som et innebygd verktأ¸y, vil plugin-verktأ¸yet ha forrang.
 :::
 
 ---
@@ -331,16 +331,16 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-Nivåer: `debug`, `info`, `warn`, `error`. Se [SDK dokumentasjon](https://opencode.ai/docs/sdk) for detaljer.
+Nivأ¥er: `debug`, `info`, `warn`, `error`. Se [SDK dokumentasjon](https://opencode.ai/docs/sdk) for detaljer.
 
 ---
 
 ### Komprimerings-hooks
 
-Tilpass konteksten inkludert når en økt komprimeres:
+Tilpass konteksten inkludert nأ¥r en أ¸kt komprimeres:
 
 ```ts title=".opencode/plugins/compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -359,12 +359,12 @@ Include any state that should persist across compaction:
 }
 ```
 
-`experimental.session.compacting`-kroken trigges før LLM genererer et fortsettelsessammendrag. Bruk den til å injisere domenespesifikk kontekst som standard komprimeringsprompt ville gå glipp av.
+`experimental.session.compacting`-kroken trigges fأ¸r LLM genererer et fortsettelsessammendrag. Bruk den til أ¥ injisere domenespesifikk kontekst som standard komprimeringsprompt ville gأ¥ glipp av.
 
-Du kan også erstatte komprimeringsprompten helt ved å stille inn `output.prompt`:
+Du kan ogsأ¥ erstatte komprimeringsprompten helt ved أ¥ stille inn `output.prompt`:
 
 ```ts title=".opencode/plugins/custom-compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -386,4 +386,4 @@ Format as a structured prompt that a new agent can use to resume work.
 }
 ```
 
-Når `output.prompt` er angitt, erstatter den standard komprimeringsprompt fullstendig. `output.context`-matrisen ignoreres i dette tilfellet.
+Nأ¥r `output.prompt` er angitt, erstatter den standard komprimeringsprompt fullstendig. `output.context`-matrisen ignoreres i dette tilfellet.

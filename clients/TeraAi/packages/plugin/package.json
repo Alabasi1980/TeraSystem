@@ -1,6 +1,6 @@
-{
+﻿{
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@opencode-ai/plugin",
+  "name": "@tera-system/plugin",
   "version": "1.17.18",
   "type": "module",
   "license": "MIT",
@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "@ai-sdk/provider": "3.0.8",
-    "@opencode-ai/sdk": "workspace:*",
+    "@tera-system/sdk": "workspace:*",
     "effect": "catalog:",
     "zod": "catalog:"
   },
@@ -52,3 +52,4 @@
     "@typescript/native-preview": "catalog:"
   }
 }
+

@@ -1,5 +1,5 @@
-import { define } from "./internal"
-import type { ModelV2Info } from "@opencode-ai/sdk/v2/types"
+﻿import { define } from "./internal"
+import type { ModelV2Info } from "@tera-system/sdk/v2/types"
 import { Effect, Stream } from "effect"
 import { EventV2 } from "../event"
 import { ModelsDev } from "../models-dev"

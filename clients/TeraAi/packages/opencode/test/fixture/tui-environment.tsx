@@ -1,10 +1,10 @@
-/** @jsxImportSource @opentui/solid */
+﻿/** @jsxImportSource @opentui/solid */
 import {
   TuiPathsProvider,
   TuiStartupProvider,
   TuiTerminalEnvironmentProvider,
   type TuiPaths,
-} from "@opencode-ai/tui/context/runtime"
+} from "@tera-system/tui/context/runtime"
 import type { ParentProps } from "solid-js"
 
 export function TestTuiContexts(

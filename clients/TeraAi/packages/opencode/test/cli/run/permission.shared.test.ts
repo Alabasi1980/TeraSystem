@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test"
-import type { PermissionRequest } from "@opencode-ai/sdk/v2"
+﻿import { describe, expect, test } from "bun:test"
+import type { PermissionRequest } from "@tera-system/sdk/v2"
 import {
   createPermissionBodyState,
   permissionAlwaysLines,
@@ -105,7 +105,7 @@ describe("run permission shared", () => {
       ),
     ).toMatchObject({
       title: "General Task",
-      lines: ["◉ investigate stream"],
+      lines: ["â—‰ investigate stream"],
     })
 
     expect(

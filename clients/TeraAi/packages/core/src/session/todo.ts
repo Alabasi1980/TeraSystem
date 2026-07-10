@@ -1,8 +1,8 @@
-export * as SessionTodo from "./todo"
+﻿export * as SessionTodo from "./todo"
 
 import { asc, eq } from "drizzle-orm"
 import { Context, Effect, Layer } from "effect"
-import { SessionTodo } from "@opencode-ai/schema/session-todo"
+import { SessionTodo } from "@tera-system/schema/session-todo"
 import { Database } from "../database/database"
 import { makeLocationNode } from "../effect/app-node"
 import { EventV2 } from "../event"

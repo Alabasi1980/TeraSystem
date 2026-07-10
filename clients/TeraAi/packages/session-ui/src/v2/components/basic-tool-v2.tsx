@@ -1,7 +1,7 @@
-import { Collapsible } from "@kobalte/core/collapsible"
+﻿import { Collapsible } from "@kobalte/core/collapsible"
 import { type ComponentProps, type JSX, For, Show, createMemo, splitProps } from "solid-js"
-import { DiffChanges } from "@opencode-ai/ui/v2/diff-changes-v2"
-import { TextShimmerV2 } from "@opencode-ai/ui/v2/text-shimmer-v2"
+import { DiffChanges } from "@tera-system/ui/v2/diff-changes-v2"
+import { TextShimmerV2 } from "@tera-system/ui/v2/text-shimmer-v2"
 import "./basic-tool-v2.css"
 
 function ChevronIcon() {
@@ -95,7 +95,7 @@ export function BasicToolV2(props: BasicToolV2Props) {
                 </span>
                 <Show when={!pending() && title().subtitle}>
                   <span data-slot="basic-tool-v2-sep" aria-hidden="true">
-                    ·
+                    آ·
                   </span>
                   <span
                     data-slot="basic-tool-v2-subtitle"

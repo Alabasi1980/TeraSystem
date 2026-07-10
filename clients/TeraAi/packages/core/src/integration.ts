@@ -1,4 +1,4 @@
-export * as Integration from "./integration"
+﻿export * as Integration from "./integration"
 
 import { makeLocationNode } from "./effect/app-node"
 import {
@@ -15,7 +15,7 @@ import {
   SynchronizedRef,
   Types,
 } from "effect"
-import { Integration } from "@opencode-ai/schema/integration"
+import { Integration } from "@tera-system/schema/integration"
 import { Credential } from "./credential"
 import { State } from "./state"
 import { EventV2 } from "./event"

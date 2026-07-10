@@ -1,16 +1,16 @@
-import { afterEach, describe, expect } from "bun:test"
-import { ConfigV1 } from "@opencode-ai/core/v1/config/config"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
+﻿import { afterEach, describe, expect } from "bun:test"
+import { ConfigV1 } from "@tera-system/core/v1/config/config"
+import { SessionV1 } from "@tera-system/core/v1/session"
 import { Deferred, Effect, Layer } from "effect"
 import type * as Scope from "effect/Scope"
 import { HttpServer } from "effect/unstable/http"
 import { ChildProcessSpawner } from "effect/unstable/process"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
-import { Flag } from "@opencode-ai/core/flag/flag"
-import { createOpencodeClient } from "@opencode-ai/sdk/v2"
+import { AppNodeBuilder } from "@tera-system/core/effect/app-node-builder"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { FSUtil } from "@tera-system/core/fs-util"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
+import { Flag } from "@tera-system/core/flag/flag"
+import { createOpencodeClient } from "@tera-system/sdk/v2"
 import { validateSession } from "../../src/cli/tui/validate-session"
 import { InstanceBootstrap } from "../../src/project/bootstrap"
 import { InstanceStore } from "../../src/project/instance-store"
@@ -26,9 +26,9 @@ import { resetDatabase } from "../fixture/db"
 import { disposeAllInstances, TestInstance, tmpdirScoped } from "../fixture/fixture"
 import { awaitWithTimeout, pollWithTimeout, testEffect } from "../lib/effect"
 import { testProviderConfig } from "../lib/test-provider"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { Database } from "@opencode-ai/core/database/database"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
+import { Database } from "@tera-system/core/database/database"
 import { httpApiLayer } from "./httpapi-layer"
 
 const noopBootstrapLayer = Layer.succeed(InstanceBootstrap.Service, InstanceBootstrap.Service.of({ run: Effect.void }))
@@ -672,8 +672,8 @@ describe("HttpApi SDK", () => {
 
   // Regression: EventV2 must publish on the same ProjectBus the /event handler
   // subscribes to, AND the /event stream must forward handler ALS/context into the
-  // body-pump fiber. Drives the full SDK → /event → Session.updatePart → sync.run →
-  // bus.publish → SDK subscriber path. Goes red if either the publisher uses a
+  // body-pump fiber. Drives the full SDK â†’ /event â†’ Session.updatePart â†’ sync.run â†’
+  // bus.publish â†’ SDK subscriber path. Goes red if either the publisher uses a
   // different bus instance (Bug 2 / pre-#27825) or the stream loses context (Bug 1 /
   // pre-#27425).
   serverPathParity("streams sync-backed part updates to /event subscribers", (serverPath) =>

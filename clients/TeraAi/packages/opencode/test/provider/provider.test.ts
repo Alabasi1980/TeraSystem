@@ -1,13 +1,13 @@
-import { afterEach, expect, test } from "bun:test"
+﻿import { afterEach, expect, test } from "bun:test"
 import { mkdir, unlink } from "fs/promises"
 import path from "path"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { AppNodeBuilder } from "@tera-system/core/effect/app-node-builder"
 import { Effect, Layer } from "effect"
-import { ModelsDev } from "@opencode-ai/core/models-dev"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
-import { Global } from "@opencode-ai/core/global"
+import { ModelsDev } from "@tera-system/core/models-dev"
+import { FSUtil } from "@tera-system/core/fs-util"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
+import { Global } from "@tera-system/core/global"
 import { disposeAllInstances, provideInstanceEffect, tmpdirScoped, TestInstance } from "../fixture/fixture"
 import { markPluginDependenciesReady } from "../fixture/plugin"
 import { Auth } from "@/auth"
@@ -21,8 +21,8 @@ import { Filesystem } from "@/util/filesystem"
 import { InstanceBootstrap } from "@/project/bootstrap"
 import { InstanceStore } from "@/project/instance-store"
 import { testEffect } from "../lib/effect"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
 
 const originalEnv = new Map<string, string | undefined>()
 
@@ -329,7 +329,7 @@ it.instance("getModel throws ModelNotFoundError for invalid provider", () =>
   }),
 )
 
-// Pure synchronous unit tests — no Effect runtime needed.
+// Pure synchronous unit tests â€” no Effect runtime needed.
 
 test("parseModel correctly parses provider/model string", () => {
   const result = Provider.parseModel("anthropic/claude-sonnet-4")
@@ -987,7 +987,7 @@ it.instance(
     expect(providers[ProviderV2.ID.google]).toBeUndefined()
   }),
   {
-    // enabled_providers takes precedence — only these are considered
+    // enabled_providers takes precedence â€” only these are considered
     // Then disabled_providers filters from the enabled set
     config: { enabled_providers: ["anthropic", "openai"], disabled_providers: ["openai"] },
   },

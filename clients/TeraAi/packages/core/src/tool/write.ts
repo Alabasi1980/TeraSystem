@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Model-facing V2 file-write leaf. Relative paths resolve within the active
  * Location. Absolute paths inside that Location are accepted, while explicit
  * absolute external paths retain mutation capability through a separate
@@ -6,7 +6,7 @@
  */
 export * as WriteTool from "./write"
 
-import { ToolFailure } from "@opencode-ai/llm"
+import { ToolFailure } from "@tera-system/llm"
 import { Effect, Layer, Schema } from "effect"
 import { makeLocationNode } from "../effect/app-node"
 import { FileMutation } from "../file-mutation"

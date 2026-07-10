@@ -1,6 +1,6 @@
-import { DataProvider } from "@opencode-ai/session-ui/context"
+﻿import { DataProvider } from "@tera-system/session-ui/context"
 import { showToast } from "@/utils/toast"
-import { base64Encode } from "@opencode-ai/core/util/encode"
+import { base64Encode } from "@tera-system/core/util/encode"
 import { useLocation, useNavigate, useParams } from "@solidjs/router"
 import { type Accessor, createEffect, createMemo, createResource, onCleanup, type ParentProps, Show } from "solid-js"
 import { useLanguage } from "@/context/language"
@@ -34,7 +34,7 @@ export function DirectoryDataProvider(
   }
 
   createEffect(() => {
-    // A draft lives at /new-session?draftId=… and has no directory segment to normalize.
+    // A draft lives at /new-session?draftId=â€¦ and has no directory segment to normalize.
     if (props.draftID || props.server?.()) return
     const next = sync().data.path.directory
     if (!next || next === directory()) return

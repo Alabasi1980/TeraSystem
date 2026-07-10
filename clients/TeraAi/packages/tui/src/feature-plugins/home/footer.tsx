@@ -1,4 +1,4 @@
-import type { TuiPlugin, TuiPluginApi } from "@opencode-ai/plugin/tui"
+﻿import type { TuiPlugin, TuiPluginApi } from "@tera-system/plugin/tui"
 import type { BuiltinTuiPlugin } from "../builtins"
 import { createMemo, Match, Show, Switch } from "solid-js"
 import { abbreviateHome } from "../../runtime"
@@ -37,10 +37,10 @@ function Mcp(props: { api: TuiPluginApi }) {
         <text fg={theme().text}>
           <Switch>
             <Match when={err()}>
-              <span style={{ fg: theme().error }}>⊙ </span>
+              <span style={{ fg: theme().error }}>âٹ™ </span>
             </Match>
             <Match when={true}>
-              <span style={{ fg: count() > 0 ? theme().success : theme().textMuted }}>⊙ </span>
+              <span style={{ fg: count() > 0 ? theme().success : theme().textMuted }}>âٹ™ </span>
             </Match>
           </Switch>
           {count()} MCP

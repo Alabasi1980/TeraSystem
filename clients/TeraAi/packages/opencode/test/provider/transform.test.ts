@@ -1,9 +1,9 @@
-import { describe, expect, test } from "bun:test"
+﻿import { describe, expect, test } from "bun:test"
 import { Effect } from "effect"
 import { ProviderTransform } from "@/provider/transform"
 import { LLMRequestPrep } from "@/session/llm/request"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
 import { jsonSchema } from "ai"
 
 describe("ProviderTransform.options - setCacheKey", () => {
@@ -1786,8 +1786,8 @@ describe("ProviderTransform.message - surrogate sanitization", () => {
 
   test("replaces lone surrogates in model-visible text", () => {
     const lone = "\uD83D"
-    const valid = "🚀"
-    const sanitized = "�"
+    const valid = "ًںڑ€"
+    const sanitized = "ï؟½"
     const text = (label: string) => `${label} ${lone} and ${valid}`
     const expected = (label: string) => `${label} ${sanitized} and ${valid}`
     const msgs = [

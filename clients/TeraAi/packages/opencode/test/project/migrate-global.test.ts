@@ -1,16 +1,16 @@
-import { describe, expect } from "bun:test"
+﻿import { describe, expect } from "bun:test"
 import { Project } from "@/project/project"
-import { Database } from "@opencode-ai/core/database/database"
+import { Database } from "@tera-system/core/database/database"
 import { eq } from "drizzle-orm"
-import { SessionTable } from "@opencode-ai/core/session/sql"
-import { ProjectTable } from "@opencode-ai/core/project/sql"
-import { AbsolutePath } from "@opencode-ai/core/schema"
-import { ProjectV2 } from "@opencode-ai/core/project"
+import { SessionTable } from "@tera-system/core/session/sql"
+import { ProjectTable } from "@tera-system/core/project/sql"
+import { AbsolutePath } from "@tera-system/core/schema"
+import { ProjectV2 } from "@tera-system/core/project"
 import { SessionID } from "../../src/session/schema"
 import { $ } from "bun"
 import { tmpdirScoped } from "../fixture/fixture"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
 import { Effect } from "effect"
 import { testEffect } from "../lib/effect"
 
@@ -61,7 +61,7 @@ function ensureGlobal() {
 describe("migrateFromGlobal", () => {
   it.live("migrates global sessions on first project creation", () =>
     Effect.gen(function* () {
-      // 1. Start with git init but no commits — creates "global" project row
+      // 1. Start with git init but no commits â€” creates "global" project row
       const tmp = yield* tmpdirScoped()
       yield* Effect.promise(() => $`git init`.cwd(tmp).quiet())
       yield* Effect.promise(() => $`git config user.name "Test"`.cwd(tmp).quiet())
@@ -92,7 +92,7 @@ describe("migrateFromGlobal", () => {
 
   it.live("migrates global sessions even when project row already exists", () =>
     Effect.gen(function* () {
-      // 1. Create a repo with a commit — real project ID created immediately
+      // 1. Create a repo with a commit â€” real project ID created immediately
       const tmp = yield* tmpdirScoped({ git: true })
       const projects = yield* Project.Service
       const { project } = yield* projects.fromDirectory(tmp)
@@ -107,7 +107,7 @@ describe("migrateFromGlobal", () => {
       const id = legacySessionID()
       yield* seed({ id, dir: tmp, project: ProjectV2.ID.global })
 
-      // 4. Call fromDirectory again — project row already exists,
+      // 4. Call fromDirectory again â€” project row already exists,
       //    so the current code skips migration entirely. This is the bug.
       yield* projects.fromDirectory(tmp)
 
@@ -161,7 +161,7 @@ describe("migrateFromGlobal", () => {
         db.select().from(SessionTable).where(eq(SessionTable.id, id)).get().pipe(Effect.orDie),
       )
       expect(row).toBeDefined()
-      // Should remain under "global" — not stolen
+      // Should remain under "global" â€” not stolen
       expect(row!.project_id).toBe(ProjectV2.ID.global)
     }),
   )

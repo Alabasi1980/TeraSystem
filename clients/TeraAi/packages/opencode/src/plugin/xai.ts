@@ -1,8 +1,8 @@
-import type { Hooks, PluginInput } from "@opencode-ai/plugin"
+﻿import type { Hooks, PluginInput } from "@tera-system/plugin"
 import { OAUTH_DUMMY_KEY } from "../auth"
 import { createServer } from "http"
-import { InstallationVersion } from "@opencode-ai/core/installation/version"
-import { OauthCallbackPage } from "@opencode-ai/core/oauth/page"
+import { InstallationVersion } from "@tera-system/core/installation/version"
+import { OauthCallbackPage } from "@tera-system/core/oauth/page"
 
 // Public Grok-CLI OAuth client. xAI's auth server rejects loopback OAuth from
 // non-allowlisted clients, so we reuse the Grok-CLI client_id that xAI ships
@@ -15,7 +15,7 @@ const TOKEN_URL = "https://auth.x.ai/oauth2/token"
 // with the matching `urn:ietf:params:oauth:grant-type:device_code` grant
 // in `grant_types_supported`. This is the headless / VPS path: no
 // loopback callback server, no SSH port forwarding, no inbound firewall
-// holes — the user opens the URL on any device with a browser, types
+// holes â€” the user opens the URL on any device with a browser, types
 // the short user_code, and the CLI long-polls the token endpoint.
 const DEVICE_AUTHORIZATION_URL = "https://auth.x.ai/oauth2/device/code"
 const DEVICE_CODE_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:device_code"
@@ -224,7 +224,7 @@ async function defaultSleep(ms: number): Promise<void> {
 // Normalize a server-supplied seconds value to milliseconds, falling back to
 // the supplied default when the input is missing, non-positive, or not a
 // finite number. Defends the polling loop against garbage like `NaN`, `"NaN"`,
-// `null`, or `-5` from a misbehaving device-code endpoint — without this,
+// `null`, or `-5` from a misbehaving device-code endpoint â€” without this,
 // a NaN interval would slip through `?? default` (NaN is typeof number),
 // reach `setTimeout(_, NaN)` which is treated as 0, and busy-loop until the
 // hard deadline. Matches the defensive normalization Codex uses for the same
@@ -261,8 +261,8 @@ export async function pollDeviceCodeToken(
 
     const body = (await response.json().catch(() => ({}))) as DeviceTokenErrorBody
     const remaining = Math.max(0, deadline - now())
-    // RFC 8628 §3.5: authorization_pending = keep polling at the same
-    // interval; slow_down = bump the interval by ≥5s and keep polling.
+    // RFC 8628 آ§3.5: authorization_pending = keep polling at the same
+    // interval; slow_down = bump the interval by â‰¥5s and keep polling.
     // Anything else is terminal.
     if (body.error === "authorization_pending") {
       await sleep(Math.min(intervalMs + OAUTH_POLLING_SAFETY_MARGIN_MS, remaining))
@@ -470,7 +470,7 @@ export async function XaiAuthPlugin(input: PluginInput, options: XaiAuthPluginOp
         return {
           // Dummy bearer keeps the AI SDK from bailing on "missing apiKey"; the
           // real OAuth token is injected by the fetch override below.
-          // We intentionally do NOT set baseURL — @ai-sdk/xai already defaults
+          // We intentionally do NOT set baseURL â€” @ai-sdk/xai already defaults
           // to https://api.x.ai/v1 and overriding here would silently route
           // around a user-configured gateway.
           apiKey: OAUTH_DUMMY_KEY,
@@ -483,7 +483,7 @@ export async function XaiAuthPlugin(input: PluginInput, options: XaiAuthPluginOp
             if (currentAuth.type !== "oauth") return fetch(requestInput, init)
 
             // Refresh either when the stored expires timestamp is within the
-            // skew window, or — for JWT access tokens — when the JWT exp
+            // skew window, or â€” for JWT access tokens â€” when the JWT exp
             // claim itself is. The stored expires field is best-effort
             // (xAI doesn't always return expires_in) so the JWT check is the
             // load-bearing one for tokens that lack a fresh stored deadline.
@@ -502,7 +502,7 @@ export async function XaiAuthPlugin(input: PluginInput, options: XaiAuthPluginOp
                     // old refresh_token by the time we get here; an auth.set failure leaves
                     // the on-disk state stale but the in-memory result is still valid for
                     // this turn. The next live refresh against the stale disk state will
-                    // 4xx and force re-login — a known cross-process limitation.
+                    // 4xx and force re-login â€” a known cross-process limitation.
                     await input.client.auth
                       .set({
                         path: { id: "xai" },

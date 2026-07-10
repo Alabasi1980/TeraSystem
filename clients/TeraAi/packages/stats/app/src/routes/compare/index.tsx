@@ -1,6 +1,6 @@
-import "../index.css"
+﻿import "../index.css"
 import { Meta, Title } from "@solidjs/meta"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
+import { ProviderIcon } from "@tera-system/ui/provider-icon"
 import { createAsync } from "@solidjs/router"
 import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { getRequestEvent } from "solid-js/web"
@@ -460,7 +460,7 @@ function CompareHomeCard(props: { category: CompareCategory }) {
       <span data-slot="compare-home-card-divider" aria-hidden="true" />
       <span data-slot="compare-home-card-models">
         <span>{props.category.first.name}</span>
-        <i aria-hidden="true">·</i>
+        <i aria-hidden="true">آ·</i>
         <span>{props.category.second.name}</span>
       </span>
       <span data-slot="compare-home-card-avatars" aria-hidden="true">

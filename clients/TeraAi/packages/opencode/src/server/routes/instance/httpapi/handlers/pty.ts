@@ -1,16 +1,16 @@
-import * as InstanceState from "@/effect/instance-state"
+﻿import * as InstanceState from "@/effect/instance-state"
 import { registerDisposer } from "@/effect/instance-registry"
 import { InstanceRef, WorkspaceRef } from "@/effect/instance-ref"
 import { Plugin } from "@/plugin"
-import { Pty } from "@opencode-ai/core/pty"
-import { PtyProtocol } from "@opencode-ai/core/pty/protocol"
-import { PtyID } from "@opencode-ai/core/pty/schema"
-import { PtyTicket } from "@opencode-ai/core/pty/ticket"
-import { LocationServiceMap, locationServiceMapLayer } from "@opencode-ai/core/location-services"
-import { Location } from "@opencode-ai/core/location"
-import { AbsolutePath } from "@opencode-ai/core/schema"
-import { Shell } from "@opencode-ai/core/shell"
-import { CorsConfig, isAllowedRequestOrigin, type CorsOptions } from "@opencode-ai/server/cors"
+import { Pty } from "@tera-system/core/pty"
+import { PtyProtocol } from "@tera-system/core/pty/protocol"
+import { PtyID } from "@tera-system/core/pty/schema"
+import { PtyTicket } from "@tera-system/core/pty/ticket"
+import { LocationServiceMap, locationServiceMapLayer } from "@tera-system/core/location-services"
+import { Location } from "@tera-system/core/location"
+import { AbsolutePath } from "@tera-system/core/schema"
+import { Shell } from "@tera-system/core/shell"
+import { CorsConfig, isAllowedRequestOrigin, type CorsOptions } from "@tera-system/server/cors"
 import {
   PTY_CONNECT_TICKET_QUERY,
   PTY_CONNECT_TOKEN_HEADER,
@@ -36,8 +36,8 @@ const ticketScope = Effect.gen(function* () {
 })
 
 // Legacy surface compatibility: before exited-session retention, sessions vanished the moment
-// their process exited. These routes preserve that observable behavior — exited sessions are
-// invisible here — while the canonical /api/pty surface exposes them until removal.
+// their process exited. These routes preserve that observable behavior â€” exited sessions are
+// invisible here â€” while the canonical /api/pty surface exposes them until removal.
 export const ptyHandlers = HttpApiBuilder.group(InstanceHttpApi, "pty", (handlers) =>
   Effect.gen(function* () {
     const tickets = yield* PtyTicket.Service

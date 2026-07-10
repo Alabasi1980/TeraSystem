@@ -1,5 +1,5 @@
-/// <reference path="../env.d.ts" />
-import { tool } from "@opencode-ai/plugin"
+﻿/// <reference path="../env.d.ts" />
+import { tool } from "@tera-system/plugin"
 
 const TEAM = {
   tui: ["kommander", "simonklee"],

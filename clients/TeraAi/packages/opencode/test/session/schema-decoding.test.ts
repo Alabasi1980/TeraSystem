@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+﻿import { describe, expect, test } from "bun:test"
 import { Schema } from "effect"
 
 import { Session } from "@/session/session"
@@ -8,15 +8,15 @@ import { SessionStatus } from "../../src/session/status"
 import { SessionSummary } from "../../src/session/summary"
 import { Todo } from "../../src/session/todo"
 import { SessionID, MessageID, PartID } from "../../src/session/schema"
-import { ProjectV2 } from "@opencode-ai/core/project"
-import { WorkspaceV2 } from "@opencode-ai/core/workspace"
+import { ProjectV2 } from "@tera-system/core/project"
+import { WorkspaceV2 } from "@tera-system/core/workspace"
 
 // Covers the session-domain Effect Schema migration. For each migrated
 // schema we assert:
 //   1. The Effect decoder (`Schema.decodeUnknownSync`) accepts valid input.
 //   2. Clearly-invalid input is rejected.
 
-// Representative valid IDs — the branded schemas require the right prefix
+// Representative valid IDs â€” the branded schemas require the right prefix
 // (see src/id/id.ts).
 const sessionID = Schema.decodeUnknownSync(SessionID)("ses_01J5Y5H0AH4Q4NXJ6P4C3P5V2K")
 const sessionIDChild = Schema.decodeUnknownSync(SessionID)("ses_01J5Y5H0AH4Q4NXJ6P4C3P5V2L")

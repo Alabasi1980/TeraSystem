@@ -1,11 +1,11 @@
-import { describe, expect } from "bun:test"
+﻿import { describe, expect } from "bun:test"
 import path from "path"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import { Effect, Exit, Layer } from "effect"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
+import { FSUtil } from "@tera-system/core/fs-util"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
 import { Git } from "../../src/git"
-import { Global } from "@opencode-ai/core/global"
+import { Global } from "@tera-system/core/global"
 import { Storage } from "@/storage/storage"
 import { tmpdirScoped } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
@@ -26,7 +26,7 @@ const scope = Effect.fnUntraced(function* () {
 
 // remap(root) rewrites any path under Global.Path.data to live under `root` instead.
 // Used by remappedFs to build an FSUtil that Storage thinks is the real global
-// data dir but actually targets a tmp dir — letting migration tests stage legacy layouts.
+// data dir but actually targets a tmp dir â€” letting migration tests stage legacy layouts.
 // NOTE: only the 6 methods below are intercepted. If Storage starts using a different
 // FSUtil method that touches Global.Path.data, add it here.
 function remap(root: string, file: string) {
@@ -54,7 +54,7 @@ function remappedFs(root: string) {
   ).pipe(Layer.provide(LayerNode.compile(FSUtil.node)))
 }
 
-// Layer.fresh forces a new Storage instance — without it, Effect's in-test layer cache
+// Layer.fresh forces a new Storage instance â€” without it, Effect's in-test layer cache
 // returns the outer testEffect's Storage (which uses the real FSUtil), not a new
 // one built on top of remappedFs.
 const remappedStorage = (root: string) =>

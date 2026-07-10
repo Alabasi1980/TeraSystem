@@ -1,6 +1,6 @@
-{
+﻿{
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@opencode-ai/codemode",
+  "name": "@tera-system/codemode",
   "version": "1.17.18",
   "description": "Effect-native confined code execution over schema-described tools",
   "private": true,
@@ -24,3 +24,4 @@
     "@typescript/native-preview": "catalog:"
   }
 }
+

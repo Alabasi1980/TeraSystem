@@ -1,4 +1,4 @@
-import { createResource, createMemo, createSignal } from "solid-js"
+﻿import { createResource, createMemo, createSignal } from "solid-js"
 import { TextAttributes } from "@opentui/core"
 import { DialogSelect } from "../ui/dialog-select"
 import { useSDK } from "../context/sdk"
@@ -6,7 +6,7 @@ import { useDialog } from "../ui/dialog"
 import { useToast } from "../ui/toast"
 import { useTheme } from "../context/theme"
 import { errorMessage } from "../util/error"
-import type { ExperimentalConsoleListOrgsResponse } from "@opencode-ai/sdk/v2"
+import type { ExperimentalConsoleListOrgsResponse } from "@tera-system/sdk/v2"
 
 type OrgOption = ExperimentalConsoleListOrgsResponse["orgs"][number]
 

@@ -1,5 +1,5 @@
-import { Session } from "@/session/session"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
+﻿import { Session } from "@/session/session"
+import { SessionV1 } from "@tera-system/core/v1/session"
 import { MessageV2 } from "../../session/message-v2"
 import { SessionID } from "../../session/schema"
 import { effectCmd, fail } from "../effect-cmd"
@@ -263,7 +263,7 @@ const run = Effect.fn("Cli.export.body")(function* (args: { sessionID?: string; 
         options: sessions.map((session) => ({
           label: session.title,
           value: session.id,
-          hint: `${new Date(session.time.updated).toLocaleString()} • ${session.id.slice(-8)}`,
+          hint: `${new Date(session.time.updated).toLocaleString()} â€¢ ${session.id.slice(-8)}`,
         })),
         output: process.stderr,
       }),
@@ -278,7 +278,7 @@ const run = Effect.fn("Cli.export.body")(function* (args: { sessionID?: string; 
     prompts.outro("Exporting session...", { output: process.stderr })
   }
 
-  // Match legacy try/catch — catches both typed failures and defects
+  // Match legacy try/catch â€” catches both typed failures and defects
   // (Session.Service.get throws NotFoundError as a defect, not a typed E).
   return yield* Effect.gen(function* () {
     const sessionInfo = yield* svc.get(sessionID!)

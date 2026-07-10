@@ -1,17 +1,17 @@
----
+﻿---
 title: Plugins
 description: Skriv dine egne plugins for at udvide OpenCode.
 ---
 
-Plugins giver dig mulighed for at udvide OpenCode ved at tilslutte sig forskellige begivenheder og tilpasse adfærd. Du kan oprette plugins for at tilføje nye funktioner, integrere med eksterne tjenester eller ændre OpenCodes standardadfærd.
+Plugins giver dig mulighed for at udvide OpenCode ved at tilslutte sig forskellige begivenheder og tilpasse adfأ¦rd. Du kan oprette plugins for at tilfأ¸je nye funktioner, integrere med eksterne tjenester eller أ¦ndre OpenCodes standardadfأ¦rd.
 
-For eksempler, tjek [plugins](/docs/ecosystem#plugins) oprettet af fællesskabet.
+For eksempler, tjek [plugins](/docs/ecosystem#plugins) oprettet af fأ¦llesskabet.
 
 ---
 
 ## Brug af plugin
 
-Der er to måder at indlæse plugins på.
+Der er to mأ¥der at indlأ¦se plugins pأ¥.
 
 ---
 
@@ -19,10 +19,10 @@ Der er to måder at indlæse plugins på.
 
 Placer JavaScript- eller TypeScript-filer i plugin-mappen.
 
-- `.opencode/plugins/` - Plugins på projektniveau
+- `.opencode/plugins/` - Plugins pأ¥ projektniveau
 - `~/.config/opencode/plugins/` - Globale plugins
 
-Filer i disse mapper indlæses automatisk ved opstart.
+Filer i disse mapper indlأ¦ses automatisk ved opstart.
 
 ---
 
@@ -37,30 +37,30 @@ Angiv npm-pakker i din konfigurationsfil.
 }
 ```
 
-Både almindelige og omfangsrige npm-pakker understøttes.
+Bأ¥de almindelige og omfangsrige npm-pakker understأ¸ttes.
 
-Gennemse tilgængelige plugins i [ecosystem](/docs/ecosystem#plugins).
+Gennemse tilgأ¦ngelige plugins i [ecosystem](/docs/ecosystem#plugins).
 
 ---
 
 ### Installation af plugins
 
-**npm plugins** installeres automatisk ved hjælp af Bun ved opstart. Pakker og deres afhængigheder cachelagres i `~/.cache/opencode/node_modules/`.
+**npm plugins** installeres automatisk ved hjأ¦lp af Bun ved opstart. Pakker og deres afhأ¦ngigheder cachelagres i `~/.cache/opencode/node_modules/`.
 
-**Lokale plugins** indlæses direkte fra plugin-biblioteket. For at bruge eksterne pakker skal du oprette en `package.json` i din konfigurationsmappe (se [Dependencies](#dependencies)), eller udgive pluginnet til npm og [add it to your config](/docs/config#plugins).
+**Lokale plugins** indlأ¦ses direkte fra plugin-biblioteket. For at bruge eksterne pakker skal du oprette en `package.json` i din konfigurationsmappe (se [Dependencies](#dependencies)), eller udgive pluginnet til npm og [add it to your config](/docs/config#plugins).
 
 ---
 
-### Indlæsningsrækkefølge
+### Indlأ¦sningsrأ¦kkefأ¸lge
 
-Plugins indlæses fra alle kilder, og alle hooks kører i rækkefølge. Indlæsningsrækkefølgen er:
+Plugins indlأ¦ses fra alle kilder, og alle hooks kأ¸rer i rأ¦kkefأ¸lge. Indlأ¦sningsrأ¦kkefأ¸lgen er:
 
 1. Global konfiguration (`~/.config/opencode/opencode.json`)
 2. Projektkonfiguration (`opencode.json`)
 3. Global plugin-mappe (`~/.config/opencode/plugins/`)
 4. Projekt plugin bibliotek (`.opencode/plugins/`)
 
-Dublerede npm-pakker med samme navn og version indlæses én gang. Et lokalt plugin og et npm plugin med lignende navne indlæses dog hver for sig.
+Dublerede npm-pakker med samme navn og version indlأ¦ses أ©n gang. Et lokalt plugin og et npm plugin med lignende navne indlأ¦ses dog hver for sig.
 
 ---
 
@@ -71,9 +71,9 @@ funktioner. Hver funktion modtager et kontekstobjekt og returnerer et hooks-obje
 
 ---
 
-### Afhængigheder
+### Afhأ¦ngigheder
 
-Lokale plugins og brugerdefinerede værktøjer kan bruge eksterne npm-pakker. Tilføj en `package.json` til din konfigurationsmappe med de afhængigheder, du har brug for.
+Lokale plugins og brugerdefinerede vأ¦rktأ¸jer kan bruge eksterne npm-pakker. Tilfأ¸j en `package.json` til din konfigurationsmappe med de afhأ¦ngigheder, du har brug for.
 
 ```json title=".opencode/package.json"
 {
@@ -83,7 +83,7 @@ Lokale plugins og brugerdefinerede værktøjer kan bruge eksterne npm-pakker. Ti
 }
 ```
 
-OpenCode kører `bun install` ved opstart for at installere disse. Dine plugins og værktøjer kan derefter importere dem.
+OpenCode kأ¸rer `bun install` ved opstart for at installere disse. Dine plugins og vأ¦rktأ¸jer kan derefter importere dem.
 
 ```ts title=".opencode/plugins/my-plugin.ts"
 import { escape } from "shescape"
@@ -101,7 +101,7 @@ export const MyPlugin = async (ctx) => {
 
 ---
 
-### Grundlæggende struktur
+### Grundlأ¦ggende struktur
 
 ```js title=".opencode/plugins/example.js"
 export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
@@ -119,16 +119,16 @@ Plugin-funktionen modtager:
 - `directory`: Den aktuelle arbejdsmappe.
 - `worktree`: Git worktree-stien.
 - `client`: En opencode SDK klient til interaktion med AI.
-- `$`: Buns [shell API](https://bun.com/docs/runtime/shell) til udførelse af kommandoer.
+- `$`: Buns [shell API](https://bun.com/docs/runtime/shell) til udfأ¸relse af kommandoer.
 
 ---
 
-### TypeScript-understøttelse
+### TypeScript-understأ¸ttelse
 
 For TypeScript-plugins kan du importere typer fra plugin-pakken:
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -141,43 +141,43 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ### Begivenheder
 
-Plugins kan abonnere på begivenheder som vist nedenfor i afsnittet Eksempler. Her er en liste over de forskellige arrangementer.
+Plugins kan abonnere pأ¥ begivenheder som vist nedenfor i afsnittet Eksempler. Her er en liste over de forskellige arrangementer.
 
-#### Kommandohændelser
+#### Kommandohأ¦ndelser
 
 - `command.executed`
 
-#### Filhændelser
+#### Filhأ¦ndelser
 
 - `file.edited`
 - `file.watcher.updated`
 
-#### Installationshændelser
+#### Installationshأ¦ndelser
 
 - `installation.updated`
 
-#### LSP-hændelser
+#### LSP-hأ¦ndelser
 
 - `lsp.client.diagnostics`
 - `lsp.updated`
 
-#### Beskedhændelser
+#### Beskedhأ¦ndelser
 
 - `message.part.removed`
 - `message.part.updated`
 - `message.removed`
 - `message.updated`
 
-#### Tilladelseshændelser
+#### Tilladelseshأ¦ndelser
 
 - `permission.asked`
 - `permission.replied`
 
-#### Serverhændelser
+#### Serverhأ¦ndelser
 
 - `server.connected`
 
-#### Sessionshændelser
+#### Sessionshأ¦ndelser
 
 - `session.created`
 - `session.compacted`
@@ -188,20 +188,20 @@ Plugins kan abonnere på begivenheder som vist nedenfor i afsnittet Eksempler. H
 - `session.status`
 - `session.updated`
 
-#### Todo-hændelser
+#### Todo-hأ¦ndelser
 
 - `todo.updated`
 
-#### Shell-hændelser
+#### Shell-hأ¦ndelser
 
 - `shell.env`
 
-#### Værktøjshændelser
+#### Vأ¦rktأ¸jshأ¦ndelser
 
 - `tool.execute.after`
 - `tool.execute.before`
 
-#### TUI-hændelser
+#### TUI-hأ¦ndelser
 
 - `tui.prompt.append`
 - `tui.command.execute`
@@ -211,13 +211,13 @@ Plugins kan abonnere på begivenheder som vist nedenfor i afsnittet Eksempler. H
 
 ## Eksempler
 
-Her er nogle eksempler på plugins, du kan bruge til at udvide opencode.
+Her er nogle eksempler pأ¥ plugins, du kan bruge til at udvide opencode.
 
 ---
 
 ### Send meddelelser
 
-Send meddelelser, når visse hændelser indtræffer:
+Send meddelelser, nأ¥r visse hأ¦ndelser indtrأ¦ffer:
 
 ```js title=".opencode/plugins/notification.js"
 export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
@@ -232,17 +232,17 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 }
 ```
 
-Vi bruger `osascript` til at køre AppleScript på macOS. Her bruger vi det til at sende notifikationer.
+Vi bruger `osascript` til at kأ¸re AppleScript pأ¥ macOS. Her bruger vi det til at sende notifikationer.
 
 :::note
-Hvis du bruger OpenCode desktop-appen, kan den sende systemmeddelelser automatisk, når et svar er klar, eller når en session fejler.
+Hvis du bruger OpenCode desktop-appen, kan den sende systemmeddelelser automatisk, nأ¥r et svar er klar, eller nأ¥r en session fejler.
 :::
 
 ---
 
 ### .env-beskyttelse
 
-Undgå opencode i at læse `.env` filer:
+Undgأ¥ opencode i at lأ¦se `.env` filer:
 
 ```javascript title=".opencode/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
@@ -258,9 +258,9 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 ---
 
-### Injicer miljøvariabler
+### Injicer miljأ¸variabler
 
-Injicer miljøvariabler i al shell-udførelse (AI-værktøjer og brugerterminaler):
+Injicer miljأ¸variabler i al shell-udfأ¸relse (AI-vأ¦rktأ¸jer og brugerterminaler):
 
 ```javascript title=".opencode/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
@@ -275,12 +275,12 @@ export const InjectEnvPlugin = async () => {
 
 ---
 
-### Brugerdefinerede værktøjer
+### Brugerdefinerede vأ¦rktأ¸jer
 
-Plugins kan også tilføje brugerdefinerede værktøjer til opencode:
+Plugins kan ogsأ¥ tilfأ¸je brugerdefinerede vأ¦rktأ¸jer til opencode:
 
 ```ts title=".opencode/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@opencode-ai/plugin"
+import { type Plugin, tool } from "@tera-system/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -300,16 +300,16 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-`tool`-hjælperen opretter et brugerdefineret værktøj, som opencode kan kalde. Det tager en Zod-skemafunktion og returnerer en værktøjsdefinition med:
+`tool`-hjأ¦lperen opretter et brugerdefineret vأ¦rktأ¸j, som opencode kan kalde. Det tager en Zod-skemafunktion og returnerer en vأ¦rktأ¸jsdefinition med:
 
-- `description`: Hvad værktøjet gør
-- `args`: Zod-skema for værktøjets argumenter
-- `execute`: Funktion, der kører, når værktøjet kaldes
+- `description`: Hvad vأ¦rktأ¸jet gأ¸r
+- `args`: Zod-skema for vأ¦rktأ¸jets argumenter
+- `execute`: Funktion, der kأ¸rer, nأ¥r vأ¦rktأ¸jet kaldes
 
-Dine tilpassede værktøjer vil være tilgængelige for opencode sammen med indbyggede værktøjer.
+Dine tilpassede vأ¦rktأ¸jer vil vأ¦re tilgأ¦ngelige for opencode sammen med indbyggede vأ¦rktأ¸jer.
 
 :::note
-Hvis et plugin-værktøj bruger samme navn som et indbygget værktøj, har plugin-værktøjet forrang.
+Hvis et plugin-vأ¦rktأ¸j bruger samme navn som et indbygget vأ¦rktأ¸j, har plugin-vأ¦rktأ¸jet forrang.
 :::
 
 ---
@@ -337,10 +337,10 @@ Niveauer: `debug`, `info`, `warn`, `error`. Se [SDK documentation](https://openc
 
 ### Komprimerings-hooks
 
-Tilpas konteksten inkluderet, når en session komprimeres:
+Tilpas konteksten inkluderet, nأ¥r en session komprimeres:
 
 ```ts title=".opencode/plugins/compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -359,12 +359,12 @@ Include any state that should persist across compaction:
 }
 ```
 
-`experimental.session.compacting` krogen affyres, før LLM genererer en fortsættelsesoversigt. Brug den til at injicere domænespecifik kontekst, som standardkomprimeringsprompten ville gå glip af.
+`experimental.session.compacting` krogen affyres, fأ¸r LLM genererer en fortsأ¦ttelsesoversigt. Brug den til at injicere domأ¦nespecifik kontekst, som standardkomprimeringsprompten ville gأ¥ glip af.
 
-Du kan også erstatte komprimeringsprompten helt ved at indstille `output.prompt`:
+Du kan ogsأ¥ erstatte komprimeringsprompten helt ved at indstille `output.prompt`:
 
 ```ts title=".opencode/plugins/custom-compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -386,4 +386,4 @@ Format as a structured prompt that a new agent can use to resume work.
 }
 ```
 
-Når `output.prompt` er indstillet, erstatter den standardkompressionsprompten fuldstændigt. `output.context`-arrayet ignoreres i dette tilfælde.
+Nأ¥r `output.prompt` er indstillet, erstatter den standardkompressionsprompten fuldstأ¦ndigt. `output.context`-arrayet ignoreres i dette tilfأ¦lde.

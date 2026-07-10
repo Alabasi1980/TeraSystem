@@ -1,5 +1,5 @@
-import { Binary } from "@opencode-ai/core/util/binary"
-import type { AssistantMessage, Message, Part, SessionStatus, UserMessage } from "@opencode-ai/sdk/v2"
+﻿import { Binary } from "@tera-system/core/util/binary"
+import type { AssistantMessage, Message, Part, SessionStatus, UserMessage } from "@tera-system/sdk/v2"
 import { createMemo, mapArray, type Accessor } from "solid-js"
 import { reuseTimelineRows } from "./row-reconciliation"
 import { Timeline, TimelineRow } from "./rows"

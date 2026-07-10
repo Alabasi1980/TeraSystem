@@ -1,9 +1,9 @@
-import { afterEach, describe, expect } from "bun:test"
+﻿import { afterEach, describe, expect } from "bun:test"
 import path from "path"
 import fs from "fs/promises"
 import { fileURLToPath, pathToFileURL } from "url"
 import { Effect, Layer, Result, Schema } from "effect"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import { ToolRegistry } from "@/tool/registry"
 import { Tool } from "@/tool/tool"
 import { disposeAllInstances, TestInstance } from "../fixture/fixture"
@@ -17,8 +17,8 @@ import { InstanceState } from "@/effect/instance-state"
 import { ToolJsonSchema } from "@/tool/json-schema"
 import { MessageID, SessionID } from "@/session/schema"
 import { RuntimeFlags } from "@/effect/runtime-flags"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
 import { MCP } from "@/mcp"
 import type { Tool as MCPToolDef } from "@modelcontextprotocol/sdk/types.js"
 
@@ -225,7 +225,7 @@ describe("tool.registry", () => {
   // crash registry initialization with
   // `Object.entries requires that input parameter not be null or undefined`.
   // Pre-1.14.49 the code path was `z.object(def.args)`, and `z.object(undefined)`
-  // silently produced an empty schema — so the tool registered as no-args.
+  // silently produced an empty schema â€” so the tool registered as no-args.
   // Preserve that tolerance.
   it.instance("tolerates a custom tool exporting null/undefined args (no-args fallback)", () =>
     Effect.gen(function* () {
@@ -248,7 +248,7 @@ describe("tool.registry", () => {
 
       const registry = yield* ToolRegistry.Service
       const ids = yield* registry.ids()
-      // Built-in tools must still load — a single malformed custom tool must
+      // Built-in tools must still load â€” a single malformed custom tool must
       // not poison the whole registry.
       expect(ids).toContain("read")
       const loaded = (yield* registry.all()).find((t) => t.id === "noargs")
@@ -258,7 +258,7 @@ describe("tool.registry", () => {
   )
 
   // Same regression, plugin entry point. The original reports (#27451, #27630)
-  // came in through `plugin.list()` — `oh-my-opencode` was registering a tool
+  // came in through `plugin.list()` â€” `oh-my-opencode` was registering a tool
   // with `args: undefined` and crashing every message submit. The file-scan
   // and plugin-list loops both funnel through `fromPlugin`, but covering both
   // entry points means a future refactor that splits them won't silently lose
@@ -369,7 +369,7 @@ describe("tool.registry", () => {
         yield* Effect.promise(() =>
           Bun.write(
             path.join(plugin, "package.json"),
-            JSON.stringify({ name: "@opencode-ai/plugin", type: "module", exports: { ".": "./dist/index.js" } }),
+            JSON.stringify({ name: "@tera-system/plugin", type: "module", exports: { ".": "./dist/index.js" } }),
           ),
         )
         yield* Effect.promise(() =>
@@ -389,7 +389,7 @@ describe("tool.registry", () => {
           Bun.write(
             path.join(customTools, "addition.ts"),
             [
-              'import { tool } from "@opencode-ai/plugin"',
+              'import { tool } from "@tera-system/plugin"',
               "export default tool({",
               "  description: 'Use this tool to add two numbers and return their sum.',",
               "  args: {",
@@ -506,7 +506,7 @@ describe("tool.registry", () => {
           JSON.stringify({
             name: "custom-tools",
             dependencies: {
-              "@opencode-ai/plugin": "^0.0.0",
+              "@tera-system/plugin": "^0.0.0",
               cowsay: "^1.6.0",
             },
           }),
@@ -521,7 +521,7 @@ describe("tool.registry", () => {
             packages: {
               "": {
                 dependencies: {
-                  "@opencode-ai/plugin": "^0.0.0",
+                  "@tera-system/plugin": "^0.0.0",
                   cowsay: "^1.6.0",
                 },
               },

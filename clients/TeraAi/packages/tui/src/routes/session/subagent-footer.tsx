@@ -1,9 +1,9 @@
-import { createMemo, createSignal, Show } from "solid-js"
+﻿import { createMemo, createSignal, Show } from "solid-js"
 import { useRouteData } from "../../context/route"
 import { useSync } from "../../context/sync"
 import { useTheme } from "../../context/theme"
 import { SplitBorder } from "../../ui/border"
-import type { AssistantMessage } from "@opencode-ai/sdk/v2"
+import type { AssistantMessage } from "@tera-system/sdk/v2"
 import { Locale } from "../../util/locale"
 import { useTerminalDimensions } from "@opentui/solid"
 import { useCommandShortcut, useOpencodeKeymap } from "../../keymap"
@@ -88,7 +88,7 @@ export function SubagentFooter() {
             <Show when={usage()}>
               {(item) => (
                 <text fg={theme.textMuted} wrapMode="none">
-                  {[item().context, item().cost].filter(Boolean).join(" · ")}
+                  {[item().context, item().cost].filter(Boolean).join(" آ· ")}
                 </text>
               )}
             </Show>

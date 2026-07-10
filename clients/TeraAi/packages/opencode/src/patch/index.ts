@@ -1,6 +1,6 @@
-import { Effect, Schema } from "effect"
+﻿import { Effect, Schema } from "effect"
 import * as path from "path"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+import { FSUtil } from "@tera-system/core/fs-util"
 import * as Bom from "../util/bom"
 
 export const PatchSchema = Schema.Struct({
@@ -417,11 +417,11 @@ function applyReplacements(lines: string[], replacements: Array<[number, number,
 // Normalize Unicode punctuation to ASCII equivalents (like Rust's normalize_unicode)
 function normalizeUnicode(str: string): string {
   return str
-    .replace(/[‘’‚‛]/g, "'") // single quotes
-    .replace(/[“”„‟]/g, '"') // double quotes
-    .replace(/[‐‑‒–—―]/g, "-") // dashes
-    .replace(/…/g, "...") // ellipsis
-    .replace(/ /g, " ") // non-breaking space
+    .replace(/[â€کâ€™â€ڑâ€›]/g, "'") // single quotes
+    .replace(/[â€œâ€‌â€‍â€ں]/g, '"') // double quotes
+    .replace(/[â€گâ€‘â€’â€“â€”â€•]/g, "-") // dashes
+    .replace(/â€¦/g, "...") // ellipsis
+    .replace(/آ /g, " ") // non-breaking space
 }
 
 type Comparator = (a: string, b: string) => boolean

@@ -1,8 +1,8 @@
-import type { Argv } from "yargs"
+﻿import type { Argv } from "yargs"
 import { UI } from "../ui"
 import * as prompts from "@clack/prompts"
 import { Installation } from "../../installation"
-import { Global } from "@opencode-ai/core/global"
+import { Global } from "@tera-system/core/global"
 import fs from "fs/promises"
 import path from "path"
 import os from "os"
@@ -114,17 +114,17 @@ async function showRemovalSummary(targets: RemovalTargets, method: Installation.
     const size = await getDirectorySize(dir.path)
     const sizeStr = formatSize(size)
     const status = dir.keep ? UI.Style.TEXT_DIM + "(keeping)" : ""
-    const prefix = dir.keep ? "○" : "✓"
+    const prefix = dir.keep ? "â—‹" : "âœ“"
 
     prompts.log.info(`  ${prefix} ${dir.label}: ${shortenPath(dir.path)} ${UI.Style.TEXT_DIM}(${sizeStr})${status}`)
   }
 
   if (targets.binary) {
-    prompts.log.info(`  ✓ Binary: ${shortenPath(targets.binary)}`)
+    prompts.log.info(`  âœ“ Binary: ${shortenPath(targets.binary)}`)
   }
 
   if (targets.shellConfig) {
-    prompts.log.info(`  ✓ Shell PATH in ${shortenPath(targets.shellConfig)}`)
+    prompts.log.info(`  âœ“ Shell PATH in ${shortenPath(targets.shellConfig)}`)
   }
 
   if (method !== "curl" && method !== "unknown") {
@@ -137,7 +137,7 @@ async function showRemovalSummary(targets: RemovalTargets, method: Installation.
       choco: "choco uninstall opencode",
       scoop: "scoop uninstall opencode",
     }
-    prompts.log.info(`  ✓ Package: ${cmds[method] || method}`)
+    prompts.log.info(`  âœ“ Package: ${cmds[method] || method}`)
   }
 }
 

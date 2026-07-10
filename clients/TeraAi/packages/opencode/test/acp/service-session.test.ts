@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test"
+﻿import { describe, expect, it } from "bun:test"
 import type {
   AgentSideConnection,
   ForkSessionResponse,
@@ -10,9 +10,9 @@ import type {
   SessionConfigSelectOption,
   SetSessionConfigOptionResponse,
 } from "@agentclientprotocol/sdk"
-import type { AssistantMessage, OpencodeClient } from "@opencode-ai/sdk/v2"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+import type { AssistantMessage, OpencodeClient } from "@tera-system/sdk/v2"
+import { ProviderV2 } from "@tera-system/core/provider"
+import { ModelV2 } from "@tera-system/core/model"
 import { Effect } from "effect"
 import * as ACPService from "@/acp/service"
 import * as ACPError from "@/acp/error"

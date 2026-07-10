@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test"
-import type { Agent } from "@opencode-ai/sdk/v2/client"
+﻿import { describe, expect, test } from "bun:test"
+import type { Agent } from "@tera-system/sdk/v2/client"
 import { directoryKey, normalizeAgentList } from "./utils"
 
 const agent = (name = "build") =>

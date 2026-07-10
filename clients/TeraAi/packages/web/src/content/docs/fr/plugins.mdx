@@ -1,34 +1,34 @@
----
+﻿---
 title: Plugins
-description: Écrivez vos propres plugins pour étendre OpenCode.
+description: أ‰crivez vos propres plugins pour أ©tendre OpenCode.
 ---
 
-Les plugins vous permettent d'étendre OpenCode en vous connectant à divers événements et en personnalisant le comportement. Vous pouvez créer des plugins pour ajouter de nouvelles fonctionnalités, intégrer des services externes ou modifier le comportement par défaut de OpenCode.
+Les plugins vous permettent d'أ©tendre OpenCode en vous connectant أ  divers أ©vأ©nements et en personnalisant le comportement. Vous pouvez crأ©er des plugins pour ajouter de nouvelles fonctionnalitأ©s, intأ©grer des services externes ou modifier le comportement par dأ©faut de OpenCode.
 
-Pour des exemples, consultez les [plugins](/docs/ecosystem#plugins) créés par la communauté.
+Pour des exemples, consultez les [plugins](/docs/ecosystem#plugins) crأ©أ©s par la communautأ©.
 
 ---
 
 ## Utiliser un plugin
 
-Il existe deux manières de charger des plugins.
+Il existe deux maniأ¨res de charger des plugins.
 
 ---
 
-### À partir de fichiers locaux
+### أ€ partir de fichiers locaux
 
-Placez les fichiers JavaScript ou TypeScript dans le répertoire du plugin.
+Placez les fichiers JavaScript ou TypeScript dans le rأ©pertoire du plugin.
 
 - `.opencode/plugins/` - Plugins au niveau du projet
 - `~/.config/opencode/plugins/` - Plugins globaux
 
-Les fichiers de ces répertoires sont automatiquement chargés au démarrage.
+Les fichiers de ces rأ©pertoires sont automatiquement chargأ©s au dأ©marrage.
 
 ---
 
 ### Depuis npm
 
-Spécifiez les packages npm dans votre fichier de configuration.
+Spأ©cifiez les packages npm dans votre fichier de configuration.
 
 ```json title="opencode.json"
 {
@@ -37,42 +37,42 @@ Spécifiez les packages npm dans votre fichier de configuration.
 }
 ```
 
-Les packages npm scopés et standards sont pris en charge.
+Les packages npm scopأ©s et standards sont pris en charge.
 
 Parcourez les plugins disponibles dans le [ecosystem](/docs/ecosystem#plugins).
 
 ---
 
-### Comment les plugins sont installés
+### Comment les plugins sont installأ©s
 
-Les **plugins npm** sont installés automatiquement à l'aide de Bun au démarrage. Les packages et leurs dépendances sont mis en cache dans `~/.cache/opencode/node_modules/`.
+Les **plugins npm** sont installأ©s automatiquement أ  l'aide de Bun au dأ©marrage. Les packages et leurs dأ©pendances sont mis en cache dans `~/.cache/opencode/node_modules/`.
 
-Les **plugins locaux** sont chargés directement depuis le répertoire des plugins. Pour utiliser des packages externes, vous devez créer un `package.json` dans votre répertoire de configuration (voir [Dépendances](#dependencies)), ou publier le plugin sur npm et [l'ajouter à votre config](/docs/config#plugins).
+Les **plugins locaux** sont chargأ©s directement depuis le rأ©pertoire des plugins. Pour utiliser des packages externes, vous devez crأ©er un `package.json` dans votre rأ©pertoire de configuration (voir [Dأ©pendances](#dependencies)), ou publier le plugin sur npm et [l'ajouter أ  votre config](/docs/config#plugins).
 
 ---
 
 ### Ordre de chargement
 
-Les plugins sont chargés à partir de toutes les sources et tous les hooks s'exécutent dans l'ordre. L'ordre de chargement est le suivant :
+Les plugins sont chargأ©s أ  partir de toutes les sources et tous les hooks s'exأ©cutent dans l'ordre. L'ordre de chargement est le suivant :
 
 1. Configuration globale (`~/.config/opencode/opencode.json`)
 2. Configuration du projet (`opencode.json`)
-3. Répertoire global des plugins (`~/.config/opencode/plugins/`)
-4. Répertoire des plugins du projet (`.opencode/plugins/`)
+3. Rأ©pertoire global des plugins (`~/.config/opencode/plugins/`)
+4. Rأ©pertoire des plugins du projet (`.opencode/plugins/`)
 
-Les packages npm en double avec le même nom et la même version sont chargés une fois. Cependant, un plugin local et un plugin npm portant des noms similaires sont tous deux chargés séparément.
-
----
-
-## Créer un plugin
-
-Un plugin est un **module JavaScript/TypeScript** qui exporte une ou plusieurs fonctions de plugin. Chaque fonction reçoit un objet contextuel et renvoie un objet hooks.
+Les packages npm en double avec le mأھme nom et la mأھme version sont chargأ©s une fois. Cependant, un plugin local et un plugin npm portant des noms similaires sont tous deux chargأ©s sأ©parأ©ment.
 
 ---
 
-### Dépendances
+## Crأ©er un plugin
 
-Les plugins locaux et les outils personnalisés peuvent utiliser des packages npm externes. Ajoutez un `package.json` à votre répertoire de configuration avec les dépendances dont vous avez besoin.
+Un plugin est un **module JavaScript/TypeScript** qui exporte une ou plusieurs fonctions de plugin. Chaque fonction reأ§oit un objet contextuel et renvoie un objet hooks.
+
+---
+
+### Dأ©pendances
+
+Les plugins locaux et les outils personnalisأ©s peuvent utiliser des packages npm externes. Ajoutez un `package.json` أ  votre rأ©pertoire de configuration avec les dأ©pendances dont vous avez besoin.
 
 ```json title=".opencode/package.json"
 {
@@ -82,7 +82,7 @@ Les plugins locaux et les outils personnalisés peuvent utiliser des packages np
 }
 ```
 
-OpenCode exécute `bun install` au démarrage pour les installer. Vos plugins et outils peuvent ensuite les importer.
+OpenCode exأ©cute `bun install` au dأ©marrage pour les installer. Vos plugins et outils peuvent ensuite les importer.
 
 ```ts title=".opencode/plugins/my-plugin.ts"
 import { escape } from "shescape"
@@ -112,22 +112,22 @@ export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
 }
 ```
 
-La fonction plugin reçoit :
+La fonction plugin reأ§oit :
 
 - `project` : informations sur le projet actuel.
-- `directory` : le répertoire de travail actuel.
+- `directory` : le rأ©pertoire de travail actuel.
 - `worktree` : le chemin de l'arbre de travail git.
 - `client` : un client SDK opencode pour interagir avec l'IA.
-- `$` : [shell API](https://bun.com/docs/runtime/shell) de Bun pour l'exécution de commandes.
+- `$` : [shell API](https://bun.com/docs/runtime/shell) de Bun pour l'exأ©cution de commandes.
 
 ---
 
 ### Prise en charge de TypeScript
 
-Pour les plugins TypeScript, vous pouvez importer des types à partir du package du plugin :
+Pour les plugins TypeScript, vous pouvez importer des types أ  partir du package du plugin :
 
 ```ts title="my-plugin.ts" {1}
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
   return {
@@ -138,45 +138,45 @@ export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree
 
 ---
 
-### Événements
+### أ‰vأ©nements
 
-Les plugins peuvent s'abonner à des événements comme indiqué ci-dessous dans la section Exemples. Voici une liste des différents événements disponibles.
+Les plugins peuvent s'abonner أ  des أ©vأ©nements comme indiquأ© ci-dessous dans la section Exemples. Voici une liste des diffأ©rents أ©vأ©nements disponibles.
 
-#### Événements de commande
+#### أ‰vأ©nements de commande
 
 - `command.executed`
 
-#### Événements de fichier
+#### أ‰vأ©nements de fichier
 
 - `file.edited`
 - `file.watcher.updated`
 
-#### Événements d'installation
+#### أ‰vأ©nements d'installation
 
 - `installation.updated`
 
-#### LSP Événements
+#### LSP أ‰vأ©nements
 
 - `lsp.client.diagnostics`
 - `lsp.updated`
 
-#### Événements de messages
+#### أ‰vأ©nements de messages
 
 - `message.part.removed`
 - `message.part.updated`
 - `message.removed`
 - `message.updated`
 
-#### Événements d'autorisation
+#### أ‰vأ©nements d'autorisation
 
 - `permission.asked`
 - `permission.replied`
 
-#### Événements du serveur
+#### أ‰vأ©nements du serveur
 
 - `server.connected`
 
-#### Événements de session
+#### أ‰vأ©nements de session
 
 - `session.created`
 - `session.compacted`
@@ -187,20 +187,20 @@ Les plugins peuvent s'abonner à des événements comme indiqué ci-dessous dans
 - `session.status`
 - `session.updated`
 
-#### Événements à faire
+#### أ‰vأ©nements أ  faire
 
 - `todo.updated`
 
-#### Événements Shell
+#### أ‰vأ©nements Shell
 
 - `shell.env`
 
-#### Événements d'outils
+#### أ‰vأ©nements d'outils
 
 - `tool.execute.after`
 - `tool.execute.before`
 
-#### TUI Événements
+#### TUI أ‰vأ©nements
 
 - `tui.prompt.append`
 - `tui.command.execute`
@@ -210,13 +210,13 @@ Les plugins peuvent s'abonner à des événements comme indiqué ci-dessous dans
 
 ## Exemples
 
-Voici quelques exemples de plugins que vous pouvez utiliser pour étendre opencode.
+Voici quelques exemples de plugins que vous pouvez utiliser pour أ©tendre opencode.
 
 ---
 
 ### Envoyer des notifications
 
-Envoyez des notifications lorsque certains événements se produisent :
+Envoyez des notifications lorsque certains أ©vأ©nements se produisent :
 
 ```js title=".opencode/plugins/notification.js"
 export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
@@ -231,17 +231,17 @@ export const NotificationPlugin = async ({ project, client, $, directory, worktr
 }
 ```
 
-Nous utilisons `osascript` pour exécuter AppleScript sur macOS. Ici, nous l'utilisons pour envoyer des notifications.
+Nous utilisons `osascript` pour exأ©cuter AppleScript sur macOS. Ici, nous l'utilisons pour envoyer des notifications.
 
 :::note
-Si vous utilisez l'application de bureau OpenCode, elle peut envoyer automatiquement des notifications système lorsqu'une réponse est prête ou en cas d'erreur de session.
+Si vous utilisez l'application de bureau OpenCode, elle peut envoyer automatiquement des notifications systأ¨me lorsqu'une rأ©ponse est prأھte ou en cas d'erreur de session.
 :::
 
 ---
 
 ### Protection .env
 
-Empêchez opencode de lire les fichiers `.env` :
+Empأھchez opencode de lire les fichiers `.env` :
 
 ```javascript title=".opencode/plugins/env-protection.js"
 export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
@@ -259,7 +259,7 @@ export const EnvProtection = async ({ project, client, $, directory, worktree })
 
 ### Injecter des variables d'environnement
 
-Injectez des variables d'environnement dans toutes les exécutions du shell (outils d'IA et terminal utilisateur) :
+Injectez des variables d'environnement dans toutes les exأ©cutions du shell (outils d'IA et terminal utilisateur) :
 
 ```javascript title=".opencode/plugins/inject-env.js"
 export const InjectEnvPlugin = async () => {
@@ -274,12 +274,12 @@ export const InjectEnvPlugin = async () => {
 
 ---
 
-### Outils personnalisés
+### Outils personnalisأ©s
 
-Les plugins peuvent également ajouter des outils personnalisés à opencode :
+Les plugins peuvent أ©galement ajouter des outils personnalisأ©s أ  opencode :
 
 ```ts title=".opencode/plugins/custom-tools.ts"
-import { type Plugin, tool } from "@opencode-ai/plugin"
+import { type Plugin, tool } from "@tera-system/plugin"
 
 export const CustomToolsPlugin: Plugin = async (ctx) => {
   return {
@@ -299,19 +299,19 @@ export const CustomToolsPlugin: Plugin = async (ctx) => {
 }
 ```
 
-L'assistant `tool` crée un outil personnalisé que opencode peut appeler. Il prend une fonction de schéma Zod et renvoie une définition d'outil avec :
+L'assistant `tool` crأ©e un outil personnalisأ© que opencode peut appeler. Il prend une fonction de schأ©ma Zod et renvoie une dأ©finition d'outil avec :
 
 - `description` : ce que fait l'outil
-- `args` : schéma Zod pour les arguments de l'outil
-- `execute` : Fonction qui s'exécute lorsque l'outil est appelé
+- `args` : schأ©ma Zod pour les arguments de l'outil
+- `execute` : Fonction qui s'exأ©cute lorsque l'outil est appelأ©
 
-Vos outils personnalisés seront disponibles pour opencode aux côtés des outils intégrés.
+Vos outils personnalisأ©s seront disponibles pour opencode aux cأ´tأ©s des outils intأ©grأ©s.
 
 ---
 
 ### Journalisation
 
-Utilisez `client.app.log()` au lieu de `console.log` pour la journalisation structurée :
+Utilisez `client.app.log()` au lieu de `console.log` pour la journalisation structurأ©e :
 
 ```ts title=".opencode/plugins/my-plugin.ts"
 export const MyPlugin = async ({ client }) => {
@@ -326,16 +326,16 @@ export const MyPlugin = async ({ client }) => {
 }
 ```
 
-Niveaux : `debug`, `info`, `warn`, `error`. Voir la [documentation du SDK](https://opencode.ai/docs/sdk) pour plus de détails.
+Niveaux : `debug`, `info`, `warn`, `error`. Voir la [documentation du SDK](https://opencode.ai/docs/sdk) pour plus de dأ©tails.
 
 ---
 
 ### Hooks de compactage
 
-Personnalisez le contexte inclus lorsqu'une session est compactée :
+Personnalisez le contexte inclus lorsqu'une session est compactأ©e :
 
 ```ts title=".opencode/plugins/compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -354,12 +354,12 @@ Include any state that should persist across compaction:
 }
 ```
 
-Le hook `experimental.session.compacting` se déclenche avant que le LLM ne génère un résumé de continuation. Utilisez-le pour injecter un contexte spécifique au domaine que le prompt de compactage par défaut manquerait.
+Le hook `experimental.session.compacting` se dأ©clenche avant que le LLM ne gأ©nأ¨re un rأ©sumأ© de continuation. Utilisez-le pour injecter un contexte spأ©cifique au domaine que le prompt de compactage par dأ©faut manquerait.
 
-Vous pouvez également remplacer entièrement le prompt de compactage en définissant `output.prompt` :
+Vous pouvez أ©galement remplacer entiأ¨rement le prompt de compactage en dأ©finissant `output.prompt` :
 
 ```ts title=".opencode/plugins/custom-compaction.ts"
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from "@tera-system/plugin"
 
 export const CustomCompactionPlugin: Plugin = async (ctx) => {
   return {
@@ -381,4 +381,4 @@ Format as a structured prompt that a new agent can use to resume work.
 }
 ```
 
-Lorsque `output.prompt` est défini, il remplace complètement le prompt de compactage par défaut. Le tableau `output.context` est ignoré dans ce cas.
+Lorsque `output.prompt` est dأ©fini, il remplace complأ¨tement le prompt de compactage par dأ©faut. Le tableau `output.context` est ignorأ© dans ce cas.

@@ -1,6 +1,6 @@
-import { SessionID, MessageID } from "./schema"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
-import { ProviderV2 } from "@opencode-ai/core/provider"
+﻿import { SessionID, MessageID } from "./schema"
+import { SessionV1 } from "@tera-system/core/v1/session"
+import { ProviderV2 } from "@tera-system/core/provider"
 import {
   APIError,
   AbortedError,
@@ -14,12 +14,12 @@ import {
   SubtaskPart,
   User,
   WithParts,
-} from "@opencode-ai/core/v1/session"
+} from "@tera-system/core/v1/session"
 
-import { NamedError } from "@opencode-ai/core/util/error"
+import { NamedError } from "@tera-system/core/util/error"
 import { APICallError, convertToModelMessages, LoadAPIKeyError, type ModelMessage, type UIMessage } from "ai"
-import { Database } from "@opencode-ai/core/database/database"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+import { Database } from "@tera-system/core/database/database"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import { NotFoundError } from "@/storage/storage"
 import { and } from "drizzle-orm"
 import { desc } from "drizzle-orm"
@@ -27,7 +27,7 @@ import { eq } from "drizzle-orm"
 import { inArray } from "drizzle-orm"
 import { lt } from "drizzle-orm"
 import { or } from "drizzle-orm"
-import { MessageTable, PartTable, SessionTable } from "@opencode-ai/core/session/sql"
+import { MessageTable, PartTable, SessionTable } from "@tera-system/core/session/sql"
 import { ProviderError } from "@/provider/error"
 import { iife } from "@/util/iife"
 import { errorMessage } from "@/util/error"
@@ -581,7 +581,7 @@ export const filterCompactedEffect = Effect.fnUntraced(function* (sessionID: Ses
 // is monotonic via MessageID.ascending) so a pre-compaction overflowing tail
 // assistant doesn't get mistaken for the most recent turn. tasks are
 // compaction/subtask parts attached to user messages newer than the latest
-// finished assistant — i.e. unprocessed work.
+// finished assistant â€” i.e. unprocessed work.
 export function latest(msgs: WithParts[]) {
   let user: User | undefined
   let assistant: Assistant | undefined

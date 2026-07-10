@@ -1,5 +1,5 @@
-import { describe, expect } from "bun:test"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+﻿import { describe, expect } from "bun:test"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
 import { Cause, Effect, Exit, Schema } from "effect"
 import { Agent } from "../../src/agent/agent"
 import { MessageID, SessionID } from "../../src/session/schema"
@@ -107,7 +107,7 @@ describe("Tool.define", () => {
     }),
   )
 
-  // Regression for #28438: the wrap is the canonical "untyped → typed" boundary.
+  // Regression for #28438: the wrap is the canonical "untyped â†’ typed" boundary.
   // When the LLM emits a tool call with a payload that fails the parameter
   // schema, the wrap must surface a typed `Tool.InvalidArgumentsError` whose
   // `.message` is the actionable prose the AI SDK feeds back to the model.

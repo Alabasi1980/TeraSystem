@@ -1,21 +1,21 @@
-import { test, expect, describe, afterEach, beforeEach, spyOn } from "bun:test"
-import { ConfigV1 } from "@opencode-ai/core/v1/config/config"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { httpClient } from "@opencode-ai/core/effect/app-node-platform"
+﻿import { test, expect, describe, afterEach, beforeEach, spyOn } from "bun:test"
+import { ConfigV1 } from "@tera-system/core/v1/config/config"
+import { LayerNode } from "@tera-system/core/effect/layer-node"
+import { httpClient } from "@tera-system/core/effect/app-node-platform"
 import { Cause, Effect, Exit, Layer, Option } from "effect"
-import { NamedError } from "@opencode-ai/core/util/error"
+import { NamedError } from "@tera-system/core/util/error"
 import { FetchHttpClient, HttpClient, HttpClientResponse } from "effect/unstable/http"
 import { Config } from "@/config/config"
 import { ConfigManaged } from "@/config/managed"
 import { ConfigParse } from "../../src/config/parse"
-import { Npm } from "@opencode-ai/core/npm"
+import { Npm } from "@tera-system/core/npm"
 
 import { InstanceRef } from "../../src/effect/instance-ref"
 import type { InstanceContext } from "../../src/project/instance-context"
 import { Auth } from "../../src/auth"
 import { Account } from "../../src/account/account"
 import { AccessToken, AccountID, OrgID } from "../../src/account/schema"
-import { FSUtil } from "@opencode-ai/core/fs-util"
+import { FSUtil } from "@tera-system/core/fs-util"
 import { Env } from "../../src/env"
 import {
   provideTmpdirInstance,
@@ -27,17 +27,17 @@ import {
   testInstanceStoreLayer,
 } from "../fixture/fixture"
 import { InstanceRuntime } from "@/project/instance-runtime"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
+import { CrossSpawnSpawner } from "@tera-system/core/cross-spawn-spawner"
 import { testEffect } from "../lib/effect"
 import path from "path"
 import fs from "fs/promises"
 import os from "os"
 import { pathToFileURL } from "url"
-import { Global } from "@opencode-ai/core/global"
-import { ProjectV2 } from "@opencode-ai/core/project"
+import { Global } from "@tera-system/core/global"
+import { ProjectV2 } from "@tera-system/core/project"
 import { Filesystem } from "@/util/filesystem"
 import { ConfigPlugin } from "@/config/plugin"
-import { ConfigPluginV1 } from "@opencode-ai/core/v1/config/plugin"
+import { ConfigPluginV1 } from "@tera-system/core/v1/config/plugin"
 import { AccountTest } from "../fake/account"
 import { AuthTest } from "../fake/auth"
 import { NpmTest } from "../fake/npm"
@@ -1942,7 +1942,7 @@ describe("OPENCODE_CONFIG_CONTENT token substitution", () => {
   )
 })
 
-// parseManagedPlist unit tests — pure function, no OS interaction
+// parseManagedPlist unit tests â€” pure function, no OS interaction
 
 test("parseManagedPlist strips MDM metadata keys", async () => {
   const config = ConfigParse.schema(

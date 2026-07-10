@@ -1,11 +1,11 @@
-import { afterEach, describe, expect, test } from "bun:test"
+﻿import { afterEach, describe, expect, test } from "bun:test"
 import { ConfigProvider, Layer } from "effect"
 import { HttpRouter } from "effect/unstable/http"
 import { EventPaths } from "../../src/server/routes/instance/httpapi/groups/event"
 import { PtyPaths } from "../../src/server/routes/instance/httpapi/groups/pty"
 import { HttpApiApp } from "../../src/server/routes/instance/httpapi/server"
 import { ServerAuth } from "../../src/server/auth"
-import { PtyID } from "@opencode-ai/core/pty/schema"
+import { PtyID } from "@tera-system/core/pty/schema"
 import { resetDatabase } from "../fixture/db"
 import { disposeAllInstances, tmpdir } from "../fixture/fixture"
 

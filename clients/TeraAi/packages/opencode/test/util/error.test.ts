@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test"
-import { NamedError } from "@opencode-ai/core/util/error"
+﻿import { describe, expect, test } from "bun:test"
+import { NamedError } from "@tera-system/core/util/error"
 import { MessageError } from "../../src/session/message-error"
 
 describe("util.error", () => {

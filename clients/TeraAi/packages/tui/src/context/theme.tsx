@@ -1,4 +1,4 @@
-import { CliRenderEvents, SyntaxStyle, type TerminalColors } from "@opentui/core"
+﻿import { CliRenderEvents, SyntaxStyle, type TerminalColors } from "@opentui/core"
 import { useRenderer } from "@opentui/solid"
 import {
   DEFAULT_THEMES,
@@ -24,8 +24,8 @@ import { createStore, produce } from "solid-js/store"
 import { createSimpleContext } from "./helper"
 import { useKV } from "./kv"
 import { useTuiConfig } from "../config"
-import { Global } from "@opencode-ai/core/global"
-import { Glob } from "@opencode-ai/core/util/glob"
+import { Global } from "@tera-system/core/global"
+import { Glob } from "@tera-system/core/util/glob"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 
