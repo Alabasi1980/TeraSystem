@@ -1,10 +1,10 @@
-﻿# TERA GATEWAY PROTOCOL SPECIFICATION
+# TERA GATEWAY PROTOCOL SPECIFICATION
 
 ## الملف: TERA_GATEWAY_PROTOCOL_SPEC.md
 ## المسار: .tera-workspace/
-## الإصدار: 1.1
+## الإصدار: 1.2
 ## التاريخ: 2026-07-10
-## الحالة: Draft — Pending Phase 4.1 Review
+## الحالة: ✅ Approved — اعتمد بعد Phase 4.1 Review
 ## مرجع: Engine Contract v1.2
 
 ---
@@ -17,7 +17,7 @@
 
 **النوع:** Request/Response via stdio (JSON Lines).
 
-**ملاحظة الحالة:** هذه وثيقة **Draft**. لا تُعتمد إلا بعد انتهاء مراجعة Phase 4.1.
+**ملاحظة الحالة:** هذه وثيقة **Approved v1.2** بعد معالجة Patch النهائي ومراجعة Phase 4.1.
 
 ---
 
@@ -321,7 +321,6 @@ Engine → Platform: HandshakeResponse
   "timestamp": "2026-07-10T14:32:00.000Z",
   "payload": {
     "method": "approval.request",
-    "request_id": "ar_abc123",
     "task_id": "t_abc123",
     "action_type": "destructive",
     "description": "Delete old test files that are no longer needed",
@@ -340,17 +339,29 @@ Engine → Platform: HandshakeResponse
 ```json
 {
   "type": "response",
-  "id": "ar_abc123",
+  "id": "appr_001",
   "timestamp": "2026-07-10T14:33:00.000Z",
   "payload": {
     "method": "approval.response",
-    "request_id": "ar_abc123",
     "approved": true,
     "reason": "Approved - old tests are obsolete",
     "approved_by": "majed"
   }
 }
 ```
+
+## 7.5 Approval Correlation Rules
+
+```
+القاعدة الرسمية في Phase 4:
+  1. approval.response يجب أن يحمل نفس id الخاص بـ approval.request.
+  2. `id` هو Correlation ID الوحيد على مستوى البروتوكول.
+  3. لا نستخدم `request_id` مستقلًا في Phase 4 لتجنب وجود معرّفين مختلفين لنفس الموافقة.
+  4. إذا احتاجت طبقة typed/schema الداخلية إلى request_id لاحقًا، فيجب أن يساوي `id` تمامًا، ولا يجوز أن يكون معرّفًا مستقلاً.
+  5. المنصة تملك سجل الموافقات الدائم، وليس المحرك.
+```
+
+**الحكم:** Correlation ID واحد يكفي في Phase 4. `request_id` الإضافي غير ضروري الآن، ويؤجل حتى توجد Approval Store دائمة تتطلب Business ID مستقل.
 
 ---
 
@@ -372,7 +383,7 @@ corr_[prefix]_[timestamp]_[random]
 | القاعدة | الشرح |
 |---|---|
 | **فريد** | لا يمكن تكرار معرّف في نفس الجلسة |
-| **ثابت** |一旦 أُرسل، لا يتغير |
+| **ثابت** |بمجرد إرساله، لا يتغير |
 | **مرتبط** | الرد يحمل نفس `id` الخاص بالطلب |
 | **قابل للتتبع** | يُستخدم لربط الطلب بالرد في السجلات |
 | **لا يتكرر** | كل طلب جديد = معرّف جديد |
@@ -404,7 +415,7 @@ corr_[prefix]_[timestamp]_[random]
   5. لا يُسمح للمحرك باتخاذ بديل أو المتابعة بدون موافقة
 
 ❌ ممنوع: المحرك يكمل دون موافقة ويُبلّغ بعدها
-❌ ممنوع: المحرك يُoclara أن الإجراء "ليس محمياً" ويتجاوز الـ Envelope
+❌ ممنوع: المحرك يدّعي أن الإجراء "ليس محمياً" ويتجاوز الـ Envelope
 ✅ المطلوب: الإجراء يتوقف → المهمة تصبح blocked → المنصة تقرر
 ```
 
@@ -414,7 +425,7 @@ corr_[prefix]_[timestamp]_[random]
 عند انتهاء أي timeout:
   1. المنصة تُرسل task.cancel
   2. المنصة تنتظر grace period (5 ثوانٍ)
-  3. إذا لم يتوقف المحرك → المنصة تقتل child process (SIGTERM، ثم SIGKILL بعد 3 ثوانٍ)
+  3. إذا لم يتوقف المحرك → المنصة تنهي process tree بالكامل عبر graceful termination ثم forceful termination حسب نظام التشغيل
   4. المنصة تُقيّم الحالة وتُخطر المستخدم
   5. لا تُرسل أي طلب آخر للمحرك حتى إعادة التشغيل
 ```
@@ -448,24 +459,37 @@ corr_[prefix]_[timestamp]_[random]
 5. إذا كان هناك ملفات معدّلة جزئياً → المحرك يُبلغ بها في outputs.files_changed
 ```
 
-## 10.3 Grace Period + Force Kill
+## 10.3 Cross-Platform Termination
+
+إنهاء المحرك يجب أن يكون **cross-platform** وينهي **process tree بالكامل**، وليس العملية الأم فقط.
 
 ```
 عند إرسال task.cancel:
   │
-  ├── المنصة تُرسل task.cancel عبر stdin
+  ├── 1. Cooperative cancellation
+  │      - المنصة تُرسل task.cancel عبر stdin
+  │      - المحرك يُتوقع أن يتوقف ذاتياً ويرسل task.result = cancelled
   │
-  ├── المنصة تنتظر grace period = 5 ثوانٍ
-  │     │
-  │     ├── المحرك أرسل task.result خلال Grace Period → قبول
-  │     │
-  │     └── المحرك لم يُرسل → المنصة تقتل العملية:
-  │           1. SIGTERM (إشعار بلطف)
-  │           2. انتظار 3 ثوانٍ
-  │           3. SIGKILL (قتل قسري)
+  ├── 2. Grace period
+  │      - المنصة تنتظر 5 ثوانٍ
+  │      - إذا أرسل المحرك task.result خلال المهلة → قبول وإغلاق نظيف
   │
-  └── المنصة تُقيّم الحالة وتُخطر المستخدم
+  ├── 3. Graceful termination
+  │      - Unix/macOS: SIGTERM إلى process group كامل
+  │      - Windows: CTRL_BREAK_EVENT إذا كان child process في process group مناسب، أو taskkill /T بدون /F كخيار fallback
+  │      - الانتظار 3 ثوانٍ
+  │
+  ├── 4. Forceful termination
+  │      - Unix/macOS: SIGKILL إلى process group كامل
+  │      - Windows: Job Object termination إن توفر، أو TerminateProcess/process tree kill، أو taskkill /F /T كـ fallback
+  │
+  └── 5. Post-termination assessment
+         - المنصة تُقيّم Workspace
+         - تُسجّل الملفات التي قد تكون تغيرت جزئياً
+         - تُخطر المستخدم
 ```
+
+**قاعدة إلزامية:** لا يكفي إنهاء العملية الأم فقط. يجب إنهاء كل العمليات الفرعية التي بدأها المحرك أو أوامر Shell/Git/Test التابعة للمهمة.
 
 ---
 
@@ -515,10 +539,13 @@ corr_[prefix]_[timestamp]_[random]
 | task.cancel | 4,096 | 4 KB |
 | Error | 16,384 | 16 KB |
 
-**القواعد:**
-- أي رسالة تتجاوز الحد الأقصى → **تُرفض ولا تُرسل**
-- إذا كان المحتوى أكبر → استخدم File Reference بدلاً من الإدراج
-- stderr logs ليس لها حد أقصى (لكن يُنصح بالاعتدال)
+**مسؤولية الحجم:**
+- **المرسل** يتحقق من حجم الرسالة قبل الإرسال. إذا تجاوزت الحد → لا يرسلها، ويستخدم File Reference أو يرسل structured error.
+- **المستقبل** يتحقق من حجم الرسالة عند الاستلام قبل المعالجة.
+- إذا كانت الرسالة كبيرة لكن framing سليم وآمن → يرد المستقبل بـ structured protocol error: `MESSAGE_TOO_LARGE` عبر stdout كـ JSON Line.
+- إذا كان الحجم يهدد framing أو الأمان أو يسبب memory pressure → يحق للمستقبل إغلاق الجلسة فوراً وتسجيل السبب في stderr.
+- إذا كان المحتوى أكبر → استخدم File Reference بدلاً من الإدراج.
+- stderr logs ليس لها حد بروتوكولي صارم، لكن يجب ألا تُستخدم لنقل بيانات كبيرة أو محتوى ملفات.
 
 ## 12.1 File References — حماية صارمة
 
@@ -609,10 +636,12 @@ corr_[prefix]_[timestamp]_[random]
 
 | القاعدة | الشرح |
 |---|---|
-| **stdout نظيف** | لا أخطاء في stdout — stderr فقط للـ logs |
-| **الخطأ رد** | الخطأ يُرسل كرد على الطلب (نفس correlation_id) |
+| **Structured protocol errors عبر stdout** | أي خطأ بروتوكولي منظم يُرسل كـ JSON Line على stdout باستخدام `type: "error"` |
+| **stderr للتشخيص فقط** | stderr مخصص للـ logs والتشخيص والأخطاء النصية غير البروتوكولية |
+| **الممنوع** | الممنوع هو unstructured output على stdout، وليس structured protocol errors |
+| **الخطأ رد** | الخطأ يُرسل كرد على الطلب (نفس correlation_id) عندما يكون ذلك ممكناً |
 | **fatal vs non-fatal** | `fatal: true` → توقف المهمة. `fatal: false` → يمكن المتابعة |
-| **لا سلسلة أخطاء** | لا يُرسل المحرك أخطاء متعددة لنفس المشكلة |
+| **MESSAGE_TOO_LARGE** | إذا أمكن framing آمن، يُعاد كـ structured error؛ إذا هدد framing أو الأمان تُغلق الجلسة |
 
 ---
 
@@ -629,10 +658,14 @@ corr_[prefix]_[timestamp]_[random]
   - Progress indicators
 
 ❌ stdout (محظور):
-  - أي شيء غير JSON Lines
+  - أي output غير JSON Lines
   - Logs
   - Debug output
   - Prints عادية
+  - أخطاء نصية غير مهيكلة
+
+✅ stdout (مسموح):
+  - request/response/notification/error كـ JSON Lines مهيكلة
 ```
 
 ## 14.2 تنسيق stderr (اختياري)
@@ -714,9 +747,9 @@ corr_[prefix]_[timestamp]_[random]
 | الإصدار | التعديل |
 |---|---|
 | v1.0 | النسخة الأولى |
-| v1.1 | إضافة: ephemeral runtime state model، approval timeout protection (لا يكمل بدون موافقة)، timeout → cancel → grace period → kill، File Reference protection (canonicalization, no absolute, no ../, no symlink, workspace_id match, envelope check)، توحيد message size limits، حالة Draft — Pending Review |
+| v1.1 | إضافة: ephemeral runtime state model، approval timeout protection، timeout cancellation، File Reference protection، توحيد message size limits، حالة Draft — Pending Review |
+| v1.2 | Patch نهائي: approval.response يستخدم نفس correlation id، إلغاء request_id مستقل في Phase 4، termination cross-platform مع process tree، structured errors عبر stdout، مسؤولية حجم الرسائل للمرسل والمستقبل، تنظيف الأحرف الغريبة، الحالة Approved |
 
 ---
 
-*هذه وثيقة **Draft v1.1** — الحالة: **Pending Phase 4.1 Review**.*
-*لا تُعتمد إلا بعد انتهاء المراجعة والموافقة.*
+*هذه وثيقة **Approved v1.2** — اعتمدت بعد Patch النهائي ومراجعة Phase 4.1.*

@@ -1,10 +1,11 @@
-﻿# خطة Phase 4 — تصميم Engine Gateway
+# خطة Phase 4 — تصميم Engine Gateway
 
 ## الملف: 05-phase4-engine-gateway-design.md
 ## المسار: .tera-workspace/PLANS/
-## الإصدار: 1.1
+## الإصدار: 1.2
 ## التاريخ: 2026-07-10
 ## الحالة: 🔵 Design Phase
+## مرجع: TERA_GATEWAY_PROTOCOL_SPEC.md v1.2
 
 ---
 
@@ -12,126 +13,55 @@
 
 Phase 4 هو بناء **Engine Gateway** — قناة الاتصال الرسمية بين TeraSystem Platform و TeraOpenCode Engine.
 
-**ملاحظة مهمة:** هذه مرحلة **تصميم** فقط. لا تنفيذ واسع حتى تتم مراجعة التصميم والموافقة عليه.
+**ملاحظة مهمة:** التنفيذ يبدأ تدريجيًا. المرحلة الحالية هي **Context API Limited Design** فقط، لا تنفيذ واسع.
 
 ---
 
 # المفهوم
 
 ```
-الآن (Phase 3):
+قبل Gateway:
   TeraSystem ←→ .tera-workspace/ (ملفات) ←→ TeraOpenCode
   (قراءة فقط من المحرك)
 
-بعد Phase 4:
+بعد Gateway:
   TeraSystem ←→ Engine Gateway ←→ TeraOpenCode
-  (Request/Response عبر Local IPC)
+  (Request/Response عبر stdio IPC)
   (read_tera_workspace = fallback مؤقت)
 ```
 
 ---
 
-# ما يحله Engine Gateway
+# البروتوكول المعتمد
 
-| المشكلة | الحل |
+| البند | القيمة |
 |---|---|
-| لا يوجد فصل رسمي بين المنصة والمحرك | Gateway = نقطة اتصال رسمية |
-| المحرك يقرأ ملفات مباشرة | Gateway يُرسل السياق عبر IPC |
-| لا يوجد Task API واضح | Assignment/Result API عبر Gateway |
-| لا يوجد Approval mechanism | Approval API عبر Gateway |
-| read_tera_workspace أداة مؤقتة | Gateway يحل محلها تدريجياً |
+| Protocol Spec | TERA_GATEWAY_PROTOCOL_SPEC.md |
+| Version | v1.2 |
+| Status | ✅ Approved |
+| Transport | stdio IPC / JSON Lines |
+| stdout | protocol messages فقط |
+| stderr | logs والتشخيص |
+| Termination | cross-platform process tree termination |
+| File References | محمية بـ canonicalization + Capability Envelope |
 
 ---
 
-# المكونات (تصميم)
+# آلية الاتصال المختارة
 
-## 1. Context API
-
-```
-Platform → ContextRequest → Gateway → ContextResponse → Engine
-```
-
-| الحقل | النوع | الوصف |
-|---|---|---|
-| workspace_id | string | معرّف المشروع |
-| context_type | "system" \| "project" \| "task" | نوع السياق |
-| context_data | string | محتوى السياق (JSON/Markdown) |
-| capabilities | CapabilityEnvelope | صلاحيات هذه الجلسة |
-
-## 2. Task Assignment API
-
-```
-Platform → TaskAssignment → Gateway → Engine
-Engine → ExecutionResult → Gateway → Platform
-```
-
-(مبني على Schemas في Engine Contract Section 6.1 و 6.2)
-
-## 3. Approval API
-
-```
-Engine → ApprovalRequest → Gateway → Platform
-Platform → ApprovalResponse → Gateway → Engine
-```
-
-(مبني على Schema في Engine Contract Section 6.3)
-
-## 4. Error Reporting API
-
-```
-Engine → EngineError → Gateway → Platform
-```
-
-(مبني على Schema في Engine Contract Section 6.5)
-
----
-
-# آلية الاتصال
-
-## الخيار A: stdio (الأبسط)
+## الخيار المختار: stdio IPC
 
 ```
 TeraSystem Platform
   │
   ├── يشغّل TeraOpenCode كـ child process
   │
-  ├── يُرسل Requests عبر stdin (JSON)
+  ├── يُرسل Requests عبر stdin (JSON Lines)
   │
-  └── يستقبل Responses عبر stdout (JSON)
+  └── يستقبل Responses عبر stdout (JSON Lines)
 ```
 
-**المزايا:**
-- لا يحتاج خادم منفصل
-- لا يحتاج منفذ شبكة
-- أبسط في التشغيل والصيانة
-- آمن (لا فتح منافذ)
-
-**العيوب:**
-- اتصال أحادي الجلسة (لا يتصل بعدة جلسات)
-- يحتاج إعادة تشغيل للاتصالات المتعددة
-
-## الخيار B: localhost HTTP
-
-```
-TeraSystem Platform
-  │
-  ├── تشغّل Gateway Server على localhost:PORT
-  │
-  ├── TeraOpenCode يتصل كـ client
-  │
-  └── Request/Response عبر HTTP
-```
-
-**المزايا:**
-- يدعم جلسات متعددة
-- أسهل في التشخيص
-- يمكن إضافة Auth لاحقاً
-
-**العيوب:**
-- يحتاج منفذ شبكة
-- تعقيد أكثر
-
-**التوصية:** البدء بـ **stdio** (الخيار A) لـ Phase 4، والانتقال لـ localhost HTTP في Phase 6 عند الحاجة.
+**السبب:** أبسط، لا يفتح منافذ، مناسب لأول Gateway.
 
 ---
 
@@ -139,16 +69,15 @@ TeraSystem Platform
 
 | الخطوة | الوصف | المدة التقريبية | الحالة |
 |---|---|---|---|
-| **4.0** | **TERA_GATEWAY_PROTOCOL_SPEC.md** — البروتوكول الرسمي | 2-3 أيام | ✅ مكتمل |
-| 4.1 | **مراجعة البروتوكول** — مراجعة و approve قبل التنفيذ | 1 يوم | 🔵 التالي |
-| 4.2 | **بناء Context API** — أول تكليف عبر stdio IPC | 3-4 أيام | 🔜 |
-| 4.3 | **بناء Task/Result API** — التكليف والنتيجة | 3-4 أيام | 🔜 |
-| 4.4 | **بناء Approval API** — الموافقات | 2-3 أيام | 🔜 |
-| 4.5 | **تحويل read_tera_workspace لـ fallback** | 1 يوم | 🔜 |
-| 4.6 | **اختبارات وتوثيق** | 2-3 أيام | 🔜 |
-| 4.7 | **مراجعة Phase 4** — إغلاق المرحلة | 1 يوم | 🔜 |
-
-**المجموع التقريبي:** 15-20 يوم عمل
+| 4.0 | TERA_GATEWAY_PROTOCOL_SPEC.md — البروتوكول الرسمي | 2-3 أيام | ✅ مكتمل |
+| 4.1 | مراجعة البروتوكول واعتماده | 1 يوم | ✅ مكتمل |
+| 4.2 | Context API Limited Design | 1-2 يوم | 🔵 التالي |
+| 4.3 | بناء Context API عبر stdio IPC | 3-4 أيام | 🔜 |
+| 4.4 | بناء Task/Result API | 3-4 أيام | 🔜 |
+| 4.5 | بناء Approval API | 2-3 أيام | 🔜 |
+| 4.6 | تحويل read_tera_workspace لـ fallback | 1 يوم | 🔜 |
+| 4.7 | اختبارات وتوثيق | 2-3 أيام | 🔜 |
+| 4.8 | مراجعة Phase 4 — إغلاق المرحلة | 1 يوم | 🔜 |
 
 ---
 
@@ -156,8 +85,8 @@ TeraSystem Platform
 
 | # | البند |
 |---|---|
-| 1 | TERA_GATEWAY_PROTOCOL_SPEC.md مكتوب ومراجع ✅ |
-| 2 | البروتوكول معتمد (contract_version, handshake, correlation_id, timeout, crash, sizing) |
+| 1 | TERA_GATEWAY_PROTOCOL_SPEC.md v1.2 مكتوب ومراجع ومعتمد ✅ |
+| 2 | Context API Limited Design مكتمل ومراجع |
 | 3 | Context API يعمل عبر stdio IPC |
 | 4 | Task Assignment API يعمل |
 | 5 | ExecutionResult API يعمل |
@@ -175,11 +104,10 @@ TeraSystem Platform
 ❌ REST API (يُؤجَّل لـ Phase 6)
 ❌ Event Stream (يُؤجَّل حتى تظهر حاجة)
 ❌ WebSocket (لا حاجة حالياً)
-❌ Auth على Gateway (مبسط في Phase 4)
 ❌ Multi-engine support (Phase 7)
+❌ تنفيذ واسع قبل Context API Limited Design
 ```
 
 ---
 
-*هذه وثيقة تصميم — تُراجع قبل التنفيذ.*
-
+*هذه الخطة محدثة بعد اعتماد Protocol Spec v1.2.*

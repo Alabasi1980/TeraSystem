@@ -1,11 +1,11 @@
-﻿# خريطة الطريق — TeraSystem Platform + TeraOpenCode Engine + Workspaces
+# خريطة الطريق — TeraSystem Platform + TeraOpenCode Engine + Workspaces
 
 ## الملف: ROADMAP.md
 ## المسار: .tera-workspace/
 ## الإصدار: 1.2
 ## التاريخ: 2026-07-10
 ## الحالة: ✅ Approved — اعتمد من ماجد
-## مرجع: Engine Contract v1.2
+## مرجع: Engine Contract v1.2 + Gateway Protocol Spec v1.2
 
 ---
 
@@ -22,70 +22,28 @@
 # المعمارية المستهدفة
 
 ```
-┌──────────────────────────────────────────────────────┐
-│                  TeraSystem Platform                  │
-│                    (Control Plane)                    │
-│                    تملك الحالة الدائمة                │
-│                                                      │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐ │
-│  │ العملاء  │ │ المهام   │ │ السياسات│ │ الجودة  │ │
-│  │ Customers│ │ Tasks    │ │ Policies│ │ Gates   │ │
-│  └──────────┘ └──────────┘ └──────────┘ └─────────┘ │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐ │
-│  │ القرارات │ │ الجلسات │ │ التقارير│ │ الذاكرة │ │
-│  │ Decisions│ │ Sessions │ │ Reports │ │ Memory  │ │
-│  └──────────┘ └──────────┘ └──────────┘ └─────────┘ │
-│                                                      │
-│  ┌────────────────────────────────────────────────┐  │
-│  │           Engine Gateway (API)                  │  │
-│  │  Context | Task | Result | Approval | (Events) │  │
-│  │          Request/Response via IPC               │  │
-│  └────────────────────────────────────────────────┘  │
-└──────────────────────┬───────────────────────────────┘
-                       │ Engine Contract v1.2
-                       │ (Capability Envelope لكل مهمة)
-                       ▼
-┌──────────────────────────────────────────────────────┐
-│                 TeraOpenCode Engine                   │
-│              (Execution Engine — Stateless)            │
-│              Runtime Session مؤقتة فقط                │
-│                                                      │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐ │
-│  │ AI Models│ │ File Ops │ │ Shell    │ │ Git     │ │
-│  └──────────┘ └──────────┘ └──────────┘ └─────────┘ │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐ │
-│  │ Search   │ │ Read-Only│ │ Tests    │ │ Prompts │ │
-│  │ (Glob/   │ │ Adapter  │ │          │ │         │ │
-│  │  Grep)   │ │ (read_   │ │          │ │         │ │
-│  │          │ │ tera_ws) │ │          │ │         │ │
-│  └──────────┘ └──────────┘ └──────────┘ └─────────┘ │
-│                                                      │
-│  ┌────────────────────────────────────────────────┐  │
-│  │  يُرسل ExecutionResult فقط                    │  │
-│  │  لا يغير Task State — المنصة وحدها تقرّر      │  │
-│  └────────────────────────────────────────────────┘  │
-└──────────────────────┬───────────────────────────────┘
-                       │ يعمل ضد (ضمن Capability Envelope)
-                       ▼
-┌──────────────────────────────────────────────────────┐
-│                Project Workspace                      │
-│                ملكية العميل/المؤسسة                   │
-│                                                      │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐ │
-│  │ كود المشروع │ │ .tera-   │ │ التبعيات│ │ الإعدادات│ │
-│  │ Source    │ │ workspace │ │ Deps    │ │ Config  │ │
-│  │ (ملكية   │ │ (قراءة   │ │         │ │         │ │
-│  │ العميل)  │ │ فقط من   │ │         │ │         │ │
-│  │          │ │ المحرك)  │ │         │ │         │ │
-│  └──────────┘ └──────────┘ └──────────┘ └─────────┘ │
-└──────────────────────────────────────────────────────┘
+TeraSystem Platform (Control Plane)
+  ├── Customers / Projects / Tasks / Policies / Gates
+  ├── Decisions / Sessions / Reports / Memory
+  └── Engine Gateway (Request/Response via stdio IPC)
+        │
+        │ Engine Contract v1.2 + Capability Envelope
+        ▼
+TeraOpenCode Engine (Execution Engine)
+  ├── Stateless business-wise
+  ├── Ephemeral runtime state during task only
+  ├── File/Shell/Git/Search/AI tools
+  └── ExecutionResult only — no Task State changes
+        │
+        ▼
+Project Workspace
+  ├── Source code (owned by client/organization)
+  └── .tera-workspace/ (read-only from engine until Gateway replaces it)
 ```
 
 ---
 
 # المراحل
-
----
 
 ## ✅ Phase 1-2: الفصل عن upstream والهوية (مكتمل)
 
@@ -102,80 +60,60 @@
 
 ## ✅ Phase 3: التكامل بين المنصة والمحرك (مكتمل)
 
-### Phase 3.1 — Context Source (مكتمل ✅)
-
 | المكون | الوصف | الحالة |
 |---|---|---|
-| SystemContext tera/system | سياق يُحقن في الـ model لوعيه بوجود TeraSystem | ✅ |
+| Context Source | سياق TeraSystem داخل المحرك | ✅ |
+| read_tera_workspace | Read-Only Adapter مؤقت | ✅ |
+| Engine Contract v1.2 | عقد معماري/تكاملي مع Schemas وCapability Envelope | ✅ |
 
-### Phase 3.2.1 — Read-Only Adapter (مكتمل ✅)
-
-| المكون | الوصف | الحالة |
-|---|---|---|
-| `read_tera_workspace` | أداة قراءة من `.tera-workspace/` فقط | ✅ — Read-Only Adapter |
-
-### Phase 3.2.2-3 — أدوات المنصة (معلقة ⏸️)
-
-| المكون | السبب |
-|---|---|
-| `tera_list_tasks` | ⏸️ معلقة — تحتاج Engine Gateway |
-| `tera_check_gates` | ⏸️ معلقة — تحتاج Engine Gateway |
-
-### Phase 3.3 — Config Bridge (معلقة ⏸️)
-
-| المكون | السبب |
-|---|---|
-| Config Bridge (tera-policy.ts) | ⏸️ معلقة — بعد Engine Gateway |
-
-### Definition of Done — Phase 3 ✅
+### Definition of Done — Phase 3
 
 | # | البند | الحالة |
 |---|---|---|
 | 1 | Engine Contract v1.2 معتمد | ✅ |
-| 2 | `read_tera_workspace` يعمل ومستقر | ✅ |
-| 3 | `read_tera_workspace` مُصنّف كـ Read-Only Adapter | ✅ |
-| 4 | Context Source يعمل ومستقر | ✅ |
-| 5 | `.tera-workspace/` للقراءة فقط من المحرك | ✅ |
-| 6 | Task Ownership واضح | ✅ |
-| 7 | Capability Envelope معرّف + يُفرض وقائيًا | ✅ |
-| 8 | Session Model موثّق | ✅ |
-| 9 | ملكية الكود واضحة | ✅ |
-| 10 | Roadmap محدَّث ومقبول | ✅ |
-| 11 | لا يوجد تناقض في الوثائق | ✅ |
-| 12 | لا يوجد أدوات جديدة تغير حالة النظام | ✅ |
+| 2 | read_tera_workspace يعمل ومستقر | ✅ |
+| 3 | .tera-workspace/ للقراءة فقط من المحرك | ✅ |
+| 4 | Task Ownership واضح | ✅ |
+| 5 | Capability Envelope معرّف ويُفرض وقائيًا | ✅ |
+| 6 | Session Model موثّق | ✅ |
+| 7 | ملكية الكود واضحة | ✅ |
+| 8 | Roadmap سليمة ومحدثة | ✅ |
+| 9 | لا يوجد أدوات جديدة تغير حالة النظام | ✅ |
 
-**النتيجة:** Phase 3 مكتمل بالكامل.
+**النتيجة:** Phase 3 مغلقة بالكامل.
 
 ---
 
-## 🔵 Phase 4: تصميم وبناء Engine Gateway (مفتوح)
+## 🔵 Phase 4: Engine Gateway (مفتوح — تصميم محدود ثم تنفيذ تدريجي)
 
 **الشرط المسبق:** اكتمال DoD لـ Phase 3 ✅
 
 ### المخرج الأول: TERA_GATEWAY_PROTOCOL_SPEC.md
 
-بروتوكول الاتصال الرسمي قبل أي تنفيذ:
-
 | البند | التفاصيل |
 |---|---|
+| الإصدار | v1.2 |
+| الحالة | ✅ Approved |
 | stdout | رسائل البروتوكول فقط (JSON Lines) |
-| stderr | logs فقط |
-| Framing | JSON Lines (سطر واحد = رسالة واحدة) |
-| Handshake | التحقق من contract_version و engine_version |
-| correlation_id | ربط كل طلب بردّه |
-| timeout | حد أقصى لكل طلب/رد |
-| cancellation | إلغاء المهمة برسالة وحيدة |
-| crash/restart | سلوك عند انهيار المحرك |
-| حجم الرسائل | حد أقصى + تمرير الملفات الكبيرة كمراجع |
-|Transport | stdio (Phase 4-5) → localhost HTTP (Phase 6+) |
+| stderr | logs والتشخيص والأخطاء النصية فقط |
+| Framing | JSON Lines |
+| Handshake | contract_version + engine_version |
+| correlation_id | ردود البروتوكول تحمل نفس id للطلب |
+| Approval correlation | approval.response يحمل نفس id الخاص بـ approval.request؛ لا request_id مستقل في Phase 4 |
+| timeout | timeout → task.cancel → grace period → graceful termination → forceful termination |
+| cancellation | cooperative cancellation + process tree termination |
+| crash/restart | المنصة تقيم الحالة وتعيد التشغيل عند الحاجة |
+| حجم الرسائل | sender check + receiver check + MESSAGE_TOO_LARGE أو إغلاق الجلسة |
+| File References | canonicalization + no absolute + no ../ + no symlink escape + workspace_id + Capability Envelope |
+| Transport | stdio (Phase 4-5) → localhost HTTP (Phase 6+) |
 
 ### مراحل التنفيذ
 
 | الخطوة | الوصف | الحالة |
 |---|---|---|
-| 4.0 | **TERA_GATEWAY_PROTOCOL_SPEC.md — البروتوكول الرسمي (Draft v1.1 — Pending Phase 4.1 Review)
-| 4.1 | تصميم Gateway API بالتفصيل | 🔜 |
-| 4.2 | مراجعة التصميم + approve | 🔜 |
+| 4.0 | TERA_GATEWAY_PROTOCOL_SPEC.md v1.2 — البروتوكول الرسمي | ✅ مكتمل |
+| 4.1 | مراجعة البروتوكول واعتماده | ✅ مكتمل |
+| 4.2 | Context API Limited Design | 🔵 التالي |
 | 4.3 | بناء Context API عبر stdio IPC | 🔜 |
 | 4.4 | بناء Task/Result API | 🔜 |
 | 4.5 | بناء Approval API | 🔜 |
@@ -187,8 +125,8 @@
 
 | # | البند |
 |---|---|
-| 1 | TERA_GATEWAY_PROTOCOL_SPEC.md مكتوب ومراجع |
-| 2 | Gateway API مصمم ومراجع |
+| 1 | TERA_GATEWAY_PROTOCOL_SPEC.md v1.2 مكتوب ومراجع ومعتمد |
+| 2 | Context API Limited Design مكتمل ومراجع |
 | 3 | Context API يعمل عبر stdio IPC |
 | 4 | Task Assignment API يعمل |
 | 5 | ExecutionResult API يعمل |
@@ -202,10 +140,10 @@
 
 | المرحلة | الحالة |
 |---|---|
-| Phase 3 (الآن) | **Active** — الأداة الوحيدة |
-| Phase 4 (بناء Gateway) | **Fallback** — Gateway أساسي، read_tera_workspace احتياطي |
-| Phase 4.5 (تثبيت Gateway) | **Deprecated** — تحذير عند الاستخدام |
-| Phase 5 (Workspace Mgmt) | **Removed** — حذف نهائي |
+| Phase 3 | Active — الأداة الوحيدة |
+| Phase 4 | Fallback — Gateway أساسي، read_tera_workspace احتياطي |
+| Phase 4.5 | Deprecated — تحذير عند الاستخدام |
+| Phase 5 | Removed — حذف نهائي |
 
 ---
 
@@ -213,11 +151,11 @@
 
 | الأولوية | المكون | الوصف |
 |---|---|---|
-| 🥇 1 | **Workspace Registry** | سجل المشاريع النشطة |
-| 🥇 2 | **Multi-Client Isolation** | عزل كامل بين العملاء |
-| 🥈 3 | **Workspace Templates** | قوالب مشاريع جاهزة |
-| 🥈 4 | **Project Lifecycle** | إنشاء → تطوير → مراجعة → تسليم |
-| 🥉 5 | **Artifact Storage** | تخزين المخرجات |
+| 🥇 1 | Workspace Registry | سجل المشاريع النشطة |
+| 🥇 2 | Multi-Client Isolation | عزل كامل بين العملاء |
+| 🥈 3 | Workspace Templates | قوالب مشاريع جاهزة |
+| 🥈 4 | Project Lifecycle | إنشاء → تطوير → مراجعة → تسليم |
+| 🥉 5 | Artifact Storage | تخزين المخرجات |
 
 ---
 
@@ -225,12 +163,12 @@
 
 | الأولوية | المكون | الوصف |
 |---|---|---|
-| 🥇 1 | **Gate Framework** | نظام قابل للتوسع |
-| 🥇 2 | **Security Gate** | منع كلمات السر والمفاتيح |
-| 🥈 3 | **Quality Gate** | اختبارات وتغطية |
-| 🥈 4 | **Naming Gate** | نمط التسمية |
-| 🥉 5 | **Doc Gate** | توثيق APIs |
-| 🥉 6 | **Decision Proposal Gate** | تسجيل القرارات |
+| 🥇 1 | Gate Framework | نظام قابل للتوسع |
+| 🥇 2 | Security Gate | منع كلمات السر والمفاتيح |
+| 🥈 3 | Quality Gate | اختبارات وتغطية |
+| 🥈 4 | Naming Gate | نمط التسمية |
+| 🥉 5 | Doc Gate | توثيق APIs |
+| 🥉 6 | Decision Proposal Gate | تسجيل القرارات |
 
 ---
 
@@ -238,24 +176,11 @@
 
 | المحرك | الوظيفة |
 |---|---|
-| **TeraOpenCode** (موجود) | كتابة وتعديل الكود |
-| **TeraDesignEngine** (مستقبل) | تصميم واجهات المستخدم |
-| **TeraTestEngine** (مستقبل) | اختبار آلي |
-| **TeraDeployEngine** (مستقبل) | نشر وتوزيع |
-| **TeraDocEngine** (مستقبل) | توثيق |
-
----
-
-# الجدول الزمني
-
-| المرحلة | الحالة |
-|---|---|
-| Phase 1-2 | ✅ مكتمل |
-| Phase 3 | ✅ مكتمل |
-| Phase 4 (تصميم + تنفيذ) | 🔵 مفتوح |
-| Phase 5 | 🔜 معلق |
-| Phase 6 | 🔜 معلق |
-| Phase 7 | 🔮 مستقبلي |
+| TeraOpenCode | كتابة وتعديل الكود |
+| TeraDesignEngine | تصميم واجهات المستخدم |
+| TeraTestEngine | اختبار آلي |
+| TeraDeployEngine | نشر وتوزيع |
+| TeraDocEngine | توثيق |
 
 ---
 
@@ -266,43 +191,21 @@
 ❌ البدء في Config Bridge
 ❌ نسخ المحرك داخل أي مشروع
 ❌ خلط بيانات العملاء مع مستودع المنصة
-❌ إضافة أدوات تغير حالة النظام
-❌ تعديل Engine Contract دون مراجعة
+❌ إضافة أدوات تغير حالة النظام خارج Gateway scope
 ❌ كتابة المحرك في .tera-workspace/
 ❌ استخدام Event Stream قبل الحاجة التشغيلية المثبتة
-❌ تنفيذ Phase 4 بدون Protocol Spec معتمد
+❌ تنفيذ واسع لـ Phase 4 قبل إكمال Context API Limited Design
 ```
 
 # ما هو مسموح فعله الآن
 
 ```
-✅ صيانة وتحسين read_tera_workspace (قراءة فقط)
-✅ تطوير Context Source (Phase 3.1)
-✅ كتابة TERA_GATEWAY_PROTOCOL_SPEC.md
-✅ تصميم Engine Gateway
-✅ تحسين جودة الكود الحالي
-✅ إصلاح أخطاء
-✅ تحضير وثائق Phase 4
-✅ دراسة Capability Envelope designs
+✅ تصميم Context API ضمن نطاق محدود
+✅ تجهيز واجهة Context Request/Response
+✅ تحديد payloads والحدود والاختبارات المطلوبة
+✅ صيانة read_tera_workspace كـ fallback مؤقت فقط
 ```
 
 ---
 
-# المبادئ التوجيهية
-
-1. **تثبيت العقد قبل البناء** — Engine Contract أولاً
-2. **المحرك Stateless** — Runtime Session تنتهي عند إرسال النتيجة
-3. **المنصة تقرر، المحرك ينفذ** — Control Plane vs Execution Engine
-4. **المحرك يُرسل النتيجة فقط** — لا يغير Task State
-5. **الفصل الكامل** — كود المنصة ≠ كود المحرك ≠ بيانات العملاء
-6. **ملكية الكود للعميل** — المحرك مخوّل بالتعديل
-7. **`.tera-workspace/` للقراءة فقط** — لا كتابة أبداً
-8. **Request/Response أولاً** — Event Stream يتأجل
-9. **Capability Envelope يُفرض وقائيًا** — قبل كل عملية
-10. **Protocol Spec قبل التنفيذ** — لا IPC بدون بروتوكول موثّق
-
----
-
-*هذه الخريطة **v1.2 Approved** — اعتمد من ماجد.*
-*آخر تحديث: 2026-07-10.*
-
+*هذه الخريطة **v1.2 Approved** — محدثة بعد اعتماد Gateway Protocol Spec v1.2.*
