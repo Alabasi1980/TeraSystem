@@ -222,3 +222,29 @@
 - Stub logic: risk_level "critical" → denied, others → auto-approved
 - Correlation: response carries same id as request (Phase 4 rule)
 - Approval API = approval.request, approval.response
+
+---
+
+## المهمة 010: TASK-COD-004 — Phase 4.6 read_tera_workspace Fallback ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ Accepted |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/TASKS/TASK-COD-004.md` |
+| التعديل | `packages/core/src/tool/read-tera-workspace.ts` |
+
+### التحقق:
+
+- ✅ `bun run typecheck` — PASS (no errors)
+- ✅ Tool description includes "[DEPRECATED]" prefix
+- ✅ Tool output includes deprecation warning message
+- ✅ Tool still functions correctly (reads files)
+
+### ملاحظات:
+
+- Tool converted from active to fallback
+- Deprecation warning added to description and output
+- Gateway API is now the primary communication method
+- Tool will be removed in Phase 5

@@ -15,6 +15,10 @@ export const name = "read_tera_workspace"
 
 const MAX_BYTES = 512_000
 
+const DEPRECATION_WARNING =
+  "[DEPRECATED] read_tera_workspace is deprecated. " +
+  "Use Gateway API (context method) instead. This tool will be removed in Phase 5."
+
 export const Input = Schema.Struct({
   path: Schema.String,
 })
@@ -44,9 +48,10 @@ const layer = Layer.effectDiscard(
       .register({
         [name]: Tool.make({
           description:
-            "Read files from the .tera-workspace/ governance directory. " +
-            "Use this to read TeraSystem task registry, decisions log, plans, " +
-            "and any governance documents. Only .tera-workspace/ files are accessible.",
+            "[DEPRECATED] Read files from the .tera-workspace/ governance directory. " +
+            "Use Gateway API (context method) instead. " +
+            "This tool is a fallback and will be removed in Phase 5. " +
+            "Only .tera-workspace/ files are accessible.",
           input: Input,
           output: Output,
           execute: (input, context) =>
@@ -85,7 +90,7 @@ const layer = Layer.effectDiscard(
 
               return {
                 path: input.path,
-                content: display,
+                content: DEPRECATION_WARNING + "\n\n" + display,
                 truncated,
               }
             }).pipe(
