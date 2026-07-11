@@ -16,6 +16,102 @@
 
 ## Activity Log
 
+## [2026-07-10 18:20] - PHASE_4_2_EXECUTION_PREP
+
+- Related Task: TASK-COD-001
+- Actor: Tera
+- Summary: Prepared the controlled Phase 4.2 Context API prototype path. Created draft Technology Profile `effect-bun-opencode`, added TASK-COD-001 with strict scope and gates, and kept implementation blocked until profile approval and exact write-target narrowing.
+- Decision / Result: No code implementation delegated yet. Pre-Execution Gate is BLOCKED pending Majed approval of the active Technology Profile.
+- Next Action: Ask Majed to approve `effect-bun-opencode`; after approval, delegate TASK-COD-001 to EngineeringAgent with narrow allowed write targets.
+
+## [2026-07-10 18:25] - ENGINEERING_PLANNING_HANDBACK
+
+- Related Task: TASK-COD-001
+- Actor: EngineeringAgent → Tera
+- Summary: EngineeringAgent performed read-only planning for the Phase 4.2 Context API prototype. It recommended an opencode-only implementation under `clients/TeraAi/packages/opencode/`, with no `packages/core/**` writes and no code changes during planning.
+- Decision / Result: Tera accepted the planning handback and updated TASK-COD-001 with proposed write targets. Implementation remains blocked pending Majed approval of the Technology Profile, Build Mode, and write targets.
+- Next Action: Request Majed approval; if approved, delegate TASK-COD-001 to EngineeringAgent for implementation.
+
+## [2026-07-10 18:30] - BUILD_MODE_APPROVAL
+
+- Related Task: TASK-COD-001
+- Actor: User + Tera
+- Summary: Majed approved `effect-bun-opencode` Technology Profile, Build Mode for TASK-COD-001, and the proposed opencode-only write targets.
+- Decision / Result: Pre-Execution Gate updated to PASS. TASK-COD-001 is approved and assigned to EngineeringAgent for constrained implementation.
+- Next Action: Delegate TASK-COD-001 to EngineeringAgent with strict allowed write targets and acceptance criteria.
+
+## [2026-07-10 18:40] - ENGINEERING_IMPLEMENTATION_HANDBACK
+
+- Related Task: TASK-COD-001
+- Actor: EngineeringAgent → Tera
+- Summary: EngineeringAgent submitted TASK-COD-001 implementation handback. Created gateway protocol/stdin modules, gateway CLI command, scoped gateway tests, and updated opencode CLI registration within approved write targets.
+- Decision / Result: Handback recorded. Scoped gateway test passed. Package typecheck reported a pre-existing/unrelated plugin type mismatch outside allowed write targets. Tera Post-Execution Review is now required before acceptance.
+- Next Action: Tera reviews actual diff, allowed write targets, tests, and typecheck failure scope before deciding Accepted / Needs Fix / Blocked.
+
+## [2026-07-10 18:50] - POST_EXECUTION_REVIEW
+
+- Related Task: TASK-COD-001
+- Actor: Tera
+- Summary: Reviewed TASK-COD-001 implementation files, allowed write targets, scope exclusions, scoped gateway tests, and package typecheck failure.
+- Decision / Result: TASK-COD-001 accepted with external follow-up issue. Scoped gateway tests pass (7/7). Typecheck failure is documented as GAP-0001 because it occurs in `src/plugin/index.ts`, outside allowed write targets and outside this task scope.
+- Next Action: Ask Majed whether to open a separate TASK-COD-FIX for plugin typecheck before broader Gateway work, or proceed with the next Gateway step while tracking GAP-0001.
+
+## [2026-07-10 18:55] - FIX_TASK_OPENED
+
+- Related Task: TASK-COD-FIX-001
+- Actor: User + Tera
+- Summary: Majed selected option A: fix the plugin type mismatch before expanding Gateway work. Tera created TASK-COD-FIX-001 and linked it to GAP-0001.
+- Decision / Result: Fix task opened in Planning state. No implementation delegated yet.
+- Next Action: Delegate read-only planning to EngineeringAgent to identify root cause and exact write targets before Build Mode approval.
+
+## [2026-07-10 19:00] - FIX_PLANNING_HANDBACK
+
+- Related Task: TASK-COD-FIX-001
+- Actor: EngineeringAgent → Tera
+- Summary: EngineeringAgent completed read-only planning for GAP-0001. Root cause is third-party plugin packages typed against upstream `@opencode-ai/plugin` while the local repo uses `@tera-system/plugin`.
+- Decision / Result: Recommended minimal one-file compatibility adapter in `clients/TeraAi/packages/opencode/src/plugin/index.ts`. No files were modified by EngineeringAgent during planning.
+- Next Action: Request Majed Build Mode approval for TASK-COD-FIX-001 with the single allowed write target.
+
+## [2026-07-10 19:05] - FIX_BUILD_MODE_APPROVAL
+
+- Related Task: TASK-COD-FIX-001
+- Actor: User + Tera
+- Summary: Majed approved Build Mode for TASK-COD-FIX-001 with a single allowed write target: `clients/TeraAi/packages/opencode/src/plugin/index.ts`.
+- Decision / Result: Pre-Execution Gate updated to PASS. Task assigned to EngineeringAgent for constrained implementation.
+- Next Action: Delegate TASK-COD-FIX-001 implementation to EngineeringAgent.
+
+## [2026-07-10 19:15] - FIX_IMPLEMENTATION_HANDBACK
+
+- Related Task: TASK-COD-FIX-001
+- Actor: EngineeringAgent → Tera
+- Summary: EngineeringAgent completed the one-file plugin type compatibility fix in `clients/TeraAi/packages/opencode/src/plugin/index.ts`.
+- Decision / Result: Handback recorded. EngineeringAgent reports `bun run typecheck` passed and TASK-COD-001 gateway regression test passed.
+- Next Action: Tera runs Post-Execution Review and independent verification before accepting the fix.
+
+## [2026-07-10 19:20] - FIX_POST_EXECUTION_REVIEW
+
+- Related Task: TASK-COD-FIX-001
+- Actor: Tera
+- Summary: Reviewed the one-file plugin compatibility adapter in `clients/TeraAi/packages/opencode/src/plugin/index.ts` and independently reran verification.
+- Decision / Result: TASK-COD-FIX-001 accepted and closed. `bun run typecheck` passes. `bun test test/gateway/context-api.test.ts` passes (7/7). GAP-0001 resolved.
+- Next Action: Continue Phase 4 Gateway work from a clean typecheck baseline.
+
+## [2026-07-10 17:58] - CLIENT_APP_AUTH_FIX
+
+- Related Task: N/A
+- Actor: Tera
+- Summary: Investigated repeated frontend `401 Unauthorized` errors after page refresh. Identified that the temporary `auth_token` is cleared after initial load, so refresh returned the Web UI to unauthenticated backend calls.
+- Decision / Result: Restarted local backend on `4097` with `OPENCODE_SERVER_PASSWORD` cleared only for the spawned local process, disabling Basic Auth for localhost development. Restarted Web UI on `4445`. Verified `http://127.0.0.1:4097/global/health` and `http://127.0.0.1:4097/global/config` return `200`, and Web UI returns `200`.
+- Next Action: User can refresh `http://127.0.0.1:4445/` normally; no `auth_token` is needed for this local no-auth run.
+
+## [2026-07-10 17:47] - CLIENT_APP_RUN
+
+- Related Task: N/A
+- Actor: Tera + EngineeringAgent
+- Summary: Started `clients/TeraAi` Web App. Found port conflicts on `4096` and `4444`, so backend was started on `4097` and web UI on `4445`. Diagnosed Vite startup failure caused by UTF-8 BOM bytes in workspace `package.json` files.
+- Decision / Result: EngineeringAgent removed BOM bytes only from affected `package.json` files. Verification showed `BOM_COUNT=0`. Vite returned `200` at `http://127.0.0.1:4445/` and the URL was opened in the browser.
+- Next Action: User can inspect the running Web App in browser; keep backend PID `25992` and web listener PID `19564` running until no longer needed.
+
 ## [2026-06-30 11:45] - SYSTEM_CONSISTENCY_FIX
 
 - Related Task: N/A
@@ -286,3 +382,11 @@
 - Actor: Tera Agent (per Majed request)
 - Summary: Created project-control/GIT_REMOTE.md to store the client repository remote URL. Updated .opencode/agents/tera.md Git protocol to reference GIT_REMOTE.md. Updated opencode.json instruction. The file is user-editable — user can update the URL manually or ask Tera to do it.
 - Decision / Result: Clear separation: GIT_REMOTE.md holds the URL, Tera reads it before push, user updates it per project. Each client project has its own remote URL stored explicitly.
+
+## [2026-07-10 22:15] - TASK-COD-002_COMPLETION
+
+- Related Task: TASK-COD-002
+- Actor: Tera + EngineeringAgent
+- Summary: Implemented Gateway Task API (Phase 4.4) with task.create, task.cancel, task.status methods. Created task-handlers.ts, task-api.test.ts, modified protocol.ts and context-api.test.ts. All within allowed write targets.
+- Decision / Result: Post-Execution Review Gate PASS. Typecheck clean. 15/15 tests pass (8 task + 7 context). Gateway now announces supported_methods: ["context", "task"]. Task state is ephemeral (in-memory Map). TASK-COD-002 status: Accepted.
+- Next Action: Commit and push code changes. Then proceed to Phase 4.5 (Approval API) or Phase 4.6 (Event Stream) per roadmap.

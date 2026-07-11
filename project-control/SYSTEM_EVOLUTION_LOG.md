@@ -806,3 +806,29 @@
   1. Remove `websearch: allow` and `task: deny` from `.opencode/agents/tera-strategic-advisor.md`.
   2. Remove the added sub-agent invocation note from `.opencode/agents/tera-strategic-advisor.md`.
   3. Restore `AGENT_DEPENDENCY_MAP.md` line count to previous value if needed.
+
+### Second Post-Review Amendment — 2026-07-10 — كتابة الملفات التحليلية
+
+- Request Source: Majed direct instruction after review.
+- Files Changed:
+  - `.opencode/agents/tera-strategic-advisor.md`
+  - `tera-system/AGENT_DEPENDENCY_MAP.md`
+  - `project-control/SYSTEM_EVOLUTION_LOG.md`
+- Summary:
+  - Changed `write: deny` → `write: ask` so the advisor can create analytical files, plans, risk assessments, option comparisons, and any text-only advisory output (.md) — with Majed approval per file.
+  - Kept `edit: deny` — the advisor may not modify existing system or application files unless Majed explicitly instructs it in a specific case.
+  - Updated Output Persistence section (§15) with:
+    - explicit write protocol (state path, confirm advisory-only, confirm no code)
+    - absolute prohibition on writing any executable, compilable, or runnable file
+    - explicit list of allowed file types (.md analysis only)
+  - No `advisory-reports/` folder created; write location is per-instruction by Majed.
+- Validation:
+  - ✅ `edit: deny` remains — no modification of existing files.
+  - ✅ Absolute code-writing prohibition added in natural language.
+  - ✅ Allowed writes are limited to `.md` advisory/analysis/plan files.
+  - ✅ File size still below split threshold — `tera-strategic-advisor.md` = 323 سطر (< 700).
+  - ✅ `git diff --check` PASS — only CRLF warnings.
+- Rollback Notes:
+  1. Revert `write: ask` → `write: deny` in `.opencode/agents/tera-strategic-advisor.md`.
+  2. Restore §15 Output Persistence to read-only version.
+  3. Restore `AGENT_DEPENDENCY_MAP.md` line count.

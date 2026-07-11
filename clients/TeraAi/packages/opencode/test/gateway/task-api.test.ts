@@ -83,7 +83,7 @@ describe("gateway task api", () => {
     expect(result.stdout[0].payload).toMatchObject({
       method: "handshake",
       status: "ok",
-      supported_methods: ["context", "task"],
+      supported_methods: ["context", "task", "approval"],
     })
   })
 

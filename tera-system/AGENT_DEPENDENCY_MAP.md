@@ -68,7 +68,7 @@ ui-designer.md
 | `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` | 469 | 🟢 < 700 — لا حاجة |
 | `tera-system/TeraPreExecutionGate.md` | 563 | 🟢 < 700 — لا حاجة |
 | `tera-system-evolution.md` | 451 | 🟢 < 700 — لا حاجة |
-| `tera-strategic-advisor.md` | 314 | 🟢 < 700 — لا حاجة |
+| `tera-strategic-advisor.md` | 323 | 🟢 < 700 — لا حاجة |
 | `domain-expert-agent.md` | 398 | 🟢 < 700 — لا حاجة |
 | `application-blueprint.md` | 335 | 🟢 < 700 — لا حاجة |
 | باقي ملفات agents | 180–322 | 🟢 < 700 — لا حاجة |
