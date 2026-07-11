@@ -3,7 +3,7 @@ import { GatewayProtocol } from "@/gateway/protocol"
 import { GatewayStdio } from "@/gateway/stdio"
 
 describe("gateway context api", () => {
-  test("accepts handshake version 1.2 and advertises context only", async () => {
+  test("accepts handshake version 1.2 and advertises context and task", async () => {
     const result = await runGateway([handshake()])
     expect(result.stderr).toBe("")
     expect(result.stdout).toHaveLength(1)
@@ -13,7 +13,7 @@ describe("gateway context api", () => {
       method: "handshake",
       status: "ok",
       contract_version: "1.2",
-      supported_methods: ["context"],
+      supported_methods: ["context", "task"],
     })
   })
 
