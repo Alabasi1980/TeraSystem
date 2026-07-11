@@ -194,3 +194,31 @@
 - لا يوجد persistence أو real task execution
 - Task API = task.create, task.cancel, task.status
 - الـ hook timeout عند تشغيل ملفين معًا هو مشكلة في بيئة الاختبار وليس في الكود
+
+---
+
+## المهمة 009: TASK-COD-003 — Phase 4.5 Gateway Approval API ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ Accepted |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/TASKS/TASK-COD-003.md` |
+| الملفات الجديدة | `packages/opencode/src/gateway/approval-handlers.ts`, `packages/opencode/test/gateway/approval-api.test.ts` |
+| التعديل | `packages/opencode/src/gateway/protocol.ts`, `packages/opencode/test/gateway/context-api.test.ts` |
+
+### التحقق:
+
+- ✅ `bun run typecheck` — PASS (no errors)
+- ✅ `bun test test/gateway/approval-api.test.ts` — 12/12 passed
+- ✅ `bun test test/gateway/task-api.test.ts` — 8/8 passed
+- ✅ `bun test test/gateway/context-api.test.ts` — 7/7 passed
+- ✅ Gateway يعلن `supported_methods: ["context", "task", "approval"]`
+
+### ملاحظات:
+
+- Approval state ephemeral (no persistence)
+- Stub logic: risk_level "critical" → denied, others → auto-approved
+- Correlation: response carries same id as request (Phase 4 rule)
+- Approval API = approval.request, approval.response

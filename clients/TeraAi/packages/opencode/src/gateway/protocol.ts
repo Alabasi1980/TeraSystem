@@ -1,3 +1,4 @@
+import { handleApproval } from "./approval-handlers"
 import { handleTask } from "./task-handlers"
 
 const CONTRACT_VERSION = "1.2"
@@ -51,6 +52,7 @@ export function handleGatewayLine(session: GatewaySession, line: string): Gatewa
   if (method === "handshake") return handleHandshake({ id, payload, messageSize, session })
   if (method === "context") return handleContext({ id, payload, messageSize, session })
   if (method === "task") return handleTask({ id, payload, messageSize, session })
+  if (method === "approval.request" || method === "approval.response") return handleApproval({ id, payload, messageSize, session })
 
   return {
     session,
@@ -106,7 +108,7 @@ function handleHandshake(input: {
       status: "ok",
       engine_version: ENGINE_VERSION,
       contract_version: CONTRACT_VERSION,
-      supported_methods: ["context", "task"],
+      supported_methods: ["context", "task", "approval"],
     }),
   }
 }
