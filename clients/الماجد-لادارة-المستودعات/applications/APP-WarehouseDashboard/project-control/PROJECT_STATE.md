@@ -1,7 +1,7 @@
 # PROJECT_STATE.md
 
 > **Purpose:** Compact project memory to reduce re-reading files.
-> **Last Updated:** 2026-07-12
+> **Last Updated:** 2026-07-12 (Phase 4 Complete — Ready for Phase 5)
 
 ---
 
@@ -9,11 +9,11 @@
 
 - **Project Name:** WarehouseDashboard
 - **Client:** الماجد لادارة المستودعات
-- **Current Phase:** 2 — Project Decision Formation ✅ Complete
+- **Current Phase:** 4 — Sub-Agent Generation & Preparation Delegation ✅ COMPLETE (all 19 files)
 - **Project Size:** Medium (45.95% complexity)
-- **Active Technology Profile:** Pending — no exact match exists (Razor Pages, not Blazor). Custom profile to be created in Phase 3.
+- **Active Technology Profile:** `dotnet-razorpages-adonet` (custom, ✅ approved by Majed)
 - **Target Delivery:** No deadline — natural pace
-- **Current Lifecycle Phase:** 2 Decision → Next: 3 Preparation Planning
+- **Current Lifecycle Phase:** 4 Preparation Delegation → Next: 5 Execution Planning (PROJECT_MASTER_PLAN.md first)
 - **Closure Status:** Not Started
 
 ---
@@ -42,6 +42,9 @@
 | 2026-07-12 | Monitor: PROJECT_MASTER_PLAN.md first in Phase 5 | Governance condition |
 | 2026-07-12 | Monitor: PROJECT_STATE.md before first TASK-COD | Governance condition |
 | 2026-07-12 | Monitor: First TASK-COD = Oracle connection test | Risk mitigation condition |
+| 2026-07-12 | **D-BE-1:** AdminPassword singleton (Phase 1); AdminUsers table deferred to Phase 2 | Aligns with `08_TECHNICAL_ARCHITECTURE.md §8.1`; prevents scope creep |
+| 2026-07-12 | **D-BE-2:** AuditLog table DEFERRED to Phase 2; Phase 1 tracks SyncLogs + ErrorLogs only | Baseline (06/08) has no AuditLog; admin action audit = Phase 2 enhancement |
+| 2026-07-12 | **D-BE-3:** Phase 1 API = NO app-level auth token; internal network only (IIS); admin auth on Web panel via password | Aligns with `08_TECHNICAL_ARCHITECTURE.md §8.1` |
 
 ---
 
@@ -49,16 +52,36 @@
 
 | TASK-ID | Description | Status | Agent |
 |---|---|---|---|
-| — | No tasks created yet | — | — |
+| TASK-PREP-001 | `01_PROJECT_BRIEF.md` | ✅ Accepted | General |
+| TASK-PREP-002 | `08_TECHNICAL_ARCHITECTURE.md` | ✅ Accepted | tera-software-designer |
+| TASK-PREP-003 | `02_SCOPE_AND_BOUNDARIES.md` | ✅ Accepted | General |
+| TASK-PREP-004 | `03_MODULES_AND_FEATURES.md` | ✅ Accepted | General |
+| TASK-PREP-005 | `04_USERS_ROLES_PERMISSIONS.md` | ✅ Accepted | General |
+| TASK-PREP-006 | `05_BUSINESS_WORKFLOWS.md` | ✅ Accepted | General |
+| TASK-PREP-007 | `06_DATA_MODEL_PREPARATION.md` | ✅ Accepted | tera-software-designer |
+| TASK-PREP-008 | `07_SCREENS_AND_UI_STRUCTURE.md` | ✅ Accepted | ui-designer |
+| TASK-PREP-009 | `13_REPORTS_AND_DASHBOARDS.md` | ✅ Accepted | tera-software-designer |
+| TASK-PREP-010 | `14_INTEGRATIONS_AND_EXTERNAL_SERVICES.md` | ✅ Accepted | tera-software-designer |
+| TASK-PREP-011 | `28_UI_UX_GUIDELINES.md` | ✅ Accepted | ui-designer |
+| TASK-PREP-012 | `16_AUDIT_LOG_AND_ACTIVITY_TRACKING.md` | ✅ Accepted | tera-software-designer |
+| TASK-PREP-013 | `19_DATABASE_DESIGN.md` | ✅ Accepted | tera-software-designer |
+| TASK-PREP-014 | `20_API_CONTRACTS.md` | ✅ Accepted | tera-software-designer |
+| TASK-PREP-015 | `22_DEPLOYMENT_AND_ENVIRONMENTS.md` | ✅ Accepted | tera-software-designer |
+| TASK-PREP-016 | `09_IMPLEMENTATION_PLAN.md` | ✅ Accepted | General |
+| TASK-PREP-017 | `24_CLIENT_REVIEW_NOTES.md` | ✅ Accepted | General |
+| TASK-PREP-018 | `25_CHANGE_REQUESTS.md` | ✅ Accepted | General |
+| TASK-PREP-019 | `35_ROADMAP_AND_FUTURE_PHASES.md` | ✅ Accepted | General |
+
+**All 19 Required preparation files COMPLETE (Phase 4 ✅)**
 
 ---
 
 ## 5. Upcoming Milestones
 
-1. **Phase 3:** Create PREPARATION_PLAN.md → classify preparation files
-2. **Phase 4:** Generate/activate sub-agents → delegate preparation files
-3. **Phase 5:** Create PROJECT_MASTER_PLAN.md → detailed execution plan → first batch
-4. **Phase 6:** First TASK-COD = Oracle connection test (Monitor condition)
+1. ✅ **Phase 3:** PREPARATION_PLAN.md created + Technology Profile approved
+2. ✅ **Phase 4:** All 19 preparation files delegated & accepted (Batches A–F)
+3. **Phase 5:** Create PROJECT_MASTER_PLAN.md first → detailed execution plan → first batch
+4. **Phase 6:** First TASK-COD = Oracle connection test (Monitor condition 3)
 
 ---
 
@@ -66,7 +89,7 @@
 
 1. **R1 (High):** Full Refresh may be slow with large data — mitigated by Incremental Sync ready
 2. **R2 (Medium):** Oracle table details deferred — client available during execution
-3. **R3 (Medium):** No Technology Profile for Razor Pages — custom profile needed in Phase 3
+3. ✅ **R3 Resolved:** Technology Profile `dotnet-razorpages-adonet` created — pending user confirmation
 4. **R4 (Medium):** Client Approval Package not yet created — needed before Build Mode
 
 ---
