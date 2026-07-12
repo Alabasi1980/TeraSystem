@@ -1,5 +1,7 @@
 import { handleApproval } from "./approval-handlers"
 import { handleTask } from "./task-handlers"
+import { handleWorkspace } from "./workspace-handlers"
+import { workspaceStore } from "./workspace-registry"
 
 const CONTRACT_VERSION = "1.2"
 const ENGINE_VERSION = "0.1.0"
@@ -52,6 +54,7 @@ export function handleGatewayLine(session: GatewaySession, line: string): Gatewa
   if (method === "handshake") return handleHandshake({ id, payload, messageSize, session })
   if (method === "context") return handleContext({ id, payload, messageSize, session })
   if (method === "task") return handleTask({ id, payload, messageSize, session })
+  if (method === "workspace") return handleWorkspace({ id, payload, messageSize, session })
   if (method === "approval.request" || method === "approval.response") return handleApproval({ id, payload, messageSize, session })
 
   return {
@@ -101,6 +104,9 @@ function handleHandshake(input: {
     }
   }
 
+  const directory = requireString(input.payload.directory) ?? "unknown"
+  workspaceStore.create(workspaceID, projectID, directory)
+
   return {
     session: { handshake: { workspaceID, projectID } },
     output: response(input.id, {
@@ -108,7 +114,7 @@ function handleHandshake(input: {
       status: "ok",
       engine_version: ENGINE_VERSION,
       contract_version: CONTRACT_VERSION,
-      supported_methods: ["context", "task", "approval"],
+      supported_methods: ["context", "task", "approval", "workspace"],
     }),
   }
 }

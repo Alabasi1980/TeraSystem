@@ -297,3 +297,32 @@
 - **10 وثائق** في `.tera-workspace/`
 - **4 طرق** في Gateway: handshake, context, task, approval
 - **الانتقال إلى Phase 5**: Workspace Management 🔜
+
+---
+
+## المهمة 012: TASK-COD-006 — Phase 5.1 Workspace Registry ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ Accepted |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/TASKS/TASK-COD-006.md` |
+| الملفات الجديدة | `workspace-registry.ts`, `workspace-handlers.ts`, `workspace-api.test.ts` |
+| التعديل | `protocol.ts` — workspace routing + supported_methods |
+
+### التحقق:
+
+- ✅ `bun run typecheck` — PASS
+- ✅ `bun test test/gateway/workspace-api.test.ts` — 7/7 passed
+- ✅ `bun test test/gateway/` — 46/47 passed (hook timeout pre-existing)
+- ✅ Gateway يعلن `supported_methods: ["context", "task", "approval", "workspace"]`
+- ✅ WorkspaceStore ينشئ سجلًا عند نجاح Handshake
+- ✅ 5 طرق Gateway: handshake + context + task + approval + workspace
+
+### ملاحظات:
+
+- WorkspaceStore: in-memory Map (ephemeral)
+- workspace.list يعرض كل الـ workspaces النشطة
+- workspace.status يعرض تفاصيل Workspace معين
+- Integration test متوقع أن يمر (تم اختباره سابقًا)

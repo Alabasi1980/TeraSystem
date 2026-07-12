@@ -13,7 +13,7 @@ describe("gateway context api", () => {
       method: "handshake",
       status: "ok",
       contract_version: "1.2",
-      supported_methods: ["context", "task", "approval"],
+      supported_methods: ["context", "task", "approval", "workspace"],
     })
   })
 

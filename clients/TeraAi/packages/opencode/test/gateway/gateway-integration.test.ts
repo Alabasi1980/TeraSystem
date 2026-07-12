@@ -100,7 +100,7 @@ describe("gateway integration (child process)", () => {
       status: "ok",
       contract_version: "1.2",
       engine_version: "0.1.0",
-      supported_methods: ["context", "task", "approval"],
+      supported_methods: ["context", "task", "approval", "workspace"],
     })
 
     // 2. Context
@@ -195,7 +195,7 @@ describe("gateway integration (child process)", () => {
     expect(response.payload).toMatchObject({
       method: "handshake",
       status: "ok",
-      supported_methods: ["context", "task", "approval"],
+      supported_methods: ["context", "task", "approval", "workspace"],
     })
     await gw.finish()
   })
