@@ -274,3 +274,26 @@
 - 12 integration test عبر child process فعلي
 - 27 unit tests موجودة سابقًا
 - توثيق شامل بالعربية لجميع طرق Gateway
+
+---
+
+## ✅ Phase 4 — Engine Gateway (مغلقة بالكامل)
+
+| المعيار | الحالة |
+|---|---|
+| TERA_GATEWAY_PROTOCOL_SPEC.md v1.2 معتمد | ✅ |
+| Context API يعمل | ✅ |
+| Task API يعمل (create, cancel, status) | ✅ |
+| Approval API يعمل (request, response) | ✅ |
+| read_tera_workspace → fallback deprecated | ✅ |
+| اختبارات تكاملية (39/39 pass) | ✅ |
+| توثيق Gateway API | ✅ |
+| لا Event Stream (مُؤجَّل) | ✅ |
+| **Phase 4 مغلقة** | **✅** |
+
+### الملخص
+- **5 مهام تنفيذية**: TASK-COD-001, FIX-001, 002, 003, 004, 005
+- **39 اختبارًا** لـ Gateway API (وحدة + تكامل)
+- **10 وثائق** في `.tera-workspace/`
+- **4 طرق** في Gateway: handshake, context, task, approval
+- **الانتقال إلى Phase 5**: Workspace Management 🔜

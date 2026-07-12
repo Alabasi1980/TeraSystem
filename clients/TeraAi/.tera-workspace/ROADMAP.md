@@ -2,8 +2,8 @@
 
 ## الملف: ROADMAP.md
 ## المسار: .tera-workspace/
-## الإصدار: 1.2
-## التاريخ: 2026-07-10
+## الإصدار: 1.3
+## التاريخ: 2026-07-12
 ## الحالة: ✅ Approved — اعتمد من ماجد
 ## مرجع: Engine Contract v1.2 + Gateway Protocol Spec v1.2
 
@@ -84,7 +84,7 @@ Project Workspace
 
 ---
 
-## 🔵 Phase 4: Engine Gateway (مفتوح — تصميم محدود ثم تنفيذ تدريجي)
+## ✅ Phase 4: Engine Gateway (مكتمل)
 
 **الشرط المسبق:** اكتمال DoD لـ Phase 3 ✅
 
@@ -118,8 +118,8 @@ Project Workspace
 | 4.4 | بناء Task/Result API | ✅ مكتمل |
 | 4.5 | بناء Approval API | ✅ مكتمل |
 | 4.6 | تحويل read_tera_workspace لـ fallback | ✅ مكتمل |
-| 4.7 | اختبارات وتوثيق | 🔵 التالي |
-| 4.8 | مراجعة Phase 4 — إغلاق | 🔜 |
+| 4.7 | اختبارات وتوثيق | ✅ مكتمل |
+| 4.8 | مراجعة Phase 4 — إغلاق | ✅ مكتمل |
 
 ### معايير الإنجاز (DoD لـ Phase 4)
 
@@ -133,8 +133,8 @@ Project Workspace
 | 6 | Approval API يعمل | ✅ |
 | 7 | read_tera_workspace يتحول لـ fallback | ✅ |
 | 8 | لا يوجد Event Stream (مُؤجَّل) | ✅ |
-| 9 | اختبارات تكاملية تمر | 🔜 |
-| 10 | توثيق Gateway مكتمل | 🔜 |
+| 9 | اختبارات تكاملية تمر | ✅ (39/39 tests pass) |
+| 10 | توثيق Gateway مكتمل | ✅ (GATEWAY_API_REFERENCE.md) |
 
 ### خطة انتقال read_tera_workspace
 
@@ -202,12 +202,23 @@ Project Workspace
 
 ```
 ✅ Gateway يعمل كطريقة اتصال أساسية (handshake + context + task + approval)
+✅ اختبارات تكاملية لـ Gateway API (39/39 tests pass)
+✅ توثيق Gateway API بالعربية
 ✅ read_tera_workspace كـ fallback مع تحذير deprecated
-✅ اختبارات تكاملية لـ Gateway API
-✅ توثيق Gateway API
-✅ التحضير لإغلاق Phase 4
+✅ البدء في Phase 5: Workspace Management
 ```
 
 ---
 
-*هذه الخريطة **v1.2 Approved** — محدثة بعد اعتماد Gateway Protocol Spec v1.2.*
+# سجل التعديلات (Changelog)
+
+| الإصدار | التاريخ | التعديل |
+|---|---|---|
+| v1.0 | 2026-07-10 | النسخة الأولى |
+| v1.1 | 2026-07-10 | إضافة Phase 4.2-4.8 مراحل التنفيذ |
+| v1.2 | 2026-07-10 | اعتماد Gateway Protocol Spec v1.2 |
+| v1.3 | 2026-07-12 | إغلاق Phase 4 — جميع مراحل التنفيذ (4.0–4.8) مكتملة، 39 اختبارًا تمر، توثيق Gateway API مكتمل |
+
+---
+
+*هذه الخريطة **v1.3 Approved** — محدثة بعد إغلاق Phase 4 بالكامل.*
