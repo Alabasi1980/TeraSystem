@@ -286,3 +286,11 @@
 - Actor: Tera Agent (per Majed request)
 - Summary: Created project-control/GIT_REMOTE.md to store the client repository remote URL. Updated .opencode/agents/tera.md Git protocol to reference GIT_REMOTE.md. Updated opencode.json instruction. The file is user-editable — user can update the URL manually or ask Tera to do it.
 - Decision / Result: Clear separation: GIT_REMOTE.md holds the URL, Tera reads it before push, user updates it per project. Each client project has its own remote URL stored explicitly.
+
+## [2026-07-12 15:30] - GIT: Commit and Push
+
+- Related Task: N/A (Housekeeping)
+- Actor: Tera Agent (per Majed request)
+- Summary: Full cleanup commit and push to develop branch. Removed node_modules/ and dist/ from git tracking (previously committed before .gitignore existed). Updated system files (TeraAgent, sub-agents, commands, runtime protocols/checklists), project-control logs, and client folders. Commit da78e0d7 pushed to origin/develop.
+- Decision / Result: Repository cleaned up — ~911K lines of node_modules removed from tracking. Future npm installs will not create tracked changes.
+- Next Action: None — housekeeping complete.
