@@ -147,15 +147,19 @@ Project Workspace
 
 ---
 
-## 🔜 Phase 5: Workspace Management
+## 🔄 Phase 5: Workspace Management (قيد التنفيذ)
 
-| الأولوية | المكون | الوصف |
-|---|---|---|
-| 🥇 1 | Workspace Registry | سجل المشاريع النشطة |
-| 🥇 2 | Multi-Client Isolation | عزل كامل بين العملاء |
-| 🥈 3 | Workspace Templates | قوالب مشاريع جاهزة |
-| 🥈 4 | Project Lifecycle | إنشاء → تطوير → مراجعة → تسليم |
-| 🥉 5 | Artifact Storage | تخزين المخرجات |
+> التفصيل التنفيذي في `PLANS/07-phase5-workspace-management-design.md` (5.1–5.5).
+
+| الأولوية | المكون | الوصف | الحالة |
+|---|---|---|---|
+| 🥇 1 | Workspace Registry | سجل المشاريع النشطة | ✅ (TASK-COD-006) |
+| 🥇 2 | Gateway-Workspace Binding | ربط handlers بـ WorkspaceRecord | ✅ (TASK-COD-007) |
+| 🥇 3 | TaskStore/ApprovalStore Isolation | عزل لكل Workspace | ✅ (ضمن TASK-COD-007) |
+| 🥈 4 | Multi-Client Isolation | عزل نظام الملفات بين العملاء | 🔜 (TASK-COD-008) |
+| 🥈 5 | Workspace Cleanup/Lifecycle | إغلاق وتنظيف شامل | 🔜 (TASK-COD-009) |
+| 🥉 6 | Workspace Templates | قوالب مشاريع جاهزة | ⏸ مؤجل |
+| 🥉 7 | Artifact Storage | تخزين المخرجات | ⏸ مؤجل |
 
 ---
 
@@ -201,11 +205,11 @@ Project Workspace
 # ما هو مسموح فعله الآن
 
 ```
-✅ Gateway يعمل كطريقة اتصال أساسية (handshake + context + task + approval)
-✅ اختبارات تكاملية لـ Gateway API (39/39 tests pass)
-✅ توثيق Gateway API بالعربية
+✅ Gateway يعمل كطريقة اتصال أساسية (handshake + context + task + approval + workspace)
+✅ اختبارات شاملة لـ Gateway API (51/51 tests pass)
+✅ توثيق Gateway API بالعربية (GATEWAY_API_REFERENCE.md)
 ✅ read_tera_workspace كـ fallback مع تحذير deprecated
-✅ البدء في Phase 5: Workspace Management
+✅ Phase 5 قيد التنفيذ: Workspace Registry + Gateway Binding منجزان (5.1/5.2/5.3)
 ```
 
 ---
@@ -218,7 +222,8 @@ Project Workspace
 | v1.1 | 2026-07-10 | إضافة Phase 4.2-4.8 مراحل التنفيذ |
 | v1.2 | 2026-07-10 | اعتماد Gateway Protocol Spec v1.2 |
 | v1.3 | 2026-07-12 | إغلاق Phase 4 — جميع مراحل التنفيذ (4.0–4.8) مكتملة، 39 اختبارًا تمر، توثيق Gateway API مكتمل |
+| v1.4 | 2026-07-12 | تقدم Phase 5 — Workspace Registry (5.1) + Gateway Binding & Isolation (5.2/5.3) منجزان، 51/51 اختبار يمر |
 
 ---
 
-*هذه الخريطة **v1.3 Approved** — محدثة بعد إغلاق Phase 4 بالكامل.*
+*هذه الخريطة **v1.4** — محدثة بعد تقدم Phase 5 (5.1/5.2/5.3).*
