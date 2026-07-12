@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarehouseDashboard — ملخص القرارات</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .print-table thead, .print-table tfoot { background: #fff; }
+        .print-table thead td, .print-table tfoot td, .print-table tbody td { padding: 0; vertical-align: top; }
+        .page-header, .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+        .page-header img, .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+        .document { padding: 0 var(--page-padding-x); }
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+        .doc__top strong { color: var(--ink); }
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+        .field { display: flex; gap: 2mm; align-items: baseline; }
+        .field__label { white-space: nowrap; font-weight: 700; }
+        .field__value {
+            flex: 1; min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+        .doc__recipient {
+            margin-top: 4mm;
+            font-size: 10.3pt;
+            line-height: 1.6;
+        }
+        .doc__recipient p, .doc__body p { margin: 0 0 2.4mm; }
+        .doc__body {
+            margin-top: 2mm;
+            font-size: 10.7pt;
+        }
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+        }
+        .doc__body ul { margin: 0 0 2.4mm; padding: 0 5mm 0 0; }
+        .doc__body li { margin-bottom: 1.4mm; }
+        .no-break { break-inside: avoid-page; page-break-inside: avoid; }
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+        .sign-box { flex: 1; }
+        .sign-box__label { margin-bottom: 6mm; font-size: 10.2pt; font-weight: 700; }
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+        @media print {
+            body { background: #fff; }
+            .print-page {
+                width: 100%; min-height: 0; margin: 0;
+                box-shadow: none; overflow: visible;
+            }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/12</div>
+                <div><strong>الرقم:</strong> TDS-LET-2026-006</div>
+            </div>
+
+            <div class="doc__chip">ملخص القرارات</div>
+
+            <p class="doc__subject">الموضوع: ملخص القرارات الفنية والإدارية لمشروع WarehouseDashboard</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">السادة / شركة الماجد لإدارة المستودعات</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المرجع:</span>
+                    <span class="field__value">TDS-LET-2026-006</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+                <p>في هذا الموجز عرض لأبرز القرارات الفنية والإدارية التي تمّ اتخاذها لمشروع <strong>WarehouseDashboard</strong>، مع مبرراتها وحالتها. جميع القرارات المدرجة هنا معتمدة من الفريق المشترك.</p>
+
+                <h3>القرارات التقنية الرئيسية</h3>
+
+                <p><strong>القرار 1: اختيار .NET 8 (LTS)</strong></p>
+                <ul>
+                    <li><strong>التوصية:</strong> .NET 8 — أحدث إطار عمل من Microsoft مع دعم طويل الأمد (LTS) حتى 2026.</li>
+                    <li><strong>المبرر:</strong> أداء أعلى، مكتبات أحدث، توافق ممتاز مع بيئة Windows و IIS.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد.</li>
+                </ul>
+
+                <p><strong>القرار 2: نمط الواجهة — Razor Pages</strong></p>
+                <ul>
+                    <li><strong>التوصية:</strong> ASP.NET Core Razor Pages لتطبيق Dashboard.</li>
+                    <li><strong>المبرر:</strong> بساطة التطوير، تكامل مباشر مع Syncfusion + Entity Framework.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد.</li>
+                </ul>
+
+                <p><strong>القرار 3: مكتبة الداشبورد — Syncfusion</strong></p>
+                <ul>
+                    <li><strong>التوصية:</strong> Syncfusion Essential Studio مع Community License.</li>
+                    <li><strong>المبرر:</strong> أكثر من 1,600 مكوّن، دعم ممتاز لـ .NET 8، خاصية Drill Down مدمجة.</li>
+                    <li><strong>البديل:</strong> Chart.js + D3.js (لم يكن ضرورياً).</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد — الرخصة متوفرة (مفتاح UnlockKey موجود).</li>
+                </ul>
+
+                <p><strong>القرار 4: الاتصال بقاعدة Oracle — ODP.NET</strong></p>
+                <ul>
+                    <li><strong>التوصية:</strong> Oracle.ManagedDataAccess (ODP.NET Managed Driver).</li>
+                    <li><strong>المبرر:</strong> اتصال مباشر بـ Oracle دون الحاجة إلى تثبيت Oracle Client.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد.</li>
+                </ul>
+
+                <p><strong>القرار 5: طريقة الإدخال المجمّع — ADO.NET SqlBulkCopy</strong></p>
+                <ul>
+                    <li><strong>التوصية:</strong> استخدام ADO.NET مع SqlBulkCopy للإدخال المجمّع بدلاً من EF Core.</li>
+                    <li><strong>المبرر:</strong> أسرع بـ 3-5 مرات من EF Core عند التعامل مع كميات كبيرة من البيانات.</li>
+                    <li><strong>EF Core:</strong> يُستخدم فقط لجداول التكوين وسجلات المزامنة (البيانات الصغيرة).</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد — قرار استراتيجي.</li>
+                </ul>
+
+                <p><strong>القرار 6: جاهزية Incremental Sync</strong></p>
+                <ul>
+                    <li><strong>التوصية:</strong> تصميم محرك المزامنة ليدعم Incremental Sync من البداية، حتى لو لم يُفعّل في Phase 1.</li>
+                    <li><strong>المبرر:</strong> يمنع الحاجة إلى إعادة كتابة المحرك بالكامل مستقبلاً عند الحاجة للتحديث التزايدي.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد — قرار استراتيجي.</li>
+                </ul>
+
+                <p><strong>القرار 7: اختبار Oracle في وقت مبكر</strong></p>
+                <ul>
+                    <li><strong>التوصية:</strong> اختبار الاتصال بقاعدة Oracle خلال أول 3 أيام من بدء التنفيذ.</li>
+                    <li><strong>المبرر:</strong> يقلّل مخاطر اكتشاف مشاكل الاتصال في وقت متأخر.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد.</li>
+                </ul>
+
+                <p><strong>القرار 8: أمان Admin Panel — كلمة مرور فقط</strong></p>
+                <ul>
+                    <li><strong>التوصية:</strong> حماية Admin Panel بكلمة مرور بسيطة + تشفير (BCrypt/PBKDF2).</li>
+                    <li><strong>الوصول:</strong> صفحة غير مرئية في القائمة — وصول عبر الرابط المباشر فقط.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد — مع إمكانية تطوير صلاحيات أكثر في Phase 2.</li>
+                </ul>
+
+                <h3>القرارات الإدارية والتنظيمية</h3>
+
+                <p><strong>القرار 9: طريقة التسعير — Time &amp; Material</strong></p>
+                <ul>
+                    <li><strong>السعر:</strong> 4 JOD لكل ساعة.</li>
+                    <li><strong>النطاق المقدر:</strong> 430 — 625 ساعة = 1,720 — 2,500 JOD.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد.</li>
+                </ul>
+
+                <p><strong>القرار 10: الأولوية — API أولاً ثم Dashboard</strong></p>
+                <ul>
+                    <li><strong>الترتيب:</strong> بناء WarehouseDashboard.API أولاً، ثم WarehouseDashboard.Web.</li>
+                    <li><strong>المبرر:</strong> Dashboard يعتمد على البيانات التي يوفّرها API.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد.</li>
+                </ul>
+
+                <p><strong>القرار 11: المدة الزمنية — بدون deadline</strong></p>
+                <ul>
+                    <li>العمل بالسرعة الطبيعية مع الالتزام بالجودة العالية.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد.</li>
+                </ul>
+
+                <p><strong>القرار 12: الميزانية — مفتوحة</strong></p>
+                <ul>
+                    <li>التكلفة ليست العامل الأوّل — التركيز على الجودة.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد.</li>
+                </ul>
+
+                <p><strong>القرار 13: الدعم بعد التسليم — صيانة + تطوير</strong></p>
+                <ul>
+                    <li>إصلاح أخطاء + تطوير مستمر حسب الاحتياجات المستقبلية.</li>
+                    <li><strong>الحالة:</strong> ✅ معتمد.</li>
+                </ul>
+
+                <p><strong>سجلّ القرارات الكامل:</strong> يتضمّن 23 قراراً مفصّلاً في ملف CLIENT_DECISION_LOG.md.</p>
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">إعداد وتقديم</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">مؤسسة تيرا للنظم (Teranoo)</div>
+                    <div class="sign-box__line">الختم: .......................................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarehouseDashboard — عرض السعر</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .print-table thead, .print-table tfoot { background: #fff; }
+        .print-table thead td, .print-table tfoot td, .print-table tbody td { padding: 0; vertical-align: top; }
+        .page-header, .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+        .page-header img, .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+        .document { padding: 0 var(--page-padding-x); }
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+        .doc__top strong { color: var(--ink); }
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+        .field { display: flex; gap: 2mm; align-items: baseline; }
+        .field__label { white-space: nowrap; font-weight: 700; }
+        .field__value {
+            flex: 1; min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+        .doc__recipient {
+            margin-top: 4mm;
+            font-size: 10.3pt;
+            line-height: 1.6;
+        }
+        .doc__recipient p, .doc__body p { margin: 0 0 2.4mm; }
+        .doc__body {
+            margin-top: 2mm;
+            font-size: 10.7pt;
+        }
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+        }
+        .doc__body ul { margin: 0 0 2.4mm; padding: 0 5mm 0 0; }
+        .doc__body li { margin-bottom: 1.4mm; }
+        .no-break { break-inside: avoid-page; page-break-inside: avoid; }
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+        .sign-box { flex: 1; }
+        .sign-box__label { margin-bottom: 6mm; font-size: 10.2pt; font-weight: 700; }
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+        @media print {
+            body { background: #fff; }
+            .print-page {
+                width: 100%; min-height: 0; margin: 0;
+                box-shadow: none; overflow: visible;
+            }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/12</div>
+                <div><strong>الرقم:</strong> TDS-QOT-2026-001</div>
+            </div>
+
+            <div class="doc__chip">عرض سعر</div>
+
+            <p class="doc__subject">الموضوع: عرض السعر الخاص بتطبيق WarehouseDashboard — المرحلة الأولى (MVP)</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">السادة / شركة الماجد لإدارة المستودعات</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المرجع:</span>
+                    <span class="field__value">TDS-QOT-2026-001</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المشروع:</span>
+                    <span class="field__value">WarehouseDashboard — .NET 8 + Razor Pages + Syncfusion</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">مدة الصلاحية:</span>
+                    <span class="field__value">30 يوماً من تاريخه</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+                <p>استناداً إلى التحليل الفني الذي أجرته مؤسسة تيرا للنظم (Teranoo) لمتطلبات شركتكم الموقّرة، نقدّم لكم عرض السعر التالي لتطوير المرحلة الأولى (MVP) من نظام <strong>WarehouseDashboard</strong>.</p>
+
+                <h3>أوّلاً: نطاق العمل (Phase 1 — MVP)</h3>
+                <ul>
+                    <li><strong>WarehouseDashboard.API:</strong> تطبيق API لاستخراج البيانات من Oracle عبر ODP.NET، ومزامنتها مع SQL Server بطريقة Full Refresh (حذف + إدخال مجمّع)، مع دعم المزامنة التلقائية واليدوية وتسجيل العمليات.</li>
+                    <li><strong>WarehouseDashboard.Web:</strong> تطبيق Dashboard ديناميكي بحوالي 20 بطاقة تفاعلية (مخططات بيانية، مؤشرات أداء، جداول) مع خاصية Drill Down، وشريط حالة المزامنة.</li>
+                    <li><strong>Admin Panel:</strong> لوحة تحكم إدارية منفصلة ومحمية بكلمة مرور لإدارة البطاقات وتكوينها وتحديثها ديناميكياً.</li>
+                    <li><strong>البنية التحتية:</strong> إعداد حل المشروع على .NET 8، تصميم قاعدة بيانات SQL Server، ونشر النظام على IIS.</li>
+                </ul>
+
+                <h3>ثانياً: طريقة التسعير</h3>
+                <p><strong>Time &amp; Material (ساعة عمل)</strong> — السعر: <strong>4 JOD لكل ساعة</strong>. هذه الطريقة هي الأنسب للمشاريع متوسطة التعقيد حيث تكون بعض التفاصيل (مثل جداول Oracle) غير محددة بالكامل بعد وستُكتشف أثناء التنفيذ.</p>
+
+                <h3>ثالثاً: تقدير الساعات والتكلفة</h3>
+                <p>بناءً على تحليل Scorecard (مؤشر التعقيد: 45.95% — متوسط)، فإن تقدير الساعات لكل مكوّن كالتالي:</p>
+                <ul>
+                    <li>API (محرك المزامنة): 105 — 150 ساعة</li>
+                    <li>Dashboard (~20 بطاقة + Drill Down): 140 — 205 ساعة</li>
+                    <li>Admin Panel (CRUD + تكوين): 110 — 160 ساعة</li>
+                    <li>البنية التحتية (مشروع + قاعدة بيانات + IIS): 35 — 50 ساعة</li>
+                    <li>التكامل والاختبار: 40 — 60 ساعة</li>
+                </ul>
+                <p><strong>المجموع التقديري:</strong> 430 — 625 ساعة</p>
+                <p><strong>التكلفة التقديرية الإجمالية:</strong> 1,720 — 2,500 JOD (فقط ألف وسبعمائة وعشرون إلى ألفان وخمسمائة دينار أردني)</p>
+
+                <h3>رابعاً: شروط الدفع</h3>
+                <ul>
+                    <li>الدفع على أساس Time &amp; Material — يُفوتر وفقاً لساعات العمل الفعلية المسجّلة شهرياً.</li>
+                    <li>لا يُشترط عربون مقدّم.</li>
+                </ul>
+
+                <h3>خامساً: المدة الزمنية</h3>
+                <p>بدون مهلة زمنية محددة — العمل بالسرعة الطبيعيّة مع الالتزام بالجودة المطلوبة. المدة التقريبية: 12 — 16 أسبوعاً حسب توفر المعلومات من طرف العميل.</p>
+
+                <h3>سادساً: البنود المستثناة (خارج هذا العرض)</h3>
+                <ul>
+                    <li>المرحلة الثانية (Phase 2): شاشات تعديل البيانات، صلاحيات المستخدمين، التصدير إلى Excel/PDF — تُسعّر منفصلة لاحقاً.</li>
+                    <li>الاستضافة السحابية، التطبيق الجوّال، Microservices، CI/CD، الاختبار الآلي.</li>
+                </ul>
+
+                <h3>سابعاً: ملاحظات</h3>
+                <ul>
+                    <li>هذا العرض تقديري غير ملزِم حتى تاريخ التوقيع على اتفاقية الخدمة.</li>
+                    <li>أي تغيير في النطاق بعد البدء قد يؤثّر على التكلفة والمدة.</li>
+                    <li>مكتبة Syncfusion متوفرة برخصة مجانية (Community License — مفتاح UnlockKey موجود) ولا تتطلب تكلفة إضافية.</li>
+                </ul>
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">إعداد وتقديم</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">مؤسسة تيرا للنظم (Teranoo)</div>
+                    <div class="sign-box__line">الختم: .......................................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
