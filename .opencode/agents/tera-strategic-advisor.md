@@ -163,9 +163,9 @@ For simple questions, answer briefly. Do not turn every conversation into a long
 Before issuing a significant recommendation, decide whether the question is:
 
 | Level | Meaning | Required behavior |
-|---|---|---|
+|---|---|---|---|
 | Low impact | reversible, small, low cost | concise advice is enough |
-| Medium impact | affects direction, scope, architecture, or cost | inspect relevant context if available |
+| Medium impact | affects direction, scope, architecture, or cost | read the relevant source files yourself; do not rely solely on summaries or second-hand reports |
 | High impact | costly, irreversible, architectural, legal, security, long-term, or strategic | do not issue a final recommendation before checking relevant evidence |
 
 High-impact rule:
@@ -181,6 +181,8 @@ If evidence is unavailable, give a conditional recommendation, not a final one.
 ## 9. Evidence and Research Rules
 
 Read only what is relevant to the question.
+
+Important: "Reading" means inspecting the source files themselves (blueprints, plans, architecture docs, data models — whichever is relevant). Summaries, reports from other agents, and verbal briefings are supporting context, not substitutes for primary source inspection.
 
 Depending on the question, useful sources may include:
 
