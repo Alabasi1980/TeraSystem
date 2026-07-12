@@ -248,3 +248,29 @@
 - Deprecation warning added to description and output
 - Gateway API is now the primary communication method
 - Tool will be removed in Phase 5
+
+---
+
+## المهمة 011: TASK-COD-005 — Phase 4.7 Gateway Integration Tests + Documentation ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ Accepted |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/TASKS/TASK-COD-005.md` |
+| الملفات الجديدة | `packages/opencode/test/gateway/gateway-integration.test.ts`, `.tera-workspace/GATEWAY_API_REFERENCE.md` |
+
+### التحقق:
+
+- ✅ `bun run typecheck` — PASS (no errors)
+- ✅ `bun test test/gateway/` — 39/39 passed
+- ✅ Gateway CLI integration test (child process stdin/stdout) — 12 tests
+- ✅ Gateway API reference documentation — مكتملة (عربي)
+
+### ملاحظات:
+
+- 39 اختبارًا لـ Gateway API (وحدة + تكامل)
+- 12 integration test عبر child process فعلي
+- 27 unit tests موجودة سابقًا
+- توثيق شامل بالعربية لجميع طرق Gateway
