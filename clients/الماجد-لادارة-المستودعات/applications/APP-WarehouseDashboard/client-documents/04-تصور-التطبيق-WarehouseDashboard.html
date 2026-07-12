@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarehouseDashboard — تصور التطبيق</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .print-table thead, .print-table tfoot { background: #fff; }
+        .print-table thead td, .print-table tfoot td, .print-table tbody td { padding: 0; vertical-align: top; }
+        .page-header, .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+        .page-header img, .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+        .document { padding: 0 var(--page-padding-x); }
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+        .doc__top strong { color: var(--ink); }
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+        .field { display: flex; gap: 2mm; align-items: baseline; }
+        .field__label { white-space: nowrap; font-weight: 700; }
+        .field__value {
+            flex: 1; min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+        .doc__recipient {
+            margin-top: 4mm;
+            font-size: 10.3pt;
+            line-height: 1.6;
+        }
+        .doc__recipient p, .doc__body p { margin: 0 0 2.4mm; }
+        .doc__body {
+            margin-top: 2mm;
+            font-size: 10.7pt;
+        }
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+        }
+        .doc__body ul { margin: 0 0 2.4mm; padding: 0 5mm 0 0; }
+        .doc__body li { margin-bottom: 1.4mm; }
+        .no-break { break-inside: avoid-page; page-break-inside: avoid; }
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+        .sign-box { flex: 1; }
+        .sign-box__label { margin-bottom: 6mm; font-size: 10.2pt; font-weight: 700; }
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+        @media print {
+            body { background: #fff; }
+            .print-page {
+                width: 100%; min-height: 0; margin: 0;
+                box-shadow: none; overflow: visible;
+            }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/12</div>
+                <div><strong>الرقم:</strong> TDS-LET-2026-004</div>
+            </div>
+
+            <div class="doc__chip">تصور التطبيق</div>
+
+            <p class="doc__subject">الموضوع: تصور كيفية عمل تطبيق WarehouseDashboard</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">السادة / شركة الماجد لإدارة المستودعات</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المرجع:</span>
+                    <span class="field__value">TDS-LET-2026-004</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+                <p>في هذا الموجز نقدّم تصوّراً واضحاً لكيفية عمل تطبيق <strong>WarehouseDashboard</strong> من منظور المستخدم، مع شرح مسارات العمل الرئيسية وواجهات الشاشات المتوقعة.</p>
+
+                <h3>أوّلاً: مسار المزامنة (Data Sync Workflow)</h3>
+                <p>يبدأ عمل النظام من قاعدة Oracle حيث يتم استخراج البيانات حسب جدول زمني محدّد (مزامنة تلقائية) أو عند الطلب (مزامنة يدوية). تمرّ عملية المزامنة بالخطوات التالية:</p>
+                <ul>
+                    <li><strong>بدء المزامنة:</strong> إمّا تلقائياً عبر مؤقّت خلفي (Background Service) أو يدوياً عبر النقر على زر "مزامنة الآن" في Dashboard.</li>
+                    <li><strong>استخراج البيانات:</strong> يقوم محرك المزامنة بقراءة الجداول المحدّدة من Oracle عبر ODP.NET.</li>
+                    <li><strong>تحويل البيانات:</strong> تحويل أنواع البيانات من Oracle إلى صيغ SQL Server.</li>
+                    <li><strong>الإدخال المجمّع:</strong> حذف جميع البيانات الموجودة في الجداول الهدف في SQL Server، ثم إدخال البيانات الجديدة دفعة واحدة باستخدام تقنية SqlBulkCopy عالية الأداء.</li>
+                    <li><strong>تسجيل العملية:</strong> تسجيل العملية في جدول السجلات (وقت البدء، وقت الانتهاء، الحالة، عدد السجلات، المدة، أي أخطاء).</li>
+                </ul>
+
+                <h3>ثانياً: مسار عرض Dashboard (Dashboard Workflow)</h3>
+                <p>عند دخول المستخدم إلى صفحة Dashboard الرئيسية:</p>
+                <ul>
+                    <li>يقوم النظام بقراءة تكوين البطاقات من قاعدة بيانات SQL Server.</li>
+                    <li>ينفّذ الاستعلام المرتبط بكل بطاقة للحصول على البيانات.</li>
+                    <li>يعرض البطاقات في تخطيط شبكي متجاوب مع دعم 6 أنواع مختلفة من البطاقات.</li>
+                    <li>يظهر في أعلى الصفحة شريط حالة المزامنة يعرض آخر وقت مزامنة وحالة النظام.</li>
+                    <li>يمكن للمستخدم النقر على زر المزامنة اليدوية لبدء مزامنة فورية.</li>
+                </ul>
+
+                <h3>ثالثاً: خاصية التعمق في البيانات (Drill Down)</h3>
+                <p>عند النقر على أي بطاقة، يمكن للمستخدم التعمق في بياناتها عبر مستويات متعددة قابلة للتكوين. على سبيل المثال:</p>
+                <ul>
+                    <li>بطاقة إجمالي المشتريات ← النقر عليها يعرض تفاصيل المشتريات حسب المورّد ← النقر على مورّد يعرض فواتيره.</li>
+                    <li>يظهر شريط التنقل (Breadcrumb) لتوضيح المستوى الحالي وإمكانية العودة للخلف.</li>
+                    <li>كل بطاقة لها مستوياتها المستقلة التي يمكن تكوينها من Admin Panel.</li>
+                </ul>
+
+                <h3>رابعاً: مسار Admin Panel (Config Workflow)</h3>
+                <p>Admin Panel هو لوحة تحكم منفصلة تُستخدم لإدارة النظام دون التأثير على واجهة المستخدم:</p>
+                <ul>
+                    <li><strong>الدخول:</strong> يتم عبر الرابط المباشر مع إدخال كلمة مرور. الصفحة غير مرئية في قوائم التنقل.</li>
+                    <li><strong>إدارة البطاقات:</strong> يمكن إضافة بطاقة جديدة، تعديل بطاقة موجودة، أو حذف بطاقة.</li>
+                    <li><strong>تكوين البطاقة:</strong> عند إنشاء أو تعديل بطاقة، يتاح للمسؤول تحديد:
+                        <ul>
+                            <li>الاسم والعنوان الظاهر</li>
+                            <li>مصدر البيانات (SQL Query أو View)</li>
+                            <li>نوع العرض (Bar, Line, Pie, KPI, Table, Gauge)</li>
+                            <li>مستويات Drill Down (استعلام خاص بكل مستوى)</li>
+                            <li>الحجم والموقع في الشبكة</li>
+                        </ul>
+                    </li>
+                    <li><strong>اختبار الاستعلام:</strong> يمكن اختبار أي استعلام قبل حفظه للتأكد من صحّة النتائج.</li>
+                    <li><strong>الحفظ:</strong> يُحفظ التكوين في قاعدة البيانات وتتحدّث Dashboard فوراً.</li>
+                </ul>
+
+                <h3>خامساً: أنواع البطاقات المدعومة</h3>
+                <ul>
+                    <li><strong>Bar Chart:</strong> مقارنة بين فئات مختلفة (مثل: المشتريات لكل شهر)</li>
+                    <li><strong>Line Chart:</strong> عرض الاتجاهات الزمنية (مثل: حركة المخزون خلال عام)</li>
+                    <li><strong>Pie Chart:</strong> توزيع نسبي (مثل: توزيع المشتريات حسب المورّد)</li>
+                    <li><strong>KPI Card:</strong> رقم رئيسي مع مؤشر لأداء (مثل: إجمالي قيمة المخزون + نسبة التغيّر)</li>
+                    <li><strong>Data Table:</strong> جدول تفصيلي يعرض البيانات كاملة</li>
+                    <li><strong>Gauge:</strong> مؤشر أداء بصري (مثل: نسبة إشغال المستودع)</li>
+                </ul>
+
+                <h3>سادساً: وصف الشاشات</h3>
+                <p><strong>Dashboard الرئيسية:</strong></p>
+                <ul>
+                    <li>شريط علوي: اسم النظام + شعار + شريط حالة المزامنة (آخر مزامنة + مؤشر حالة + زر مزامنة)</li>
+                    <li>منطقة البطاقات: تخطيط شبكي يعرض جميع البطاقات المكوّنة مع إمكانية التمرير</li>
+                    <li>كل بطاقة تعرض عنوانها + الرسم البياني/البيانات المخصّصة</li>
+                </ul>
+                <p><strong>Admin Panel:</strong></p>
+                <ul>
+                    <li>صفحة دخول: حقل كلمة مرور</li>
+                    <li>لوحة التحكم: قائمة البطاقات مع خيارات (إضافة، تعديل، حذف)</li>
+                    <li>محرر البطاقة: نموذج يحتوي على جميع خيارات التكوين</li>
+                    <li>صفحة اختبار الاستعلام: محرر SQL + زر تنفيذ + عرض النتائج</li>
+                </ul>
+                <p><strong>سجلات المزامنة:</strong></p>
+                <ul>
+                    <li>جدول يعرض جميع عمليات المزامنة مع تفاصيلها (التاريخ، الحالة، عدد السجلات، المدة)</li>
+                    <li>إمكانية تصفية السجلات وعرض تفاصيل كل عملية</li>
+                </ul>
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">إعداد وتقديم</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">مؤسسة تيرا للنظم (Teranoo)</div>
+                    <div class="sign-box__line">الختم: .......................................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
