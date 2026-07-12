@@ -1,11 +1,9 @@
 import type { GatewayProtocolResult, GatewaySession } from "./protocol"
+import { workspaceStore } from "./workspace-registry"
 
 type JsonRecord = Record<string, unknown>
 
 const TASK_REQUEST_MAX_BYTES = 65_536
-
-// Ephemeral in-memory task state — no persistence, cleared on process exit.
-const taskStore = new Map<string, string>()
 
 export function handleTask(input: {
   readonly session: GatewaySession
@@ -63,7 +61,16 @@ function handleTaskCreate(input: {
     }
   }
 
-  taskStore.set(taskID, "created")
+  const workspaceRecord = workspaceStore.get(input.session.handshake!.workspaceID)
+  if (!workspaceRecord) {
+    return {
+      session: input.session,
+      output: protocolError(input.id, "task", "WORKSPACE_NOT_FOUND", "Workspace not found", false),
+      diagnostic: `task create for unknown workspace: ${input.session.handshake!.workspaceID}`,
+    }
+  }
+
+  workspaceRecord.tasks.set(taskID, "created")
 
   return {
     session: input.session,
@@ -90,7 +97,16 @@ function handleTaskCancel(input: {
     }
   }
 
-  taskStore.set(taskID, "cancelled")
+  const workspaceRecord = workspaceStore.get(input.session.handshake!.workspaceID)
+  if (!workspaceRecord) {
+    return {
+      session: input.session,
+      output: protocolError(input.id, "task", "WORKSPACE_NOT_FOUND", "Workspace not found", false),
+      diagnostic: `task cancel for unknown workspace: ${input.session.handshake!.workspaceID}`,
+    }
+  }
+
+  workspaceRecord.tasks.set(taskID, "cancelled")
 
   return {
     session: input.session,
@@ -117,7 +133,16 @@ function handleTaskStatus(input: {
     }
   }
 
-  const status = taskStore.get(taskID) ?? "unknown"
+  const workspaceRecord = workspaceStore.get(input.session.handshake!.workspaceID)
+  if (!workspaceRecord) {
+    return {
+      session: input.session,
+      output: protocolError(input.id, "task", "WORKSPACE_NOT_FOUND", "Workspace not found", false),
+      diagnostic: `task status for unknown workspace: ${input.session.handshake!.workspaceID}`,
+    }
+  }
+
+  const status = workspaceRecord.tasks.get(taskID) ?? "unknown"
 
   return {
     session: input.session,

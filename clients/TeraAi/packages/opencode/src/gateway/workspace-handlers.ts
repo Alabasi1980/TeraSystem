@@ -28,6 +28,7 @@ export function handleWorkspace(input: {
 
   if (action === "list") return handleWorkspaceList(input)
   if (action === "status") return handleWorkspaceStatus(input)
+  if (action === "close") return handleWorkspaceClose(input)
 
   return {
     session: input.session,
@@ -90,6 +91,47 @@ function handleWorkspaceStatus(input: {
         lastActiveAt: record.lastActiveAt,
         status: record.status,
       },
+    }),
+  }
+}
+
+function handleWorkspaceClose(input: {
+  readonly id: string
+  readonly payload: JsonRecord
+  readonly session: GatewaySession
+}): GatewayProtocolResult {
+  const workspaceID = requireString(input.payload.workspace_id)
+  if (!workspaceID) {
+    return {
+      session: input.session,
+      output: protocolError(input.id, "workspace.close", "INVALID_REQUEST", "Workspace close requires a workspace_id", false),
+      diagnostic: "workspace close missing workspace_id",
+    }
+  }
+
+  const record = workspaceStore.get(workspaceID)
+  if (!record) {
+    return {
+      session: input.session,
+      output: protocolError(input.id, "workspace.close", "WORKSPACE_NOT_FOUND", `Workspace not found: ${workspaceID}`, false),
+      diagnostic: `workspace close for unknown workspace: ${workspaceID}`,
+    }
+  }
+
+  const cleaned = {
+    tasks: record.tasks.size,
+    approvals: record.approvals.length,
+    sessions: record.sessions.length,
+  }
+
+  workspaceStore.remove(workspaceID)
+
+  return {
+    session: input.session,
+    output: response(input.id, {
+      method: "workspace.close",
+      status: "closed",
+      cleaned,
     }),
   }
 }

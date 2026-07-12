@@ -326,3 +326,29 @@
 - workspace.list يعرض كل الـ workspaces النشطة
 - workspace.status يعرض تفاصيل Workspace معين
 - Integration test متوقع أن يمر (تم اختباره سابقًا)
+
+---
+
+## المهمة 013: TASK-COD-007 — Phase 5.2 Gateway-Workspace Binding + Isolation ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ Accepted |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/TASKS/TASK-COD-007.md` |
+
+### التعديلات:
+- `workspace-registry.ts` — إضافة tasks Map, approvals[], sessions[] لكل WorkspaceRecord
+- `task-handlers.ts` — إزالة global taskStore، ربط بـ WorkspaceRecord.tasks
+- `approval-handlers.ts` — ربط بـ WorkspaceRecord.approvals
+- `workspace-handlers.ts` — إضافة workspace.close
+- `protocol.ts` — تتبع session ID في WorkspaceRecord
+- `workspace-api.test.ts` — إضافة اختبارات العزل
+
+### التحقق:
+- ✅ `bun run typecheck` — PASS
+- ✅ `bun test test/gateway/` — 51/51 passed
+- ✅ Workspace A tasks معزولة عن Workspace B
+- ✅ Workspace A approvals معزولة عن Workspace B
+- ✅ workspace.close ينظف المهام والموافقات والجلسات

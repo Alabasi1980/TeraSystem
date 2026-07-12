@@ -1,4 +1,5 @@
 import type { GatewayProtocolResult, GatewaySession } from "./protocol"
+import { workspaceStore } from "./workspace-registry"
 
 type JsonRecord = Record<string, unknown>
 
@@ -79,6 +80,22 @@ function handleApprovalRequest(input: {
 
   const approved = riskLevel !== "critical"
 
+  const workspaceRecord = workspaceStore.get(input.session.handshake!.workspaceID)
+  if (workspaceRecord) {
+    workspaceRecord.approvals.push({
+      type: "request",
+      task_id: taskID,
+      action_type: actionType,
+      description: requireString(input.payload.description),
+      details: details ? {
+        affected_files: isStringArray(details.affected_files) ? (details.affected_files as readonly string[]) : undefined,
+        affected_commands: isStringArray(details.affected_commands) ? (details.affected_commands as readonly string[]) : undefined,
+        risk_level: riskLevel,
+      } : undefined,
+      timestamp: new Date().toISOString(),
+    })
+  }
+
   return {
     session: input.session,
     output: response(input.id, {
@@ -112,7 +129,17 @@ function handleApprovalResponse(input: {
     }
   }
 
-  // Platform responses are acknowledged; no state persistence in Phase 4.
+  const workspaceRecord = workspaceStore.get(input.session.handshake!.workspaceID)
+  if (workspaceRecord) {
+    workspaceRecord.approvals.push({
+      type: "response",
+      approved: Boolean(input.payload.approved),
+      reason: requireString(input.payload.reason),
+      approved_by: requireString(input.payload.approved_by),
+      timestamp: new Date().toISOString(),
+    })
+  }
+
   return {
     session: input.session,
     output: response(input.id, {
@@ -150,4 +177,8 @@ function requireString(value: unknown) {
 function requireRecord(value: unknown): JsonRecord | undefined {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return
   return value as JsonRecord
+}
+
+function isStringArray(value: unknown): boolean {
+  return Array.isArray(value) && value.every((item) => typeof item === "string")
 }

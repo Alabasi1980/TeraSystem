@@ -1,5 +1,21 @@
 export type WorkspaceStatus = "active" | "idle" | "closed"
 
+export interface ApprovalRecord {
+  readonly type: "request" | "response"
+  readonly task_id?: string
+  readonly action_type?: string
+  readonly description?: string
+  readonly details?: {
+    readonly affected_files?: readonly string[]
+    readonly affected_commands?: readonly string[]
+    readonly risk_level?: string
+  }
+  readonly approved?: boolean
+  readonly reason?: string
+  readonly approved_by?: string
+  readonly timestamp: string
+}
+
 export interface WorkspaceRecord {
   readonly id: string
   readonly projectId: string
@@ -7,6 +23,9 @@ export interface WorkspaceRecord {
   readonly createdAt: string
   lastActiveAt: string
   status: WorkspaceStatus
+  tasks: Map<string, string>
+  approvals: ApprovalRecord[]
+  sessions: string[]
 }
 
 export class WorkspaceStore {
@@ -29,6 +48,9 @@ export class WorkspaceStore {
       createdAt: now,
       lastActiveAt: now,
       status: "active",
+      tasks: new Map(),
+      approvals: [],
+      sessions: [],
     }
     this.records.set(id, record)
     return record

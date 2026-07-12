@@ -107,6 +107,11 @@ function handleHandshake(input: {
   const directory = requireString(input.payload.directory) ?? "unknown"
   workspaceStore.create(workspaceID, projectID, directory)
 
+  const record = workspaceStore.get(workspaceID)
+  if (record) {
+    record.sessions.push(input.id)
+  }
+
   return {
     session: { handshake: { workspaceID, projectID } },
     output: response(input.id, {
