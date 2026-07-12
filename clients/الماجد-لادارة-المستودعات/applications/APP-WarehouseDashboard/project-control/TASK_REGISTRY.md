@@ -20,10 +20,18 @@
 | TASK-PREP-009 | `13_REPORTS_AND_DASHBOARDS.md` | tera-software-designer | ✅ Accepted | D | 2026-07-12 |
 | TASK-PREP-010 | `14_INTEGRATIONS_AND_EXTERNAL_SERVICES.md` | tera-software-designer | ✅ Accepted | D | 2026-07-12 |
 | TASK-PREP-011 | `28_UI_UX_GUIDELINES.md` | ui-designer | ✅ Accepted | D | 2026-07-12 |
-| TASK-PREP-012 | `16_AUDIT_LOG_AND_ACTIVITY_TRACKING.md` | tera-software-designer | ✅ Approved / In Progress | E | 2026-07-12 |
-| TASK-PREP-013 | `19_DATABASE_DESIGN.md` | tera-software-designer | ✅ Approved / In Progress | E | 2026-07-12 |
-| TASK-PREP-014 | `20_API_CONTRACTS.md` | tera-software-designer | ✅ Approved / In Progress | E | 2026-07-12 |
-| TASK-PREP-015 | `22_DEPLOYMENT_AND_ENVIRONMENTS.md` | tera-software-designer | ✅ Approved / In Progress | E | 2026-07-12 |
+| TASK-PREP-012 | `16_AUDIT_LOG_AND_ACTIVITY_TRACKING.md` | tera-software-designer | ✅ Accepted | E | 2026-07-12 |
+| TASK-PREP-013 | `19_DATABASE_DESIGN.md` | tera-software-designer | ✅ Accepted (DGs resolved) | E | 2026-07-12 |
+| TASK-PREP-014 | `20_API_CONTRACTS.md` | tera-software-designer | ✅ Accepted (typo+auth fixed) | E | 2026-07-12 |
+| TASK-PREP-015 | `22_DEPLOYMENT_AND_ENVIRONMENTS.md` | tera-software-designer | ✅ Accepted | E | 2026-07-12 |
+
+---
+
+## Phase 6 — Implementation Tasks
+
+| TASK-ID | Description | Assigned Agent | Status | Batch | Created |
+|---|---|---|---|---|---|
+| TASK-COD-001 | Oracle Connection Test (Code Ready) | engineering-agent | ✅ Code Ready — ينتظر بيانات Oracle | B1 | 2026-07-12 |
 
 ---
 
@@ -37,6 +45,7 @@
 | **Submitted** | Agent completed — awaiting Tera review |
 | **Needs Fix** | Returned to agent for revision |
 | **Accepted** | Fully accepted and closed |
+| **Code Ready** | Code complete — ينتظر بيانات/بيئة خارجية للتشغيل |
 | **Blocked** | Cannot proceed — needs external input |
 | **Cancelled** | No longer needed |
 | **Deferred** | Postponed to later phase |
