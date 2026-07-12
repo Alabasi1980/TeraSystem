@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AGENT_DEPENDENCY_MAP.md
 
 ## الغرض

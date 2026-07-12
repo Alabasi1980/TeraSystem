@@ -390,3 +390,11 @@
 - Summary: Implemented Gateway Task API (Phase 4.4) with task.create, task.cancel, task.status methods. Created task-handlers.ts, task-api.test.ts, modified protocol.ts and context-api.test.ts. All within allowed write targets.
 - Decision / Result: Post-Execution Review Gate PASS. Typecheck clean. 15/15 tests pass (8 task + 7 context). Gateway now announces supported_methods: ["context", "task"]. Task state is ephemeral (in-memory Map). TASK-COD-002 status: Accepted.
 - Next Action: Commit and push code changes. Then proceed to Phase 4.5 (Approval API) or Phase 4.6 (Event Stream) per roadmap.
+
+## [2026-07-12 15:30] - GIT: Commit and Push
+
+- Related Task: N/A (Housekeeping)
+- Actor: Tera Agent (per Majed request)
+- Summary: Full cleanup commit and push to develop branch. Removed node_modules/ and dist/ from git tracking (previously committed before .gitignore existed). Updated system files (TeraAgent, sub-agents, commands, runtime protocols/checklists), project-control logs, and client folders. Commit da78e0d7 pushed to origin/develop.
+- Decision / Result: Repository cleaned up — ~911K lines of node_modules removed from tracking. Future npm installs will not create tracked changes.
+- Next Action: None — housekeeping complete.

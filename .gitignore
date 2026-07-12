@@ -17,6 +17,9 @@ dist/
 *.swp
 *.swo
 
+# OpenCode (client-specific only)
+clients/*/.opencode/
+
 # OS
 Thumbs.db
 .DS_Store

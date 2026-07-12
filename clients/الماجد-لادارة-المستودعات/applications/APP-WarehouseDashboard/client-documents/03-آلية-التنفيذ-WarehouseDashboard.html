@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarehouseDashboard — آلية التنفيذ</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .print-table thead, .print-table tfoot { background: #fff; }
+        .print-table thead td, .print-table tfoot td, .print-table tbody td { padding: 0; vertical-align: top; }
+        .page-header, .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+        .page-header img, .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+        .document { padding: 0 var(--page-padding-x); }
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+        .doc__top strong { color: var(--ink); }
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+        .field { display: flex; gap: 2mm; align-items: baseline; }
+        .field__label { white-space: nowrap; font-weight: 700; }
+        .field__value {
+            flex: 1; min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+        .doc__recipient {
+            margin-top: 4mm;
+            font-size: 10.3pt;
+            line-height: 1.6;
+        }
+        .doc__recipient p, .doc__body p { margin: 0 0 2.4mm; }
+        .doc__body {
+            margin-top: 2mm;
+            font-size: 10.7pt;
+        }
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+        }
+        .doc__body ul { margin: 0 0 2.4mm; padding: 0 5mm 0 0; }
+        .doc__body li { margin-bottom: 1.4mm; }
+        .no-break { break-inside: avoid-page; page-break-inside: avoid; }
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+        .sign-box { flex: 1; }
+        .sign-box__label { margin-bottom: 6mm; font-size: 10.2pt; font-weight: 700; }
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+        @media print {
+            body { background: #fff; }
+            .print-page {
+                width: 100%; min-height: 0; margin: 0;
+                box-shadow: none; overflow: visible;
+            }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/12</div>
+                <div><strong>الرقم:</strong> TDS-LET-2026-003</div>
+            </div>
+
+            <div class="doc__chip">آلية التنفيذ</div>
+
+            <p class="doc__subject">الموضوع: آلية تنفيذ مشروع WarehouseDashboard — المرحلة الأولى (MVP)</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">السادة / شركة الماجد لإدارة المستودعات</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المرجع:</span>
+                    <span class="field__value">TDS-LET-2026-003</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+                <p>نستعرض في هذا الموجز آلية تنفيذ المرحلة الأولى (MVP) من مشروع <strong>WarehouseDashboard</strong>، وفقاً للمنهجية المعتمدة من مؤسسة تيرا للنظم (Teranoo) لضمان الجودة والشفافية في جميع مراحل التطوير.</p>
+
+                <h3>أوّلاً: منهجية التنفيذ</h3>
+                <p>تعتمد آلية التنفيذ على منهجية <strong>Iterative Development</strong> (تطوير تكراري) مع تسليمات مرحلية. يتم بناء API (محرك المزامنة) أولاً ثم Dashboard، مع اختبار كل مرحلة قبل الانتقال إلى التي تليها، وذلك وفق الأولوية المُعتمدة من شركتكم.</p>
+
+                <h3>ثانياً: مراحل التنفيذ</h3>
+
+                <p><strong>المرحلة 1 — التهيئة والإعداد (الأسبوع 1)</strong></p>
+                <ul>
+                    <li>إنشاء حل .NET 8 بمشروعين (API + Razor)</li>
+                    <li>إعداد قاعدة بيانات SQL Server (جداول التكوين، السجلات، البيانات)</li>
+                    <li>تجهيز بيئة IIS للنشر</li>
+                    <li>اختبار الاتصال بقاعدة Oracle (خلال أول 3 أيام)</li>
+                </ul>
+
+                <p><strong>المرحلة 2 — بناء API (محرك المزامنة) — الأسبوع 2 إلى 4</strong></p>
+                <ul>
+                    <li>تكوين الاتصال بقاعدة Oracle باستخدام ODP.NET</li>
+                    <li>بناء محرك الاستخراج مع تحويل أنواع البيانات</li>
+                    <li>تطبيق آلية Full Refresh (حذف + إدخال مجمّع باستخدام ADO.NET SqlBulkCopy)</li>
+                    <li>إعداد محرك المزامنة لدعم Incremental Sync مستقبلاً (جاهزية استراتيجية)</li>
+                    <li>بناء نقاط الـ API: /trigger، /status، /logs، /config</li>
+                    <li>تسجيل عمليات المزامنة مع تتبّع الحالة والمدة</li>
+                    <li>اختبار المزامنة اليدوية والتلقائية</li>
+                </ul>
+
+                <p><strong>المرحلة 3 — بناء Dashboard (الأسبوع 5 إلى 8)</strong></p>
+                <ul>
+                    <li>إعداد التخطيط الأساسي مع Syncfusion</li>
+                    <li>بناء آلية عرض البطاقات الديناميكية (قراءة التكوين من DB)</li>
+                    <li>تطبيق 6 أنواع من البطاقات (Bar, Line, Pie, KPI, Table, Gauge)</li>
+                    <li>بناء خاصية Drill Down مع Breadcrumb Navigation</li>
+                    <li>تطبيق الهوية البصرية (Blue Theme — 11 لوناً)</li>
+                    <li>إضافة شريط حالة المزامنة وزر المزامنة اليدوية</li>
+                    <li>ضبط التجاوب مع جميع أحجام الشاشات</li>
+                </ul>
+
+                <p><strong>المرحلة 4 — بناء Admin Panel (الأسبوع 9 إلى 11)</strong></p>
+                <ul>
+                    <li>صفحة دخول محمية بكلمة مرور (وصل عبر الرابط المباشر فقط)</li>
+                    <li>واجهة CRUD للبطاقات (إنشاء، تعديل، حذف)</li>
+                    <li>تكوين مصادر البيانات (SQL Query / View)</li>
+                    <li>اختيار نوع العرض وتحديد مستويات Drill Down</li>
+                    <li>اختبار الاستعلام قبل الحفظ (Query Tester)</li>
+                    <li>تكوين تخطيط البطاقات (الحجم والترتيب)</li>
+                </ul>
+
+                <p><strong>المرحلة 5 — التكامل والاختبار (الأسبوع 12 إلى 13)</strong></p>
+                <ul>
+                    <li>اختبار التكامل بين API و Dashboard</li>
+                    <li>اختبار سيناريوهات المزامنة (يدوي، تلقائي، أخطاء)</li>
+                    <li>اختبار Drill Down عبر مستويات متعددة</li>
+                    <li>اختبار Admin Panel (CRUD + حفظ التكوين)</li>
+                    <li>اختبار الأداء مع بيانات فعلية</li>
+                </ul>
+
+                <p><strong>المرحلة 6 — النشر والتسليم (الأسبوع 14)</strong></p>
+                <ul>
+                    <li>نشر API و Dashboard على IIS في خادم الشركة</li>
+                    <li>تسليم كود المصدر مع تعليمات التشغيل الأساسية</li>
+                    <li>تدريب فريق العميل على استخدام النظام</li>
+                </ul>
+
+                <h3>ثالثاً: متطلبات من العميل</h3>
+                <ul>
+                    <li>توفير بيانات الاتصال بقاعدة Oracle (Server, Port, SID, User, Password)</li>
+                    <li>تحديد الجداول المطلوب مزامنتها من Oracle (أثناء التنفيذ)</li>
+                    <li>الوصول إلى سيرفر IIS للنشر أو توفير صلاحيات الإعداد</li>
+                    <li>التوفر للإجابة عن الاستفسارات أثناء مرحلة اكتشاف الجداول</li>
+                </ul>
+
+                <h3>رابعاً: معايير القبول والتسليم</h3>
+                <ul>
+                    <li>اكتمال جميع الميزات المدرجة في Phase 1 وفقاً لقائمة الميزات (FEATURE_LIST.md)</li>
+                    <li>نجاح المزامنة التلقائية واليدوية مع تسجيل العمليات</li>
+                    <li>عرض Dashboard كامل البطاقات مع Drill Down يعمل بشكل صحيح</li>
+                    <li>Admin Panel يتيح إنشاء وتعديل وحذف البطاقات وحفظ التكوين</li>
+                    <li>النظام يعمل بشكل مستقر على IIS</li>
+                </ul>
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">إعداد وتقديم</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">مؤسسة تيرا للنظم (Teranoo)</div>
+                    <div class="sign-box__line">الختم: .......................................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

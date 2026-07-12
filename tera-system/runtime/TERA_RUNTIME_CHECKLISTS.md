@@ -16,12 +16,16 @@ When the user provides a project idea and technical information:
 1. Read the required system references in `tera-system/`.
 2. Check `project-inputs/01_APPLICATION_IDEA.md` and `project-inputs/02_TECHNICAL_CONTEXT.md`.
 3. If intake is incomplete, enter `Client Discovery Mode` and complete intake first.
-4. If the user provides project-specific rules, create or update `project-preparation/PROJECT_RULES.md`.
-5. If the project has UI, collect design preferences and sources: colors, screenshots, Figma, CSS, reference sites, RTL/LTR, brand notes.
+4. **Determine project type:**
+   - [ ] Is this an **external client project**? (has a client folder under `clients/`)
+   - [ ] Is this an **internal Tera project**? (no client folder)
+   - If client project → read `clients/README.md`, identify the client application path, and set write paths accordingly.
+5. If the user provides project-specific rules, create or update `project-preparation/PROJECT_RULES.md` in the appropriate tier (root for internal, client sub-path for client project).
+6. If the project has UI, collect design preferences and sources: colors, screenshots, Figma, CSS, reference sites, RTL/LTR, brand notes.
 
 ### Phase 2: Project Decision Formation
-1. Create or update `project-preparation/00_PROJECT_INPUTS.md` as a normalized summary derived from `project-inputs/`.
-2. Create or update `project-preparation/TERA_PROJECT_DECISION.md`.
+1. Create or update `00_PROJECT_INPUTS.md` — **in the correct tier** (root `project-preparation/` for internal OR `clients/.../APP-xxx/project-preparation/` for client project).
+2. Create or update `TERA_PROJECT_DECISION.md` — **in the correct tier**.
 
 ### Phase 3: Project Preparation Planning
 1. Read `TERA_PROJECT_DECISION.md` — verify Decision is `Proceed to Project Preparation`.

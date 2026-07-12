@@ -56,6 +56,90 @@ It requires review by Majed and formal implementation through TeraSystemEvolutio
 
 <!-- تبدأ الاقتراحات من هنا -->
 
+## AIS-0008 — TeraAgent — قيود مسارات الكتابة للمجلدات الجذرية
+
+**Date:** 2026-07-12
+**Agent:** TeraAgent
+**Related Task / Session:** Phase 2 — WarehouseDashboard project
+**Severity:** High
+**Type:** Missing Rule / Workflow Improvement
+
+### Observation
+
+عند استلام مشروع WarehouseDashboard، كتبت ملفات المشروع في المجلدات الجذرية `project-preparation/` و `project-control/` بدلاً من مجلد تطبيق العميل. هذا خلط بين ملفات النظام (قوالب، بروتوكولات) وملفات المشاريع (بيانات مشروع محدد).
+
+المجلدات الجذرية `project-preparation/` و `project-control/` تحتوي:
+- قالب `PROJECT_STATE.md` (يجب أن يبقى فارغاً كقالب)
+- قالب `TERA_ACTIVE_CONTEXT.md` (يجب أن يبقى فارغاً كقالب)
+- قالب `DECISIONS_LOG.md` (يجب أن يبقى فارغاً كقالب)
+- سجلات نظام `PROJECT_ACTIVITY_LOG.md` (سجلات عامة للمشروعات)
+
+لكنني كتبت فيها محتوى مشروع محدد، مما عكّس القوالب وأخلط بين البيانات.
+
+### Evidence
+
+المجلدات المستخدمة (خاطئة):
+```
+project-preparation/00_PROJECT_INPUTS.md     ← خطأ
+project-preparation/TERA_PROJECT_DECISION.md ← خطأ
+project-control/PROJECT_STATE.md             ← خطأ (عكّس القالب)
+project-control/TERA_ACTIVE_CONTEXT.md       ← خطأ (عكّس القالب)
+project-control/DECISIONS_LOG.md             ← خطأ (عكّس القالب)
+```
+
+المجلدات الصحيحة:
+```
+clients/الماجد-لادارة-المستودعات/applications/APP-WarehouseDashboard/project-preparation/
+clients/الماجد-لادارة-المستودعات/applications/APP-WarehouseDashboard/project-control/
+```
+
+### Impact
+
+1. **خلط بيانات:** ملفات مشروع محدد تتداخل مع ملفات النظام العامة
+2. **تلوث قوالب:** القوالب الأصلية فقدت محتواها الأصلي
+3. **صعوبة الفصل:** لا يمكن تمييز مشاريع مختلفة عن بعضها
+4. **عرضة للتلوث:** أي مشروع جديد قد يكتب فوق بيانات مشروع سابق
+
+### Proposed Improvement
+
+إضافة قاعدة صريحة في `.opencode/agents/tera.md` أو `TERA_RUNTIME_PROTOCOLS.md`:
+
+```
+TeraAgent Write Location Rule:
+═══════════════════════════════
+
+TeraAgent writes ONLY inside client application folders:
+  clients/.../applications/APP-xxx/project-preparation/
+  clients/.../applications/APP-xxx/project-control/
+
+Root-level project-preparation/ and project-control/ = system templates and protocols ONLY.
+TeraAgent MUST NOT write project-specific content to root directories.
+
+Check before every write:
+1. Is this file project-specific? → Write to client folder
+2. Is this file a system template/protocol? → Write to root
+3. If unsure → Write to client folder (safe default)
+```
+
+### Suggested Target File
+- `.opencode/agents/tera.md` — إضافة قاعدة Write Location Rule
+- `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` — تعزيز القاعدة في قسم مناسب
+- `TERA_RUNTIME_CHECKLISTS.md` — إضافة فحص Write Location قبل كل كتابة
+
+### Execution Authority
+This suggestion is NOT active.
+It requires review by Majed and formal implementation through TeraSystemEvolutionAgent (Hares) after approval.
+
+---
+
+**Status:** Approved for SCP
+**SCP:** SCP-2026-07-12-092
+**Processed by:** TeraSystemEvolutionAgent (حارس) on 2026-07-12
+
+---
+
+## AIS-0005 — TeraClientEngagementAgent — Future-Proof Discovery: توثيق معلومات إضافية قابلة للتوسع
+
 ## AIS-0005 — TeraClientEngagementAgent — Future-Proof Discovery: توثيق معلومات إضافية قابلة للتوسع
 
 **Date:** 2026-07-06

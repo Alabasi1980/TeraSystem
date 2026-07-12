@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Technology Profiles Index
 
 ## Purpose
