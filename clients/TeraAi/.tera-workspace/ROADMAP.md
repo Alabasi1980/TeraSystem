@@ -113,28 +113,28 @@ Project Workspace
 |---|---|---|
 | 4.0 | TERA_GATEWAY_PROTOCOL_SPEC.md v1.2 — البروتوكول الرسمي | ✅ مكتمل |
 | 4.1 | مراجعة البروتوكول واعتماده | ✅ مكتمل |
-| 4.2 | Context API Limited Design | 🔵 التالي |
-| 4.3 | بناء Context API عبر stdio IPC | 🔜 |
-| 4.4 | بناء Task/Result API | 🔜 |
-| 4.5 | بناء Approval API | 🔜 |
-| 4.6 | تحويل read_tera_workspace لـ fallback | 🔜 |
-| 4.7 | اختبارات وتوثيق | 🔜 |
+| 4.2 | Context API Limited Design | ✅ مكتمل |
+| 4.3 | بناء Context API عبر stdio IPC | ✅ مكتمل |
+| 4.4 | بناء Task/Result API | ✅ مكتمل |
+| 4.5 | بناء Approval API | ✅ مكتمل |
+| 4.6 | تحويل read_tera_workspace لـ fallback | ✅ مكتمل |
+| 4.7 | اختبارات وتوثيق | 🔵 التالي |
 | 4.8 | مراجعة Phase 4 — إغلاق | 🔜 |
 
 ### معايير الإنجاز (DoD لـ Phase 4)
 
-| # | البند |
-|---|---|
-| 1 | TERA_GATEWAY_PROTOCOL_SPEC.md v1.2 مكتوب ومراجع ومعتمد |
-| 2 | Context API Limited Design مكتمل ومراجع |
-| 3 | Context API يعمل عبر stdio IPC |
-| 4 | Task Assignment API يعمل |
-| 5 | ExecutionResult API يعمل |
-| 6 | Approval API يعمل |
-| 7 | read_tera_workspace يتحول لـ fallback |
-| 8 | لا يوجد Event Stream (مُؤجَّل) |
-| 9 | اختبارات تكاملية تمر |
-| 10 | توثيق Gateway مكتمل |
+| # | البند | الحالة |
+|---|---|---|
+| 1 | TERA_GATEWAY_PROTOCOL_SPEC.md v1.2 مكتوب ومراجع ومعتمد | ✅ |
+| 2 | Context API Limited Design مكتمل ومراجع | ✅ |
+| 3 | Context API يعمل عبر stdio IPC | ✅ |
+| 4 | Task Assignment API يعمل | ✅ |
+| 5 | ExecutionResult API يعمل | ✅ |
+| 6 | Approval API يعمل | ✅ |
+| 7 | read_tera_workspace يتحول لـ fallback | ✅ |
+| 8 | لا يوجد Event Stream (مُؤجَّل) | ✅ |
+| 9 | اختبارات تكاملية تمر | 🔜 |
+| 10 | توثيق Gateway مكتمل | 🔜 |
 
 ### خطة انتقال read_tera_workspace
 
@@ -194,16 +194,18 @@ Project Workspace
 ❌ إضافة أدوات تغير حالة النظام خارج Gateway scope
 ❌ كتابة المحرك في .tera-workspace/
 ❌ استخدام Event Stream قبل الحاجة التشغيلية المثبتة
-❌ تنفيذ واسع لـ Phase 4 قبل إكمال Context API Limited Design
+❌ إضافة Task State persistence (ephemeral only)
+❌ إضافة Approval State persistence (ephemeral only)
 ```
 
 # ما هو مسموح فعله الآن
 
 ```
-✅ تصميم Context API ضمن نطاق محدود
-✅ تجهيز واجهة Context Request/Response
-✅ تحديد payloads والحدود والاختبارات المطلوبة
-✅ صيانة read_tera_workspace كـ fallback مؤقت فقط
+✅ Gateway يعمل كطريقة اتصال أساسية (handshake + context + task + approval)
+✅ read_tera_workspace كـ fallback مع تحذير deprecated
+✅ اختبارات تكاملية لـ Gateway API
+✅ توثيق Gateway API
+✅ التحضير لإغلاق Phase 4
 ```
 
 ---
