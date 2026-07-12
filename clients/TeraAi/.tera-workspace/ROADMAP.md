@@ -156,8 +156,8 @@ Project Workspace
 | 🥇 1 | Workspace Registry | سجل المشاريع النشطة | ✅ (TASK-COD-006) |
 | 🥇 2 | Gateway-Workspace Binding | ربط handlers بـ WorkspaceRecord | ✅ (TASK-COD-007) |
 | 🥇 3 | TaskStore/ApprovalStore Isolation | عزل لكل Workspace | ✅ (ضمن TASK-COD-007) |
-| 🥈 4 | Multi-Client Isolation | عزل نظام الملفات بين العملاء | 🔜 (TASK-COD-008) |
-| 🥈 5 | Workspace Cleanup/Lifecycle | إغلاق وتنظيف شامل | 🔜 (TASK-COD-009) |
+| 🥈 4 | Multi-Client Isolation | عزل نظام الملفات بين العملاء | ✅ (TASK-COD-008) |
+| 🥈 5 | Workspace Cleanup/Lifecycle | أرشفة + حذف + رفض على المؤرشف | ✅ (TASK-COD-009) |
 | 🥉 6 | Workspace Templates | قوالب مشاريع جاهزة | ⏸ مؤجل |
 | 🥉 7 | Artifact Storage | تخزين المخرجات | ⏸ مؤجل |
 
@@ -206,10 +206,10 @@ Project Workspace
 
 ```
 ✅ Gateway يعمل كطريقة اتصال أساسية (handshake + context + task + approval + workspace)
-✅ اختبارات شاملة لـ Gateway API (51/51 tests pass)
+✅ اختبارات شاملة لـ Gateway API (61/61 tests pass)
 ✅ توثيق Gateway API بالعربية (GATEWAY_API_REFERENCE.md)
 ✅ read_tera_workspace كـ fallback مع تحذير deprecated
-✅ Phase 5 قيد التنفيذ: Workspace Registry + Gateway Binding منجزان (5.1/5.2/5.3)
+✅ Phase 5 الأساسي مكتمل: Registry + Binding + Isolation + Lifecycle (5.1–5.5)
 ```
 
 ---
@@ -223,7 +223,8 @@ Project Workspace
 | v1.2 | 2026-07-10 | اعتماد Gateway Protocol Spec v1.2 |
 | v1.3 | 2026-07-12 | إغلاق Phase 4 — جميع مراحل التنفيذ (4.0–4.8) مكتملة، 39 اختبارًا تمر، توثيق Gateway API مكتمل |
 | v1.4 | 2026-07-12 | تقدم Phase 5 — Workspace Registry (5.1) + Gateway Binding & Isolation (5.2/5.3) منجزان، 51/51 اختبار يمر |
+| v1.5 | 2026-07-12 | إغلاق Phase 5 الأساسي — Multi-Client Isolation (5.4) + Lifecycle (5.5) منجزان، 61/61 اختبار يمر |
 
 ---
 
-*هذه الخريطة **v1.4** — محدثة بعد تقدم Phase 5 (5.1/5.2/5.3).*
+*هذه الخريطة **v1.5** — Phase 5 الأساسي مكتمل (5.1–5.5). Templates/Artifact Storage مؤجلة.*

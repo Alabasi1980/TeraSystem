@@ -1,6 +1,6 @@
 import { isAbsolute, resolve, sep } from "node:path"
 
-export type WorkspaceStatus = "active" | "idle" | "closed"
+export type WorkspaceStatus = "active" | "idle" | "closed" | "archived"
 
 export interface ApprovalRecord {
   readonly type: "request" | "response"
@@ -63,6 +63,14 @@ export class WorkspaceStore {
     const record = this.records.get(id)
     if (!record) return
     record.status = status
+    record.lastActiveAt = new Date().toISOString()
+    return record
+  }
+
+  archive(id: string) {
+    const record = this.records.get(id)
+    if (!record) return undefined
+    record.status = "archived"
     record.lastActiveAt = new Date().toISOString()
     return record
   }

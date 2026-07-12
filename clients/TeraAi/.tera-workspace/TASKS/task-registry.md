@@ -375,3 +375,29 @@
 - ✅ Workspace A directory ≠ Workspace B directory
 - ✅ resolveWorkspacePath يرفض traversal و المسارات المطلقة الخارجية
 - ✅ State Isolation (TaskStore + ApprovalStore) مؤكد من 007
+
+---
+
+## المهمة 015: TASK-COD-009 — Phase 5.5 Workspace Cleanup & Lifecycle ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ Accepted |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/TASKS/TASK-COD-009.md` |
+
+### التعديلات:
+- `workspace-registry.ts` — `status` union + `"archived"` + `archive(id)`
+- `workspace-handlers.ts` — `workspace.archive` + `workspace.delete`
+- `task-handlers.ts` — رفض task.create على Workspace مؤرشف
+- `approval-handlers.ts` — رفض approval.request على المؤرشف
+- `protocol.ts` — رفض context على المؤرشف
+- `workspace-api.test.ts` — +6 اختبارات lifecycle
+
+### التحقق:
+- ✅ `bun run typecheck` — PASS
+- ✅ `bun test test/gateway/` — 61/61 passed (Tera تحقق بنفسه)
+- ✅ Workspace جديد = "active"، archive → "archived"
+- ✅ archived يرفض task.create / approval.request / context
+- ✅ workspace.delete يزيل من Registry مع cleanup summary

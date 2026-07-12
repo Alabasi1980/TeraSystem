@@ -222,6 +222,98 @@ describe("gateway workspace api", () => {
     expect(inA.ok && inB.ok).toBe(true)
     if (inA.ok && inB.ok) expect(inA.path).not.toBe(inB.path)
   })
+
+  test("new workspace has status active", async () => {
+    const result = await runGateway([
+      handshake({ workspace_id: "ws_life_active", project_id: "proj_life_active" }),
+      workspace({ action: "status", workspace_id: "ws_life_active" }),
+    ])
+    expect(result.stderr).toBe("")
+    expect(result.stdout[1].type).toBe("response")
+    expect(result.stdout[1].payload).toMatchObject({
+      method: "workspace.status",
+      workspace: { id: "ws_life_active", status: "active" },
+    })
+  })
+
+  test("workspace.archive sets status archived", async () => {
+    const result = await runGateway([
+      handshake({ workspace_id: "ws_life_archive", project_id: "proj_life_archive" }),
+      workspace({ action: "archive", workspace_id: "ws_life_archive" }),
+    ])
+    expect(result.stderr).toBe("")
+    expect(result.stdout[1].type).toBe("response")
+    expect(result.stdout[1].payload).toMatchObject({
+      method: "workspace.archive",
+      status: "archived",
+    })
+  })
+
+  test("workspace.status shows archived status", async () => {
+    const result = await runGateway([
+      handshake({ workspace_id: "ws_life_status", project_id: "proj_life_status" }),
+      workspace({ action: "archive", workspace_id: "ws_life_status" }),
+      workspace({ action: "status", workspace_id: "ws_life_status" }),
+    ])
+    expect(result.stderr).toBe("")
+    expect(result.stdout[2].type).toBe("response")
+    expect(result.stdout[2].payload).toMatchObject({
+      method: "workspace.status",
+      workspace: { id: "ws_life_status", status: "archived" },
+    })
+  })
+
+  test("archived workspace rejects task.create with WORKSPACE_ARCHIVED", async () => {
+    const result = await runGateway([
+      handshake({ workspace_id: "ws_life_task", project_id: "proj_life_task" }),
+      workspace({ action: "archive", workspace_id: "ws_life_task" }),
+      task({ action: "create", task_id: "t_archived_001" }, "task_archived"),
+    ])
+    expect(result.stdout[2].type).toBe("error")
+    expect(result.stdout[2].payload).toMatchObject({
+      method: "task",
+      error_code: "WORKSPACE_ARCHIVED",
+    })
+    expect(result.stderr).toContain("task create on archived workspace: ws_life_task")
+  })
+
+  test("archived workspace rejects approval.request with WORKSPACE_ARCHIVED", async () => {
+    const result = await runGateway([
+      handshake({ workspace_id: "ws_life_appr", project_id: "proj_life_appr" }),
+      workspace({ action: "archive", workspace_id: "ws_life_appr" }),
+      approvalRequest({
+        task_id: "t_archived_appr_001",
+        action_type: "destructive",
+        description: "Delete file in archived workspace",
+        details: { affected_files: [], affected_commands: [], risk_level: "low" },
+      }, "appr_archived"),
+    ])
+    expect(result.stdout[2].type).toBe("error")
+    expect(result.stdout[2].payload).toMatchObject({
+      method: "approval.request",
+      error_code: "WORKSPACE_ARCHIVED",
+    })
+    expect(result.stderr).toContain("approval request on archived workspace: ws_life_appr")
+  })
+
+  test("workspace.delete removes workspace from registry", async () => {
+    const result = await runGateway([
+      handshake({ workspace_id: "ws_life_del", project_id: "proj_life_del" }),
+      workspace({ action: "delete", workspace_id: "ws_life_del" }),
+      workspace({ action: "status", workspace_id: "ws_life_del" }),
+    ])
+    expect(result.stdout[1].type).toBe("response")
+    expect(result.stdout[1].payload).toMatchObject({
+      method: "workspace.delete",
+      status: "deleted",
+      cleaned: { tasks: 0, approvals: 0, sessions: 1 },
+    })
+    expect(result.stdout[2].type).toBe("error")
+    expect(result.stdout[2].payload).toMatchObject({
+      method: "workspace.status",
+      error_code: "WORKSPACE_NOT_FOUND",
+    })
+  })
 })
 
 function runGateway(messages: object[]) {

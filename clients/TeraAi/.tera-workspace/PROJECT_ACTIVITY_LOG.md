@@ -77,3 +77,17 @@
 - **Summary:** Multi-Client Isolation — `directory` لكل Workspace + `resolveWorkspacePath` حارس (يمنع traversal) + تأكيد State Isolation.
 - **Decision/Result:** Committed `ebb8be1`. 55/55 pass (Tera تحقق بنفسه).
 - **Next Action:** TASK-COD-009 (Workspace Cleanup & Lifecycle) أو إغلاق Phase 5.
+
+## [2026-07-13 00:xx] - TASK_ACCEPTED
+- **Related Task:** TASK-COD-009
+- **Actor:** TeraAgent + EngineeringAgent
+- **Summary:** Workspace Lifecycle — `status` (active/archived) + `workspace.archive` + `workspace.delete` + رفض task/approval/context على المؤرشف.
+- **Decision/Result:** 61/61 pass (Tera تحقق بنفسه). `protocol.ts` عُدّل بتعليمات المهمة.
+- **Next Action:** إغلاق Phase 5 الأساسي → الانتقال لـ Phase 6 (Quality Gates).
+
+## [2026-07-13 00:xx] - PHASE_COMPLETED (أساسي)
+- **Related Task:** Phase 5 (5.1–5.5)
+- **Actor:** TeraAgent
+- **Summary:** إغلاق Phase 5 الأساسي. ROADMAP → v1.5. Templates/Artifact Storage مؤجلة بقرار.
+- **Decision/Result:** 61/61 tests. جاهز للانتقال لـ Phase 6.
+- **Next Action:** تأكيد المستخدم للانتقال إلى Phase 6.

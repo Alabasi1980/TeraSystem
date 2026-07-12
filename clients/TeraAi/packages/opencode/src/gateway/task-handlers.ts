@@ -70,6 +70,14 @@ function handleTaskCreate(input: {
     }
   }
 
+  if (workspaceRecord.status === "archived") {
+    return {
+      session: input.session,
+      output: protocolError(input.id, "task", "WORKSPACE_ARCHIVED", "Workspace is archived and cannot accept new tasks", false),
+      diagnostic: `task create on archived workspace: ${input.session.handshake!.workspaceID}`,
+    }
+  }
+
   workspaceRecord.tasks.set(taskID, "created")
 
   return {

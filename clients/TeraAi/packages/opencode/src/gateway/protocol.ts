@@ -158,6 +158,15 @@ function handleContext(input: {
     }
   }
 
+  const workspaceRecord = workspaceStore.get(input.session.handshake.workspaceID)
+  if (workspaceRecord?.status === "archived") {
+    return {
+      session: input.session,
+      output: protocolError(input.id, "context", "WORKSPACE_ARCHIVED", "Workspace is archived and cannot accept new context requests", false),
+      diagnostic: `context request on archived workspace: ${input.session.handshake.workspaceID}`,
+    }
+  }
+
   if (!isValidCapabilityEnvelope(input.payload.capabilities)) {
     return {
       session: input.session,

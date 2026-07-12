@@ -81,6 +81,13 @@ function handleApprovalRequest(input: {
   const approved = riskLevel !== "critical"
 
   const workspaceRecord = workspaceStore.get(input.session.handshake!.workspaceID)
+  if (workspaceRecord?.status === "archived") {
+    return {
+      session: input.session,
+      output: protocolError(input.id, "approval.request", "WORKSPACE_ARCHIVED", "Workspace is archived and cannot accept new approvals", false),
+      diagnostic: `approval request on archived workspace: ${input.session.handshake!.workspaceID}`,
+    }
+  }
   if (workspaceRecord) {
     workspaceRecord.approvals.push({
       type: "request",
