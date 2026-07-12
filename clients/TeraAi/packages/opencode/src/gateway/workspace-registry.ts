@@ -1,3 +1,5 @@
+import { isAbsolute, resolve, sep } from "node:path"
+
 export type WorkspaceStatus = "active" | "idle" | "closed"
 
 export interface ApprovalRecord {
@@ -39,12 +41,13 @@ export class WorkspaceStore {
     return Array.from(this.records.values())
   }
 
-  create(id: string, projectId: string, directory: string) {
+  create(id: string, projectId: string, directory?: string) {
     const now = new Date().toISOString()
+    const resolvedDir = directory && directory.length > 0 ? directory : resolve(".tera-workspace", id)
     const record: WorkspaceRecord = {
       id,
       projectId,
-      directory,
+      directory: resolvedDir,
       createdAt: now,
       lastActiveAt: now,
       status: "active",
@@ -67,6 +70,32 @@ export class WorkspaceStore {
   remove(id: string) {
     return this.records.delete(id)
   }
+}
+
+/**
+ * Resolves `inputPath` against a workspace's directory and rejects anything
+ * that escapes it. Used by future file-scoped gateway tools to guarantee that
+ * a workspace can never read or write outside its own root.
+ */
+export function resolveWorkspacePath(
+  workspaceId: string,
+  inputPath: string,
+):
+  | { ok: true; path: string }
+  | { ok: false; error: "PATH_TRAVERSAL" | "OUTSIDE_WORKSPACE" | "WORKSPACE_NOT_FOUND" } {
+  const record = workspaceStore.get(workspaceId)
+  if (!record) return { ok: false, error: "WORKSPACE_NOT_FOUND" }
+
+  const root = resolve(record.directory)
+  const resolved = resolve(root, inputPath)
+
+  // Anything that is not the root itself nor nested under it escapes the
+  // workspace and must be refused.
+  if (resolved !== root && !resolved.startsWith(root + sep)) {
+    return { ok: false, error: isAbsolute(inputPath) ? "OUTSIDE_WORKSPACE" : "PATH_TRAVERSAL" }
+  }
+
+  return { ok: true, path: resolved }
 }
 
 /** Singleton workspace store used by the gateway. */

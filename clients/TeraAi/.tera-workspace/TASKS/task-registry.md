@@ -352,3 +352,26 @@
 - ✅ Workspace A tasks معزولة عن Workspace B
 - ✅ Workspace A approvals معزولة عن Workspace B
 - ✅ workspace.close ينظف المهام والموافقات والجلسات
+
+---
+
+## المهمة 014: TASK-COD-008 — Phase 5.4 Multi-Client Isolation (File System + State) ✅
+
+| الحقل | القيمة |
+|---|---|
+| الحالة | ✅ Accepted |
+| المسؤول | TeraAgent + EngineeringAgent |
+| الأولوية | عالية |
+| المرجع | `.tera-workspace/TASKS/TASK-COD-008.md` |
+
+### التعديلات:
+- `workspace-registry.ts` — إضافة `directory` لـ WorkspaceRecord + `resolveWorkspacePath` حارس (يمنع traversal)
+- `protocol.ts` — handshake يقرأ `workspace_dir` (اختياري) من الطلب
+- `workspace-api.test.ts` — إضافة 4 اختبارات للحارس والعزل
+
+### التحقق:
+- ✅ `bun run typecheck` — PASS
+- ✅ `bun test test/gateway/` — 55/55 passed (Tera تحقق بنفسه)
+- ✅ Workspace A directory ≠ Workspace B directory
+- ✅ resolveWorkspacePath يرفض traversal و المسارات المطلقة الخارجية
+- ✅ State Isolation (TaskStore + ApprovalStore) مؤكد من 007

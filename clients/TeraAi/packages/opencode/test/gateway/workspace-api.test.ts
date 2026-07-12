@@ -1,5 +1,7 @@
+import { resolve } from "node:path"
 import { describe, expect, test } from "bun:test"
 import { GatewayProtocol } from "@/gateway/protocol"
+import { resolveWorkspacePath, workspaceStore } from "@/gateway/workspace-registry"
 
 describe("gateway workspace api", () => {
   test("workspace.list returns workspace created by handshake", async () => {
@@ -183,6 +185,42 @@ describe("gateway workspace api", () => {
       method: "workspace.close",
       cleaned: { tasks: 0, approvals: 0, sessions: 1 },
     })
+  })
+
+  test("resolveWorkspacePath accepts valid path inside workspace", () => {
+    workspaceStore.create("ws_path_ok", "proj_path_ok", "/tmp/ws_path_ok")
+    const result = resolveWorkspacePath("ws_path_ok", "files/report.txt")
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.path).toBe(resolve("/tmp/ws_path_ok", "files/report.txt"))
+    }
+  })
+
+  test("resolveWorkspacePath rejects path traversal (../)", () => {
+    workspaceStore.create("ws_trav", "proj_trav", "/tmp/ws_trav")
+    const result = resolveWorkspacePath("ws_trav", "../escape.txt")
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.error).toBe("PATH_TRAVERSAL")
+  })
+
+  test("resolveWorkspacePath rejects absolute path outside workspace", () => {
+    workspaceStore.create("ws_abs", "proj_abs", "/tmp/ws_abs")
+    const outside = process.platform === "win32" ? "C:\\windows\\system32\\passwd" : "/etc/passwd"
+    const result = resolveWorkspacePath("ws_abs", outside)
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.error).toBe("OUTSIDE_WORKSPACE")
+  })
+
+  test("workspace A directory differs from workspace B", () => {
+    workspaceStore.create("ws_iso_dir_a", "proj_iso_dir_a", "/tmp/ws_iso_dir_a")
+    workspaceStore.create("ws_iso_dir_b", "proj_iso_dir_b", "/tmp/ws_iso_dir_b")
+    const a = workspaceStore.get("ws_iso_dir_a")!
+    const b = workspaceStore.get("ws_iso_dir_b")!
+    expect(a.directory).not.toBe(b.directory)
+    const inA = resolveWorkspacePath("ws_iso_dir_a", "a.txt")
+    const inB = resolveWorkspacePath("ws_iso_dir_b", "a.txt")
+    expect(inA.ok && inB.ok).toBe(true)
+    if (inA.ok && inB.ok) expect(inA.path).not.toBe(inB.path)
   })
 })
 

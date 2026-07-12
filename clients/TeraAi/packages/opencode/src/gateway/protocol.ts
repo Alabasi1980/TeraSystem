@@ -1,3 +1,4 @@
+import { resolve } from "node:path"
 import { handleApproval } from "./approval-handlers"
 import { handleTask } from "./task-handlers"
 import { handleWorkspace } from "./workspace-handlers"
@@ -104,7 +105,7 @@ function handleHandshake(input: {
     }
   }
 
-  const directory = requireString(input.payload.directory) ?? "unknown"
+  const directory = requireString(input.payload.workspace_dir) ?? resolve(".tera-workspace", workspaceID)
   workspaceStore.create(workspaceID, projectID, directory)
 
   const record = workspaceStore.get(workspaceID)
