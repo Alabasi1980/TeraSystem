@@ -803,6 +803,40 @@
   - ✅ No sub-agent invocation authority; `task: deny` added.
   - ✅ File size still below split threshold — `tera-strategic-advisor.md` = 314 سطر (< 700).
 - Rollback Notes:
-  1. Remove `websearch: allow` and `task: deny` from `.opencode/agents/tera-strategic-advisor.md`.
-  2. Remove the added sub-agent invocation note from `.opencode/agents/tera-strategic-advisor.md`.
-  3. Restore `AGENT_DEPENDENCY_MAP.md` line count to previous value if needed.
+   1. Remove `websearch: allow` and `task: deny` from `.opencode/agents/tera-strategic-advisor.md`.
+   2. Remove the added sub-agent invocation note from `.opencode/agents/tera-strategic-advisor.md`.
+   3. Restore `AGENT_DEPENDENCY_MAP.md` line count to previous value if needed.
+
+---
+
+## SCP-2026-07-12-092 — Write Location Rule: Two-Tier Write System
+
+- **تاريخ:** 2026-07-12
+- **معرف التغيير:** SCP-2026-07-12-092
+- **مصدر الطلب:** AIS-0008 (TeraAgent) + GAP-013
+- **نوع التغيير:** Policy Update / Workflow Improvement
+- **الملفات المعدلة:**
+  - `.opencode/agents/tera.md` — §7: إعادة هيكلة كاملة إلى Two-Tier Write System (Tier 1 Root Templates vs Tier 2 Client Application Paths) + إضافة Write Location Decision Rule
+  - `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` — إضافة §3.1 Write Location Protocol مع Decision Rule
+  - `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — تحديث Phase 1 First Action Checklist: إضافة تحديد نوع المشروع (Client vs Internal)
+  - `project-control/AGENT_GAPS_LOG.md` — تحديث GAP-013: Pending → Approved
+  - `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` — تحديث AIS-0008: إضافة Status Approved for SCP + SCP link
+- **الملخص:**
+  إضافة قاعدة واضحة تمنع TeraAgent من كتابة بيانات المشروع في المجلدات الجذرية (`project-preparation/` و `project-control/`). القاعدة تفرق بين:
+  - **Tier 1 (الجذر):** قوالب النظام فقط — تبقى فارغة
+  - **Tier 2 (العميل):** `clients/.../applications/APP-xxx/project-*/` — بيانات المشروع الفعلية
+  كُتبت القاعدة في `tera.md` (مصدر الحقيقة) واختصارها في `TERA_RUNTIME_PROTOCOLS.md`، وأضيف بند فحص أولي في `TERA_RUNTIME_CHECKLISTS.md`.
+- **الموافقة:** Majed — Approved
+- **التحقق من الصحة:**
+  - ✅ Anti-Bloat Gate — PASS (تعديل ملفات موجودة فقط، لا ملفات جديدة)
+  - ✅ Policy Map Check — `TeraPolicyMap.md` لا يحتاج تحديث (القاعدة ضمن `tera.md` مصدر الحقيقة)
+  - ✅ Architecture Map Check — `TeraArchitectureMap.md` لا يحتاج تحديث (المجلدات معرّفة)
+  - ✅ No client-app contamination
+  - ✅ No unauthorized privilege expansion
+  - ✅ No duplicated rules (مصدر الحقيقة في `tera.md`، ملخص في runtime)
+  - ✅ `git diff --check` — PASS
+- **المخاطر:** منخفضة — تغيير توضيحي فقط، لا يكسر شيئاً
+- **ملاحظات الاسترجاع:**
+  1. إعادة `tera.md` §7 إلى النص الأصلي
+  2. حذف §3.1 من `TERA_RUNTIME_PROTOCOLS.md`
+  3. إعادة Phase 1 checklist في `TERA_RUNTIME_CHECKLISTS.md` إلى حالته السابقة
