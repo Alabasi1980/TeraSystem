@@ -70,3 +70,10 @@
   - ❌ `PROJECT_ACTIVITY_LOG.md` كان مفقوداً → تم إنشاؤه الآن.
   - ⚠️ `ROADMAP.md` Phase 5 قديم → تم تحديثه.
 - **Next Action:** Push `51d89fc` + إنشاء TASK-COD-008.
+
+## [2026-07-12 23:xx] - TASK_ACCEPTED
+- **Related Task:** TASK-COD-008
+- **Actor:** TeraAgent + EngineeringAgent
+- **Summary:** Multi-Client Isolation — `directory` لكل Workspace + `resolveWorkspacePath` حارس (يمنع traversal) + تأكيد State Isolation.
+- **Decision/Result:** Committed `ebb8be1`. 55/55 pass (Tera تحقق بنفسه).
+- **Next Action:** TASK-COD-009 (Workspace Cleanup & Lifecycle) أو إغلاق Phase 5.
