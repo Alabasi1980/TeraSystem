@@ -171,6 +171,32 @@ Rules:
 - If a conflict arises between `PROJECT_RULES.md` and another file, stop related delegation and record the required decision.
 - Any change outside `Allowed Write Targets` must be classified as `Approved deviation`, `Needs user approval`, or `Reverted`.
 
+### 3.1 Write Location Protocol (Two-Tier System)
+
+Tera uses a two-tier write location system. The root-level `project-preparation/` and `project-control/` folders contain **system templates only** — they must remain empty of project-specific data. Each client application has its own sub-path under `clients/`.
+
+**Decision Rule:**
+```
+1. Is the current task for an EXTERNAL CLIENT APPLICATION?
+   → YES: Write to clients/CLIENT-XXXXX/applications/APP-XXXXX/project-preparation/
+          or clients/.../APP-XXXXX/project-control/
+   → NO  (internal Tera project): Write to root project-preparation/ or project-control/
+
+2. Is this a system template or protocol update?
+   → Write to root project-preparation/ or project-control/ (keep templates empty)
+
+3. Unsure which client/application?
+   → Check clients/README.md first, then verify with the user.
+
+4. If still unsure → Write to client application sub-path (safe default).
+```
+
+**When starting a client project:**
+- Read `clients/README.md` for the folder structure.
+- Verify the client application folder exists under `clients/.../applications/APP-*/`.
+- Set `Allowed Write Targets` to the client application sub-path during task setup.
+- The root level `project-control/PROJECT_STATE.md`, `TERA_ACTIVE_CONTEXT.md`, and `DECISIONS_LOG.md` are **templates** — copy their structure, do not overwrite them.
+
 ---
 
 ## 4. Execution Orchestration Protocol

@@ -295,6 +295,32 @@ Only then changes are implemented.
 - Status: Applied
 - Resolution Notes: تم تنفيذ الحل عبر SCP-2026-07-05-036. تم إنشاء TeraAuditor.md (10 أقسام) في tera-system/، تحديث auditor.md بإضافة System Reference + بروتوكول التراكم + تحديث Output Format (DEFERRED)، تحديث ENGINEERING_AGENT_RESPONSIBILITIES.md §5 (توسيع كامل: منهجية + تراكم + بروتوكول عدم يقين + مرجع TeraAuditor.md)، وتحديث TeraPolicyMap.md بإضافة إدخال Auditor.
 
+## 2026-07-12 — TeraAgent — GAP-013
+
+- Title: **TeraAgent كتب ملفات محددة للمشروع في المجلد الرئيسي (project-preparation/ و project-control/) بدلاً من مجلد تطبيق العميل**
+- Agent: TeraAgent
+- Gap Type: Process Gap / Policy Gap
+- Issue: عند استلام مشروع WarehouseDashboard، كتب TeraAgent الملفات التالية في المجلد الرئيسي بدلاً من مجلد تطبيق العميل:
+  1. `project-preparation/00_PROJECT_INPUTS.md` — ملخص مُوحّد
+  2. `project-preparation/TERA_PROJECT_DECISION.md` — قرار المشروع
+  3. `project-control/PROJECT_STATE.md` — حالة المشروع (عكّس القالب الأصلي)
+  4. `project-control/TERA_ACTIVE_CONTEXT.md` — سياق الجلسة (عكّس القالب الأصلي)
+  5. `project-control/DECISIONS_LOG.md` — سجل القرارات (عكّس القالب الأصلي)
+  6. `project-control/PROJECT_ACTIVITY_LOG.md` — سجل النشاط (أضاف إدخال مشروع)
+
+  المجلدات `project-preparation/` و `project-control/` في الجذر تحتوي ملفات نظام عامة (قوالب، بروتوكولات، سجلات نظام). الملفات الخاصة بالمشاريع يجب أن تذهب إلى `clients/.../applications/APP-xxx/project-preparation/` و `clients/.../applications/APP-xxx/project-control/`.
+- Impact on agent performance: يخلط بين ملفات النظام وملفات المشاريع. يجعل من الصعب فصل مشاريع مختلفة. يعرض ملفات القوالب للتعويض بالبيانات الخاصة بالمشروع.
+- Suggested direction (optional): قاعدة صريحة في `.opencode/agents/tera.md` أو `TERA_RUNTIME_PROTOCOLS.md`:
+  ```
+  TeraAgent writes ONLY inside client application folders:
+  clients/.../applications/APP-xxx/project-preparation/
+  clients/.../applications/APP-xxx/project-control/
+
+  Root-level project-preparation/ and project-control/ = system templates and protocols ONLY.
+  ```
+- Status: Approved (SCP-2026-07-12-092)
+- Resolution Notes: تم نقل الملفات إلى `clients/الماجد-لادارة-المستودعات/applications/APP-WarehouseDashboard/project-preparation/` و `project-control/`. تم استعادة ملفات القالب الأصلي في الجذر. تم إنتاج SCP-2026-07-12-092 لتعديل `tera.md` و `TERA_RUNTIME_PROTOCOLS.md` و `TERA_RUNTIME_CHECKLISTS.md` لإضافة قاعدة Write Location Rule تمنع تكرار المشكلة.
+
 ## 2026-07-07 — DomainExpertAgent + DomainResearchAgent — GAP-012
 
 - Title: **DomainExpertAgent و DomainResearchAgent يفتقران لملفات تعريف مستقلة في `.opencode/agents/` مع Dual Mode (Software + Consulting)**
