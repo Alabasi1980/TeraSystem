@@ -163,16 +163,19 @@ Project Workspace
 
 ---
 
-## 🔜 Phase 6: Quality Gates & Governance Automation
+## 🔄 Phase 6 (معاد توجيهها): Control Plane MVP + Task Execution حقيقي 🔜 بانتظار اعتماد الخطة
 
-| الأولوية | المكون | الوصف |
-|---|---|---|
-| 🥇 1 | Gate Framework | نظام قابل للتوسع |
-| 🥇 2 | Security Gate | منع كلمات السر والمفاتيح |
-| 🥈 3 | Quality Gate | اختبارات وتغطية |
-| 🥈 4 | Naming Gate | نمط التسمية |
-| 🥉 5 | Doc Gate | توثيق APIs |
-| 🥉 6 | Decision Proposal Gate | تسجيل القرارات |
+> التصميم: `PLANS/08-phase6-control-plane.md` — **بانتظار موافقة المستخدم قبل أي TASK-COD-***.
+> القرار (2026-07-13): تأجيل Quality Gates وبناء "أول حلقة عمل حقيقية" أولاً.
+
+| الأولوية | المكون | الوصف | الحالة |
+|---|---|---|---|
+| 🥇 1 | Real Task Execution | `task.create` ينفّذ فعلياً داخل Workspace | 🔜 (TASK-COD-010) |
+| 🥇 2 | Control Plane MVP | سائق يشغّل المحرك ويثبت الحلقة + log | 🔜 (TASK-COD-011) |
+| 🥈 3 | Gate Middleware Hook | نقطة وسطية هيكلية للـ Gates (بلا منطق) | ⏸ اختياري (TASK-COD-012) |
+
+### Phase 6 الأصلية (مؤجّلة حتى توجد مهام حقيقية)
+~~Quality Gates: Gate Framework / Security / Quality / Naming / Doc / Decision Proposal~~ — تُبنى بعد إثبات الحلقة.
 
 ---
 
@@ -224,7 +227,8 @@ Project Workspace
 | v1.3 | 2026-07-12 | إغلاق Phase 4 — جميع مراحل التنفيذ (4.0–4.8) مكتملة، 39 اختبارًا تمر، توثيق Gateway API مكتمل |
 | v1.4 | 2026-07-12 | تقدم Phase 5 — Workspace Registry (5.1) + Gateway Binding & Isolation (5.2/5.3) منجزان، 51/51 اختبار يمر |
 | v1.5 | 2026-07-12 | إغلاق Phase 5 الأساسي — Multi-Client Isolation (5.4) + Lifecycle (5.5) منجزان، 61/61 اختبار يمر |
+| v1.6 | 2026-07-13 | قرار المحور: تأجيل Quality Gates، البدء بـ Control Plane MVP + Real Task Execution (Phase 6 معاد توجيهها) |
 
 ---
 
-*هذه الخريطة **v1.5** — Phase 5 الأساسي مكتمل (5.1–5.5). Templates/Artifact Storage مؤجلة.*
+*هذه الخريطة **v1.6** — قرار المحور معتمد. تفاصيل Phase 6 الجديدة في `PLANS/08-phase6-control-plane.md` (بانتظار اعتماد الخطة).*

@@ -91,3 +91,9 @@
 - **Summary:** إغلاق Phase 5 الأساسي. ROADMAP → v1.5. Templates/Artifact Storage مؤجلة بقرار.
 - **Decision/Result:** 61/61 tests. جاهز للانتقال لـ Phase 6.
 - **Next Action:** تأكيد المستخدم للانتقال إلى Phase 6.
+
+## [2026-07-13 01:xx] - DECISION (Pivot)
+- **Actor:** Majed (بعد توصية مستشار) + TeraAgent
+- **Summary:** اعتماد محور Phase 6 — تأجيل Quality Gates، البدء بـ Control Plane MVP + Real Task Execution.
+- **Decision/Result:** وثيقة تصميم `PLANS/08-phase6-control-plane.md` منشأة (بانتظار اعتماد المهام). ROADMAP → v1.6.
+- **Next Action:** اعتماد المستخدم لوثيقة التصميم → إنشاء TASK-COD-010/011.
