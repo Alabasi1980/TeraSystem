@@ -1,0 +1,220 @@
+@* Sync Status Bar — TASK-COD-013 *@
+@* Compact pill/badge at the top of the public Dashboard. *@
+@* Stable element ids/classes so the Dashboard (TASK-COD-011) can rely on them. *@
+<div id="sync-status-bar" class="sync-bar" data-api-base="https://localhost:5001"
+     role="status" aria-live="polite">
+
+    <span id="sync-dot" class="sync-dot sync-dot--idle" aria-hidden="true"></span>
+
+    <span id="sync-status-text" class="sync-status-text">جاري التحميل...</span>
+
+    <span class="sync-meta">
+        <span class="sync-meta__item">آخر مزامنة: <strong id="sync-last-time">—</strong></span>
+        <span class="sync-meta__item">الحالة: <strong id="sync-last-status">—</strong></span>
+        <span class="sync-meta__item">عدد السجلات: <strong id="sync-record-count">—</strong></span>
+    </span>
+
+    <button id="sync-refresh-btn" class="sync-btn" type="button" aria-label="مزامنة الآن">
+        <span id="sync-btn-spinner" class="sync-spinner" style="display:none;" aria-hidden="true"></span>
+        <span id="sync-btn-label" class="sync-btn__label">مزامنة الآن</span>
+    </button>
+</div>
+
+<script>
+(function () {
+    var root = document.getElementById('sync-status-bar');
+    if (!root) return;
+
+    // Single configurable base URL. Override order:
+    //   1. data-api-base attribute on the root element
+    //   2. window.SYNC_API_BASE global (set once in a layout/script)
+    //   3. default https://localhost:5001
+    var API_BASE = (root.getAttribute('data-api-base') || window.SYNC_API_BASE || 'https://localhost:5001').replace(/\/+$/, '');
+    var STATUS_URL = API_BASE + '/api/sync/status';
+    var TRIGGER_URL = API_BASE + '/api/sync/trigger';
+
+    var dot = document.getElementById('sync-dot');
+    var statusText = document.getElementById('sync-status-text');
+    var lastTime = document.getElementById('sync-last-time');
+    var lastStatus = document.getElementById('sync-last-status');
+    var recordCount = document.getElementById('sync-record-count');
+    var btn = document.getElementById('sync-refresh-btn');
+    var btnLabel = document.getElementById('sync-btn-label');
+    var btnSpinner = document.getElementById('sync-btn-spinner');
+
+    var BACKGROUND_INTERVAL = 30000; // §1: refresh every ~30s
+    var POLL_INTERVAL = 2000;        // poll while running
+    var pollTimer = null;
+    var manualTriggerPending = false;
+
+    function setDot(state) {
+        dot.className = 'sync-dot sync-dot--' + state;
+        if (state === 'warning') dot.classList.add('sync-dot--pulse');
+    }
+
+    function statusLabel(v) {
+        if (v === 'Success') return 'ناجحة';
+        if (v === 'Failed') return 'فاشلة';
+        if (v === 'Cancelled') return 'ملغاة';
+        if (v === 'Idle' || v === 'idle') return 'خامل';
+        if (!v) return 'غير معروف';
+        return v;
+    }
+
+    function statusState(v) {
+        if (v === 'Success') return 'success';
+        if (v === 'Failed') return 'failed';
+        if (v === 'Cancelled') return 'warning';
+        if (v === 'Idle' || v === 'idle') return 'idle';
+        return 'unknown';
+    }
+
+    function formatTime(v) {
+        if (!v) return 'غير معروف';
+        var d = new Date(v);
+        if (isNaN(d.getTime())) return 'غير معروف';
+        try {
+            return d.toLocaleString('ar-SA', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+        } catch (e) {
+            return d.toLocaleString();
+        }
+    }
+
+    function render(data) {
+        if (!data) {
+            setDot('unknown');
+            statusText.textContent = 'غير معروف';
+            lastTime.textContent = 'غير معروف';
+            lastStatus.textContent = 'غير معروف';
+            recordCount.textContent = '—';
+            return;
+        }
+        if (data.isRunning) {
+            setDot('warning');
+            statusText.textContent = 'جاري المزامنة...';
+        } else {
+            setDot(statusState(data.lastStatus));
+            statusText.textContent = statusLabel(data.lastStatus);
+        }
+        lastTime.textContent = formatTime(data.lastSyncTime);
+        lastStatus.textContent = statusLabel(data.lastStatus);
+        recordCount.textContent = (typeof data.lastRecordCount === 'number') ? String(data.lastRecordCount) : '—';
+    }
+
+    function ensureContainer() {
+        var c = document.getElementById('wd-toast-container');
+        if (!c) {
+            c = document.createElement('div');
+            c.id = 'wd-toast-container';
+            c.className = 'wd-toast-container';
+            document.body.appendChild(c);
+        }
+        return c;
+    }
+
+    function showToast(type, message) {
+        var icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+        var container = ensureContainer();
+        var t = document.createElement('div');
+        t.className = 'wd-toast wd-toast--' + type;
+        var icon = document.createElement('span');
+        icon.className = 'wd-toast__icon';
+        icon.textContent = icons[type] || 'ℹ';
+        var body = document.createElement('div');
+        body.className = 'wd-toast__body';
+        body.textContent = message;
+        t.appendChild(icon);
+        t.appendChild(body);
+        container.appendChild(t);
+        requestAnimationFrame(function () { t.classList.add('wd-toast--show'); });
+        setTimeout(function () {
+            t.classList.remove('wd-toast--show');
+            setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 300);
+        }, 4000);
+    }
+
+    function setButtonBusy(busy) {
+        btn.disabled = busy;
+        btnSpinner.style.display = busy ? '' : 'none';
+        btnLabel.textContent = busy ? 'جاري المزامنة...' : 'مزامنة الآن';
+    }
+
+    function stopPolling() {
+        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    }
+
+    function startPolling() {
+        if (pollTimer) return;
+        pollTimer = setInterval(function () {
+            fetch(STATUS_URL, { method: 'GET', headers: { 'Accept': 'application/json' } })
+                .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                .then(function (data) {
+                    if (!data.isRunning) {
+                        stopPolling();
+                        render(data);
+                        setButtonBusy(false);
+                        if (manualTriggerPending) {
+                            manualTriggerPending = false;
+                            if (data.lastStatus === 'Failed') showToast('error', 'فشلت المزامنة. راجع سجلات المزامنة.');
+                            else if (data.lastStatus === 'Cancelled') showToast('warning', 'تم إلغاء المزامنة.');
+                            else showToast('success', 'تمت المزامنة بنجاح.');
+                        }
+                    } else {
+                        render(data);
+                    }
+                })
+                .catch(function () {
+                    stopPolling();
+                    render(null);
+                    setButtonBusy(false);
+                    if (manualTriggerPending) {
+                        manualTriggerPending = false;
+                        showToast('error', 'تعذر الاتصال بخادم المزامنة.');
+                    }
+                });
+        }, POLL_INTERVAL);
+    }
+
+    function loadStatus() {
+        return fetch(STATUS_URL, { method: 'GET', headers: { 'Accept': 'application/json' } })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (data) {
+                render(data);
+                if (data.isRunning) {
+                    setButtonBusy(true);
+                    startPolling();
+                } else if (!manualTriggerPending) {
+                    setButtonBusy(false);
+                    stopPolling();
+                }
+                return data;
+            })
+            .catch(function () { render(null); });
+    }
+
+    function triggerSync() {
+        if (manualTriggerPending) return;
+        manualTriggerPending = true;
+        setButtonBusy(true);
+        stopPolling();
+        fetch(TRIGGER_URL, { method: 'POST', headers: { 'Accept': 'application/json' } })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function () {
+                setDot('warning');
+                statusText.textContent = 'جاري المزامنة...';
+                startPolling();
+            })
+            .catch(function () {
+                manualTriggerPending = false;
+                setButtonBusy(false);
+                showToast('error', 'تعذر تشغيل المزامنة. تحقق من اتصال الخادم.');
+            });
+    }
+
+    btn.addEventListener('click', triggerSync);
+
+    // Initial load + background auto-refresh every ~30s
+    loadStatus();
+    setInterval(loadStatus, BACKGROUND_INTERVAL);
+})();
+</script>

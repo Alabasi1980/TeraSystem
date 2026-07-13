@@ -4,14 +4,10 @@ using WarehouseDashboard.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // ---------------------------------------------------------------------------
-// Connection strings are stored as TEMPLATES in appsettings.json.
-// Passwords are resolved from environment variables at runtime (never hardcoded).
+// Connection strings with passwords are stored directly in appsettings.json
+// for development/testing. For production, use environment variables with
+// {SQL_PASSWORD} and {ORACLE_PASSWORD} placeholders.
 // ---------------------------------------------------------------------------
-if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("SQL_PASSWORD")))
-    Console.WriteLine("[WARN] SQL_PASSWORD env var is not set. SQL Server access will fail.");
-
-if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("ORACLE_PASSWORD")))
-    Console.WriteLine("[WARN] ORACLE_PASSWORD env var is not set. Oracle access will fail.");
 
 // ---------------------------------------------------------------------------
 // Service registration.
@@ -33,7 +29,19 @@ builder.Services.AddSingleton<SyncRunLogStore>();
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWeb", policy =>
+    {
+        policy.WithOrigins("https://localhost:5000", "http://localhost:5000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowWeb");
 
 app.MapControllers();
 

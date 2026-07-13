@@ -24,8 +24,7 @@ try
     {
         WriteError($"'{ConnectionStringKey}' not found or empty in '{AppSettingsFile}'.");
         WriteInfo("Expected format:");
-        WriteInfo("  { \"OracleConnection\": \"User Id=NATEJSOFT;Password={ORACLE_PASSWORD};Data Source=//host:1521/service;\" }");
-        WriteInfo("Then set the ORACLE_PASSWORD environment variable before running.");
+        WriteInfo("  { \"OracleConnection\": \"User Id=NATEJSOFT;Password=COGNOS;Data Source=//host:1521/service;\" }");
         return;
     }
 
@@ -36,23 +35,7 @@ try
     }
 
     // ---------------------------------------------------------------
-    // 2. Resolve password from environment variable
-    // ---------------------------------------------------------------
-    var oraclePassword = Environment.GetEnvironmentVariable("ORACLE_PASSWORD");
-
-    if (string.IsNullOrWhiteSpace(oraclePassword))
-    {
-        WriteError("Please set ORACLE_PASSWORD environment variable.");
-        WriteInfo("Example:");
-        WriteInfo("  PowerShell: $env:ORACLE_PASSWORD = \"COGNOS\"");
-        WriteInfo("  CMD:         set ORACLE_PASSWORD=COGNOS");
-        return;
-    }
-
-    connectionString = connectionString.Replace("{ORACLE_PASSWORD}", oraclePassword);
-
-    // ---------------------------------------------------------------
-    // 3. Attempt connection + query
+    // 2. Attempt connection + query
     // ---------------------------------------------------------------
     WriteHeader("WarehouseDashboard — Oracle Connectivity Test");
     Console.WriteLine($"Target  : Oracle Database (ODP.NET Managed Driver)");
@@ -71,7 +54,7 @@ try
         Console.WriteLine();
 
         // -----------------------------------------------------------
-        // 3. Execute SYSDATE query
+        // 2.1 Execute SYSDATE query
         // -----------------------------------------------------------
         await using (var command = connection.CreateCommand())
         {

@@ -8,5 +8,7 @@
 | 2026-07-12 | Monitor Condition: PROJECT_MASTER_PLAN.md first in Phase 5 | Process | Governance — no TASK-COD-* before MASTER_PLAN approval | Majed |
 | 2026-07-12 | Monitor Condition: PROJECT_STATE.md before first TASK-COD | Process | Governance — state must be current before implementation | Majed |
 | 2026-07-12 | Monitor Condition: First TASK-COD = Oracle connection test | Risk | Mitigate R1 (late Oracle connectivity discovery) | Majed |
+| 2026-07-13 | SQL Server changed from localhost to 10.10.1.1 | Technology | Both Api and Web projects now point to remote SQL Server at 10.10.1.1 | Majed |
+| 2026-07-13 | Database passwords hardcoded in appsettings.json (temp) | Technology | Oracle=COGNOS, SQL Server=P@$$w0rd — for development/testing only. Production should use Environment Variables (§8.4) | Majed |
 
 **Categories:** Scope / Technology / Design / Priority / Deferral / Out-of-Scope / Delivery / Closure / Process / Other

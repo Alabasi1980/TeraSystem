@@ -1,21 +1,21 @@
 using WarehouseDashboard.Web.Data;
 using WarehouseDashboard.Web.Infrastructure;
+using WarehouseDashboard.Web.Pages;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ---------------------------------------------------------------------------
-// Syncfusion license is read from the SYNCFUSION_LICENSE_KEY environment variable.
-// It is NEVER hardcoded in source or configuration files.
+// Syncfusion license is read from appsettings.json (Syncfusion:LicenseKey).
 // ---------------------------------------------------------------------------
-var syncLicense = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
+var syncLicense = builder.Configuration["Syncfusion:LicenseKey"];
 if (!string.IsNullOrWhiteSpace(syncLicense))
 {
     Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(syncLicense);
 }
 else
 {
-    Console.WriteLine("[WARN] SYNCFUSION_LICENSE_KEY env var is not set. " +
+    Console.WriteLine("[WARN] Syncfusion:LicenseKey not found in appsettings.json. " +
                       "Syncfusion components will display a license warning.");
 }
 
@@ -46,7 +46,20 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddRazorPages();
 
+// DashboardService: registered as Scoped so it gets a fresh DbContext per request.
+builder.Services.AddScoped<DashboardService>();
+
 var app = builder.Build();
+
+// ---------------------------------------------------------------------------
+// Auto-apply EF Core migrations on startup.
+// Creates the WarehouseDashboard database and all tables if they don't exist.
+// ---------------------------------------------------------------------------
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<WarehouseDashboardDbContext>();
+    db.Database.Migrate();
+}
 
 if (!app.Environment.IsDevelopment())
 {

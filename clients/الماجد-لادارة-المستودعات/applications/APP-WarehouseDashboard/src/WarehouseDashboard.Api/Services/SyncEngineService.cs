@@ -97,6 +97,16 @@ public class SyncEngineService : BackgroundService
         _load = load;
         _configuration = configuration;
         _logger = logger;
+
+        // Load table mappings from configuration (appsettings.json "TableMappings" section).
+        var mappings = _configuration.GetSection("TableMappings").Get<List<TableMapping>>();
+        if (mappings is { Count: > 0 })
+        {
+            _mappings.AddRange(mappings);
+        }
+
+        _logger.LogInformation(
+            "SyncEngineService initialized. {Count} mapping(s) loaded from configuration.", _mappings.Count);
     }
 
     /// <summary>
@@ -186,6 +196,25 @@ public class SyncEngineService : BackgroundService
 
             // Success: record completion time + totals.
             SetStatus(running: false, status: "Success", lastSyncTime: DateTime.UtcNow, recordCount: totalRows);
+
+            // Persist the sync timestamp so the dashboard "last sync" indicator is current.
+            // Wrapped in try/catch: a failure here must not invalidate a successful data load.
+            try
+            {
+                var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+                if (!string.IsNullOrWhiteSpace(connectionString))
+                {
+                    await using var conn = new SqlConnection(connectionString);
+                    await conn.OpenAsync(ct);
+                    await using var cmd = conn.CreateCommand();
+                    cmd.CommandText = "UPDATE SyncSettings SET LastSyncTimestamp = GETUTCDATE() WHERE Id = 1";
+                    await cmd.ExecuteNonQueryAsync(ct);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Sync completed successfully but failed to update LastSyncTimestamp in SyncSettings.");
+            }
         }
         catch (OperationCanceledException)
         {

@@ -1,7 +1,7 @@
 # TASK_REGISTRY.md — WarehouseDashboard
 
 > **Purpose:** Central registry of all TASK-IDs created during the project lifecycle.
-> **Last Updated:** 2026-07-13 (Phase 6 — TASK-COD-001 ✅ PASS, TASK-COD-003 🔵 In Progress, TASK-COD-002 🟡 Approved)
+> **Last Updated:** 2026-07-13 (Phase 6 — B1-B5 complete, TASK-COD-FIX-001 ✅ Accepted)
 
 ---
 
@@ -48,7 +48,17 @@
 | TASK-COD-009 | DashboardCards CRUD (List + Editor) | engineering-agent | ✅ Accepted (build PASS) | B4 | 2026-07-13 |
 | TASK-COD-010 | Query Tester + Drill Down Config | engineering-agent | ✅ Accepted (build PASS) | B4 | 2026-07-13 |
 | TASK-COD-011 | Dashboard Main Page (Grid of Cards) | engineering-agent | 🔵 In Progress | B5 | 2026-07-13 |
-| TASK-COD-013 | Sync Status Bar + Manual Refresh | engineering-agent | 🔵 In Progress | B5 | 2026-07-13 |
+| TASK-COD-013 | Sync Status Bar + Manual Refresh | engineering-agent | ✅ Accepted (build PASS) | B5 | 2026-07-13 |
+| TASK-COD-012 | Drill Down Pages | engineering-agent | ✅ Accepted (build PASS) | B5 | 2026-07-13 |
+| TASK-COD-014 | Filtering + Search | engineering-agent | ✅ Accepted (build PASS) | B5 | 2026-07-13 |
+| TASK-COD-015 | Skeleton Loading / Shimmer | ui-designer | ✅ Covered by B5 (011/012/013) | B6 | 2026-07-13 |
+| TASK-COD-016 | Empty States + Error States | ui-designer | ✅ Covered by B5 (011/012/013) | B6 | 2026-07-13 |
+| TASK-COD-017 | Toast + Micro-animations | ui-designer | ✅ Covered by B5 (011/012/013/014) | B6 | 2026-07-13 |
+| TASK-COD-018 | Connection Status Indicator | ui-designer | ✅ Covered by B5 (013) | B6 | 2026-07-13 |
+| TASK-COD-019 | IIS Setup + Environment Config | engineering-agent | ⏳ Pending (B7) | B7 | 2026-07-13 |
+| TASK-COD-020 | Syncfusion License + Scheduled Sync | engineering-agent | ⏳ Pending (B7) | B7 | 2026-07-13 |
+| TASK-COD-021 | UAT + Deployment Testing | engineering-agent + Tera | ⏳ Pending (B7) | B7 | 2026-07-13 |
+| TASK-COD-FIX-001 | Critical & Important Bug Fixes (self-audit) | engineering-agent | ✅ Accepted (build PASS, 11/11 AC) | FIX | 2026-07-13 |
 
 ---
 

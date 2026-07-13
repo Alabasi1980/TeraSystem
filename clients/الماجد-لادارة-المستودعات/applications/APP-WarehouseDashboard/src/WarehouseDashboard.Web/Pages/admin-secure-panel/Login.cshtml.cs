@@ -22,11 +22,13 @@ namespace WarehouseDashboard.Web.Pages.AdminSecurePanel;
 public class LoginModel : PageModel
 {
     private readonly WarehouseDashboardDbContext _db;
+    private readonly ILogger<LoginModel> _logger;
     private const string SessionKey = "AdminAuthenticated";
 
-    public LoginModel(WarehouseDashboardDbContext db)
+    public LoginModel(WarehouseDashboardDbContext db, ILogger<LoginModel> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
     [BindProperty]
@@ -81,7 +83,7 @@ public class LoginModel : PageModel
         catch (Exception ex)
         {
             // Never leak internals to the client; log server-side only.
-            Console.WriteLine($"[ERROR] Admin login failed: {ex.Message}");
+            _logger.LogError(ex, "Admin login failed.");
             ErrorMessage = "تعذر الاتصال بقاعدة البيانات. يرجى المحاولة لاحقاً.";
             return Page();
         }

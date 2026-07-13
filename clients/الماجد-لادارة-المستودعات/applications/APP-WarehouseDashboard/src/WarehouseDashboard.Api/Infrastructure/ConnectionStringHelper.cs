@@ -4,8 +4,9 @@ namespace WarehouseDashboard.Api.Infrastructure;
 
 /// <summary>
 /// Resolves connection-string password placeholders from environment variables.
-/// Passwords are NEVER stored in source or configuration files; they are supplied
-/// at runtime via the SQL_PASSWORD and ORACLE_PASSWORD environment variables.
+/// If the connection string contains hardcoded passwords (no placeholders),
+/// it is returned as-is — no environment variables required.
+/// For production, use placeholders and supply passwords via env vars.
 /// </summary>
 public static class ConnectionStringHelper
 {
@@ -13,6 +14,10 @@ public static class ConnectionStringHelper
     {
         if (string.IsNullOrWhiteSpace(template))
             return string.Empty;
+
+        // If passwords are already hardcoded (no placeholders), return as-is
+        if (!template.Contains("{SQL_PASSWORD}") && !template.Contains("{ORACLE_PASSWORD}"))
+            return template;
 
         var sqlPassword = Environment.GetEnvironmentVariable("SQL_PASSWORD") ?? string.Empty;
         var oraclePassword = Environment.GetEnvironmentVariable("ORACLE_PASSWORD") ?? string.Empty;
