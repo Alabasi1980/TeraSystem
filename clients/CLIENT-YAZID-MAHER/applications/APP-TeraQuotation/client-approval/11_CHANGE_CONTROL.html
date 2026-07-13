@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeraQuotation — إدارة التغيير</title>
+    <style>
+        :root { --page-width: 210mm; --page-height: 297mm; --page-padding-x: 16mm; --header-height: 34mm; --header-gap: 7mm; --footer-height: 20mm; --footer-gap: 7mm; --ink: #17233c; --muted: #5c6784; --line: #dfe6f2; --soft: #f8faff; --screen-bg: #eef2f7; --screen-shadow: 0 18px 44px rgba(15,23,42,0.14); }
+        @page { size: A4; margin: 0; } * { box-sizing: border-box; } html, body { margin: 0; padding: 0; }
+        body { background: var(--screen-bg); color: var(--ink); font-family: "Segoe UI", Tahoma, Arial, sans-serif; line-height: 1.75; }
+        .print-page { width: var(--page-width); min-height: var(--page-height); margin: 16px auto; background: #fff; box-shadow: var(--screen-shadow); overflow: hidden; }
+        .print-table { width: 100%; min-height: var(--page-height); border-collapse: collapse; table-layout: fixed; }
+        .print-table thead, .print-table tfoot { background: #fff; }
+        .print-table thead td, .print-table tfoot td, .print-table tbody td { padding: 0; vertical-align: top; }
+        .page-header, .page-footer { padding-right: var(--page-padding-x); padding-left: var(--page-padding-x); background: #fff; }
+        .page-header { height: calc(var(--header-height) + var(--header-gap)); padding-top: 2mm; padding-bottom: var(--header-gap); }
+        .page-footer { height: calc(var(--footer-height) + var(--footer-gap)); padding-top: var(--footer-gap); padding-bottom: 2mm; }
+        .page-header img, .page-footer img { width: 100%; display: block; object-fit: contain; }
+        .document { padding: 0 var(--page-padding-x); }
+        .doc__top { display: flex; justify-content: space-between; gap: 6mm; font-size: 10pt; color: var(--muted); }
+        .doc__top strong { color: var(--ink); }
+        .doc__chip { display: flex; width: fit-content; justify-content: center; margin: 3mm auto 0; padding: 1.4mm 6mm; border: 1px solid var(--line); border-radius: 999px; background: var(--soft); font-size: 9.5pt; font-weight: 700; }
+        .doc__subject { margin: 3.5mm 0 0; padding-bottom: 2.2mm; border-bottom: 1px solid #e7edf7; font-size: 11.5pt; font-weight: 700; }
+        .doc__body { margin-top: 2mm; font-size: 10.7pt; }
+        .doc__body h3 { margin: 5mm 0 2mm; font-size: 10.8pt; break-after: avoid-page; page-break-after: avoid; }
+        table.data { width: 100%; border-collapse: collapse; margin: 3mm 0; font-size: 9.5pt; }
+        table.data th { background: var(--ink); color: #fff; padding: 1.2mm 1.5mm; text-align: center; }
+        table.data td { border: 1px solid var(--line); padding: 1.2mm 1.5mm; text-align: center; }
+        table.data tr:nth-child(even) td { background: var(--soft); }
+        .badge-green { background: #d4edda; color: #155724; display: inline-block; padding: 0.5mm 3mm; border-radius: 4px; font-size: 9pt; font-weight: 700; }
+        .type-tag { display: inline-block; padding: 0.3mm 2mm; border-radius: 3px; font-size: 8pt; font-weight: 700; }
+        .type-clarify { background: #cce5ff; color: #004085; }
+        .type-minor { background: #d4edda; color: #155724; }
+        .type-enhance { background: #fff3cd; color: #856404; }
+        .type-new { background: #f8d7da; color: #721c24; }
+        .type-phase2 { background: #e2e3e5; color: #383d41; }
+        .type-reject { background: #f5c6cb; color: #721c24; }
+        .no-break { break-inside: avoid-page; page-break-inside: avoid; }
+        @media print {
+            body { background: #fff; }
+            .print-page { width: 100%; min-height: 0; margin: 0; box-shadow: none; overflow: visible; }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page"><table class="print-table" role="presentation">
+        <thead><tr><td><header class="page-header"><img src="../client-assets/header.png" alt="Teranoo header"></header></td></tr></thead>
+        <tfoot><tr><td><footer class="page-footer"><img src="../client-assets/footer.png" alt="Teranoo footer"></footer></td></tr></tfoot>
+        <tbody><tr><td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/13</div>
+                <div><strong>الرقم:</strong> TQ-CHG-001</div>
+            </div>
+            <div class="doc__chip">إدارة التغيير</div>
+            <p class="doc__subject">الموضوع: إدارة التغيير — TeraQuotation</p>
+
+            <div class="doc__body">
+                <h3>سياسة إدارة التغيير</h3>
+                <p>أي طلب تغيير خارج نطاق العمل المتفق عليه يجب أن يُسجل ويُعتمد قبل التنفيذ.</p>
+
+                <h3>أنواع التغيير</h3>
+                <table class="data">
+                    <tr><th>النوع</th><th>المعنى</th><th>الإجراء</th></tr>
+                    <tr><td><span class="type-tag type-clarify">توضيح</span></td><td>شرح بند موجود دون تغيير النطاق</td><td>يُوثق ويُنفّذ</td></tr>
+                    <tr><td><span class="type-tag type-minor">تعديل بسيط</span></td><td>تغيير صغير ضمن النطاق المتفق عليه</td><td>يُنفّذ بعد الموافقة</td></tr>
+                    <tr><td><span class="type-tag type-enhance">تحسين</span></td><td>إضافة على ميزة موجودة تزيد الجهد</td><td>يحتاج موافقة</td></tr>
+                    <tr><td><span class="type-tag type-new">نطاق جديد</span></td><td>إضافة ميزة جديدة خارج النطاق الحالي</td><td>يحتاج موافقة + تسعير</td></tr>
+                    <tr><td><span class="type-tag type-phase2">مرحلة ثانية</span></td><td>مفيدة لكن غير ضرورية حالياً</td><td>تُؤجّل</td></tr>
+                    <tr><td><span class="type-tag type-reject">مرفوض</span></td><td>يتعارض مع هدف المشروع</td><td>لا يُنفّذ</td></tr>
+                </table>
+
+                <h3>سجل التغيير</h3>
+                <table class="data">
+                    <tr><th>#</th><th>التاريخ</th><th>الطلب</th><th>النوع</th><th>القرار</th></tr>
+                    <tr><td colspan="5" style="color:var(--muted);font-style:italic;">لا توجد طلبات تغيير حتى الآن</td></tr>
+                </table>
+
+                <p><span class="badge-green">✅ معتمد — 2026/07/13</span></p>
+            </div>
+        </section>
+        </td></tr></tbody>
+    </table></main>
+</body>
+</html>

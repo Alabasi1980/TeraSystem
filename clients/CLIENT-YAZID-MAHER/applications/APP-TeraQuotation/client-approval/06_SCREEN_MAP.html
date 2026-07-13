@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeraQuotation — خريطة الشاشات</title>
+    <style>
+        :root { --page-width: 210mm; --page-height: 297mm; --page-padding-x: 16mm; --header-height: 34mm; --header-gap: 7mm; --footer-height: 20mm; --footer-gap: 7mm; --ink: #17233c; --muted: #5c6784; --line: #dfe6f2; --soft: #f8faff; --screen-bg: #eef2f7; --screen-shadow: 0 18px 44px rgba(15,23,42,0.14); }
+        @page { size: A4; margin: 0; } * { box-sizing: border-box; } html, body { margin: 0; padding: 0; }
+        body { background: var(--screen-bg); color: var(--ink); font-family: "Segoe UI", Tahoma, Arial, sans-serif; line-height: 1.75; }
+        .print-page { width: var(--page-width); min-height: var(--page-height); margin: 16px auto; background: #fff; box-shadow: var(--screen-shadow); overflow: hidden; }
+        .print-table { width: 100%; min-height: var(--page-height); border-collapse: collapse; table-layout: fixed; }
+        .print-table thead, .print-table tfoot { background: #fff; }
+        .print-table thead td, .print-table tfoot td, .print-table tbody td { padding: 0; vertical-align: top; }
+        .page-header, .page-footer { padding-right: var(--page-padding-x); padding-left: var(--page-padding-x); background: #fff; }
+        .page-header { height: calc(var(--header-height) + var(--header-gap)); padding-top: 2mm; padding-bottom: var(--header-gap); }
+        .page-footer { height: calc(var(--footer-height) + var(--footer-gap)); padding-top: var(--footer-gap); padding-bottom: 2mm; }
+        .page-header img, .page-footer img { width: 100%; display: block; object-fit: contain; }
+        .document { padding: 0 var(--page-padding-x); }
+        .doc__top { display: flex; justify-content: space-between; gap: 6mm; font-size: 10pt; color: var(--muted); }
+        .doc__top strong { color: var(--ink); }
+        .doc__chip { display: flex; width: fit-content; justify-content: center; margin: 3mm auto 0; padding: 1.4mm 6mm; border: 1px solid var(--line); border-radius: 999px; background: var(--soft); font-size: 9.5pt; font-weight: 700; }
+        .doc__subject { margin: 3.5mm 0 0; padding-bottom: 2.2mm; border-bottom: 1px solid #e7edf7; font-size: 11.5pt; font-weight: 700; }
+        .doc__body { margin-top: 2mm; font-size: 10.7pt; }
+        .doc__body h3 { margin: 5mm 0 2mm; font-size: 10.8pt; break-after: avoid-page; page-break-after: avoid; }
+        .screen-box { border: 2px solid var(--ink); border-radius: 3mm; padding: 2mm 3mm; margin: 2mm 0; background: var(--soft); font-size: 9.5pt; }
+        .screen-box .title { font-weight: 700; font-size: 10pt; margin-bottom: 1mm; }
+        .nav-table { width: 100%; border-collapse: collapse; margin: 3mm 0; font-size: 9.5pt; }
+        .nav-table th { background: var(--ink); color: #fff; padding: 1.2mm 2mm; text-align: center; }
+        .nav-table td { border: 1px solid var(--line); padding: 1.2mm 2mm; text-align: center; }
+        .badge-green { background: #d4edda; color: #155724; display: inline-block; padding: 0.5mm 3mm; border-radius: 4px; font-size: 9pt; font-weight: 700; }
+        .no-break { break-inside: avoid-page; page-break-inside: avoid; }
+        @media print {
+            body { background: #fff; }
+            .print-page { width: 100%; min-height: 0; margin: 0; box-shadow: none; overflow: visible; }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page"><table class="print-table" role="presentation">
+        <thead><tr><td><header class="page-header"><img src="../client-assets/header.png" alt="Teranoo header"></header></td></tr></thead>
+        <tfoot><tr><td><footer class="page-footer"><img src="../client-assets/footer.png" alt="Teranoo footer"></footer></td></tr></tfoot>
+        <tbody><tr><td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/13</div>
+                <div><strong>الرقم:</strong> TQ-SCM-001</div>
+            </div>
+            <div class="doc__chip">خريطة الشاشات</div>
+            <p class="doc__subject">الموضوع: خريطة الشاشات — TeraQuotation</p>
+
+            <div class="doc__body">
+                <h3>الشاشات الرئيسية (5 شاشات)</h3>
+
+                <div class="screen-box no-break">
+                    <div class="title">🔐 شاشة الدخول — Login Screen</div>
+                    <div>إدخال كلمة المرور للوصول إلى التطبيق. مستخدم واحد.</div>
+                </div>
+                <div class="screen-box no-break">
+                    <div class="title">⚙️ شاشة الإعدادات — Settings</div>
+                    <div>4 أقسام: الموردين (إضافة/تعديل/حذف)، القطع (كتالوج + بحث)، التوقيعات (إنشاء)، الترويسة (شعار + بيانات)</div>
+                </div>
+                <div class="screen-box no-break">
+                    <div class="title">📝 شاشة عرض السعر — Quotation Form</div>
+                    <div>إنشاء/تعديل عرض سعر: تسلسل تلقائي، تاريخ، وصف، جدول بقطعة + 3 موردين (نوع + سعر). حفظ/طباعة/PDF/Outlook.</div>
+                </div>
+                <div class="screen-box no-break">
+                    <div class="title">📂 شاشة قائمة العروض — Quotation List</div>
+                    <div>عرض جميع العروض المحفوظة مع بحث وتصفية. فتح/تعديل/طباعة.</div>
+                </div>
+                <div class="screen-box no-break">
+                    <div class="title">📊 شاشة التقارير — Reports</div>
+                    <div>4 تقارير: مقارنة أسعار، أكثر القطع طلباً، سجل العروض، إجمالي شهري.</div>
+                </div>
+
+                <h3>الملاحة بين الشاشات</h3>
+                <table class="nav-table">
+                    <tr><th>من</th><th>إلى</th><th>الإجراء</th></tr>
+                    <tr><td>🔐 شاشة الدخول</td><td>جميع الشاشات</td><td>إدخال كلمة المرور الصحيحة</td></tr>
+                    <tr><td>⚙️ الإعدادات</td><td>🔙 أي شاشة</td><td>حفظ الإعدادات ← العودة</td></tr>
+                    <tr><td>📝 عرض سعر</td><td>📂 قائمة العروض</td><td>حفظ ← قائمة</td></tr>
+                    <tr><td>📂 قائمة العروض</td><td>📝 عرض سعر</td><td>فتح عرض موجود</td></tr>
+                    <tr><td>أي شاشة</td><td>📊 التقارير</td><td>من شريط القائمة الرئيسي</td></tr>
+                </table>
+
+                <p><span class="badge-green">✅ معتمد — 2026/07/13</span></p>
+            </div>
+        </section>
+        </td></tr></tbody>
+    </table></main>
+</body>
+</html>

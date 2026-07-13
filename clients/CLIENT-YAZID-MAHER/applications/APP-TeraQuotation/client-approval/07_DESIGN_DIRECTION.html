@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeraQuotation — اتجاه التصميم</title>
+    <style>
+        :root { --page-width: 210mm; --page-height: 297mm; --page-padding-x: 16mm; --header-height: 34mm; --header-gap: 7mm; --footer-height: 20mm; --footer-gap: 7mm; --ink: #17233c; --muted: #5c6784; --line: #dfe6f2; --soft: #f8faff; --screen-bg: #eef2f7; --screen-shadow: 0 18px 44px rgba(15,23,42,0.14); }
+        @page { size: A4; margin: 0; } * { box-sizing: border-box; } html, body { margin: 0; padding: 0; }
+        body { background: var(--screen-bg); color: var(--ink); font-family: "Segoe UI", Tahoma, Arial, sans-serif; line-height: 1.75; }
+        .print-page { width: var(--page-width); min-height: var(--page-height); margin: 16px auto; background: #fff; box-shadow: var(--screen-shadow); overflow: hidden; }
+        .print-table { width: 100%; min-height: var(--page-height); border-collapse: collapse; table-layout: fixed; }
+        .print-table thead, .print-table tfoot { background: #fff; }
+        .print-table thead td, .print-table tfoot td, .print-table tbody td { padding: 0; vertical-align: top; }
+        .page-header, .page-footer { padding-right: var(--page-padding-x); padding-left: var(--page-padding-x); background: #fff; }
+        .page-header { height: calc(var(--header-height) + var(--header-gap)); padding-top: 2mm; padding-bottom: var(--header-gap); }
+        .page-footer { height: calc(var(--footer-height) + var(--footer-gap)); padding-top: var(--footer-gap); padding-bottom: 2mm; }
+        .page-header img, .page-footer img { width: 100%; display: block; object-fit: contain; }
+        .document { padding: 0 var(--page-padding-x); }
+        .doc__top { display: flex; justify-content: space-between; gap: 6mm; font-size: 10pt; color: var(--muted); }
+        .doc__top strong { color: var(--ink); }
+        .doc__chip { display: flex; width: fit-content; justify-content: center; margin: 3mm auto 0; padding: 1.4mm 6mm; border: 1px solid var(--line); border-radius: 999px; background: var(--soft); font-size: 9.5pt; font-weight: 700; }
+        .doc__subject { margin: 3.5mm 0 0; padding-bottom: 2.2mm; border-bottom: 1px solid #e7edf7; font-size: 11.5pt; font-weight: 700; }
+        .doc__body { margin-top: 2mm; font-size: 10.7pt; }
+        .doc__body h3 { margin: 5mm 0 2mm; font-size: 10.8pt; break-after: avoid-page; page-break-after: avoid; }
+        table.data { width: 100%; border-collapse: collapse; margin: 3mm 0; font-size: 10pt; }
+        table.data th { background: var(--ink); color: #fff; padding: 1.5mm 2mm; text-align: center; }
+        table.data td { border: 1px solid var(--line); padding: 1.5mm 2mm; text-align: center; }
+        .color-swatch { display: inline-block; width: 8mm; height: 8mm; border-radius: 2mm; vertical-align: middle; margin-left: 2mm; border: 1px solid var(--line); }
+        .header-preview { background: #1a2a4a; color: #fff; padding: 3mm 4mm; border-radius: 2mm; margin: 2mm 0; font-size: 10pt; }
+        .header-preview .right { text-align: right; }
+        .badge-green { background: #d4edda; color: #155724; display: inline-block; padding: 0.5mm 3mm; border-radius: 4px; font-size: 9pt; font-weight: 700; }
+        .no-break { break-inside: avoid-page; page-break-inside: avoid; }
+        @media print {
+            body { background: #fff; }
+            .print-page { width: 100%; min-height: 0; margin: 0; box-shadow: none; overflow: visible; }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page"><table class="print-table" role="presentation">
+        <thead><tr><td><header class="page-header"><img src="../client-assets/header.png" alt="Teranoo header"></header></td></tr></thead>
+        <tfoot><tr><td><footer class="page-footer"><img src="../client-assets/footer.png" alt="Teranoo footer"></footer></td></tr></tfoot>
+        <tbody><tr><td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/13</div>
+                <div><strong>الرقم:</strong> TQ-DSN-001</div>
+            </div>
+            <div class="doc__chip">اتجاه التصميم</div>
+            <p class="doc__subject">الموضوع: اتجاه التصميم المعتمد — TeraQuotation</p>
+
+            <div class="doc__body">
+                <h3>1. الألوان</h3>
+                <table class="data">
+                    <tr><th>اللون</th><th>الاستخدام</th><th>الرمز</th></tr>
+                    <tr><td><span class="color-swatch" style="background:#1a2a4a;"></span> أزرق داكن</td><td>اللون الرئيسي — الهوية</td><td>#1a2a4a</td></tr>
+                    <tr><td><span class="color-swatch" style="background:#ffffff;border-color:#999;"></span> أبيض</td><td>الخلفيات</td><td>#ffffff</td></tr>
+                    <tr><td><span class="color-swatch" style="background:#f0f2f5;"></span> رمادي فاتح</td><td>خلفيات الأقسام الثانوية</td><td>#f0f2f5</td></tr>
+                    <tr><td><span class="color-swatch" style="background:#333333;"></span> رمادي غامق</td><td>النصوص والعناوين</td><td>#333333</td></tr>
+                    <tr><td><span class="color-swatch" style="background:#3b82f6;"></span> أزرق فاتح</td><td>الأزرار والروابط</td><td>#3b82f6</td></tr>
+                </table>
+
+                <h3>2. الترويسة (Header)</h3>
+                <p>تصميم ترويسة احترافية تحتوي على: الشعار، اسم العميل وبياناته.</p>
+                <div class="header-preview no-break">
+                    <div style="display:flex;align-items:center;gap:4mm;">
+                        <div style="background:#fff;width:20mm;height:20mm;border-radius:2mm;display:flex;align-items:center;justify-content:center;color:#1a2a4a;font-weight:700;font-size:8pt;">[الشعار]</div>
+                        <div><strong>يزيد ماهر</strong><br>صيانة الآليات<br>هاتف: ...............<br>بريد: ...............</div>
+                    </div>
+                </div>
+
+                <h3>3. تنسيق الطباعة (A4)</h3>
+                <table class="data">
+                    <tr><th>العنصر</th><th>المواصفة</th></tr>
+                    <tr><td>المقاس</td><td>A4 (210mm × 297mm)</td></tr>
+                    <tr><td>الهوامش</td><td>16mm يمين ويسار</td></tr>
+                    <tr><td>الخط</td><td>Segoe UI / Tahoma</td></tr>
+                    <tr><td>حجم الخط</td><td>10pt – 11pt للنصوص</td></tr>
+                    <tr><td>الترويسة</td><td>ثابتة في أعلى كل صفحة</td></tr>
+                    <tr><td>التذييل</td><td>في أسفل كل صفحة</td></tr>
+                </table>
+
+                <h3>4. نمط الواجهة</h3>
+                <ul>
+                    <li>تصميم أنيق بسيط واحترافي</li>
+                    <li>أزرار بألوان متناسقة</li>
+                    <li>جداول واضحة وسهلة القراءة</li>
+                    <li>حقول إدخال مريحة للعين</li>
+                </ul>
+
+                <h3>5. المواد المطلوبة من العميل</h3>
+                <table class="data">
+                    <tr><th>المادة</th><th>الحالة</th></tr>
+                    <tr><td>الشعار</td><td>موجود — سيُسلّم</td></tr>
+                    <tr><td>الألوان المفضلة</td><td>✅ أزرق داكن — تم التأكيد</td></tr>
+                    <tr><td>الخطوط</td><td>لا يوجد تفضيل — نستخدم Segoe UI</td></tr>
+                </table>
+
+                <p><span class="badge-green">✅ معتمد — 2026/07/13</span></p>
+            </div>
+        </section>
+        </td></tr></tbody>
+    </table></main>
+</body>
+</html>
