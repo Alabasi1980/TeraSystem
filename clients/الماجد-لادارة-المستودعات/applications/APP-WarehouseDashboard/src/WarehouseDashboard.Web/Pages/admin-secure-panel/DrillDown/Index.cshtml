@@ -1,0 +1,418 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.DrillDownModel
+@{
+    ViewData["Title"] = "تكوين التنقّل العميق";
+    Layout = "_Layout";
+}
+@Html.AntiForgeryToken()
+
+<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.2.5/styles/bootstrap5.css" />
+
+<style>
+    :root {
+        --c-primary: #1F4E79;
+        --c-primary-strong: #163A5A;
+        --c-secondary: #2E6DA4;
+        --c-accent: #0A2540;
+        --c-accent-soft: #8FBCDE;
+        --c-bg: #F3F7FB;
+        --c-surface: #FFFFFF;
+        --c-surface-muted: #EAF1F8;
+        --c-border: #D4E2F0;
+        --c-text: #102A43;
+        --c-text-muted: #5B7A99;
+        --c-success: #1E9E6A;
+        --c-warning: #E0A106;
+        --c-error: #D64545;
+        --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+        --shadow-sm: 0 1px 2px rgba(10,37,64,0.06);
+        --shadow-md: 0 4px 12px rgba(10,37,64,0.08);
+        --shadow-lg: 0 8px 24px rgba(10,37,64,0.12);
+        --duration-fast: 120ms; --duration-normal: 240ms;
+        --easing: cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .wd-page { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    .wd-page__header { margin-bottom: 24px; animation: wd-fade-in var(--duration-normal) var(--easing); }
+    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
+    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
+    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
+
+    .wd-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        transition: box-shadow var(--duration-normal) var(--easing);
+        animation: wd-fade-in var(--duration-normal) var(--easing);
+    }
+    .wd-card:hover { box-shadow: var(--shadow-lg); }
+    .wd-card__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+    .wd-card__title { font-size: 18px; font-weight: 600; color: var(--c-text); }
+    .wd-card__body { color: var(--c-text); }
+
+    .wd-label { display: block; font-size: 13px; font-weight: 600; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-input, .wd-select, .wd-textarea {
+        width: 100%; font-family: "Cairo", "Tajawal", Tahoma, sans-serif;
+        font-size: 14px; color: var(--c-text);
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        padding: 10px 12px; background: var(--c-surface);
+        transition: border-color var(--duration-fast) var(--easing), box-shadow var(--duration-fast) var(--easing);
+    }
+    .wd-textarea { min-height: 120px; resize: vertical; direction: ltr; text-align: start; font-family: "Courier New", monospace; }
+    .wd-input:focus, .wd-select:focus, .wd-textarea:focus {
+        outline: none; border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+    .wd-field { margin-bottom: 14px; }
+
+    .wd-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .wd-btn {
+        font-size: 14px; font-weight: 600; color: #fff; cursor: pointer;
+        background: var(--c-primary); border: 1px solid var(--c-primary);
+        border-radius: var(--radius-md); padding: 10px 20px;
+        transition: background var(--duration-fast) var(--easing), transform var(--duration-fast) var(--easing);
+    }
+    .wd-btn:hover { background: var(--c-primary-strong); }
+    .wd-btn:active { transform: translateY(1px); }
+    .wd-btn--sm { padding: 6px 12px; font-size: 13px; }
+    .wd-btn--ghost { background: transparent; color: var(--c-primary); border-color: var(--c-border); }
+    .wd-btn--ghost:hover { background: var(--c-surface-muted); }
+    .wd-btn--danger { background: var(--c-error); border-color: var(--c-error); }
+    .wd-btn--danger:hover { background: #B53737; }
+
+    .wd-grid { margin-top: 8px; min-height: 80px; }
+    .e-grid .e-headercell { background: var(--c-surface-muted); color: var(--c-text); }
+    .e-grid .e-rowcell { color: var(--c-text); }
+
+    .wd-empty {
+        text-align: center; color: var(--c-text-muted);
+        padding: 40px 16px; border: 1px dashed var(--c-border); border-radius: var(--radius-md);
+        background: var(--c-surface-muted);
+    }
+    .wd-empty__icon { font-size: 28px; display: block; margin-bottom: 8px; }
+
+    .wd-skeleton { padding: 12px; }
+    .wd-skeleton__row {
+        height: 18px; margin-bottom: 12px; border-radius: 6px;
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, #dbe7f3 37%, var(--c-surface-muted) 63%);
+        background-size: 400% 100%;
+        animation: wd-shimmer 1.2s ease-in-out infinite;
+    }
+    @@keyframes wd-shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+    .wd-form-panel {
+        position: fixed; inset: 0; z-index: 1000;
+        background: rgba(10,37,64,0.45);
+        display: flex; align-items: center; justify-content: center;
+        padding: 16px; animation: wd-fade-in var(--duration-fast) var(--easing);
+    }
+    .wd-form-panel__inner {
+        width: min(540px, 94vw); max-height: 92vh; overflow: auto;
+        background: var(--c-surface); border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+        padding: 20px 24px; animation: wd-slide-up var(--duration-normal) var(--easing);
+    }
+    .wd-form-panel__inner h3 { font-size: 18px; font-weight: 700; color: var(--c-text); margin: 0 0 16px; }
+    @@keyframes wd-slide-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @@keyframes wd-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .wd-toast-container {
+        position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
+        display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+    }
+    .wd-toast {
+        min-width: 240px; max-width: 360px; padding: 12px 16px; border-radius: var(--radius-md);
+        color: #fff; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 8px;
+        animation: wd-toast-in var(--duration-normal) var(--easing);
+        font-size: 14px;
+    }
+    .wd-toast--success { background: var(--c-success); }
+    .wd-toast--error { background: var(--c-error); }
+    .wd-toast--warning { background: var(--c-warning); color: #3a2c00; }
+    .wd-toast--info { background: var(--c-secondary); }
+    @@keyframes wd-toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    [hidden] { display: none !important; }
+</style>
+
+<div class="wd-page">
+    <header class="wd-page__header">
+        <div class="wd-breadcrumb">
+            <a href="/admin-secure-panel/Index">لوحة الإدارة</a> &laquo; تكوين التنقّل العميق
+        </div>
+        <h2 class="wd-page__title">تكوين التنقّل العميق</h2>
+        <p class="wd-page__subtitle">إدارة مستويات التنقّل العميق لكل بطاقة (الاستعلام ونوع الرسم لكل مستوى).</p>
+    </header>
+
+    <section class="wd-card">
+        <div class="wd-card__header">
+            <span class="wd-card__title">البطاقة</span>
+            <button class="wd-btn wd-btn--sm" onclick="openForm()">+ إضافة مستوى</button>
+        </div>
+        <div class="wd-card__body">
+            <label class="wd-label" for="cardSelect">اختر بطاقة لتكوين مستوياتها</label>
+            <select id="cardSelect" class="wd-select" onchange="onCardChange()">
+                <option value="">— اختر بطاقة —</option>
+                @foreach (var card in Model.Cards)
+                {
+                    <option value="@card.Id">@card.Title</option>
+                }
+            </select>
+        </div>
+    </section>
+
+    <section class="wd-card">
+        <div class="wd-card__header">
+            <span class="wd-card__title">مستويات التنقّل العميق</span>
+        </div>
+        <div class="wd-card__body">
+            <div id="levelsSkeleton" class="wd-skeleton" hidden>
+                @for (int i = 0; i < 5; i++) { <div class="wd-skeleton__row"></div> }
+            </div>
+            <div id="levelsEmpty" class="wd-empty">
+                <span class="wd-empty__icon">&#128202;</span>
+                اختر بطاقة لعرض مستويات التنقّل العميق الخاصة بها.
+            </div>
+            <div id="levelsGrid" class="wd-grid"></div>
+        </div>
+    </section>
+</div>
+
+<div id="formPanel" class="wd-form-panel" hidden>
+    <div class="wd-form-panel__inner">
+        <h3 id="formTitle">إضافة مستوى تنقّل عميق</h3>
+        <div class="wd-field">
+            <label class="wd-label" for="levelInput">المستوى (رقم ≥ 1)</label>
+            <input id="levelInput" class="wd-input" type="number" min="1" value="1" />
+        </div>
+        <div class="wd-field">
+            <label class="wd-label" for="displayNameInput">اسم العرض</label>
+            <input id="displayNameInput" class="wd-input" type="text" placeholder="مثال: حسب المدينة" />
+        </div>
+        <div class="wd-field">
+            <label class="wd-label" for="chartTypeInput">نوع الرسم</label>
+            <select id="chartTypeInput" class="wd-select">
+                <option value="Bar">Bar</option>
+                <option value="Line">Line</option>
+                <option value="Pie">Pie</option>
+                <option value="KPI">KPI</option>
+                <option value="Table">Table</option>
+                <option value="Gauge">Gauge</option>
+            </select>
+        </div>
+        <div class="wd-field">
+            <label class="wd-label" for="queryInput">استعلام SQL (قد يقبل معاملاً)</label>
+            <textarea id="queryInput" class="wd-textarea" placeholder="SELECT City, COUNT(*) AS Qty FROM ..."></textarea>
+        </div>
+        <div class="wd-actions">
+            <button class="wd-btn" onclick="saveLevel()">حفظ</button>
+            <button class="wd-btn wd-btn--ghost" onclick="closeForm()">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<div id="toastContainer" class="wd-toast-container"></div>
+
+<script src="https://cdn.syncfusion.com/ej2/27.2.5/dist/ej2.min.js"></script>
+<script>
+    let levelsGrid = null;
+    let currentLevels = [];
+    let editingId = null;
+    let selectedCardId = null;
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text ?? '';
+        return div.innerHTML;
+    }
+
+    function showToast(message, type) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'wd-toast wd-toast--' + (type || 'info');
+        const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠' : 'ℹ';
+        toast.innerHTML = '<span>' + icon + '</span><span>' + escapeHtml(message) + '</span>';
+        container.appendChild(toast);
+        setTimeout(function () {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(8px)';
+            setTimeout(function () { toast.remove(); }, 240);
+        }, 3500);
+    }
+
+    function showLevelsSkeleton(show) {
+        document.getElementById('levelsSkeleton').hidden = !show;
+        if (show) { showLevelsEmpty(false); destroyLevelsGrid(); }
+    }
+
+    function showLevelsEmpty(show) {
+        document.getElementById('levelsEmpty').hidden = !show;
+        if (show) { destroyLevelsGrid(); }
+    }
+
+    function destroyLevelsGrid() {
+        if (levelsGrid) { levelsGrid.destroy(); levelsGrid = null; }
+        document.getElementById('levelsGrid').innerHTML = '';
+    }
+
+    function renderLevels(levels) {
+        destroyLevelsGrid();
+        const container = document.getElementById('levelsGrid');
+        document.getElementById('levelsEmpty').hidden = true;
+
+        if (!levels || levels.length === 0) {
+            showLevelsEmpty(true);
+            return;
+        }
+
+        levelsGrid = new ej.grids.Grid({
+            dataSource: levels,
+            columns: [
+                { field: 'level', headerText: 'المستوى', width: 90, textAlign: 'Right' },
+                { field: 'displayName', headerText: 'الاسم', width: 200 },
+                { field: 'targetChartType', headerText: 'النوع', width: 120 },
+                { field: 'drillDownQuery', headerText: 'الاستعلام', width: 280, clipMode: 'EllipsisWithTooltip' },
+                {
+                    headerText: 'إجراءات', width: 170,
+                    template: function (data) {
+                        return '<button class="wd-btn wd-btn--sm" onclick="editLevel(' + data.id + ')">تعديل</button>' +
+                               ' <button class="wd-btn wd-btn--sm wd-btn--danger" onclick="deleteLevel(' + data.id + ')">حذف</button>';
+                    }
+                }
+            ],
+            allowPaging: true,
+            pageSize: 15,
+            gridLines: 'Horizontal'
+        });
+        levelsGrid.appendTo(container);
+    }
+
+    function onCardChange() {
+        selectedCardId = document.getElementById('cardSelect').value;
+        if (!selectedCardId) {
+            showLevelsEmpty(true);
+            destroyLevelsGrid();
+            currentLevels = [];
+            return;
+        }
+        loadLevels(selectedCardId);
+    }
+
+    async function loadLevels(cardId) {
+        showLevelsSkeleton(true);
+        try {
+            const resp = await fetch('?handler=Levels&cardId=' + encodeURIComponent(cardId));
+            const data = await resp.json();
+            document.getElementById('levelsSkeleton').hidden = true;
+
+            if (!data.success) {
+                showToast(data.errorMessage || 'تعذر تحميل المستويات.', 'error');
+                showLevelsEmpty(true);
+                return;
+            }
+
+            currentLevels = data.levels || [];
+            renderLevels(currentLevels);
+        } catch (err) {
+            document.getElementById('levelsSkeleton').hidden = true;
+            showToast('تعذر الاتصال بالخادم.', 'error');
+            showLevelsEmpty(true);
+        }
+    }
+
+    function openForm() {
+        if (!selectedCardId) {
+            showToast('الرجاء اختيار بطاقة أولاً.', 'warning');
+            return;
+        }
+        editingId = null;
+        document.getElementById('formTitle').textContent = 'إضافة مستوى تنقّل عميق';
+        document.getElementById('levelInput').value = '1';
+        document.getElementById('displayNameInput').value = '';
+        document.getElementById('chartTypeInput').value = 'Bar';
+        document.getElementById('queryInput').value = '';
+        document.getElementById('formPanel').hidden = false;
+    }
+
+    function closeForm() {
+        document.getElementById('formPanel').hidden = true;
+    }
+
+    function editLevel(id) {
+        const level = currentLevels.find(function (l) { return l.id === id; });
+        if (!level) { return; }
+        editingId = id;
+        document.getElementById('formTitle').textContent = 'تعديل مستوى تنقّل عميق';
+        document.getElementById('levelInput').value = level.level;
+        document.getElementById('displayNameInput').value = level.displayName;
+        document.getElementById('chartTypeInput').value = level.targetChartType;
+        document.getElementById('queryInput').value = level.drillDownQuery;
+        document.getElementById('formPanel').hidden = false;
+    }
+
+    async function deleteLevel(id) {
+        if (!confirm('هل تريد حذف هذا المستوى؟')) { return; }
+        try {
+            const token = document.querySelector('input[name=__RequestVerificationToken]').value;
+            const fd = new FormData();
+            fd.append('id', id);
+            const resp = await fetch('?handler=Delete', {
+                method: 'POST',
+                headers: { 'RequestVerificationToken': token },
+                body: fd
+            });
+            const data = await resp.json();
+            if (data.success) {
+                showToast('تم حذف المستوى.', 'success');
+                if (selectedCardId) { loadLevels(selectedCardId); }
+            } else {
+                showToast(data.errorMessage || 'تعذر الحذف.', 'error');
+            }
+        } catch (err) {
+            showToast('تعذر الاتصال بالخادم.', 'error');
+        }
+    }
+
+    async function saveLevel() {
+        const level = parseInt(document.getElementById('levelInput').value, 10);
+        const displayName = document.getElementById('displayNameInput').value.trim();
+        const targetChartType = document.getElementById('chartTypeInput').value;
+        const drillDownQuery = document.getElementById('queryInput').value;
+
+        if (!level || level < 1) { showToast('المستوى يجب أن يكون رقماً 1 أو أكثر.', 'warning'); return; }
+        if (!displayName) { showToast('الرجاء إدخال اسم العرض.', 'warning'); return; }
+        if (!drillDownQuery.trim()) { showToast('الرجاء إدخال استعلام SQL.', 'warning'); return; }
+
+        try {
+            const token = document.querySelector('input[name=__RequestVerificationToken]').value;
+            const fd = new FormData();
+            fd.append('parentCardId', selectedCardId);
+            fd.append('level', level);
+            fd.append('displayName', displayName);
+            fd.append('targetChartType', targetChartType);
+            fd.append('drillDownQuery', drillDownQuery);
+            if (editingId) { fd.append('id', editingId); }
+
+            const resp = await fetch('?handler=Save', {
+                method: 'POST',
+                headers: { 'RequestVerificationToken': token },
+                body: fd
+            });
+            const data = await resp.json();
+
+            if (data.success) {
+                showToast(editingId ? 'تم تحديث المستوى.' : 'تم حفظ المستوى.', 'success');
+                closeForm();
+                if (selectedCardId) { loadLevels(selectedCardId); }
+            } else {
+                showToast(data.errorMessage || 'تعذر الحفظ.', 'error');
+            }
+        } catch (err) {
+            showToast('تعذر الاتصال بالخادم.', 'error');
+        }
+    }
+</script>

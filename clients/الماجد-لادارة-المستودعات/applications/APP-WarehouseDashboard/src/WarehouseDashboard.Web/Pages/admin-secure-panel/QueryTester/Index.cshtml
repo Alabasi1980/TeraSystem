@@ -1,0 +1,320 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.QueryTesterModel
+@{
+    ViewData["Title"] = "مختبِّر الاستعلامات";
+    Layout = "_Layout";
+}
+@Html.AntiForgeryToken()
+
+<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.2.5/styles/bootstrap5.css" />
+
+<style>
+    :root {
+        --c-primary: #1F4E79;
+        --c-primary-strong: #163A5A;
+        --c-secondary: #2E6DA4;
+        --c-accent: #0A2540;
+        --c-accent-soft: #8FBCDE;
+        --c-bg: #F3F7FB;
+        --c-surface: #FFFFFF;
+        --c-surface-muted: #EAF1F8;
+        --c-border: #D4E2F0;
+        --c-text: #102A43;
+        --c-text-muted: #5B7A99;
+        --c-success: #1E9E6A;
+        --c-warning: #E0A106;
+        --c-error: #D64545;
+        --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+        --shadow-sm: 0 1px 2px rgba(10,37,64,0.06);
+        --shadow-md: 0 4px 12px rgba(10,37,64,0.08);
+        --shadow-lg: 0 8px 24px rgba(10,37,64,0.12);
+        --duration-fast: 120ms; --duration-normal: 240ms;
+        --easing: cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .wd-page { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    .wd-page__header { margin-bottom: 24px; animation: wd-fade-in var(--duration-normal) var(--easing); }
+    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
+    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
+    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
+
+    .wd-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        transition: box-shadow var(--duration-normal) var(--easing), transform var(--duration-normal) var(--easing);
+        animation: wd-fade-in var(--duration-normal) var(--easing);
+    }
+    .wd-card:hover { box-shadow: var(--shadow-lg); }
+    .wd-card__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .wd-card__title { font-size: 18px; font-weight: 600; color: var(--c-text); }
+    .wd-card__body { color: var(--c-text); }
+
+    .wd-badge {
+        font-size: 12px; font-weight: 600; color: var(--c-primary);
+        background: var(--c-surface-muted); border: 1px solid var(--c-border);
+        border-radius: 999px; padding: 2px 12px;
+    }
+
+    .wd-label { display: block; font-size: 13px; font-weight: 600; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-textarea, .wd-input, .wd-select {
+        width: 100%; font-family: "Cairo", "Tajawal", Tahoma, sans-serif;
+        font-size: 14px; color: var(--c-text);
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        padding: 10px 12px; background: var(--c-surface);
+        transition: border-color var(--duration-fast) var(--easing), box-shadow var(--duration-fast) var(--easing);
+    }
+    .wd-textarea { min-height: 140px; resize: vertical; direction: ltr; text-align: start; font-family: "Courier New", monospace; }
+    .wd-textarea:focus, .wd-input:focus, .wd-select:focus {
+        outline: none; border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+
+    .wd-actions { display: flex; align-items: center; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+    .wd-btn {
+        font-size: 14px; font-weight: 600; color: #fff; cursor: pointer;
+        background: var(--c-primary); border: 1px solid var(--c-primary);
+        border-radius: var(--radius-md); padding: 10px 20px;
+        transition: background var(--duration-fast) var(--easing), transform var(--duration-fast) var(--easing);
+    }
+    .wd-btn:hover { background: var(--c-primary-strong); }
+    .wd-btn:active { transform: translateY(1px); }
+    .wd-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .wd-btn--sm { padding: 6px 12px; font-size: 13px; }
+    .wd-btn--ghost { background: transparent; color: var(--c-primary); border-color: var(--c-border); }
+    .wd-btn--ghost:hover { background: var(--c-surface-muted); }
+    .wd-btn--danger { background: var(--c-error); border-color: var(--c-error); }
+    .wd-btn--danger:hover { background: #B53737; }
+    .wd-meta { font-size: 13px; color: var(--c-text-muted); }
+
+    .wd-grid { margin-top: 8px; min-height: 80px; }
+    .e-grid .e-headercell { background: var(--c-surface-muted); color: var(--c-text); }
+    .e-grid .e-rowcell { color: var(--c-text); }
+
+    .wd-empty {
+        text-align: center; color: var(--c-text-muted);
+        padding: 40px 16px; border: 1px dashed var(--c-border); border-radius: var(--radius-md);
+        background: var(--c-surface-muted);
+    }
+    .wd-empty__icon { font-size: 28px; display: block; margin-bottom: 8px; }
+
+    .wd-skeleton { padding: 12px; }
+    .wd-skeleton__row {
+        height: 18px; margin-bottom: 12px; border-radius: 6px;
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, #dbe7f3 37%, var(--c-surface-muted) 63%);
+        background-size: 400% 100%;
+        animation: wd-shimmer 1.2s ease-in-out infinite;
+    }
+    @@keyframes wd-shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+    .wd-toast-container {
+        position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
+        display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+    }
+    .wd-toast {
+        min-width: 240px; max-width: 360px; padding: 12px 16px; border-radius: var(--radius-md);
+        color: #fff; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 8px;
+        animation: wd-toast-in var(--duration-normal) var(--easing);
+        font-size: 14px;
+    }
+    .wd-toast--success { background: var(--c-success); }
+    .wd-toast--error { background: var(--c-error); }
+    .wd-toast--warning { background: var(--c-warning); color: #3a2c00; }
+    .wd-toast--info { background: var(--c-secondary); }
+    @@keyframes wd-toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @@keyframes wd-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    [hidden] { display: none !important; }
+</style>
+
+<div class="wd-page">
+    <header class="wd-page__header">
+        <div class="wd-breadcrumb">
+            <a href="/admin-secure-panel/Index">لوحة الإدارة</a> &laquo; مختبِّر الاستعلامات
+        </div>
+        <h2 class="wd-page__title">مختبِّر الاستعلامات</h2>
+        <p class="wd-page__subtitle">نفِّذ استعلامات SQL للقراءة فقط للتحقق من صياغتها قبل إسنادها إلى بطاقة لوحة المعلومات.</p>
+    </header>
+
+    <section class="wd-card">
+        <div class="wd-card__header">
+            <span class="wd-card__title">الاستعلام</span>
+            <span class="wd-badge">للقراءة فقط</span>
+        </div>
+        <div class="wd-card__body">
+            <label class="wd-label" for="sqlInput">استعلام SQL</label>
+            <textarea id="sqlInput" class="wd-textarea" placeholder="SELECT Column FROM Table">SELECT 1 AS [عيّنة]</textarea>
+            <div class="wd-actions">
+                <button id="runBtn" class="wd-btn" onclick="runQuery()">تشغيل</button>
+                <button class="wd-btn wd-btn--ghost" onclick="clearEditor()">مسح</button>
+                <span id="meta" class="wd-meta"></span>
+            </div>
+        </div>
+    </section>
+
+    <section class="wd-card">
+        <div class="wd-card__header">
+            <span class="wd-card__title">النتائج</span>
+        </div>
+        <div class="wd-card__body">
+            <div id="skeleton" class="wd-skeleton" hidden>
+                @for (int i = 0; i < 6; i++) { <div class="wd-skeleton__row"></div> }
+            </div>
+            <div id="emptyState" class="wd-empty">
+                <span class="wd-empty__icon">&#128270;</span>
+                نفِّذ استعلاماً لعرض النتائج هنا.
+            </div>
+            <div id="gridContainer" class="wd-grid"></div>
+        </div>
+    </section>
+</div>
+
+<div id="toastContainer" class="wd-toast-container"></div>
+
+<script src="https://cdn.syncfusion.com/ej2/27.2.5/dist/ej2.min.js"></script>
+<script>
+    let gridInstance = null;
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text ?? '';
+        return div.innerHTML;
+    }
+
+    function showToast(message, type) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'wd-toast wd-toast--' + (type || 'info');
+        const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠' : 'ℹ';
+        toast.innerHTML = '<span>' + icon + '</span><span>' + escapeHtml(message) + '</span>';
+        container.appendChild(toast);
+        setTimeout(function () {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(8px)';
+            setTimeout(function () { toast.remove(); }, 240);
+        }, 3500);
+    }
+
+    function setRunning(running) {
+        document.getElementById('runBtn').disabled = running;
+        document.getElementById('runBtn').textContent = running ? 'جارٍ التنفيذ...' : 'تشغيل';
+    }
+
+    function showSkeleton(show) {
+        document.getElementById('skeleton').hidden = !show;
+        if (show) { document.getElementById('emptyState').hidden = true; destroyGrid(); }
+    }
+
+    function destroyGrid() {
+        if (gridInstance) { gridInstance.destroy(); gridInstance = null; }
+        document.getElementById('gridContainer').innerHTML = '';
+    }
+
+    function mapType(clrType) {
+        switch ((clrType || '').toLowerCase()) {
+            case 'int32': case 'int64': case 'int16': case 'decimal':
+            case 'double': case 'single': case 'byte': case 'sbyte':
+                return 'number';
+            case 'datetime': case 'datetimeoffset': case 'timespan':
+                return 'datetime';
+            case 'boolean':
+                return 'boolean';
+            default:
+                return 'string';
+        }
+    }
+
+    function renderGrid(columns, rows) {
+        destroyGrid();
+        const container = document.getElementById('gridContainer');
+        document.getElementById('emptyState').hidden = true;
+
+        if (!columns || columns.length === 0) {
+            container.innerHTML = '<div class="wd-empty"><span class="wd-empty__icon">▦</span>لا توجد أعمدة في النتيجة.</div>';
+            return;
+        }
+
+        const gridColumns = columns.map(function (c) {
+            return {
+                field: c.name,
+                headerText: c.name,
+                type: mapType(c.dataType),
+                width: 160,
+                textAlign: mapType(c.dataType) === 'number' ? 'Right' : 'Left'
+            };
+        });
+
+        gridInstance = new ej.grids.Grid({
+            dataSource: rows,
+            columns: gridColumns,
+            allowPaging: true,
+            pageSize: 20,
+            allowSorting: true,
+            allowTextWrap: true,
+            gridLines: 'Horizontal'
+        });
+        gridInstance.appendTo(container);
+    }
+
+    async function runQuery() {
+        const sql = document.getElementById('sqlInput').value;
+        if (!sql.trim()) {
+            showToast('الرجاء إدخال استعلام SQL.', 'warning');
+            return;
+        }
+
+        setRunning(true);
+        showSkeleton(true);
+        document.getElementById('meta').textContent = '';
+
+        try {
+            const token = document.querySelector('input[name=__RequestVerificationToken]').value;
+            const resp = await fetch('?handler=Run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ sql: sql })
+            });
+            const data = await resp.json();
+            document.getElementById('skeleton').hidden = true;
+            setRunning(false);
+
+            if (!data.success) {
+                document.getElementById('emptyState').hidden = false;
+                document.getElementById('emptyState').innerHTML =
+                    '<span class="wd-empty__icon">⚠</span>' + escapeHtml(data.errorMessage || 'فشل تنفيذ الاستعلام.');
+                showToast(data.errorMessage || 'فشل تنفيذ الاستعلام.', 'error');
+                return;
+            }
+
+            renderGrid(data.columns, data.rows);
+            document.getElementById('meta').textContent =
+                'النتائج: ' + data.rowCount + ' صف · الزمن: ' + data.elapsedMilliseconds + ' مللي ثانية';
+
+            if (data.rowCount === 0) {
+                document.getElementById('gridContainer').innerHTML =
+                    '<div class="wd-empty"><span class="wd-empty__icon">✓</span>تم تنفيذ الاستعلام بنجاح لكن لم يُرجع أي صفوف.</div>';
+            }
+
+            showToast('تم تنفيذ الاستعلام بنجاح.', 'success');
+        } catch (err) {
+            document.getElementById('skeleton').hidden = true;
+            document.getElementById('emptyState').hidden = false;
+            setRunning(false);
+            showToast('تعذر الاتصال بالخادم.', 'error');
+        }
+    }
+
+    function clearEditor() {
+        document.getElementById('sqlInput').value = '';
+        destroyGrid();
+        document.getElementById('emptyState').hidden = false;
+        document.getElementById('meta').textContent = '';
+    }
+</script>

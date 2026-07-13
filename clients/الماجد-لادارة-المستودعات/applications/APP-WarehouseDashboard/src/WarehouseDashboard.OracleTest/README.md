@@ -11,6 +11,28 @@ This project verifies that a .NET application can connect to an Oracle Database 
 - ODP.NET is correctly configured
 - Basic SQL query execution works
 
+## How to Run
+
+Before running, set the `ORACLE_PASSWORD` environment variable to your Oracle password:
+
+```powershell
+# PowerShell
+$env:ORACLE_PASSWORD = "COGNOS"
+
+# CMD
+set ORACLE_PASSWORD=COGNOS
+```
+
+Then run the application:
+
+```bash
+dotnet run
+```
+
+> **Note:** The connection string in `appsettings.json` uses the placeholder `{ORACLE_PASSWORD}`. The application reads the `ORACLE_PASSWORD` environment variable at startup and substitutes it in — the password is **never** hardcoded in source code.
+
+---
+
 ## Prerequisites
 
 | Requirement | Version / Notes |
@@ -22,49 +44,47 @@ This project verifies that a .NET application can connect to an Oracle Database 
 
 ## Connection String Format
 
-Edit `appsettings.json` with your Oracle credentials:
-
-### 1. TNS Names (requires `tnsnames.ora`)
+Edit `appsettings.json` with your Oracle credentials. The project uses **Easy Connect** format (no `tnsnames.ora` required):
 
 ```json
 {
-  "OracleConnection": "User Id=YOUR_USER;Password=YOUR_PASSWORD;Data Source=YOUR_TNS_ALIAS;"
+  "OracleConnection": "User Id=NATEJSOFT;Password={ORACLE_PASSWORD};Data Source=//10.10.1.1:1521/NATEJSOFT;"
 }
 ```
 
-- `YOUR_TNS_ALIAS` must be defined in `tnsnames.ora`
-- Set `TNS_ADMIN` environment variable to the directory containing `tnsnames.ora`, or place it in the default Oracle home location.
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| `User Id` | `NATEJSOFT` | Oracle database username |
+| `Password` | `{ORACLE_PASSWORD}` | Placeholder — resolved from env var at runtime |
+| `Data Source` | `//10.10.1.1:1521/NATEJSOFT` | Easy Connect: `//host:port/service` |
 
-### 2. Easy Connect (no `tnsnames.ora` needed)
+### How the Password Works
 
-```json
-{
-  "OracleConnection": "User Id=YOUR_USER;Password=YOUR_PASSWORD;Data Source=//host:1521/SERVICE_NAME;"
-}
+1. `appsettings.json` contains the placeholder `{ORACLE_PASSWORD}` — **not** the real password.
+2. Before running, set the `ORACLE_PASSWORD` environment variable to the actual password.
+3. `Program.cs` reads the env var and substitutes it into the connection string at startup.
+4. If the env var is not set, the application prints a clear error and exits.
+
+### Easy Connect Format (alternatives)
+
 ```
-
-Example:
-
-```json
-{
-  "OracleConnection": "User Id=warehouse_user;Password=MyP@ssw0rd;Data Source=//192.168.1.100:1521/ORCL;"
-}
+//host:port/service_name
+//10.10.1.1:1521/NATEJSOFT
 ```
 
 ### Security Notes
 
 - **Never commit real passwords** to source control.
-- Use environment variables or user secrets for production:
-  ```
-  $env:ORACLE_PASS="YourRealPassword"
-  ```
-  Then modify connection string: `Password=%ORACLE_PASS%`
+- The `{ORACLE_PASSWORD}` placeholder in `appsettings.json` is safe to commit.
+- Set `ORACLE_PASSWORD` as an environment variable on each machine where the app runs.
 - Consider using Oracle Wallet for production deployments.
 
-## How to Run
+## Run Steps (detailed)
 
 ```bash
-# 1. Edit appsettings.json with your Oracle credentials
+# 1. Set the ORACLE_PASSWORD environment variable
+#    PowerShell: $env:ORACLE_PASSWORD = "COGNOS"
+#    CMD:        set ORACLE_PASSWORD=COGNOS
 
 # 2. Restore NuGet packages
 dotnet restore
@@ -107,8 +127,8 @@ Press any key to exit...
 
 | Symptom | Likely Cause | Fix |
 |---------|-------------|-----|
-| ORA-01017 | Invalid username/password | Check credentials in `appsettings.json` |
-| ORA-12154 | TNS alias not resolved | Check `tnsnames.ora` or switch to Easy Connect format |
+| ORA-01017 | Invalid username/password | Check that `ORACLE_PASSWORD` env var is set correctly |
+| ORA-12154 | TNS alias not resolved | Use Easy Connect format `//host:port/service` (not TNS alias) |
 | ORA-12541 | TNS listener down | Verify Oracle listener is running (`lsnrctl status`) |
 | ORA-28000 / ORA-28001 | Account locked / password expired | Contact DBA |
 | Connection refused (no Oracle error) | Wrong host/port in Easy Connect | Verify host:port/SERVICE_NAME is correct |

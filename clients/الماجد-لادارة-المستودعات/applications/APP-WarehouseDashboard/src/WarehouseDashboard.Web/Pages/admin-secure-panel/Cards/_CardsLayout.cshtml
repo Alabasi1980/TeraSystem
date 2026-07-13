@@ -1,0 +1,333 @@
+@{
+    // Self-contained admin layout for the Cards CRUD area.
+    // Kept inside the Cards folder so it does not touch the global _Layout.
+    // Blue theme tokens are inlined per 28_UI_UX_GUIDELINES.md §1.
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Warehouse Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    @* Syncfusion Bootstrap5 theme (CDN, version matched to the installed package 27.*) *@
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.2.3/bootstrap5.css" />
+
+    <style>
+        :root {
+            /* ===== Blue Identity Palette (11 colors) — 28_UI_UX_GUIDELINES.md §1.1 ===== */
+            --c-primary:        #1F4E79;
+            --c-primary-strong: #163A5A;
+            --c-secondary:      #2E6DA4;
+            --c-accent:         #0A2540;
+            --c-accent-soft:    #8FBCDE;
+            --c-bg:             #F3F7FB;
+            --c-surface:        #FFFFFF;
+            --c-surface-muted:  #EAF1F8;
+            --c-border:         #D4E2F0;
+            --c-text:           #102A43;
+            --c-text-muted:     #5B7A99;
+
+            /* ===== Functional status colors §1.2 ===== */
+            --c-success: #1E9E6A;
+            --c-warning: #E0A106;
+            --c-error:   #D64545;
+            --c-info:    #2E6DA4;
+
+            /* ===== Spacing (4px scale) §1.4 ===== */
+            --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+            --sp-6: 24px; --sp-8: 32px; --sp-12: 48px;
+
+            /* ===== Radius §1.5 ===== */
+            --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px; --radius-full: 999px;
+
+            /* ===== Shadow §1.6 ===== */
+            --shadow-sm: 0 1px 2px rgba(10, 37, 64, 0.06);
+            --shadow-md: 0 4px 12px rgba(10, 37, 64, 0.08);
+            --shadow-lg: 0 8px 24px rgba(10, 37, 64, 0.12);
+
+            /* ===== Motion §1.7 ===== */
+            --dur-fast: 120ms;
+            --dur-norm: 240ms;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+            --font-ar: "Cairo", "Tajawal", Tahoma, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { margin: 0; padding: 0; }
+
+        body.wd-app {
+            font-family: var(--font-ar);
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--c-text);
+            background: var(--c-bg);
+            min-height: 100vh;
+        }
+
+        /* ===== Topbar ===== */
+        .wd-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--sp-4);
+            height: 64px;
+            padding-inline: var(--sp-6);
+            background: var(--c-primary);
+            color: #fff;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        .wd-topbar__brand {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-2);
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .wd-logo-dot {
+            width: 12px; height: 12px;
+            border-radius: var(--radius-full);
+            background: var(--c-accent-soft);
+            display: inline-block;
+        }
+        .wd-topbar__actions { display: flex; align-items: center; gap: var(--sp-3); }
+
+        /* ===== Content ===== */
+        .wd-content {
+            padding: var(--sp-6);
+            max-width: 1200px;
+            margin-inline: auto;
+            width: 100%;
+        }
+
+        /* ===== Breadcrumb ===== */
+        .wd-breadcrumb-row {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-2);
+            color: var(--c-text-muted);
+            font-size: 13px;
+            margin-bottom: var(--sp-4);
+        }
+        .wd-breadcrumb-row a { color: var(--c-secondary); text-decoration: none; }
+        .wd-breadcrumb-row a:hover { color: var(--c-primary); }
+        .wd-sep { color: var(--c-border); }
+
+        /* ===== Page head ===== */
+        .wd-page-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--sp-4);
+            margin-bottom: var(--sp-6);
+        }
+        .wd-page-title { font-size: 22px; font-weight: 700; margin: 0; color: var(--c-text); }
+
+        /* ===== Card container §3.2 ===== */
+        .wd-card {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--sp-6);
+            transition: box-shadow var(--dur-norm) var(--ease);
+            animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        }
+        .wd-card:hover { box-shadow: var(--shadow-lg); }
+        .wd-card__header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: var(--sp-3);
+        }
+        .wd-card__title { font-size: 18px; font-weight: 600; margin: 0; color: var(--c-text); }
+
+        /* ===== Buttons ===== */
+        .wd-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+            font-family: var(--font-ar);
+            font-size: 14px; font-weight: 600; line-height: 1.2;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+            min-height: 40px;
+        }
+        .wd-btn:active { transform: translateY(1px); }
+        .wd-btn--primary { background: var(--c-primary); color: #fff; }
+        .wd-btn--primary:hover { background: var(--c-primary-strong); }
+        .wd-btn--ghost { background: transparent; color: var(--c-primary); border-color: var(--c-border); }
+        .wd-btn--ghost:hover { background: var(--c-surface-muted); }
+        .wd-btn--sm { padding: 6px 12px; min-height: 34px; font-size: 13px; }
+        .wd-btn--danger { background: var(--c-error); color: #fff; }
+        .wd-btn--danger:hover { filter: brightness(0.95); }
+
+        /* ===== Form ===== */
+        .wd-form { margin-top: var(--sp-2); }
+        .wd-form__grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--sp-4) var(--sp-6);
+        }
+        .wd-field { display: flex; flex-direction: column; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+        .wd-field--full { grid-column: 1 / -1; }
+        .wd-field--check { flex-direction: row; align-items: center; }
+        .wd-field label { font-size: 13px; font-weight: 600; color: var(--c-text); }
+        .wd-field .wd-error { color: var(--c-error); font-size: 12px; }
+
+        .wd-form__actions {
+            display: flex; align-items: center; gap: var(--sp-3);
+            margin-top: var(--sp-6);
+            padding-top: var(--sp-4);
+            border-top: 1px solid var(--c-border);
+        }
+
+        /* ===== Syncfusion grid tuning §2.3 ===== */
+        .wd-sync-grid { border-radius: var(--radius-md); overflow: hidden; }
+        .wd-sync-grid .e-headercell { background: var(--c-surface-muted); color: var(--c-text); font-weight: 600; }
+        .wd-sync-grid .e-rowcell { color: var(--c-text); }
+        .wd-sync-grid .e-altrow { background: #F7FAFD; }
+
+        /* ===== Grid wrapper + skeleton ===== */
+        .wd-grid-wrap { display: none; }
+        .wd-skeleton-wrap {
+            display: block;
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius-lg);
+            padding: var(--sp-4);
+            box-shadow: var(--shadow-sm);
+        }
+        .wd-skel-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr 0.8fr 1fr;
+            gap: var(--sp-3);
+            padding: var(--sp-3) var(--sp-2);
+            border-bottom: 1px solid var(--c-border);
+        }
+        .wd-skel {
+            height: 16px; border-radius: var(--radius-sm);
+            background: linear-gradient(90deg, var(--c-surface-muted) 25%, #f6f9fd 37%, var(--c-surface-muted) 63%);
+            background-size: 400% 100%;
+            animation: wdShimmer 1.4s ease infinite;
+        }
+        @@keyframes wdShimmer {
+            0% { background-position: 100% 0; }
+            100% { background-position: 0 0; }
+        }
+
+        /* ===== Badge (IsActive) ===== */
+        .wd-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 2px 10px; border-radius: var(--radius-full);
+            font-size: 12px; font-weight: 600; line-height: 1.6;
+        }
+        .wd-badge--on { background: rgba(30, 158, 106, 0.12); color: var(--c-success); }
+        .wd-badge--off { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
+
+        /* ===== Links (grid actions) ===== */
+        .wd-link {
+            color: var(--c-primary); font-weight: 600; text-decoration: none;
+            background: none; border: none; cursor: pointer; font-family: var(--font-ar); font-size: 13px;
+            padding: 4px 8px; border-radius: var(--radius-sm);
+        }
+        .wd-link:hover { background: var(--c-surface-muted); }
+        .wd-link--danger { color: var(--c-error); }
+
+        /* ===== Empty state §7.1 ===== */
+        .wd-empty {
+            text-align: center;
+            display: flex; flex-direction: column; align-items: center; gap: var(--sp-3);
+            padding: var(--sp-12) var(--sp-6);
+        }
+        .wd-empty__icon {
+            width: 64px; height: 64px; border-radius: var(--radius-full);
+            background: var(--c-surface-muted); color: var(--c-text-muted);
+            display: flex; align-items: center; justify-content: center; font-size: 30px;
+        }
+        .wd-empty h3 { margin: 0; font-size: 18px; color: var(--c-text); }
+        .wd-empty p { margin: 0; color: var(--c-text-muted); }
+
+        /* ===== Toast (§7.2) ===== */
+        .wd-toast-host {
+            position: fixed; top: 76px; inset-inline-end: var(--sp-6);
+            z-index: 1000; display: flex; flex-direction: column; gap: var(--sp-2);
+            pointer-events: none;
+        }
+        .wd-toast {
+            pointer-events: auto;
+            display: flex; align-items: center; gap: var(--sp-3);
+            background: var(--c-surface); color: var(--c-text);
+            border: 1px solid var(--c-border); border-inline-start: 4px solid var(--c-success);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            padding: 12px 16px; min-width: 260px; max-width: 360px;
+            animation: wdToastIn var(--dur-norm) var(--ease) both;
+        }
+        .wd-toast--success { border-inline-start-color: var(--c-success); }
+        .wd-toast--error { border-inline-start-color: var(--c-error); }
+        .wd-toast__icon {
+            width: 24px; height: 24px; border-radius: var(--radius-full);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700; color: #fff; flex: none;
+        }
+        .wd-toast--success .wd-toast__icon { background: var(--c-success); }
+        .wd-toast--error .wd-toast__icon { background: var(--c-error); }
+        .wd-toast__msg { font-size: 14px; }
+
+        .wd-hidden { display: none !important; }
+
+        /* ===== Animations ===== */
+        @@keyframes wdFadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @@keyframes wdToastIn {
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Responsive §5 ===== */
+        @@media (max-width: 768px) {
+            .wd-content { padding: var(--sp-3); }
+            .wd-form__grid { grid-template-columns: 1fr; }
+            .wd-skel-row { grid-template-columns: 1fr; }
+            .wd-page-head { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body class="wd-app">
+    <header class="wd-topbar">
+        <div class="wd-topbar__brand">
+            <span class="wd-logo-dot"></span>
+            <span>Warehouse Dashboard · لوحة الإدارة</span>
+        </div>
+        <div class="wd-topbar__actions">
+            <a class="wd-btn wd-btn--ghost wd-btn--sm" href="/admin-secure-panel/Logout">تسجيل الخروج</a>
+        </div>
+    </header>
+
+    <main class="wd-content">
+        @RenderBody()
+    </main>
+
+    <div id="wd-toast-host" class="wd-toast-host" aria-live="polite" aria-atomic="true">
+        @await RenderSectionAsync("Toast", required: false)
+    </div>
+
+    @* Syncfusion scripts (CDN, matched to package 27.*) *@
+    <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.min.js"></script>
+    <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.aspnetcore.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

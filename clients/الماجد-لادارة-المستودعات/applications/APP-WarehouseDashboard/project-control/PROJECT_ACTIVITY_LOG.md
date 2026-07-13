@@ -178,3 +178,26 @@
 - Summary: **Monitor Condition 3 MET** ✅ — First TASK-COD was Oracle connection test. engineering-agent created 4 files in `src/WarehouseDashboard.OracleTest/`: .NET 8 Console app with ODP.NET, SELECT SYSDATE FROM DUAL, 6 Oracle error types handled, placeholders only. Build not verified (.NET SDK not on this server).
 - Decision / Result: ✅ TASK-COD-001 — Code Ready (ينتظر بيانات Oracle لتأكيد الاتصال). ~~Accepted~~ كانت متسرعة — صحّحناها.
 - Next Action: انتظار بيانات اتصال Oracle من العميل → تشغيل `dotnet build && dotnet run`.
+
+## [2026-07-12 24:00] - QA_AGENT_CREATED
+
+- Related Task: N/A (Continuous Improvement)
+- Actor: Hares (TeraSystemEvolutionAgent)
+- Summary: Created `qa-agent.md` — متخصص بالاختبارات والتحقق قبل قبول أي TASK-COD. السبب: TeraAgent قبل TASK-COD-001 بدون تشغيل فعلي (ثغرة خطيرة). المواصفات جاهزة في `generated-agents/QA_AGENT_SPECIFICATION.md`.
+- Decision / Result: QA-Agent متوفّر للاستخدام عند الحاجة.
+- Next Action: استخدام QA-Agent لكل اختبار مستقبلاً.
+
+## [2026-07-13 11:46] - ORACLE_TEST_PASS
+
+- Related Task: TASK-COD-001
+- Actor: Client (Majed) + engineering-agent
+- Summary: العميل زوّد بيانات Oracle (server 10.10.1.1, user NATEJSOFT, SID NATEJSOFT). engineering-agent حدّث المشروع لاستخدام متغير بيئة `ORACLE_PASSWORD` (لا hardcode). العميل شغّل `dotnet run` على جهازه:
+  ```
+  [OK] Connection established successfully.
+    Server Version : 19.10.0.0.0
+    SYSDATE value : 7/13/2026 11:46:28 AM
+  [OK] Oracle connectivity test completed successfully.
+  ```
+- Decision / Result: ✅ **TASK-COD-001 Accepted (Test PASS)**. R1 resolved — Oracle 19c reachable, ODP.NET works.
+- **Issue found:** ملفات التحكم (PROJECT_STATE.md, TASK_REGISTRY.md) كانت مفقودة — أُعيد إنشاؤها. action: verify file persistence بعد كل write.
+- Next Action: Proceed to B1 remaining: TASK-COD-002/003.

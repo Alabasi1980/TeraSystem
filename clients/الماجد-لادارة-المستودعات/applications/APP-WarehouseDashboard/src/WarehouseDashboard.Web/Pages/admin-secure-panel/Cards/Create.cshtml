@@ -1,0 +1,88 @@
+@page
+@model CreateModel
+@{
+    ViewData["Title"] = "إضافة بطاقة";
+}
+
+<div class="wd-breadcrumb-row">
+    <a href="/admin-secure-panel/Cards">البطاقات</a>
+    <span class="wd-sep">/</span>
+    <span>إضافة بطاقة</span>
+</div>
+
+<div class="wd-card wd-editor">
+    <div class="wd-card__header">
+        <h2 class="wd-card__title">إضافة بطاقة جديدة</h2>
+    </div>
+
+    <form method="post" class="wd-form" novalidate>
+        <div asp-validation-summary="ModelOnly" class="wd-error"></div>
+
+        <div class="wd-form__grid">
+            <div class="wd-field wd-field--full">
+                <label asp-for="Input.Title">العنوان</label>
+                <ejs-textbox asp-for="Input.Title" placeholder="مثال: مخزون حسب المنطقة"></ejs-textbox>
+                <span asp-validation-for="Input.Title" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.ChartType">نوع الرسم</label>
+                <ejs-dropdownlist asp-for="Input.ChartType" dataSource="@Model.ChartTypeOptions" placeholder="اختر النوع...">
+                    <e-dropdownlist-fields value="Value" text="Text"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+                <span asp-validation-for="Input.ChartType" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.DataSourceType">مصدر البيانات</label>
+                <ejs-dropdownlist asp-for="Input.DataSourceType" dataSource="@Model.DataSourceTypeOptions" placeholder="اختر المصدر...">
+                    <e-dropdownlist-fields value="Value" text="Text"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+                <span asp-validation-for="Input.DataSourceType" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field wd-field--full">
+                <label asp-for="Input.SqlQuery">استعلام SQL / اسم العرض</label>
+                <ejs-textbox asp-for="Input.SqlQuery" multiline="true" placeholder="SELECT Region, TotalQty FROM dbo.stg_WarehouseStock"></ejs-textbox>
+                <span asp-validation-for="Input.SqlQuery" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.GridPositionX">الموضع X</label>
+                <ejs-numerictextbox asp-for="Input.GridPositionX" min="0" placeholder="0"></ejs-numerictextbox>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.GridPositionY">الموضع Y</label>
+                <ejs-numerictextbox asp-for="Input.GridPositionY" min="0" placeholder="0"></ejs-numerictextbox>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.GridWidth">العرض (1-12)</label>
+                <ejs-numerictextbox asp-for="Input.GridWidth" min="1" max="12" placeholder="4"></ejs-numerictextbox>
+                <span asp-validation-for="Input.GridWidth" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.GridHeight">الارتفاع (1-6)</label>
+                <ejs-numerictextbox asp-for="Input.GridHeight" min="1" max="6" placeholder="2"></ejs-numerictextbox>
+                <span asp-validation-for="Input.GridHeight" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.RefreshInterval">فاصل التحديث (ثوانٍ)</label>
+                <ejs-numerictextbox asp-for="Input.RefreshInterval" min="0" placeholder="0"></ejs-numerictextbox>
+                <span asp-validation-for="Input.RefreshInterval" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field wd-field--check">
+                <ejs-checkbox asp-for="Input.IsActive" label="نشط (معروضة في اللوحة)"></ejs-checkbox>
+            </div>
+        </div>
+
+        <div class="wd-form__actions">
+            <button type="submit" class="wd-btn wd-btn--primary">حفظ</button>
+            <a href="/admin-secure-panel/Cards" class="wd-btn wd-btn--ghost">إلغاء</a>
+        </div>
+    </form>
+</div>
