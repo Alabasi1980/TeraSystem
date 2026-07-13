@@ -406,3 +406,11 @@
 - Summary: Staged and committed 9 intended files (excluded TeraSystem.zip binary 3.03 MB). Commit d7d4e81 — activate qa-agent (moved spec from generated-agents to .opencode/agents/qa-agent.md), sync Tera runtime rules (code-boundary hard rule), update agent registry/permission/dependency/activation matrix, update SYSTEM_EVOLUTION_LOG.md, archive SCP-012. Pushed to origin/master (0182bac..d7d4e81).
 - Decision / Result: Push succeeded. TeraSystem.zip intentionally excluded (binary, not intended for text repo). No force push, no commit rewrite.
 - Next Action: Decide separately whether to add TeraSystem.zip (e.g., as a release artifact) or keep it untracked.
+
+## [2026-07-13 18:13] - GIT: Merge develop → master + Push + Pull
+
+- Related Task: N/A (Housekeeping / Branch sync)
+- Actor: Tera Agent (per Majed request)
+- Summary: Merged origin/develop into local master via fast-forward (50dc18a7 → 7866b5f4), which brought the full WarehouseDashboard client project (APP-WarehouseDashboard: .NET Api/Web/OracleTest, 101 files, +9630/-514) plus updated project-control task/state logs. Pushed master to origin (e8b04e06 → 7866b5f4, fast-forward, no force, no rewrite). Ran git pull — already up to date.
+- Decision / Result: local master = origin/master = 7866b5f4. All develop updates now in master locally and remotely. Clean fast-forward, zero conflicts. TeraSystem.zip remains untracked.
+- Next Action: None. Branch sync complete.
