@@ -17,6 +17,10 @@ dist/
 *.swp
 *.swo
 
+# .NET build artifacts (bin/obj)
+bin/
+obj/
+
 # OpenCode (client-specific only)
 clients/*/.opencode/
 

@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\WarehouseDashboard.Api.props" />
-</Project>
