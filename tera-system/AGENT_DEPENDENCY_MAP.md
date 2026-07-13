@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # AGENT_DEPENDENCY_MAP.md
 
 ## الغرض
@@ -26,6 +25,8 @@
 | **tera-strategic-advisor.md** | — (مستقل — يستدعيه Majed فقط) | لا يستدعي عملاء ولا يديرهم؛ قد يوصي Majed بالرجوع إلى TeraAgent أو حارس أو غيرهم | ملفات وسياقات القرار فقط، مصادر خارجية عند الحاجة |
 | **auditor.md** | — (مستقل — يستدعيه Majed) | يراجع مخرجات `tera.md`, `engineering-agent.md` | `project-control/*.md`, `tera-system/*.md` |
 | **monitor.md** | — (مستقل — يستدعيه Majed) | يراجع مخرجات `tera.md`, `engineering-agent.md` | `project-control/*.md`, `tera-system/*.md` |
+| **QAAndAcceptanceAgent** | `tera.md` (يُفعّله Tera) | لا يستدعي عملاء آخرين | ملفات التحضير، ملفات المهمة المنفذة، logs، مخرجات CLI |
+| **qa-agent.md** | `tera.md` (يُفعّله Tera) | لا يستدعي عملاء آخرين | ملفات التحضير، ملفات المهمة، logs، مخرجات CLI، `project-control/test-reports/` |
 
 ---
 
@@ -61,7 +62,7 @@ ui-designer.md
 
 | الملف | الحجم (سطور) | الحالة |
 |-------|-------------|--------|
-| `tera-system/TeraSubAgents.md` | 1,375 | 🔴 تقسيم إجباري (> 1000) |
+| `tera-system/TeraSubAgents.md` | 1,502 | 🔴 > 1000 — تم تبسيط 6 عملاء (ملفات runtime). المتبقي: 12 عميل بدون runtime يحتفظون بتعريفاتهم الكاملة |
 | `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` | 1,186 | 🔴 تقسيم إجباري (> 1000) |
 | `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` | 1,110 | 🔴 تقسيم إجباري (> 1000) |
 | `tera-client-engagement.md` | 564 | 🟢 < 700 — لا حاجة |

@@ -193,7 +193,7 @@
 | DataDesignAgent | `DATA_DESIGN_AGENT` | `WRITE_DOCS` | — | يكتب نموذج البيانات فقط |
 | SolutionArchitectureAgent | `SOLUTION_ARCH_AGENT` | `WRITE_DOCS` | إلى PLAN_ONLY إذا كان تحليلًا فقط | يكتب المعمارية فقط |
 | EngineeringAgent | `ENGINEERING_AGENT` | `WRITE_CODE` | إلى READ_ONLY إذا كانت مراجعة كود فقط | مستوى عالٍ، يجب مراقبته |
-| QAAndAcceptanceAgent | `QA_ACCEPTANCE_AGENT` | `RUN_TESTS` | إلى READ_ONLY إذا كان مراجعة فقط | يشغل اختبارات ويكتب تقارير |
+| QAAndAcceptanceAgent | `QA_ACCEPTANCE_AGENT` | `RUN_TESTS` | إلى READ_ONLY إذا كان مراجعة فقط | **Planning Mode:** `WRITE_DOCS` — يكتب خطط الاختبار ومعايير القبول. **Execution Mode:** `RUN_TESTS` + bash — يشغّل أوامر CLI (dotnet build/test/run) ويكتب تقارير اختبار رسمية |
 | DocumentationHandoverAgent | `DOC_HANDOVER_AGENT` | `WRITE_DOCS` | — | يكتب وثائق التسليم فقط |
 
 ### 3.2 العملاء المشروطون

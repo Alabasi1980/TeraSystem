@@ -386,7 +386,8 @@ project-preparation/design-source/ عند توفيره من Tera
 | اسم العميل | UI Visual Designer Agent |
 | المعرّف | `UI_VISUAL_DESIGNER_AGENT` |
 | الفئة | أساسي عند وجود واجهات مهمة / مشروط للمشاريع البسيطة |
-| الدور | تحويل مصدر التصميم (بما في ذلك Figma files) إلى Design Tokens وComponent Rules وLayout Rules وقواعد تنفيذ بصرية داخل `28_UI_UX_GUIDELINES.md` |
+| ملف العميل | `.opencode/agents/ui-designer.md` |
+| الدور | تحويل مصدر التصميم إلى Design Tokens وComponent Rules وLayout Rules وقواعد تنفيذ بصرية داخل `28_UI_UX_GUIDELINES.md` |
 
 ### الفرق بينه وبين UIUXStructureAgent
 
@@ -395,60 +396,7 @@ project-preparation/design-source/ عند توفيره من Tera
 | `UIUXStructureAgent` | هيكل الشاشات، التنقل، تجربة الاستخدام، محتوى الشاشة وظيفيًا |
 | `UIVisualDesignerAgent` | الستايل، Design Tokens، Component Rules، Layout Rules، RTL/LTR visual behavior، والمراجعة البصرية |
 
-### متى يستدعيه Tera؟
-
-- عند وجود Frontend أو UI مهم.
-- عند استخدام `getdesign.md` أو DESIGN.md.
-- عند وجود صور، Figma، CSS، ألوان، أو موقع مرجعي من العميل.
-- عند استخدام `FIGMA_DESIGN_FILE` — لتحليل ملف Figma واستخراج التوكينز والقواعد.
-- عند مشروع ERP / CRM / Dashboard يحتاج هوية بصرية منضبطة.
-- عندما يجب إنشاء أو تحديث `project-preparation/28_UI_UX_GUIDELINES.md`.
-
-### يقرأ
-
-```text
-project-preparation/07_SCREENS_AND_UI_STRUCTURE.md
-project-preparation/design-source/ عند وجوده
-tera-system/design-system/DESIGN_SOURCE_PROTOCOL.md
-tera-system/design-system/DESIGN_MD_INTEGRATION.md
-tera-system/design-system/FIGMA_INTEGRATION.md  (عند استخدام FIGMA_DESIGN_FILE)
-tera-system/design-system/EXTERNAL_REFERENCE_ANALYSIS.md
-tera-system/design-system/DESIGN_TOKENS_SCHEMA.md
-tera-system/design-system/COMPONENT_LIBRARY_SCHEMA.md
-tera-system/design-system/LAYOUT_PATTERNS.md
-tera-system/design-system/RTL_LTR_RULES.md
-tera-system/design-system/ACCESSIBILITY_RULES.md
-tera-system/design-system/kits/KIT_ADMIN_DASHBOARD.md عند استخدام Internal Kit
-```
-
-### ينتج أو يساهم في
-
-```text
-project-preparation/28_UI_UX_GUIDELINES.md
-project-preparation/design-source/DESIGN_SOURCE_NOTES.md عند الحاجة
-```
-
-### حدوده
-
-- لا يكتب Frontend code.
-- لا يغير هيكل الشاشات أو النطاق الوظيفي.
-- لا ينسخ علامة تجارية حرفيًا.
-- لا يجعل `getdesign.md` مصدرًا إلزاميًا.
-- لا يتجاوز قرار Tera أو تفضيلات العميل المعتمدة.
-- لا يعتمد الواجهة كمنفذة؛ يرفع قواعد التصميم فقط إلى Tera.
-- عند `FIGMA_DESIGN_FILE`: لا يمرر Figma مباشرة لـ EngineeringAgent — يستخرج القواعد أولاً.
-- عند `FIGMA_DESIGN_FILE`: يسجل أي تفاصيل تصميم ناقصة (fonts, states, variants) كـ Design Gap.
-
-### معايير القبول
-
-- `28_UI_UX_GUIDELINES.md` يحتوي Design Source Decision واضحًا.
-- Design Tokens مكتملة أو gaps موثقة.
-- Component Rules قابلة للتنفيذ.
-- Layout Rules واضحة.
-- RTL/LTR وAccessibility مذكورة.
-- Forbidden Styling واضح.
-- Engineering Implementation Instructions تمنع التخمين.
-- إذا كان المصدر `FIGMA_DESIGN_FILE`: Figma tokens/components تم استخراجها وتوثيقها بالكامل.
+> **التعريف الكامل:** `.opencode/agents/ui-designer.md` — يحتوي جميع التفاصيل التشغيلية، حدود الصلاحيات، سير العمل، ومعايير القبول.
 
 ---
 
@@ -564,6 +512,7 @@ project-preparation/design-source/DESIGN_SOURCE_NOTES.md عند الحاجة
 | اسم العميل | Engineering Agent |
 | المعرّف | `ENGINEERING_AGENT` |
 | الفئة | أساسي |
+| ملف العميل | `.opencode/agents/engineering-agent.md` |
 | الدور | تنفيذ المهام البرمجية بعد اعتماد التحليل والتصميم |
 
 ### متى يستدعيه تيرا؟
@@ -594,34 +543,7 @@ tera-system/design-system/ كمرجع fallback يحدده Tera فقط
 - ملاحظات التنفيذ.
 - تحديثات محدودة على ملفات التنفيذ إذا طلب تيرا.
 
-قد يساهم في:
-
-```text
-09_IMPLEMENTATION_PLAN.md
-20_API_CONTRACTS.md
-21_VALIDATION_AND_ERROR_HANDLING.md
-```
-
-### حدوده
-
-- لا يغير النطاق.
-- لا يضيف Feature من تلقاء نفسه.
-- لا يغير المعمارية دون إذن.
-- لا يتجاوز خطة التنفيذ.
-- لا يعتمد نفسه كمكتمل دون اختبار.
-- لا يخترع ألوانًا أو spacing أو typography أو component styles أو layout patterns من عنده مطلقًا في أي مهمة UI.
-- إذا نقصت قواعد التصميم، يجب أن يرفع `Design Gap` بدل التخمين.
-- لا ينفذ مباشرة من `DESIGN.md` الخام؛ ينفذ من `28_UI_UX_GUIDELINES.md` أولًا.
-- لا يخلط أكثر من نظام تصميم دون قرار واضح من Tera.
-- يجب أن يمر أي تنفيذ UI عبر `UI_ACCEPTANCE_GATE` قبل القبول.
-
-### معايير القبول
-
-- الكود يطابق المهمة.
-- لا توجد تغييرات خارج النطاق.
-- لا يكسر وظائف موجودة.
-- يوضح ما تم تنفيذه.
-- يذكر أي مشكلة أو قرار يحتاج مراجعة تيرا.
+> **التعريف الكامل:** `.opencode/agents/engineering-agent.md` — يحتوي جميع التفاصيل التشغيلية، حدود الصلاحيات، سير العمل، ومعايير القبول.
 
 ---
 
@@ -632,56 +554,17 @@ tera-system/design-system/ كمرجع fallback يحدده Tera فقط
 | اسم العميل | QA & Acceptance Agent |
 | المعرّف | `QA_ACCEPTANCE_AGENT` |
 | الفئة | أساسي |
-| الدور | تحديد الاختبارات ومعايير القبول ومراجعة جاهزية المخرجات |
+| ملف العميل | `.opencode/agents/qa-agent.md` |
+| الدور | تخطيط + تنفيذ + مراجعة اختبارات — عميل اختبارات كامل يعمل في وضعين |
 
-### متى يستدعيه تيرا؟
+### الوضعين التشغيليين
 
-- عند إعداد خطة التنفيذ.
-- قبل قبول أي مرحلة.
-- بعد تنفيذ أي موديول أو ميزة.
-- قبل التسليم النهائي.
-- في Phase 7 لإجراء Final QA / Smoke / Regression / Acceptance checks.
-- بعد أي مهمة تنفيذية تشمل UI أو Workflow أو Acceptance Criteria وتحتاج مراجعة مستقلة بعد التنفيذ.
+| الوضع | الغرض | الصلاحية |
+|---|---|---|
+| **Planning Mode** | تحديد الاختبارات ومعايير القبول ومراجعة جاهزية المخرجات | `WRITE_DOCS` |
+| **Execution Mode** | تشغيل اختبارات CLI فعلياً وإنتاج تقارير نتائج رسمية | `RUN_TESTS` + bash |
 
-### يقرأ
-
-```text
-01_PROJECT_BRIEF.md
-02_SCOPE_AND_BOUNDARIES.md
-03_MODULES_AND_FEATURES.md
-04_USERS_ROLES_PERMISSIONS.md
-05_BUSINESS_WORKFLOWS.md
-07_SCREENS_AND_UI_STRUCTURE.md
-09_IMPLEMENTATION_PLAN.md
-project-control/tasks/[TASK-ID].md عند تكليفه بمراجعة قبول مهمة منفذة
-project-control/PROJECT_ACTIVITY_LOG.md عند الحاجة لتتبع اختبار أو مراجعة قبول
-project-control/DELIVERY_READINESS_REPORT.md في Phase 7
-project-control/FINAL_ACCEPTANCE_CHECKLIST.md في Phase 7
-```
-
-### ينتج أو يساهم في
-
-```text
-10_TESTING_AND_ACCEPTANCE.md
-```
-
-وقد يساهم في تقارير ملاحظات الاختبار و`FINAL_ACCEPTANCE_CHECKLIST.md` و`DELIVERY_READINESS_REPORT.md` في Phase 7.
-
-### حدوده
-
-- لا يغير المتطلبات.
-- لا يكتب إصلاحات برمجية.
-- لا يقرر جاهزية التسليم وحده.
-- لا ينفذ مراجعة أمنية متخصصة بدل SecurityAgent.
-- لا يقبل المهمة بنفسه؛ يعيد تقرير المراجعة إلى Tera فقط.
-
-### معايير القبول
-
-- كل ميزة لها اختبار واضح.
-- اختبارات الصلاحيات موجودة عند الحاجة.
-- الحالات الحدية موثقة.
-- أخطاء القبول موثقة بوضوح.
-- يفرّق بين خطأ وظيفي وملاحظة تحسين.
+> **التعريف الكامل:** `.opencode/agents/qa-agent.md` — يحتوي جميع التفاصيل التشغيلية، حدود الصلاحيات، سير العمل لكل وضع، نموذج التقرير، ومعايير القبول.
 
 ---
 
@@ -1078,74 +961,13 @@ project-control/tasks/
 | البند | القيمة |
 |---|---|
 | اسم العميل | Software Designer Agent |
-| اللقب | مُصمم — يرد على "يا مصمم" أو "مصمم" |
+| اللقب | مُصمم |
 | المعرّف | `SOFTWARE_DESIGNER_AGENT` |
 | الفئة | مشروط / تصميم تقني |
-| شرط الاستدعاء | للمهام ذات الأثر: DB, API, Business Logic, Security, Permissions, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic. يُستخدم أيضاً للمهام متعددة العملاء، أو التي تتجاوز 3 ملفات، أو تحمل مخاطر |
+| ملف العميل | `.opencode/agents/tera-software-designer.md` |
+| شرط الاستدعاء | للمهام ذات الأثر: DB, API, Business Logic, Security, Permissions, Workflow, Cross-module, Architecture, Migration, UI Structure, Financial/Inventory Logic |
 
-### يقرأ
-
-```text
-[active application workspace]/project-preparation/
-├── 04_USERS_ROLES_PERMISSIONS.md
-├── 05_BUSINESS_WORKFLOWS.md
-├── 06_DATA_MODEL_PREPARATION.md
-├── 07_SCREENS_AND_UI_STRUCTURE.md
-├── 08_TECHNICAL_ARCHITECTURE.md
-├── 12_BUSINESS_RULES.md
-├── 20_API_CONTRACTS.md (عند وجوده)
-├── 28_UI_UX_GUIDELINES.md
-├── PROJECT_RULES.md
-├── DECISIONS_LOG.md
-├── ISSUES_AND_GAPS.md
-وأي ملفات تحضيرية أخرى يحددها Tera
-```
-
-### ينتج
-
-```text
-TECHNICAL_SPECIFICATION.md
-```
-
-### دوره
-
-- تحليل المهمة تقنياً: التبعيات، العلاقات، المكونات، ربط البيانات، التأثيرات الجانبية، التحقق.
-- قراءة ملفات التحضير: نماذج البيانات، قواعد العمل، هيكل الشاشات، عقود API، إرشادات UI، أدوار المستخدمين.
-- إنتاج Technical Specification كاملة تشمل:
-  - الهدف التقني
-  - النطاق والحدود
-  - `Allowed Write Targets`
-  - الملفات المرجعية
-  - معايير القبول التقنية
-  - `Task Engineering Review Decision`
-  - ملاحظات المخاطر
-  - قائمة `Pre-Execution` checklist
-- رفع `Design Gap` إذا كانت وثائق التحضير غير كافية (لا تخمين).
-- فحص Lifecycle Header قبل قراءة أي ملف تحضيري (يطلب ≥ Module Baseline Approved).
-
-### Fast Path
-
-للمهام البسيطة التي تحقق ALL: ملف واحد، لا DB/API/BL/Security/Cross-module، معايير قبول واضحة — يمكن لـ Tera تخطي SDA شرط توثيق سبب التخطي في ملف المهمة.
-
-### حدوده
-
-- لا يقرر ما المهمة التالية.
-- لا يقرر النطاق بدل Tera.
-- لا ينفذ كود.
-- لا يحدّث `TASK_REGISTRY.md` أو `PROJECT_ACTIVITY_LOG.md` أو `DECISIONS_LOG.md` أو `ISSUES_AND_GAPS.md`.
-- لا يوافق على المهمة أو يغلقها.
-- لا يشغّل `Pre-Execution Gate` النهائي بدل Tera؛ يسلّم Technical Specification فقط.
-- لا ينشئ أو يفعّل أو يعدّل أو يفوض Agent آخر من تلقاء نفسه.
-
-### معايير القبول
-
-- Technical Specification تحتوي هدفاً تقنياً واحداً واضحاً.
-- يوجد فصل واضح بين `Scope` و `Out of Scope`.
-- `Allowed Write Targets` محددة بدقة.
-- الملفات المرجعية كافية وليست واسعة بلا داع.
-- معايير القبول قابلة للفحص تقنياً.
-- ملاحظات المخاطر مختصرة ومرتبطة بالمهمة فقط.
-- إذا وُجد Design Gap، تم توثيقه وليس افتراضه.
+> **التعريف الكامل:** `.opencode/agents/tera-software-designer.md` — يحتوي جميع التفاصيل التشغيلية، حدود الصلاحيات، سير العمل، Fast Path، ومعايير القبول.
 
 ---
 
@@ -1349,23 +1171,7 @@ Plan Compliance Report
 | المعرّف | `DOMAIN_RESEARCH_AGENT` |
 | الفئة | مشروط / Domain Intelligence |
 | ملف العميل | `.opencode/agents/domain-research-agent.md` |
-| شرط الاستدعاء | عندما يقرر Tera وجود حاجة إلى معرفة خارجية موثقة أو best practices أو مرجع مثل SAP / Oracle / Odoo / Dynamics، وبعد إعداد `Domain Research Brief`. **أو عندما يستدعيه TCEA مباشرة** لإجراء بحث ويب موجه عن مجال العميل أثناء Discovery أو لاقتراح Value-Added Proposals (راجع §3.2.1 الاستثناء). |
-
-### يقرأ
-
-```text
-Domain Research Brief
-project-preparation/PROJECT_RULES.md عند الحاجة
-ملفات التحضير المرتبطة بالموديول الحالي فقط
-المصادر الخارجية التي يسمح بها Tera صراحة
-```
-
-### ينتج
-
-```text
-Domain Research Report (primary — all modes)
-Research Gap Notice (عند فشل البحث)
-```
+| شرط الاستدعاء | عندما يقرر Tera وجود حاجة إلى معرفة خارجية موثقة أو best practices أو مرجع مثل SAP / Oracle / Odoo / Dynamics. **أو عندما يستدعيه TCEA مباشرة** لإجراء بحث ويب موجه عن مجال العميل أثناء Discovery أو لاقتراح Value-Added Proposals. |
 
 ### وضعا التشغيل
 
@@ -1374,62 +1180,7 @@ Research Gap Notice (عند فشل البحث)
 | Software Mode | TeraAgent | project-preparation/ أو project-control/ |
 | Consulting Mode | TCEA | client-engagement/ فقط |
 
-اكتشاف الوضع: من `mode` parameter في task description. إذا لم يُحدد: افتراضي Software.
-
-### حدوده
-
-- يجمع ويلخص معلومات موثقة فقط.
-- يذكر المصادر أو أسماءها ومستوى موثوقيتها.
-- لا يقرر النطاق النهائي.
-- لا ينشئ مهام تنفيذ.
-- لا يعدل ملفات المشروع إلا إذا أعطاه Tera ملف تقرير محددًا كـ Allowed Write Target.
-- لا يعتبر أي مصدر خارجي إلزاميًا للمشروع.
-- لا يستخدم بحثًا مفتوحًا دون `Domain Research Brief`.
-
-### عند الاستدعاء من TCEA (Consulting Mode)
-
-```text
-عندما يستدعيك TCEA (مستشار) مباشرة:
-1. مهمتك: إنتاج Domain Research Report فقط (جمع + مصادر مصنفة)
-2. السؤال البحثي يحدده TCEA في الـ task description
-3. استخدم websearch و webfetch — ابحث أولاً، اقرأ ثانياً
-4. صنّف المصادر حسب الموثوقية: Tier 1 (رسمية) / Tier 2 (مهنية) / Tier 3 (عامة)
-5. كل معلومة تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed (MR1)
-6. تكتب في client-engagement/ فقط (الملفات التي يحددها TCEA في Allowed Write Targets)
-7. لا تعدل ملفات التحضير (project-preparation/) — هذه ملكية Tera Agent
-8. لا تقرر نيابة عن Majed — معلوماتك استرشادية فقط
-```
-
-### قواعد البحث الصارمة — تجنب أخطاء 404
-
-```text
-القاعدة الذهبية: ابحث أولاً، اقرأ ثانياً.
-
-1. ❌ لا تستخدم webfetch على روابط تخمينية مباشرة
-   ✅ استخدم websearch أولاً للعثور على الروابط الصحيحة والحديثة
-
-2. ❌ لا تفترض أن رابطاً قديماً لا يزال موجوداً
-   ✅ المواقع الكبرى (SAP, Oracle, Microsoft) تعيد هيكلة مواقعها باستمرار
-
-3. ✅ إذا أعطى webfetch خطأ (404, 403, timeout):
-   - لا تتوقف — ابحث عن مصدر بديل
-   - جرّب websearch بنفس الموضوع بكلمات مختلفة
-   - وثّق في التقرير: "الرابط الأصلي غير متاح — تم استخدام مصدر بديل"
-
-4. ✅ ترتيب الأدوات الصحيح:
-   websearch("الموضوع") → يجد روابط → webfetch(الرابط) → يستخرج المحتوى
-
-5. ✅ إذا فشل webfetch عدة مرات (3+ محاولات):
-   - اعتمد على ملخص websearch فقط
-   - وثّق: "المصدر غير متاح للقراءة الكاملة — المعلومات من ملخص البحث"
-```
-
-### معايير القبول
-
-- التقرير مرتبط بالسؤال البحثي المحدد.
-- المصادر مصنفة حسب الموثوقية.
-- النتائج لا تتحول إلى متطلبات إلزامية.
-- القيود والتعارضات ومخاطر المصدر مذكورة.
+> **التعريف الكامل:** `.opencode/agents/domain-research-agent.md` — يحتوي جميع التفاصيل التشغيلية، حدود الصلاحيات، قواعد البحث الصارمة، ومعايير القبول.
 
 ---
 
@@ -1442,75 +1193,16 @@ Research Gap Notice (عند فشل البحث)
 | المعرّف | `DOMAIN_EXPERT_AGENT` |
 | الفئة | مشروط / Domain Intelligence |
 | ملف العميل | `.opencode/agents/domain-expert-agent.md` |
-| شرط الاستدعاء | عندما يحتاج Tera إلى تحويل بحث أو معرفة مجال إلى متطلبات وقواعد وWorkflow مصنفة حسب MVP / Later / Out of Scope. **أو عندما يستدعيه TCEA مباشرة** للحصول على معرفة متخصصة بمجال العميل أثناء Discovery أو لاقتراح Value-Added Proposals (راجع §3.2.1 الاستثناء). |
+| شرط الاستدعاء | عندما يحتاج Tera إلى تحويل بحث أو معرفة مجال إلى متطلبات وقواعد وWorkflow مصنفة حسب MVP / Later / Out of Scope. **أو عندما يستدعيه TCEA مباشرة** للحصول على معرفة متخصصة بمجال العميل أثناء Discovery أو لاقتراح Value-Added Proposals. |
 
-### وضعا التشغيل — Dual Mode
+### وضعا التشغيل
 
-| الوضع | المستدعي | التصنيف | المخرجات |
-|:------|:---------|:--------|:---------|
-| **Software Mode** | TeraAgent | MVP: Include now / Recommended / Defer / Out of Scope / Needs User Decision | Domain Intelligence Report |
-| **Consulting Mode** | TCEA | معرفي: Core / Supporting / Structural / Contextual / Cross-Cutting | Domain Intelligence Report + Knowledge Structure + Gap Analysis |
+| الوضع | المستدعي | المخرجات |
+|:------|:---------|:---------|
+| **Software Mode** | TeraAgent | Domain Intelligence Report (بمقاييس MVP) |
+| **Consulting Mode** | TCEA | Domain Intelligence Report + Knowledge Structure + Gap Analysis |
 
-اكتشاف الوضع: من `mode` parameter في task description. إذا لم يُحدد: يُستنتج من الـ Objective (ذكر "consulting"/"استشاري"/"دراسة" → Consulting، وإلا → Software افتراضي).
-
-### يقرأ
-
-```text
-Software Mode:
-- Domain Research Report (عند وجوده)
-- Domain Research Brief
-- project-preparation/PROJECT_RULES.md (عند الحاجة)
-- ملفات التحضير المرتبطة بالموديول الحالي فقط
-
-Consulting Mode:
-- Domain Research Report(s) — قد تكون متعددة (R01, R02, ...)
-- Domain Research Brief
-- client-engagement/ ذات الصلة (عند الحاجة)
-```
-
-### ينتج
-
-```text
-Software Mode:
-- Domain Intelligence Report (Software) — بمقاييس MVP
-
-Consulting Mode:
-- Domain Intelligence Report (Consulting) — بتصنيف معرفي
-- Knowledge Structure — هيكل هرمي (فصول ← أقسام ← أجزاء)
-- Gap Analysis — تحليل فجوات المعرفة مع الأولويات
-```
-
-### حدوده
-
-- يحلل المجال ولا يقرر النطاق النهائي — كل التوصيات [Research Hint].
-- في Software Mode: يصنف كل توصية إلى Include now / Recommended / Defer / Out of Scope / Needs User Decision.
-- في Consulting Mode: يصنف كل عنصر معرفي إلى Core / Supporting / Structural / Contextual / Cross-Cutting.
-- لا يوسع MVP أو النطاق المعتمد تلقائيًا.
-- لا يتجاوز `PROJECT_RULES.md` أو القرارات المعتمدة.
-- لا ينشئ مهام تنفيذ ولا يعتمد بدء التنفيذ.
-- لا يحول SAP / Oracle / Odoo / Dynamics إلى blueprint إلزامي.
-- لا يسعّر أو يقدر تكلفة.
-
-### عند الاستدعاء من TCEA (Consulting Mode)
-
-```text
-عندما يستدعيك TCEA (مستشار) مباشرة:
-1. الوضع: Consulting Mode تلقائياً
-2. مهمتك: تحليل Domain Research Reports وإنتاج Domain Intelligence Report + Knowledge Structure + Gap Analysis (حسب الحاجة)
-3. كل توصية تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed (MR1)
-4. تكتب في client-engagement/ فقط (الملفات التي يحددها TCEA في Allowed Write Targets)
-5. لا تعدل ملفات التحضير (project-preparation/) — هذه ملكية Tera Agent
-6. لا تقرر نيابة عن Majed — توصياتك استرشادية فقط
-7. كل عنصر معرفي يربط بمصدره (من أي Research Report)
-8. الفجوات توثق مع الأولويات (High/Medium/Low)
-```
-
-### معايير القبول
-
-- التقرير عملي وقابل لاستخدام Tera في بناء مهمة أو ملف تحضير.
-- Software Mode: كل توصية مصنفة بوضوح حسب MVP؛ ملاحظات منع التضخم واضحة.
-- Consulting Mode: الهيكل الهرمي منطقي؛ الفجوات محددة مع الأولويات؛ كل عنصر مرتبط بمصدره.
-- القرارات المطلوبة من المستخدم/Majed محددة ومحدودة.
+> **التعريف الكامل:** `.opencode/agents/domain-expert-agent.md` — يحتوي جميع التفاصيل التشغيلية، حدود الصلاحيات، سير العمل لكل وضع، ومعايير القبول.
 
 
 ### قاعدة منع الإفراط في التفويض

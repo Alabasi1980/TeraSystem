@@ -43,7 +43,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | DataDesignAgent | `DATA_DESIGN_AGENT` | `DOCUMENT_READY`: بعد وضوح الموديولات والعمليات | 4 | إذا كان التطبيق لا يملك بيانات مترابطة (مثل موقع بسيط بمحتوى ثابت) | `03_MODULES_AND_FEATURES.md` + `05_BUSINESS_WORKFLOWS.md` |
 | SolutionArchitectureAgent | `SOLUTION_ARCH_AGENT` | `PHASE_GATE`: قبل التنفيذ (Phase 5) | 5 | إذا كان المشروع صغيرًا جدًا والتقنيات محددة مسبقًا بدون قرارات معمارية مؤثرة | `08_TECHNICAL_ARCHITECTURE.md` أو `00_PROJECT_INPUTS.md` |
 | EngineeringAgent | `ENGINEERING_AGENT` | `PHASE_GATE`: عند وجود مهمة تنفيذية مع `Pre-Execution Gate: PASS` | 6 | لا يُفعّل بدون `TASK-COD-*` معتمد. لا يُفعّل لتحضير أو تحليل | ملفات التحليل والتصميم المعتمدة + `TASK-ID` + `Pre-Execution Gate: PASS` |
-| QAAndAcceptanceAgent | `QA_ACCEPTANCE_AGENT` | `PHASE_GATE`: قبل إعداد خطة التنفيذ وبعد التنفيذ وقبل Phase 7 | 5–6–7 | إذا كانت المهمة بسيطة ومعايير القبول واضحة ويمكن لـ Tera مراجعتها مباشرة | `10_TESTING_AND_ACCEPTANCE.md` أو ملفات المهمة المنفذة |
+| QAAndAcceptanceAgent | `QA_ACCEPTANCE_AGENT` | **Planning Mode:** `PHASE_GATE` + `DOCUMENT_READY`: قبل إعداد خطة التنفيذ. **Execution Mode:** `DOCUMENT_READY`: بعد تنفيذ `TASK-COD-*` يحتاج تحقق فعلي (build/test/run/connect). **كلا الوضعين:** قبل Phase 7 وقبل قبول أي مرحلة | 5–6–7 | **Planning Mode:** إذا كانت المهمة بسيطة ومعايير القبول واضحة ويمكن لـ Tera كتابتها مباشرة. **Execution Mode:** إذا كانت المهمة لا تحتاج اختبار CLI (مثل وثائق أو تحضير) | `10_TESTING_AND_ACCEPTANCE.md` (Planning) أو ملف `TASK-COD-*` المنفذ + معايير القبول (Execution) |
 | DocumentationHandoverAgent | `DOC_HANDOVER_AGENT` | `PHASE_7_GATE`: عند قرب التسليم أو في Phase 7 | 7 | إذا كان المشروع داخليًا small ولن يُسلّم لطرف آخر | ملفات التحليل والتصميم المعتمدة |
 
 ---

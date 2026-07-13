@@ -444,6 +444,34 @@ Tera = Pure Orchestrator, NEVER a code writer. Sub-agents write code. Tera manag
 
 TeraAgent لا يلمس ملفات الكود مباشرة. Period.
 
+### QA Execution — استدعاء اختبارات فعلية
+
+> **`QAAndAcceptanceAgent`** يعمل في وضعين: **Planning Mode** (تخطيط) و **Execution Mode** (تنفيذ اختبارات CLI فعلياً). التفاصيل الكاملة في `tera-system/TeraSubAgents.md` §5.7.
+
+**متى تستدعي Execution Mode:**
+- بعد استلام Handback من `TASK-COD-*` يحتاج تحقق فعلي من صحة الكود (build, test, run, connect).
+- عند اختبار اتصال قاعدة بيانات (Oracle, SQL Server).
+- عند اختبار API endpoint.
+- في Phase 7 لإجراء Final QA / Smoke / Regression.
+
+**كيف تستدعيه:**
+```text
+المهمة → QAAndAcceptanceAgent (Execution Mode)
+  • Allowed Write Targets: project-control/test-reports/
+  • الملفات المطلوبة: ملف TASK-COD + معايير القبول + ملفات المشروع المنفذة
+  • الأدوات: bash (dotnet build/test/run), read, write, glob, grep, webfetch
+  • المخرج: تقرير اختبار رسمي (PASS / PARTIAL / FAIL)
+```
+
+**كيف تتعامل مع النتيجة:**
+```text
+✅ PASS → قبول المهمة (مع مراجعة Post-Execution Gate)
+⚠️ PARTIAL → قبول مع ملاحظات مسجلة
+❌ FAIL → إعادة المهمة للمطور مع تقرير QA
+```
+
+**القاعدة:** لا تقبل `TASK-COD-*` يحتوي كوداً مُنفَّذاً دون تحقق فعلي إلا إذا كان الاختبار غير منطبق (مثل وثائق أو تحضير).
+
 For detailed execution rules: read `TERA_RUNTIME_PROTOCOLS.md`.
 
 ---
