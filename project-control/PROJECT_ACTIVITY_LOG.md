@@ -398,3 +398,11 @@
 - Summary: Full cleanup commit and push to develop branch. Removed node_modules/ and dist/ from git tracking (previously committed before .gitignore existed). Updated system files (TeraAgent, sub-agents, commands, runtime protocols/checklists), project-control logs, and client folders. Commit da78e0d7 pushed to origin/develop.
 - Decision / Result: Repository cleaned up — ~911K lines of node_modules removed from tracking. Future npm installs will not create tracked changes.
 - Next Action: None — housekeeping complete.
+
+## [2026-07-13 06:37] - GIT: Commit and Push to origin/master
+
+- Related Task: N/A (Housekeeping)
+- Actor: Tera Agent (per Majed request + explicit push approval)
+- Summary: Staged and committed 9 intended files (excluded TeraSystem.zip binary 3.03 MB). Commit d7d4e81 — activate qa-agent (moved spec from generated-agents to .opencode/agents/qa-agent.md), sync Tera runtime rules (code-boundary hard rule), update agent registry/permission/dependency/activation matrix, update SYSTEM_EVOLUTION_LOG.md, archive SCP-012. Pushed to origin/master (0182bac..d7d4e81).
+- Decision / Result: Push succeeded. TeraSystem.zip intentionally excluded (binary, not intended for text repo). No force push, no commit rewrite.
+- Next Action: Decide separately whether to add TeraSystem.zip (e.g., as a release artifact) or keep it untracked.
