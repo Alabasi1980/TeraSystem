@@ -1,4 +1,4 @@
-# TASK-COD-007: Sync Engine — Config-Driven Scheduling & Run-Status Tracking
+﻿# TASK-COD-007: Sync Engine — Config-Driven Scheduling & Run-Status Tracking
 
 ## 1. Task Information
 
@@ -32,7 +32,7 @@ sync API task.
 
 ## 4. Allowed Write Targets
 
-- `clients/الماجد-لادارة-المستودعات/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Api/**`
+- `clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Api/**`
 - `project-control/tasks/TASK-COD-007.md`
 
 ## 5. Forbidden Files / Actions

@@ -1,0 +1,329 @@
+<UserControl x:Class="TeraQuotation.Views.QuotationFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:TeraQuotation.ViewModels"
+             d:DataContext="{d:DesignInstance vm:QuotationFormViewModel}"
+             FlowDirection="RightToLeft"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1100">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ══════════ Row 0: Header ══════════ -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="إنشاء عرض سعر جديد"
+                       FontSize="24" FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+            <Button Content="الصفحة الرئيسية"
+                    Command="{Binding GoToSettingsCommand}"
+                    Margin="20,0,0,0" Padding="10,5"
+                    Background="#EEE" BorderThickness="1" Cursor="Hand"/>
+        </StackPanel>
+
+        <!-- ══════════ Row 1: Quote Info ══════════ -->
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="رقم العرض:" Grid.Column="0"
+                       Margin="5" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding QuoteNumber}" IsReadOnly="True"
+                     Grid.Column="1" Margin="5" Background="#F0F0F0"
+                     ToolTip="يُولّد تلقائياً"/>
+
+            <TextBlock Text="التاريخ:" Grid.Column="2"
+                       Margin="5" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding Date}"
+                        Grid.Column="3" Margin="5"
+                        ToolTip="تاريخ اليوم"/>
+
+            <TextBlock Text="الوصف:" Grid.Column="4"
+                       Margin="5" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Description}"
+                     Grid.Column="5" Margin="5"
+                     ToolTip="وصف مختصر لعرض السعر (اختياري)"/>
+        </Grid>
+
+        <!-- ══════════ Row 2: Supplier Chips ══════════ -->
+        <Border Grid.Row="2" Margin="0,0,0,10" Padding="10"
+                BorderBrush="#E0E0E0" BorderThickness="1"
+                CornerRadius="8" Background="#FAFAFA">
+            <StackPanel>
+                <TextBlock Text="الموردون:" FontWeight="Bold" Margin="0,0,0,5"
+                           Foreground="#333"/>
+                <WrapPanel Orientation="Horizontal">
+
+                    <!-- Supplier Chips -->
+                    <ItemsControl ItemsSource="{Binding SelectedSuppliers}"
+                                  Margin="0,0,10,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#E3F2FD" CornerRadius="12"
+                                        Padding="10,5" Margin="3"
+                                        BorderBrush="#90CAF9" BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#1565C0"
+                                                   FontWeight="SemiBold"
+                                                   Margin="0,0,6,0"/>
+                                        <Button Content="&#x2715;"
+                                                Click="RemoveSupplierChip_Click"
+                                                Tag="{Binding}"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Foreground="#E53935"
+                                                Cursor="Hand"
+                                                FontSize="11"
+                                                Padding="2"
+                                                ToolTip="حذف المورد"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Max suppliers indicator -->
+                    <TextBlock VerticalAlignment="Center"
+                               Foreground="#888" FontSize="12"
+                               Margin="0,0,10,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedSuppliers.Count}"
+                                                 Value="3">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="Text" Value="(الحد الأقصى)"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <!-- Add Supplier Button -->
+                    <Button Content="إضافة مورد +"
+                            Click="SupplierSearchButton_Click"
+                            Background="#4CAF50" Foreground="White"
+                            BorderThickness="0" Padding="12,5"
+                            Cursor="Hand" FontWeight="Bold"
+                            ToolTip="إضافة مورد جديد للعرض">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedSuppliers.Count}"
+                                                 Value="3">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- ══════════ Row 3: DataGrid ══════════ -->
+        <DataGrid x:Name="ItemsDataGrid"
+                  ItemsSource="{Binding Items}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="False"
+                  FlowDirection="RightToLeft"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  SelectionMode="Single"
+                  Margin="0,5"
+                  MinHeight="200"
+                  Grid.Row="3"
+                  AlternatingRowBackground="#F8F9FA"
+                  GridLinesVisibility="Horizontal"
+                  HorizontalGridLinesBrush="#E0E0E0"
+                  HeadersVisibility="Column"
+                  BorderBrush="#E0E0E0"
+                  BorderThickness="1">
+            <DataGrid.Columns>
+
+                <!-- ─── عمود القطعة (مع بحث) ─── -->
+                <DataGridTemplateColumn Header="القطعة" Width="200" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="ItemSearch_Click"
+                                    Tag="{Binding}"
+                                    Background="Transparent"
+                                    HorizontalContentAlignment="Right"
+                                    Cursor="Hand"
+                                    BorderThickness="0"
+                                    Padding="5,2">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Foreground" Value="#333"/>
+                                        <Setter Property="FontSize" Value="13"/>
+                                    </Style>
+                                </Button.Style>
+                                <Button.Content>
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               TextTrimming="CharacterEllipsis"
+                                               ToolTip="{Binding DisplayName}"/>
+                                </Button.Content>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- ─── عمود الكمية ─── -->
+                <DataGridTemplateColumn Header="الكمية" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="60"
+                                     HorizontalContentAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     Margin="2"
+                                     ToolTip="الكمية المطلوبة"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- ─── عمود الوحدة ─── -->
+                <DataGridTextColumn Header="الوحدة"
+                                    Binding="{Binding Unit}"
+                                    Width="80"
+                                    IsReadOnly="True"/>
+
+                <!-- ─── أعمدة الموردين الديناميكية تُضاف برمجياً ─── -->
+                <!-- (انظر RebuildColumns في Code-Behind) -->
+
+                <!-- ─── عمود حذف ─── -->
+                <DataGridTemplateColumn Header="حذف" Width="60">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="&#x2715;"
+                                    Click="RemoveRow_Click"
+                                    Tag="{Binding}"
+                                    Background="Transparent"
+                                    Foreground="#E53935"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    FontWeight="Bold"
+                                    FontSize="14"
+                                    HorizontalContentAlignment="Center"
+                                    ToolTip="حذف الصف"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- ══════════ Row 4: Action Buttons ══════════ -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal"
+                    HorizontalAlignment="Center" Margin="0,10">
+            <Button Content="إضافة ص فارغ +"
+                    Command="{Binding AddItemRowCommand}"
+                    Background="#FF9800" Foreground="White"
+                    FontWeight="Bold" Padding="15,10"
+                    Margin="5" BorderThickness="0"
+                    Cursor="Hand" FontSize="13"/>
+            <Button Content="&#x1F4BE; حفظ كمسودة"
+                    Command="{Binding SaveAsyncCommand}"
+                    Background="#1A73E8" Foreground="White"
+                    FontWeight="Bold" Padding="20,12"
+                    Margin="5" BorderThickness="0"
+                    Cursor="Hand" FontSize="14"/>
+        </StackPanel>
+
+        <!-- ══════════════════════════════════════════════ -->
+        <!--  Popups (داخل Grid — لا يؤثرون على التخطيط) -->
+        <!-- ══════════════════════════════════════════════ -->
+
+        <!-- ─── Popup: بحث عن قطعة ─── -->
+        <Popup x:Name="ItemSearchPopup"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               Placement="Bottom"
+               PopupAnimation="Fade">
+            <Border Background="White" BorderBrush="#CCC"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="12" Width="380" MaxHeight="420" Margin="5">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12" Opacity="0.25" ShadowDepth="4"/>
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock Text="بحث عن قطعة"
+                               FontWeight="Bold" FontSize="15"
+                               Margin="0,0,0,8" Foreground="#333"/>
+                    <TextBox x:Name="ItemSearchBox"
+                             TextChanged="ItemSearchBox_TextChanged"
+                             Margin="0,0,0,8" Padding="8" FontSize="13"
+                             ToolTip="اكتب اسم القطعة للبحث"/>
+                    <Border BorderBrush="#EEE" BorderThickness="1"
+                            CornerRadius="4" MaxHeight="300">
+                        <ListBox x:Name="ItemResultsList"
+                                 ItemsSource="{Binding FilteredItems}"
+                                 DisplayMemberPath="Name"
+                                 SelectionChanged="ItemResults_SelectionChanged"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 BorderThickness="0"
+                                 Padding="4"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!-- ─── Popup: بحث عن مورد ─── -->
+        <Popup x:Name="SupplierSearchPopup"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               Placement="Bottom"
+               PopupAnimation="Fade">
+            <Border Background="White" BorderBrush="#CCC"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="12" Width="320" MaxHeight="380" Margin="5">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12" Opacity="0.25" ShadowDepth="4"/>
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock Text="بحث عن مورد"
+                               FontWeight="Bold" FontSize="15"
+                               Margin="0,0,0,8" Foreground="#333"/>
+                    <TextBox x:Name="SupplierSearchBox"
+                             TextChanged="SupplierSearchBox_TextChanged"
+                             Margin="0,0,0,8" Padding="8" FontSize="13"
+                             ToolTip="اكتب اسم المورد للبحث"/>
+                    <Border BorderBrush="#EEE" BorderThickness="1"
+                            CornerRadius="4" MaxHeight="260">
+                        <ListBox x:Name="SupplierResultsList"
+                                 ItemsSource="{Binding FilteredSuppliers}"
+                                 DisplayMemberPath="Name"
+                                 SelectionChanged="SupplierResults_SelectionChanged"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 BorderThickness="0"
+                                 Padding="4"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+    </Grid>
+</UserControl>

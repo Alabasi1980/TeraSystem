@@ -414,3 +414,157 @@
 - Summary: Merged origin/develop into local master via fast-forward (50dc18a7 → 7866b5f4), which brought the full WarehouseDashboard client project (APP-WarehouseDashboard: .NET Api/Web/OracleTest, 101 files, +9630/-514) plus updated project-control task/state logs. Pushed master to origin (e8b04e06 → 7866b5f4, fast-forward, no force, no rewrite). Ran git pull — already up to date.
 - Decision / Result: local master = origin/master = 7866b5f4. All develop updates now in master locally and remotely. Clean fast-forward, zero conflicts. TeraSystem.zip remains untracked.
 - Next Action: None. Branch sync complete.
+
+## [2026-07-13 18:30] - BLUEPRINT_CONFIRMATION_GATE: PASS
+
+- Related Task: APPLICATION_BLUEPRINT.md
+- Actor: Majed (approval) → TeraAgent (execution)
+- Summary: Majed approved APPLICATION_BLUEPRINT.md → status changed from `draft` to `approved_for_preparation`. Updated Blueprint Confirmation Gate section and DECISIONS_LOG.md.
+- Decision / Result: ✅ Blueprint معتمد وجاهز للتحضير الرسمي
+- Next Action: بدء Phase 2 — Project Decision Formation
+
+## [2026-07-13 18:35] - PHASE_2_PROJECT_DECISION: COMPLETE
+
+- Related Task: TERA_PROJECT_DECISION.md
+- Actor: TeraAgent
+- Summary: أنتجت TERA_PROJECT_DECISION.md بتصنيف المشروع Small، اختيار WPF + .NET 8 + SQLite، اختيار 8 ملفات تحضير أساسية، تحديد فريق tera-software-designer + EngineeringAgent. بالإضافة إلى مسودة Technology Profile `dotnet-wpf-sqlite`.
+- Decision / Result: ✅ مرفوع للموافقة
+- Next Action: انتظار اعتماد Majed
+
+## [2026-07-13 18:40] - PHASE_2_DECISION_APPROVED + PHASE_3_START
+
+- Related Task: TERA_PROJECT_DECISION.md + Technology Profile `dotnet-wpf-sqlite`
+- Actor: Majed (approval) → TeraAgent (execution)
+- Summary: Majed اعتمد TERA_PROJECT_DECISION.md و Technology Profile. تم تحديث الحالة في PROJECT_STATE.md و DECISIONS_LOG.md. بدء Phase 3 — إنشاء PREPARATION_PLAN.md.
+- Decision / Result: ✅ Phase 2 كاملة. Technology Profile معتمد. الانتقال إلى Phase 3.
+- Next Action: إنتاج PREPARATION_PLAN.md + تفعيل tera-software-designer
+
+## [2026-07-13 18:50] - PHASE_4_PREP_DELEGATION: 08_TECHNICAL_ARCHITECTURE.md
+
+- Related Task: PREPARATION_PLAN.md
+- Actor: TeraAgent → tera-software-designer
+- Summary: فوّضت tera-software-designer لإنتاج أول ملف تحضيري: 08_TECHNICAL_ARCHITECTURE.md. Handback تم بنجاح — 12 قسماً، 360+ سطر. قرارات معمارية مهمة: MVVM + DI + EF Core + QuestPDF + FixedDocument + نشر Single Exe.
+- Decision / Result: ✅ 08_TECHNICAL_ARCHITECTURE.md جاهز
+- Next Action: تفويض 06_DATA_MODEL_PREPARATION.md
+
+## [2026-07-13 19:05] - PHASE_4_PREP_DELEGATION: 06_DATA_MODEL_PREPARATION.md
+
+- Related Task: PREPARATION_PLAN.md
+- Actor: TeraAgent → tera-software-designer
+- Summary: فوّضت tera-software-designer لإنتاج 06_DATA_MODEL_PREPARATION.md. تم بنجاح — 11 قسماً، 53.8 KB، 8 كيانات مفصّلة، ERD نصي، 10 سيناريوهات LINQ. تم رصد خلافين مع Architecture (Status حالات، IsLocked) وتم تضمين توصيات.
+- Decision / Result: ✅ 06_DATA_MODEL_PREPARATION.md جاهز
+- Next Action: تفويض 07_SCREENS_AND_UI_STRUCTURE.md
+
+## [2026-07-13 19:15] - PHASE_4_PREP_DELEGATION: 07_SCREENS_AND_UI_STRUCTURE.md
+
+- Related Task: PREPARATION_PLAN.md
+- Actor: TeraAgent → tera-software-designer
+- Summary: فوّضت tera-software-designer لإنتاج 07_SCREENS_AND_UI_STRUCTURE.md. تم بنجاح — 67 KB، 5 شاشات مفصّلة، 62+ عنصراً، 35+ أمراً، 8 Converters، 20+ حالة شاشة. RTL بالكامل. توصيات للملفات التالية.
+- Decision / Result: ✅ 07_SCREENS_AND_UI_STRUCTURE.md جاهز
+- Next Action: تفويض 05_BUSINESS_WORKFLOWS.md + 13_REPORTS_AND_DASHBOARDS.md (بالتوازي)
+
+## [2026-07-13 19:30] - PHASE_4_PREP_DELEGATION: 05_BUSINESS_WORKFLOWS.md + 13_REPORTS_AND_DASHBOARDS.md
+
+- Related Task: PREPARATION_PLAN.md
+- Actor: TeraAgent → tera-software-designer (مهمتان بالتوازي)
+- Summary: 
+  - 05_BUSINESS_WORKFLOWS.md: 112.4 KB، 11 Workflow، State Machine كامل (5 حالات)، 25+ Edge Case
+  - 13_REPORTS_AND_DASHBOARDS.md: 52.6 KB، 4 تقارير (D1-D4)، DTOs، 25 سيناريو اختبار
+- Decision / Result: ✅ جميع ملفات التحضير الأساسية جاهزة (8 ملفات)
+- Next Action: بدء Phase 5 — إنشاء PROJECT_MASTER_PLAN.md
+
+## [2026-07-13 19:35] - PHASE_5_EXECUTION_PLANNING: PROJECT_MASTER_PLAN.md
+
+- Related Task: PROJECT_MASTER_PLAN.md
+- Actor: TeraAgent
+- Summary: أنتجت PROJECT_MASTER_PLAN.md بتفصيل 19 مهمة (TASK-COD-001→019) في 4 Batches، تصنيف MVP، هيكل المجلدات.
+- Decision / Result: ✅ PROJECT_MASTER_PLAN.md جاهز — مرفوع للموافقة
+- Next Action: انتظار اعتماد Majed
+
+## [2026-07-13 19:40] - PHASE_5_APPROVED + EXECUTION_AUTHORIZATION: GRANTED
+
+- Related Task: PROJECT_MASTER_PLAN.md
+- Actor: Majed (approval) → TeraAgent (execution)
+- Summary: Majed اعتمد PROJECT_MASTER_PLAN.md وأذن بدخول Build Mode. Self-Diagnosis: PASS. Execution Authorization مسجّل.
+- Decision / Result: ✅ Build Mode نشط — التنفيذ مسموح
+- Next Action: تفعيل EngineeringAgent لـ TASK-COD-001
+
+## [2026-07-13 19:55] - TASK-COD-001: COMPLETED ✅
+
+- Related Task: TASK-COD-001 (Scaffold WPF + MVVM + SQLite)
+- Actor: EngineeringAgent
+- Summary: Scaffold كامل بنجاح — 8 Entities, AppDbContext, Migrations, DI, SQLite DB. 0 Build Errors. الحزم: CommunityToolkit.Mvvm 8.4.2, EF Core Sqlite 10.0.9, QuestPDF 2026.7.1. مشكلة: AppDbContextFactory أنشئت لحل خطأ Design-Time.
+- Decision / Result: ✅ Post-Execution Review: PASS. المشروع جاهز لتطوير الميزات.
+- Next Action: TASK-COD-002 — Services Layer
+
+## [2026-07-13 20:00] - 🔴 CRITICAL FIX: مسار كود TeraQuotation
+
+- Related Task: TASK-COD-001
+- Actor: Majed (discovery) → TeraAgent (fix)
+- Summary: EngineeringAgent أنشأ المشروع في `D:\Teranoo Foundation\Customer 01 - Noor\TeraSystem\src\TeraQuotation\` (جذر المنظومة) بدلاً من مسار العميل الصحيح. تم نقل الملفات إلى `clients/CLIENT-YAZID-MAHER/applications/APP-TeraQuotation/source/TeraQuotation/`. تم تسجيل GAP-0002 في ISSUES_AND_GAPS.md و GAP-001/GAP-002 في AGENT_GAPS_LOG.md.
+- Decision / Result: ✅ تم التصحيح. المسار الصحيح معتمد لكل المهام اللاحقة.
+- Next Action: تصحيح سلوك EngineeringAgent عبر Hares + استئناف TASK-COD-002
+
+## [2026-07-13 20:10] - 🔴 CRITICAL FIX: تصحيح مسارات جميع ملفات العميل
+
+- Related Task: GAP-003 (هيكل المسارات)
+- Actor: Majed (توجيه) → TeraAgent (تنفيذ)
+- Summary: اكتشف Majed أن جميع ملفات TeraQuotation (تحضير وتحكم) كانت في جذر المنظومة خطأً. تم نقل 8 ملفات تحضير و 3 ملفات تحكم إلى `clients/CLIENT-YAZID-MAHER/applications/APP-TeraQuotation/`. تم تسجيل GAP-003 في AGENT_GAPS_LOG.md. تمت إعادة PROJECT_STATE.md في الجذر إلى القالب الفارغ.
+- Decision / Result: ✅ كل ملفات TeraQuotation في مسارها الصحيح. المسار الصحيح: `clients/.../APP-TeraQuotation/`
+- Next Action: استئناف TASK-COD-002
+
+## [2026-07-13 20:25] - TASK-COD-002: COMPLETED ✅
+
+- Related Task: TASK-COD-002 (Services Layer — 7 Interfaces + Implementations)
+- Actor: EngineeringAgent
+- Summary: تم إنشاء 18 ملف — 7 Interfaces, 7 Implementations(stubs), 4 Report DTOs, تحديث DI. 0 Build Errors. NavigationService بتنفيذ حقيقي (Frame + Stack). ملاحظة: MainWindow.xaml لا يحتوي MainFrame بعد — سيُضاف في مهمة UI.
+- Decision / Result: ✅ Services Layer جاهزة
+- Next Action: TASK-COD-003 — إنشاء شاشة Login S1
+
+## [2026-07-13 20:45] - TASK-COD-003: COMPLETED ✅
+
+- Related Task: TASK-COD-003 (Login Screen S1 — Auth + LoginView + MainFrame)
+- Actor: EngineeringAgent
+- Summary: Login Screen كاملة — IAuthService/AuthService (BCrypt), LoginViewModel, LoginView.xaml (RTL), Converters (InverseBoolToVis, NullToVis), MainWindow مع Frame, DI كامل. 0 Build Errors. `dotnet run` يعرض شاشة Login مع FirstTimeSetup.
+- Decision / Result: ✅ شاشة Login تعمل — مستعد للمهمة التالية
+- Next Action: TASK-COD-004 — Settings Screen (S2) — هيكل عام + 4 Tabs
+
+## [2026-07-13 21:00] - TASK-COD-004: COMPLETED ✅
+
+- Related Task: TASK-COD-004 (Settings Screen S2 — 4 Tabs + CRUD)
+- Actor: EngineeringAgent
+- Summary: Settings Screen كاملة — 4 Tabs (الموردين، القطع، التوقيعات، الترويسة). CRUD كامل مع try/catch. حذف محمي (DbUpdateException). ترتيب التواقيع (Move up/down). ترويسة عبر key-value. 0 Build Errors. Login → Settings transition تعمل.
+- Decision / Result: ✅ Settings جاهزة
+- Next Action: TASK-COD-005 — Quotation Form (S3) — الجوهر
+
+## [2026-07-13 21:15] - TASK-COD-005: COMPLETED ✅
+
+- Related Task: TASK-COD-005 (Quotation Form S3 — الجوهر)
+- Actor: EngineeringAgent
+- Summary: QuotationForm كاملة — تسلسل تلقائي Q-001+, DataGrid ب7 أعمدة، إضافة من الكتالوج، Quick-Add، حفظ كمسودة مع DB. QuotationService بتنفيذ حقيقي. 0 Build Errors. Login → Settings → QuotationForm → Save → Settings.
+- Decision / Result: ✅ QuotationForm تعمل مع DB
+- Next Action: TASK-COD-006 — Quotation List (S4) + Detail View
+
+## [2026-07-13 21:30] - TASK-COD-006: COMPLETED ✅
+
+- Related Task: COD-006 (Quotation List S4 + Detail View)
+- Actor: EngineeringAgent
+- Summary: قائمة العروض (بحث/تصفية/فتح) + شاشة تفاصيل (تعديل/إضافة قطع/تغيير حالة/طباعة/PDF). 10 ملفات، 0 Errors. التدفق الكامل: Form → Save → List → Open → Detail → Save → List يعمل.
+- Decision / Result: ✅ Core Quotation كامل
+- Next Action: TASK-COD-008 — الشاشة الخامسة (S5) + Backup
+
+## [2026-07-13 21:40] - TASK-COD-007: COMPLETED ✅
+
+- Related Task: COD-007 (طباعة A4 + PDF)
+- Actor: EngineeringAgent
+- Summary: PdfService حقيقي بـ QuestPDF، PrintHelper لطباعة A4 عبر FixedDocument، ربط أزرار طباعة/PDF في DetailView. PDF يُحفظ على Desktop. طباعة بدون أسعار ونهائية. 0 Errors.
+- Decision / Result: ✅ Core printing complete
+- Next Action: TASK-COD-008 — الشاشة الخامسة (S5) + Backup
+
+## [2026-07-13 21:50] - TASK-COD-008: COMPLETED ✅
+
+- Related Task: COD-008 (Reports S5 + Backup)
+- Actor: EngineeringAgent
+- Summary: 4 تقارير (موردين، قطع، إحصائيات) عبر IReportService + Backup/Restore SQLite. زر تقارير من Settings. 12 ملف، 0 Errors.
+- Decision / Result: ✅ Reports + Backup complete
+- Next Action: TASK-COD-009 — Outlook + Final Polish

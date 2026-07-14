@@ -1,4 +1,4 @@
-# AGENT_IMPROVEMENT_SUGGESTIONS.md
+﻿# AGENT_IMPROVEMENT_SUGGESTIONS.md
 
 ## Purpose
 
@@ -89,8 +89,8 @@ project-control/DECISIONS_LOG.md             ← خطأ (عكّس القالب)
 
 المجلدات الصحيحة:
 ```
-clients/الماجد-لادارة-المستودعات/applications/APP-WarehouseDashboard/project-preparation/
-clients/الماجد-لادارة-المستودعات/applications/APP-WarehouseDashboard/project-control/
+clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/project-preparation/
+clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/project-control/
 ```
 
 ### Impact
@@ -132,9 +132,9 @@ It requires review by Majed and formal implementation through TeraSystemEvolutio
 
 ---
 
-**Status:** Approved for SCP
-**SCP:** SCP-2026-07-12-092
-**Processed by:** TeraSystemEvolutionAgent (حارس) on 2026-07-12
+**Status:** Implemented (SCP-2026-07-13-094)
+**Processed by:** TeraSystemEvolutionAgent (حارس) on 2026-07-13
+**Details:** Write Location Rule + Path Enforcement implemented across `tera.md` §12, `TERA_RUNTIME_PROTOCOLS.md` §3.1, `TeraSubAgents.md` §9, and `engineering-agent.md` §10.1
 
 ---
 
@@ -385,3 +385,8 @@ tera-system/runtime/TERA_RUNTIME_TEMPLATES.md
 
 ### Execution Authority
 Not active. Requires review by Majed and formal implementation through TeraSystemEvolutionAgent after approval.
+
+---
+
+**Status:** Implemented (SCP-2026-07-13-095)
+**Verified by:** TeraSystemEvolutionAgent (حارس) on 2026-07-13 — added full TERA_HANDOFF_PACKAGE.md template (incl. SCP-038 section) to TERA_RUNTIME_TEMPLATES.md §36

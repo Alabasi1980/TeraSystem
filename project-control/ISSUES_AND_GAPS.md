@@ -44,3 +44,18 @@
 - Verification:
   - `bun run typecheck` from `clients/TeraAi/packages/opencode` — PASS
   - `bun test test/gateway/context-api.test.ts` — PASS, 7/7
+
+## GAP-0002 - EngineeringAgent أنشأ كود التطبيق في المسار الخطأ
+
+- Source Task: TASK-COD-001
+- Discovered By: Majed
+- Severity: **Critical**
+- Status: Resolved (الملفات منقولة)
+- Description: EngineeringAgent أنشأ مشروع TeraQuotation في `D:\Teranoo Foundation\Customer 01 - Noor\TeraSystem\src\TeraQuotation\` (جذر المنظومة) بدلاً من مسار العميل الصحيح داخل `clients/CLIENT-YAZID-MAHER/applications/APP-TeraQuotation/source/`. السبب: TeraAgent لم يحدد Allowed Write Targets بالكامل عند التفويض.
+- Impact: تلويث جذر المنظومة بملفات تطبيق لا تنتمي إليها. لو استمر، كان سيؤدي إلى التزام كود العميل مع كود TeraSystem في Git history دون فصل.
+- Recommended Action: 
+  1. ✅ نقل الملفات إلى `clients/.../source/TeraQuotation/` (تم)
+  2. 🔄 تصحيح سلوك EngineeringAgent بإضافة قاعدة صارمة عن Allowed Write Targets (مطلوب عبر Hares)
+  3. 🔄 تحديث قالب تفويض TeraAgent ليشمل المسار الكامل للـ Client
+- Target Task / Phase: AFTER TASK-COD-001 — تصحيح سلوك الوكيل
+- Owner: TeraAgent (نقل) + Hares (تصحيح سلوك EngineeringAgent)
