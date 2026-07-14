@@ -59,6 +59,9 @@
 | TASK-COD-020 | Syncfusion License + Scheduled Sync | engineering-agent | ⏳ Pending (B7) | B7 | 2026-07-13 |
 | TASK-COD-021 | UAT + Deployment Testing | engineering-agent + Tera | ⏳ Pending (B7) | B7 | 2026-07-13 |
 | TASK-COD-FIX-001 | Critical & Important Bug Fixes (self-audit) | engineering-agent | ✅ Accepted (build PASS, 11/11 AC) | FIX | 2026-07-13 |
+| TASK-COD-022 | Admin Panel Home + Navigation + Layout Unification | engineering-agent + ui-designer | ✅ Approved | B8 | 2026-07-13 |
+| TASK-COD-023 | Sync Logs Page | engineering-agent | ✅ Approved | B8 | 2026-07-13 |
+| TASK-COD-024 | Sync Settings Admin Page | engineering-agent | ✅ Approved | B8 | 2026-07-13 |
 
 ---
 

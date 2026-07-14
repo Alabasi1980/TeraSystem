@@ -246,7 +246,45 @@ Phase 5 (هذا الملف) → EXECUTION_BATCH_PLAN.md → TASK-COD-* → Build
 
 ---
 
-## 7. Phase F — Deployment (النشر)
+## 7. Phase G — Gap Closure (سد الثغرات)
+
+**الهدف:** إغلاق كل الثغرات المتبقية لضمان عمل التطبيق بالكامل
+**المدة المقدرة:** 5–7 ساعة
+**التبعية:** Phases A–F (كل الميزات الأساسية مبنية)
+
+### G.1 — TASK-COD-022: Admin Panel Home + Navigation
+
+| البند | القيمة |
+|---|---|
+| **الهدف** | إعادة بناء صفحة الرئيسية للادمن مع روابط تنقل + توحيد التصميم |
+| **الوكيل** | engineering-agent + ui-designer |
+| **ملف التصميم** | `07_SCREENS_AND_UI_STRUCTURE.md` (Admin Panel) |
+| **مخرجات المتوقع** | صفحة رئيسية ببطاقات تنقل + توحيد `_CardsLayout` لجميع الصفحات |
+| **قبول** | ✅ تنقل يعمل + تصميم موحّد + لا CSS مكرر |
+
+### G.2 — TASK-COD-023: Sync Logs Page
+
+| البند | القيمة |
+|---|---|
+| **الهدف** | صفحة عرض سجلات المزامنة |
+| **الوكيل** | engineering-agent |
+| **ملف التصميم** | `07_SCREENS_AND_UI_STRUCTURE.md` §5.8 |
+| **مخرجات المتوقع** | صفحة SyncLogs مع Syncfusion Grid + فلتر + حالة فارغة |
+| **قبول** | ✅ سجلات تظهر + فلتر يعمل + تصميم موحّد |
+
+### G.3 — TASK-COD-024: Sync Settings Admin Page
+
+| البند | القيمة |
+|---|---|
+| **الهدف** | صفحة إعدادات المزامنة (فاصل + تشغيل تلقائي) |
+| **الوكيل** | engineering-agent |
+| **ملف التصميم** | — (مفقود من المواصفات الأصلية) |
+| **مخرجات المتوقع** | صفحة SyncSettings مع نموذج تعديل + حفظ عبر EF Core |
+| **قبول** | ✅ إعدادات تُقرأ + تُعدّل + تُحفظ |
+
+---
+
+## 8. Phase F — Deployment (النشر)
 
 **الهدف:** نشر النظام على IIS وإعداد البيئة
 **المدة المقدرة:** 16–24 ساعة
@@ -383,7 +421,8 @@ TASK-COD-001 (Oracle test)          ──┬──> 002 (SQL Server DB)
 | Phase C (Admin Panel) | TASK-COD-003 ✅ (يمكن بدء C-A بعد 003، لا ينتظر B) |
 | Phase D (Dashboard) | TASK-COD-006 ✅ (Sync API) + 004 ✅ (بيانات) |
 | Phase E (Polish) | TASK-COD-011 ✅ (Dashboard يعمل) |
-| Phase F (Deployment) | جميع TASK-COD-* من A–E ✅ |
+| Phase G (Gap Closure) | جميع TASK-COD-* من A–E ✅ + FIX-001 ✅ |
+| Phase F (Deployment) | Phase G ✅ (كل الثغرات مغلقة) |
 | Phase 7 (Closure) | ALL TASK-COD-* ✅ + Delivery Readiness |
 
 ---
@@ -406,3 +445,4 @@ TASK-COD-001 (Oracle test)          ──┬──> 002 (SQL Server DB)
 | Version | Date | Author | Changes |
 |---|---|---|---|
 | 1.0 | 2026-07-12 | TeraAgent | Initial detailed execution plan (21 TASK-COD-* across 6 phases) |
+| 1.1 | 2026-07-13 | TeraAgent | Added Phase G (Gap Closure): TASK-COD-022/023/024 + Batch B8 |
