@@ -294,6 +294,39 @@ UI Designer ← UI Code (React + Tailwind — شكل فقط)
 
 ---
 
+## 10.1 Path Validation Gate — بوابة التحقق من المسار (قاعدة إلزامية)
+
+**قبل كتابة أو إنشاء أي ملف، يجب تنفيذ هذا الفحص:**
+
+```text
+Path Validation Gate:
+1. المسار المستهدف = المسار الذي سأكتب فيه الملف
+2. هل المسار المسموح (Allowed Write Targets) محدد في التفويض؟
+   - لا → STOP. أطلب من TeraAgent توضيح Allowed Write Targets
+3. هل المسار النهائي Fully Resolved Path (وليس نسبياً)؟
+   - نسبي → أحلّه إلى مسار كامل نسبةً إلى Workspace Root
+4. هل المسار النهائي يبدأ بـ Allowed Write Targets المحدد في التفويض؟
+   - نعم → أكمل
+   - لا → STOP. أبلغ TeraAgent أن المسار خارج النطاق المسموح
+5. هل المسار النهائي خارج مجلدات النظام المحمية (tera-system/, .opencode/, project-control/ الجذر, project-preparation/ الجذر)؟
+   - خارج → أحتاج تأكيداً إضافياً قبل الكتابة
+```
+
+**أمثلة:**
+| الموقف | المسار المستلم | المسار النهائي | الفحص | الإجراء |
+|--------|---------------|----------------|------|--------|
+| تفويض صحيح | `clients/.../APP-TeraQuotation/source/` | `D:\...\clients\...\APP-TeraQuotation\source\Models\Invoice.cs` | ✅ يبدأ بـ Allowed Write Targets | أكتب |
+| مسار نسبي | `src/TeraQuotation/` | بعد الحل: `D:\...\TeraSystem\src\TeraQuotation\` | ❌ خارج clients/ | STOP — أطلب توضيحاً |
+| كتابة في جذر النظام | `project-control/` | `D:\...\TeraSystem\project-control\` | ⚠️ مجلد قالب نظامي | أتأكد: هل هذا لمشروع عميل؟ |
+
+**القاعدة الذهبية:**
+```
+When in doubt about the path → STOP AND ASK.
+Do not assume. Do not guess. Do not write outside Allowed Write Targets.
+```
+
+---
+
 ## 11. ما لا أفعله
 
 ```

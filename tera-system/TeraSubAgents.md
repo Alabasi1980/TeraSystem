@@ -1281,6 +1281,25 @@ Pre-Execution Gate Result:
 Done / Blocked / Needs Clarification / Rework Needed
 ```
 
+### قاعدة إلزامية — المسارات في التفويض
+
+- **Allowed Write Targets** يجب أن تكون **مسارات كاملة (Absolute Paths)** أو مسارات نسبةً إلى `ClientAppPath` (يُعرَّف في التفويض).
+- حقل إضافي إلزامي لمشاريع العملاء الخارجيين:
+  ```text
+  ClientAppPath: [المسار الكامل لمجلد التطبيق، مثل: D:\...\clients\CLIENT-XXX\applications\APP-XXX]
+  ```
+- **ممنوع** استخدام مسارات نسبية بدون `ClientAppPath`.
+- العميل الفرعي **ملزم** بالتحقق من أن المسار النهائي يقع داخل `Allowed Write Targets` قبل أي كتابة.
+
+### Checkpoint للعملاء الفرعيين (فحص المسار قبل الكتابة)
+
+قبل بدء أي مهمة كتابة، يجب على العميل الفرعي تأكيد:
+```text
+[Path Check] Allowed Write Targets are absolute or relative to ClientAppPath: ✅
+[Path Check] Final target path starts with Allowed Write Targets: ✅
+[Path Check] Not writing to system template folders (root project-preparation/ or project-control/): ✅
+```
+
 ---
 
 # 10. بروتوكول تسليم النتيجة

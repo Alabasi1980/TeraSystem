@@ -45,6 +45,7 @@ If the stack is still unclear, do not activate a final profile yet.
 | `nextjs-prisma` | Next.js + TypeScript + PostgreSQL + Prisma | Available | Use when the approved architecture matches this stack |
 | `dotnet-blazor-ef` | .NET Blazor + EF Core | Available | Ready for future .NET-oriented projects |
 | `effect-bun-opencode` | TypeScript + Effect TS + Bun + OpenCode-style monorepo | Available | Approved for TeraOpenCode engine implementation tasks starting with TASK-COD-001 |
+| `dotnet-wpf-sqlite` | C# (.NET 8) + WPF + CommunityToolkit.Mvvm + SQLite | ✅ **Approved** | WPF Desktop — معتمد من Majed لتطبيق TeraQuotation |
 
 ## Placeholder Candidates
 

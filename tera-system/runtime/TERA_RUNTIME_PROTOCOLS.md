@@ -197,6 +197,13 @@ Tera uses a two-tier write location system. The root-level `project-preparation/
 - Set `Allowed Write Targets` to the client application sub-path during task setup.
 - The root level `project-control/PROJECT_STATE.md`, `TERA_ACTIVE_CONTEXT.md`, and `DECISIONS_LOG.md` are **templates** — copy their structure, do not overwrite them.
 
+### Path Enforcement Rule (قاعدة إنفاذ المسار)
+
+- **TeraAgent مسؤول** عن ضبط `ClientAppPath` و `Allowed Write Targets` كمسارات كاملة قبل أي تفويض.
+- **EngineeringAgent و UI Designer و أي عميل فرعي** ملزمون بتشغيل Path Validation Gate (بوابة التحقق من المسار) قبل أي كتابة.
+- **مخالفة المسار = فشل المهمة.** إذا اكتشف TeraAgent أثناء Post-Execution Review أن أي ملف كُتب خارج Allowed Write Targets، تُصنَّف المخالفة وتُسجَّل في ISSUES_AND_GAPS.md كـ Critical/High حسب درجة الضرر.
+- **التكرار:** أول مخالفة → Needs Fix + تسجيل. التكرار → إيقاف التفويض مؤقتاً وإعلام Majed.
+
 ---
 
 ## 4. Execution Orchestration Protocol

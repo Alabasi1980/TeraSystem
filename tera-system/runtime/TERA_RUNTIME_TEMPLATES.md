@@ -1,4 +1,4 @@
-# Tera Runtime Templates
+﻿# Tera Runtime Templates
 
 These templates are official runtime support material for Tera Agent.
 Use them when the compact runtime file requests a formal output format.
@@ -187,7 +187,7 @@ Source confidence:
 
 ## 10. Domain Intelligence Report (Software Mode)
 
-Software Mode template — يُستخدم عندما يستدعي TeraAgent الـ DomainExpertAgent لتحليل مجال وتصنيفه حسب MVP.
+Software Mode template â€” ظٹظڈط³طھط®ط¯ظ… ط¹ظ†ط¯ظ…ط§ ظٹط³طھط¯ط¹ظٹ TeraAgent ط§ظ„ظ€ DomainExpertAgent ظ„طھط­ظ„ظٹظ„ ظ…ط¬ط§ظ„ ظˆطھطµظ†ظٹظپظ‡ ط­ط³ط¨ MVP.
 
 ```text
 Domain Intelligence Report (Software)
@@ -225,7 +225,7 @@ Tera decision recommendation:
 
 ## 10.1 Domain Intelligence Report (Consulting Mode)
 
-Consulting Mode template — يُستخدم عندما يستدعي TCEA الـ DomainExpertAgent لتحليل مجال وإنتاجه بتصنيف معرفي.
+Consulting Mode template â€” ظٹظڈط³طھط®ط¯ظ… ط¹ظ†ط¯ظ…ط§ ظٹط³طھط¯ط¹ظٹ TCEA ط§ظ„ظ€ DomainExpertAgent ظ„طھط­ظ„ظٹظ„ ظ…ط¬ط§ظ„ ظˆط¥ظ†طھط§ط¬ظ‡ ط¨طھطµظ†ظٹظپ ظ…ط¹ط±ظپظٹ.
 
 ```text
 Domain Intelligence Report (Consulting)
@@ -234,39 +234,39 @@ Topic:
 Domain:
 Mode: consulting
 Date:
-Requested by: TCEA — [client name if available]
+Requested by: TCEA â€” [client name if available]
 Sources Used:
 [R01, R02, ... or specific report titles]
 
 Domain Overview:
-[نظرة عامة على المجال ونطاقه]
+[ظ†ط¸ط±ط© ط¹ط§ظ…ط© ط¹ظ„ظ‰ ط§ظ„ظ…ط¬ط§ظ„ ظˆظ†ط·ط§ظ‚ظ‡]
 
 Core Processes:
-[العمليات الأساسية — جوهر المجال]
-- Process 1 [مصدر: R01]
-- Process 2 [مصدر: R02]
+[ط§ظ„ط¹ظ…ظ„ظٹط§طھ ط§ظ„ط£ط³ط§ط³ظٹط© â€” ط¬ظˆظ‡ط± ط§ظ„ظ…ط¬ط§ظ„]
+- Process 1 [ظ…طµط¯ط±: R01]
+- Process 2 [ظ…طµط¯ط±: R02]
 
 Supporting Activities:
-[الأنشطة المساندة — تدعم العمليات الأساسية]
-- Activity 1 [مصدر: R01]
+[ط§ظ„ط£ظ†ط´ط·ط© ط§ظ„ظ…ط³ط§ظ†ط¯ط© â€” طھط¯ط¹ظ… ط§ظ„ط¹ظ…ظ„ظٹط§طھ ط§ظ„ط£ط³ط§ط³ظٹط©]
+- Activity 1 [ظ…طµط¯ط±: R01]
 
 Structural Elements:
-[العناصر الهيكلية والتنظيمية — أدوار، أقسام، هيكليات]
-- Element 1 [مصدر: R03]
+[ط§ظ„ط¹ظ†ط§طµط± ط§ظ„ظ‡ظٹظƒظ„ظٹط© ظˆط§ظ„طھظ†ط¸ظٹظ…ظٹط© â€” ط£ط¯ظˆط§ط±طŒ ط£ظ‚ط³ط§ظ…طŒ ظ‡ظٹظƒظ„ظٹط§طھ]
+- Element 1 [ظ…طµط¯ط±: R03]
 
 Contextual Knowledge:
-[المعلومات السياقية — تاريخ، اتجاهات، معلومات خلفية]
-- Knowledge 1 [مصدر: R02]
+[ط§ظ„ظ…ط¹ظ„ظˆظ…ط§طھ ط§ظ„ط³ظٹط§ظ‚ظٹط© â€” طھط§ط±ظٹط®طŒ ط§طھط¬ط§ظ‡ط§طھطŒ ظ…ط¹ظ„ظˆظ…ط§طھ ط®ظ„ظپظٹط©]
+- Knowledge 1 [ظ…طµط¯ط±: R02]
 
 Cross-Cutting Topics:
-[المواضيع العرضية — تمس عدّة أقسام]
-- Topic 1 [مصدر: R01, R02]
+[ط§ظ„ظ…ظˆط§ط¶ظٹط¹ ط§ظ„ط¹ط±ط¶ظٹط© â€” طھظ…ط³ ط¹ط¯ظ‘ط© ط£ظ‚ط³ط§ظ…]
+- Topic 1 [ظ…طµط¯ط±: R01, R02]
 
 Relationships & Dependencies:
-[العلاقات والترابطات بين العناصر]
+[ط§ظ„ط¹ظ„ط§ظ‚ط§طھ ظˆط§ظ„طھط±ط§ط¨ط·ط§طھ ط¨ظٹظ† ط§ظ„ط¹ظ†ط§طµط±]
 
 Risks & Considerations:
-[المخاطر والاعتبارات التي ظهرت من التحليل]
+[ط§ظ„ظ…ط®ط§ط·ط± ظˆط§ظ„ط§ط¹طھط¨ط§ط±ط§طھ ط§ظ„طھظٹ ط¸ظ‡ط±طھ ظ…ظ† ط§ظ„طھط­ظ„ظٹظ„]
 
 ---
 This report contains [Research Hint] information.
@@ -277,7 +277,7 @@ Does NOT define scope, pricing, or commitments.
 
 ## 10.2 Knowledge Structure (Consulting Mode)
 
-Consulting Mode template — هيكل هرمي للمعرفة (3 مستويات كحد أقصى)، يصنف كل عنصر حسب التصنيف المعرفي ويربطه بمصدره.
+Consulting Mode template â€” ظ‡ظٹظƒظ„ ظ‡ط±ظ…ظٹ ظ„ظ„ظ…ط¹ط±ظپط© (3 ظ…ط³طھظˆظٹط§طھ ظƒط­ط¯ ط£ظ‚طµظ‰)طŒ ظٹطµظ†ظپ ظƒظ„ ط¹ظ†طµط± ط­ط³ط¨ ط§ظ„طھطµظ†ظٹظپ ط§ظ„ظ…ط¹ط±ظپظٹ ظˆظٹط±ط¨ط·ظ‡ ط¨ظ…طµط¯ط±ظ‡.
 
 ```text
 Knowledge Structure
@@ -287,29 +287,29 @@ Study Title:
 Date:
 Classification Key: [Core] Core Process / [Supp] Supporting Activity / [Str] Structural Element / [Ctx] Contextual Knowledge / [CC] Cross-Cutting
 
-1. [Chapter 1 Title — المعرف الأساسي في المجال]
+1. [Chapter 1 Title â€” ط§ظ„ظ…ط¹ط±ظپ ط§ظ„ط£ط³ط§ط³ظٹ ظپظٹ ط§ظ„ظ…ط¬ط§ظ„]
    1.1 [Section 1.1]
-       - [Part / Topic 1] — [Core/Supp/Str/Ctx/CC] — مصدر: [R01]
-       - [Part / Topic 2] — [Core/Supp/Str/Ctx/CC] — مصدر: [R02]
+       - [Part / Topic 1] â€” [Core/Supp/Str/Ctx/CC] â€” ظ…طµط¯ط±: [R01]
+       - [Part / Topic 2] â€” [Core/Supp/Str/Ctx/CC] â€” ظ…طµط¯ط±: [R02]
    1.2 [Section 1.2]
-       - [Part / Topic] — [Core/Supp/Str/Ctx/CC] — مصدر: [R01]
+       - [Part / Topic] â€” [Core/Supp/Str/Ctx/CC] â€” ظ…طµط¯ط±: [R01]
 
 2. [Chapter 2 Title]
    2.1 [Section 2.1]
-       - [Part / Topic] — [Core/Supp/Str/Ctx/CC] — مصدر: [R03]
+       - [Part / Topic] â€” [Core/Supp/Str/Ctx/CC] â€” ظ…طµط¯ط±: [R03]
    2.2 [Section 2.2]
-       - [Part / Topic] — [Core/Supp/Str/Ctx/CC] — مصدر: [R01, R02]
+       - [Part / Topic] â€” [Core/Supp/Str/Ctx/CC] â€” ظ…طµط¯ط±: [R01, R02]
 
-N. [Chapter N Title — المواضيع العرضية / المشتركة]
+N. [Chapter N Title â€” ط§ظ„ظ…ظˆط§ط¶ظٹط¹ ط§ظ„ط¹ط±ط¶ظٹط© / ط§ظ„ظ…ط´طھط±ظƒط©]
    N.1 [Section N.1]
-       - [Part / Topic] — [CC] — مصدر: [R01, R02, R03]
+       - [Part / Topic] â€” [CC] â€” ظ…طµط¯ط±: [R01, R02, R03]
 
 ---
 
 Structural Notes:
-- Chapters follow logical domain progression: core processes → supporting → structural → contextual
+- Chapters follow logical domain progression: core processes â†’ supporting â†’ structural â†’ contextual
 - Cross-cutting topics can be a separate chapter or distributed
-- Max depth: 3 levels (Chapter → Section → Part/Topic)
+- Max depth: 3 levels (Chapter â†’ Section â†’ Part/Topic)
 - Every element references its source report
 ```
 
@@ -317,7 +317,7 @@ Structural Notes:
 
 ## 10.3 Gap Analysis (Consulting Mode)
 
-Consulting Mode template — تحليل الفجوات في المعرفة بعد مقارنة جميع التقارير البحثية مع ما تحتاجه الدراسة.
+Consulting Mode template â€” طھط­ظ„ظٹظ„ ط§ظ„ظپط¬ظˆط§طھ ظپظٹ ط§ظ„ظ…ط¹ط±ظپط© ط¨ط¹ط¯ ظ…ظ‚ط§ط±ظ†ط© ط¬ظ…ظٹط¹ ط§ظ„طھظ‚ط§ط±ظٹط± ط§ظ„ط¨ط­ط«ظٹط© ظ…ط¹ ظ…ط§ طھط­طھط§ط¬ظ‡ ط§ظ„ط¯ط±ط§ط³ط©.
 
 ```text
 Gap Analysis
@@ -333,23 +333,23 @@ Coverage Summary:
 
 | # | Topic / Element | Classification | Current Coverage | Gap Description | Priority | Suggested Research | Source |
 |:-:|:---------------|:-------------:|:----------------:|:---------------|:--------:|:-----------------|:------:|
-| 1 | [Topic name] | [Core/Supp/Str/Ctx/CC] | Covered / Partial / Missing | [وصف الفجوة] | H/M/L | [اقتراح بحث إضافي] | R01 |
-| 2 | [Topic name] | [Core/Supp/Str/Ctx/CC] | Covered / Partial / Missing | [وصف الفجوة] | H/M/L | [اقتراح بحث إضافي] | R02 |
+| 1 | [Topic name] | [Core/Supp/Str/Ctx/CC] | Covered / Partial / Missing | [ظˆطµظپ ط§ظ„ظپط¬ظˆط©] | H/M/L | [ط§ظ‚طھط±ط§ط­ ط¨ط­ط« ط¥ط¶ط§ظپظٹ] | R01 |
+| 2 | [Topic name] | [Core/Supp/Str/Ctx/CC] | Covered / Partial / Missing | [ظˆطµظپ ط§ظ„ظپط¬ظˆط©] | H/M/L | [ط§ظ‚طھط±ط§ط­ ط¨ط­ط« ط¥ط¶ط§ظپظٹ] | R02 |
 
 Priority Legend:
-- H (High): الفجوة تمنع إكمال الدراسة أو تؤثر على جودة المخرجات
-- M (Medium): الفجوة تؤثر على العمق ولكن يمكن تجاوزها مؤقتاً
-- L (Low): الفجوة في معلومات سياقية أو تكميلية
+- H (High): ط§ظ„ظپط¬ظˆط© طھظ…ظ†ط¹ ط¥ظƒظ…ط§ظ„ ط§ظ„ط¯ط±ط§ط³ط© ط£ظˆ طھط¤ط«ط± ط¹ظ„ظ‰ ط¬ظˆط¯ط© ط§ظ„ظ…ط®ط±ط¬ط§طھ
+- M (Medium): ط§ظ„ظپط¬ظˆط© طھط¤ط«ط± ط¹ظ„ظ‰ ط§ظ„ط¹ظ…ظ‚ ظˆظ„ظƒظ† ظٹظ…ظƒظ† طھط¬ط§ظˆط²ظ‡ط§ ظ…ط¤ظ‚طھط§ظ‹
+- L (Low): ط§ظ„ظپط¬ظˆط© ظپظٹ ظ…ط¹ظ„ظˆظ…ط§طھ ط³ظٹط§ظ‚ظٹط© ط£ظˆ طھظƒظ…ظٹظ„ظٹط©
 
 Coverage Details:
-- Covered: المعلومة كاملة ومفهومة من المصادر
-- Partial: المعلومة موجودة لكنها ناقصة أو غير مؤكدة — يحتاج توثيقاً إضافياً
-- Missing: لا توجد معلومات — يحتاج بحثاً إضافياً أو استشارة عميل
+- Covered: ط§ظ„ظ…ط¹ظ„ظˆظ…ط© ظƒط§ظ…ظ„ط© ظˆظ…ظپظ‡ظˆظ…ط© ظ…ظ† ط§ظ„ظ…طµط§ط¯ط±
+- Partial: ط§ظ„ظ…ط¹ظ„ظˆظ…ط© ظ…ظˆط¬ظˆط¯ط© ظ„ظƒظ†ظ‡ط§ ظ†ط§ظ‚طµط© ط£ظˆ ط؛ظٹط± ظ…ط¤ظƒط¯ط© â€” ظٹط­طھط§ط¬ طھظˆط«ظٹظ‚ط§ظ‹ ط¥ط¶ط§ظپظٹط§ظ‹
+- Missing: ظ„ط§ طھظˆط¬ط¯ ظ…ط¹ظ„ظˆظ…ط§طھ â€” ظٹط­طھط§ط¬ ط¨ط­ط«ط§ظ‹ ط¥ط¶ط§ظپظٹط§ظ‹ ط£ظˆ ط§ط³طھط´ط§ط±ط© ط¹ظ…ظٹظ„
 
 Recommended Next Actions:
-1. [إجراء مقترح للفجوات عالية الأولوية]
-2. [إجراء مقترح للفجوات متوسطة الأولوية]
-3. [إجراء مقترح للفجوات منخفضة الأولوية]
+1. [ط¥ط¬ط±ط§ط، ظ…ظ‚طھط±ط­ ظ„ظ„ظپط¬ظˆط§طھ ط¹ط§ظ„ظٹط© ط§ظ„ط£ظˆظ„ظˆظٹط©]
+2. [ط¥ط¬ط±ط§ط، ظ…ظ‚طھط±ط­ ظ„ظ„ظپط¬ظˆط§طھ ظ…طھظˆط³ط·ط© ط§ظ„ط£ظˆظ„ظˆظٹط©]
+3. [ط¥ط¬ط±ط§ط، ظ…ظ‚طھط±ط­ ظ„ظ„ظپط¬ظˆط§طھ ظ…ظ†ط®ظپط¶ط© ط§ظ„ط£ظˆظ„ظˆظٹط©]
 ```
 
 ---
@@ -695,153 +695,153 @@ Use these outlines when creating files under `clients/.../client-approval/`. Cli
 ### 25.1 `01_CLIENT_PROJECT_BRIEF.md`
 
 ```text
-# ملخص فكرة المشروع
+# ظ…ظ„ط®طµ ظپظƒط±ط© ط§ظ„ظ…ط´ط±ظˆط¹
 
-اسم العميل:
-اسم التطبيق:
-وصف مختصر للمشروع:
-المشكلة التي يحلها:
-المستخدمون المستهدفون:
-الأهداف الرئيسية:
-القيمة المتوقعة للعميل:
-حدود النسخة الأولى:
-ملاحظات أو قرارات معلقة:
-حالة الاعتماد:
+ط§ط³ظ… ط§ظ„ط¹ظ…ظٹظ„:
+ط§ط³ظ… ط§ظ„طھط·ط¨ظٹظ‚:
+ظˆطµظپ ظ…ط®طھطµط± ظ„ظ„ظ…ط´ط±ظˆط¹:
+ط§ظ„ظ…ط´ظƒظ„ط© ط§ظ„طھظٹ ظٹط­ظ„ظ‡ط§:
+ط§ظ„ظ…ط³طھط®ط¯ظ…ظˆظ† ط§ظ„ظ…ط³طھظ‡ط¯ظپظˆظ†:
+ط§ظ„ط£ظ‡ط¯ط§ظپ ط§ظ„ط±ط¦ظٹط³ظٹط©:
+ط§ظ„ظ‚ظٹظ…ط© ط§ظ„ظ…طھظˆظ‚ط¹ط© ظ„ظ„ط¹ظ…ظٹظ„:
+ط­ط¯ظˆط¯ ط§ظ„ظ†ط³ط®ط© ط§ظ„ط£ظˆظ„ظ‰:
+ظ…ظ„ط§ط­ط¸ط§طھ ط£ظˆ ظ‚ط±ط§ط±ط§طھ ظ…ط¹ظ„ظ‚ط©:
+ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:
 ```
 
 ### 25.2 `02_CLIENT_PROPOSAL.md`
 
 ```text
-# عرض مشروع
+# ط¹ط±ط¶ ظ…ط´ط±ظˆط¹
 
-مقدمة:
-فهمنا لاحتياج العميل:
-نطاق العمل المقترح:
-المخرجات المتوقعة:
-مراحل العمل:
-ما هو خارج النطاق:
-الافتراضات:
-المتطلبات من العميل:
-آلية الاعتماد والتغييرات:
-حالة الاعتماد:
+ظ…ظ‚ط¯ظ…ط©:
+ظپظ‡ظ…ظ†ط§ ظ„ط§ط­طھظٹط§ط¬ ط§ظ„ط¹ظ…ظٹظ„:
+ظ†ط·ط§ظ‚ ط§ظ„ط¹ظ…ظ„ ط§ظ„ظ…ظ‚طھط±ط­:
+ط§ظ„ظ…ط®ط±ط¬ط§طھ ط§ظ„ظ…طھظˆظ‚ط¹ط©:
+ظ…ط±ط§ط­ظ„ ط§ظ„ط¹ظ…ظ„:
+ظ…ط§ ظ‡ظˆ ط®ط§ط±ط¬ ط§ظ„ظ†ط·ط§ظ‚:
+ط§ظ„ط§ظپطھط±ط§ط¶ط§طھ:
+ط§ظ„ظ…طھط·ظ„ط¨ط§طھ ظ…ظ† ط§ظ„ط¹ظ…ظٹظ„:
+ط¢ظ„ظٹط© ط§ظ„ط§ط¹طھظ…ط§ط¯ ظˆط§ظ„طھط؛ظٹظٹط±ط§طھ:
+ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:
 ```
 
 ### 25.3 `03_SCOPE_OF_WORK.md`
 
 ```text
-# نطاق العمل
+# ظ†ط·ط§ظ‚ ط§ظ„ط¹ظ…ظ„
 
-داخل النطاق:
+ط¯ط§ط®ظ„ ط§ظ„ظ†ط·ط§ظ‚:
 - ...
 
-خارج النطاق:
+ط®ط§ط±ط¬ ط§ظ„ظ†ط·ط§ظ‚:
 - ...
 
-مؤجل لمرحلة لاحقة:
+ظ…ط¤ط¬ظ„ ظ„ظ…ط±ط­ظ„ط© ظ„ط§ط­ظ‚ط©:
 - ...
 
-قيود مهمة:
-افتراضات:
-قرارات معلقة:
-حالة الاعتماد:
+ظ‚ظٹظˆط¯ ظ…ظ‡ظ…ط©:
+ط§ظپطھط±ط§ط¶ط§طھ:
+ظ‚ط±ط§ط±ط§طھ ظ…ط¹ظ„ظ‚ط©:
+ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:
 ```
 
 ### 25.4 `04_FEATURE_SCOPE_MATRIX.md`
 
 ```text
-# مصفوفة نطاق الميزات
+# ظ…طµظپظˆظپط© ظ†ط·ط§ظ‚ ط§ظ„ظ…ظٹط²ط§طھ
 
-| الميزة | التصنيف | الأولوية | الملاحظات |
+| ط§ظ„ظ…ظٹط²ط© | ط§ظ„طھطµظ†ظٹظپ | ط§ظ„ط£ظˆظ„ظˆظٹط© | ط§ظ„ظ…ظ„ط§ط­ط¸ط§طھ |
 |---|---|---|---|
-|  | داخل النطاق / مؤجل / خارج النطاق / يحتاج قرار | عالية / متوسطة / منخفضة |  |
+|  | ط¯ط§ط®ظ„ ط§ظ„ظ†ط·ط§ظ‚ / ظ…ط¤ط¬ظ„ / ط®ط§ط±ط¬ ط§ظ„ظ†ط·ط§ظ‚ / ظٹط­طھط§ط¬ ظ‚ط±ط§ط± | ط¹ط§ظ„ظٹط© / ظ…طھظˆط³ط·ط© / ظ…ظ†ط®ظپط¶ط© |  |
 
-حالة الاعتماد:
+ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:
 ```
 
 ### 25.5 `05_USER_FLOWS.md`
 
 ```text
-# مسارات الاستخدام
+# ظ…ط³ط§ط±ط§طھ ط§ظ„ط§ط³طھط®ط¯ط§ظ…
 
-## المسار الأول: [الاسم]
+## ط§ظ„ظ…ط³ط§ط± ط§ظ„ط£ظˆظ„: [ط§ظ„ط§ط³ظ…]
 
-المستخدم:
-الهدف:
-الخطوات:
+ط§ظ„ظ…ط³طھط®ط¯ظ…:
+ط§ظ„ظ‡ط¯ظپ:
+ط§ظ„ط®ط·ظˆط§طھ:
 1. ...
 
-الحالات البديلة:
-النتيجة المتوقعة:
+ط§ظ„ط­ط§ظ„ط§طھ ط§ظ„ط¨ط¯ظٹظ„ط©:
+ط§ظ„ظ†طھظٹط¬ط© ط§ظ„ظ…طھظˆظ‚ط¹ط©:
 
-حالة الاعتماد:
+ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:
 ```
 
 ### 25.6 `06_SCREEN_MAP.md`
 
 ```text
-# خريطة الشاشات
+# ط®ط±ظٹط·ط© ط§ظ„ط´ط§ط´ط§طھ
 
-| الشاشة | الغرض | المستخدمون | ملاحظات |
+| ط§ظ„ط´ط§ط´ط© | ط§ظ„ط؛ط±ط¶ | ط§ظ„ظ…ط³طھط®ط¯ظ…ظˆظ† | ظ…ظ„ط§ط­ط¸ط§طھ |
 |---|---|---|---|
 |  |  |  |  |
 
-شاشات غير مطلوبة في النسخة الأولى:
-حالة الاعتماد:
+ط´ط§ط´ط§طھ ط؛ظٹط± ظ…ط·ظ„ظˆط¨ط© ظپظٹ ط§ظ„ظ†ط³ط®ط© ط§ظ„ط£ظˆظ„ظ‰:
+ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:
 ```
 
 ### 25.7 `07_DESIGN_DIRECTION.md`
 
 ```text
-# التوجه البصري
+# ط§ظ„طھظˆط¬ظ‡ ط§ظ„ط¨طµط±ظٹ
 
-اللغة والأسلوب العام:
-الألوان أو الهوية:
-مراجع تعجب العميل:
-مراجع لا تعجب العميل:
-انطباع التصميم المطلوب: رسمي / حديث / بسيط / فاخر / شبابي / آخر
-قيود التصميم:
-ما لا يجب استخدامه:
-حالة الاعتماد:
+ط§ظ„ظ„ط؛ط© ظˆط§ظ„ط£ط³ظ„ظˆط¨ ط§ظ„ط¹ط§ظ…:
+ط§ظ„ط£ظ„ظˆط§ظ† ط£ظˆ ط§ظ„ظ‡ظˆظٹط©:
+ظ…ط±ط§ط¬ط¹ طھط¹ط¬ط¨ ط§ظ„ط¹ظ…ظٹظ„:
+ظ…ط±ط§ط¬ط¹ ظ„ط§ طھط¹ط¬ط¨ ط§ظ„ط¹ظ…ظٹظ„:
+ط§ظ†ط·ط¨ط§ط¹ ط§ظ„طھطµظ…ظٹظ… ط§ظ„ظ…ط·ظ„ظˆط¨: ط±ط³ظ…ظٹ / ط­ط¯ظٹط« / ط¨ط³ظٹط· / ظپط§ط®ط± / ط´ط¨ط§ط¨ظٹ / ط¢ط®ط±
+ظ‚ظٹظˆط¯ ط§ظ„طھطµظ…ظٹظ…:
+ظ…ط§ ظ„ط§ ظٹط¬ط¨ ط§ط³طھط®ط¯ط§ظ…ظ‡:
+ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:
 ```
 
 ### 25.8 `08_PROTOTYPE_PLAN.md`
 
 ```text
-# خطة البروتوتايب
+# ط®ط·ط© ط§ظ„ط¨ط±ظˆطھظˆطھط§ظٹط¨
 
-هل البروتوتايب مطلوب؟ نعم / لا
-سبب القرار:
-الشاشات أو التدفقات التي يجب تمثيلها:
-مستوى التفصيل: منخفض / متوسط / عالي
-الأداة المقترحة إن وجدت:
-معايير قبول البروتوتايب:
-حالة الاعتماد:
+ظ‡ظ„ ط§ظ„ط¨ط±ظˆطھظˆطھط§ظٹط¨ ظ…ط·ظ„ظˆط¨طں ظ†ط¹ظ… / ظ„ط§
+ط³ط¨ط¨ ط§ظ„ظ‚ط±ط§ط±:
+ط§ظ„ط´ط§ط´ط§طھ ط£ظˆ ط§ظ„طھط¯ظپظ‚ط§طھ ط§ظ„طھظٹ ظٹط¬ط¨ طھظ…ط«ظٹظ„ظ‡ط§:
+ظ…ط³طھظˆظ‰ ط§ظ„طھظپطµظٹظ„: ظ…ظ†ط®ظپط¶ / ظ…طھظˆط³ط· / ط¹ط§ظ„ظٹ
+ط§ظ„ط£ط¯ط§ط© ط§ظ„ظ…ظ‚طھط±ط­ط© ط¥ظ† ظˆط¬ط¯طھ:
+ظ…ط¹ط§ظٹظٹط± ظ‚ط¨ظˆظ„ ط§ظ„ط¨ط±ظˆطھظˆطھط§ظٹط¨:
+ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:
 ```
 
 ### 25.9 `09_ACCEPTANCE_CRITERIA.md`
 
 ```text
-# معايير القبول
+# ظ…ط¹ط§ظٹظٹط± ط§ظ„ظ‚ط¨ظˆظ„
 
-| الميزة أو الشاشة | معيار القبول | طريقة التحقق | الحالة |
+| ط§ظ„ظ…ظٹط²ط© ط£ظˆ ط§ظ„ط´ط§ط´ط© | ظ…ط¹ظٹط§ط± ط§ظ„ظ‚ط¨ظˆظ„ | ط·ط±ظٹظ‚ط© ط§ظ„طھط­ظ‚ظ‚ | ط§ظ„ط­ط§ظ„ط© |
 |---|---|---|---|
-|  |  |  | مقبول / يحتاج تعديل / معلق |
+|  |  |  | ظ…ظ‚ط¨ظˆظ„ / ظٹط­طھط§ط¬ طھط¹ط¯ظٹظ„ / ظ…ط¹ظ„ظ‚ |
 
-معايير قبول عامة:
-معايير لا تعتبر ضمن التسليم الحالي:
-حالة الاعتماد:
+ظ…ط¹ط§ظٹظٹط± ظ‚ط¨ظˆظ„ ط¹ط§ظ…ط©:
+ظ…ط¹ط§ظٹظٹط± ظ„ط§ طھط¹طھط¨ط± ط¶ظ…ظ† ط§ظ„طھط³ظ„ظٹظ… ط§ظ„ط­ط§ظ„ظٹ:
+ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:
 ```
 
 ### 25.10 `11_CHANGE_CONTROL.md`
 
 ```text
-# سجل طلبات التغيير
+# ط³ط¬ظ„ ط·ظ„ط¨ط§طھ ط§ظ„طھط؛ظٹظٹط±
 
-| Change ID | التاريخ | مقدم الطلب | الملخص | التصنيف | القرار | حالة الاعتماد |
+| Change ID | ط§ظ„طھط§ط±ظٹط® | ظ…ظ‚ط¯ظ… ط§ظ„ط·ظ„ط¨ | ط§ظ„ظ…ظ„ط®طµ | ط§ظ„طھطµظ†ظٹظپ | ط§ظ„ظ‚ط±ط§ط± | ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯ |
 |---|---|---|---|---|---|---|
 | CHG-001 |  |  |  | Clarification / Minor Adjustment / Enhancement / New Scope / Phase 2 / Rejected |  |  |
 
-ملاحظات عامة:
+ظ…ظ„ط§ط­ط¸ط§طھ ط¹ط§ظ…ط©:
 ```
 
 ---
@@ -964,9 +964,9 @@ Batch D (depends on Batch C):
 ## 8. Approval Status
 
 - [ ] Plan submitted
-- [ ] Plan approved → Proceed to Phase 4
-- [ ] Plan rejected → Revise and resubmit
-- [ ] Plan blocked → Reason: ...
+- [ ] Plan approved â†’ Proceed to Phase 4
+- [ ] Plan rejected â†’ Revise and resubmit
+- [ ] Plan blocked â†’ Reason: ...
 ```
 
 ---
@@ -997,9 +997,9 @@ Decision: Proceed / Needs User Approval / Blocked
 
 | Status | Meaning |
 |---|---|
-| **Generate** | Agent does not exist — create from `AGENT_GENERATION_TEMPLATE.md` |
-| **Use Existing** | Agent exists and is suitable — use directly |
-| **Specialize** | Agent exists but is too generic — narrow sources/targets/constraints |
+| **Generate** | Agent does not exist â€” create from `AGENT_GENERATION_TEMPLATE.md` |
+| **Use Existing** | Agent exists and is suitable â€” use directly |
+| **Specialize** | Agent exists but is too generic â€” narrow sources/targets/constraints |
 
 ## 3. Agents Not Needed Now
 
@@ -1050,14 +1050,14 @@ Decision: Proceed / Needs User Approval / Blocked
 ## 8. Approval Status
 
 - [ ] Plan submitted
-- [ ] Plan approved → Proceed to agent generation
-- [ ] Plan rejected → Revise and resubmit
-- [ ] Plan blocked → Reason: ...
+- [ ] Plan approved â†’ Proceed to agent generation
+- [ ] Plan rejected â†’ Revise and resubmit
+- [ ] Plan blocked â†’ Reason: ...
 ```
 
 ---
 
-## 29. Project Master Plan (Phase 5 — Output)
+## 29. Project Master Plan (Phase 5 â€” Output)
 
 This template is used for the first formal output of Phase 5 (Execution Planning).
 The generated file is saved to `project-control/PROJECT_MASTER_PLAN.md`.
@@ -1088,7 +1088,7 @@ The generated file is saved to `project-control/PROJECT_MASTER_PLAN.md`.
 
 | Phase | Name | Objective | Roadmap Tier | Depends On | Status |
 |---|---|---|---|---|---|
-| 1 | [e.g. Technical Foundation] | [e.g. Scaffold project, init ORM, verify startup] | Core MVP / Foundation | — | Planned |
+| 1 | [e.g. Technical Foundation] | [e.g. Scaffold project, init ORM, verify startup] | Core MVP / Foundation | â€” | Planned |
 | 2 | [e.g. Database Schema] | [e.g. Define models, create migration, seed] | Core MVP | Phase 1 | Planned |
 | 3 | [e.g. Core Feature] | [e.g. Main workflow implementation] | Core MVP / Extended MVP | Phase 1, 2 | Planned |
 | ... | ... | ... | ... | ... | ... |
@@ -1130,13 +1130,13 @@ The generated file is saved to `project-control/PROJECT_MASTER_PLAN.md`.
 ## 6. Approval
 
 - [ ] Submitted
-- [ ] Approved → Ready for Detailed Planning
+- [ ] Approved â†’ Ready for Detailed Planning
 - [ ] Needs revision
 ```
 
 ---
 
-## 30. Detailed Execution Plan (Phase 5 — Output)
+## 30. Detailed Execution Plan (Phase 5 â€” Output)
 
 This template breaks each phase into traceable execution items.
 The generated file is saved to `project-control/PROJECT_DETAILED_EXECUTION_PLAN.md`.
@@ -1155,7 +1155,7 @@ The generated file is saved to `project-control/PROJECT_DETAILED_EXECUTION_PLAN.
 
 | Item ID | Description | Linked TASK-ID | Depends On | Status | Notes |
 |---|---|---|---|---|---|
-| P1-01 | [e.g. Scaffold Next.js project] | TASK-COD-001 | — | Planned | |
+| P1-01 | [e.g. Scaffold Next.js project] | TASK-COD-001 | â€” | Planned | |
 | P1-02 | [e.g. Init Prisma + connect to DB] | TASK-COD-002 | P1-01 | Planned | See profile: nextjs-prisma |
 | P2-01 | [e.g. Define User model] | TASK-COD-003 | P1-02 | Planned | |
 | P2-02 | [e.g. Create migration + apply] | TASK-COD-004 | P2-01 | Planned | |
@@ -1174,15 +1174,15 @@ The generated file is saved to `project-control/PROJECT_DETAILED_EXECUTION_PLAN.
 ## 3. Approval
 
 - [ ] Submitted
-- [ ] Approved → Ready for batch planning
+- [ ] Approved â†’ Ready for batch planning
 - [ ] Needs revision
 ```
 
 ---
 
-## 31. Execution Batch Plan (Phase 5 — Output)
+## 31. Execution Batch Plan (Phase 5 â€” Output)
 
-This template defines the current approved batch only — not the full project.
+This template defines the current approved batch only â€” not the full project.
 The generated file is saved to `project-control/EXECUTION_BATCH_PLAN.md`.
 
 ```markdown
@@ -1226,9 +1226,9 @@ The generated file is saved to `project-control/EXECUTION_BATCH_PLAN.md`.
 ## 5. User Approval
 
 - [ ] Batch plan submitted
-- [ ] Approved → Begin execution (Phase 6)
-- [ ] Rejected → Revise
-- [ ] Blocked → Reason: ...
+- [ ] Approved â†’ Begin execution (Phase 6)
+- [ ] Rejected â†’ Revise
+- [ ] Blocked â†’ Reason: ...
 
 ---
 
@@ -1283,8 +1283,8 @@ Required Record Updates:
 
 ## 33. Compliance Record (Task Closure Governance Summary)
 
-هذا القسم يُضاف إلى `project-control/tasks/TASK-COD-XXX.md` كآخر قسم قبل الإغلاق (بعد `Post-Execution Review`).
-وهو المرجع المعتمد لـ Monitor للتحقق من مطابقة Handback + Git diff + القواعد.
+ظ‡ط°ط§ ط§ظ„ظ‚ط³ظ… ظٹظڈط¶ط§ظپ ط¥ظ„ظ‰ `project-control/tasks/TASK-COD-XXX.md` ظƒط¢ط®ط± ظ‚ط³ظ… ظ‚ط¨ظ„ ط§ظ„ط¥ط؛ظ„ط§ظ‚ (ط¨ط¹ط¯ `Post-Execution Review`).
+ظˆظ‡ظˆ ط§ظ„ظ…ط±ط¬ط¹ ط§ظ„ظ…ط¹طھظ…ط¯ ظ„ظ€ Monitor ظ„ظ„طھط­ظ‚ظ‚ ظ…ظ† ظ…ط·ط§ط¨ظ‚ط© Handback + Git diff + ط§ظ„ظ‚ظˆط§ط¹ط¯.
 
 ```markdown
 ## Compliance Record
@@ -1301,7 +1301,7 @@ Required Record Updates:
 | 8 | Git diff matches Handback description | PASS / FAIL / PENDING | Monitor\* |
 | 9 | CLI/commands documented (if any) | Done / N/A | Tera |
 
-\* Item 8: Monitor يتحقق عند نشاطه. إذا لم يكن Monitor نشطاً، يوثق Tera الفحص الذاتي.
+\* Item 8: Monitor ظٹطھط­ظ‚ظ‚ ط¹ظ†ط¯ ظ†ط´ط§ط·ظ‡. ط¥ط°ط§ ظ„ظ… ظٹظƒظ† Monitor ظ†ط´ط·ط§ظ‹طŒ ظٹظˆط«ظ‚ Tera ط§ظ„ظپط­طµ ط§ظ„ط°ط§طھظٹ.
 
 Compliance Status: COMPLIANT / NON-COMPLIANT / PENDING_MONITOR_REVIEW
 ```
@@ -1359,7 +1359,7 @@ Generated file: `project-control/DELIVERY_READINESS_REPORT.md`
 | Field | Value |
 |---|---|
 | Project |  |
-| Phase | 7 — Delivery, Handover & Closure |
+| Phase | 7 â€” Delivery, Handover & Closure |
 | Date |  |
 | Prepared By | Tera / QAAndAcceptanceAgent / DevOpsAgent |
 | Status | Draft / Ready / Blocked |
@@ -1526,36 +1526,36 @@ clients/CLIENT-[client-name-or-id]/applications/APP-[app-name-or-id]/delivery/CL
 ```markdown
 # CLIENT_HANDOVER_PACKAGE.md
 
-## 1. تسليم المشروع
+## 1. طھط³ظ„ظٹظ… ط§ظ„ظ…ط´ط±ظˆط¹
 
-- اسم العميل:
-- اسم التطبيق:
-- تاريخ التسليم:
-- نسخة التسليم:
+- ط§ط³ظ… ط§ظ„ط¹ظ…ظٹظ„:
+- ط§ط³ظ… ط§ظ„طھط·ط¨ظٹظ‚:
+- طھط§ط±ظٹط® ط§ظ„طھط³ظ„ظٹظ…:
+- ظ†ط³ط®ط© ط§ظ„طھط³ظ„ظٹظ…:
 
-## 2. ما تم تسليمه
-
-- ...
-
-## 3. طريقة التشغيل / الوصول
-
-- لا تكتب أسرارًا أو كلمات مرور.
-- أشر فقط إلى أن البيانات الحساسة محفوظة كـ local environment secrets أو عبر قناة آمنة.
-
-## 4. العناصر المؤجلة أو غير المشمولة
+## 2. ظ…ط§ طھظ… طھط³ظ„ظٹظ…ظ‡
 
 - ...
 
-## 5. القبول النهائي
+## 3. ط·ط±ظٹظ‚ط© ط§ظ„طھط´ط؛ظٹظ„ / ط§ظ„ظˆطµظˆظ„
+
+- ظ„ط§ طھظƒطھط¨ ط£ط³ط±ط§ط±ظ‹ط§ ط£ظˆ ظƒظ„ظ…ط§طھ ظ…ط±ظˆط±.
+- ط£ط´ط± ظپظ‚ط· ط¥ظ„ظ‰ ط£ظ† ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ط­ط³ط§ط³ط© ظ…ط­ظپظˆط¸ط© ظƒظ€ local environment secrets ط£ظˆ ط¹ط¨ط± ظ‚ظ†ط§ط© ط¢ظ…ظ†ط©.
+
+## 4. ط§ظ„ط¹ظ†ط§طµط± ط§ظ„ظ…ط¤ط¬ظ„ط© ط£ظˆ ط؛ظٹط± ط§ظ„ظ…ط´ظ…ظˆظ„ط©
+
+- ...
+
+## 5. ط§ظ„ظ‚ط¨ظˆظ„ ط§ظ„ظ†ظ‡ط§ط¦ظٹ
 
 - Accepted / Needs Fix / Deferred
-- اسم صاحب الاعتماد:
-- التاريخ:
+- ط§ط³ظ… طµط§ط­ط¨ ط§ظ„ط§ط¹طھظ…ط§ط¯:
+- ط§ظ„طھط§ط±ظٹط®:
 ```
 
 ---
 
-## 35. Discovery Coverage Summary (TCEA — Phase 2 Mandatory Output)
+## 35. Discovery Coverage Summary (TCEA â€” Phase 2 Mandatory Output)
 
 This template defines `client-engagement/DISCOVERY_COVERAGE_SUMMARY.md`.
 It is produced by TCEA after completing the 13-domain discovery and before any scope/quotation/handoff.
@@ -1575,7 +1575,7 @@ It is produced by TCEA after completing the 13-domain discovery and before any s
 
 ## 2. Domain Coverage Matrix
 
-> الترقيم والتسمية حسب المصدر الرسمي: `tera-system/client-helpers/tera-client-engagement-discovery-domains.md`
+> ط§ظ„طھط±ظ‚ظٹظ… ظˆط§ظ„طھط³ظ…ظٹط© ط­ط³ط¨ ط§ظ„ظ…طµط¯ط± ط§ظ„ط±ط³ظ…ظٹ: `tera-system/client-helpers/tera-client-engagement-discovery-domains.md`
 
 | # | Domain | Status | Reason if not Complete | Impact | Risk | Blocks Pricing? | Blocks Handoff? | **Source of Info** | **Confirmed by Majed?** | **Risk if Wrong** |
 |---|--------|--------|----------------------|--------|------|----------------|-----------------|--------------------|-------------------------|-------------------|
@@ -1593,7 +1593,7 @@ It is produced by TCEA after completing the 13-domain discovery and before any s
 | 12 | Integrations & APIs | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 | 13 | Acceptance, Commercials & Warranty | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 
-> **ملاحظة المجال 13:** يحتاج تغطية 3 جوانب داخلية على الأقل: (أ) معايير القبول والاختبارات, (ب) الميزانية وخطة الدفع, (ج) الضمان والصيانة.
+> **ظ…ظ„ط§ط­ط¸ط© ط§ظ„ظ…ط¬ط§ظ„ 13:** ظٹط­طھط§ط¬ طھط؛ط·ظٹط© 3 ط¬ظˆط§ظ†ط¨ ط¯ط§ط®ظ„ظٹط© ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„: (ط£) ظ…ط¹ط§ظٹظٹط± ط§ظ„ظ‚ط¨ظˆظ„ ظˆط§ظ„ط§ط®طھط¨ط§ط±ط§طھ, (ط¨) ط§ظ„ظ…ظٹط²ط§ظ†ظٹط© ظˆط®ط·ط© ط§ظ„ط¯ظپط¹, (ط¬) ط§ظ„ط¶ظ…ط§ظ† ظˆط§ظ„طµظٹط§ظ†ط©.
 
 ## 3. Coverage Decision
 
@@ -1603,4 +1603,172 @@ It is produced by TCEA after completing the 13-domain discovery and before any s
 | Missing Critical Domains | [list or none] |
 | Next Action | [explicit next step] |
 | Approved by Majed | Yes / No / Pending |
+
+---
+
+## 36. TERA_HANDOFF_PACKAGE.md â€” TCEA Output (Phase 3 Mandatory Output)
+
+This is the official template for `client-engagement/TERA_HANDOFF_PACKAGE.md`.
+It is produced by TCEA after scope/quotation approval, packaging everything for delivery to ApplicationBlueprintAgent â†’ TeraAgent.
+
+**SCP-038 Compliance:** This template includes a dedicated compliance section (آ§1). Every handoff MUST include this section â€” do NOT remove it.
+
+```markdown
+# TERA_HANDOFF_PACKAGE.md
+
+> **ط­ط²ظ…ط© ط§ظ„طھط³ظ„ظٹظ… ط§ظ„ط±ط³ظ…ظٹط© â€” ظ…طھظˆط§ظپظ‚ط© ظ…ط¹ SCP-038**
+> **ط§ظ„ط¹ظ…ظٹظ„:** [Client Name]
+> **ط§ظ„طھط·ط¨ظٹظ‚:** [Application Name]
+> **ط§ظ„ظ…ط±ط­ظ„ط©:** Phase 1 (MVP) / Phase 2 / Phase 3
+> **طھط§ط±ظٹط® ط§ظ„ط¥ط¹ط¯ط§ط¯:** YYYY-MM-DD
+> **ط§ظ„ط­ط§ظ„ط©:** [Draft / Approved]
+> **SCP-038 Compliance:** âœ… ظ…طھظˆط§ظپظ‚ط© â€” طھظ… طھط·ط¨ظٹظ‚ ط§ظ„ظ‚ظˆط§ط¹ط¯ ط§ظ„ط£ط±ط¨ط¹ (Reconciliation, Budget-to-Scope, Decision Register, Approval Consistency)
+> **ط¥ط¹ط¯ط§ط¯:** TCEA
+
+---
+
+## ظپظ‡ط±ط³ ط§ظ„ظ…ط­طھظˆظٹط§طھ
+
+| ط§ظ„ظ‚ط³ظ… | ط§ظ„ظ…ط­طھظˆظ‰ |
+|:------|:--------|
+| 1 | ط§ظ„طھظˆط§ظپظ‚ ظ…ط¹ SCP-038 |
+| 2 | ط®ظ„ط§طµط© طھظ†ظپظٹط°ظٹط© |
+| 3 | ظ…ط¹ظ„ظˆظ…ط§طھ ط§ظ„ط¹ظ…ظٹظ„ |
+| 4 | ظ…ظ„ط®طµ ط§ظ„ظ†ط·ط§ظ‚ |
+| 5 | ظ‚ط§ط¦ظ…ط© ط§ظ„ظ…ظٹط²ط§طھ ط§ظ„ظ…ط¹طھظ…ط¯ط© |
+| 6 | ط®ط§ط±ط¬ ط§ظ„ظ†ط·ط§ظ‚ + ط§ظ„ظ…ط¤ط¬ظ„ |
+| 7 | ظ…ظ„ط®طµ ط§ظ„طھط³ط¹ظٹط± ظˆط§ظ„ط´ط±ظˆط· ط§ظ„طھط¬ط§ط±ظٹط© |
+| 8 | ظ…ظ„ط®طµ ط³ط¬ظ„ ط§ظ„ظ‚ط±ط§ط±ط§طھ |
+| 9 | ط§ظ„ظ†ظ‚ط§ط· ط§ظ„ظ…ظپطھظˆط­ط© ظˆط§ظ„ظ…ط¹ظ„ظ‚ط© |
+| 10 | ط§ظ„ظ…ط±ط§ط¬ط¹ ظˆط§ظ„ظ…ظ„ظپط§طھ |
+| 11 | ظ‚ط±ط§ط± ط§ظ„ط¬ط§ظ‡ط²ظٹط© ظ„ظ„طھط³ظ„ظٹظ… |
+
+---
+
+## 1. ط§ظ„طھظˆط§ظپظ‚ ظ…ط¹ SCP-038
+
+طھظ… طھط·ط¨ظٹظ‚ ظ‚ظˆط§ط¹ط¯ SCP-038 ط§ظ„ط£ط±ط¨ط¹ ط¹ظ„ظ‰ ط­ط²ظ…ط© ط§ظ„طھط³ظ„ظٹظ…:
+
+| ط§ظ„ظ‚ط§ط¹ط¯ط© | ط§ظ„ط­ط§ظ„ط© | ط§ظ„طھظپط§طµظٹظ„ |
+|---------|:------:|----------|
+| **آ§3.3.1 Final Scope Reconciliation Gate** | âœ… ظ…ط·ط¨ظ‘ظ‚ / âڑ ï¸ڈ ط؛ظٹط± ظ…ط·ط¨ظ‘ظ‚ | [FEATURE_LIST.md: ظƒظ„ ظ…ظٹط²ط© ظ…طµظ†ظپط© ط¨ط­ط§ظ„طھظ‡ط§ ط§ظ„ظ†ظ‡ط§ط¦ظٹط© âœ… Included / â—‰ Optional / âڈ³ Phase 2 / â‌Œ Out of Scope] |
+| **آ§3.3.2 Budget-to-Scope Control Rule** | âœ… ظ…ط·ط¨ظ‘ظ‚ / âڑ ï¸ڈ ط؛ظٹط± ظ…ط·ط¨ظ‘ظ‚ | [ظƒظ„ ظ…ظٹط²ط© ظ…طµظ†ظپط© Essential/Important/Nice-to-have ط¶ظ…ظ† ط§ظ„ظ…ظٹط²ط§ظ†ظٹط© ط§ظ„ظ…ط­ط¯ط¯ط©] |
+| **آ§3.3.3 Client Decision Register** | âœ… ظ…ط·ط¨ظ‘ظ‚ / âڑ ï¸ڈ ط؛ظٹط± ظ…ط·ط¨ظ‘ظ‚ | [CLIENT_DECISION_LOG.md: ط¬ظ…ظٹط¹ ط§ظ„ظ‚ط±ط§ط±ط§طھ ظ…ظˆط«ظ‚ط© ط¨ط­ط§ظ„ط§طھ ظ…ظˆط­ط¯ط©] |
+| **آ§3.6.1 Approval Consistency Rule** | âœ… ظ…ط·ط¨ظ‘ظ‚ / âڑ ï¸ڈ ط؛ظٹط± ظ…ط·ط¨ظ‘ظ‚ | [ط§ظ„ط­ط²ظ…ط© ظ…طھط³ظ‚ط© ظ…ط¹ ط£ظ‚ظ„ ط­ط§ظ„ط© ظ…طµط¯ط± â€” ط¬ظ…ظٹط¹ ط§ظ„ظ…طµط§ط¯ط± ظ…ط¹طھظ…ط¯ط© / ط¨ط¹ط¶ظ‡ط§ Draft] |
+
+> **ظ…ظ„ط§ط­ط¸ط©:** ط¥ط°ط§ ظƒط§ظ†طھ ط£ظٹ ظ‚ط§ط¹ط¯ط© ط؛ظٹط± ظ…ط·ط¨ظ‘ظ‚ط©طŒ ط§ط°ظƒط± ط§ظ„ط³ط¨ط¨ ظˆط§ظ„ط®ط·ط© ظ„طھظپط¹ظٹظ„ظ‡ط§ ظپظٹ ظ‚ط³ظ… ط§ظ„ظ†ظ‚ط§ط· ط§ظ„ظ…ظپطھظˆط­ط© (آ§9).
+
+---
+
+## 2. ط®ظ„ط§طµط© طھظ†ظپظٹط°ظٹط©
+
+[2-3 ط¬ظ…ظ„ طھظ„ط®طµ: ظ…ظ† ظ‡ظˆ ط§ظ„ط¹ظ…ظٹظ„طŒ ط§ظ„ظ…ط´ظƒظ„ط© ط§ظ„طھظٹ ظٹط­ظ„ظ‡ط§ ط§ظ„طھط·ط¨ظٹظ‚طŒ ط§ظ„ط­ظ„ ط§ظ„ظ…ظ‚طھط±ط­طŒ ظˆط­ط§ظ„ط© ط§ظ„طھط³ظ„ظٹظ…]
+
+---
+
+## 3. ظ…ط¹ظ„ظˆظ…ط§طھ ط§ظ„ط¹ظ…ظٹظ„
+
+| ط§ظ„ط­ظ‚ظ„ | ط§ظ„ظ‚ظٹظ…ط© |
+|-------|--------|
+| **Client name** | [Full Name] |
+| **Application name** | [Full Name] |
+| **Business goal** | [Goal statement] |
+| **Problem statement** | [Problem statement] |
+| **Client approval status** | âœ… Approved / âڈ³ Pending |
+| **SCP-038 Compliance** | âœ… ظ…طھظˆط§ظپظ‚ط© |
+
+---
+
+## 4. ظ…ظ„ط®طµ ط§ظ„ظ†ط·ط§ظ‚
+
+| ط§ظ„ط­ظ‚ظ„ | ط§ظ„ظ‚ظٹظ…ط© |
+|-------|--------|
+| **Approved scope** | [Core scope description] |
+| **MVP scope** | [Bullet list of MVP features] |
+| **Phase 2** | [Items for Phase 2] |
+| **Phase 3** | [Items for Phase 3] |
+| **Out of scope** | [Items explicitly out of scope] |
+
+---
+
+## 5. ظ‚ط§ط¦ظ…ط© ط§ظ„ظ…ظٹط²ط§طھ ط§ظ„ظ…ط¹طھظ…ط¯ط©
+
+| # | ط§ظ„ظ…ظٹط²ط© | ط§ظ„ط­ط§ظ„ط© ط§ظ„ظ†ظ‡ط§ط¦ظٹط© Stack | ط§ظ„ط£ظˆظ„ظˆظٹط© ظ„ظ„ظ…ظٹط²ط§ظ†ظٹط© | ظ…ظ„ط§ط­ط¸ط§طھ |
+|---|--------|----------------------|-------------------|---------|
+| 1 | [Feature] | âœ… Included / â—‰ Optional / âڈ³ Phase 2 / â‌Œ Out of Scope | Essential / Important / Nice-to-have | [Notes] |
+
+> **ط§ظ„ظ…ظپطھط§ط­:** âœ… Included = ظ…ط´ظ…ظˆظ„ط© ظپظٹ ظ‡ط°ظ‡ ط§ظ„ظ…ط±ط­ظ„ط© آ· â—‰ Optional = ط§ط®طھظٹط§ط±ظٹط© آ· âڈ³ Phase 2/3 = ظ…ط¤ط¬ظ„ط© آ· â‌Œ Out of Scope = ط؛ظٹط± ظ…ط´ظ…ظˆظ„ط© ط£ط¨ط¯ط§ظ‹
+
+---
+
+## 6. ط®ط§ط±ط¬ ط§ظ„ظ†ط·ط§ظ‚ + ط§ظ„ظ…ط¤ط¬ظ„
+
+| ط§ظ„ط¨ظ†ط¯ | ط§ظ„ط­ط§ظ„ط© | ط§ظ„ط³ط¨ط¨ | ط§ظ„طھط§ط±ظٹط® ط§ظ„ظ…ط³طھظ‡ط¯ظپ |
+|-------|--------|-------|:----------------:|
+| [Item] | ط®ط§ط±ط¬ ط§ظ„ظ†ط·ط§ظ‚ / ظ…ط¤ط¬ظ„ ظ„ظ€ Phase 2/3 | [Reason] | [Target date or TBD] |
+
+---
+
+## 7. ظ…ظ„ط®طµ ط§ظ„طھط³ط¹ظٹط± ظˆط§ظ„ط´ط±ظˆط· ط§ظ„طھط¬ط§ط±ظٹط©
+
+| ط§ظ„ط­ظ‚ظ„ | ط§ظ„ظ‚ظٹظ…ط© |
+|-------|--------|
+| **ط§ظ„ط³ط¹ط± ط§ظ„ط¥ط¬ظ…ط§ظ„ظٹ** | [Amount] JOD |
+| **ط³ظٹط§ط³ط© ط§ظ„طھط³ط¹ظٹط±** | [e.g. Tera Pricing Policy v4.2] |
+| **ظ†ط·ط§ظ‚ ط§ظ„ط¯ظپط¹** | [Payment terms] |
+| **ط§ظ„ط¶ظ…ط§ظ†** | [Warranty terms] |
+| **ط§ظ„ظ…ط±ط¬ط¹** | DRAFT_QUOTATION.md |
+
+---
+
+## 8. ظ…ظ„ط®طµ ط³ط¬ظ„ ط§ظ„ظ‚ط±ط§ط±ط§طھ
+
+| # | ط§ظ„طھط§ط±ظٹط® | ط§ظ„ظ‚ط±ط§ط± | ط§ظ„ط­ط§ظ„ط© |
+|---|---------|--------|:------:|
+| 1 | YYYY-MM-DD | [Decision description] | âœ… Approved / âڈ³ Deferred / âڑ ï¸ڈ Conditional / â‌“ Not Finalized |
+
+> **ط§ظ„ظ…ط±ط¬ط¹:** CLIENT_DECISION_LOG.md ظ„ظ„طھظپط§طµظٹظ„ ط§ظ„ظƒط§ظ…ظ„ط©
+
+---
+
+## 9. ط§ظ„ظ†ظ‚ط§ط· ط§ظ„ظ…ظپطھظˆط­ط© ظˆط§ظ„ظ…ط¹ظ„ظ‚ط©
+
+| # | ط§ظ„ظ†ظ‚ط·ط© | ط§ظ„طھط£ط«ظٹط± | ظ…ط·ظ„ظˆط¨ ظ…ظ† | ط§ظ„طھط§ط±ظٹط® ط§ظ„ظ…ط³طھظ‡ط¯ظپ |
+|---|--------|---------|----------|:----------------:|
+| 1 | [Description] | [Impact] | Majed / Client / TCEA | YYYY-MM-DD |
+
+---
+
+## 10. ط§ظ„ظ…ط±ط§ط¬ط¹ ظˆط§ظ„ظ…ظ„ظپط§طھ
+
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„ظ…ط³ط§ط± | ط§ظ„ط¥طµط¯ط§ط± | ظ…ظ„ط§ط­ط¸ط§طھ |
+|-------|--------|:-------:|---------|
+| CLIENT_INTAKE.md | `client-engagement/` | v1.0 | [Notes] |
+| CLIENT_BRIEF.md | `client-engagement/` | v1.0 | [Notes] |
+| SCOPE_SUMMARY.md | `client-engagement/` | v1.0 | [Notes] |
+| FEATURE_LIST.md | `client-engagement/` | v1.0 | [Notes] |
+| DRAFT_QUOTATION.md | `client-engagement/` | v1.0 | [Notes] |
+| CLIENT_DECISION_LOG.md | `client-engagement/` | v1.0 | [Notes] |
+| DISCOVERY_COVERAGE_SUMMARY.md | `client-engagement/` | v1.0 | [Notes] |
+| GATE_COMPLIANCE_RECORD.md | `client-engagement/` | v1.0 | [Notes] |
+
+---
+
+## 11. ظ‚ط±ط§ط± ط§ظ„ط¬ط§ظ‡ط²ظٹط© ظ„ظ„طھط³ظ„ظٹظ…
+
+| ط§ظ„ط­ظ‚ظ„ | ط§ظ„ظ‚ظٹظ…ط© |
+|-------|--------|
+| **Handoff Readiness Gate** | ًںں¢ ط¬ط§ظ‡ط² / ًںں، ط¬ط§ظ‡ط² ظ…ط¹ ظ…ظ„ط§ط­ط¸ط§طھ / ًں”´ ط؛ظٹط± ط¬ط§ظ‡ط² |
+| âœ… | [Checklist item 1] |
+| âœ… | [Checklist item 2] |
+| **ط§ظ„ط®ط·ظˆط© ط§ظ„طھط§ظ„ظٹط©:** | [Next step after handoff] |
+| **طھط§ط±ظٹط® ط§ظ„طھط³ظ„ظٹظ…:** | YYYY-MM-DD |
+
+---
+
+> **طھظ… ط¥ط¹ط¯ط§ط¯ ظ‡ط°ظ‡ ط§ظ„ط­ط²ظ…ط© ط¨ظˆط§ط³ط·ط©:** TCEA
+> **طھط§ط±ظٹط® ط§ظ„طھط­ط¯ظٹط«:** YYYY-MM-DD
+> **ط­ط§ظ„ط© ط§ظ„ط§ط¹طھظ…ط§ط¯:** Draft / Approved
 ```
+```
+

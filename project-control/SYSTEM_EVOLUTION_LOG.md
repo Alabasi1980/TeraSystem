@@ -875,3 +875,96 @@
 - ملاحظات إضافية:
   - الملف لا يزال فوق حد 1,000 سطر (1,502) — لكن المتبقي مبرر: 12 عميل بدون runtime يحتفظون بتعريفاتهم الكاملة + Sections نظامية
   - الخطوة التالية (عند موافقة Majed): دراسة أي من الـ 12 عميل يبرر إنشاء ملف runtime مستقل
+
+---
+
+## SCP-2026-07-13-094 — انضباط المسارات عند تفويض العملاء الفرعيين (Path Discipline)
+
+- تاريخ: 2026-07-13
+- معرف التغيير: SCP-2026-07-13-094
+- مصدر الطلب: AGENT_GAPS_LOG.md — GAP-001 (Critical), GAP-002 (High), GAP-003 (Critical)
+- نوع التغيير: Policy Update + Agent Improvement + Protocol Change
+- الملفات المعدلة:
+  - `.opencode/agents/tera.md` — إضافة Absolute Path Delegation Rule + Client Project Path Checkpoint
+  - `.opencode/agents/engineering-agent.md` — إضافة §10.1 Path Validation Gate
+  - `tera-system/TeraSubAgents.md` — إضافة قواعد المسارات + Checkpoint بعد §9
+  - `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` — إضافة Path Enforcement Rule في §3.1
+  - `project-control/AGENT_GAPS_LOG.md` — GAP-001/002/003: Pending → Applied
+  - `project-control/SYSTEM_CHANGE_PROPOSALS.md` — إحالة SCP-001~003 إلى SCP-094
+  - `project-control/SYSTEM_EVOLUTION_LOG.md` — هذا الإدخال
+- الملخص:
+  - **GAP-001 (EngineeringAgent):** أُضيفت Path Validation Gate — 5 خطوات فحص إلزامية قبل أي كتابة
+  - **GAP-002 (TeraAgent مسارات نسبية):** أُضيفت Absolute Path Delegation Rule — Allowed Write Targets = مسارات كاملة إلزامياً
+  - **GAP-003 (TeraAgent ملفات في الجذر):** أُضيف Client Project Path Checkpoint — 6 خطوات قبل بداية مشروع عميل
+  - **TeraSubAgents.md:** قاعدة إلزامية للمسارات + Checkpoint فحص للعملاء الفرعيين
+  - **TERA_RUNTIME_PROTOCOLS.md:** Path Enforcement Rule — مسؤولية + عواقب
+  - **توحيد 3 مقترحات سابقة (SCP-001~003) في SCP واحد شامل**
+- الموافقة: Majed — Approved
+- التحقق من الصحة: (راجع Validation Gates أدناه)
+- المخاطر: منخفض — قواعد فحص فقط، لا تغيير صلاحيات
+- ملاحظات الاسترجاع (Rollback):
+  1. `git checkout HEAD -- .opencode/agents/tera.md`
+  2. `git checkout HEAD -- .opencode/agents/engineering-agent.md`
+  3. `git checkout HEAD -- tera-system/TeraSubAgents.md`
+  4. `git checkout HEAD -- tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md`
+   5. إعادة GAP-001/002/003 إلى Pending في AGENT_GAPS_LOG.md
+   6. إزالة هذا الإدخال من SYSTEM_EVOLUTION_LOG.md
+
+---
+
+## SCP-2026-07-13-095 — إضافة قالب TERA_HANDOFF_PACKAGE مع قسم SCP-038 (AIS-0007)
+
+- التاريخ: 2026-07-13
+- معرف التغيير: SCP-2026-07-13-095
+- مصدر الطلب: AIS Processing (AIS-0007) — TCEA اقتراح
+- نوع التغيير: Template Addition / AIS Implementation
+- الملفات المعدلة:
+  - `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` — إضافة §36: قالب TERA_HANDOFF_PACKAGE.md كامل مع قسم SCP-038 (§1)
+  - `project-control/AGENT_IMPROVEMENT_SUGGESTIONS.md` — تحديث حالة AIS-0007 إلى Implemented, تحديث حالة AIS-0008 إلى Implemented (SCP-094)
+  - `project-control/SYSTEM_CHANGE_PROPOSALS.md` — إضافة SCP-095, تحديث حالة SCP-094 إلى منفّذ
+  - `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-13-095.md` — إنشاء
+- الملخص:
+  - أُضيف §36 إلى TERA_RUNTIME_TEMPLATES.md يتضمن قالب TERA_HANDOFF_PACKAGE.md كامل
+  - القسم §1 من القالب مخصص للتوافق مع SCP-038 (القواعد الأربع: Final Scope Reconciliation, Budget-to-Scope, Decision Register, Approval Consistency)
+  - القالب يغطي 11 قسماً أساسياً من Executive Summary إلى Readiness Decision
+  - وُثّق أن قسم SCP-038 إلزامي ("do NOT remove")
+- الموافقة: Owner Directive — Majed ("you decide and fix")
+- التحقق من الصحة:
+  - ✅ Anti-Bloat Gate PASS — حل مشكلة حقيقية (لا يوجد قالب موحد)
+  - ✅ Consistency with Dependency Map — Verified (لا تعارض)
+  - ✅ No broken references — Grep check PASS
+  - ⚠️ File Size Note: TERA_RUNTIME_TEMPLATES.md زاد ~145 سطراً (~1,606 → ~1,751) — سيعالج ضمن M-1
+- المخاطر: منخفض — قالب فقط، لا تغيير في سلوك العملاء
+- ملاحظات الاسترجاع (Rollback):
+  1. إزالة §36 من TERA_RUNTIME_TEMPLATES.md
+  2. إعادة AIS-0007 إلى حالة Not active في AGENT_IMPROVEMENT_SUGGESTIONS.md
+   3. حذف SCP-095 من SYSTEM_CHANGE_PROPOSALS.md
+   4. حذف SCP-095 من SYSTEM_EVOLUTION_LOG.md
+
+---
+
+## H-2 — إعادة تسمية مجلدات العملاء من العربية إلى اللاتينية (Health Report 2026-07-08)
+
+- التاريخ: 2026-07-13
+- معرف التغيير: H-2-Rename-Clients
+- مصدر الطلب: SYSTEM_HEALTH_REPORT_2026-07-08.md — H-2 (عالي)
+- نوع التغيير: Structural Cleanup / Path Rename
+- الملفات المعاد تسميتها (4 مجلدات رئيسية):
+  - `الماجد-لادارة-المستودعات` → `CLIENT-MAJED-WAREHOUSE`
+  - `شركة-الحوت-للمقاولات` → `CLIENT-HOOT-CONTRACTING`
+  - `شركة-العمران-الحديثة-للمقاولات` → `CLIENT-OMRAN-CONTRACTING`
+  - `شركة-حسين-عطية-للمقاولات` → `CLIENT-HUSAIN-ATTIYA`
+- المراجع المحدّثة (21 ملفاً):
+  - نظامية: `AGENT_IMPROVEMENT_SUGGESTIONS.md` (AIS-0008), `TASK-COD-007.md`
+  - عميل MAJED-WAREHOUSE: ملفات engagement, tasks, preparation (13 ملفاً)
+  - عميل HOOT-CONTRACTING: `R17-procurement-planning-budget.md`
+  - عميل OMRAN-CONTRACTING: `TERA_HANDOFF_PACKAGE.md`
+  - عميل HUSAIN-ATTIYA: `TERA_HANDOFF_PACKAGE.md`, `DRAFT_QUOTATION.md`
+- الموافقة: Owner Directive — Majed ("نفذ")
+- المخاطر: منخفض — تغيير اسماء مجلدات فقط. git تعامل معها كـ renames
+- ملاحظات الاسترجاع (Rollback):
+  1. `git checkout HEAD -- clients/CLIENT-MAJED-WAREHOUSE/` وإعادة تسميته يدوياً إلى `الماجد-لادارة-المستودعات`
+  2. `git checkout HEAD -- clients/CLIENT-HOOT-CONTRACTING/` وإعادة تسميته يدوياً
+  3. `git checkout HEAD -- clients/CLIENT-OMRAN-CONTRACTING/` وإعادة تسميته يدوياً
+  4. `git checkout HEAD -- clients/CLIENT-HUSAIN-ATTIYA/` وإعادة تسميته يدوياً
+  5. إعادة الملفات المحدّثة من git (21 ملفاً)
