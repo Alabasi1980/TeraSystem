@@ -18,8 +18,10 @@
 | **B5** | 011, 012, 013, 014 | D — Dashboard UI | Main page + Drill Down + Status + Filter | ✅ Complete |
 | **B6** | 015, 016, 017, 018 | E — Polish | Skeleton + Empty/Error + Toast + Animations + Connection | ✅ Covered by B5 |
 | **FIX** | FIX-001 | FIX | Critical & Important Bug Fixes | ✅ Complete |
-| **B7** | 019, 020, 021 | F — Deployment | IIS + License + UAT | ⏳ Pending |
-| **B8** | 022, 023, 024 | G — Gap Closure | Admin Nav + SyncLogs + SyncSettings | 🔵 Next |
+| **B7** | 019, 020, 021 | F — Deployment | IIS + License + UAT | ✅ Complete |
+| **B8** | 022, 023, 024 | G — Gap Closure | Admin Nav + SyncLogs + SyncSettings | ✅ Complete |
+| **B9** | 025 | H — Dynamic Mappings | Dynamic Table Mappings (CRUD + Schema Diff) | ✅ Complete |
+| **B10** | 026 | I — Card Builder UX | Visual Card Builder (Wizard + Preview + Templates) | 🟡 Assigned |
 
 ---
 
@@ -110,6 +112,24 @@
 **إستراتيجية التنفيذ:** 022 + 023 + 024 **بالتوازي** (لا تبعية بينها).
 **ملاحظة:** هذه المهام تُغلق كل الثغرات المتبقية قبل النشر.
 
+### B9 — Dynamic Table Mappings (تعيينات الجداول الديناميكية)
+
+| TASK-COD | الوصف | الوكيل | التقدير | التبعية |
+|---|---|---|---|---|
+| 025 | Dynamic Table Mappings — CRUD UI + Oracle Schema Detection + Schema Diff + SyncEngine DB-driven | engineering-agent | 20–30h | ALL ✅ |
+
+**إستراتيجية التنفيذ:** مهمة واحدة شاملة — البنية متداخلة (Model + Migration + Service + UI + SyncEngine).
+**ملاحظة:** هذه الميزة تُحول التعيينات من ملف ثابت إلى نظام ديناميكي يُدار من لوحة الإدارة.
+
+### B10 — Card Builder UX (منشئ البطاقات البصري)
+
+| TASK-COD | الوصف | الوكيل | التقدير | التبعية |
+|---|---|---|---|---|
+| 026 | Visual Card Builder — Wizard + Live Preview + Templates + Clone | ui-designer + engineering-agent | 25–35h | 009 ✅ + 011 ✅ |
+
+**إستراتيجية التنفيذ:** مهمة واحدة متكاملة — UI/UX (ui-designer) + Integration/Backend (engineering-agent).
+**ملاحظة:** تحول صفحة الإنشاء الحالية إلى منشئ بصري تفاعلي بخطوات قليلة + معاينة مباشرة + قوالب.
+
 ---
 
 ## 3. Dependency Map
@@ -146,6 +166,10 @@ B7 ──┬── 019 (IIS) ← 003
 B8 ──┬── 022 (Admin Nav) ← 009 + 010
      ├── 023 (SyncLogs) ← 006
      └── 024 (SyncSettings) ← 002
+           │
+B9 ─────── 025 (Dynamic Mappings) ← ALL
+      │
+B10 ────── 026 (Card Builder) ← 009 + 011
 ```
 
 ---
@@ -189,12 +213,12 @@ B8 ──┬── 022 (Admin Nav) ← 009 + 010
 
 ### Agent Availability
 
-| الوكيل | B1 | B2 | B3 | B4 | B5 | B6 | B7 |
-|---|---|---|---|---|---|---|---|
-| **engineering-agent** | ✅ | ✅ | ✅ | ✅ | مساعد | ❌ | ✅ |
-| **ui-designer** | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
-| **tera-software-designer** | دعم | دعم | دعم | دعم | دعم | دعم | دعم |
-| **TeraAgent** | إشراف | إشراف | إشراف | إشراف | إشراف | إشراف | إشراف |
+| الوكيل | B1 | B2 | B3 | B4 | B5 | B6 | B7 | B9 | B10 |
+|---|---|---|---|---|---|---|---|---|---|
+| **engineering-agent** | ✅ | ✅ | ✅ | ✅ | مساعد | ❌ | ✅ | ✅ | ✅ |
+| **ui-designer** | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ✅ |
+| **tera-software-designer** | دعم | دعم | دعم | دعم | دعم | دعم | دعم | دعم | دعم |
+| **TeraAgent** | إشراف | إشراف | إشراف | إشراف | إشراف | إشراف | إشراف | إشراف | إشراف |
 
 ### Engineering-Agent Activation
 
@@ -219,6 +243,7 @@ B8 ──┬── 022 (Admin Nav) ← 009 + 010
 | ✅ Sync logs visible | TASK-COD-023 (B8) |
 | ✅ Sync settings configurable from UI | TASK-COD-024 (B8) |
 | ✅ Deployed on IIS | TASK-COD-019→021 (B7) |
+| ✅ Dynamic Table Mappings | TASK-COD-025 (B9) |
 | ✅ Client approval | Phase 7 ✅ |
 
 ---
@@ -234,9 +259,11 @@ B8 ──┬── 022 (Admin Nav) ← 009 + 010
 | B5 Dashboard UI | 80–120 | ✅ Done |
 | B6 Polish | 33–48 | ✅ Covered |
 | FIX (Bug Fixes) | 3–4 | ✅ Done |
-| B7 Deployment | 16–24 | ⏳ Pending |
-| B8 Gap Closure | 5–7 | 🔵 Next |
-| **Total** | **307–478** | **20–34 days** |
+| B7 Deployment | 16–24 | ✅ Done |
+| B8 Gap Closure | 5–7 | ✅ Done |
+| B9 Dynamic Mappings | 20–30 | ✅ Done |
+| B10 Card Builder UX | 25–35 | 🟡 Assigned |
+| **Total** | **352–543** | **22–39 days** |
 
 > ضمن النطاق المعتمد (430–625 ساعة / ~8–12 أسبوع لوتيرة طبيعية).
 
@@ -247,4 +274,5 @@ B8 ──┬── 022 (Admin Nav) ← 009 + 010
 | Version | Date | Author | Changes |
 |---|---|---|---|
 | 1.0 | 2026-07-12 | TeraAgent | Initial batch plan — 7 batches, 21 TASK-COD-* |
-| 1.1 | 2026-07-13 | TeraAgent | Updated batch statuses (B1-B6 complete, FIX complete). Added B8 (Gap Closure: 022/023/024). |
+| 1.2 | 2026-07-14 | TeraAgent | B7 complete ✅, B8 complete ✅. Added B9 (Dynamic Table Mappings: 025). |
+| 1.3 | 2026-07-14 | TeraAgent | B9 complete ✅. Added B10 (Card Builder UX: 026). |

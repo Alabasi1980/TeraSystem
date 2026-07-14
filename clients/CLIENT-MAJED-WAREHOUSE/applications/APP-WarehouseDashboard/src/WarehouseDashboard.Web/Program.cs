@@ -1,6 +1,7 @@
 using WarehouseDashboard.Web.Data;
 using WarehouseDashboard.Web.Infrastructure;
 using WarehouseDashboard.Web.Pages;
+using WarehouseDashboard.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,6 +49,13 @@ builder.Services.AddRazorPages();
 
 // DashboardService: registered as Scoped so it gets a fresh DbContext per request.
 builder.Services.AddScoped<DashboardService>();
+
+// Card Builder service (TASK-COD-026)
+builder.Services.AddScoped<CardBuilderService>();
+
+// Dynamic table mapping services (TASK-COD-025)
+builder.Services.AddScoped<OracleSchemaService>();
+builder.Services.AddScoped<SchemaManagementService>();
 
 var app = builder.Build();
 

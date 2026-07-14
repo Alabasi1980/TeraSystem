@@ -17,6 +17,10 @@
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="27.*" />
     <!-- BCrypt password hashing for the Admin Panel (single shared password, Phase 1) -->
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.*" />
+    <!-- Oracle source (schema introspection for dynamic table mappings) -->
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.*" />
+    <!-- SQL Server data operations (ADO.NET for schema management) -->
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.*" />
   </ItemGroup>
 
 </Project>

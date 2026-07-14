@@ -6,90 +6,169 @@
              FlowDirection="RightToLeft"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
-    <Grid Margin="20">
+    <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,15">
-            <TextBlock Text="الإعدادات" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
-            <Button Content="إنشاء عرض سعر جديد" Command="{Binding GoToQuotationFormCommand}"
-                    Margin="20,0,0,0" Padding="12,6"
-                    Background="#1A73E8" Foreground="White" BorderThickness="0"
-                    Cursor="Hand" FontWeight="Bold">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="4" />
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button Content="📊 التقارير" Command="{Binding GoToReportsCommand}"
-                    Margin="10,0,0,0" Padding="12,6"
-                    Background="#2E7D32" Foreground="White" BorderThickness="0"
-                    Cursor="Hand" FontWeight="Bold">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="4" />
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button Content="🔑 تغيير كلمة المرور" Command="{Binding ChangePasswordCommand}"
-                    Margin="10,0,0,0" Padding="12,6"
-                    Background="#FF9800" Foreground="White" BorderThickness="0"
-                    Cursor="Hand" FontWeight="Bold">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="4" />
-                    </Style>
-                </Button.Resources>
-            </Button>
+        <!-- Page Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="الإعدادات"
+                       FontSize="{StaticResource PageTitleFontSize}"
+                       FontWeight="{StaticResource PageTitleFontWeight}"
+                       Foreground="{StaticResource TextPrimaryBrush}" />
+            <TextBlock Text="إدارة الموردين والقطع والترويسة والتوقيعات"
+                       FontSize="{StaticResource HelperFontSize}"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       Margin="0,4,0,12" />
+
+            <!-- Action buttons row -->
+            <StackPanel Orientation="Horizontal">
+                <Button Content="إنشاء عرض سعر جديد"
+                        Command="{Binding GoToQuotationFormCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Margin="0,0,10,0" />
+                <Button Content="التقارير"
+                        Command="{Binding GoToReportsCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Margin="0,0,10,0" />
+                <Button Content="تغيير كلمة المرور"
+                        Command="{Binding ChangePasswordCommand}"
+                        Style="{StaticResource GhostButtonStyle}" />
+            </StackPanel>
         </StackPanel>
 
         <!-- TabControl with 4 tabs -->
         <TabControl Grid.Row="1">
+
             <!-- =========== Tab 1: Suppliers =========== -->
             <TabItem Header="الموردين">
-                <Grid>
+                <Grid Margin="0,12,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
-                        <TextBox Text="{Binding NewSupplierName, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="200" Margin="0,0,10,0" />
-                        <TextBox Text="{Binding NewSupplierContact, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="150" Margin="0,0,10,0" />
-                        <Button Content="إضافة" Command="{Binding AddSupplierCommand}" Padding="10,5" />
-                    </StackPanel>
+                    <!-- Add form -->
+                    <Border Grid.Row="0"
+                            Style="{StaticResource CardStyle}"
+                            Padding="16"
+                            Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="220" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="180" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                    <DataGrid Grid.Row="1" ItemsSource="{Binding Suppliers}"
-                              SelectedItem="{Binding SelectedSupplier}"
-                              AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
-                              CanUserDeleteRows="False" CanUserReorderColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="*" />
-                            <DataGridTextColumn Header="معلومات الاتصال" Binding="{Binding ContactInfo}" Width="Auto" MinWidth="120" />
-                            <DataGridTextColumn Header="ملاحظات" Binding="{Binding Notes}" Width="Auto" MinWidth="120" />
-                            <DataGridTemplateColumn Header="إجراء" Width="90">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Content="حذف"
-                                                Command="{Binding DataContext.DeleteSupplierCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding Id}" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            <!-- Name field -->
+                            <TextBlock Text="اسم المورد:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Grid.Row="0" Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,0,0" />
+                            <TextBox Text="{Binding NewSupplierName, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Grid.Row="0" Grid.Column="1"
+                                     Margin="8,0,12,0" />
+
+                            <!-- Contact field -->
+                            <TextBlock Text="معلومات الاتصال:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Grid.Row="0" Grid.Column="2"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding NewSupplierContact, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Grid.Row="0" Grid.Column="3"
+                                     Margin="8,0,12,0" />
+
+                            <!-- Add button -->
+                            <Button Content="إضافة مورد"
+                                    Command="{Binding AddSupplierCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Grid.Row="0" Grid.Column="4"
+                                    VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Data area -->
+                    <Grid Grid.Row="1">
+                        <!-- Empty state (visible when Suppliers.Count == 0) -->
+                        <TextBlock Text="لا يوجد موردون بعد. أضف مورداً جديداً."
+                                   VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource EmptyStateTextStyle}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Suppliers.Count, FallbackValue=-1}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Suppliers DataGrid -->
+                        <DataGrid ItemsSource="{Binding Suppliers}"
+                                  SelectedItem="{Binding SelectedSupplier}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserReorderColumns="False"
+                                  CanUserResizeRows="False"
+                                  RowHeaderWidth="0"
+                                  GridLinesVisibility="Horizontal"
+                                  AlternatingRowBackground="{StaticResource AlternatingRowBrush}"
+                                  FontSize="{StaticResource BodyFontSize}"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  BorderBrush="{StaticResource BorderBrush}"
+                                  BorderThickness="1"
+                                  HeadersVisibility="Column"
+                                  RowHeight="40"
+                                  MinHeight="150">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="الاسم"
+                                                    Binding="{Binding Name}"
+                                                    Width="*"
+                                                    FontWeight="Bold" />
+                                <DataGridTextColumn Header="معلومات الاتصال"
+                                                    Binding="{Binding ContactInfo}"
+                                                    Width="Auto"
+                                                    MinWidth="120" />
+                                <DataGridTextColumn Header="ملاحظات"
+                                                    Binding="{Binding Notes}"
+                                                    Width="Auto"
+                                                    MinWidth="120" />
+                                <DataGridTemplateColumn Header="إجراء" Width="90">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="حذف"
+                                                    Style="{StaticResource DangerButtonStyle}"
+                                                    Height="30"
+                                                    Padding="10,2"
+                                                    FontSize="{StaticResource LabelFontSize}"
+                                                    Command="{Binding DataContext.DeleteSupplierCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding Id}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </Grid>
             </TabItem>
 
             <!-- =========== Tab 2: Items =========== -->
             <TabItem Header="القطع">
-                <Grid>
+                <Grid Margin="0,12,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -97,131 +176,328 @@
                     </Grid.RowDefinitions>
 
                     <!-- Search row -->
-                    <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
-                        <TextBox Text="{Binding ItemSearch, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="200" Margin="0,0,10,0" />
-                        <Button Content="بحث" Command="{Binding SearchItemsCommand}" Padding="10,5" />
-                    </StackPanel>
+                    <Border Grid.Row="0"
+                            Style="{StaticResource CardStyle}"
+                            Padding="16"
+                            Margin="0,0,0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="بحث:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,0,0" />
+                            <TextBox Text="{Binding ItemSearch, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Width="240"
+                                     Margin="8,0,10,0" />
+                            <Button Content="بحث"
+                                    Command="{Binding SearchItemsCommand}"
+                                    Style="{StaticResource SecondaryButtonStyle}" />
+                        </StackPanel>
+                    </Border>
 
                     <!-- Add form -->
-                    <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
-                        <TextBox Text="{Binding NewItemName, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="200" Margin="0,0,10,0" />
-                        <TextBox Text="{Binding NewItemDescription, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="200" Margin="0,0,10,0" />
-                        <TextBox Text="{Binding NewItemUnit, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="100" Margin="0,0,10,0" />
-                        <Button Content="إضافة قطعة" Command="{Binding AddItemCommand}" Padding="10,5" />
-                    </StackPanel>
+                    <Border Grid.Row="1"
+                            Style="{StaticResource CardStyle}"
+                            Padding="16"
+                            Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="160" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                    <DataGrid Grid.Row="2" ItemsSource="{Binding Items}"
-                              SelectedItem="{Binding SelectedItem}"
-                              AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
-                              CanUserDeleteRows="False" CanUserReorderColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="*" />
-                            <DataGridTextColumn Header="الوصف" Binding="{Binding Description}" Width="Auto" MinWidth="150" />
-                            <DataGridTextColumn Header="الوحدة" Binding="{Binding Unit}" Width="Auto" MinWidth="80" />
-                            <DataGridTemplateColumn Header="إجراء" Width="90">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Content="حذف"
-                                                Command="{Binding DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding Id}" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            <!-- Name field -->
+                            <TextBlock Text="اسم القطعة:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Grid.Column="0"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding NewItemName, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Grid.Column="1"
+                                     Margin="8,0,12,0" />
+
+                            <!-- Description field -->
+                            <TextBlock Text="الوصف:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Grid.Column="2"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding NewItemDescription, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Grid.Column="3"
+                                     Margin="8,0,12,0" />
+
+                            <!-- Unit field -->
+                            <TextBlock Text="الوحدة:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Grid.Column="4"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding NewItemUnit, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Grid.Column="5"
+                                     Margin="8,0,12,0" />
+
+                            <!-- Add button -->
+                            <Button Content="إضافة قطعة"
+                                    Command="{Binding AddItemCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Grid.Column="6"
+                                    VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Data area -->
+                    <Grid Grid.Row="2">
+                        <!-- Empty state -->
+                        <TextBlock Text="لا توجد قطع في الكتالوج بعد. أضف قطعة جديدة."
+                                   VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource EmptyStateTextStyle}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Items.Count, FallbackValue=-1}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Items DataGrid -->
+                        <DataGrid ItemsSource="{Binding Items}"
+                                  SelectedItem="{Binding SelectedItem}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserReorderColumns="False"
+                                  CanUserResizeRows="False"
+                                  RowHeaderWidth="0"
+                                  GridLinesVisibility="Horizontal"
+                                  AlternatingRowBackground="{StaticResource AlternatingRowBrush}"
+                                  FontSize="{StaticResource BodyFontSize}"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  BorderBrush="{StaticResource BorderBrush}"
+                                  BorderThickness="1"
+                                  HeadersVisibility="Column"
+                                  RowHeight="40"
+                                  MinHeight="150">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="الاسم"
+                                                    Binding="{Binding Name}"
+                                                    Width="*"
+                                                    FontWeight="Bold" />
+                                <DataGridTextColumn Header="الوصف"
+                                                    Binding="{Binding Description}"
+                                                    Width="Auto"
+                                                    MinWidth="150" />
+                                <DataGridTextColumn Header="الوحدة"
+                                                    Binding="{Binding Unit}"
+                                                    Width="Auto"
+                                                    MinWidth="80" />
+                                <DataGridTemplateColumn Header="إجراء" Width="90">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="حذف"
+                                                    Style="{StaticResource DangerButtonStyle}"
+                                                    Height="30"
+                                                    Padding="10,2"
+                                                    FontSize="{StaticResource LabelFontSize}"
+                                                    Command="{Binding DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding Id}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </Grid>
             </TabItem>
 
             <!-- =========== Tab 3: Signatures =========== -->
             <TabItem Header="التوقيعات">
-                <Grid>
+                <Grid Margin="0,12,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
-                        <TextBox Text="{Binding NewSignatureName, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="300" Margin="0,0,10,0" />
-                        <Button Content="إضافة توقيع" Command="{Binding AddSignatureCommand}" Padding="10,5" />
-                    </StackPanel>
+                    <!-- Add form -->
+                    <Border Grid.Row="0"
+                            Style="{StaticResource CardStyle}"
+                            Padding="16"
+                            Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="اسم التوقيع:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding NewSignatureName, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Width="300"
+                                     Margin="8,0,12,0" />
+                            <Button Content="إضافة توقيع"
+                                    Command="{Binding AddSignatureCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}" />
+                        </StackPanel>
+                    </Border>
 
-                    <ListBox Grid.Row="1" ItemsSource="{Binding Signatures}"
-                             SelectedItem="{Binding SelectedSignature}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Margin="5">
-                                    <TextBlock Text="{Binding Name}" Width="300" VerticalAlignment="Center" />
-                                    <Button Content="▲" Width="32" Margin="3,0"
-                                            Command="{Binding DataContext.MoveUpSignatureCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding Id}" />
-                                    <Button Content="▼" Width="32" Margin="3,0"
-                                            Command="{Binding DataContext.MoveDownSignatureCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding Id}" />
-                                    <Button Content="حذف" Margin="10,0,0,0" Padding="8,2"
-                                            Command="{Binding DataContext.DeleteSignatureCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding Id}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <!-- Data area -->
+                    <Grid Grid.Row="1">
+                        <!-- Empty state -->
+                        <TextBlock Text="لا توجد توقيعات بعد. أضف توقيعاً جديداً."
+                                   VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource EmptyStateTextStyle}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Signatures.Count, FallbackValue=-1}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Signatures ListBox -->
+                        <ListBox ItemsSource="{Binding Signatures}"
+                                 SelectedItem="{Binding SelectedSignature}"
+                                 BorderBrush="{StaticResource BorderBrush}"
+                                 BorderThickness="1"
+                                 FontSize="{StaticResource BodyFontSize}"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 MinHeight="150">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource CardStyle}"
+                                            Padding="12,8"
+                                            Margin="4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}"
+                                                       Width="300"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="{StaticResource BodyFontSize}"
+                                                       Foreground="{StaticResource TextPrimaryBrush}" />
+                                            <Button Content="▲"
+                                                    Style="{StaticResource SmallButtonStyle}"
+                                                    Background="{StaticResource BorderLightBrush}"
+                                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    Width="32"
+                                                    Margin="3,0"
+                                                    Command="{Binding DataContext.MoveUpSignatureCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding Id}" />
+                                            <Button Content="▼"
+                                                    Style="{StaticResource SmallButtonStyle}"
+                                                    Background="{StaticResource BorderLightBrush}"
+                                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    Width="32"
+                                                    Margin="3,0"
+                                                    Command="{Binding DataContext.MoveDownSignatureCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding Id}" />
+                                            <Button Content="حذف"
+                                                    Style="{StaticResource DangerButtonStyle}"
+                                                    Height="30"
+                                                    Padding="14,2"
+                                                    FontSize="{StaticResource LabelFontSize}"
+                                                    Margin="10,0,0,0"
+                                                    Command="{Binding DataContext.DeleteSignatureCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding Id}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                 </Grid>
             </TabItem>
 
             <!-- =========== Tab 4: Letterhead =========== -->
             <TabItem Header="الترويسة">
-                <Grid>
+                <Grid Margin="0,12,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="بيانات الشركة" FontSize="18" FontWeight="SemiBold"
-                               Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,15" />
+                    <Border Grid.Row="0"
+                            Style="{StaticResource CardStyle}"
+                            Padding="24">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="اسم الشركة:" Grid.Row="1" Grid.Column="0"
-                               Margin="10" VerticalAlignment="Center" />
-                    <TextBox Text="{Binding CompanyName}" Grid.Row="1" Grid.Column="1"
-                             Margin="10" Padding="5" />
+                            <!-- Section title -->
+                            <TextBlock Text="بيانات الشركة"
+                                       Style="{StaticResource CardTitleStyle}"
+                                       Grid.Row="0" Grid.ColumnSpan="2" />
 
-                    <TextBlock Text="العنوان:" Grid.Row="2" Grid.Column="0"
-                               Margin="10" VerticalAlignment="Center" />
-                    <TextBox Text="{Binding CompanyAddress}" Grid.Row="2" Grid.Column="1"
-                             Margin="10" Padding="5" />
+                            <!-- Company Name -->
+                            <TextBlock Text="اسم الشركة:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Grid.Row="1" Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,0,0" />
+                            <TextBox Text="{Binding CompanyName}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Grid.Row="1" Grid.Column="1"
+                                     Margin="0,0,0,12" />
 
-                    <TextBlock Text="الهاتف:" Grid.Row="3" Grid.Column="0"
-                               Margin="10" VerticalAlignment="Center" />
-                    <TextBox Text="{Binding CompanyPhone}" Grid.Row="3" Grid.Column="1"
-                             Margin="10" Padding="5" />
+                            <!-- Address -->
+                            <TextBlock Text="العنوان:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Grid.Row="2" Grid.Column="0"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding CompanyAddress}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Grid.Row="2" Grid.Column="1"
+                                     Margin="0,0,0,12" />
 
-                    <TextBlock Text="البريد:" Grid.Row="4" Grid.Column="0"
-                               Margin="10" VerticalAlignment="Center" />
-                    <TextBox Text="{Binding CompanyEmail}" Grid.Row="4" Grid.Column="1"
-                             Margin="10" Padding="5" />
+                            <!-- Phone -->
+                            <TextBlock Text="الهاتف:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Grid.Row="3" Grid.Column="0"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding CompanyPhone}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Grid.Row="3" Grid.Column="1"
+                                     Margin="0,0,0,12" />
 
-                    <Button Content="حفظ الإعدادات" Command="{Binding SaveLetterheadCommand}"
-                            Grid.Row="5" Grid.ColumnSpan="2"
-                            HorizontalAlignment="Left" Margin="10,15" Padding="18,10"
-                            Background="#1A73E8" Foreground="White" BorderThickness="0"
-                            Cursor="Hand">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="4" />
-                            </Style>
-                        </Button.Resources>
-                    </Button>
+                            <!-- Email -->
+                            <TextBlock Text="البريد:"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Grid.Row="4" Grid.Column="0"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding CompanyEmail}"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Grid.Row="4" Grid.Column="1"
+                                     Margin="0,0,0,12" />
+
+                            <!-- Save button -->
+                            <Button Content="حفظ الإعدادات"
+                                    Command="{Binding SaveLetterheadCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Grid.Row="5" Grid.ColumnSpan="2"
+                                    HorizontalAlignment="Left"
+                                    Margin="0,8,0,0" />
+                        </Grid>
+                    </Border>
                 </Grid>
             </TabItem>
         </TabControl>

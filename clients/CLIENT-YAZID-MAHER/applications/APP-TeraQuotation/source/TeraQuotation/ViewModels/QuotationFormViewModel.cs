@@ -1,27 +1,40 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using TeraQuotation.Helpers;
 using TeraQuotation.Models;
 using TeraQuotation.Services;
 
 namespace TeraQuotation.ViewModels;
 
-public partial class QuotationFormViewModel : ObservableObject
+public partial class QuotationFormViewModel : ObservableObject, Services.IUnsavedChangesAware
 {
     private readonly IQuotationService _quotationService;
     private readonly ISettingsService _settingsService;
     private readonly INavigationService _navigationService;
+    private readonly IPdfService _pdfService;
+    private readonly IOutlookService _outlookService;
 
     private List<Item> _allItems = new();
+    private Quotation? _savedQuotation;
 
     public QuotationFormViewModel(
         IQuotationService quotationService,
         ISettingsService settingsService,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        IPdfService pdfService,
+        IOutlookService outlookService)
     {
         _quotationService = quotationService;
         _settingsService = settingsService;
         _navigationService = navigationService;
+        _pdfService = pdfService;
+        _outlookService = outlookService;
+
+        // Track items collection changes for computed properties
+        Items.CollectionChanged += OnItemsCollectionChanged;
     }
 
     // ══════════════════════════════════════════════
@@ -36,6 +49,79 @@ public partial class QuotationFormViewModel : ObservableObject
 
     [ObservableProperty]
     private string? _description;
+
+    [ObservableProperty]
+    private string _status = "Draft";
+
+    [ObservableProperty]
+    private DateTime? _lastSaveTime;
+
+    [ObservableProperty]
+    private bool _hasUnsavedChanges;
+
+    [ObservableProperty]
+    private bool _isSaved;
+
+    // ══════════════════════════════════════════════
+    //  العنوان الديناميكي
+    // ══════════════════════════════════════════════
+
+    public string TitleText =>
+        string.IsNullOrEmpty(QuoteNumber)
+            ? "عرض سعر جديد"
+            : $"تعديل عرض سعر {QuoteNumber}";
+
+    public string LastSaveText
+    {
+        get
+        {
+            if (!IsSaved) return "غير محفوظ ●";
+            if (LastSaveTime.HasValue)
+                return $"آخر حفظ: {LastSaveTime.Value:HH:mm}";
+            return "غير محفوظ ●";
+        }
+    }
+
+    partial void OnQuoteNumberChanged(string? value)
+    {
+        OnPropertyChanged(nameof(TitleText));
+    }
+
+    partial void OnIsSavedChanged(bool value)
+    {
+        OnPropertyChanged(nameof(LastSaveText));
+    }
+
+    partial void OnLastSaveTimeChanged(DateTime? value)
+    {
+        OnPropertyChanged(nameof(LastSaveText));
+    }
+
+    partial void OnHasUnsavedChangesChanged(bool value)
+    {
+        OnPropertyChanged(nameof(LastSaveText));
+    }
+
+    // ══════════════════════════════════════════════
+    //  نص الإرشادات (Guidance Strip)
+    // ══════════════════════════════════════════════
+
+    public string GuidanceText
+    {
+        get
+        {
+            if (SelectedSuppliers.Count == 0)
+                return "ابدأ بإضافة مورد واحد على الأقل، ثم أضف المواد المطلوبة.";
+
+            if (Items.Count == 0)
+                return "تمت إضافة الموردين. أضف المواد التي تريد تسعيرها.";
+
+            if (!AllItemsPriced)
+                return "بعض المواد لم تكتمل أسعارها بعد. أكمل الأسعار لتفعيل الطباعة النهائية.";
+
+            return "العرض مكتمل وجاهز للطباعة أو التصدير.";
+        }
+    }
 
     // ══════════════════════════════════════════════
     //  الموردين
@@ -55,6 +141,176 @@ public partial class QuotationFormViewModel : ObservableObject
 
     [ObservableProperty]
     private ObservableCollection<QuotationItemRow> _items = new();
+
+    // ══════════════════════════════════════════════
+    //  العنصر المحدد (للوحة التسعير)
+    // ══════════════════════════════════════════════
+
+    [ObservableProperty]
+    private QuotationItemRow? _selectedItem;
+
+    partial void OnSelectedItemChanged(QuotationItemRow? value)
+    {
+        OnPropertyChanged(nameof(HasSelectedItem));
+        OnPropertyChanged(nameof(PricingPanelTitle));
+        OnPropertyChanged(nameof(SelectedItemQuantityText));
+        OnPricingChanged();
+    }
+
+    public bool HasSelectedItem => SelectedItem != null;
+    public string PricingPanelTitle => SelectedItem != null ? $"تسعير: {SelectedItem.DisplayName}" : "";
+    public string SelectedItemQuantityText =>
+        SelectedItem != null ? $"الكمية: {SelectedItem.Quantity:N0} {SelectedItem.Unit}" : "";
+
+    // ══════════════════════════════════════════════
+    //  خصائص محسوبة لحالة الأزرار
+    // ══════════════════════════════════════════════
+
+    public bool HasMaterials => Items.Count > 0;
+
+    public bool AllItemsPriced
+    {
+        get
+        {
+            if (Items.Count == 0) return false;
+            return Items.All(i => IsItemFullyPriced(i));
+        }
+    }
+
+    public bool CanPrintWithoutPrices => HasMaterials;
+    public bool CanPrintFinal => AllItemsPriced;
+    public bool CanExportPdf => IsSaved;
+    public bool CanSendOutlook => IsSaved;
+
+    /// <summary>
+    /// يُحدّث جميع الخصائص المحسوبة عند تغيير Items.
+    /// </summary>
+    private void OnItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        // Subscribe to property changes on new items
+        if (e.NewItems != null)
+        {
+            foreach (QuotationItemRow item in e.NewItems)
+                item.PropertyChanged += OnItemPropertyChanged;
+        }
+
+        // Unsubscribe from removed items
+        if (e.OldItems != null)
+        {
+            foreach (QuotationItemRow item in e.OldItems)
+                item.PropertyChanged -= OnItemPropertyChanged;
+        }
+
+        RefreshComputedStates();
+    }
+
+    private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(QuotationItemRow.Item) or nameof(QuotationItemRow.Quantity) or nameof(QuotationItemRow.Unit))
+        {
+            RefreshComputedStates();
+        }
+    }
+
+    /// <summary>
+    /// يُحدّث جميع الخصائص المحسوبة ويعلم الواجهة.
+    /// </summary>
+    public void RefreshComputedStates()
+    {
+        OnPropertyChanged(nameof(HasMaterials));
+        OnPropertyChanged(nameof(AllItemsPriced));
+        OnPropertyChanged(nameof(CanPrintWithoutPrices));
+        OnPropertyChanged(nameof(CanPrintFinal));
+        OnPropertyChanged(nameof(CanExportPdf));
+        OnPropertyChanged(nameof(CanSendOutlook));
+        OnPropertyChanged(nameof(GuidanceText));
+        HasUnsavedChanges = !IsSaved;
+        OnPropertyChanged(nameof(LastSaveText));
+    }
+
+    /// <summary>
+    /// يُستدعى عندما يتغير تسعير مادة ما (لتحديث حالة الأزرار).
+    /// </summary>
+    public void OnPricingChanged()
+    {
+        RefreshComputedStates();
+    }
+
+    // ══════════════════════════════════════════════
+    //  حالة تسعير العنصر (لشاشة المواد)
+    // ══════════════════════════════════════════════
+
+    /// <summary>
+    /// هل جميع أسعار هذا العنصر مكتملة عند جميع الموردين؟
+    /// </summary>
+    public bool IsItemFullyPriced(QuotationItemRow item)
+    {
+        if (SelectedSuppliers.Count == 0) return false;
+        return SelectedSuppliers.All(s =>
+            item.SupplierCells.TryGetValue(s.Id, out var cell) &&
+            cell.Price.HasValue &&
+            cell.Price.Value > 0);
+    }
+
+    /// <summary>
+    /// هل بدأ تسعير هذا العنصر (واحد على الأقل)?
+    /// </summary>
+    public bool IsItemPartiallyPriced(QuotationItemRow item)
+    {
+        if (SelectedSuppliers.Count == 0) return false;
+        return SelectedSuppliers.Any(s =>
+            item.SupplierCells.TryGetValue(s.Id, out var cell) &&
+            cell.Price.HasValue);
+    }
+
+    /// <summary>
+    /// نص حالة تسعير العنصر.
+    /// </summary>
+    public string GetItemPricingStatus(QuotationItemRow item)
+    {
+        if (IsItemFullyPriced(item)) return "مكتمل";
+        if (IsItemPartiallyPriced(item)) return "ناقص سعر";
+        return "لم يبدأ التسعير";
+    }
+
+    /// <summary>
+    /// يحسب أفضل سعر للعنصر ويعيد (قيمة, اسم المورد).
+    /// </summary>
+    public (decimal? BestPrice, string? BestSupplierName) GetItemBestPrice(QuotationItemRow item)
+    {
+        decimal? minPrice = null;
+        string? bestSupplier = null;
+
+        foreach (var supplier in SelectedSuppliers)
+        {
+            if (item.SupplierCells.TryGetValue(supplier.Id, out var cell) && cell.Price.HasValue)
+            {
+                if (!minPrice.HasValue || cell.Price.Value < minPrice.Value)
+                {
+                    minPrice = cell.Price.Value;
+                    bestSupplier = supplier.Name;
+                }
+            }
+        }
+
+        return (minPrice, bestSupplier);
+    }
+
+    /// <summary>
+    /// هل هذا المورد لديه أفضل سعر للعنصر المحدد؟
+    /// </summary>
+    public bool IsSupplierBestPrice(QuotationItemRow item, int supplierId)
+    {
+        if (item == null) return false;
+
+        var (bestPrice, _) = GetItemBestPrice(item);
+        if (!bestPrice.HasValue) return false;
+
+        if (item.SupplierCells.TryGetValue(supplierId, out var cell) && cell.Price.HasValue)
+            return cell.Price.Value == bestPrice.Value;
+
+        return false;
+    }
 
     // ══════════════════════════════════════════════
     //  بحث القطع (داخل الخلية)
@@ -101,6 +357,13 @@ public partial class QuotationFormViewModel : ObservableObject
 
             var allSuppliers = await _settingsService.GetAllSuppliersAsync();
             AvailableSuppliers = new ObservableCollection<Supplier>(allSuppliers);
+
+            // ربط تغييرات SelectedSuppliers بتحديث الإرشادات
+            SelectedSuppliers.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(GuidanceText));
+                RefreshComputedStates();
+            };
         }
         catch (Exception ex)
         {
@@ -128,6 +391,9 @@ public partial class QuotationFormViewModel : ObservableObject
             row.EnsureSupplierCell(supplier.Id);
 
         Items.Add(row);
+        SelectedItem = row;
+
+        ToastHelper.ShowSuccess("تمت إضافة المادة");
     }
 
     /// <summary>
@@ -136,7 +402,13 @@ public partial class QuotationFormViewModel : ObservableObject
     public void RemoveItemRow(QuotationItemRow? row)
     {
         if (row != null)
+        {
+            if (SelectedItem == row)
+                SelectedItem = null;
+
             Items.Remove(row);
+            ToastHelper.ShowSuccess("تم حذف المادة");
+        }
     }
 
     /// <summary>
@@ -167,6 +439,8 @@ public partial class QuotationFormViewModel : ObservableObject
         // إضافة خلية مورد فارغة لكل صف موجود
         foreach (var row in Items)
             row.EnsureSupplierCell(supplier.Id);
+
+        ToastHelper.ShowSuccess("تمت إضافة المورد");
     }
 
     /// <summary>
@@ -182,6 +456,8 @@ public partial class QuotationFormViewModel : ObservableObject
         // حذف خلية المورد من كل صف
         foreach (var row in Items)
             row.RemoveSupplierCell(supplier.Id);
+
+        ToastHelper.ShowSuccess("تم حذف المورد");
     }
 
     // ══════════════════════════════════════════════
@@ -248,14 +524,24 @@ public partial class QuotationFormViewModel : ObservableObject
     {
         try
         {
+            HasUnsavedChanges = false;
+
             // إنشاء عرض السعر
             var quotation = new Quotation
             {
                 QuoteNumber = QuoteNumber!,
                 Date = Date,
                 Description = Description ?? "",
-                Status = "Draft"
+                Status = Status
             };
+
+            if (_savedQuotation != null)
+            {
+                // تحديث العرض الحالي
+                quotation.Id = _savedQuotation.Id;
+                quotation.CreatedAt = _savedQuotation.CreatedAt;
+                quotation.Items = _savedQuotation.Items;
+            }
 
             quotation = await _quotationService.CreateQuotationAsync(quotation);
 
@@ -303,28 +589,270 @@ public partial class QuotationFormViewModel : ObservableObject
 
             await _quotationService.UpdateQuotationAsync(quotation);
 
-            System.Windows.MessageBox.Show(
-                $"تم حفظ عرض السعر {quotation.QuoteNumber} بنجاح.",
-                "نجاح",
-                System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Information);
+            _savedQuotation = quotation;
+            IsSaved = true;
+            LastSaveTime = DateTime.Now;
+            Status = "Draft";
 
-            // الانتقال لقائمة عروض الأسعار
-            _navigationService.NavigateTo<Views.QuotationListView>();
+            ToastHelper.ShowSuccess($"تم حفظ عرض السعر {quotation.QuoteNumber} بنجاح");
         }
         catch (Exception ex)
         {
-            System.Windows.MessageBox.Show(
-                $"خطأ في حفظ عرض السعر: {ex.Message}",
-                "خطأ",
-                System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Error);
+            HasUnsavedChanges = true;
+            ToastHelper.ShowError($"تعذر حفظ العرض. حاول مرة أخرى.\n{ex.Message}");
         }
     }
 
+    // ══════════════════════════════════════════════
+    //  الطباعة بدون أسعار
+    // ══════════════════════════════════════════════
+
     [RelayCommand]
-    void GoToSettings()
+    async Task PrintWithoutPricesAsync()
     {
-        _navigationService.NavigateTo<Views.SettingsView>();
+        if (!HasMaterials)
+        {
+            ToastHelper.ShowWarning("أضف مادة واحدة على الأقل للطباعة");
+            return;
+        }
+
+        try
+        {
+            // حفظ أولاً
+            if (!IsSaved) await SaveAsync();
+            if (!IsSaved) return;
+
+            var quotation = await BuildQuotationForPrint();
+            if (quotation == null) return;
+
+            // استخدام الـ PrintHelper الموجود في المشروع
+            PrintHelper.PrintQuotation(quotation, showPrices: false);
+
+            Status = "UpdatedWithPrices";
+            ToastHelper.ShowSuccess("تمت طباعة عرض السعر بدون أسعار");
+        }
+        catch (Exception ex)
+        {
+            ToastHelper.ShowError($"خطأ في الطباعة: {ex.Message}");
+        }
+    }
+
+    // ══════════════════════════════════════════════
+    //  الطباعة النهائية
+    // ══════════════════════════════════════════════
+
+    [RelayCommand]
+    async Task PrintFinalAsync()
+    {
+        if (!AllItemsPriced)
+        {
+            ToastHelper.ShowWarning("لا يمكن الطباعة النهائية — توجد مواد بدون أسعار");
+            return;
+        }
+
+        try
+        {
+            if (!IsSaved) await SaveAsync();
+            if (!IsSaved) return;
+
+            var quotation = await BuildQuotationForPrint();
+            if (quotation == null) return;
+
+            PrintHelper.PrintQuotation(quotation, showPrices: true);
+
+            Status = "Printed";
+            ToastHelper.ShowSuccess("تمت طباعة عرض السعر النهائية");
+        }
+        catch (Exception ex)
+        {
+            ToastHelper.ShowError($"خطأ في الطباعة: {ex.Message}");
+        }
+    }
+
+    // ══════════════════════════════════════════════
+    //  تصدير PDF
+    // ══════════════════════════════════════════════
+
+    [RelayCommand]
+    async Task ExportPdfAsync()
+    {
+        if (!IsSaved)
+        {
+            ToastHelper.ShowWarning("احفظ العرض أولاً قبل تصدير PDF");
+            return;
+        }
+
+        try
+        {
+            var quotation = await BuildQuotationForPrint();
+            if (quotation == null) return;
+
+            var pdfBytes = await _pdfService.GenerateQuotationPdfAsync(quotation.Id);
+
+            string safeFileName = SanitizeFileName($"عرض_سعر_{quotation.QuoteNumber}.pdf");
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string filePath = System.IO.Path.Combine(desktopPath, safeFileName);
+
+            await System.IO.File.WriteAllBytesAsync(filePath, pdfBytes);
+
+            Status = "PDFExported";
+            ToastHelper.ShowSuccess($"تم تصدير PDF بنجاح إلى سطح المكتب");
+        }
+        catch (Exception ex)
+        {
+            ToastHelper.ShowError($"خطأ في تصدير PDF: {ex.Message}");
+        }
+    }
+
+    // ══════════════════════════════════════════════
+    //  الإرسال عبر Outlook
+    // ══════════════════════════════════════════════
+
+    [RelayCommand]
+    async Task SendViaOutlookAsync()
+    {
+        if (!IsSaved)
+        {
+            ToastHelper.ShowWarning("احفظ العرض أولاً، ثم يمكنك الإرسال عبر Outlook");
+            return;
+        }
+
+        try
+        {
+            var quotation = await BuildQuotationForPrint();
+            if (quotation == null) return;
+
+            var pdfBytes = await _pdfService.GenerateQuotationPdfAsync(quotation.Id);
+            var safeFileName = SanitizeFileName($"عرض_سعر_{quotation.QuoteNumber}.pdf");
+            var pdfPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), safeFileName);
+            await System.IO.File.WriteAllBytesAsync(pdfPath, pdfBytes);
+
+            _outlookService.SendQuotationEmail(quotation.QuoteNumber, pdfPath);
+
+            Status = "SentViaOutlook";
+            ToastHelper.ShowSuccess("تم فتح بريد Outlook مع المرفق");
+        }
+        catch (System.Runtime.InteropServices.COMException)
+        {
+            ToastHelper.ShowWarning("تعذر فتح Outlook. الرجاء التأكد من تثبيت Outlook.");
+        }
+        catch (Exception ex)
+        {
+            ToastHelper.ShowError($"خطأ في الإرسال عبر Outlook: {ex.Message}");
+        }
+    }
+
+    // ══════════════════════════════════════════════
+    //  أدوات مساعدة للتصدير والطباعة
+    // ══════════════════════════════════════════════
+
+    /// <summary>
+    /// يبني كائن Quotation من البيانات الحالية للطباعة/التصدير.
+    /// </summary>
+    private async Task<Quotation?> BuildQuotationForPrint()
+    {
+        if (_savedQuotation == null) return null;
+
+        var quotation = await _quotationService.GetQuotationByIdAsync(_savedQuotation.Id);
+        if (quotation == null) return null;
+
+        quotation.Date = Date;
+        quotation.Description = Description ?? "";
+
+        // مزامنة العناصر
+        quotation.Items.Clear();
+        foreach (var row in Items)
+        {
+            if (row.ItemId == 0) continue;
+
+            var qi = new QuotationItem
+            {
+                QuotationId = quotation.Id,
+                ItemId = row.ItemId,
+                Quantity = row.Quantity,
+                Unit = row.Unit,
+            };
+
+            for (int i = 0; i < SelectedSuppliers.Count && i < 3; i++)
+            {
+                var supplierId = SelectedSuppliers[i].Id;
+                if (!row.SupplierCells.TryGetValue(supplierId, out var cell)) continue;
+
+                switch (i)
+                {
+                    case 0:
+                        qi.Supplier1Name = SelectedSuppliers[i].Name;
+                        qi.Supplier1Type = cell.Type;
+                        qi.Supplier1Price = cell.Price;
+                        break;
+                    case 1:
+                        qi.Supplier2Name = SelectedSuppliers[i].Name;
+                        qi.Supplier2Type = cell.Type;
+                        qi.Supplier2Price = cell.Price;
+                        break;
+                    case 2:
+                        qi.Supplier3Name = SelectedSuppliers[i].Name;
+                        qi.Supplier3Type = cell.Type;
+                        qi.Supplier3Price = cell.Price;
+                        break;
+                }
+            }
+
+            quotation.Items.Add(qi);
+        }
+
+        await _quotationService.UpdateQuotationAsync(quotation);
+        return quotation;
+    }
+
+    private static string SanitizeFileName(string fileName)
+    {
+        var invalid = System.IO.Path.GetInvalidFileNameChars();
+        return string.Concat(fileName.Select(ch => invalid.Contains(ch) ? '_' : ch));
+    }
+
+    // ══════════════════════════════════════════════
+    //  IUnsavedChangesAware
+    // ══════════════════════════════════════════════
+
+    /// <summary>
+    /// Shows the UnsavedChangesDialog with 3 options:
+    /// "حفظ ثم خروج" → saves then returns true,
+    /// "خروج بدون حفظ" → returns true,
+    /// "إلغاء" → returns false (stay).
+    /// </summary>
+    public async Task<bool> ConfirmNavigateAwayAsync()
+    {
+        var dialog = new Views.Dialogs.UnsavedChangesDialog();
+        dialog.Owner = System.Windows.Application.Current.MainWindow;
+        dialog.ShowDialog();
+
+        switch (dialog.Choice)
+        {
+            case Views.Dialogs.UnsavedChangesChoice.Save:
+                await SaveAsync();
+                return IsSaved; // true if save succeeded
+            case Views.Dialogs.UnsavedChangesChoice.Discard:
+                return true;
+            case Views.Dialogs.UnsavedChangesChoice.Cancel:
+            default:
+                return false;
+        }
+    }
+
+    // ══════════════════════════════════════════════
+    //  التنقل
+    // ══════════════════════════════════════════════
+
+    [RelayCommand]
+    async Task GoToList()
+    {
+        await _navigationService.TryGoBackAsync();
+    }
+
+    [RelayCommand]
+    async Task GoToSettings()
+    {
+        await _navigationService.TryNavigateToAsync<Views.SettingsView>();
     }
 }

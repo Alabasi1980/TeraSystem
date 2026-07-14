@@ -19,6 +19,7 @@ public class WarehouseDashboardDbContext : DbContext
     public DbSet<CardDrillDownLevel> CardDrillDownLevels => Set<CardDrillDownLevel>();
     public DbSet<SyncSetting> SyncSettings => Set<SyncSetting>();
     public DbSet<AdminPassword> AdminPasswords => Set<AdminPassword>();
+    public DbSet<TableMappingConfig> TableMappings => Set<TableMappingConfig>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -178,6 +179,65 @@ public class WarehouseDashboardDbContext : DbContext
                 .IsRequired()
                 .HasColumnType("datetime2")
                 .HasDefaultValueSql("GETUTCDATE()");
+        });
+
+        // -------------------------------------------------------------------
+        // TableMappings (spec TASK-COD-025) — dynamic Oracle→SQL sync config
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<TableMappingConfig>(entity =>
+        {
+            entity.ToTable("TableMappings");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.OracleSource)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            entity.Property(e => e.SourceType)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasDefaultValue("Table");
+
+            entity.Property(e => e.SqlTargetTable)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            entity.Property(e => e.IsActive)
+                .IsRequired()
+                .HasDefaultValue(true);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            entity.Property(e => e.UpdatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            entity.Property(e => e.LastSyncAt)
+                .HasColumnType("datetime2")
+                .IsRequired(false);
+
+            entity.Property(e => e.SyncRecordCount)
+                .HasDefaultValue(0);
+
+            entity.Property(e => e.ErrorMessage)
+                .HasMaxLength(1000)
+                .IsRequired(false);
+
+            entity.HasIndex(e => e.OracleSource)
+                .IsUnique()
+                .HasDatabaseName("IX_TableMappings_OracleSource");
+
+            entity.HasIndex(e => e.SqlTargetTable)
+                .IsUnique()
+                .HasDatabaseName("IX_TableMappings_SqlTargetTable");
+
+            entity.HasIndex(e => e.IsActive)
+                .HasDatabaseName("IX_TableMappings_IsActive");
         });
     }
 }

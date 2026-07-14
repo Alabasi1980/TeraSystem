@@ -1,0 +1,483 @@
+@page
+@model WarehouseDashboard.Web.Pages.admin_secure_panel.Cards.BuilderModel
+@{
+    Layout = "_CardsLayout";
+    ViewData["Title"] = "منشئ البطاقات البصري";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/card-builder.css" />
+}
+
+<div class="wb-wizard" id="wb-wizard" data-clone-id="@Model.Request.Query["clone"]">
+    <!-- Step Indicator -->
+    <nav class="wb-step-indicator" aria-label="خطوات المعالج" role="navigation">
+        <ol class="wb-steps">
+            <li class="wb-step" data-step="1" aria-current="step">
+                <span class="wb-step__number" aria-hidden="true">1</span>
+                <span class="wb-step__label">النوع</span>
+                <span class="wb-step__bar" aria-hidden="true"></span>
+            </li>
+            <li class="wb-step" data-step="2">
+                <span class="wb-step__number" aria-hidden="true">2</span>
+                <span class="wb-step__label">المصدر</span>
+                <span class="wb-step__bar" aria-hidden="true"></span>
+            </li>
+            <li class="wb-step" data-step="3">
+                <span class="wb-step__number" aria-hidden="true">3</span>
+                <span class="wb-step__label">الحقول</span>
+                <span class="wb-step__bar" aria-hidden="true"></span>
+            </li>
+            <li class="wb-step" data-step="4">
+                <span class="wb-step__number" aria-hidden="true">4</span>
+                <span class="wb-step__label">الشكل</span>
+            </li>
+        </ol>
+    </nav>
+
+    <div class="wb-wizard__content">
+        <!-- Main Form Area (Left/Top) -->
+        <div class="wb-form-pane">
+            <form method="post" id="wb-form" class="wb-form" novalidate>
+
+                <!-- Step 1: Type Picker -->
+                <fieldset class="wb-step-panel" data-step="1" aria-labelledby="wb-step1-title" role="group">
+                    <legend id="wb-step1-title" class="wb-step-panel__title">
+                        <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-grid"></use></svg>
+                        اختر نوع البطاقة
+                    </legend>
+                    <p class="wb-step-panel__hint">اختر نوع التمثيل المرئي للبيانات. يمكن تغييره لاحقاً.</p>
+
+                    <div class="wb-type-picker" role="radiogroup" aria-label="نوع البطاقة" id="wb-type-picker">
+                        <label class="wb-type-card" data-type="KPI" role="radio" aria-checked="true" tabindex="0">
+                            <svg class="wb-type-card__icon" aria-hidden="true"><use href="#wb-icon-kpi"></use></svg>
+                            <span class="wb-type-card__name">مؤشر أداء (KPI)</span>
+                            <span class="wb-type-card__desc">قيمة واحدة مع مؤشر اتجاه</span>
+                            <span class="wb-type-card__check" aria-hidden="true"><svg><use href="#wb-icon-check"></use></svg></span>
+                        </label>
+                        <label class="wb-type-card" data-type="Bar" role="radio" aria-checked="false" tabindex="-1">
+                            <svg class="wb-type-card__icon" aria-hidden="true"><use href="#wb-icon-bar"></use></svg>
+                            <span class="wb-type-card__name">مخطط أعمدة</span>
+                            <span class="wb-type-card__desc">مقارنة قيم عبر فئات</span>
+                            <span class="wb-type-card__check" aria-hidden="true"><svg><use href="#wb-icon-check"></use></svg></span>
+                        </label>
+                        <label class="wb-type-card" data-type="Line" role="radio" aria-checked="false" tabindex="-1">
+                            <svg class="wb-type-card__icon" aria-hidden="true"><use href="#wb-icon-line"></use></svg>
+                            <span class="wb-type-card__name">مخطط خطي</span>
+                            <span class="wb-type-card__desc">اتجاهات عبر الزمن</span>
+                            <span class="wb-type-card__check" aria-hidden="true"><svg><use href="#wb-icon-check"></use></svg></span>
+                        </label>
+                        <label class="wb-type-card" data-type="Pie" role="radio" aria-checked="false" tabindex="-1">
+                            <svg class="wb-type-card__icon" aria-hidden="true"><use href="#wb-icon-pie"></use></svg>
+                            <span class="wb-type-card__name">مخطط دائري</span>
+                            <span class="wb-type-card__desc">نسب وتركيبة</span>
+                            <span class="wb-type-card__check" aria-hidden="true"><svg><use href="#wb-icon-check"></use></svg></span>
+                        </label>
+                        <label class="wb-type-card" data-type="Table" role="radio" aria-checked="false" tabindex="-1">
+                            <svg class="wb-type-card__icon" aria-hidden="true"><use href="#wb-icon-table"></use></svg>
+                            <span class="wb-type-card__name">جدول بيانات</span>
+                            <span class="wb-type-card__desc">صفوف وأعمدة قابلة للفرز</span>
+                            <span class="wb-type-card__check" aria-hidden="true"><svg><use href="#wb-icon-check"></use></svg></span>
+                        </label>
+                        <label class="wb-type-card" data-type="Gauge" role="radio" aria-checked="false" tabindex="-1">
+                            <svg class="wb-type-card__icon" aria-hidden="true"><use href="#wb-icon-gauge"></use></svg>
+                            <span class="wb-type-card__name">مقياس (Gauge)</span>
+                            <span class="wb-type-card__desc">تقدم نحو هدف</span>
+                            <span class="wb-type-card__check" aria-hidden="true"><svg><use href="#wb-icon-check"></use></svg></span>
+                        </label>
+                    </div>
+
+                    <div class="wb-step-panel__error wd-hidden" id="wb-step1-error" role="alert" aria-live="polite"></div>
+                </fieldset>
+
+                <!-- Step 2: Source Selector -->
+                <fieldset class="wb-step-panel wd-hidden" data-step="2" aria-labelledby="wb-step2-title" role="group">
+                    <legend id="wb-step2-title" class="wb-step-panel__title">
+                        <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-database"></use></svg>
+                        اختر مصدر البيانات
+                    </legend>
+                    <p class="wb-step-panel__hint">من أين ستأتي البيانات؟ اختر قالباً جاهزاً أو استعلماً أو جدولاً.</p>
+
+                    <div class="wb-field">
+                        <label class="wd-field__label" for="wb-source-type">نوع المصدر</label>
+                        <select id="wb-source-type" class="wd-select wb-source-type-select" name="sourceType" aria-describedby="wb-source-type-hint">
+                            <option value="Template">قالب جاهز (Template)</option>
+                            <option value="SavedQuery">استعلام محفوظ</option>
+                            <option value="OracleTable">جدول/عرض Oracle</option>
+                            <option value="CustomSQL">استعلام SQL مخصص (متقدم)</option>
+                        </select>
+                        <span id="wb-source-type-hint" class="wd-field__hint">القوالب تملأ الحقول تلقائياً</span>
+                    </div>
+
+                    <!-- Template Selector -->
+                    <div class="wb-source-panel" data-source="Template" id="wb-panel-template">
+                        <div class="wb-template-grid" id="wb-template-grid" role="listbox" aria-label="القوالب المتاحة">
+                            <!-- Templates injected by JS -->
+                        </div>
+                        <div class="wb-source-panel__empty wd-hidden" id="wb-template-empty">
+                            <svg class="wb-empty__icon" aria-hidden="true"><use href="#wb-icon-box"></use></svg>
+                            <p>لا توجد قوالب متاحة لهذا النوع</p>
+                        </div>
+                    </div>
+
+                    <!-- Saved Queries -->
+                    <div class="wb-source-panel wd-hidden" data-source="SavedQuery" id="wb-panel-savedquery">
+                        <div class="wb-field">
+                            <label class="wd-field__label" for="wb-saved-query">استعلام محفوظ</label>
+                            <select id="wb-saved-query" class="wd-select wb-searchable-select" name="sourceId" aria-describedby="wb-saved-query-hint">
+                                <option value="">ابحث أو اختر استعلاماً محفوظاً...</option>
+                            </select>
+                            <span id="wb-saved-query-hint" class="wd-field__hint">جاري التحميل...</span>
+                        </div>
+                    </div>
+
+                    <!-- Oracle Tables -->
+                    <div class="wb-source-panel wd-hidden" data-source="OracleTable" id="wb-panel-oracletable">
+                        <div class="wb-field">
+                            <label class="wd-field__label" for="wb-oracle-table">جدول أو عرض Oracle</label>
+                            <select id="wb-oracle-table" class="wd-select wb-searchable-select" name="sourceId" aria-describedby="wb-oracle-table-hint">
+                                <option value="">ابحث أو اختر جدولاً...</option>
+                            </select>
+                            <span id="wb-oracle-table-hint" class="wd-field__hint">جاري تحميل الجداول النشطة...</span>
+                        </div>
+                        <div class="wb-field">
+                            <label class="wd-field__label" for="wb-measurement-field">الحقل/القياس</label>
+                            <select id="wb-measurement-field" class="wd-select" name="measurement" aria-describedby="wb-measurement-hint" disabled>
+                                <option value="">اختر جدولاً أولاً</option>
+                            </select>
+                            <span id="wb-measurement-hint" class="wd-field__hint">الحقل الرقمي للرسوم أو القيمة للمؤشرات</span>
+                        </div>
+                    </div>
+
+                    <!-- Custom SQL (Advanced) -->
+                    <div class="wb-source-panel wd-hidden" data-source="CustomSQL" id="wb-panel-customsql">
+                        <div class="wb-field">
+                            <label class="wd-field__label" for="wb-custom-sql">استعلام SQL مخصص</label>
+                            <textarea id="wb-custom-sql" class="wd-textarea wb-sql-textarea" name="customSql" rows="8" placeholder="SELECT column1, column2 FROM table WHERE condition..." aria-describedby="wb-custom-sql-hint"></textarea>
+                            <span id="wb-custom-sql-hint" class="wd-field__hint">استخدم هذا للخبراء فقط. يجب أن يعيد أعمدة قابلة للتمثيل البياني.</span>
+                        </div>
+                        <div class="wb-field">
+                            <label class="wd-field__label" for="wb-sql-measurement">الحقل/القياس</label>
+                            <input type="text" id="wb-sql-measurement" class="wd-input" name="measurement" placeholder="اسم العمود الرقمي" aria-describedby="wb-sql-measurement-hint">
+                            <span id="wb-sql-measurement-hint" class="wd-field__hint">أدخل اسم العمود الرقمي يدوياً</span>
+                        </div>
+                    </div>
+
+                    <div class="wb-step-panel__error wd-hidden" id="wb-step2-error" role="alert" aria-live="polite"></div>
+                </fieldset>
+
+                <!-- Step 3: Basic Fields -->
+                <fieldset class="wb-step-panel wd-hidden" data-step="3" aria-labelledby="wb-step3-title" role="group">
+                    <legend id="wb-step3-title" class="wb-step-panel__title">
+                        <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-edit"></use></svg>
+                        الحقول الأساسية
+                    </legend>
+                    <p class="wb-step-panel__hint">الحقول المطلوبة موضحة بنجمة. الباقي اختياري.</p>
+
+                    <div class="wd-form__grid">
+                        <div class="wd-field">
+                            <label class="wd-field__label" for="wb-title">العنوان <span class="wb-required" aria-hidden="true">*</span></label>
+                            <input type="text" id="wb-title" class="wd-input" name="title" value="@Model.Title" required aria-required="true" maxlength="100" placeholder="مثال: إجمالي المخزون الشهري">
+                            <span class="wd-error" data-for="title"></span>
+                        </div>
+
+                        <div class="wd-field">
+                            <label class="wd-field__label" for="wb-display-name">اسم العرض <span class="wb-required" aria-hidden="true">*</span></label>
+                            <input type="text" id="wb-display-name" class="wd-input" name="displayName" required aria-required="true" maxlength="100" placeholder="مثال: إجمالي المخزون">
+                            <span class="wd-error" data-for="displayName"></span>
+                        </div>
+
+                        <div class="wd-field wd-field--full">
+                            <label class="wd-field__label" for="wb-measurement">القياس/الحقل <span class="wb-required" aria-hidden="true">*</span></label>
+                            <select id="wb-measurement" class="wd-select" name="measurement" required aria-required="true" aria-describedby="wb-measurement-hint2">
+                                <option value="">اختر قياساً...</option>
+                            </select>
+                            <span id="wb-measurement-hint2" class="wd-field__hint">يحدد بناءً على المصدر المختار</span>
+                            <span class="wd-error" data-for="measurement"></span>
+                        </div>
+
+                        <div class="wd-field wd-field--full">
+                            <label class="wd-field__label" for="wb-description">الوصف (اختياري)</label>
+                            <textarea id="wb-description" class="wd-textarea" name="description" rows="3" placeholder="وصف مختصر للبطاقة يظهر في التلميحات..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="wb-step-panel__error wd-hidden" id="wb-step3-error" role="alert" aria-live="polite"></div>
+                </fieldset>
+
+                <!-- Step 4: Visual Settings -->
+                <fieldset class="wb-step-panel wd-hidden" data-step="4" aria-labelledby="wb-step4-title" role="group">
+                    <legend id="wb-step4-title" class="wb-step-panel__title">
+                        <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-palette"></use></svg>
+                        إعدادات الشكل
+                    </legend>
+                    <p class="wb-step-panel__hint">تحكم في الحجم، الموضع، الألوان، والتحديث التلقائي.</p>
+
+                    <div class="wb-visual-section">
+                        <h4 class="wb-visual-section__title">الحجم والموضع (Grid)</h4>
+                        <div class="wd-form__grid">
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-grid-width">العرض (1-12)</label>
+                                <input type="number" id="wb-grid-width" class="wd-input wb-grid-input" name="gridWidth" min="1" max="12" value="4" aria-describedby="wb-grid-width-hint">
+                                <span id="wb-grid-width-hint" class="wd-field__hint">عدد الأعمدة</span>
+                            </div>
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-grid-height">الارتفاع (1-6)</label>
+                                <input type="number" id="wb-grid-height" class="wd-input wb-grid-input" name="gridHeight" min="1" max="6" value="2" aria-describedby="wb-grid-height-hint">
+                                <span id="wb-grid-height-hint" class="wd-field__hint">عدد الصفوف</span>
+                            </div>
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-grid-x">الموضع X (اختياري)</label>
+                                <input type="number" id="wb-grid-x" class="wd-input wb-grid-input" name="gridX" min="0" max="11" placeholder="تلقائي" aria-describedby="wb-grid-x-hint">
+                                <span id="wb-grid-x-hint" class="wd-field__hint">يترك فارغاً للتعيين التلقائي</span>
+                            </div>
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-grid-y">الموضع Y (اختياري)</label>
+                                <input type="number" id="wb-grid-y" class="wd-input wb-grid-input" name="gridY" min="0" placeholder="تلقائي" aria-describedby="wb-grid-y-hint">
+                                <span id="wb-grid-y-hint" class="wd-field__hint">يترك فارغاً للتعيين التلقائي</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wb-visual-section">
+                        <h4 class="wb-visual-section__title">لوحة الألوان</h4>
+                        <div class="wb-palette-picker" id="wb-palette-picker" role="radiogroup" aria-label="لوحة الألوان">
+                            <!-- Palette options injected by JS -->
+                        </div>
+                    </div>
+
+                    <div class="wb-visual-section">
+                        <h4 class="wb-visual-section__title">فترة التحديث التلقائي</h4>
+                        <div class="wb-field">
+                            <label class="wd-field__label" for="wb-refresh-interval">التحديث</label>
+                            <select id="wb-refresh-interval" class="wd-select" name="refreshInterval" aria-describedby="wb-refresh-hint">
+                                <option value="0">إيقاف (يدوي فقط)</option>
+                                <option value="60">دقيقة واحدة</option>
+                                <option value="300" selected>5 دقائق</option>
+                                <option value="900">15 دقيقة</option>
+                                <option value="3600">ساعة واحدة</option>
+                            </select>
+                            <span id="wb-refresh-hint" class="wd-field__hint">كم مرة يتم تحديث البيانات تلقائياً</span>
+                        </div>
+                    </div>
+
+                    <!-- Chart-specific options (collapsible) -->
+                    <div class="wb-visual-section">
+                        <h4 class="wb-visual-section__title">خيارات نوع الرسم <span class="wb-visual-section__badge" id="wb-chart-options-badge">مطوية</span></h4>
+                        <details class="wb-chart-options" id="wb-chart-options">
+                            <summary class="wb-chart-options__summary">
+                                <span>إظهار/إخفاء خيارات <span id="wb-chart-type-name">الرسم</span></span>
+                                <svg class="wb-icon wb-chart-options__chevron" aria-hidden="true"><use href="#wb-icon-chevron-down"></use></svg>
+                            </summary>
+                            <div class="wb-chart-options__content" id="wb-chart-options-content">
+                                <!-- Injected by JS based on card type -->
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Advanced Accordion -->
+                    <details class="wb-advanced-accordion" id="wb-advanced-accordion">
+                        <summary class="wb-advanced-accordion__summary">
+                            <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-settings"></use></svg>
+                            <span>خيارات متقدمة</span>
+                            <svg class="wb-icon wb-advanced-accordion__chevron" aria-hidden="true"><use href="#wb-icon-chevron-down"></use></svg>
+                        </summary>
+                        <div class="wb-advanced-accordion__content">
+                            <div class="wb-advanced-section">
+                                <h5 class="wb-advanced-section__title">فلاتر البيانات (اختياري)</h5>
+                                <div id="wb-filters-container" class="wb-filters-list">
+                                    <div class="wb-filter-row">
+                                        <input type="text" class="wd-input wb-filter-key" placeholder="المفتاح (مثال: WarehouseId)" aria-label="مفتاح الفلتر">
+                                        <input type="text" class="wd-input wb-filter-value" placeholder="القيمة (مثال: 1)" aria-label="قيمة الفلتر">
+                                        <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm wb-filter-remove" aria-label="إزالة الفلتر"><svg class="wb-icon"><use href="#wb-icon-trash"></use></svg></button>
+                                    </div>
+                                </div>
+                                <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm" id="wb-add-filter">
+                                    <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-plus"></use></svg>
+                                    إضافة فلتر
+                                </button>
+                            </div>
+
+                            <div class="wb-advanced-section">
+                                <h5 class="wb-advanced-section__title">تكوين Drill-down (اختياري)</h5>
+                                <div class="wd-form__grid">
+                                    <div class="wd-field">
+                                        <label class="wd-field__label" for="wb-drill-level">مستوى الحفر</label>
+                                        <select id="wb-drill-level" class="wd-select" name="drillLevel">
+                                            <option value="">لا يوجد</option>
+                                            <option value="warehouse">مستودع</option>
+                                            <option value="item">صنف</option>
+                                            <option value="transaction">معاملة</option>
+                                        </select>
+                                    </div>
+                                    <div class="wd-field">
+                                        <label class="wd-field__label" for="wb-drill-field">الحقل المرتبط</label>
+                                        <input type="text" id="wb-drill-field" class="wd-input" name="drillField" placeholder="مثال: WarehouseId">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="wb-advanced-section">
+                                <h5 class="wb-advanced-section__title">تسميات وتلميحات مخصصة (اختياري)</h5>
+                                <div class="wd-form__grid">
+                                    <div class="wd-field">
+                                        <label class="wd-field__label" for="wb-custom-label">تسمية مخصصة للمحور Y</label>
+                                        <input type="text" id="wb-custom-label" class="wd-input" name="customLabel" placeholder="مثال: الكمية (وحدة)">
+                                    </div>
+                                    <div class="wd-field">
+                                        <label class="wd-field__label" for="wb-tooltip-format">تنسيق التلميح</label>
+                                        <input type="text" id="wb-tooltip-format" class="wd-input" name="tooltipFormat" placeholder="مثال: {value:N0} وحدة">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <div class="wb-step-panel__error wd-hidden" id="wb-step4-error" role="alert" aria-live="polite"></div>
+                </fieldset>
+
+                <!-- Hidden fields for form submission -->
+                <input type="hidden" name="cardType" id="wb-h-cardType" value="@Model.CardType">
+                <input type="hidden" name="sourceType" id="wb-h-sourceType" value="@Model.SourceType">
+                <input type="hidden" name="sourceId" id="wb-h-sourceId" value="@Model.SourceId">
+                <input type="hidden" name="customSql" id="wb-h-customSql" value="@Model.CustomSql">
+                <input type="hidden" name="gridWidth" id="wb-h-gridWidth" value="4">
+                <input type="hidden" name="gridHeight" id="wb-h-gridHeight" value="2">
+                <input type="hidden" name="gridX" id="wb-h-gridX" value="">
+                <input type="hidden" name="gridY" id="wb-h-gridY" value="">
+                <input type="hidden" name="colorPalette" id="wb-h-colorPalette" value="primary">
+                <input type="hidden" name="refreshInterval" id="wb-h-refreshInterval" value="300">
+                <input type="hidden" name="chartOptionsJson" id="wb-h-chartOptionsJson" value="{}">
+                <input type="hidden" name="filtersJson" id="wb-h-filtersJson" value="[]">
+                <input type="hidden" name="drillDownConfigJson" id="wb-h-drillDownConfigJson" value="{}">
+                <input type="hidden" name="customLabelsJson" id="wb-h-customLabelsJson" value="{}">
+
+            </form>
+        </div>
+
+        <!-- Live Preview Pane (Right/Bottom) -->
+        <aside class="wb-preview-pane" id="wb-preview-pane" aria-label="معاينة مباشرة" role="region">
+            <div class="wb-preview__header">
+                <h3 class="wb-preview__title">معاينة مباشرة</h3>
+                <div class="wb-preview__status">
+                    <span class="wb-connection-status" id="wb-connection-status" aria-live="polite">
+                        <span class="wb-connection-status__dot" aria-hidden="true"></span>
+                        <span class="wb-connection-status__text">متصل</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="wb-preview__container" id="wb-preview-container">
+                <!-- Skeleton Loading -->
+                <div class="wb-preview__skeleton wd-skeleton-wrap" id="wb-preview-skeleton" aria-hidden="true">
+                    <div class="wd-skel-row">
+                        <div class="wd-skel" style="width: 60%;"></div>
+                        <div class="wd-skel" style="width: 30%;"></div>
+                    </div>
+                    <div class="wd-skel-row" style="margin-top: var(--sp-4);">
+                        <div class="wd-skel" style="width: 100%; height: 120px; border-radius: var(--radius-md);"></div>
+                    </div>
+                    <div class="wd-skel-row" style="margin-top: var(--sp-3);">
+                        <div class="wd-skel" style="width: 40%;"></div>
+                        <div class="wd-skel" style="width: 40%;"></div>
+                    </div>
+                </div>
+
+                <!-- Actual Preview Content -->
+                <div class="wb-preview__content wd-hidden" id="wb-preview-content" role="img" aria-label="معاينة البطاقة">
+                    <!-- Syncfusion chart/card rendered here -->
+                </div>
+
+                <!-- Empty State -->
+                <div class="wb-preview__empty wd-hidden" id="wb-preview-empty">
+                    <svg class="wb-empty__icon" aria-hidden="true"><use href="#wb-icon-preview"></use></svg>
+                    <h4>اختر نوع بطاقة للبدء</h4>
+                    <p>المعاينة تظهر هنا فور اختيارك للنوع والمصدر</p>
+                </div>
+
+                <!-- Error State -->
+                <div class="wb-preview__error wd-hidden" id="wb-preview-error" role="alert">
+                    <svg class="wb-empty__icon" aria-hidden="true"><use href="#wb-icon-alert"></use></svg>
+                    <h4>تعذر تحميل المعاينة</h4>
+                    <p id="wb-preview-error-msg">حدث خطأ أثناء توليد المعاينة</p>
+                    <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm" id="wb-preview-retry">إعادة المحاولة</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Fixed Bottom Navigation -->
+    <footer class="wb-wizard__footer" id="wb-wizard-footer">
+        <div class="wb-footer__left">
+            <button type="button" class="wd-btn wd-btn--ghost wb-btn-prev" id="wb-btn-prev" disabled aria-disabled="true">
+                <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-chevron-right"></use></svg>
+                السابق
+            </button>
+            <button type="button" class="wd-btn wd-btn--ghost wb-btn-cancel" id="wb-btn-cancel">
+                إلغاء
+            </button>
+        </div>
+        <div class="wb-footer__right">
+            <button type="button" class="wd-btn wd-btn--ghost wb-btn-save-add" id="wb-btn-save-add" disabled aria-disabled="true">
+                حفظ وإضافة أخرى
+            </button>
+            <button type="button" class="wd-btn wd-btn--primary wb-btn-save" id="wb-btn-save" disabled aria-disabled="true">
+                <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-save"></use></svg>
+                حفظ
+            </button>
+            <button type="button" class="wd-btn wd-btn--primary wb-btn-next" id="wb-btn-next" disabled aria-disabled="true">
+                التالي
+                <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-chevron-left"></use></svg>
+            </button>
+        </div>
+    </footer>
+</div>
+
+<!-- SVG Icon Sprite -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;" aria-hidden="true">
+    <symbol id="wb-icon-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="wb-icon-kpi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></symbol>
+    <symbol id="wb-icon-bar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="17" width="4" height="4"/><rect x="9" y="11" width="4" height="10"/><rect x="15" y="5" width="4" height="16"/></symbol>
+    <symbol id="wb-icon-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18l4-4 4 4 4-4 4 4"/></symbol>
+    <symbol id="wb-icon-pie" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.8 1 6.5 2.5"/><path d="M21 12v9h-9"/></symbol>
+    <symbol id="wb-icon-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 3v18"/></symbol>
+    <symbol id="wb-icon-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6l4 2"/><path d="M12 2a10 10 0 1 0 10 10"/></symbol>
+    <symbol id="wb-icon-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 2.7 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 2.7 3 9 3s9-1.3 9-3"/></symbol>
+    <symbol id="wb-icon-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+    <symbol id="wb-icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="18" cy="12" r="2"/><circle cx="11" cy="18" r="2"/><circle cx="6.5" cy="12.5" r="2"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.7-.2 2.5-.5"/></symbol>
+    <symbol id="wb-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="wb-icon-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 18l6-6-6-6"/></symbol>
+    <symbol id="wb-icon-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 18l-6-6 6-6"/></symbol>
+    <symbol id="wb-icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="wb-icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="wb-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="wb-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/></symbol>
+    <symbol id="wb-icon-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></symbol>
+    <symbol id="wb-icon-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="wb-icon-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="wb-icon-preview" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2"/><path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"/><rect x="7" y="7" width="10" height="10" rx="1"/></symbol>
+</svg>
+
+@section Scripts {
+    <script src="~/js/card-templates.js"></script>
+    <script src="~/js/card-builder.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.wbBuilder = new CardBuilderWizard({
+                previewApiUrl: '/api/dashboard/cardbuilder/preview',
+                tablesApiUrl: '/api/tablemappings/active',
+                savedQueriesApiUrl: '/api/savedqueries',
+                cloneId: '@Model.Request.Query["clone"]',
+                initialData: {
+                    cardType: '@Model.CardType',
+                    sourceType: '@Model.SourceType',
+                    sourceId: '@Model.SourceId',
+                    customSql: '@Model.CustomSql',
+                    title: '@Model.Title',
+                    displayName: '@Model.DisplayName',
+                    measurement: '@Model.Measurement'
+                }
+            });
+        });
+    </script>
+}

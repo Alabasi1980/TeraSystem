@@ -8,7 +8,7 @@ namespace WarehouseDashboard.Web.Pages.AdminSecurePanel.Cards;
 
 /// <summary>
 /// Lists all <see cref="DashboardCard"/> configurations in a Syncfusion Grid and
-/// exposes a POST delete handler (cascades to CardDrillDownLevels).
+/// exposes POST handlers for Delete and Clone actions.
 /// Reachable only when authenticated (AdminAuthMiddleware).
 /// </summary>
 public class IndexModel : PageModel
@@ -60,6 +60,26 @@ public class IndexModel : PageModel
         TempData["ToastMessage"] = "تم حذف البطاقة بنجاح.";
         TempData["ToastType"] = "success";
         return RedirectToPage();
+    }
+
+    /// <summary>
+    /// Clones an existing card and redirects to the Card Builder wizard with pre-filled data.
+    /// </summary>
+    public async Task<IActionResult> OnPostCloneAsync(int id)
+    {
+        var card = await _db.DashboardCards
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (card is null)
+        {
+            TempData["ToastMessage"] = "البطاقة غير موجودة أو سبق حذفها.";
+            TempData["ToastType"] = "error";
+            return RedirectToPage();
+        }
+
+        // Redirect to Builder with clone parameter
+        return RedirectToPage("/admin-secure-panel/Cards/Builder", new { clone = id });
     }
 }
 

@@ -1,0 +1,71 @@
+<Window x:Class="TeraQuotation.Views.Dialogs.UnsavedChangesDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="تغييرات غير محفوظة"
+        Width="420" Height="220"
+        FlowDirection="RightToLeft"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStyle="SingleBorderWindow"
+        Background="{StaticResource AppBackgroundBrush}">
+
+    <Grid Margin="24">
+        <Border Style="{StaticResource CardStyle}"
+                Padding="28">
+            <StackPanel VerticalAlignment="Center">
+
+                <!-- Icon & Title -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,16">
+                    <TextBlock Text="⚠️"
+                               FontSize="28"
+                               Margin="0,0,10,0"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="لديك تغييرات غير محفوظة"
+                               FontSize="{StaticResource SectionTitleFontSize}"
+                               FontWeight="{StaticResource SectionTitleFontWeight}"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Description -->
+                <TextBlock Text="هل تريد حفظ التغييرات قبل الخروج؟"
+                           FontSize="{StaticResource BodyFontSize}"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           Margin="0,0,0,20"/>
+
+                <!-- Buttons -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <Button x:Name="SaveAndExitBtn"
+                            Content="حفظ ثم خروج"
+                            Click="SaveAndExit_Click"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Padding="16,8"
+                            Margin="0,0,8,0"
+                            MinWidth="120"/>
+                    <Button x:Name="DiscardBtn"
+                            Content="خروج بدون حفظ"
+                            Click="Discard_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Padding="16,8"
+                            Margin="0,0,8,0"
+                            MinWidth="120"
+                            Foreground="{StaticResource DangerBrush}"
+                            BorderBrush="{StaticResource DangerBrush}"/>
+                    <Button x:Name="CancelBtn"
+                            Content="إلغاء"
+                            Click="Cancel_Click"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Padding="16,8"
+                            MinWidth="80"/>
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -32,6 +32,7 @@ public partial class App : Application
         services.AddSingleton<IOutlookService, OutlookService>();
         services.AddSingleton<IBackupService, BackupService>();
         services.AddSingleton<NavigationParameter>();
+        services.AddSingleton<IDbHealthService, DbHealthService>();
         services.AddSingleton<INavigationService>(sp =>
         {
             var mainWindow = sp.GetRequiredService<MainWindow>();
@@ -66,6 +67,10 @@ public partial class App : Application
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             db.Database.Migrate();
         }
+
+        // Initial DB health check (fire-and-forget)
+        var healthService = ServiceProvider.GetRequiredService<IDbHealthService>();
+        _ = healthService.CheckConnectionAsync();
 
         // Show MainWindow with login
         var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();

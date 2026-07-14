@@ -76,16 +76,9 @@ public class SyncEngineService : BackgroundService
     // Throttles the "using defaults" warning so it is logged once per degradation, not every poll.
     private bool _loggedConfigFallback;
 
-    // Actual source -> target mappings are configured later by the client/admin, so this
-    // starts EMPTY. Example (uncomment and adjust once the Oracle schemas are known):
-    //
-    // _mappings.Add(new TableMapping
-    // {
-    //     OracleSource    = "WMS.WAREHOUSE_STOCK",  // Oracle table or view name
-    //     SourceType      = "Table",                // "Table" | "View" | "Query"
-    //     SqlTargetTable  = "stg_WarehouseStock"    // SQL Server staging table
-    // });
-    private readonly List<TableMapping> _mappings = new();
+    // Table mappings are now loaded dynamically from the TableMappings DB table
+    // at the start of each sync cycle (not from appsettings.json).
+    private List<TableMapping> _mappings = new();
 
     public SyncEngineService(
         OracleExtractionService oracle,
@@ -98,15 +91,8 @@ public class SyncEngineService : BackgroundService
         _configuration = configuration;
         _logger = logger;
 
-        // Load table mappings from configuration (appsettings.json "TableMappings" section).
-        var mappings = _configuration.GetSection("TableMappings").Get<List<TableMapping>>();
-        if (mappings is { Count: > 0 })
-        {
-            _mappings.AddRange(mappings);
-        }
-
         _logger.LogInformation(
-            "SyncEngineService initialized. {Count} mapping(s) loaded from configuration.", _mappings.Count);
+            "SyncEngineService initialized. Mappings will be loaded from DB at each sync cycle.");
     }
 
     /// <summary>
@@ -114,6 +100,7 @@ public class SyncEngineService : BackgroundService
     /// manually (e.g. from the future manual-trigger endpoint). One table failing must not
     /// stop the others. Overlapping invocations are skipped (semaphore), so a manual trigger
     /// arriving during an automatic run simply returns without doing anything.
+    /// Mappings are reloaded from the DB at the start of each cycle.
     /// </summary>
     public async Task RunSyncOnceAsync(CancellationToken ct)
     {
@@ -126,10 +113,13 @@ public class SyncEngineService : BackgroundService
 
         try
         {
+            // Reload mappings from DB at the start of each cycle.
+            _mappings = await LoadMappingsFromDbAsync(ct);
+
             // Mark running and reset the per-run counters; LastStatus = "Running".
             SetStatus(running: true, status: "Running", lastSyncTime: null, recordCount: 0);
 
-            _logger.LogInformation("Sync cycle started. {Count} mapping(s) configured.", _mappings.Count);
+            _logger.LogInformation("Sync cycle started. {Count} mapping(s) loaded from DB.", _mappings.Count);
 
             var totalRows = 0;
             foreach (var mapping in _mappings)
@@ -394,6 +384,56 @@ public class SyncEngineService : BackgroundService
             }
 
             return DefaultSettings;
+        }
+    }
+
+    /// <summary>
+    /// Loads active table mappings from the <c>TableMappings</c> DB table via ADO.NET.
+    /// Called at the start of every sync cycle so runtime changes (added/removed/toggled
+    /// via the Admin Panel) are picked up without restarting the service.
+    /// Returns an empty list if the DB is unreachable or the table doesn't exist yet.
+    /// </summary>
+    private async Task<List<TableMapping>> LoadMappingsFromDbAsync(CancellationToken ct)
+    {
+        var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            _logger.LogDebug("SQL Server connection string is empty. No mappings loaded.");
+            return new List<TableMapping>();
+        }
+
+        try
+        {
+            await using var conn = new SqlConnection(connectionString);
+            await conn.OpenAsync(ct);
+
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                SELECT OracleSource, SourceType, SqlTargetTable
+                FROM TableMappings
+                WHERE IsActive = 1
+                ORDER BY OracleSource
+                """;
+
+            var mappings = new List<TableMapping>();
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            while (await reader.ReadAsync(ct))
+            {
+                mappings.Add(new TableMapping
+                {
+                    OracleSource = reader.GetString(reader.GetOrdinal("OracleSource")),
+                    SourceType = reader.GetString(reader.GetOrdinal("SourceType")),
+                    SqlTargetTable = reader.GetString(reader.GetOrdinal("SqlTargetTable"))
+                });
+            }
+
+            _logger.LogInformation("Loaded {Count} active mapping(s) from DB.", mappings.Count);
+            return mappings;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to load table mappings from DB. Using previous mappings.");
+            return _mappings.Count > 0 ? new List<TableMapping>(_mappings) : new List<TableMapping>();
         }
     }
 

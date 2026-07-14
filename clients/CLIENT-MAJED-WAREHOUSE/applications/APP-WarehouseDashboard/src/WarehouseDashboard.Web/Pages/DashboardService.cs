@@ -137,6 +137,80 @@ public class DashboardService
     }
 
     /// <summary>
+    /// Executes a preview query with a small row limit for the Card Builder live preview.
+    /// Reuses the same ADO.NET execution pattern as <see cref="GetCardDataAsync"/>.
+    /// </summary>
+    /// <param name="sql">The SQL query to execute (already resolved for View vs Query).</param>
+    /// <param name="chartType">Chart type to determine row limit.</param>
+    /// <param name="rowLimit">Maximum rows to return (default 10 for preview).</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Preview result with columns, rows, and status.</returns>
+    public async Task<CardDataResult> GetPreviewAsync(string sql, string chartType, int rowLimit = 10, CancellationToken ct = default)
+    {
+        var result = new CardDataResult
+        {
+            ChartType = chartType,
+            Status = "error"
+        };
+
+        try
+        {
+            var connTemplate = _config.GetConnectionString("SqlServer") ?? string.Empty;
+            var connString = ConnectionStringHelper.Resolve(connTemplate);
+
+            if (string.IsNullOrWhiteSpace(connString))
+            {
+                result.ErrorMessage = "لم يتم ضبط سلسلة الاتصال بقاعدة البيانات (SQL_PASSWORD).";
+                return result;
+            }
+
+            await using var conn = new SqlConnection(connString);
+            await conn.OpenAsync(ct);
+
+            await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 30 };
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+
+            var colCount = reader.FieldCount;
+            var columns = new List<string>(colCount);
+            for (var i = 0; i < colCount; i++)
+            {
+                columns.Add(reader.GetName(i) is { Length: > 0 } name ? name : $"Column{i + 1}");
+            }
+            result.Columns = columns;
+
+            var rows = new List<Dictionary<string, object?>>(rowLimit);
+            var count = 0;
+            while (count < rowLimit && await reader.ReadAsync(ct))
+            {
+                var row = new Dictionary<string, object?>(colCount, StringComparer.OrdinalIgnoreCase);
+                for (var i = 0; i < colCount; i++)
+                {
+                    row[columns[i]] = DataHelper.ConvertCell(reader.GetValue(i));
+                }
+                rows.Add(row);
+                count++;
+            }
+            result.Rows = rows;
+
+            if (rows.Count == 0)
+            {
+                result.Status = "empty";
+                return result;
+            }
+
+            result.KpiValue = rows[0].Values.FirstOrDefault();
+            result.Status = "success";
+        }
+        catch (Exception ex)
+        {
+            result.Status = "error";
+            result.ErrorMessage = DataHelper.Sanitize(ex.Message);
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Resolves the actual SQL to run:
     /// <list type="bullet">
     ///   <item><description><b>View</b> → <c>SELECT * FROM [ViewName]</c>.</description></item>

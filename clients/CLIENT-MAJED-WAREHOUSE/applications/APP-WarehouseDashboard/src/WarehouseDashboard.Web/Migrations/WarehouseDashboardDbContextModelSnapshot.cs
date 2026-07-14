@@ -200,6 +200,74 @@ namespace WarehouseDashboard.Web.Migrations
                     b.ToTable("SyncSettings", (string)null);
                 });
 
+            modelBuilder.Entity("WarehouseDashboard.Web.Models.TableMappingConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("LastSyncAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OracleSource")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("SourceType")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Table");
+
+                    b.Property<string>("SqlTargetTable")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("SyncRecordCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_TableMappings_IsActive");
+
+                    b.HasIndex("OracleSource")
+                        .IsUnique()
+                        .HasDatabaseName("IX_TableMappings_OracleSource");
+
+                    b.HasIndex("SqlTargetTable")
+                        .IsUnique()
+                        .HasDatabaseName("IX_TableMappings_SqlTargetTable");
+
+                    b.ToTable("TableMappings", (string)null);
+                });
+
             modelBuilder.Entity("WarehouseDashboard.Web.Models.CardDrillDownLevel", b =>
                 {
                     b.HasOne("WarehouseDashboard.Web.Models.DashboardCard", "Card")

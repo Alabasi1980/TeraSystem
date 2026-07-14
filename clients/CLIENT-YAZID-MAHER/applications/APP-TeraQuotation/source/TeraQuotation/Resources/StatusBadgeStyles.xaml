@@ -1,0 +1,171 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ════════════════════════════════════════════ -->
+    <!--  StatusBadgeStyles.xaml                     -->
+    <!--  Badge/status pill styles for the app      -->
+    <!--  Source: 28_UI_UX_GUIDELINES.md §5.4        -->
+    <!-- ════════════════════════════════════════════ -->
+
+    <!-- ─── Base Badge Border Style ─── -->
+    <!-- Radius=4, Padding=4-8px horizontal, 2-4px vertical -->
+    <Style x:Key="BaseBadgeStyle" TargetType="Border">
+        <Setter Property="CornerRadius" Value="{StaticResource RadiusBadge}" />
+        <Setter Property="Padding" Value="8,3" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+    </Style>
+
+    <!-- ─── Base Badge Text Style ─── -->
+    <!-- 12px SemiBold -->
+    <Style x:Key="BadgeTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource BadgeFontSize}" />
+        <Setter Property="FontWeight" Value="{StaticResource BadgeFontWeight}" />
+        <Setter Property="FlowDirection" Value="RightToLeft" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!--  Status Badge Styles                        -->
+    <!--  Each style targets a Border containing     -->
+    <!--  the status TextBlock.                      -->
+    <!-- ════════════════════════════════════════════ -->
+
+    <!-- Draft / مسودة: #F3F4F6 bg, #6B7280 text -->
+    <Style x:Key="DraftBadgeStyle" TargetType="Border" BasedOn="{StaticResource BaseBadgeStyle}">
+        <Setter Property="Background" Value="#F3F4F6" />
+    </Style>
+    <Style x:Key="DraftBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+
+    <!-- Saved / محفوظ: #DBEAFE bg, #2563EB text -->
+    <Style x:Key="SavedBadgeStyle" TargetType="Border" BasedOn="{StaticResource BaseBadgeStyle}">
+        <Setter Property="Background" Value="{StaticResource InfoBgBrush}" />
+    </Style>
+    <Style x:Key="SavedBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
+        <Setter Property="Foreground" Value="{StaticResource InfoBrush}" />
+    </Style>
+
+    <!-- Missing Prices / ناقص أسعار: #FEF3C7 bg, #D97706 text -->
+    <Style x:Key="WarningBadgeStyle" TargetType="Border" BasedOn="{StaticResource BaseBadgeStyle}">
+        <Setter Property="Background" Value="{StaticResource WarningBgBrush}" />
+    </Style>
+    <Style x:Key="WarningBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
+        <Setter Property="Foreground" Value="{StaticResource WarningBrush}" />
+    </Style>
+
+    <!-- Completed / مكتمل: #DCFCE7 bg, #16A34A text -->
+    <Style x:Key="SuccessBadgeStyle" TargetType="Border" BasedOn="{StaticResource BaseBadgeStyle}">
+        <Setter Property="Background" Value="{StaticResource SuccessBgBrush}" />
+    </Style>
+    <Style x:Key="SuccessBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
+        <Setter Property="Foreground" Value="{StaticResource SuccessBrush}" />
+    </Style>
+
+    <!-- Best Price / أفضل سعر: #F0FDF4 bg, #16A34A text -->
+    <Style x:Key="BestPriceBadgeStyle" TargetType="Border" BasedOn="{StaticResource BaseBadgeStyle}">
+        <Setter Property="Background" Value="{StaticResource BestPriceBgBrush}" />
+    </Style>
+    <Style x:Key="BestPriceBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
+        <Setter Property="Foreground" Value="{StaticResource BestPriceBrush}" />
+    </Style>
+
+    <!-- Error / خطأ: #FEE2E2 bg, #DC2626 text -->
+    <Style x:Key="ErrorBadgeStyle" TargetType="Border" BasedOn="{StaticResource BaseBadgeStyle}">
+        <Setter Property="Background" Value="{StaticResource DangerBgBrush}" />
+    </Style>
+    <Style x:Key="ErrorBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
+        <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+    </Style>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!--  Status-to-style Mapping DataTemplate      -->
+    <!--  Usage:                                     -->
+    <!--  <ContentPresenter Content="{Binding Status}" -->
+    <!--    ContentTemplate="{StaticResource StatusBadgeTemplate}" /> -->
+    <!-- ════════════════════════════════════════════ -->
+    <DataTemplate x:Key="StatusBadgeTemplate">
+        <Border CornerRadius="{StaticResource RadiusBadge}"
+                Padding="8,3"
+                BorderThickness="0"
+                SnapsToDevicePixels="True"
+                UseLayoutRounding="True">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="#F3F4F6" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding}" Value="Draft">
+                            <Setter Property="Background" Value="#F3F4F6" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding}" Value="UpdatedWithPrices">
+                            <Setter Property="Background" Value="{StaticResource InfoBgBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding}" Value="Printed">
+                            <Setter Property="Background" Value="{StaticResource SuccessBgBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding}" Value="PDFExported">
+                            <Setter Property="Background" Value="{StaticResource WarningBgBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding}" Value="SentViaOutlook">
+                            <Setter Property="Background" Value="#F3E8FF" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock FontSize="{StaticResource BadgeFontSize}"
+                       FontWeight="{StaticResource BadgeFontWeight}"
+                       FlowDirection="RightToLeft"
+                       VerticalAlignment="Center"
+                       TextAlignment="Center">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding}" Value="Draft">
+                                <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="UpdatedWithPrices">
+                                <Setter Property="Foreground" Value="{StaticResource InfoBrush}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="Printed">
+                                <Setter Property="Foreground" Value="{StaticResource SuccessBrush}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="PDFExported">
+                                <Setter Property="Foreground" Value="{StaticResource WarningBrush}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="SentViaOutlook">
+                                <Setter Property="Foreground" Value="#9333EA" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+                <TextBlock.Text>
+                    <Binding Mode="OneWay" />
+                </TextBlock.Text>
+            </TextBlock>
+        </Border>
+    </DataTemplate>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!--  Simplified Badge Template (just the Border) -->
+    <!--  Usage: wrap it in a ContentControl with    -->
+    <!--  ContentTemplate="{StaticResource SimpleBadgeTemplate}" -->
+    <!-- ════════════════════════════════════════════ -->
+    <DataTemplate x:Key="SimpleBadgeTemplate">
+        <Border CornerRadius="{StaticResource RadiusBadge}"
+                Padding="8,3"
+                Background="{StaticResource InfoBgBrush}"
+                BorderThickness="0">
+            <TextBlock Text="{Binding}"
+                       FontSize="{StaticResource BadgeFontSize}"
+                       FontWeight="{StaticResource BadgeFontWeight}"
+                       Foreground="{StaticResource InfoBrush}"
+                       FlowDirection="RightToLeft"
+                       VerticalAlignment="Center" />
+        </Border>
+    </DataTemplate>
+
+</ResourceDictionary>

@@ -1,7 +1,7 @@
 # PROJECT_STATE.md — TeraQuotation
 
 > **Purpose:** Compact project memory to reduce re-reading files.
-> **Last Updated:** 2026-07-13
+> **Last Updated:** 2026-07-14
 
 ---
 
@@ -12,11 +12,11 @@
 - **Price:** ~300 JOD (60% + 40%)
 - **Warranty:** شهر واحد
 - **Target Delivery:** 5-7 أيام عمل من بدء التنفيذ
-- **Current Phase:** Phase 6 — Implementation (Build Mode) 🚀
+- **Current Phase:** Phase 6 → Phase 7 (UI Rescue Complete — Delivery Pending) 🏁
 - **Project Size:** 🟢 Small (5 شاشات، 19 ميزة، مستخدم واحد)
 - **Active Technology Profile:** `dotnet-wpf-sqlite` ✅ Approved
-- **Current Lifecycle Phase:** 6 Implementation
-- **Closure Status:** Not Started
+- **Current Lifecycle Phase:** 7 Delivery, Handover & Closure
+- **Closure Status:** In Phase 7
 
 ---
 
@@ -59,24 +59,30 @@
 | TASK-COD-008 | Reports (S5) + Backup | ✅ Complete | EngineeringAgent |
 | TASK-COD-009 | Outlook + Final Polish | ✅ Complete | EngineeringAgent |
 | TASK-COD-FIX-010 | زر "تغيير كلمة المرور" في Settings | ✅ Complete | EngineeringAgent |
-| TASK-COD-007..019 | باقي المهام | ⏳ Pending | EngineeringAgent |
+| TASK-COD-007..019 | باقي المهام | ✅ Complete (UI Rescue Plan supersedes) | EngineeringAgent |
+| **TASK-COD-020** | **Create WPF Design System Resources** | **✅ Complete — Accepted** | EngineeringAgent |
+| **TASK-COD-021** | **Refactor QuotationForm → Master-Detail Workspace** | **✅ Complete — Accepted** | EngineeringAgent |
+| **TASK-COD-022** | **Apply Design Tokens to Login + Settings** | **✅ Complete — Accepted** | EngineeringAgent |
+| **TASK-COD-023** | **Apply Design Tokens to QuotationList + Reports** | **✅ Complete — Accepted** | EngineeringAgent |
+| **TASK-COD-024** | **Add Vitality & UX Features** | **✅ Complete — Accepted** | EngineeringAgent |
 
----
+## 5. Milestones
 
-## 5. Upcoming Milestones
-
-1. ✅ TASK-COD-001 Completed (نُقل إلى المسار الصحيح)
-2. 🔜 **TASK-COD-002 — Services Layer**
-3. 🔜 **TASK-COD-003..008 — Settings Module**
-4. 🔜 **TASK-COD-009..013 — Quotation Core**
-5. 🔜 **TASK-COD-014..019 — Reports + Polish + Delivery**
+1. ✅ TASK-COD-001..019 Complete (أساسيات التطبيق)
+2. ✅ TASK-COD-020 — Design System Resources
+3. ✅ TASK-COD-021 — QuotationForm Redesign (Master-Detail Workspace)
+4. ✅ TASK-COD-022 — Login + Settings Polish
+5. ✅ TASK-COD-023 — QuotationList + Reports Polish
+6. ✅ TASK-COD-024 — Vitality & UX Features (Toast, Unsaved Dialog, Validation, Connection Status)
+7. 🔜 **Phase 7 — Delivery, Handover & Closure**
 
 ---
 
 ## 6. Known Issues / Risks
 
-1. 🔴 **GAP-0002 (مُعالج):** EngineeringAgent أنشأ الكود في المسار الخطأ — نُقل إلى مسار العميل الصحيح. راجع ISSUES_AND_GAPS.md و AGENT_GAPS_LOG.md.
+1. ✅ **GAP-0002 (مُعالج):** تم نقل الكود إلى المسار الصحيح.
 2. 🔄 **Hares مطلوب:** تصحيح سلوك EngineeringAgent + TeraAgent في تعريف المسارات (GAP-001, GAP-002, GAP-003 في AGENT_GAPS_LOG.md).
+3. 📋 **Phase 7 قيد التنفيذ:** Delivery Readiness, Final Acceptance, Handover لم تبدأ بعد.
 
 ---
 

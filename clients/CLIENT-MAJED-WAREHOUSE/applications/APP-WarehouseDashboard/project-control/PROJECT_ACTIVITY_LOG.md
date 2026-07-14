@@ -242,3 +242,155 @@
 - Summary: Committed and pushed to origin/develop. Changes: DB config (10.10.1.1, passwords), Syncfusion license, auto-migration, env var removal, admin nav hub, SyncLogs, SyncSettings, layout fixes, documentation updates.
 - Decision / Result: ✅ Push successful (f2412bd7 -> origin/develop). 16 files, 1054 insertions, 180 deletions.
 - Next Action: Continue with B8 implementation or next user request.
+
+## [2026-07-14 16:10] - B8_COMPLETE
+
+- Related Task: TASK-COD-022, TASK-COD-023, TASK-COD-024
+- Actor: engineering-agent
+- Summary: All 3 B8 Gap Closure tasks completed successfully. Admin Index rebuilt with navigation cards (5 links), SyncLogs page created with Syncfusion Grid, SyncSettings page created with form + toggle. _ViewStart.cshtml created for layout unification. QueryTester/DrillDown Layout overrides removed. Build passes with 0 errors.
+- Decision / Result: ✅ All 3 tasks ACCEPTED. Build PASS (0 errors / 0 warnings). Admin Panel is now fully navigable with 7 functional pages.
+- Next Action: Proceed to B7 (Deployment) tasks.
+
+## [2026-07-14 16:30] - B7_START
+
+- Related Task: TASK-COD-019, TASK-COD-020, TASK-COD-021
+- Actor: TeraAgent
+- Summary: B7 (Deployment) tasks created and delegated. TASK-COD-019 (IIS Setup) and TASK-COD-021 (UAT) delegated to engineering-agent. TASK-COD-020 (Syncfusion License) verified directly — license key already in appsettings.json and registered in Program.cs.
+- Decision / Result: All 3 tasks created as .md files. Engineering agent assigned for019 and 021.
+- Next Action: Wait for handback from engineering-agent, then verify builds.
+
+## [2026-07-14 16:45] - B7_COMPLETE
+
+- Related Task: TASK-COD-019, TASK-COD-020, TASK-COD-021
+- Actor: engineering-agent + TeraAgent
+- Summary: All B7 tasks completed. TASK-COD-019: appsettings.Production.json created for both projects, CORS updated to read from config, web.config updated with stdout logging + env vars, DEPLOYMENT_GUIDE.md created in Arabic. TASK-COD-020: Syncfusion license verified (key in appsettings + registration in Program.cs). TASK-COD-021: UAT_TEST_PLAN.md created with 97 test scenarios across 8 categories. Build passes: 0 errors / 0 warnings.
+- Decision / Result: ✅ All 3 tasks ACCEPTED. ALL Phase 6 batches (B1-B8 + FIX) now COMPLETE.
+- Next Action: Phase 7 — Delivery & Closure. Need: (1) TableMappings configuration for actual data sync, (2) IIS deployment, (3) UAT execution by client.
+
+## [2026-07-14 16:50] - ALL_IMPLEMENTATION_COMPLETE
+
+- Related Task: ALL (TASK-COD-001 to 024 + FIX-001)
+- Actor: TeraAgent
+- Summary: ALL 24 implementation tasks + 1 bug fix task are now ACCEPTED. Phase 6 Implementation is COMPLETE. Build: 0 errors / 0 warnings. All control files updated.
+- Decision / Result: ✅ Phase 6 COMPLETE. Moving to Phase 7 (Delivery & Closure).
+- Next Action: Present status to user. Remaining blockers: (1) Oracle table schemas needed for TableMappings, (2) IIS deployment on client server, (3) UAT execution.
+
+## [2026-07-14 17:30] - B9_TASK_CREATED
+
+- Related Task: TASK-COD-025
+- Actor: TeraAgent
+- Summary: User requested Dynamic Table Mappings feature — convert static appsettings.json TableMappings to a dynamic system managed from Admin Panel. Features: auto-create SQL tables from Oracle schema, disable (not delete) mappings, schema diff with confirmation before structural changes.
+- Decision / Result: TASK-COD-025 created (20-30h estimate). Batch B9 added to EXECUTION_BATCH_PLAN.md. Plan documented in task file with full requirements, schema diff flow, and acceptance criteria.
+- Next Action: Delegate to engineering-agent for implementation.
+
+## [2026-07-14 18:00] - B9_TASK_ACCEPTED
+
+- Related Task: TASK-COD-025
+- Actor: engineering-agent + TeraAgent
+- Summary: Dynamic Table Mappings feature implemented successfully. Created: TableMappingConfig model, EF Migration, OracleSchemaService (schema detection + type mapping), SchemaManagementService (DDL operations), Admin UI page with CRUD + toggle + schema preview, TableMappingController (REST API). Modified: SyncEngineService to read from DB, Admin Index with new nav card, ConnectionStringHelper with Oracle support. Removed static TableMappings from appsettings.json.
+- Decision / Result: ✅ TASK-COD-025 ACCEPTED. Build PASS (0 errors / 0 warnings). All 8 files created, 7 files modified.
+- Next Action: Run EF Migration on client's SQL Server, then test via Admin Panel.
+
+## [2026-07-14 18:15] - ENCODING_GAP_FOUND
+
+- Related Task: TASK-COD-FIX-002
+- Actor: TeraAgent
+- Summary: Detected mojibake on `admin-secure-panel/SyncSettings` and `SyncLogs`. Root cause confirmed by byte scan: `_ViewStart.cshtml`, `SyncLogs/Index.cshtml`, and `SyncSettings/Index.cshtml` are UTF-16LE with BOM.
+- Decision / Result: Created `ISSUES_AND_GAPS.md` entry and new fix task `TASK-COD-FIX-002` for normalization to UTF-8.
+- Next Action: Delegate encoding normalization to engineering-agent and verify browser rendering.
+
+## [2026-07-14 18:45] - CARD_BUILDER_PLAN_CREATED
+
+- Related Task: PLAN-CARD-BUILDER
+- Actor: TeraAgent
+- Summary: User reported `Cards/Create` is too technical (many raw text inputs) for ordinary users. Agreed to redesign as a visual, mouse-friendly Card Builder: 4-step Wizard + Live Preview + Templates + Clone + hidden Advanced accordion.
+- Decision / Result: Documented the plan in `project-preparation/CARD_BUILDER_UX_PLAN.md`. Registered as `PLAN-CARD-BUILDER` (Draft) in TASK_REGISTRY. No code yet — planning only.
+- Next Action: Await user approval, then create implementation task (e.g. TASK-COD-026) for ui-designer + engineering-agent.
+
+## [2026-07-14 19:10] - TASK_COD_026_STARTED
+
+- Related Task: TASK-COD-026
+- Actor: TeraAgent
+- Summary: User approved Card Builder plan. Created TASK-COD-026 (25-35h) in B10 batch. Delegated to ui-designer (UI/UX, Wizard, Preview, CSS, JS) + engineering-agent (CardBuilderService, Preview API, Integration).
+- Decision / Result: Task file created, EXECUTION_BATCH_PLAN updated with B10, TASK_REGISTRY updated. Both agents assigned.
+- Next Action: Wait for handback from both agents, then verify build and browser functionality.
+
+## [2026-07-14 18:45] - CARD_BUILDER_PLAN_CREATED
+
+- Related Task: PLAN-CARD-BUILDER
+- Actor: TeraAgent
+- Summary: User reported `Cards/Create` is too technical (many raw text inputs) for ordinary users. Agreed to redesign as a visual, mouse-friendly Card Builder: 4-step Wizard + Live Preview + Templates + Clone + hidden Advanced accordion.
+- Decision / Result: Documented the plan in `project-preparation/CARD_BUILDER_UX_PLAN.md`. Registered as `PLAN-CARD-BUILDER` (Draft) in TASK_REGISTRY. No code yet — planning only.
+- Next Action: Await user approval, then create implementation task (e.g. TASK-COD-026) for ui-designer + engineering-agent.
+
+## [2026-07-14 19:00] - CARD_BUILDER_TASK_CREATED
+
+- Related Task: TASK-COD-026
+- Actor: TeraAgent
+- Summary: User approved Card Builder UX plan. Created implementation task TASK-COD-026 (25-35h) for ui-designer + engineering-agent. Batch B10 added to EXECUTION_BATCH_PLAN.md with full task details. Plan documented in `project-preparation/CARD_BUILDER_UX_PLAN.md`.
+- Decision / Result: TASK-COD-026 registered as 🟡 Assigned in TASK_REGISTRY. Ready for delegation.
+- Next Action: Delegate to ui-designer (Wizard UI, Preview, CSS, JS) and engineering-agent (CardBuilderService, Preview API, Integration).
+
+## [2026-07-14 19:30] - TASK_COD_026_VERIFICATION
+
+- Related Task: TASK-COD-026
+- Actor: TeraAgent
+- Summary: تحقق من مخرجات الـ ui-designer بعد تعطله. النتيجة: `Builder.cshtml` ✅ (483 سطر)، `Builder.cshtml.cs` ✅ (589 سطر)، `card-builder.css` ✅ (1028 سطر)، `_CardsLayout.cshtml` ✅ موجود. **المفقود فقط:** `wwwroot/js/card-builder.js` و `wwwroot/js/card-templates.js` (مُشار إليهما في Builder.cshtml لكن غير موجودين → الصفحة ثابتة بلا تفاعل). بناء الـ API ✅ (0 errors)؛ بناء Web فشل فقط بسبب قفل الملف من العملية الجارية (وليس خطأ كود).
+- Decision / Result: تحديد الفجوة بدقة. الـ backend (engineering-agent) مكتمل ويُرجع `CardPreviewResult` JSON. عقد الربط: JS يبني `CardPreviewRequest {ChartType, DataSourceType, SqlQuery}` ويرسله لـ `POST /api/dashboard/cardbuilder/preview`.
+- Next Action: إعادة تفويض عميل ui-designer جديد لإنشاء الملفّين المفقودين فقط.
+
+## [2026-07-14 19:35] - TASK_COD_026_REDELEGATED
+
+- Related Task: TASK-COD-026
+- Actor: TeraAgent → ui-designer (new)
+- Summary: إعادة تفويض عميل ui-designer جديد لإنشاء `card-builder.js` + `card-templates.js` فقط، مع سياق كامل: (1) قراءة Builder.cshtml / card-builder.css / Builder.cshtml.cs / _CardsLayout.cshtml، (2) قراءة عقد الـ backend (CardBuilderService, CardBuilderModels, CardBuilder API, TableMappings/Active API)، (3) قيود: لا تعديل أي .cs/.cshtml/.css، كتابة المسارين المطلقين فقط، استخدام Syncfusion EJ2 المتاح، RTL عربي. تم توثيق العقد في ISSUES_AND_GAPS.md (GAP_UI_Builder_JS_Missing).
+- Decision / Result: المهمة أعيد تفويضها. الحالة: 🟡 In Progress (Partial).
+- Next Action: انتظار Handback من الـ ui-designer الجديد → تشغيل `dotnet build` + إعادة تشغيل Web + اختبار المعاينة الحية.
+
+## [2026-07-14 19:55] - TASK_COD_026_UI_COMPLETE
+
+- Related Task: TASK-COD-026
+- Actor: ui-designer (new) + TeraAgent (verification)
+- Summary: العميل الجديد أنشأ الملفّين المفقودين: card-builder.js (961 سطر) يكشف window.CardBuilderWizard ويتعامل مع التنقل بين الخطوات، اختيار النوع، لوحات المصدر الأربع، عرض القوالب مع استبدال {TableName}، جلب جداول Oracle، المعاينة الحية عبر POST إلى preview API مع رسم Syncfusion (Chart و Grid)، حقن الباليت، الفلاتر، الحفظ، تهيئة النسخ. و card-templates.js (102 سطر) يكشف window.CardBuilderTemplates (6) و window.CardBuilderPalettes (7). تأكد TeraAgent من الوجود والبنية. لم يُعدّل أي ملف cs/cshtml/css.
+- Decision / Result: تحقق من الوجود + البنية. القبول مشروط باختبار المتصفح. الحالة: Accepted (UI Complete). GAP_UI_Builder_JS_Missing أصبح Resolved.
+- Next Action: إعادة بناء Web + تشغيله ليُنشر الـ JS الجديد، ثم اختبار المعاينة الحية في المتصفح.
+
+## [2026-07-14 20:00] - WEB_REBUILD_RESTART
+
+- Related Task: TASK-COD-026
+- Actor: TeraAgent
+- Summary: إيقاف عملية Web الجارية، إعادة بناء WarehouseDashboard.Web بـ Release، ثم تشغيله كـ background process على localhost:5000. الـ API لا يزال يعمل على localhost:5001.
+- Decision / Result: DONE. Web rebuilt (0 errors) and restarted on :5000 (HTTP 200). JS files served: card-builder.js (200, 42496 bytes), card-templates.js (200, 4473 bytes).
+- Next Action: User tests the live preview in browser. Note: no TableMappings exist yet, so preview returns empty/error until a table is added via Admin Panel.
+
+## [2026-07-14 20:15] - BUILDER_PAGE_500_DIAGNOSED
+
+- Related Task: TASK-COD-027
+- Actor: TeraAgent
+- Summary: المستخدم أبلغ أن /admin-secure-panel/Cards/Builder يرجع HTTP 500 في المتصفح (بينما فحص PowerShell يرجع 200). التشخيص: Builder.cshtml.cs يحقن IHttpClientFactory لكن Program.cs لا يسجّله (لا AddHttpClient في المشروع). الطلب غير المُصادَق يُعاد توجيهه لدخول (200) قبل تفعيل الصفحة؛ الطلب المُصادَق يُفعّل BuilderModel → فشل حقن → 500. تأكيد بالـ grep: AddHttpClient غير موجود إلا كاستخدام CreateClient.
+- Decision / Result: السبب الجذري مؤكد. الحل المفضّل: إزالة IHttpClientFactory واستخدام CardBuilderService مباشرة (GetAvailableTablesAsync + CloneFromCardAsync). أنشئ TASK-COD-027 + سجّل في TASK_REGISTRY.
+- Next Action: تفويض TASK-COD-027 إلى engineering-agent للإصلاح.
+
+## [2026-07-14 20:20] - TASK_COD_027_DELEGATED
+
+- Related Task: TASK-COD-027
+- Actor: TeraAgent → engineering-agent
+- Summary: فوّض إصلاح الـ 500 عبر refactor لـ Builder.cshtml.cs: حقن CardBuilderService بدل IHttpClientFactory، إعادة كتابة LoadOracleTablesAsync + LoadCloneDataAsync لاستخدام الخدمة، حذف الدوال الميتة (OnGetOracleTablesAsync, OnGetMeasurementsAsync) وكلاس OracleTableDto. المسار المسموح: Builder.cshtml.cs فقط.
+- Decision / Result: المهمة مفوّضة. الحالة: 🟡 Assigned.
+- Next Action: انتظار Handback → إعادة بناء Web + إعادة تشغيل + تحقق 200 للمستخدم المسجّل.
+
+## [2026-07-14 20:35] - TASK_COD_027_FIXED
+
+- Related Task: TASK-COD-027
+- Actor: engineering-agent + TeraAgent (verification)
+- Summary: العميل الأول أعاد نتيجة فارغة دون تطبيق. أُعيد التفويض بتعليمات صريحة وأكواد دقيقة. تم: (1) إزالة IHttpClientFactory وحقن CardBuilderService، (2) إعادة كتابة LoadOracleTablesAsync + LoadCloneDataAsync لاستخدام الخدمة مباشرة، (3) حذف الدوال الميتة OnGetOracleTablesAsync / OnGetMeasurementsAsync وكلاس OracleTableDto. التحقق: grep صفري لـ IHttpClientFactory/OracleTableDto في المشروع؛ dotnet build = 0 errors / 0 warnings. أُعيد بناء Web وإعادة تشغيله.
+- Decision / Result: ✅ TASK-COD-027 Accepted. السبب الجذري للـ 500 (فشل حقن IHttpClientFactory غير المسجّل) مُزال. الطلب غير المُصادَق يرجع 302 (تحويل لدخول) = الطريق يُصرَّف والصفحة تُجمَّع بنجاح. اختبار المسار المُصادَق عبر PowerShell اصطدم بـ 400 من حماية antiforgery (قيد معروف في عملاء HTTP اليدويين، لا علاقة له بالخطأ) — لذا التحقق النهائي من المتصفح مطلوب من المستخدم.
+- Next Action: المستخدم يسجّل الدخول مجدداً (جلسة الـ Web أُعيدت عند إعادة التشغيل) ثم يفتح /admin-secure-panel/Cards/Builder — يجب أن يرجع 200 الآن. ملاحظة: لا TableMappings بعد → القائمة المنسدلة فارغة حتى تُضاف جداول عبر Admin Panel.
+
+## [2026-07-14 21:00] - TASK_COD_029_CREATED
+
+- Related Task: TASK-COD-029
+- Actor: TeraAgent
+- Summary: المستخدم طلب تطوير مودال TableMappings إلى Oracle Source Mapping Wizard احترافي بـ 4 خطوات: (1) اختيار النوع Table/View/Query، (2) بحث أو كتابة مصدر Oracle، (3) معاينة بيانات + Schema، (4) إعداد SQL Target. النطاق يشمل: OracleSchemaService enhancements (5 خدمات جديدة)، 3 API endpoints جديدة، إعادة تصميم المودال بالكامل، وملف JS جديد. Query ميزة أساسية — تتضمن فحص الأعمدة وأنواعها قبل الحفظ. الربط البصري بين التعيينات مؤجل للمرحلة التالية.
+- Decision / Result: ✅ Task created + approved by user. Scope confirmed: Table+View+Query معاً. الاسم: Oracle Source Mapping Wizard.
+- Next Action: تفويض TASK-COD-029 إلى engineering-agent.

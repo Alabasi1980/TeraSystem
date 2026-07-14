@@ -33,7 +33,20 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowWeb", policy =>
     {
-        policy.WithOrigins("https://localhost:5000", "http://localhost:5000")
+        // Read allowed origins from configuration (CORS:Origins array).
+        // Fall back to hardcoded defaults when the config section is missing.
+        var configuredOrigins = builder.Configuration.GetSection("CORS:Origins").Get<string[]>();
+        var allowedOrigins = configuredOrigins is { Length: > 0 }
+            ? configuredOrigins
+            : new[]
+            {
+                "https://localhost:5000",
+                "http://localhost:5000",
+                "https://10.10.1.1",
+                "http://10.10.1.1"
+            };
+
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
