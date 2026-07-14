@@ -1,0 +1,238 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.SyncLogsModel
+@{
+    ViewData["Title"] = "سجلات المزامنة";
+}
+
+<style>
+    /* Page-specific styles not provided by _CardsLayout */
+    .wd-page { max-width: 1100px; margin: 0 auto; padding: 0; }
+    .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
+    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
+    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
+    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
+
+    .wd-grid { margin-top: 8px; min-height: 80px; }
+    .wd-grid-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .wd-grid-toolbar .wd-meta { font-size: 13px; color: var(--c-text-muted); }
+
+    .wd-skeleton { padding: 12px; }
+    .wd-skeleton__row {
+        height: 18px; margin-bottom: 12px; border-radius: 6px;
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, #dbe7f3 37%, var(--c-surface-muted) 63%);
+        background-size: 400% 100%;
+        animation: wdShimmer 1.2s ease-in-out infinite;
+    }
+
+    .wd-status-badge {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 2px 10px; border-radius: var(--radius-full);
+        font-size: 12px; font-weight: 600; line-height: 1.6;
+    }
+    .wd-status-badge--success { background: rgba(30, 158, 106, 0.12); color: var(--c-success); }
+    .wd-status-badge--failed { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
+    .wd-status-badge--running { background: rgba(46, 109, 164, 0.12); color: var(--c-info); }
+    .wd-status-badge--cancelled { background: rgba(91, 122, 153, 0.12); color: var(--c-text-muted); }
+
+    .wd-error-cell { color: var(--c-error); font-size: 12px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    [hidden] { display: none !important; }
+</style>
+
+<div class="wd-page">
+    <header class="wd-page__header">
+        <div class="wd-breadcrumb">
+            <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; سجلات المزامنة
+        </div>
+        <h2 class="wd-page__title">سجلات المزامنة</h2>
+        <p class="wd-page__subtitle">عرض آخر دورة مزامنة đãتم تنفيذها (البيانات مخزّنة مؤقتاً في الذاكرة).</p>
+    </header>
+
+    <section class="wd-card">
+        <div class="wd-grid-toolbar">
+            <span id="meta" class="wd-meta"></span>
+            <button class="wd-btn wd-btn--ghost wd-btn--sm" onclick="loadLogs()">تحديث</button>
+        </div>
+
+        <div id="skeleton" class="wd-skeleton">
+            @for (int i = 0; i < 5; i++) { <div class="wd-skeleton__row"></div> }
+        </div>
+
+        <div id="emptyState" class="wd-empty" hidden>
+            <span class="wd-empty__icon">&#128203;</span>
+            <h3>لا توجد سجلات مزامنة بعد</h3>
+            <p>ستظهر هنا سجلات الدورات بعد تنفيذ أول مزامنة.</p>
+        </div>
+
+        <div id="gridContainer" class="wd-grid" hidden></div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var gridInstance = null;
+            var refreshTimer = null;
+            var REFRESH_INTERVAL = 30000; // 30 seconds
+
+            var apiBase = 'https://localhost:5001';
+            try {
+                var metaTag = document.querySelector('meta[name="sync-api-base"]');
+                if (metaTag) { apiBase = metaTag.getAttribute('content'); }
+            } catch (e) { /* use default */ }
+
+            function escapeHtml(text) {
+                var div = document.createElement('div');
+                div.textContent = text ?? '';
+                return div.innerHTML;
+            }
+
+            function formatDate(isoString) {
+                if (!isoString) return '—';
+                try {
+                    var d = new Date(isoString);
+                    var day = String(d.getDate()).padStart(2, '0');
+                    var month = String(d.getMonth() + 1).padStart(2, '0');
+                    var year = d.getFullYear();
+                    var hours = String(d.getHours()).padStart(2, '0');
+                    var mins = String(d.getMinutes()).padStart(2, '0');
+                    var secs = String(d.getSeconds()).padStart(2, '0');
+                    return day + '/' + month + '/' + year + ' ' + hours + ':' + mins + ':' + secs;
+                } catch (e) {
+                    return isoString;
+                }
+            }
+
+            function statusBadge(status) {
+                var cls = 'wd-status-badge';
+                var label = status || '—';
+                if (status === 'Success') { cls += ' wd-status-badge--success'; label = 'نجح'; }
+                else if (status === 'Failed') { cls += ' wd-status-badge--failed'; label = 'فشل'; }
+                else if (status === 'Running') { cls += ' wd-status-badge--running'; label = 'قيد التنفيذ'; }
+                else if (status === 'Cancelled') { cls += ' wd-status-badge--cancelled'; label = 'ملغى'; }
+                return '<span class="' + cls + '">' + label + '</span>';
+            }
+
+            function triggerLabel(trigger) {
+                if (trigger === 'Manual') return 'يدوي';
+                if (trigger === 'Auto') return 'تلقائي';
+                return trigger || '—';
+            }
+
+            function destroyGrid() {
+                if (gridInstance) { gridInstance.destroy(); gridInstance = null; }
+                document.getElementById('gridContainer').innerHTML = '';
+            }
+
+            function renderGrid(logs) {
+                destroyGrid();
+                var container = document.getElementById('gridContainer');
+                document.getElementById('emptyState').hidden = true;
+                container.hidden = false;
+
+                if (!logs || logs.length === 0) {
+                    container.hidden = true;
+                    document.getElementById('emptyState').hidden = false;
+                    return;
+                }
+
+                gridInstance = new ej.grids.Grid({
+                    dataSource: logs,
+                    columns: [
+                        {
+                            field: 'startTimeFormatted', headerText: 'التاريخ', width: 180,
+                            sortDirection: 'Descending'
+                        },
+                        {
+                            field: 'triggerTypeLabel', headerText: 'النوع', width: 100, textAlign: 'Center'
+                        },
+                        {
+                            field: 'statusHtml', headerText: 'الحالة', width: 110, textAlign: 'Center',
+                            disableHtmlEncode: false
+                        },
+                        {
+                            field: 'recordCount', headerText: 'عدد السجلات', width: 120, textAlign: 'Right'
+                        },
+                        {
+                            field: 'duration', headerText: 'المدة (ث)', width: 110, textAlign: 'Right'
+                        },
+                        {
+                            field: 'errorMessageHtml', headerText: 'رسالة الخطأ', width: 240,
+                            disableHtmlEncode: false, clipMode: 'EllipsisWithTooltip'
+                        }
+                    ],
+                    allowPaging: true,
+                    pageSize: 15,
+                    allowSorting: true,
+                    gridLines: 'Horizontal',
+                    direction: 'RTL'
+                });
+                gridInstance.appendTo(container);
+            }
+
+            window.loadLogs = async function () {
+                var skeleton = document.getElementById('skeleton');
+                var emptyState = document.getElementById('emptyState');
+                var gridContainer = document.getElementById('gridContainer');
+                var meta = document.getElementById('meta');
+
+                skeleton.hidden = false;
+                emptyState.hidden = true;
+                gridContainer.hidden = true;
+
+                try {
+                    var resp = await fetch(apiBase + '/api/sync/logs');
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    var data = await resp.json();
+
+                    skeleton.hidden = true;
+
+                    var logs = (data || []).map(function (r) {
+                        return {
+                            startTime: r.startTime,
+                            startTimeFormatted: formatDate(r.startTime),
+                            endTime: r.endTime,
+                            status: r.status,
+                            statusHtml: statusBadge(r.status),
+                            recordCount: r.recordCount ?? 0,
+                            duration: r.duration ?? '—',
+                            triggerType: r.triggerType,
+                            triggerTypeLabel: triggerLabel(r.triggerType),
+                            errorMessage: r.errorMessage,
+                            errorMessageHtml: r.errorMessage ? '<span class="wd-error-cell" title="' + escapeHtml(r.errorMessage) + '">' + escapeHtml(r.errorMessage) + '</span>' : '—'
+                        };
+                    });
+
+                    renderGrid(logs);
+                    meta.textContent = logs.length + ' سجل · آخر تحديث: ' + new Date().toLocaleTimeString('ar-SA');
+                } catch (err) {
+                    skeleton.hidden = true;
+                    emptyState.hidden = false;
+                    gridContainer.hidden = true;
+                    document.getElementById('emptyState').innerHTML =
+                        '<span class="wd-empty__icon">⚠</span>' +
+                        '<h3>تعذر تحميل السجلات</h3>' +
+                        '<p>' + escapeHtml(err.message || 'تعذر الاتصال بالخادم.') + '</p>';
+                }
+            };
+
+            // Initial load
+            loadLogs();
+
+            // Auto-refresh every 30 seconds
+            refreshTimer = setInterval(loadLogs, REFRESH_INTERVAL);
+
+            // Pause auto-refresh when tab is not visible
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    clearInterval(refreshTimer);
+                    refreshTimer = null;
+                } else {
+                    loadLogs();
+                    refreshTimer = setInterval(loadLogs, REFRESH_INTERVAL);
+                }
+            });
+        })();
+    </script>
+}

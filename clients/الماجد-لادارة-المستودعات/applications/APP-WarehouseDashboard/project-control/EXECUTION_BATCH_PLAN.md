@@ -11,13 +11,15 @@
 
 | Batch | TASK-COD-* | المرحلة | المهام | الحالة |
 |---|---|---|---|---|
-| **B1** | 001, 002, 003 | A — Foundation | Oracle test + DB + Scaffolding | ⏳ Next |
-| **B2** | 004, 005 | B — Data Core | Oracle extraction + SqlBulkCopy | ⏳ |
-| **B3** | 006, 007, 008 | B/C — API + Admin Login | Sync endpoints + BackgroundService + Admin Auth | ⏳ |
-| **B4** | 009, 010 | C — Admin Screens | Card CRUD + Query Tester + Drill Config | ⏳ |
-| **B5** | 011, 012, 013, 014 | D — Dashboard UI | Main page + Drill Down + Status + Filter | ⏳ |
-| **B6** | 015, 016, 017, 018 | E — Polish | Skeleton + Empty/Error + Toast + Animations + Connection | ⏳ |
-| **B7** | 019, 020, 021 | F — Deployment | IIS + License + UAT | ⏳ |
+| **B1** | 001, 002, 003 | A — Foundation | Oracle test + DB + Scaffolding | ✅ Complete |
+| **B2** | 004, 005 | B — Data Core | Oracle extraction + SqlBulkCopy | ✅ Complete |
+| **B3** | 006, 007, 008 | B/C — API + Admin Login | Sync endpoints + BackgroundService + Admin Auth | ✅ Complete |
+| **B4** | 009, 010 | C — Admin Screens | Card CRUD + Query Tester + Drill Config | ✅ Complete |
+| **B5** | 011, 012, 013, 014 | D — Dashboard UI | Main page + Drill Down + Status + Filter | ✅ Complete |
+| **B6** | 015, 016, 017, 018 | E — Polish | Skeleton + Empty/Error + Toast + Animations + Connection | ✅ Covered by B5 |
+| **FIX** | FIX-001 | FIX | Critical & Important Bug Fixes | ✅ Complete |
+| **B7** | 019, 020, 021 | F — Deployment | IIS + License + UAT | ⏳ Pending |
+| **B8** | 022, 023, 024 | G — Gap Closure | Admin Nav + SyncLogs + SyncSettings | 🔵 Next |
 
 ---
 
@@ -97,6 +99,17 @@
 
 **إستراتيجية التنفيذ:** 019 + 020 **بالتوازي**. 021 بعد كل شيء.
 
+### B8 — Gap Closure (سد الثغرات)
+
+| TASK-COD | الوصف | الوكيل | التقدير | التبعية |
+|---|---|---|---|---|
+| 022 | Admin Panel Home + Navigation + Layout Unification | engineering-agent + ui-designer | 2–3h | 009 ✅ + 010 ✅ |
+| 023 | Sync Logs Page | engineering-agent | 1.5–2h | 006 ✅ |
+| 024 | Sync Settings Admin Page | engineering-agent | 1–1.5h | 002 ✅ |
+
+**إستراتيجية التنفيذ:** 022 + 023 + 024 **بالتوازي** (لا تبعية بينها).
+**ملاحظة:** هذه المهام تُغلق كل الثغرات المتبقية قبل النشر.
+
 ---
 
 ## 3. Dependency Map
@@ -129,6 +142,10 @@ B6 ──┬── 015 (Skeleton) ← 011
 B7 ──┬── 019 (IIS) ← 003
      ├── 020 (License) ← 006 + 007
      └── 021 (UAT) ← ALL
+           │
+B8 ──┬── 022 (Admin Nav) ← 009 + 010
+     ├── 023 (SyncLogs) ← 006
+     └── 024 (SyncSettings) ← 002
 ```
 
 ---
@@ -197,7 +214,11 @@ B7 ──┬── 019 (IIS) ← 003
 | ✅ Dashboard displays ~20 dynamic cards | TASK-COD-011 ✅ |
 | ✅ Drill Down works (2+ levels) | TASK-COD-012 ✅ |
 | ✅ UI polished (skeleton, toast, empty, animations) | TASK-COD-015→018 ✅ |
-| ✅ Deployed on IIS | TASK-COD-019→021 ✅ |
+| ✅ Critical bugs fixed | TASK-COD-FIX-001 ✅ |
+| ✅ Admin panel navigable | TASK-COD-022 (B8) |
+| ✅ Sync logs visible | TASK-COD-023 (B8) |
+| ✅ Sync settings configurable from UI | TASK-COD-024 (B8) |
+| ✅ Deployed on IIS | TASK-COD-019→021 (B7) |
 | ✅ Client approval | Phase 7 ✅ |
 
 ---
@@ -206,13 +227,15 @@ B7 ──┬── 019 (IIS) ← 003
 
 | Batch | Hours | Realistic |
 |---|---|---|
-| B1 Foundation | 8–16 | 1 day |
-| B2 Data Core | 80–140 | 5–10 days |
-| B3 API + Admin Auth | 40–60 | 3–5 days |
-| B4 Admin Screens | 50–70 | 3–5 days |
-| B5 Dashboard UI | 80–120 | 5–8 days |
-| B6 Polish | 33–48 | 2–3 days |
-| B7 Deployment | 16–24 | 1–2 days |
+| B1 Foundation | 8–16 | ✅ Done |
+| B2 Data Core | 80–140 | ✅ Done |
+| B3 API + Admin Auth | 40–60 | ✅ Done |
+| B4 Admin Screens | 50–70 | ✅ Done |
+| B5 Dashboard UI | 80–120 | ✅ Done |
+| B6 Polish | 33–48 | ✅ Covered |
+| FIX (Bug Fixes) | 3–4 | ✅ Done |
+| B7 Deployment | 16–24 | ⏳ Pending |
+| B8 Gap Closure | 5–7 | 🔵 Next |
 | **Total** | **307–478** | **20–34 days** |
 
 > ضمن النطاق المعتمد (430–625 ساعة / ~8–12 أسبوع لوتيرة طبيعية).
@@ -224,3 +247,4 @@ B7 ──┬── 019 (IIS) ← 003
 | Version | Date | Author | Changes |
 |---|---|---|---|
 | 1.0 | 2026-07-12 | TeraAgent | Initial batch plan — 7 batches, 21 TASK-COD-* |
+| 1.1 | 2026-07-13 | TeraAgent | Updated batch statuses (B1-B6 complete, FIX complete). Added B8 (Gap Closure: 022/023/024). |

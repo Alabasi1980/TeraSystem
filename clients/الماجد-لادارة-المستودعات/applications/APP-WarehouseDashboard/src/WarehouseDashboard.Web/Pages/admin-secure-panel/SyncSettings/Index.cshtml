@@ -1,0 +1,143 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.SyncSettingsModel
+@{
+    ViewData["Title"] = "إعدادات المزامنة";
+}
+
+<style>
+    /* Page-specific styles not provided by _CardsLayout */
+    .wd-page { max-width: 700px; margin: 0 auto; padding: 0; }
+    .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
+    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
+    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
+    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
+
+    .wd-field { margin-bottom: 18px; }
+    .wd-field label { display: block; font-size: 13px; font-weight: 600; color: var(--c-text); margin-bottom: 6px; }
+    .wd-field .wd-hint { font-size: 12px; color: var(--c-text-muted); margin-top: 4px; }
+    .wd-field--row { display: flex; align-items: center; gap: 12px; }
+
+    .wd-input {
+        width: 100%; font-family: var(--font-ar);
+        font-size: 14px; color: var(--c-text);
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        padding: 10px 12px; background: var(--c-surface);
+        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    }
+    .wd-input:focus {
+        outline: none; border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+
+    .wd-toggle {
+        position: relative; width: 44px; height: 24px; flex: none;
+    }
+    .wd-toggle input {
+        opacity: 0; width: 0; height: 0; position: absolute;
+    }
+    .wd-toggle__slider {
+        position: absolute; inset: 0; cursor: pointer;
+        background: var(--c-border); border-radius: var(--radius-full);
+        transition: background var(--dur-fast) var(--ease);
+    }
+    .wd-toggle__slider::before {
+        content: '';
+        position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px;
+        background: #fff; border-radius: var(--radius-full);
+        transition: transform var(--dur-fast) var(--ease);
+    }
+    .wd-toggle input:checked + .wd-toggle__slider {
+        background: var(--c-primary);
+    }
+    .wd-toggle input:checked + .wd-toggle__slider::before {
+        transform: translateX(20px);
+    }
+    .wd-toggle input:focus-visible + .wd-toggle__slider {
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.2);
+    }
+
+    .wd-readonly-field {
+        padding: 10px 12px;
+        background: var(--c-surface-muted);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        color: var(--c-text-muted);
+        min-height: 20px;
+    }
+
+    .wd-form-actions {
+        display: flex; align-items: center; gap: 12px;
+        margin-top: var(--sp-6);
+        padding-top: var(--sp-4);
+        border-top: 1px solid var(--c-border);
+    }
+
+    .wd-toast-container {
+        position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
+        display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+    }
+    .wd-toast {
+        min-width: 240px; max-width: 360px; padding: 12px 16px; border-radius: var(--radius-md);
+        color: #fff; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 8px;
+        animation: wdToastIn var(--dur-norm) var(--ease);
+        font-size: 14px;
+    }
+    .wd-toast--success { background: var(--c-success); }
+    .wd-toast--error { background: var(--c-error); }
+</style>
+
+<div class="wd-page">
+    <header class="wd-page__header">
+        <div class="wd-breadcrumb">
+            <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; إعدادات المزامنة
+        </div>
+        <h2 class="wd-page__title">إعدادات المزامنة</h2>
+        <p class="wd-page__subtitle">تكوين فاصل المزامنة وتشغيل/إيقاف المزامنة التلقائية.</p>
+    </header>
+
+    <form method="post" class="wd-card">
+        <div class="wd-field">
+            <label for="IntervalMinutes">فاصل المزامنة (الدقائق)</label>
+            <input asp-for="IntervalMinutes" id="IntervalMinutes" class="wd-input" type="number" min="1" max="1440" />
+            <span class="wd-hint">القيمة بين 1 و 1440 دقيقة (24 ساعة).</span>
+        </div>
+
+        <div class="wd-field">
+            <label>المزامنة التلقائية</label>
+            <div class="wd-field--row">
+                <label class="wd-toggle">
+                    <input asp-for="IsAutoSyncEnabled" type="checkbox" />
+                    <span class="wd-toggle__slider"></span>
+                </label>
+                <span style="font-size:14px; color:var(--c-text);">@(Model.IsAutoSyncEnabled ? "مفعّلة" : "معطّلة")</span>
+            </div>
+            <span class="wd-hint">فعّل للمزامنة الدورية التلقائية.</span>
+        </div>
+
+        <div class="wd-field">
+            <label>آخر مزامنة</label>
+            <div class="wd-readonly-field">
+                @(Model.LastSyncTimestamp.HasValue
+                    ? Model.LastSyncTimestamp.Value.ToString("yyyy/MM/dd hh:mm:ss tt")
+                    : "لم تتم مزامنة بعد")
+            </div>
+        </div>
+
+        <div class="wd-form-actions">
+            <button type="submit" class="wd-btn wd-btn--primary">حفظ</button>
+            <a href="/admin-secure-panel" class="wd-btn wd-btn--ghost">إلغاء</a>
+        </div>
+    </form>
+</div>
+
+@section Toast {
+    @if (!string.IsNullOrEmpty(Model.ToastMessage))
+    {
+        <div class="wd-toast wd-toast--@Model.ToastType" role="status">
+            <span>@(Model.ToastType == "success" ? "✓" : "✕")</span>
+            <span>@Model.ToastMessage</span>
+        </div>
+    }
+}
