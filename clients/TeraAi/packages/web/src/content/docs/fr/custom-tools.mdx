@@ -1,0 +1,170 @@
+﻿---
+title: Outils personnalisأ©s
+description: Crأ©ez des outils que le LLM peut appeler dans opencode.
+---
+
+Les outils personnalisأ©s sont des fonctions que vous crأ©ez et que le LLM peut appeler pendant les conversations. Ils fonctionnent avec les [outils intأ©grأ©s](/docs/tools) de opencode comme `read`, `write` et `bash`.
+
+---
+
+## Crأ©ation d'un outil
+
+Les outils sont dأ©finis sous forme de fichiers **TypeScript** ou **JavaScript**. Cependant, la dأ©finition de l'outil peut appeler des scripts أ©crits dans **n'importe quel langage** : TypeScript ou JavaScript n'est utilisأ© que pour la dأ©finition de l'outil elle-mأھme.
+
+---
+
+### Emplacement
+
+Ils peuvent أھtre dأ©finis :
+
+- Localement en les plaأ§ant dans le rأ©pertoire `.opencode/tools/` de votre projet.
+- Ou globalement, en les plaأ§ant dans `~/.config/opencode/tools/`.
+
+---
+
+### Structure
+
+Le moyen le plus simple de crأ©er des outils est d'utiliser l'assistant `tool()` qui fournit la sأ©curitأ© et la validation de type.
+
+```ts title=".opencode/tools/database.ts" {1}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Query the project database",
+  args: {
+    query: tool.schema.string().describe("SQL query to execute"),
+  },
+  async execute(args) {
+    // Your database logic here
+    return `Executed query: ${args.query}`
+  },
+})
+```
+
+Le **nom de fichier** devient le **nom de l'outil**. Ce qui prأ©cأ¨de crأ©e un outil `database`.
+
+---
+
+#### Plusieurs outils par fichier
+
+Vous pouvez أ©galement exporter plusieurs outils أ  partir d'un seul fichier. Chaque exportation devient **un outil distinct** portant le nom **`<filename>_<exportname>`** :
+
+```ts title=".opencode/tools/math.ts"
+import { tool } from "@tera-system/plugin"
+
+export const add = tool({
+  description: "Add two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a + args.b
+  },
+})
+
+export const multiply = tool({
+  description: "Multiply two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a * args.b
+  },
+})
+```
+
+Cela crأ©e deux outils : `math_add` et `math_multiply`.
+
+---
+
+### Arguments
+
+Vous pouvez utiliser `tool.schema`, qui est simplement [Zod](https://zod.dev), pour dأ©finir les types d'arguments.
+
+```ts "tool.schema"
+args: {
+  query: tool.schema.string().describe("SQL query to execute")
+}
+```
+
+Vous pouvez أ©galement importer [Zod](https://zod.dev) directement et renvoyer un objet simple :
+
+```ts {6}
+import { z } from "zod"
+
+export default {
+  description: "Tool description",
+  args: {
+    param: z.string().describe("Parameter description"),
+  },
+  async execute(args, context) {
+    // Tool implementation
+    return "result"
+  },
+}
+```
+
+---
+
+### Contexte
+
+Les outils reأ§oivent le contexte de la session en cours :
+
+```ts title=".opencode/tools/project.ts" {8}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Get project information",
+  args: {},
+  async execute(args, context) {
+    // Access context information
+    const { agent, sessionID, messageID, directory, worktree } = context
+    return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}, Directory: ${directory}, Worktree: ${worktree}`
+  },
+})
+```
+
+Utilisez `context.directory` pour le rأ©pertoire de travail de la session.
+Utilisez `context.worktree` pour la racine du worktree git.
+
+---
+
+## Exemples
+
+### أ‰crire un outil en Python
+
+Vous pouvez أ©crire vos outils dans le langage de votre choix. Voici un exemple qui ajoute deux nombres أ  l'aide de Python.
+
+Tout d'abord, crأ©ez l'outil en tant que script Python :
+
+```python title=".opencode/tools/add.py"
+import sys
+
+a = int(sys.argv[1])
+b = int(sys.argv[2])
+print(a + b)
+```
+
+Crأ©ez ensuite la dأ©finition d'outil qui l'invoque :
+
+```ts title=".opencode/tools/python-add.ts" {10}
+import { tool } from "@tera-system/plugin"
+import path from "path"
+
+export default tool({
+  description: "Add two numbers using Python",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args, context) {
+    const script = path.join(context.worktree, ".opencode/tools/add.py")
+    const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
+    return result.trim()
+  },
+})
+```
+
+Ici, nous utilisons l'utilitaire [`Bun.$`](https://bun.com/docs/runtime/shell) pour exأ©cuter le script Python.

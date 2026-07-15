@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/* ── Copper & Burgundy — Classic Premium Palette ── */
+@theme {
+  --color-*: initial;
+  --color-cream: #F5F0E8;
+  --color-cream-dark: #E8DCD0;
+  --color-mocha: #8B7355;
+  --color-mocha-light: #A0886A;
+  --color-mocha-dark: #6B5344;
+  --color-espresso: #2C1810;
+  --color-espresso-light: #3D2A1F;
+  --color-espresso-muted: #6B5A50;
+  --color-copper: #CD7F32;
+  --color-copper-light: #E09140;
+  --color-copper-dark: #B8722A;
+  --color-burgundy: #800020;
+  --color-burgundy-light: #A00028;
+  --color-olive: #6B8E4E;
+  --color-olive-light: #7DA55E;
+  --color-olive-dark: #55703C;
+  --color-orange-soft: #D4876A;
+  --color-orange-soft-light: #E09A80;
+  --color-golden-olive: #B8860B;
+  --color-white: #FFFFFF;
+  --color-border: #E8DCD0;
+  --color-border-dark: #D4C4B4;
+
+  --font-sans: "Inter", "Noto Sans Arabic", system-ui, sans-serif;
+  --font-display: "Playfair Display", "Inter", serif;
+}
+
+/* ── Base Styles ── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  direction: rtl;
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-espresso);
+  min-height: 100vh;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #E8DCD0;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: #8B7355;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6B5344;
+}
+
+/* ── Custom utility classes ── */
+.card-shadow {
+  box-shadow: 0 2px 8px rgba(44, 24, 16, 0.08),
+              0 4px 16px rgba(44, 24, 16, 0.04);
+}
+.card-shadow-hover:hover {
+  box-shadow: 0 4px 16px rgba(44, 24, 16, 0.12),
+              0 8px 32px rgba(44, 24, 16, 0.06);
+  transform: translateY(-2px);
+}
+.sidebar-shadow {
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+}

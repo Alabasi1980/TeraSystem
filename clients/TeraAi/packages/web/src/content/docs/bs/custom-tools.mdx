@@ -1,0 +1,195 @@
+﻿---
+title: Prilagoؤ‘eni alati
+description: Kreirajte alate koje LLM moإ¾e pozvati u otvorenom kodu.
+---
+
+Prilagoؤ‘eni alati su funkcije koje kreirate i koje LLM moإ¾e pozvati tokom razgovora. Oni rade zajedno sa [ugraؤ‘enim opencode](/docs/tools) alatima kao إ،to su `read`, `write` i `bash`.
+
+---
+
+## Kreiranje alata
+
+Alati su definisani kao **TypeScript** ili **JavaScript** datoteke. Meؤ‘utim, definicija alata moإ¾e pozvati skripte napisane na **bilo kom jeziku** â€” TypeScript ili JavaScript se koriste samo za samu definiciju alata.
+
+---
+
+### Lokacija
+
+Mogu se definisati:
+
+- Lokalno postavljanjem u `.opencode/tools/` direktorij vaإ،eg projekta.
+- Ili globalno, postavljanjem u `~/.config/opencode/tools/`.
+
+---
+
+### Struktura
+
+Najlakإ،i naؤچin za kreiranje alata je koriإ،tenje pomoؤ‡nika `tool()` koji pruإ¾a sigurnost tipa i validaciju.
+
+```ts title=".opencode/tools/database.ts" {1}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Query the project database",
+  args: {
+    query: tool.schema.string().describe("SQL query to execute"),
+  },
+  async execute(args) {
+    // Your database logic here
+    return `Executed query: ${args.query}`
+  },
+})
+```
+
+**ime datoteke** postaje **naziv alata**. Gore navedeno je kreirano pomoؤ‡u `database` alata.
+
+---
+
+#### Viإ،e alata po datoteci
+
+Takoؤ‘er moإ¾ete izvesti viإ،e alata iz jedne datoteke. Svaki izvoz postaje **poseban alat** pod nazivom **`<filename>_<exportname>`**:
+
+```ts title=".opencode/tools/math.ts"
+import { tool } from "@tera-system/plugin"
+
+export const add = tool({
+  description: "Add two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a + args.b
+  },
+})
+
+export const multiply = tool({
+  description: "Multiply two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a * args.b
+  },
+})
+```
+
+Ovo stvara dva alata: `math_add` i `math_multiply`.
+
+---
+
+#### Sukob imena s ugraؤ‘enim alatima
+
+Prilagoؤ‘eni alati su prepoznati po imenu. Ako prilagoؤ‘eni alat koristi isto ime kao ugraؤ‘eni alat, prilagoؤ‘eni alat ima prednost.
+
+Na primjer, ova datoteka zamjenjuje ugraؤ‘eni `bash` alat:
+
+```ts title=".opencode/tools/bash.ts"
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Restricted bash wrapper",
+  args: {
+    command: tool.schema.string(),
+  },
+  async execute(args) {
+    return `blocked: ${args.command}`
+  },
+})
+```
+
+:::note
+Preferirajte jedinstvena imena osim ako namjerno ne إ¾elite zamijeniti ugraؤ‘eni alat. Ako إ¾elite onemoguؤ‡iti ugraؤ‘eni alat, ali ne i nadjaؤچati ga, koristite [dozvole](/docs/permissions).
+:::
+
+---
+
+### Argumenti
+
+Moإ¾ete koristiti `tool.schema`, إ،to je samo [Zod](https://zod.dev), da definirate tipove argumenata.
+
+```ts "tool.schema"
+args: {
+  query: tool.schema.string().describe("SQL query to execute")
+}
+```
+
+Takoؤ‘er moإ¾ete direktno uvesti [Zod](https://zod.dev) i vratiti obiؤچan objekt:
+
+```ts {6}
+import { z } from "zod"
+
+export default {
+  description: "Tool description",
+  args: {
+    param: z.string().describe("Parameter description"),
+  },
+  async execute(args, context) {
+    // Tool implementation
+    return "result"
+  },
+}
+```
+
+---
+
+### Kontekst
+
+Alati primaju kontekst o trenutnoj sesiji:
+
+```ts title=".opencode/tools/project.ts" {8}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Get project information",
+  args: {},
+  async execute(args, context) {
+    // Access context information
+    const { agent, sessionID, messageID, directory, worktree } = context
+    return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}, Directory: ${directory}, Worktree: ${worktree}`
+  },
+})
+```
+
+Koristite `context.directory` za radni direktorij sesije.
+Koristite `context.worktree` za korijen git radnog stabla.
+
+---
+
+## Primjeri
+
+### Pisanje alata u Python-u
+
+Moإ¾ete pisati svoje alate na bilo kom jeziku koji إ¾elite. Evo primjera koji zbraja dva broja koristeؤ‡i Python.
+Prvo kreirajte alat kao Python skriptu:
+
+```python title=".opencode/tools/add.py"
+import sys
+
+a = int(sys.argv[1])
+b = int(sys.argv[2])
+print(a + b)
+```
+
+Zatim kreirajte definiciju alata koja ga poziva:
+
+```ts title=".opencode/tools/python-add.ts" {10}
+import { tool } from "@tera-system/plugin"
+import path from "path"
+
+export default tool({
+  description: "Add two numbers using Python",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args, context) {
+    const script = path.join(context.worktree, ".opencode/tools/add.py")
+    const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
+    return result.trim()
+  },
+})
+```
+
+Ovdje koristimo [`Bun.$`](https://bun.com/docs/runtime/shell) usluإ¾ni program za pokretanje Python skripte.

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teranoo — عرض مشروع: نظام إدارة طلبات الصيانة</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .print-table thead,
+        .print-table tfoot { background: #fff; }
+
+        .print-table thead td,
+        .print-table tfoot td,
+        .print-table tbody td { padding: 0; vertical-align: top; }
+
+        .page-header,
+        .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+
+        .page-header img,
+        .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .document {
+            padding: 0 var(--page-padding-x);
+        }
+
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+
+        .doc__top strong { color: var(--ink); }
+
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+
+        .field {
+            display: flex;
+            gap: 2mm;
+            align-items: baseline;
+        }
+
+        .field__label {
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        .field__value {
+            flex: 1;
+            min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+
+        .doc__recipient {
+            margin-top: 4mm;
+            font-size: 10.3pt;
+            line-height: 1.6;
+        }
+
+        .doc__recipient p,
+        .doc__body p { margin: 0 0 2.4mm; }
+
+        .doc__body {
+            margin-top: 2mm;
+            font-size: 10.7pt;
+        }
+
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+        }
+
+        .doc__body ul {
+            margin: 0 0 2.4mm;
+            padding: 0 5mm 0 0;
+        }
+
+        .doc__body li { margin-bottom: 1.4mm; }
+
+        .no-break {
+            break-inside: avoid-page;
+            page-break-inside: avoid;
+        }
+
+        .doc__body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2mm 0;
+            font-size: 10pt;
+        }
+
+        .doc__body th,
+        .doc__body td {
+            border: 1px solid var(--line);
+            padding: 1.5mm 2mm;
+            text-align: right;
+        }
+
+        .doc__body th {
+            background: var(--soft);
+            font-weight: 700;
+        }
+
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+
+        .sign-box { flex: 1; }
+
+        .sign-box__label {
+            margin-bottom: 6mm;
+            font-size: 10.2pt;
+            font-weight: 700;
+        }
+
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+
+        .highlight {
+            background: #f0f5ff;
+            border-right: 3px solid #2563eb;
+            padding: 2mm 3mm;
+            margin: 2mm 0;
+            font-size: 10pt;
+        }
+
+        @media print {
+            body { background: #fff; }
+            .print-page { width: 100%; min-height: 0; margin: 0; box-shadow: none; overflow: visible; }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/05</div>
+                <div><strong>الرقم:</strong> TDS-PROP-2026-001</div>
+            </div>
+
+            <div class="doc__chip">عرض مشروع — Application Proposal</div>
+
+            <p class="doc__subject">الموضوع: عرض مشروع — نظام إدارة طلبات الصيانة</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">مؤسسة الموثوق لصيانة الأجهزة والخدمات الفنية</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">عنوان المشروع:</span>
+                    <span class="field__value">نظام إدارة طلبات الصيانة</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">نوع الوثيقة:</span>
+                    <span class="field__value">ملخص المشروع + عرض سعر مبدئي</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">صلاحية العرض:</span>
+                    <span class="field__value">14 يوماً من تاريخه</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة مؤسسة الموثوق لصيانة الأجهزة المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+
+                <p>نشكركم على تواصلكم معنا، ويسرّنا أن نقدم لكم عرض المشروع الخاص بتطوير <strong>نظام إدارة طلبات الصيانة</strong>، وذلك بناءً على المعلومات التي شاركتمونا بها حول طبيعة عملكم واحتياجاتكم.</p>
+
+                <h3>أولاً: فهمنا للمشكلة</h3>
+                <p>بناءً على لقائنا، نفهم أن العمل حالياً يعتمد على:</p>
+                <ul>
+                    <li>تسجيل الطلبات يدوياً في دفاتر وملفات Excel بدلاً من نظام إلكتروني موحد.</li>
+                    <li>استقبال الطلبات عبر الهاتف والواتساب دون وجود رقم موحد لكل طلب.</li>
+                    <li>حالات الطلب غير موحدة مما يصعّب معرفة أين كل طلب.</li>
+                    <li>صعوبة متابعة الفنيين ومعرفة الطلبات المفتوحة لكل فني.</li>
+                    <li>غياب سجل موحد للعملاء وتاريخ تعاملاتهم.</li>
+                    <li>عدم وجود تقارير يومية أو شهرية عن الإيرادات والأداء.</li>
+                    <li>عدم وجود إثبات واضح لموافقة العميل على التكلفة.</li>
+                </ul>
+
+                <h3>ثانياً: الحل المقترح</h3>
+                <p>نظام إلكتروني متكامل (Web App) لإدارة دورة حياة طلبات الصيانة بالكامل، يعمل على المتصفح من أي جهاز كمبيوتر أو جوال، بهدف تنظيم العمل وتقليل الأخطاء وتحسين متابعة الطلبات والفنيين.</p>
+
+                <h3>ثالثاً: نطاق العمل — النسخة الأولى</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المكون</th>
+                            <th>الوصف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>النظام الأساسي</td>
+                            <td>تسجيل دخول بأسماء المستخدمين، لوحة تحكم (Dashboard)، إدارة المستخدمين والإعدادات</td>
+                        </tr>
+                        <tr>
+                            <td>إدارة العملاء</td>
+                            <td>سجل موحد للعملاء (الاسم، رقم الهاتف، العنوان)، إضافة/تعديل/بحث، وعرض تاريخ الطلبات</td>
+                        </tr>
+                        <tr>
+                            <td>إدارة طلبات الصيانة</td>
+                            <td>إنشاء طلب برقم موحد، 10 حالات واضحة، تعيين فني، تسجيل ملاحظات التشخيص ونتائج الفحص</td>
+                        </tr>
+                        <tr>
+                            <td>إدارة الفنيين</td>
+                            <td>قائمة الفنيين، إضافة/تعديل/حذف، عرض الطلبات المفتوحة لكل فني</td>
+                        </tr>
+                        <tr>
+                            <td>الصلاحيات والأدوار</td>
+                            <td>4 أدوار: مدير (صلاحية كاملة)، استقبال، فني، محاسب</td>
+                        </tr>
+                        <tr>
+                            <td>تسجيل الدفع</td>
+                            <td>تسجيل حالة الدفع (مدفوع/غير مدفوع/جزئي) وإيصال بسيط</td>
+                        </tr>
+                        <tr>
+                            <td>التقارير</td>
+                            <td>تقرير يومي بعدد الطلبات + تقرير شهري بالإيرادات</td>
+                        </tr>
+                        <tr>
+                            <td>قطع الغيار الأساسية</td>
+                            <td>تسجيل اسم القطعة وتكلفتها داخل طلب الصيانة</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>رابعاً: حالات الطلب</h3>
+                <p>سيتم توحيد حالات الطلب في 10 حالات واضحة لتتبع دقيق: <strong>طلب جديد → محدد له موعد → قيد الفحص → بانتظار موافقة العميل → قيد الصيانة → بانتظار قطعة غيار → جاهز للتسليم → تم التسليم → مغلق → ملغي</strong>.</p>
+
+                <h3>خامساً: المستخدمون والصلاحيات</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الدور</th>
+                            <th>العدد التقديري</th>
+                            <th>الصلاحيات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>المدير / صاحب المؤسسة</td>
+                            <td>1</td>
+                            <td>صلاحية كاملة — إدارة المستخدمين، كل الطلبات، التقارير، الإعدادات</td>
+                        </tr>
+                        <tr>
+                            <td>موظف الاستقبال</td>
+                            <td>1</td>
+                            <td>إدارة العملاء والطلبات، متابعة الحالة — لا يعدّل الأسعار أو التقارير المالية</td>
+                        </tr>
+                        <tr>
+                            <td>الفني</td>
+                            <td>4</td>
+                            <td>مشاهدة طلباته المسندة فقط، تحديث التشخيص والقطع والحالة الفنية</td>
+                        </tr>
+                        <tr>
+                            <td>المحاسب</td>
+                            <td>1</td>
+                            <td>مشاهدة المدفوعات والتقارير المالية — لا يغيّر التفاصيل الفنية</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>سادساً: مراحل التطوير المستقبلية</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المرحلة</th>
+                            <th>المحتوى</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>المرحلة الأولى (هذا العرض)</td>
+                            <td>النظام الأساسي كما هو موضح أعلاه</td>
+                        </tr>
+                        <tr>
+                            <td>المرحلة الثانية</td>
+                            <td>نظام مخزون قطع الغيار المتكامل، تقارير متقدمة، إشعارات واتساب</td>
+                        </tr>
+                        <tr>
+                            <td>المرحلة الثالثة</td>
+                            <td>تحسينات حسب الاستخدام، تطبيق جوال، بوابة العميل</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>سابعاً: المخرجات والضمان</h3>
+                <ul>
+                    <li>تطبيق ويب متجاوب (Responsive) يعمل على الكمبيوتر والجوال والتابلت.</li>
+                    <li>دعم كامل للغة العربية (RTL).</li>
+                    <li>ضمان إصلاح الأخطاء لمدة 3 أشهر من تاريخ التسليم.</li>
+                    <li>تدريب أساسي لفريق العمل عن بُعد.</li>
+                    <li>نسخ احتياطي للبيانات.</li>
+                </ul>
+
+                <h3>ثامناً: الافتراضات الأساسية</h3>
+                <ul>
+                    <li>النطاق المذكور هو الأساس — أي تغيير أو إضافة يُسعّر بشكل منفصل.</li>
+                    <li>الاستضافة وتكاليف الدومين و SSL غير مشمولة وتُحدد لاحقاً.</li>
+                    <li>شعار المؤسسة يتم توفيره قبل بدء واجهة المستخدم.</li>
+                </ul>
+
+                <div class="highlight">
+                    <strong>عرض السعر التفصيلي مرفق مع هذه الوثيقة.</strong>
+                </div>
+
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">نحن على استعداد للبدء</div>
+                    <div class="sign-box__line">الاسم: ...............................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: ...............................</div>
+                    <div class="sign-box__line">التوقيع: ...............................</div>
+                    <div class="sign-box__line">التاريخ: ...............................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">إقرار العميل (اختياري)</div>
+                    <div class="sign-box__line">الاسم: ...............................</div>
+                    <div class="sign-box__line">المؤسسة: ...............................</div>
+                    <div class="sign-box__line">التوقيع: ...............................</div>
+                    <div class="sign-box__line">التاريخ: ...............................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

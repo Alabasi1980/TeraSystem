@@ -1,0 +1,64 @@
+@{
+    // Public dashboard layout (Viewer is public — no admin auth).
+    // Shares the Blue Identity design system via wwwroot/css/blue-theme.css
+    // and the exact Syncfusion CDN (27.2.3) used by the admin pages.
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Warehouse Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    @* Syncfusion Bootstrap5 theme (CDN, version matched to the installed package 27.*) *@
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.2.3/bootstrap5.css" />
+
+    @* Shared design system — single source of truth for the Blue Identity palette *@
+    <link rel="stylesheet" href="~/css/blue-theme.css" />
+</head>
+<body class="wd-app">
+    <header class="wd-topbar">
+        <div class="wd-topbar__brand">
+            <span class="wd-logo-dot"></span>
+            <span>Warehouse Dashboard · لوحة المعلومات</span>
+        </div>
+        <div class="wd-topbar__actions">
+            <span id="wd-conn" class="wd-conn wd-conn--checking" title="حالة الاتصال بقاعدة البيانات">
+                <span class="wd-conn__dot"></span>
+                <span id="wd-conn-text">جارٍ الفحص…</span>
+            </span>
+            <button type="button" class="wd-btn wd-btn--on-dark wd-btn--sm" id="wd-refresh-btn" onclick="wdRefreshAll()">
+                <span aria-hidden="true">⟳</span> تحديث
+            </button>
+        </div>
+    </header>
+
+    <main class="wd-content">
+        @RenderBody()
+    </main>
+
+    <div id="wd-toast-host" class="wd-toast-host" aria-live="polite" aria-atomic="true"></div>
+
+    @* Syncfusion scripts (CDN, matched to package 27.*) *@
+    <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.min.js"></script>
+    <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.aspnetcore.min.js"></script>
+
+    @* Shared dashboard utilities (toNum, formatNum, escapeHtml, showToast, wdEmptyHtml, wdErrorHtml) *@
+    <script src="~/js/dashboard-utils.js"></script>
+
+    <script>
+        // Shared palette (§2.2) — the 11 Blue Identity colors, recycled with a soft repeat.
+        window.WD_PALETTE = ['#1F4E79', '#163A5A', '#2E6DA4', '#0A2540', '#8FBCDE', '#5B7A99',
+                             '#2E6DA4', '#1F4E79', '#0A2540', '#8FBCDE', '#163A5A'];
+        // Card ids rendered server-side (drives the per-card fetch loop).
+        window.WD_CARDS = [];
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

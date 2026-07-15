@@ -1,0 +1,515 @@
+@page
+@model WarehouseDashboard.Web.Pages.IndexModel
+@{
+    ViewData["Title"] = "لوحة المعلومات";
+    Layout = "_DashboardLayout";
+}
+
+<style>
+    /* ===== Filter bar (TASK-COD-014) — tokens from blue-theme.css ===== */
+    .wd-filterbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--sp-3);
+        margin-bottom: var(--sp-6);
+        padding: var(--sp-4);
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+    .wd-filterbar__search {
+        position: relative;
+        flex: 1 1 260px;
+        min-width: 0;
+    }
+    .wd-filterbar__icon {
+        position: absolute;
+        inset-inline-end: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--c-text-muted);
+        pointer-events: none;
+        font-size: 15px;
+    }
+    .wd-filterbar__search input {
+        width: 100%;
+        font-family: var(--font-ar);
+        font-size: 14px;
+        color: var(--c-text);
+        background: var(--c-bg);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        padding: 10px 38px 10px 14px;
+        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    }
+    .wd-filterbar__search input::placeholder { color: var(--c-text-muted); }
+    .wd-filterbar__search input:focus {
+        outline: none;
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31, 78, 121, 0.18);
+    }
+    .wd-filterbar__select {
+        font-family: var(--font-ar);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--c-text);
+        background: var(--c-bg);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    }
+    .wd-filterbar__select:focus {
+        outline: none;
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31, 78, 121, 0.18);
+    }
+    .wd-filterbar__count {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-text-muted);
+        margin-inline-start: auto;
+        white-space: nowrap;
+    }
+
+    /* ===== No-results empty state (TASK-COD-014) ===== */
+    .wd-filter-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--sp-3);
+        padding: var(--sp-12) var(--sp-6);
+        text-align: center;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-filter-empty__icon {
+        width: 72px; height: 72px;
+        border-radius: var(--radius-full);
+        background: var(--c-surface-muted);
+        color: var(--c-text-muted);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 34px;
+    }
+    .wd-filter-empty h3 { margin: 0; font-size: 18px; color: var(--c-text); }
+    .wd-filter-empty p { margin: 0; color: var(--c-text-muted); }
+
+    /* ===== Filtering collapse transition (TASK-COD-014) ===== */
+    .wd-card {
+        transition: box-shadow var(--dur-norm) var(--ease),
+                    transform var(--dur-norm) var(--ease),
+                    opacity var(--dur-norm) var(--ease);
+    }
+    .wd-card.wd-card--fade {
+        opacity: 0;
+        transform: scale(0.92);
+        pointer-events: none;
+    }
+    .wd-card.wd-hidden { display: none !important; }
+
+    /* Info toast variant (TASK-COD-014 no-results hint) — token from blue-theme.css */
+    .wd-toast--info { border-inline-start-color: var(--c-info); }
+    .wd-toast--info .wd-toast__icon { background: var(--c-info); }
+
+    /* ===== Drillable card affordance (TASK-COD-012) ===== */
+    .wd-card--drillable { position: relative; }
+    .wd-card--drillable:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .wd-card--drillable:focus-visible { outline: 2px solid var(--c-secondary); outline-offset: 2px; }
+    .wd-card__drill-hint {
+        position: absolute;
+        inset-inline-end: 12px;
+        bottom: 10px;
+        width: 26px; height: 26px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: var(--radius-full);
+        background: var(--c-primary);
+        color: #fff;
+        font-size: 18px; font-weight: 700;
+        box-shadow: var(--shadow-sm);
+        opacity: 0;
+        transform: translateX(-4px);
+        transition: opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+    }
+    .wd-card--drillable:hover .wd-card__drill-hint,
+    .wd-card--drillable:focus-visible .wd-card__drill-hint { opacity: 1; transform: translateX(0); }
+</style>
+
+<div class="wd-page-head">
+    <h2 class="wd-page-title">لوحة المعلومات</h2>
+    <span class="wd-card__type">@Model.Cards.Count بطاقة نشطة</span>
+</div>
+
+@if (Model.ConfigError)
+{
+    <div class="wd-card wd-empty" style="grid-column: 1 / -1;">
+        <div class="wd-empty__icon">⚠</div>
+        <h3>تعذر الاتصال بقاعدة بيانات الإعدادات</h3>
+        <p>تأكد من ضبط متغيّر البيئة SQL_PASSWORD وأن خادم SQL متاح، ثم أعد التحميل.</p>
+    </div>
+}
+else if (Model.Cards.Count == 0)
+{
+    <div class="wd-card wd-empty" style="grid-column: 1 / -1;">
+        <div class="wd-empty__icon">▦</div>
+        <h3>لا توجد بطاقات معروضة</h3>
+        <p>لم يتم تكوين أي بطاقة نشطة بعد. أضف بطاقات من لوحة الإدارة.</p>
+    </div>
+}
+else
+{
+    <div class="wd-filterbar" role="search">
+        <div class="wd-filterbar__search">
+            <span class="wd-filterbar__icon" aria-hidden="true">🔍</span>
+            <input type="search" id="wd-search" placeholder="ابحث بعنوان البطاقة…" autocomplete="off"
+                   aria-label="بحث في البطاقات" />
+        </div>
+        <select id="wd-type-filter" class="wd-filterbar__select" aria-label="تصفية حسب نوع الرسم البياني">
+            <option value="All">كل الأنواع</option>
+            <option value="Bar">أعمدة (Bar)</option>
+            <option value="Line">خطي (Line)</option>
+            <option value="Pie">دائري (Pie)</option>
+            <option value="KPI">مؤشر (KPI)</option>
+            <option value="Table">جدول (Table)</option>
+            <option value="Gauge">مقياس (Gauge)</option>
+        </select>
+        <span class="wd-filterbar__count" id="wd-filter-count"></span>
+    </div>
+
+    <div class="wd-dashboard-grid">
+        @for (var i = 0; i < Model.Cards.Count; i++)
+        {
+            var c = Model.Cards[i];
+            var w = Math.Max(1, Math.Min(c.GridWidth, 12));
+            var h = Math.Max(1, Math.Min(c.GridHeight, 6));
+            var colStart = Math.Max(1, Math.Min(c.GridPositionX < 1 ? 1 : c.GridPositionX, 13 - w));
+            var rowStart = Math.Max(1, c.GridPositionY);
+                var cardHeight = Math.Max(200, h * 90 + (h - 1) * 24);
+                var canDrill = Model.CardsWithDrill.Contains(c.Id);
+                <article class="wd-card wd-span-@w wd-row-@h@(canDrill ? " wd-card--drillable" : "")"
+                         style="grid-column-start: @colStart; grid-row-start: @rowStart; height: @(cardHeight)px; animation-delay: @(i * 70)ms;@(canDrill ? " cursor:pointer;" : "")"
+                         id="card-@c.Id"
+                         data-card-id="@c.Id"
+                         data-grid-height="@h"
+                         data-title="@c.Title"
+                         data-chart-type="@c.ChartType"
+                         @(canDrill ? "onclick=\"wdOpenDrill(" + c.Id + ")\" role=\"button\" tabindex=\"0\" onkeydown=\"if(event.key==='Enter')wdOpenDrill(" + c.Id + ")\"" : "")>
+                    <div class="wd-card__header">
+                        <h3 class="wd-card__title">@c.Title</h3>
+                        <span class="wd-card__type">@c.ChartType</span>
+                    </div>
+                    <div class="wd-card__body">
+                        <div class="wd-skeleton-wrap" aria-hidden="true">
+                            <div class="wd-skel wd-skel--tall"></div>
+                        </div>
+                    </div>
+                    @if (canDrill)
+                    {
+                        <span class="wd-card__drill-hint" title="انقر للتعمّق" aria-hidden="true">›</span>
+                    }
+                </article>
+            }
+        </div>
+
+        <div class="wd-filter-empty wd-hidden" id="wd-filter-empty" aria-live="polite">
+            <div class="wd-filter-empty__icon" aria-hidden="true">🔍</div>
+            <h3>لا توجد بطاقات مطابقة</h3>
+            <p>جرّب تعديل كلمة البحث أو نوع الرسم البياني.</p>
+        </div>
+    }
+
+@section Scripts {
+    <script>
+        // Configurable Sync API base URL (C4: read from appsettings.json, not hardcoded).
+        window.SYNC_API_BASE = '@Model.SyncApiBaseUrl';
+
+        // Card ids rendered server-side — drives the per-card fetch loop.
+        window.WD_CARDS = [@Html.Raw(string.Join(",", Model.Cards.Select(c => "{\"id\":" + c.Id + "}")))];
+
+        (function () {
+            var PALETTE = window.WD_PALETTE || ['#1F4E79', '#163A5A', '#2E6DA4', '#0A2540', '#8FBCDE', '#5B7A99'];
+            var CHARTS = {}; // id -> control instance (for resize refresh)
+
+            // Shared utilities (toNum, isNum, formatNum, escapeHtml, showToast,
+            // wdEmptyHtml, wdErrorHtml) are provided by ~/js/dashboard-utils.js.
+
+            function wdKpiHtml(val) {
+                return '<div class="wd-kpi"><div class="wd-kpi__value">' + escapeHtml(formatNum(val)) + '</div>' +
+                    '<div class="wd-kpi__label">قيمة المؤشر</div></div>';
+            }
+
+            function clearBody(el) {
+                var body = el.querySelector('.wd-card__body');
+                body.innerHTML = '';
+                return body;
+            }
+
+            function wdRenderCard(card) {
+                var el = document.getElementById('card-' + card.cardId);
+                if (!el) return;
+                var body = clearBody(el);
+
+                if (card.status === 'empty') { body.innerHTML = wdEmptyHtml(); return; }
+                if (card.status === 'error') { body.innerHTML = wdErrorHtml(card.errorMessage, card.cardId); return; }
+
+                try {
+                    if (card.chartType === 'KPI') { body.innerHTML = wdKpiHtml(card.kpiValue); return; }
+                    if (!card.columns || card.columns.length < 1) { body.innerHTML = wdEmptyHtml(); return; }
+
+                    var viz = document.createElement('div');
+                    viz.style.width = '100%';
+                    viz.style.height = '100%';
+                    viz.style.minHeight = '180px';
+                    body.appendChild(viz);
+
+                    if (card.chartType === 'Table') { wdRenderGrid(viz, card); return; }
+                    if (card.chartType === 'Gauge') { wdRenderGauge(viz, card); return; }
+                    wdRenderChart(viz, card);
+                } catch (e) {
+                    body.innerHTML = wdErrorHtml('تعذر عرض العنصر: ' + (e && e.message ? e.message : e), card.cardId);
+                }
+            }
+
+            function wdRenderChart(viz, card) {
+                var cols = card.columns;
+                var data = (card.rows || []).map(function (r) {
+                    return { label: r[cols[0]], value: toNum(r[cols[1]]) };
+                });
+                var typeMap = { Bar: 'Column', Line: 'Line', Pie: 'Pie' };
+                var type = typeMap[card.chartType] || 'Column';
+                var isPie = card.chartType === 'Pie';
+
+                var chart = new ej.charts.Chart({
+                    theme: 'Bootstrap5',
+                    palette: PALETTE,
+                    primaryXAxis: {
+                        valueType: 'Category',
+                        labelStyle: { color: '#5B7A99' },
+                        lineStyle: { color: '#D4E2F0' },
+                        majorGridLines: { width: 0 },
+                        title: isPie ? '' : (cols[0] || '')
+                    },
+                    primaryYAxis: {
+                        labelStyle: { color: '#5B7A99' },
+                        lineStyle: { color: '#D4E2F0' },
+                        majorGridLines: { color: '#D4E2F0', width: 0.5 }
+                    },
+                    legendSettings: { visible: isPie, position: 'Bottom', textStyle: { color: '#5B7A99' } },
+                    tooltip: { enable: true, fill: '#0A2540', textStyle: { color: '#ffffff' } },
+                    series: [{
+                        type: type,
+                        dataSource: data,
+                        xName: 'label',
+                        yName: 'value',
+                        name: card.title,
+                        cornerRadius: card.chartType === 'Bar' ? { topLeft: 4, topRight: 4 } : undefined,
+                        marker: card.chartType === 'Line' ? { visible: true, width: 2, height: 6 } : undefined,
+                        dataLabel: isPie ? { visible: true, position: 'Outside' } : { visible: false },
+                        width: card.chartType === 'Line' ? 2 : undefined
+                    }],
+                    width: '100%',
+                    height: '100%'
+                });
+                chart.appendTo(viz);
+                CHARTS[card.cardId] = { control: chart, kind: 'chart' };
+            }
+
+            function wdRenderGauge(viz, card) {
+                var val = toNum(card.kpiValue);
+                var max = val <= 0 ? 100 : (val <= 100 ? 100 : Math.ceil(val * 1.2));
+                var gauge = new ej.circulargauge.CircularGauge({
+                    theme: 'Bootstrap5',
+                    axes: [{
+                        minimum: 0,
+                        maximum: max,
+                        radius: '100%',
+                        startAngle: 200, endAngle: 160,
+                        pointers: [{
+                            value: val, type: 'RangeBar', radius: '100%', pointerWidth: 6,
+                            color: '#1F4E79', cap: { radius: 0 },
+                            animation: { enable: true, duration: 900 }
+                        }],
+                        lineStyle: { width: 8, color: '#D4E2F0' },
+                        majorTicks: { color: '#D4E2F0', height: 0 },
+                        minorTicks: { height: 0 },
+                        labelStyle: { color: '#5B7A99', font: { size: '12px' } },
+                        ranges: [{ start: 0, end: val, startWidth: 8, endWidth: 8, color: '#2E6DA4', radius: '100%' }]
+                    }],
+                    annotations: [{
+                        content: '<div style="font-size:22px;font-weight:700;color:#102A43">' + escapeHtml(formatNum(val)) + '</div>',
+                        radius: '0%', angle: 0, zIndex: '1'
+                    }],
+                    width: '100%',
+                    height: '100%'
+                });
+                gauge.appendTo(viz);
+                CHARTS[card.cardId] = { control: gauge, kind: 'gauge' };
+            }
+
+            function wdRenderGrid(viz, card) {
+                var cols = (card.columns || []).map(function (c) {
+                    var sample = card.rows && card.rows.length ? card.rows[0][c] : null;
+                    return { field: c, headerText: c, textAlign: isNum(sample) ? 'Right' : 'Left', width: 120 };
+                });
+                var grid = new ej.grids.Grid({
+                    theme: 'Bootstrap5',
+                    dataSource: card.rows || [],
+                    columns: cols,
+                    allowPaging: (card.rows || []).length > 10,
+                    pageSize: 10,
+                    allowSorting: true,
+                    gridLines: 'Horizontal',
+                    cssClass: 'wd-sync-grid',
+                    width: '100%',
+                    height: '100%'
+                });
+                grid.appendTo(viz);
+                CHARTS[card.cardId] = { control: grid, kind: 'grid' };
+            }
+
+            function wdLoadCard(id, showSkeleton) {
+                var el = document.getElementById('card-' + id);
+                if (!el) return;
+                if (showSkeleton) {
+                    var body = el.querySelector('.wd-card__body');
+                    body.innerHTML = '<div class="wd-skeleton-wrap"><div class="wd-skel wd-skel--tall"></div></div>';
+                }
+                fetch('/api/dashboard/card/' + id, { headers: { 'Accept': 'application/json' } })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) { wdRenderCard(data); })
+                    .catch(function (err) {
+                        var b = el.querySelector('.wd-card__body');
+                        if (b) b.innerHTML = wdErrorHtml('تعذر الاتصال بالخادم: ' + (err && err.message ? err.message : ''), id);
+                        showToast('error', 'تعذر تحميل بطاقة #' + id);
+                    });
+            }
+
+            window.wdRetry = function (id) { wdLoadCard(id, true); };
+
+            window.wdRefreshAll = function () {
+                showToast('success', 'جارٍ تحديث البطاقات…');
+                (window.WD_CARDS || []).forEach(function (c) { wdLoadCard(c.id, true); });
+            };
+
+            // Open a card's drill-down page (TASK-COD-012). Cards without configured
+            // levels are never given this handler, so navigation only happens for drillable cards.
+            window.wdOpenDrill = function (id) {
+                window.location.href = '/Dashboard/Drill/' + id;
+            };
+
+            function wdCheckConnection() {
+                var badge = document.getElementById('wd-conn');
+                var txt = document.getElementById('wd-conn-text');
+                fetch('/api/sync/status', { headers: { 'Accept': 'application/json' } })
+                    .then(function (r) { return r.json(); })
+                    .then(function (d) {
+                        if (!badge || !txt) return;
+                        if (d && d.connected) {
+                            badge.className = 'wd-conn wd-conn--online';
+                            txt.textContent = 'متصل';
+                        } else {
+                            badge.className = 'wd-conn wd-conn--offline';
+                            txt.textContent = 'غير متصل';
+                        }
+                    })
+                    .catch(function () {
+                        if (!badge || !txt) return;
+                        badge.className = 'wd-conn wd-conn--offline';
+                        txt.textContent = 'غير متصل';
+                    });
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                (window.WD_CARDS || []).forEach(function (c) { wdLoadCard(c.id, false); });
+                wdCheckConnection();
+            });
+
+            var rt;
+            window.addEventListener('resize', function () {
+                clearTimeout(rt);
+                rt = setTimeout(function () {
+                    Object.keys(CHARTS).forEach(function (k) {
+                        try { CHARTS[k].control.refresh(); } catch (e) { /* noop */ }
+                    });
+                }, 200);
+            });
+        })();
+
+        /* ===== TASK-COD-014: client-side search + ChartType filtering ===== */
+        (function () {
+            var searchInput = document.getElementById('wd-search');
+            var typeSelect = document.getElementById('wd-type-filter');
+            var emptyState = document.getElementById('wd-filter-empty');
+            var countLabel = document.getElementById('wd-filter-count');
+            if (!searchInput || !typeSelect) return;
+
+            var grid = document.querySelector('.wd-dashboard-grid');
+            var cards = grid
+                ? Array.prototype.slice.call(grid.querySelectorAll('.wd-dashboard-grid > .wd-card'))
+                : [];
+
+            // Smoothly toggle a card's hidden state. A per-element sequence guards
+            // against rapid keystrokes cancelling an in-flight transition.
+            function setCardHidden(el, hide) {
+                var seq = (el._wdFilterSeq = (el._wdFilterSeq || 0) + 1);
+                if (hide) {
+                    el.classList.add('wd-card--fade');
+                    setTimeout(function () {
+                        if (el._wdFilterSeq === seq) {
+                            el.classList.add('wd-hidden');
+                            el.classList.remove('wd-card--fade');
+                        }
+                    }, 240);
+                } else {
+                    el.classList.remove('wd-hidden');
+                    el.classList.add('wd-card--fade');
+                    requestAnimationFrame(function () {
+                        requestAnimationFrame(function () {
+                            if (el._wdFilterSeq === seq) el.classList.remove('wd-card--fade');
+                        });
+                    });
+                }
+            }
+
+            var wasEmpty = false;
+            function applyFilter() {
+                var q = (searchInput.value || '').trim().toLocaleLowerCase();
+                var type = typeSelect.value;
+                var visible = 0;
+
+                cards.forEach(function (el) {
+                    var title = (el.getAttribute('data-title') || '').toLocaleLowerCase();
+                    var chartType = el.getAttribute('data-chart-type') || '';
+                    var match = (q === '' || title.indexOf(q) !== -1) &&
+                                (type === 'All' || chartType === type);
+                    setCardHidden(el, !match);
+                    if (match) visible++;
+                });
+
+                if (emptyState) emptyState.classList.toggle('wd-hidden', visible !== 0);
+                if (countLabel) {
+                    countLabel.textContent = (visible === cards.length)
+                        ? (cards.length + ' بطاقة')
+                        : (' ظاهر ' + visible + ' من ' + cards.length);
+                }
+
+                var isEmpty = visible === 0;
+                if (isEmpty && !wasEmpty && window.wdShowToast) {
+                    window.wdShowToast('info', 'لا توجد بطاقات مطابقة لبحثك');
+                }
+                wasEmpty = isEmpty;
+            }
+
+            // Debounce typing so we never thrash layout on every keystroke.
+            var debounceTimer;
+            searchInput.addEventListener('input', function () {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(applyFilter, 120);
+            });
+            typeSelect.addEventListener('change', applyFilter);
+
+            applyFilter(); // sync count label on first render
+        })();
+    </script>
+}

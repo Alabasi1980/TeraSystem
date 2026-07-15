@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TCEA 13-Domain Discovery Questionnaire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #6b7280;
+      --line: #d9e1f0;
+      --brand: #3f36d0;
+      --brand-2: #1c8df5;
+      --shadow: 0 10px 30px rgba(27, 39, 94, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Cairo", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(63,54,208,0.06), transparent 22%),
+        radial-gradient(circle at top left, rgba(28,141,245,0.06), transparent 18%),
+        var(--bg);
+      line-height: 1.75;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 24px auto 64px;
+    }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .hero img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      background: #fff;
+    }
+
+    .hero-content {
+      padding: 24px 28px;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .title h1 {
+      margin: 0 0 6px;
+      font-size: 32px;
+      line-height: 1.25;
+    }
+
+    .title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .meta-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #fff, #fbfcff);
+    }
+
+    .meta-card strong {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 18px;
+      padding: 14px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar button {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 16px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: #fff;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .toolbar button.secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .toolbar .status-note {
+      margin-inline-start: auto;
+      color: var(--muted);
+      font-size: 13px;
+      align-self: center;
+    }
+
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      background: #fff;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    textarea {
+      min-height: 112px;
+      resize: vertical;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px rgba(63,54,208,0.10);
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+      overflow: hidden;
+      break-inside: avoid;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px 24px;
+      background: linear-gradient(180deg, #ffffff, #fbfcff);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .toggle-btn {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 14px;
+      background: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .section-body {
+      padding: 22px 24px 26px;
+    }
+
+    .question-card {
+      padding: 16px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .question-card:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .qnum {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      margin-inline-start: 8px;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      font-size: 13px;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .hero-content, .intro-grid {
+        grid-template-columns: 1fr;
+      }
+      .toolbar .status-note {
+        width: 100%;
+        margin-inline-start: 0;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+      .page {
+        width: 100%;
+        margin: 0;
+      }
+      .toolbar {
+        display: none !important;
+      }
+      .hero, .form-card, .section {
+        box-shadow: none;
+        border-color: #cfd6e4;
+      }
+      .section {
+        page-break-inside: avoid;
+      }
+      textarea, input {
+        border-color: #c7cfdf;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <img src="header.png" alt="Teranoo Header">
+      <div class="hero-content">
+        <div class="title">
+          <h1>نموذج Discovery لجمع معلومات العميل</h1>
+          <p>TCEA Mandatory 13-Domain Client Discovery Questionnaire</p>
+        </div>
+        <div class="meta">
+          <div class="meta-card">
+            <strong>الغرض</strong>
+            جمع معلومات المشروع من الزبون بشكل منظم قبل التسعير والتنفيذ
+          </div>
+          <div class="meta-card">
+            <strong>طريقة الاستخدام</strong>
+            اطرح الأسئلة على الزبون وسجل الإجابات تحت كل سؤال
+          </div>
+          <div class="meta-card">
+            <strong>نوع النموذج</strong>
+            Discovery فقط
+          </div>
+          <div class="meta-card">
+            <strong>الحفظ</strong>
+            يمكن حفظ البيانات كملف JSON وإعادة تحميلها
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <button type="button" onclick="saveJSON()">حفظ JSON</button>
+      <button type="button" class="secondary" onclick="document.getElementById('jsonLoader').click()">تحميل JSON</button>
+      <button type="button" class="secondary" onclick="window.print()">طباعة</button>
+      <button type="button" class="secondary" onclick="expandAll()">فتح الكل</button>
+      <button type="button" class="secondary" onclick="collapseAll()">طي الكل</button>
+      <input id="jsonLoader" type="file" accept=".json,application/json" hidden>
+      <div class="status-note">حفظ تلقائي محلي مفعّل داخل المتصفح</div>
+    </div>
+
+    <section class="form-card">
+      <div class="intro-grid">
+        <div class="field">
+          <label for="client_name">اسم العميل / الجهة</label>
+          <input type="text" id="client_name" data-label="اسم العميل / الجهة">
+        </div>
+        <div class="field">
+          <label for="project_name">اسم المشروع / التطبيق</label>
+          <input type="text" id="project_name" data-label="اسم المشروع / التطبيق">
+        </div>
+        <div class="field">
+          <label for="meeting_date">تاريخ الاجتماع</label>
+          <input type="date" id="meeting_date" data-label="تاريخ الاجتماع">
+        </div>
+        <div class="field">
+          <label for="contact_name">اسم الشخص المقابل</label>
+          <input type="text" id="contact_name" data-label="اسم الشخص المقابل">
+        </div>
+        <div class="field">
+          <label for="contact_role">المنصب / الوظيفة</label>
+          <input type="text" id="contact_role" data-label="المنصب / الوظيفة">
+        </div>
+        <div class="field">
+          <label for="prepared_by">أعدّ النموذج بواسطة</label>
+          <input type="text" id="prepared_by" data-label="أعدّ النموذج بواسطة">
+        </div>
+        <div class="field full">
+          <label for="general_notes">ملاحظات افتتاحية</label>
+          <textarea id="general_notes" data-label="ملاحظات افتتاحية" rows="4" placeholder="سجّل هنا أي ملاحظات عامة قبل بدء الأسئلة..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="section" id="section-business">
+      <div class="section-header">
+        <div>
+          <h2>1) سياق العمل والجدوى</h2>
+          <div class="subtitle">Business Context &amp; Value</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('business')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-business">
+        
+        <div class="question-card">
+          <label for="business_q1" class="question-label"><span class="qnum">1.</span> من هي الجهة أو الشركة؟ وما طبيعة عملها باختصار؟</label>
+          <textarea id="business_q1" data-label="من هي الجهة أو الشركة؟ وما طبيعة عملها باختصار؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="business_q2" class="question-label"><span class="qnum">2.</span> ما المشكلة الحقيقية التي تريدون حلها بهذا التطبيق؟</label>
+          <textarea id="business_q2" data-label="ما المشكلة الحقيقية التي تريدون حلها بهذا التطبيق؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="business_q3" class="question-label"><span class="qnum">3.</span> لماذا تريدون هذا الحل الآن؟</label>
+          <textarea id="business_q3" data-label="لماذا تريدون هذا الحل الآن؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="business_q4" class="question-label"><span class="qnum">4.</span> ما الهدف التجاري أو العملي من التطبيق؟</label>
+          <textarea id="business_q4" data-label="ما الهدف التجاري أو العملي من التطبيق؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="business_q5" class="question-label"><span class="qnum">5.</span> ما الفائدة المتوقعة من التطبيق؟ (زيادة الربح، توفير وقت، تقليل أخطاء، أتمتة، تحسين متابعة)</label>
+          <textarea id="business_q5" data-label="ما الفائدة المتوقعة من التطبيق؟ (زيادة الربح، توفير وقت، تقليل أخطاء، أتمتة، تحسين متابعة)" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="business_q6" class="question-label"><span class="qnum">6.</span> كيف ستقيسون نجاح التطبيق بعد تشغيله؟</label>
+          <textarea id="business_q6" data-label="كيف ستقيسون نجاح التطبيق بعد تشغيله؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="business_q7" class="question-label"><span class="qnum">7.</span> هل يوجد نظام حالي أو ملفات Excel أو طريقة يدوية تعملون بها الآن؟</label>
+          <textarea id="business_q7" data-label="هل يوجد نظام حالي أو ملفات Excel أو طريقة يدوية تعملون بها الآن؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-integrations">
+      <div class="section-header">
+        <div>
+          <h2>2) التكامل والربط الخارجي</h2>
+          <div class="subtitle">Integrations &amp; APIs</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('integrations')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-integrations">
+        
+        <div class="question-card">
+          <label for="integrations_q1" class="question-label"><span class="qnum">1.</span> هل يحتاج التطبيق إلى الربط مع أي نظام أو خدمة خارجية؟</label>
+          <textarea id="integrations_q1" data-label="هل يحتاج التطبيق إلى الربط مع أي نظام أو خدمة خارجية؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="integrations_q2" class="question-label"><span class="qnum">2.</span> هل يوجد ربط مطلوب مع بوابة دفع، SMS، WhatsApp، Email، Google Maps، شركات شحن، ERP، نظام محاسبة، أو أي نظام آخر؟</label>
+          <textarea id="integrations_q2" data-label="هل يوجد ربط مطلوب مع بوابة دفع، SMS، WhatsApp، Email، Google Maps، شركات شحن، ERP، نظام محاسبة، أو أي نظام آخر؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="integrations_q3" class="question-label"><span class="qnum">3.</span> هل هذه الأنظمة الخارجية تملك API أو وثائق فنية واضحة؟</label>
+          <textarea id="integrations_q3" data-label="هل هذه الأنظمة الخارجية تملك API أو وثائق فنية واضحة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="integrations_q4" class="question-label"><span class="qnum">4.</span> من سيزوّدنا بمفاتيح الربط والحسابات المطلوبة؟</label>
+          <textarea id="integrations_q4" data-label="من سيزوّدنا بمفاتيح الربط والحسابات المطلوبة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="integrations_q5" class="question-label"><span class="qnum">5.</span> من سيتحمل تكلفة الاشتراكات أو الخدمات الخارجية؟</label>
+          <textarea id="integrations_q5" data-label="من سيتحمل تكلفة الاشتراكات أو الخدمات الخارجية؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="integrations_q6" class="question-label"><span class="qnum">6.</span> هل هذه التكاملات مطلوبة داخل المرحلة الأولى أم يمكن تأجيلها؟</label>
+          <textarea id="integrations_q6" data-label="هل هذه التكاملات مطلوبة داخل المرحلة الأولى أم يمكن تأجيلها؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-users">
+      <div class="section-header">
+        <div>
+          <h2>3) المستخدمون والأدوار</h2>
+          <div class="subtitle">Users &amp; Roles</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('users')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-users">
+        
+        <div class="question-card">
+          <label for="users_q1" class="question-label"><span class="qnum">1.</span> من هم المستخدمون الذين سيستخدمون النظام؟</label>
+          <textarea id="users_q1" data-label="من هم المستخدمون الذين سيستخدمون النظام؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="users_q2" class="question-label"><span class="qnum">2.</span> ما الأدوار الرئيسية داخل النظام؟</label>
+          <textarea id="users_q2" data-label="ما الأدوار الرئيسية داخل النظام؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="users_q3" class="question-label"><span class="qnum">3.</span> ما الذي يستطيع كل دور أن يراه؟</label>
+          <textarea id="users_q3" data-label="ما الذي يستطيع كل دور أن يراه؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="users_q4" class="question-label"><span class="qnum">4.</span> ما الذي يستطيع كل دور أن يضيفه أو يعدله أو يحذفه؟</label>
+          <textarea id="users_q4" data-label="ما الذي يستطيع كل دور أن يضيفه أو يعدله أو يحذفه؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="users_q5" class="question-label"><span class="qnum">5.</span> من يملك صلاحية الاعتماد أو الرفض أو الإلغاء؟</label>
+          <textarea id="users_q5" data-label="من يملك صلاحية الاعتماد أو الرفض أو الإلغاء؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="users_q6" class="question-label"><span class="qnum">6.</span> من يملك أعلى صلاحية في النظام؟</label>
+          <textarea id="users_q6" data-label="من يملك أعلى صلاحية في النظام؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="users_q7" class="question-label"><span class="qnum">7.</span> هل الصلاحيات ثابتة أم تريدونها مرنة وقابلة للتعديل مستقبلًا؟</label>
+          <textarea id="users_q7" data-label="هل الصلاحيات ثابتة أم تريدونها مرنة وقابلة للتعديل مستقبلًا؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-workflow">
+      <div class="section-header">
+        <div>
+          <h2>4) سير العمل والعمليات</h2>
+          <div class="subtitle">Workflow &amp; Operations</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('workflow')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-workflow">
+        
+        <div class="question-card">
+          <label for="workflow_q1" class="question-label"><span class="qnum">1.</span> صف لي سير العمل من البداية إلى النهاية.</label>
+          <textarea id="workflow_q1" data-label="صف لي سير العمل من البداية إلى النهاية." rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="workflow_q2" class="question-label"><span class="qnum">2.</span> ما المسار الطبيعي أو المثالي للعملية؟</label>
+          <textarea id="workflow_q2" data-label="ما المسار الطبيعي أو المثالي للعملية؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="workflow_q3" class="question-label"><span class="qnum">3.</span> ما الحالات التي يمر بها الطلب أو الإجراء؟</label>
+          <textarea id="workflow_q3" data-label="ما الحالات التي يمر بها الطلب أو الإجراء؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="workflow_q4" class="question-label"><span class="qnum">4.</span> من ينقل الحالة من مرحلة إلى أخرى؟</label>
+          <textarea id="workflow_q4" data-label="من ينقل الحالة من مرحلة إلى أخرى؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="workflow_q5" class="question-label"><span class="qnum">5.</span> هل توجد موافقات أو اعتمادات؟</label>
+          <textarea id="workflow_q5" data-label="هل توجد موافقات أو اعتمادات؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="workflow_q6" class="question-label"><span class="qnum">6.</span> ماذا يحدث إذا تم رفض الطلب؟</label>
+          <textarea id="workflow_q6" data-label="ماذا يحدث إذا تم رفض الطلب؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="workflow_q7" class="question-label"><span class="qnum">7.</span> ماذا يحدث إذا تم إلغاء الطلب؟</label>
+          <textarea id="workflow_q7" data-label="ماذا يحدث إذا تم إلغاء الطلب؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="workflow_q8" class="question-label"><span class="qnum">8.</span> ماذا يحدث إذا كانت البيانات ناقصة أو حدث خطأ؟</label>
+          <textarea id="workflow_q8" data-label="ماذا يحدث إذا كانت البيانات ناقصة أو حدث خطأ؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="workflow_q9" class="question-label"><span class="qnum">9.</span> ما الحالات الاستثنائية أو Edge Cases المهمة؟</label>
+          <textarea id="workflow_q9" data-label="ما الحالات الاستثنائية أو Edge Cases المهمة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-scope">
+      <div class="section-header">
+        <div>
+          <h2>5) نطاق العمل والنسخة الأولية</h2>
+          <div class="subtitle">Scope &amp; MVP</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('scope')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-scope">
+        
+        <div class="question-card">
+          <label for="scope_q1" class="question-label"><span class="qnum">1.</span> ما الميزات الأساسية التي يجب أن تعمل في المرحلة الأولى؟</label>
+          <textarea id="scope_q1" data-label="ما الميزات الأساسية التي يجب أن تعمل في المرحلة الأولى؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="scope_q2" class="question-label"><span class="qnum">2.</span> ما أقل نسخة يمكن اعتبارها MVP قابلة للتشغيل؟</label>
+          <textarea id="scope_q2" data-label="ما أقل نسخة يمكن اعتبارها MVP قابلة للتشغيل؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="scope_q3" class="question-label"><span class="qnum">3.</span> ما الميزات التي يمكن تأجيلها للمرحلة الثانية؟</label>
+          <textarea id="scope_q3" data-label="ما الميزات التي يمكن تأجيلها للمرحلة الثانية؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="scope_q4" class="question-label"><span class="qnum">4.</span> ما الأشياء التي تعتبر خارج النطاق تمامًا؟</label>
+          <textarea id="scope_q4" data-label="ما الأشياء التي تعتبر خارج النطاق تمامًا؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="scope_q5" class="question-label"><span class="qnum">5.</span> ما الذي يجب توثيقه بوضوح حتى لا يحدث توسع في النطاق لاحقًا؟</label>
+          <textarea id="scope_q5" data-label="ما الذي يجب توثيقه بوضوح حتى لا يحدث توسع في النطاق لاحقًا؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="scope_q6" class="question-label"><span class="qnum">6.</span> هل هناك حدود واضحة للنسخة الأولى من المشروع؟</label>
+          <textarea id="scope_q6" data-label="هل هناك حدود واضحة للنسخة الأولى من المشروع؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-data">
+      <div class="section-header">
+        <div>
+          <h2>6) البيانات والمحتوى</h2>
+          <div class="subtitle">Data &amp; Content</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('data')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-data">
+        
+        <div class="question-card">
+          <label for="data_q1" class="question-label"><span class="qnum">1.</span> ما الكيانات أو السجلات الرئيسية داخل النظام؟</label>
+          <textarea id="data_q1" data-label="ما الكيانات أو السجلات الرئيسية داخل النظام؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="data_q2" class="question-label"><span class="qnum">2.</span> ما الحقول المطلوبة لكل كيان؟</label>
+          <textarea id="data_q2" data-label="ما الحقول المطلوبة لكل كيان؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="data_q3" class="question-label"><span class="qnum">3.</span> ما الحقول الإلزامية وما الحقول الاختيارية؟</label>
+          <textarea id="data_q3" data-label="ما الحقول الإلزامية وما الحقول الاختيارية؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="data_q4" class="question-label"><span class="qnum">4.</span> هل توجد قوائم ثابتة مثل: المدن، الأقسام، الأنواع، الحالات؟</label>
+          <textarea id="data_q4" data-label="هل توجد قوائم ثابتة مثل: المدن، الأقسام، الأنواع، الحالات؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="data_q5" class="question-label"><span class="qnum">5.</span> من سيدير هذه القوائم الثابتة؟</label>
+          <textarea id="data_q5" data-label="من سيدير هذه القوائم الثابتة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="data_q6" class="question-label"><span class="qnum">6.</span> هل توجد بيانات جاهزة نحتاج إلى استيرادها؟</label>
+          <textarea id="data_q6" data-label="هل توجد بيانات جاهزة نحتاج إلى استيرادها؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="data_q7" class="question-label"><span class="qnum">7.</span> هل هناك حاجة إلى نقل بيانات من نظام سابق أو ملفات Excel؟</label>
+          <textarea id="data_q7" data-label="هل هناك حاجة إلى نقل بيانات من نظام سابق أو ملفات Excel؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="data_q8" class="question-label"><span class="qnum">8.</span> هل تريدون استيراد أو تصدير Excel أو PDF؟</label>
+          <textarea id="data_q8" data-label="هل تريدون استيراد أو تصدير Excel أو PDF؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="data_q9" class="question-label"><span class="qnum">9.</span> هل يوجد مرفقات أو صور أو ملفات داخل النظام؟</label>
+          <textarea id="data_q9" data-label="هل يوجد مرفقات أو صور أو ملفات داخل النظام؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-notifications">
+      <div class="section-header">
+        <div>
+          <h2>7) الإشعارات والتنبيهات</h2>
+          <div class="subtitle">Notifications Engine</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('notifications')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-notifications">
+        
+        <div class="question-card">
+          <label for="notifications_q1" class="question-label"><span class="qnum">1.</span> ما الأحداث التي يجب أن ينتج عنها تنبيه؟</label>
+          <textarea id="notifications_q1" data-label="ما الأحداث التي يجب أن ينتج عنها تنبيه؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="notifications_q2" class="question-label"><span class="qnum">2.</span> هل يوجد تنبيه عند إنشاء طلب جديد؟</label>
+          <textarea id="notifications_q2" data-label="هل يوجد تنبيه عند إنشاء طلب جديد؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="notifications_q3" class="question-label"><span class="qnum">3.</span> هل يوجد تنبيه عند تغيير الحالة؟</label>
+          <textarea id="notifications_q3" data-label="هل يوجد تنبيه عند تغيير الحالة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="notifications_q4" class="question-label"><span class="qnum">4.</span> هل يوجد تنبيه عند الاعتماد أو الرفض؟</label>
+          <textarea id="notifications_q4" data-label="هل يوجد تنبيه عند الاعتماد أو الرفض؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="notifications_q5" class="question-label"><span class="qnum">5.</span> هل يوجد تنبيه عند التأخير أو عدم المتابعة؟</label>
+          <textarea id="notifications_q5" data-label="هل يوجد تنبيه عند التأخير أو عدم المتابعة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="notifications_q6" class="question-label"><span class="qnum">6.</span> ما قنوات الإشعارات المطلوبة؟ (داخل النظام، بريد إلكتروني، SMS، WhatsApp، Push Notifications)</label>
+          <textarea id="notifications_q6" data-label="ما قنوات الإشعارات المطلوبة؟ (داخل النظام، بريد إلكتروني، SMS، WhatsApp، Push Notifications)" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="notifications_q7" class="question-label"><span class="qnum">7.</span> هل نصوص الرسائل مهمة ويجب اعتمادها؟</label>
+          <textarea id="notifications_q7" data-label="هل نصوص الرسائل مهمة ويجب اعتمادها؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="notifications_q8" class="question-label"><span class="qnum">8.</span> هل الإشعارات مطلوبة في المرحلة الأولى أم يمكن تأجيلها؟</label>
+          <textarea id="notifications_q8" data-label="هل الإشعارات مطلوبة في المرحلة الأولى أم يمكن تأجيلها؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="notifications_q9" class="question-label"><span class="qnum">9.</span> هل تحتاج الإشعارات إلى مزود خدمة خارجي وتكلفة إضافية؟</label>
+          <textarea id="notifications_q9" data-label="هل تحتاج الإشعارات إلى مزود خدمة خارجي وتكلفة إضافية؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-screens">
+      <div class="section-header">
+        <div>
+          <h2>8) الشاشات وتجربة المستخدم</h2>
+          <div class="subtitle">Screens &amp; UX</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('screens')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-screens">
+        
+        <div class="question-card">
+          <label for="screens_q1" class="question-label"><span class="qnum">1.</span> ما الشاشات الرئيسية التي تتوقعون وجودها في النظام؟</label>
+          <textarea id="screens_q1" data-label="ما الشاشات الرئيسية التي تتوقعون وجودها في النظام؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="screens_q2" class="question-label"><span class="qnum">2.</span> من يرى كل شاشة؟</label>
+          <textarea id="screens_q2" data-label="من يرى كل شاشة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="screens_q3" class="question-label"><span class="qnum">3.</span> ما أول شاشة يجب أن تظهر بعد تسجيل الدخول لكل دور؟</label>
+          <textarea id="screens_q3" data-label="ما أول شاشة يجب أن تظهر بعد تسجيل الدخول لكل دور؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="screens_q4" class="question-label"><span class="qnum">4.</span> هل الاستخدام الأساسي سيكون على Desktop أو Mobile أو Tablet أو POS أو Kiosk؟</label>
+          <textarea id="screens_q4" data-label="هل الاستخدام الأساسي سيكون على Desktop أو Mobile أو Tablet أو POS أو Kiosk؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="screens_q5" class="question-label"><span class="qnum">5.</span> هل تريدون تجربة استخدام بسيطة جدًا أم Dashboard واضح أم نموذج عمل أكثر تفصيلًا؟</label>
+          <textarea id="screens_q5" data-label="هل تريدون تجربة استخدام بسيطة جدًا أم Dashboard واضح أم نموذج عمل أكثر تفصيلًا؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="screens_q6" class="question-label"><span class="qnum">6.</span> هل هناك قيود على عدد الخطوات أو سهولة الاستخدام؟</label>
+          <textarea id="screens_q6" data-label="هل هناك قيود على عدد الخطوات أو سهولة الاستخدام؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="screens_q7" class="question-label"><span class="qnum">7.</span> هل توجد مشاكل استخدام حالية تريدون تجنبها؟</label>
+          <textarea id="screens_q7" data-label="هل توجد مشاكل استخدام حالية تريدون تجنبها؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-design">
+      <div class="section-header">
+        <div>
+          <h2>9) التصميم والهوية البصرية</h2>
+          <div class="subtitle">Design &amp; Branding</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('design')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-design">
+        
+        <div class="question-card">
+          <label for="design_q1" class="question-label"><span class="qnum">1.</span> هل توجد هوية بصرية جاهزة؟</label>
+          <textarea id="design_q1" data-label="هل توجد هوية بصرية جاهزة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="design_q2" class="question-label"><span class="qnum">2.</span> هل يوجد شعار معتمد؟</label>
+          <textarea id="design_q2" data-label="هل يوجد شعار معتمد؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="design_q3" class="question-label"><span class="qnum">3.</span> هل توجد ألوان وخطوط محددة يجب الالتزام بها؟</label>
+          <textarea id="design_q3" data-label="هل توجد ألوان وخطوط محددة يجب الالتزام بها؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="design_q4" class="question-label"><span class="qnum">4.</span> ما الطابع العام المطلوب للتصميم؟ (رسمي، حديث، بسيط، عملي، فاخر، ترفيهي)</label>
+          <textarea id="design_q4" data-label="ما الطابع العام المطلوب للتصميم؟ (رسمي، حديث، بسيط، عملي، فاخر، ترفيهي)" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="design_q5" class="question-label"><span class="qnum">5.</span> هل توجد تطبيقات أو مواقع يحبها العميل ويريد شيئًا قريبًا منها؟</label>
+          <textarea id="design_q5" data-label="هل توجد تطبيقات أو مواقع يحبها العميل ويريد شيئًا قريبًا منها؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="design_q6" class="question-label"><span class="qnum">6.</span> هل توجد أمثلة لا يحبها العميل؟</label>
+          <textarea id="design_q6" data-label="هل توجد أمثلة لا يحبها العميل؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="design_q7" class="question-label"><span class="qnum">7.</span> هل النظام RTL فقط أم RTL/LTR؟</label>
+          <textarea id="design_q7" data-label="هل النظام RTL فقط أم RTL/LTR؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="design_q8" class="question-label"><span class="qnum">8.</span> هل يوجد محتوى بلغتين أو أكثر؟</label>
+          <textarea id="design_q8" data-label="هل يوجد محتوى بلغتين أو أكثر؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="design_q9" class="question-label"><span class="qnum">9.</span> هل الترجمة ستكون يدوية أم آلية؟</label>
+          <textarea id="design_q9" data-label="هل الترجمة ستكون يدوية أم آلية؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="design_q10" class="question-label"><span class="qnum">10.</span> هل توجد حاجة إلى قالب رسمي للتقارير أو PDF أو الخطابات؟</label>
+          <textarea id="design_q10" data-label="هل توجد حاجة إلى قالب رسمي للتقارير أو PDF أو الخطابات؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-reports">
+      <div class="section-header">
+        <div>
+          <h2>10) التقارير ولوحات التحكم</h2>
+          <div class="subtitle">Reports &amp; Dashboards</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('reports')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-reports">
+        
+        <div class="question-card">
+          <label for="reports_q1" class="question-label"><span class="qnum">1.</span> ما التقارير المطلوبة؟</label>
+          <textarea id="reports_q1" data-label="ما التقارير المطلوبة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="reports_q2" class="question-label"><span class="qnum">2.</span> ما المؤشرات المطلوبة في Dashboard؟</label>
+          <textarea id="reports_q2" data-label="ما المؤشرات المطلوبة في Dashboard؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="reports_q3" class="question-label"><span class="qnum">3.</span> ما الرسوم البيانية أو Widgets المطلوبة؟</label>
+          <textarea id="reports_q3" data-label="ما الرسوم البيانية أو Widgets المطلوبة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="reports_q4" class="question-label"><span class="qnum">4.</span> ما الفلاتر الأساسية المطلوبة؟</label>
+          <textarea id="reports_q4" data-label="ما الفلاتر الأساسية المطلوبة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="reports_q5" class="question-label"><span class="qnum">5.</span> هل توجد تقارير مالية أو تشغيلية أو تقارير أداء؟</label>
+          <textarea id="reports_q5" data-label="هل توجد تقارير مالية أو تشغيلية أو تقارير أداء؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="reports_q6" class="question-label"><span class="qnum">6.</span> كيف يتم حساب المؤشرات أو المعادلات المهمة؟</label>
+          <textarea id="reports_q6" data-label="كيف يتم حساب المؤشرات أو المعادلات المهمة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="reports_q7" class="question-label"><span class="qnum">7.</span> هل توجد تعريفات يجب ضبطها بدقة مثل: التأخير، الإنجاز، الربح، الإغلاق؟</label>
+          <textarea id="reports_q7" data-label="هل توجد تعريفات يجب ضبطها بدقة مثل: التأخير، الإنجاز، الربح، الإغلاق؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="reports_q8" class="question-label"><span class="qnum">8.</span> هل يوجد تصدير للتقارير إلى PDF أو Excel؟</label>
+          <textarea id="reports_q8" data-label="هل يوجد تصدير للتقارير إلى PDF أو Excel؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-technical">
+      <div class="section-header">
+        <div>
+          <h2>11) البنية التحتية والتقنية والامتثال</h2>
+          <div class="subtitle">Technical, Hosting &amp; Compliance</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('technical')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-technical">
+        
+        <div class="question-card">
+          <label for="technical_q1" class="question-label"><span class="qnum">1.</span> أين سيتم استضافة النظام؟ (Cloud، On-Premise، VPS، Shared Hosting، غير محدد)</label>
+          <textarea id="technical_q1" data-label="أين سيتم استضافة النظام؟ (Cloud، On-Premise، VPS، Shared Hosting، غير محدد)" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="technical_q2" class="question-label"><span class="qnum">2.</span> من سيدير السيرفر أو الاستضافة؟</label>
+          <textarea id="technical_q2" data-label="من سيدير السيرفر أو الاستضافة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="technical_q3" class="question-label"><span class="qnum">3.</span> هل يوجد دومين جاهز؟</label>
+          <textarea id="technical_q3" data-label="هل يوجد دومين جاهز؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="technical_q4" class="question-label"><span class="qnum">4.</span> إذا كان هناك تطبيق موبايل، هل العميل يمتلك حسابات Google Play و Apple App Store؟</label>
+          <textarea id="technical_q4" data-label="إذا كان هناك تطبيق موبايل، هل العميل يمتلك حسابات Google Play و Apple App Store؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="technical_q5" class="question-label"><span class="qnum">5.</span> ما الأجهزة والمتصفحات المستهدفة؟</label>
+          <textarea id="technical_q5" data-label="ما الأجهزة والمتصفحات المستهدفة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="technical_q6" class="question-label"><span class="qnum">6.</span> هل توجد متطلبات نسخ احتياطي؟</label>
+          <textarea id="technical_q6" data-label="هل توجد متطلبات نسخ احتياطي؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="technical_q7" class="question-label"><span class="qnum">7.</span> أين يجب حفظ النسخ الاحتياطية؟</label>
+          <textarea id="technical_q7" data-label="أين يجب حفظ النسخ الاحتياطية؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="technical_q8" class="question-label"><span class="qnum">8.</span> هل توجد متطلبات قانونية أو تنظيمية أو Compliance؟</label>
+          <textarea id="technical_q8" data-label="هل توجد متطلبات قانونية أو تنظيمية أو Compliance؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="technical_q9" class="question-label"><span class="qnum">9.</span> هل توجد متطلبات فوترة إلكترونية أو حماية بيانات؟</label>
+          <textarea id="technical_q9" data-label="هل توجد متطلبات فوترة إلكترونية أو حماية بيانات؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="technical_q10" class="question-label"><span class="qnum">10.</span> هل توجد قيود تقنية في بيئة العميل؟</label>
+          <textarea id="technical_q10" data-label="هل توجد قيود تقنية في بيئة العميل؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-security">
+      <div class="section-header">
+        <div>
+          <h2>12) الأمان وسجل العمليات</h2>
+          <div class="subtitle">Security &amp; Audit</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('security')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-security">
+        
+        <div class="question-card">
+          <label for="security_q1" class="question-label"><span class="qnum">1.</span> كيف يتم تسجيل الدخول؟ (اسم مستخدم وكلمة مرور، OTP، Social Login، SSO، غير محدد)</label>
+          <textarea id="security_q1" data-label="كيف يتم تسجيل الدخول؟ (اسم مستخدم وكلمة مرور، OTP، Social Login، SSO، غير محدد)" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="security_q2" class="question-label"><span class="qnum">2.</span> هل توجد سياسة لكلمات المرور؟</label>
+          <textarea id="security_q2" data-label="هل توجد سياسة لكلمات المرور؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="security_q3" class="question-label"><span class="qnum">3.</span> هل تنتهي كلمة المرور بعد مدة أو تحتاج تغيير دوري؟</label>
+          <textarea id="security_q3" data-label="هل تنتهي كلمة المرور بعد مدة أو تحتاج تغيير دوري؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="security_q4" class="question-label"><span class="qnum">4.</span> من يضيف المستخدمين ويدير الحسابات؟</label>
+          <textarea id="security_q4" data-label="من يضيف المستخدمين ويدير الحسابات؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="security_q5" class="question-label"><span class="qnum">5.</span> هل توجد بيانات حساسة تحتاج حماية خاصة؟</label>
+          <textarea id="security_q5" data-label="هل توجد بيانات حساسة تحتاج حماية خاصة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="security_q6" class="question-label"><span class="qnum">6.</span> هل نحتاج تشفيرًا خاصًا لبعض البيانات؟</label>
+          <textarea id="security_q6" data-label="هل نحتاج تشفيرًا خاصًا لبعض البيانات؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="security_q7" class="question-label"><span class="qnum">7.</span> هل نحتاج Audit Log؟</label>
+          <textarea id="security_q7" data-label="هل نحتاج Audit Log؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="security_q8" class="question-label"><span class="qnum">8.</span> ما العمليات التي يجب تسجيلها في السجل؟ (إضافة، تعديل، حذف، عرض، دخول، خروج)</label>
+          <textarea id="security_q8" data-label="ما العمليات التي يجب تسجيلها في السجل؟ (إضافة، تعديل، حذف، عرض، دخول، خروج)" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="security_q9" class="question-label"><span class="qnum">9.</span> هل نحتاج صلاحيات دقيقة لكل شاشة أو إجراء؟</label>
+          <textarea id="security_q9" data-label="هل نحتاج صلاحيات دقيقة لكل شاشة أو إجراء؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+    <section class="section" id="section-acceptance">
+      <div class="section-header">
+        <div>
+          <h2>13) معايير القبول والتسليم التجاري</h2>
+          <div class="subtitle">Acceptance, Commercials &amp; Warranty</div>
+        </div>
+        <button class="toggle-btn" type="button" onclick="toggleSection('acceptance')">طي/فتح</button>
+      </div>
+      <div class="section-body" id="body-acceptance">
+        
+        <div class="question-card">
+          <label for="acceptance_q1" class="question-label"><span class="qnum">1.</span> ما معايير القبول التي إذا تحققت يعتبر المشروع جاهزًا للتسليم؟</label>
+          <textarea id="acceptance_q1" data-label="ما معايير القبول التي إذا تحققت يعتبر المشروع جاهزًا للتسليم؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q2" class="question-label"><span class="qnum">2.</span> متى يعتبر MVP ناجحًا من وجهة نظركم؟</label>
+          <textarea id="acceptance_q2" data-label="متى يعتبر MVP ناجحًا من وجهة نظركم؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q3" class="question-label"><span class="qnum">3.</span> من هو الشخص المخول رسميًا للاختبار والاعتماد؟</label>
+          <textarea id="acceptance_q3" data-label="من هو الشخص المخول رسميًا للاختبار والاعتماد؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q4" class="question-label"><span class="qnum">4.</span> ما آلية الاختبار المتوقعة؟</label>
+          <textarea id="acceptance_q4" data-label="ما آلية الاختبار المتوقعة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q5" class="question-label"><span class="qnum">5.</span> ما الميزانية التقريبية المرصودة؟</label>
+          <textarea id="acceptance_q5" data-label="ما الميزانية التقريبية المرصودة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q6" class="question-label"><span class="qnum">6.</span> ما الجدول الزمني المستهدف؟</label>
+          <textarea id="acceptance_q6" data-label="ما الجدول الزمني المستهدف؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q7" class="question-label"><span class="qnum">7.</span> ما خطة الدفع المناسبة؟</label>
+          <textarea id="acceptance_q7" data-label="ما خطة الدفع المناسبة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q8" class="question-label"><span class="qnum">8.</span> ما مدة الضمان المطلوبة؟</label>
+          <textarea id="acceptance_q8" data-label="ما مدة الضمان المطلوبة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q9" class="question-label"><span class="qnum">9.</span> ما الذي يشمله الضمان؟</label>
+          <textarea id="acceptance_q9" data-label="ما الذي يشمله الضمان؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q10" class="question-label"><span class="qnum">10.</span> ما الذي لا يشمله الضمان؟</label>
+          <textarea id="acceptance_q10" data-label="ما الذي لا يشمله الضمان؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q11" class="question-label"><span class="qnum">11.</span> ما شكل الدعم والصيانة بعد التسليم؟</label>
+          <textarea id="acceptance_q11" data-label="ما شكل الدعم والصيانة بعد التسليم؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q12" class="question-label"><span class="qnum">12.</span> كيف تريدون التعامل مع طلبات التغيير بعد الاتفاق؟</label>
+          <textarea id="acceptance_q12" data-label="كيف تريدون التعامل مع طلبات التغيير بعد الاتفاق؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+        <div class="question-card">
+          <label for="acceptance_q13" class="question-label"><span class="qnum">13.</span> هل تتوقعون أن بعض الطلبات ستضاف لاحقًا كمراحل جديدة؟</label>
+          <textarea id="acceptance_q13" data-label="هل تتوقعون أن بعض الطلبات ستضاف لاحقًا كمراحل جديدة؟" rows="4" placeholder="اكتب الإجابة هنا..."></textarea>
+        </div>
+        
+      </div>
+    </section>
+    
+
+    <div class="footer-note">تم إعداد هذا النموذج كنسخة HTML احترافية قابلة للتعبئة والتعديل والحفظ.</div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "tcea_13_domain_discovery_form_v1";
+
+    function collectData() {
+      const fields = document.querySelectorAll("input[id], textarea[id]");
+      const data = {};
+      fields.forEach(field => {
+        data[field.id] = field.value;
+      });
+      return data;
+    }
+
+    function applyData(data) {
+      Object.entries(data || {}).forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = value ?? "";
+      });
+    }
+
+    function saveJSON() {
+      const data = collectData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "TCEA_13_Domain_Discovery_Data.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function autoSave() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
+    }
+
+    function restoreAutoSave() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try {
+        applyData(JSON.parse(raw));
+      } catch (e) {
+        console.warn("Restore failed", e);
+      }
+    }
+
+    function toggleSection(id) {
+      const body = document.getElementById("body-" + id);
+      if (!body) return;
+      body.style.display = body.style.display === "none" ? "block" : "none";
+    }
+
+    function collapseAll() {
+      document.querySelectorAll(".section-body").forEach(el => el.style.display = "none");
+    }
+
+    function expandAll() {
+      document.querySelectorAll(".section-body").forEach(el => el.style.display = "block");
+    }
+
+    document.addEventListener("input", autoSave);
+    document.getElementById("jsonLoader").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      try {
+        const data = JSON.parse(text);
+        applyData(data);
+        autoSave();
+      } catch {
+        alert("ملف JSON غير صالح.");
+      }
+    });
+
+    restoreAutoSave();
+  </script>
+</body>
+</html>

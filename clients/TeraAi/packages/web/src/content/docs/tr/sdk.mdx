@@ -1,0 +1,463 @@
+﻿---
+title: SDK
+description: opencode sunucusu iأ§in type-safe JS istemcisi.
+---
+
+import config from "../../../../config.mjs"
+export const typesUrl = `${config.github}/blob/dev/packages/sdk/js/src/gen/types.gen.ts`
+
+opencode JS/TS SDK, sunucu ile etkileإںmek iأ§in type-safe bir istemci saؤںlar.
+opencode'u programatik olarak kontrol etmek ve entegrasyonlar oluإںturmak iأ§in kullanabilirsiniz.
+
+[Sunucu](/docs/server) sayfasؤ±nda nasؤ±l أ§alؤ±إںtؤ±ؤںؤ±nؤ± gأ¶rebilir, أ¶rnekler iأ§in topluluؤںun oluإںturduؤںu [projeler](/docs/ecosystem#projects) bأ¶lأ¼mأ¼ne bakabilirsiniz.
+
+---
+
+## Kurulum
+
+SDK'yؤ± npm'den yأ¼kleyin:
+
+```bash
+npm install @tera-system/sdk
+```
+
+---
+
+## ؤ°stemci Oluإںturma
+
+Bir opencode أ¶rneؤںi oluإںturun:
+
+```javascript
+import { createOpencode } from "@tera-system/sdk"
+
+const { client } = await createOpencode()
+```
+
+Bu, hem bir sunucu hem de bir istemci baإںlatؤ±r
+
+#### Seأ§enekler
+
+| Seأ§enek    | Tip           | Aأ§ؤ±klama                                      | Varsayؤ±lan  |
+| ---------- | ------------- | --------------------------------------------- | ----------- |
+| `hostname` | `string`      | Sunucu ana bilgisayar adؤ±                     | `127.0.0.1` |
+| `port`     | `number`      | Sunucu baؤںlantؤ± noktasؤ±                       | `4096`      |
+| `signal`   | `AbortSignal` | ؤ°ptal iأ§in durdurma sinyali                   | `undefined` |
+| `timeout`  | `number`      | Sunucu baإںlatma iأ§in ms cinsinden zaman aإںؤ±mؤ± | `5000`      |
+| `config`   | `Config`      | Yapؤ±landؤ±rma nesnesi                          | `{}`        |
+
+---
+
+## Yapؤ±landؤ±rma
+
+Davranؤ±إںؤ± أ¶zelleإںtirmek iأ§in bir yapؤ±landؤ±rma nesnesi iletebilirsiniz. أ–rnek yine de `opencode.json` dosyanؤ±zؤ± alؤ±r, ancak yapؤ±landؤ±rmayؤ± satؤ±r iأ§i olarak geأ§ersiz kؤ±labilir veya ekleyebilirsiniz:
+
+```javascript
+import { createOpencode } from "@tera-system/sdk"
+
+const opencode = await createOpencode({
+  hostname: "127.0.0.1",
+  port: 4096,
+  config: {
+    model: "anthropic/claude-3-5-sonnet-20241022",
+  },
+})
+
+console.log(`Server running at ${opencode.server.url}`)
+
+opencode.server.close()
+```
+
+## Yalnؤ±zca istemci
+
+Halihazؤ±rda أ§alؤ±إںan bir opencode أ¶rneؤںiniz varsa, ona baؤںlanmak iأ§in bir istemci أ¶rneؤںi oluإںturabilirsiniz:
+
+```javascript
+import { createOpencodeClient } from "@tera-system/sdk"
+
+const client = createOpencodeClient({
+  baseUrl: "http://localhost:4096",
+})
+```
+
+#### Seأ§enekler
+
+| Seأ§enek         | Tip        | Aأ§ؤ±klama                          | Varsayؤ±lan              |
+| --------------- | ---------- | --------------------------------- | ----------------------- |
+| `baseUrl`       | `string`   | Sunucunun URL'si                  | `http://localhost:4096` |
+| `fetch`         | `function` | أ–zel fetch uygulamasؤ±             | `globalThis.fetch`      |
+| `parseAs`       | `string`   | Yanؤ±t ayrؤ±إںtؤ±rma yأ¶ntemi          | `auto`                  |
+| `responseStyle` | `string`   | Dأ¶nأ¼إں stili: `data` veya `fields` | `fields`                |
+| `throwOnError`  | `boolean`  | Dأ¶nأ¼إں yerine hata fؤ±rlat          | `false`                 |
+
+---
+
+## Tأ¼rler
+
+SDK, tأ¼m API tأ¼rleri iأ§in TypeScript tanؤ±mlarؤ±nؤ± iأ§erir. Bunlarؤ± doؤںrudan iأ§e aktarؤ±n:
+
+```typescript
+import type { Session, Message, Part } from "@tera-system/sdk"
+```
+
+Tأ¼m tipler, sunucunun OpenAPI spesifikasyonundan oluإںturulur ve <a href={typesUrl}>tipler dosyasؤ±nda</a> mevcuttur.
+
+---
+
+## Hatalar
+
+SDK, yakalayabileceؤںiniz ve iإںleyebileceؤںiniz hatalar fؤ±rlatabilir:
+
+```typescript
+try {
+  await client.session.get({ path: { id: "invalid-id" } })
+} catch (error) {
+  console.error("Failed to get session:", (error as Error).message)
+}
+```
+
+---
+
+## Yapؤ±landؤ±rؤ±lmؤ±إں أ‡ؤ±ktؤ±
+
+Bir JSON إںemasؤ± ile `format` belirterek modelden yapؤ±landؤ±rؤ±lmؤ±إں JSON أ§ؤ±ktؤ±sؤ± isteyebilirsiniz. Model, إںemanؤ±zla eإںleإںen doؤںrulanmؤ±إں JSON'u dأ¶ndأ¼rmek iأ§in bir `StructuredOutput` aracؤ± kullanacaktؤ±r.
+
+### Temel Kullanؤ±m
+
+```typescript
+const result = await client.session.prompt({
+  path: { id: sessionId },
+  body: {
+    parts: [{ type: "text", text: "Anthropic'i araإںtؤ±rؤ±n ve إںirket bilgileri saؤںlayؤ±n" }],
+    format: {
+      type: "json_schema",
+      schema: {
+        type: "object",
+        properties: {
+          company: { type: "string", description: "إ‍irket adؤ±" },
+          founded: { type: "number", description: "Kuruluإں yؤ±lؤ±" },
+          products: {
+            type: "array",
+            items: { type: "string" },
+            description: "Ana أ¼rأ¼nler",
+          },
+        },
+        required: ["company", "founded"],
+      },
+    },
+  },
+})
+
+// Yapؤ±landؤ±rؤ±lmؤ±إں أ§ؤ±ktؤ±ya eriإںin
+console.log(result.data.info.structured_output)
+// { company: "Anthropic", founded: 2021, products: ["Claude", "Claude API"] }
+```
+
+### أ‡ؤ±ktؤ± Format Tأ¼rleri
+
+| Tأ¼r           | Aأ§ؤ±klama                                                      |
+| ------------- | ------------------------------------------------------------- |
+| `text`        | Varsayؤ±lan. Standart metin yanؤ±tؤ± (yapؤ±landؤ±rؤ±lmؤ±إں أ§ؤ±ktؤ± yok) |
+| `json_schema` | Saؤںlanan إںema ile eإںleإںen doؤںrulanmؤ±إں JSON dأ¶ndأ¼rأ¼r           |
+
+### JSON إ‍ema Formatؤ±
+
+`type: 'json_schema'` kullanؤ±rken إںunlarؤ± saؤںlayؤ±n:
+
+| Alan         | Tأ¼r             | Aأ§ؤ±klama                                                      |
+| ------------ | --------------- | ------------------------------------------------------------- |
+| `type`       | `'json_schema'` | Gerekli. JSON إںema modunu belirtir                            |
+| `schema`     | `object`        | Gerekli. أ‡ؤ±ktؤ± yapؤ±sؤ±nؤ± tanؤ±mlayan JSON إ‍ema nesnesi          |
+| `retryCount` | `number`        | ؤ°steؤںe baؤںlؤ±. Doؤںrulama yeniden deneme sayؤ±sؤ± (varsayؤ±lan: 2) |
+
+### Hata Yأ¶netimi
+
+Model, tأ¼m yeniden denemelerden sonra geأ§erli bir yapؤ±landؤ±rؤ±lmؤ±إں أ§ؤ±ktؤ± أ¼retemezse, yanؤ±t bir `StructuredOutputError` iأ§erecektir:
+
+```typescript
+if (result.data.info.error?.name === "StructuredOutputError") {
+  console.error("Yapؤ±landؤ±rؤ±lmؤ±إں أ§ؤ±ktؤ± أ¼retilemedi:", result.data.info.error.message)
+  console.error("Denemeler:", result.data.info.error.retries)
+}
+```
+
+### En ؤ°yi Uygulamalar
+
+1. **Aأ§ؤ±k aأ§ؤ±klamalar saؤںlayؤ±n**: Modelin hangi verileri أ§ؤ±karacaؤںؤ±nؤ± anlamasؤ±na yardؤ±mcؤ± olmak iأ§in إںema أ¶zelliklerinde
+2. **`required` kullanؤ±n**: Hangi alanlarؤ±n mevcut olmasؤ± gerektiؤںini belirtmek iأ§in
+3. **إ‍emalarؤ± odaklؤ± tutun**: Karmaإںؤ±k iأ§ iأ§e geأ§miإں إںemalarؤ±n model tarafؤ±ndan doؤںru doldurulmasؤ± daha zor olabilir
+4. **Uygun `retryCount` ayarlayؤ±n**: Karmaإںؤ±k إںemalar iأ§in artؤ±rؤ±n, basit olanlar iأ§in azaltؤ±n
+
+---
+
+## API'ler
+
+SDK, tأ¼m sunucu API'lerini type-safe bir istemci aracؤ±lؤ±ؤںؤ±yla sunar.
+
+---
+
+### Global
+
+| Yأ¶ntem            | Aأ§ؤ±klama                                | Yanؤ±t                                |
+| ----------------- | --------------------------------------- | ------------------------------------ |
+| `global.health()` | Sunucu saؤںlؤ±ؤںؤ±nؤ± ve sأ¼rأ¼mأ¼nأ¼ kontrol et | `{ healthy: true, version: string }` |
+
+---
+
+#### أ–rnekler
+
+```javascript
+const health = await client.global.health()
+console.log(health.data.version)
+```
+
+---
+
+### App
+
+| Yأ¶ntem         | Aأ§ؤ±klama                      | Yanؤ±t                                       |
+| -------------- | ----------------------------- | ------------------------------------------- |
+| `app.log()`    | Bir gأ¼nlأ¼k girdisi yaz        | `boolean`                                   |
+| `app.agents()` | Tأ¼m mevcut agent'larؤ± listele | <a href={typesUrl}><code>Agent[]</code></a> |
+
+---
+
+#### أ–rnekler
+
+```javascript
+// Write a log entry
+await client.app.log({
+  body: {
+    service: "my-app",
+    level: "info",
+    message: "Operation completed",
+  },
+})
+
+// List available agents
+const agents = await client.app.agents()
+```
+
+---
+
+### Project
+
+| Yأ¶ntem              | Aأ§ؤ±klama              | Yanؤ±t                                         |
+| ------------------- | --------------------- | --------------------------------------------- |
+| `project.list()`    | Tأ¼m projeleri listele | <a href={typesUrl}><code>Project[]</code></a> |
+| `project.current()` | Mevcut projeyi al     | <a href={typesUrl}><code>Project</code></a>   |
+
+---
+
+#### أ–rnekler
+
+```javascript
+// List all projects
+const projects = await client.project.list()
+
+// Get current project
+const currentProject = await client.project.current()
+```
+
+---
+
+### Path
+
+| Yأ¶ntem       | Aأ§ؤ±klama       | Yanؤ±t                                    |
+| ------------ | -------------- | ---------------------------------------- |
+| `path.get()` | Mevcut yolu al | <a href={typesUrl}><code>Path</code></a> |
+
+---
+
+#### أ–rnekler
+
+```javascript
+// Get current path information
+const pathInfo = await client.path.get()
+```
+
+---
+
+### Config
+
+| Yأ¶ntem               | Aأ§ؤ±klama                                      | Yanؤ±t                                                                                                 |
+| -------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `config.get()`       | Yapؤ±landؤ±rma bilgisini al                     | <a href={typesUrl}><code>Config</code></a>                                                            |
+| `config.providers()` | Saؤںlayؤ±cؤ±larؤ± ve varsayؤ±lan modelleri listele | `{ providers: `<a href={typesUrl}><code>Provider[]</code></a>`, default: { [key: string]: string } }` |
+
+---
+
+#### أ–rnekler
+
+```javascript
+const config = await client.config.get()
+
+const { providers, default: defaults } = await client.config.providers()
+```
+
+---
+
+### Oturumlar
+
+| Yأ¶ntem                                                     | Aأ§ؤ±klama                                    | Notlar                                                                                                                                                                                                                                        |
+| ---------------------------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `session.list()`                                           | Oturumlarؤ± listele                          | <a href={typesUrl}><code>Session[]</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                        |
+| `session.get({ path })`                                    | Oturum al                                   | <a href={typesUrl}><code>Session</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                          |
+| `session.children({ path })`                               | Alt oturumlarؤ± listele                      | <a href={typesUrl}><code>Session[]</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                        |
+| `session.create({ body })`                                 | Oturum oluإںtur                              | <a href={typesUrl}><code>Session</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                          |
+| `session.delete({ path })`                                 | Oturum sil                                  | `boolean` dأ¶ndأ¼rأ¼r                                                                                                                                                                                                                            |
+| `session.update({ path, body })`                           | Oturum أ¶zelliklerini gأ¼ncelle               | <a href={typesUrl}><code>Session</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                          |
+| `session.init({ path, body })`                             | Uygulamayؤ± analiz et ve `AGENTS.md` oluإںtur | `boolean` dأ¶ndأ¼rأ¼r                                                                                                                                                                                                                            |
+| `session.abort({ path })`                                  | أ‡alؤ±إںan bir oturumu iptal et                | `boolean` dأ¶ndأ¼rأ¼r                                                                                                                                                                                                                            |
+| `session.share({ path })`                                  | Oturum paylaإں                               | <a href={typesUrl}><code>Session</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                          |
+| `session.unshare({ path })`                                | Oturum paylaإںؤ±mؤ±nؤ± kaldؤ±r                   | <a href={typesUrl}><code>Session</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                          |
+| `session.summarize({ path, body })`                        | Oturumu أ¶zetle                              | `boolean` dأ¶ndأ¼rأ¼r                                                                                                                                                                                                                            |
+| `session.messages({ path })`                               | Oturumdaki mesajlarؤ± listele                | `{ info: `<a href={typesUrl}><code>Message</code></a>`, parts: `<a href={typesUrl}><code>Part[]</code></a>`}[]` dأ¶ndأ¼rأ¼r                                                                                                                      |
+| `session.message({ path })`                                | Mesaj ayrؤ±ntؤ±larؤ±nؤ± al                      | `{ info: `<a href={typesUrl}><code>Message</code></a>`, parts: `<a href={typesUrl}><code>Part[]</code></a>`}` dأ¶ndأ¼rأ¼r                                                                                                                        |
+| `session.prompt({ path, body })`                           | ؤ°stem mesajؤ± gأ¶nder                         | `body.noReply: true` UserMessage (yalnؤ±zca baؤںlam) dأ¶ndأ¼rأ¼r. Varsayؤ±lan olarak AI yanؤ±tؤ±yla <a href={typesUrl}><code>AssistantMessage</code></a> dأ¶ndأ¼rأ¼r. [yapؤ±landؤ±rؤ±lmؤ±إں أ§ؤ±ktؤ±](#yapؤ±landؤ±rؤ±lmؤ±إں-أ§ؤ±ktؤ±) iأ§in `body.outputFormat` destekler |
+| `session.command({ path, body })`                          | Oturuma komut gأ¶nder                        | `{ info: `<a href={typesUrl}><code>AssistantMessage</code></a>`, parts: `<a href={typesUrl}><code>Part[]</code></a>`}` dأ¶ndأ¼rأ¼r                                                                                                               |
+| `session.shell({ path, body })`                            | Bir kabuk komutu أ§alؤ±إںtؤ±r                   | <a href={typesUrl}><code>AssistantMessage</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                 |
+| `session.revert({ path, body })`                           | Bir mesajؤ± geri al                          | <a href={typesUrl}><code>Session</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                          |
+| `session.unrevert({ path })`                               | Geri alؤ±nan mesajlarؤ± geri yأ¼kle            | <a href={typesUrl}><code>Session</code></a> dأ¶ndأ¼rأ¼r                                                                                                                                                                                          |
+| `postSessionByIdPermissionsByPermissionId({ path, body })` | Bir izin isteؤںine yanؤ±t ver                 | `boolean` dأ¶ndأ¼rأ¼r                                                                                                                                                                                                                            |
+
+---
+
+#### أ–rnekler
+
+```javascript
+// Create and manage sessions
+const session = await client.session.create({
+  body: { title: "My session" },
+})
+
+const sessions = await client.session.list()
+
+// Send a prompt message
+const result = await client.session.prompt({
+  path: { id: session.id },
+  body: {
+    model: { providerID: "anthropic", modelID: "claude-3-5-sonnet-20241022" },
+    parts: [{ type: "text", text: "Hello!" }],
+  },
+})
+
+// Inject context without triggering AI response (useful for plugins)
+await client.session.prompt({
+  path: { id: session.id },
+  body: {
+    noReply: true,
+    parts: [{ type: "text", text: "You are a helpful assistant." }],
+  },
+})
+```
+
+---
+
+### Dosyalar
+
+| Yأ¶ntem                    | Aأ§ؤ±klama                         | Yanؤ±t                                                                                           |
+| ------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `find.text({ query })`    | Dosyalarda metin ara             | `path`, `lines`, `line_number`, `absolute_offset`, `submatches` iأ§eren eإںleإںme nesneleri dizisi |
+| `find.files({ query })`   | Dosya ve dizinleri isme gأ¶re bul | `string[]` (yollar)                                                                             |
+| `find.symbols({ query })` | أ‡alؤ±إںma alanؤ± sembollerini bul   | <a href={typesUrl}><code>Symbol[]</code></a>                                                    |
+| `file.read({ query })`    | Bir dosyayؤ± oku                  | `{ type: "raw" \| "patch", content: string }`                                                   |
+| `file.status({ query? })` | ؤ°zlenen dosyalar iأ§in durumu al  | <a href={typesUrl}><code>File[]</code></a>                                                      |
+
+`find.files` birkaأ§ isteؤںe baؤںlؤ± sorgu alanؤ±nؤ± destekler:
+
+- `type`: `"file"` veya `"directory"`
+- `directory`: arama iأ§in proje kأ¶kأ¼nأ¼ geأ§ersiz kؤ±lma
+- `limit`: maksimum sonuأ§ (1-200)
+
+---
+
+#### أ–rnekler
+
+```javascript
+// Search and read files
+const textResults = await client.find.text({
+  query: { pattern: "function.*opencode" },
+})
+
+const files = await client.find.files({
+  query: { query: "*.ts", type: "file" },
+})
+
+const directories = await client.find.files({
+  query: { query: "packages", type: "directory", limit: 20 },
+})
+
+const content = await client.file.read({
+  query: { path: "src/index.ts" },
+})
+```
+
+---
+
+### TUI
+
+| Yأ¶ntem                         | Aأ§ؤ±klama                    | Yanؤ±t     |
+| ------------------------------ | --------------------------- | --------- |
+| `tui.appendPrompt({ body })`   | ؤ°steme metin ekle           | `boolean` |
+| `tui.openHelp()`               | Yardؤ±m iletiإںim kutusunu aأ§ | `boolean` |
+| `tui.openSessions()`           | Oturum seأ§iciyi aأ§          | `boolean` |
+| `tui.openThemes()`             | Tema seأ§iciyi aأ§            | `boolean` |
+| `tui.openModels()`             | Model seأ§iciyi aأ§           | `boolean` |
+| `tui.submitPrompt()`           | Mevcut istemi gأ¶nder        | `boolean` |
+| `tui.clearPrompt()`            | ؤ°stemi temizle              | `boolean` |
+| `tui.executeCommand({ body })` | Bir komut أ§alؤ±إںtؤ±r          | `boolean` |
+| `tui.showToast({ body })`      | Toast bildirimi gأ¶ster      | `boolean` |
+
+---
+
+#### أ–rnekler
+
+```javascript
+// Control TUI interface
+await client.tui.appendPrompt({
+  body: { text: "Add this to prompt" },
+})
+
+await client.tui.showToast({
+  body: { message: "Task completed", variant: "success" },
+})
+```
+
+---
+
+### Auth
+
+| Yأ¶ntem              | Aأ§ؤ±klama                  | Yanؤ±t     |
+| ------------------- | ------------------------- | --------- |
+| `auth.set({ ... })` | Kimlik bilgilerini ayarla | `boolean` |
+
+---
+
+#### أ–rnekler
+
+```javascript
+await client.auth.set({
+  path: { id: "anthropic" },
+  body: { type: "api", key: "your-api-key" },
+})
+```
+
+---
+
+### Olaylar
+
+| Yأ¶ntem              | Aأ§ؤ±klama                                | Yanؤ±t                                   |
+| ------------------- | --------------------------------------- | --------------------------------------- |
+| `event.subscribe()` | Sunucu tarafؤ±ndan gأ¶nderilen olay akؤ±إںؤ± | Sunucu tarafؤ±ndan gأ¶nderilen olay akؤ±إںؤ± |
+
+---
+
+#### أ–rnekler
+
+```javascript
+// Listen to real-time events
+const events = await client.event.subscribe()
+for await (const event of events.stream) {
+  console.log("Event:", event.type, event.properties)
+}
+```

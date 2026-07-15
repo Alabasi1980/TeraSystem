@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "WarehouseDashboard.Api": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5001",
+      "environmentVariables": {}
+    }
+  }
+}

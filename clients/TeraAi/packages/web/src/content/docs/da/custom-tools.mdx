@@ -1,0 +1,196 @@
+﻿---
+title: Brugerdefinerede vأ¦rktأ¸jer
+description: Opret vأ¦rktأ¸jer, som LLM kan kalde opencode ind.
+---
+
+Brugerdefinerede vأ¦rktأ¸jer er funktioner, du opretter, som LLM kan kalde under samtaler. De arbejder sammen med opencodes [built-in tools](/docs/tools) som `read`, `write` og `bash`.
+
+---
+
+## Oprettelse af et vأ¦rktأ¸j
+
+Vأ¦rktأ¸jer er defineret som **TypeScript**- eller **JavaScript**-filer. Vأ¦rktأ¸jsdefinitionen kan dog kalde scripts skrevet pأ¥ **alle sprog** - TypeScript eller JavaScript bruges kun til selve vأ¦rktأ¸jsdefinitionen.
+
+---
+
+### Placering
+
+De kan definere:
+
+- Lokalt ved at placere dem i biblioteket `.opencode/tools/` i dit projekt.
+- Eller globalt ved at placere dem i `~/.config/opencode/tools/`.
+
+---
+
+### Struktur
+
+Den nemmeste mأ¥de at oprette vأ¦rktأ¸jer pأ¥ er at bruge `tool()`-hjأ¦lperen, som giver typesikkerhed og validering.
+
+```ts title=".opencode/tools/database.ts" {1}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Query the project database",
+  args: {
+    query: tool.schema.string().describe("SQL query to execute"),
+  },
+  async execute(args) {
+    // Your database logic here
+    return `Executed query: ${args.query}`
+  },
+})
+```
+
+**filnavnet** bliver **vأ¦rktأ¸jsnavnet**. Ovenstأ¥ende opretter et `database` vأ¦rktأ¸j.
+
+---
+
+#### Flere vأ¦rktأ¸jer pr. fil
+
+Du kan ogsأ¥ eksportere flere vأ¦rktأ¸jer fra en enkelt fil. Hver eksport bliver **et separat vأ¦rktأ¸j** med navnet **`<filename>_<exportname>`**:
+
+```ts title=".opencode/tools/math.ts"
+import { tool } from "@tera-system/plugin"
+
+export const add = tool({
+  description: "Add two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a + args.b
+  },
+})
+
+export const multiply = tool({
+  description: "Multiply two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a * args.b
+  },
+})
+```
+
+Dette skaber vأ¦rktأ¸jer: `math_add` og `math_multiply`.
+
+---
+
+#### Navnekollisioner med indbyggede vأ¦rktأ¸jer
+
+Brugerdefinerede vأ¦rktأ¸jer er identificeret ved vأ¦rktأ¸jsnavn. Hvis et brugerdefineret vأ¦rktأ¸j bruger samme navn som et indbygget vأ¦rktأ¸j, har det brugerdefinerede vأ¦rktأ¸j forrang.
+
+For eksempel erstatter denne fil det indbyggede `bash` vأ¦rktأ¸j:
+
+```ts title=".opencode/tools/bash.ts"
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Restricted bash wrapper",
+  args: {
+    command: tool.schema.string(),
+  },
+  async execute(args) {
+    return `blocked: ${args.command}`
+  },
+})
+```
+
+:::note
+Foretrأ¦k unikke navne, medmindre du bevidst أ¸nsker at erstatte et indbygget vأ¦rktأ¸j. Hvis du vil deaktivere et indbygget vأ¦rktأ¸j, men ikke overskrive det, skal du bruge [tilladelser](/docs/permissions).
+:::
+
+---
+
+### Argumenter
+
+Du kan bruge `tool.schema`, som kun er [Zod](https://zod.dev), til at definere argumenttyper.
+
+```ts "tool.schema"
+args: {
+  query: tool.schema.string().describe("SQL query to execute")
+}
+```
+
+Du kan ogsأ¥ importere [Zod](https://zod.dev) direkte og returnere et almindeligt objekt:
+
+```ts {6}
+import { z } from "zod"
+
+export default {
+  description: "Tool description",
+  args: {
+    param: z.string().describe("Parameter description"),
+  },
+  async execute(args, context) {
+    // Tool implementation
+    return "result"
+  },
+}
+```
+
+---
+
+### Kontekst
+
+Vأ¦rktأ¸jer modtager kontekst om den aktuelle session:
+
+```ts title=".opencode/tools/project.ts" {8}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Get project information",
+  args: {},
+  async execute(args, context) {
+    // Access context information
+    const { agent, sessionID, messageID, directory, worktree } = context
+    return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}, Directory: ${directory}, Worktree: ${worktree}`
+  },
+})
+```
+
+Brug `context.directory` til sessionens arbejdsmappe.
+Brug `context.worktree` til git-arbejdstrأ¦ets rod.
+
+---
+
+## Eksempler
+
+### Skriv et vأ¦rktأ¸j i Python
+
+Du kan skrive dine vأ¦rktأ¸jer pأ¥ et hvilket som helst sprog, du أ¸nsker. Her er et eksempel, der tilfأ¸jer til tal ved hjأ¦lp af Python.
+
+Fأ¸rst skal du oprette vأ¦rktأ¸jet som et Python-script:
+
+```python title=".opencode/tools/add.py"
+import sys
+
+a = int(sys.argv[1])
+b = int(sys.argv[2])
+print(a + b)
+```
+
+Opret derefter vأ¦rktأ¸jsdefinitionen, der kalder den:
+
+```ts title=".opencode/tools/python-add.ts" {10}
+import { tool } from "@tera-system/plugin"
+import path from "path"
+
+export default tool({
+  description: "Add two numbers using Python",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args, context) {
+    const script = path.join(context.worktree, ".opencode/tools/add.py")
+    const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
+    return result.trim()
+  },
+})
+```
+
+Her bruger vi [`Bun.$`](https://bun.com/docs/runtime/shell)-vأ¦rktأ¸jet til at kأ¸re Python-scriptet.

@@ -1,0 +1,13 @@
+Total messages: 11 (Errors: 0, Warnings: 0)
+Returning 10 messages for level "info"
+
+[LOG] Line 1: Test line @ :1
+[LOG] Line 2: Another line @ :2
+[LOG] Line 3: Final line @ :3
+[LOG] # Test Document @ :2
+[LOG]  @ :3
+[LOG] This is a test paragraph with multiple lines. @ :4
+[LOG]  @ :5
+[LOG] ## Section 1 @ :6
+[LOG]  @ :7
+[LOG] Content of section 1 with some details. @ :8

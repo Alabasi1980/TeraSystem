@@ -1,0 +1,389 @@
+﻿---
+title: Plugins
+description: Skriv dine egne plugins for at udvide OpenCode.
+---
+
+Plugins giver dig mulighed for at udvide OpenCode ved at tilslutte sig forskellige begivenheder og tilpasse adfأ¦rd. Du kan oprette plugins for at tilfأ¸je nye funktioner, integrere med eksterne tjenester eller أ¦ndre OpenCodes standardadfأ¦rd.
+
+For eksempler, tjek [plugins](/docs/ecosystem#plugins) oprettet af fأ¦llesskabet.
+
+---
+
+## Brug af plugin
+
+Der er to mأ¥der at indlأ¦se plugins pأ¥.
+
+---
+
+### Fra lokale filer
+
+Placer JavaScript- eller TypeScript-filer i plugin-mappen.
+
+- `.opencode/plugins/` - Plugins pأ¥ projektniveau
+- `~/.config/opencode/plugins/` - Globale plugins
+
+Filer i disse mapper indlأ¦ses automatisk ved opstart.
+
+---
+
+### Fra npm
+
+Angiv npm-pakker i din konfigurationsfil.
+
+```json title="opencode.json"
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-helicone-session", "opencode-wakatime", "@my-org/custom-plugin"]
+}
+```
+
+Bأ¥de almindelige og omfangsrige npm-pakker understأ¸ttes.
+
+Gennemse tilgأ¦ngelige plugins i [ecosystem](/docs/ecosystem#plugins).
+
+---
+
+### Installation af plugins
+
+**npm plugins** installeres automatisk ved hjأ¦lp af Bun ved opstart. Pakker og deres afhأ¦ngigheder cachelagres i `~/.cache/opencode/node_modules/`.
+
+**Lokale plugins** indlأ¦ses direkte fra plugin-biblioteket. For at bruge eksterne pakker skal du oprette en `package.json` i din konfigurationsmappe (se [Dependencies](#dependencies)), eller udgive pluginnet til npm og [add it to your config](/docs/config#plugins).
+
+---
+
+### Indlأ¦sningsrأ¦kkefأ¸lge
+
+Plugins indlأ¦ses fra alle kilder, og alle hooks kأ¸rer i rأ¦kkefأ¸lge. Indlأ¦sningsrأ¦kkefأ¸lgen er:
+
+1. Global konfiguration (`~/.config/opencode/opencode.json`)
+2. Projektkonfiguration (`opencode.json`)
+3. Global plugin-mappe (`~/.config/opencode/plugins/`)
+4. Projekt plugin bibliotek (`.opencode/plugins/`)
+
+Dublerede npm-pakker med samme navn og version indlأ¦ses أ©n gang. Et lokalt plugin og et npm plugin med lignende navne indlأ¦ses dog hver for sig.
+
+---
+
+## Oprettelse af plugin
+
+Et plugin er et **JavaScript/TypeScript modul**, der eksporterer et eller flere plugin
+funktioner. Hver funktion modtager et kontekstobjekt og returnerer et hooks-objekt.
+
+---
+
+### Afhأ¦ngigheder
+
+Lokale plugins og brugerdefinerede vأ¦rktأ¸jer kan bruge eksterne npm-pakker. Tilfأ¸j en `package.json` til din konfigurationsmappe med de afhأ¦ngigheder, du har brug for.
+
+```json title=".opencode/package.json"
+{
+  "dependencies": {
+    "shescape": "^2.1.0"
+  }
+}
+```
+
+OpenCode kأ¸rer `bun install` ved opstart for at installere disse. Dine plugins og vأ¦rktأ¸jer kan derefter importere dem.
+
+```ts title=".opencode/plugins/my-plugin.ts"
+import { escape } from "shescape"
+
+export const MyPlugin = async (ctx) => {
+  return {
+    "tool.execute.before": async (input, output) => {
+      if (input.tool === "bash") {
+        output.args.command = escape(output.args.command)
+      }
+    },
+  }
+}
+```
+
+---
+
+### Grundlأ¦ggende struktur
+
+```js title=".opencode/plugins/example.js"
+export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
+  console.log("Plugin initialized!")
+
+  return {
+    // Hook implementations go here
+  }
+}
+```
+
+Plugin-funktionen modtager:
+
+- `project`: Den aktuelle projektinformation.
+- `directory`: Den aktuelle arbejdsmappe.
+- `worktree`: Git worktree-stien.
+- `client`: En opencode SDK klient til interaktion med AI.
+- `$`: Buns [shell API](https://bun.com/docs/runtime/shell) til udfأ¸relse af kommandoer.
+
+---
+
+### TypeScript-understأ¸ttelse
+
+For TypeScript-plugins kan du importere typer fra plugin-pakken:
+
+```ts title="my-plugin.ts" {1}
+import type { Plugin } from "@tera-system/plugin"
+
+export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
+  return {
+    // Type-safe hook implementations
+  }
+}
+```
+
+---
+
+### Begivenheder
+
+Plugins kan abonnere pأ¥ begivenheder som vist nedenfor i afsnittet Eksempler. Her er en liste over de forskellige arrangementer.
+
+#### Kommandohأ¦ndelser
+
+- `command.executed`
+
+#### Filhأ¦ndelser
+
+- `file.edited`
+- `file.watcher.updated`
+
+#### Installationshأ¦ndelser
+
+- `installation.updated`
+
+#### LSP-hأ¦ndelser
+
+- `lsp.client.diagnostics`
+- `lsp.updated`
+
+#### Beskedhأ¦ndelser
+
+- `message.part.removed`
+- `message.part.updated`
+- `message.removed`
+- `message.updated`
+
+#### Tilladelseshأ¦ndelser
+
+- `permission.asked`
+- `permission.replied`
+
+#### Serverhأ¦ndelser
+
+- `server.connected`
+
+#### Sessionshأ¦ndelser
+
+- `session.created`
+- `session.compacted`
+- `session.deleted`
+- `session.diff`
+- `session.error`
+- `session.idle`
+- `session.status`
+- `session.updated`
+
+#### Todo-hأ¦ndelser
+
+- `todo.updated`
+
+#### Shell-hأ¦ndelser
+
+- `shell.env`
+
+#### Vأ¦rktأ¸jshأ¦ndelser
+
+- `tool.execute.after`
+- `tool.execute.before`
+
+#### TUI-hأ¦ndelser
+
+- `tui.prompt.append`
+- `tui.command.execute`
+- `tui.toast.show`
+
+---
+
+## Eksempler
+
+Her er nogle eksempler pأ¥ plugins, du kan bruge til at udvide opencode.
+
+---
+
+### Send meddelelser
+
+Send meddelelser, nأ¥r visse hأ¦ndelser indtrأ¦ffer:
+
+```js title=".opencode/plugins/notification.js"
+export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
+  return {
+    event: async ({ event }) => {
+      // Send notification on session completion
+      if (event.type === "session.idle") {
+        await $`osascript -e 'display notification "Session completed!" with title "opencode"'`
+      }
+    },
+  }
+}
+```
+
+Vi bruger `osascript` til at kأ¸re AppleScript pأ¥ macOS. Her bruger vi det til at sende notifikationer.
+
+:::note
+Hvis du bruger OpenCode desktop-appen, kan den sende systemmeddelelser automatisk, nأ¥r et svar er klar, eller nأ¥r en session fejler.
+:::
+
+---
+
+### .env-beskyttelse
+
+Undgأ¥ opencode i at lأ¦se `.env` filer:
+
+```javascript title=".opencode/plugins/env-protection.js"
+export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
+  return {
+    "tool.execute.before": async (input, output) => {
+      if (input.tool === "read" && output.args.filePath.includes(".env")) {
+        throw new Error("Do not read .env files")
+      }
+    },
+  }
+}
+```
+
+---
+
+### Injicer miljأ¸variabler
+
+Injicer miljأ¸variabler i al shell-udfأ¸relse (AI-vأ¦rktأ¸jer og brugerterminaler):
+
+```javascript title=".opencode/plugins/inject-env.js"
+export const InjectEnvPlugin = async () => {
+  return {
+    "shell.env": async (input, output) => {
+      output.env.MY_API_KEY = "secret"
+      output.env.PROJECT_ROOT = input.cwd
+    },
+  }
+}
+```
+
+---
+
+### Brugerdefinerede vأ¦rktأ¸jer
+
+Plugins kan ogsأ¥ tilfأ¸je brugerdefinerede vأ¦rktأ¸jer til opencode:
+
+```ts title=".opencode/plugins/custom-tools.ts"
+import { type Plugin, tool } from "@tera-system/plugin"
+
+export const CustomToolsPlugin: Plugin = async (ctx) => {
+  return {
+    tool: {
+      mytool: tool({
+        description: "This is a custom tool",
+        args: {
+          foo: tool.schema.string(),
+        },
+        async execute(args, context) {
+          const { directory, worktree } = context
+          return `Hello ${args.foo} from ${directory} (worktree: ${worktree})`
+        },
+      }),
+    },
+  }
+}
+```
+
+`tool`-hjأ¦lperen opretter et brugerdefineret vأ¦rktأ¸j, som opencode kan kalde. Det tager en Zod-skemafunktion og returnerer en vأ¦rktأ¸jsdefinition med:
+
+- `description`: Hvad vأ¦rktأ¸jet gأ¸r
+- `args`: Zod-skema for vأ¦rktأ¸jets argumenter
+- `execute`: Funktion, der kأ¸rer, nأ¥r vأ¦rktأ¸jet kaldes
+
+Dine tilpassede vأ¦rktأ¸jer vil vأ¦re tilgأ¦ngelige for opencode sammen med indbyggede vأ¦rktأ¸jer.
+
+:::note
+Hvis et plugin-vأ¦rktأ¸j bruger samme navn som et indbygget vأ¦rktأ¸j, har plugin-vأ¦rktأ¸jet forrang.
+:::
+
+---
+
+### Logning
+
+Brug `client.app.log()` i stedet for `console.log` til struktureret logning:
+
+```ts title=".opencode/plugins/my-plugin.ts"
+export const MyPlugin = async ({ client }) => {
+  await client.app.log({
+    body: {
+      service: "my-plugin",
+      level: "info",
+      message: "Plugin initialized",
+      extra: { foo: "bar" },
+    },
+  })
+}
+```
+
+Niveauer: `debug`, `info`, `warn`, `error`. Se [SDK documentation](https://opencode.ai/docs/sdk) for detaljer.
+
+---
+
+### Komprimerings-hooks
+
+Tilpas konteksten inkluderet, nأ¥r en session komprimeres:
+
+```ts title=".opencode/plugins/compaction.ts"
+import type { Plugin } from "@tera-system/plugin"
+
+export const CompactionPlugin: Plugin = async (ctx) => {
+  return {
+    "experimental.session.compacting": async (input, output) => {
+      // Inject additional context into the compaction prompt
+      output.context.push(`
+## Custom Context
+
+Include any state that should persist across compaction:
+- Current task status
+- Important decisions made
+- Files being actively worked on
+`)
+    },
+  }
+}
+```
+
+`experimental.session.compacting` krogen affyres, fأ¸r LLM genererer en fortsأ¦ttelsesoversigt. Brug den til at injicere domأ¦nespecifik kontekst, som standardkomprimeringsprompten ville gأ¥ glip af.
+
+Du kan ogsأ¥ erstatte komprimeringsprompten helt ved at indstille `output.prompt`:
+
+```ts title=".opencode/plugins/custom-compaction.ts"
+import type { Plugin } from "@tera-system/plugin"
+
+export const CustomCompactionPlugin: Plugin = async (ctx) => {
+  return {
+    "experimental.session.compacting": async (input, output) => {
+      // Replace the entire compaction prompt
+      output.prompt = `
+You are generating a continuation prompt for a multi-agent swarm session.
+
+Summarize:
+1. The current task and its status
+2. Which files are being modified and by whom
+3. Any blockers or dependencies between agents
+4. The next steps to complete the work
+
+Format as a structured prompt that a new agent can use to resume work.
+`
+    },
+  }
+}
+```
+
+Nأ¥r `output.prompt` er indstillet, erstatter den standardkompressionsprompten fuldstأ¦ndigt. `output.context`-arrayet ignoreres i dette tilfأ¦lde.

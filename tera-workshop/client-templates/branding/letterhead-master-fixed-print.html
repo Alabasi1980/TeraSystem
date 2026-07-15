@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teranoo Letterhead Fixed Print</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .print-table thead,
+        .print-table tfoot {
+            background: #fff;
+        }
+
+        .print-table thead td,
+        .print-table tfoot td,
+        .print-table tbody td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .page-header,
+        .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+
+        .page-header img,
+        .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .document {
+            padding: 0 var(--page-padding-x);
+        }
+
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+
+        .doc__top strong {
+            color: var(--ink);
+        }
+
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+
+        .field {
+            display: flex;
+            gap: 2mm;
+            align-items: baseline;
+        }
+
+        .field__label {
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        .field__value {
+            flex: 1;
+            min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+
+        .doc__recipient {
+            margin-top: 4mm;
+            font-size: 10.3pt;
+            line-height: 1.6;
+        }
+
+        .doc__recipient p,
+        .doc__body p {
+            margin: 0 0 2.4mm;
+        }
+
+        .doc__body {
+            margin-top: 2mm;
+            font-size: 10.7pt;
+        }
+
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+        }
+
+        .doc__body ul {
+            margin: 0 0 2.4mm;
+            padding: 0 5mm 0 0;
+        }
+
+        .doc__body li {
+            margin-bottom: 1.4mm;
+        }
+
+        .no-break {
+            break-inside: avoid-page;
+            page-break-inside: avoid;
+        }
+
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+
+        .sign-box {
+            flex: 1;
+        }
+
+        .sign-box__label {
+            margin-bottom: 6mm;
+            font-size: 10.2pt;
+            font-weight: 700;
+        }
+
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            .print-page {
+                width: 100%;
+                min-height: 0;
+                margin: 0;
+                box-shadow: none;
+                overflow: visible;
+            }
+
+            .print-table {
+                width: 100%;
+                min-height: 0;
+            }
+
+            .print-table thead {
+                display: table-header-group;
+            }
+
+            .print-table tfoot {
+                display: table-footer-group;
+            }
+
+            .print-table tbody {
+                display: table-row-group;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/04</div>
+                <div><strong>الرقم:</strong> TDS-LET-2026-001</div>
+            </div>
+
+            <div class="doc__chip">خطاب رسمي</div>
+
+            <p class="doc__subject">الموضوع: نموذج كتاب رسمي متعدد الصفحات للطباعة المؤسسية</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">السادة / ............................................................</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">عناية:</span>
+                    <span class="field__value">............................................................</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المرجع:</span>
+                    <span class="field__value">............................................................</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المرفقات:</span>
+                    <span class="field__value">............................................................</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+                <p>هذه النسخة تعتمد على منطق طباعة أكثر ثباتًا من الاعتماد على مكتبة خارجية في بيئة ملف محلي. الفكرة هنا أن الترويسة والتذييل يتم تثبيتهما أثناء الطباعة، بينما يبقى متن الكتاب متدفقًا بشكل طبيعي على عدد الصفحات المطلوب.</p>
+                <p>بهذا الشكل، إذا زاد طول الكتاب على صفحة واحدة، ينتقل النص تلقائيًا إلى الصفحة التالية، مع بقاء الهوية البصرية في الأعلى والأسفل في كل صفحة مطبوعة، بشرط أن يكون المتصفح المستخدم يدعم تكرار العناصر الثابتة في الطباعة كما هو متوقع في Chrome وEdge غالبًا.</p>
+
+                <h3>متى يكون هذا الخيار أفضل</h3>
+                <p>هذا الخيار أفضل عندما يكون المطلوب قالب طباعة مؤسسي يعمل مباشرة من ملف HTML محلي، بدون الاعتماد على تحميل مكتبة من الإنترنت أو انتظار polyfill ليتحكم في تقسيم الصفحات داخل المعاينة.</p>
+
+                <h3>قواعد الاستخدام</h3>
+                <ul>
+                    <li>ضع كل متن الكتاب داخل هذا القسم فقط.</li>
+                    <li>لا تستخدم عناصر بتموضع مطلق داخل متن المستند.</li>
+                    <li>طبّق الفئة <code>no-break</code> على كتل التوقيع أو أي جزء لا يجب أن ينكسر.</li>
+                    <li>إذا كان لديك جدول طويل جدًا، فالأفضل تصميم نسخة طباعة مخصصة له.</li>
+                </ul>
+
+                <h3>نص تجريبي طويل</h3>
+                <p>نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر. نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر.</p>
+                <p>نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر. نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر.</p>
+                <p>نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر. نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر.</p>
+                <p>نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر. نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر.</p>
+                <p>نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر. نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر.</p>
+                <p>نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر. نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر.</p>
+                <p>نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر. نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر.</p>
+                <p>نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر. نود الإشارة إلى أن هذا النص مكرر لأغراض الفحص البصري فقط، وهو موجود هنا للتأكد من أن المحتوى عند امتداده إلى أكثر من صفحة سيبقى منظمًا ولن يصطدم مع الهيدر أو الفوتر.</p>
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">الاسم والتوقيع</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">الختم</div>
+                    <div class="sign-box__line">.......................................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

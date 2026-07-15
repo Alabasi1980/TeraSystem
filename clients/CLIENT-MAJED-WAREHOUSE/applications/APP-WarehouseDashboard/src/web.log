@@ -1,0 +1,117 @@
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (22ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (16ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20405]
+      No migrations were applied. The database is already up to date.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\HAE_Stores\TeraSystem\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (23ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [a].[Id], [a].[PasswordHash], [a].[UpdatedAt]
+      FROM [AdminPassword] AS [a]
+      ORDER BY [a].[Id]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      ORDER BY [t].[OracleSource]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (29ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      WHERE [t].[Id] = @__p_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      ORDER BY [t].[OracleSource]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      WHERE [t].[Id] = @__p_0
+fail: WarehouseDashboard.Web.Pages.AdminSecurePanel.TableMappingsModel[0]
+      Failed to apply schema for mapping 1.
+      System.InvalidOperationException: No columns found for Oracle source 'select ITEM_CODE,ITEM_DESC,ITEM_DESC_E,UNIT_CODE,GROUP_CODE  from ST_ITEM_CARD where ITEM_CODE like '03%''. Check that the source exists and the Oracle connection is working.
+         at WarehouseDashboard.Web.Services.SchemaManagementService.CreateTableFromOracleAsync(String oracleSource, String targetTable, String sourceType, CancellationToken ct) in D:\HAE_Stores\TeraSystem\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Services\SchemaManagementService.cs:line 42
+         at WarehouseDashboard.Web.Pages.AdminSecurePanel.TableMappingsModel.OnPostApplySchemaAsync(Int32 id) in D:\HAE_Stores\TeraSystem\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Pages\admin-secure-panel\TableMappings\Index.cshtml.cs:line 245
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      ORDER BY [t].[OracleSource]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      WHERE [t].[Id] = @__p_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (13ms) [Parameters=[@p2='?' (DbType = Int32), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [TableMappings] SET [IsActive] = @p0, [UpdatedAt] = @p1
+      OUTPUT 1
+      WHERE [Id] = @p2;
+info: WarehouseDashboard.Web.Pages.AdminSecurePanel.TableMappingsModel[0]
+      Table mapping 1 تعطيل.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      ORDER BY [t].[OracleSource]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      WHERE [t].[Id] = @__p_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[@p2='?' (DbType = Int32), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [TableMappings] SET [IsActive] = @p0, [UpdatedAt] = @p1
+      OUTPUT 1
+      WHERE [Id] = @p2;
+info: WarehouseDashboard.Web.Pages.AdminSecurePanel.TableMappingsModel[0]
+      Table mapping 1 تفعيل.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      ORDER BY [t].[OracleSource]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      WHERE [t].[Id] = @__p_0
+fail: WarehouseDashboard.Web.Pages.AdminSecurePanel.TableMappingsModel[0]
+      Failed to apply schema for mapping 1.
+      System.InvalidOperationException: No columns found for Oracle source 'select ITEM_CODE,ITEM_DESC,ITEM_DESC_E,UNIT_CODE,GROUP_CODE  from ST_ITEM_CARD where ITEM_CODE like '03%''. Check that the source exists and the Oracle connection is working.
+         at WarehouseDashboard.Web.Services.SchemaManagementService.CreateTableFromOracleAsync(String oracleSource, String targetTable, String sourceType, CancellationToken ct) in D:\HAE_Stores\TeraSystem\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Services\SchemaManagementService.cs:line 42
+         at WarehouseDashboard.Web.Pages.AdminSecurePanel.TableMappingsModel.OnPostApplySchemaAsync(Int32 id) in D:\HAE_Stores\TeraSystem\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Pages\admin-secure-panel\TableMappings\Index.cshtml.cs:line 245
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IsActive], [t].[LastSyncAt], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncRecordCount], [t].[UpdatedAt]
+      FROM [TableMappings] AS [t]
+      ORDER BY [t].[OracleSource]

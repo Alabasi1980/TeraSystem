@@ -1,0 +1,33 @@
+﻿<Application x:Class="TeraQuotation.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:TeraQuotation.Converters"
+             xmlns:local="clr-namespace:TeraQuotation">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- HandyControl themes -->
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+
+                <!-- TeraQuotation Design System Resources -->
+                <!-- DesignTokens MUST be first (all styles depend on it) -->
+                <ResourceDictionary Source="Resources/DesignTokens.xaml"/>
+                <ResourceDictionary Source="Resources/ButtonStyles.xaml"/>
+                <ResourceDictionary Source="Resources/CardStyles.xaml"/>
+                <ResourceDictionary Source="Resources/FieldStyles.xaml"/>
+                <ResourceDictionary Source="Resources/StatusBadgeStyles.xaml"/>
+                <ResourceDictionary Source="Resources/EmptyStateStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Built-in BooleanToVisibilityConverter -->
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+            <!-- Custom converters -->
+            <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
+            <converters:NullToVisibilityConverter x:Key="NullToVis"/>
+            <converters:StatusToBrushConverter x:Key="StatusToBrushConverter"/>
+            <converters:InverseNullToBoolConverter x:Key="InverseNullToBoolConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

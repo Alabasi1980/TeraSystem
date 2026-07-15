@@ -1,0 +1,147 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.IndexModel
+@{
+    ViewData["Title"] = "لوحة الإدارة";
+}
+
+<style>
+    .wd-nav-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--sp-6);
+        margin-top: var(--sp-6);
+    }
+
+    .wd-nav-card {
+        display: flex;
+        flex-direction: column;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        padding: var(--sp-6);
+        text-decoration: none;
+        color: var(--c-text);
+        transition: box-shadow var(--dur-norm) var(--ease), transform var(--dur-norm) var(--ease), border-color var(--dur-norm) var(--ease);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .wd-nav-card:nth-child(2) { animation-delay: 60ms; }
+    .wd-nav-card:nth-child(3) { animation-delay: 120ms; }
+    .wd-nav-card:nth-child(4) { animation-delay: 180ms; }
+    .wd-nav-card:nth-child(5) { animation-delay: 240ms; }
+
+    .wd-nav-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+        border-color: var(--c-secondary);
+    }
+
+    .wd-nav-card__icon {
+        width: 52px;
+        height: 52px;
+        border-radius: var(--radius-md);
+        background: var(--c-surface-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        margin-bottom: var(--sp-4);
+        transition: background var(--dur-fast) var(--ease);
+    }
+
+    .wd-nav-card:hover .wd-nav-card__icon {
+        background: rgba(46, 109, 164, 0.12);
+    }
+
+    .wd-nav-card__title {
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0 0 var(--sp-2);
+        color: var(--c-text);
+    }
+
+    .wd-nav-card__desc {
+        font-size: 14px;
+        color: var(--c-text-muted);
+        margin: 0;
+        flex: 1;
+    }
+
+    .wd-nav-card__arrow {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-top: var(--sp-4);
+        color: var(--c-text-muted);
+        font-size: 18px;
+        transition: color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+    }
+
+    .wd-nav-card:hover .wd-nav-card__arrow {
+        color: var(--c-primary);
+        transform: translateX(-4px);
+    }
+
+    @@media (max-width: 992px) {
+        .wd-nav-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @@media (max-width: 600px) {
+        .wd-nav-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="wd-breadcrumb-row">
+    <span>لوحة الإدارة</span>
+</div>
+
+<div class="wd-page-head">
+    <h2 class="wd-page-title">لوحة الإدارة</h2>
+</div>
+
+<div class="wd-nav-grid">
+    <a href="/admin-secure-panel/Cards" class="wd-nav-card">
+        <div class="wd-nav-card__icon">&#128202;</div>
+        <h3 class="wd-nav-card__title">إدارة البطاقات</h3>
+        <p class="wd-nav-card__desc">إنشاء وتعديل وحذف بطاقات لوحة المعلومات</p>
+        <div class="wd-nav-card__arrow">&#8594;</div>
+    </a>
+
+    <a href="/admin-secure-panel/QueryTester" class="wd-nav-card">
+        <div class="wd-nav-card__icon">&#128269;</div>
+        <h3 class="wd-nav-card__title">مختبر الاستعلامات</h3>
+        <p class="wd-nav-card__desc">اختبار استعلام SQL للقراءة فقط</p>
+        <div class="wd-nav-card__arrow">&#8594;</div>
+    </a>
+
+    <a href="/admin-secure-panel/DrillDown" class="wd-nav-card">
+        <div class="wd-nav-card__icon">&#128279;</div>
+        <h3 class="wd-nav-card__title">تكوين التنقّل العميق</h3>
+        <p class="wd-nav-card__desc">إدارة مستويات التنقّل العميق لكل بطاقة</p>
+        <div class="wd-nav-card__arrow">&#8594;</div>
+    </a>
+
+    <a href="/admin-secure-panel/SyncLogs" class="wd-nav-card">
+        <div class="wd-nav-card__icon">&#128203;</div>
+        <h3 class="wd-nav-card__title">سجلات المزامنة</h3>
+        <p class="wd-nav-card__desc">عرض سجلات المزامنة الأخيرة</p>
+        <div class="wd-nav-card__arrow">&#8594;</div>
+    </a>
+
+    <a href="/admin-secure-panel/SyncSettings" class="wd-nav-card">
+        <div class="wd-nav-card__icon">&#9881;&#65039;</div>
+        <h3 class="wd-nav-card__title">إعدادات المزامنة</h3>
+        <p class="wd-nav-card__desc">تكوين فاصل المزامنة والتشغيل التلقائي</p>
+        <div class="wd-nav-card__arrow">&#8594;</div>
+    </a>
+
+    <a href="/admin-secure-panel/TableMappings" class="wd-nav-card">
+        <div class="wd-nav-card__icon">&#128203;</div>
+        <h3 class="wd-nav-card__title">تعيينات الجداول</h3>
+        <p class="wd-nav-card__desc">إدارة مصادر Oracle والجدول المرتبطة في SQL Server</p>
+        <div class="wd-nav-card__arrow">&#8594;</div>
+    </a>
+</div>

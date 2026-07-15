@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطاب تأكيد النطاق - شركة العمران الحديثة للمقاولات</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .print-table thead,
+        .print-table tfoot { background: #fff; }
+
+        .print-table thead td,
+        .print-table tfoot td,
+        .print-table tbody td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .page-header,
+        .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+
+        .page-header img,
+        .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .document {
+            padding: 0 var(--page-padding-x);
+        }
+
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+        .doc__top strong { color: var(--ink); }
+
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+
+        .field {
+            display: flex;
+            gap: 2mm;
+            align-items: baseline;
+        }
+        .field__label {
+            white-space: nowrap;
+            font-weight: 700;
+        }
+        .field__value {
+            flex: 1;
+            min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+
+        .doc__recipient {
+            margin-top: 4mm;
+            font-size: 10.3pt;
+            line-height: 1.6;
+        }
+
+        .doc__recipient p,
+        .doc__body p { margin: 0 0 2.4mm; }
+
+        .doc__body {
+            margin-top: 2mm;
+            font-size: 10.7pt;
+        }
+
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+        }
+
+        .doc__body ul {
+            margin: 0 0 2.4mm;
+            padding: 0 5mm 0 0;
+        }
+        .doc__body li { margin-bottom: 1.4mm; }
+
+        .no-break {
+            break-inside: avoid-page;
+            page-break-inside: avoid;
+        }
+
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+
+        .sign-box { flex: 1; }
+        .sign-box__label {
+            margin-bottom: 6mm;
+            font-size: 10.2pt;
+            font-weight: 700;
+        }
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+
+        .scope-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2mm 0;
+            font-size: 10pt;
+        }
+
+        .scope-table th,
+        .scope-table td {
+            border: 1px solid var(--line);
+            padding: 1.5mm 2mm;
+            text-align: right;
+        }
+
+        .scope-table th {
+            background: var(--soft);
+            font-weight: 700;
+        }
+
+        .tag-green {
+            display: inline-block;
+            padding: 0.3mm 3mm;
+            background: #e4f4e6;
+            color: #1a7230;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 700;
+        }
+        .tag-red {
+            display: inline-block;
+            padding: 0.3mm 3mm;
+            background: #fde8e8;
+            color: #b91c1c;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 700;
+        }
+        .tag-amber {
+            display: inline-block;
+            padding: 0.3mm 3mm;
+            background: #fef3cd;
+            color: #856404;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 700;
+        }
+        .tag-blue {
+            display: inline-block;
+            padding: 0.3mm 3mm;
+            background: #e0edfc;
+            color: #1a56db;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 700;
+        }
+
+        @media print {
+            body { background: #fff; }
+            .print-page {
+                width: 100%;
+                min-height: 0;
+                margin: 0;
+                box-shadow: none;
+                overflow: visible;
+            }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="../../../../branding/header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="../../../../branding/footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/06</div>
+                <div><strong>الرقم:</strong> SCL-2026-001</div>
+            </div>
+
+            <div class="doc__chip">خطاب تأكيد نطاق العمل — Scope Confirmation Letter</div>
+
+            <p class="doc__subject">الموضوع: تأكيد نطاق العمل للمرحلة الأولى — منظومة إدارة طلبات المصنع</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">شركة العمران الحديثة للمقاولات</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">عناية:</span>
+                    <span class="field__value">م. سامر الخطيب — مدير المصنع</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المرجع:</span>
+                    <span class="field__value">جلسات الاكتشاف والتحليل — تموز 2026</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">نسخة إلى:</span>
+                    <span class="field__value">م. نادر العواملة — المدير التنفيذي</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة شركة العمران الحديثة للمقاولات المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+
+                <p>بناءً على سلسلة جلسات الاكتشاف والتحليل التي جرت بيننا في بداية شهر تموز 2026، يسرنا أن نؤكد لكم نطاق العمل المتفق عليه للمرحلة الأولى من مشروع <strong>«منظومة إدارة طلبات المصنع»</strong>، وذلك لتأكيد الفهم المشترك قبل الانتقال إلى مرحلة التسعير والبدء في التنفيذ.</p>
+
+                <p>نؤكد أن هذه الوثيقة هي <strong>لتأكيد النطاق فقط</strong>، وليست عرض سعر أو عقداً ملزماً، وسيتم إعداد عرض السعر الرسمي بعد التوقيع على هذا التأكيد.</p>
+
+                <!-- ===== النطاق المعتمد ===== -->
+                <h3>أولاً: نطاق المرحلة الأولى — داخل النطاق <span class="tag-green">معتمد</span></h3>
+
+                <table class="scope-table">
+                    <thead>
+                        <tr>
+                            <th style="width:5%">#</th>
+                            <th style="width:35%">المكون</th>
+                            <th style="width:45%">التفاصيل</th>
+                            <th style="width:15%">الأولوية</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>دخول فردي</td>
+                            <td>اسم مستخدم + كلمة سر لكل موظف، تسجيل دخول آمن</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>3 أدوار صلاحيات</td>
+                            <td>مدخل طلب (يرى طلبات مشروعه فقط) / مشرف مصنع (يرى كل الطلبات النشطة) / مدير (يرى الكل + تقارير)</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>إنشاء طلب</td>
+                            <td>مع إرفاق مخططات/قياسات، رقم طلب فريد، تاريخ التسليم المطلوب، أولوية</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>5 مراحل رئيسية</td>
+                            <td>طلب جديد ← قيد التجهيز ← قيد التصنيع ← فحص الجودة ← تم التسليم</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>حالة "معلق" مع أسباب</td>
+                            <td>مع 4 أسباب محددة: ناقص مخطط، ناقص مادة، بانتظار موافقة المشروع، بانتظار مقاس/زيارة موقع</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>تحديث حالة الطلب</td>
+                            <td>مشرف المصنع يحدّث المرحلة يدوياً</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>تسليم الطلب</td>
+                            <td>زر تسليم + تاريخ واسم المسلّم</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>لوحة متابعة (Dashboard)</td>
+                            <td>جميع الطلبات + أوضاعها بالألوان (جاهز / تحت التصنيع / متأخر / معلق)</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>ساعات العمل</td>
+                            <td>إجمالي ساعات الفريق على الطلب (يدخلها المشرف)</td>
+                            <td><span class="tag-amber">أولوية 2</span></td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>صرف مواد</td>
+                            <td>إدخال المواد المستخدمة: الاسم، الكمية، التكلفة التقريبية</td>
+                            <td><span class="tag-amber">أولوية 2</span></td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>مصاريف إضافية</td>
+                            <td>خانة واحدة لأي تكلفة خارجية (دهان، نقل، شغل خارجي)</td>
+                            <td><span class="tag-amber">أولوية 2</span></td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>تسجيل إجراءات (Audit)</td>
+                            <td>التاريخ + الوقت + اسم الموظف لكل: إنشاء طلب، تغيير حالة، إضافة تكلفة، تسليم</td>
+                            <td><span class="tag-amber">أولوية 2</span></td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>واجهة مستخدم متجاوبة</td>
+                            <td>يعمل على Chrome (كمبيوتر + جوال)</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>استضافة + دومين + نسخ احتياطي</td>
+                            <td>استضافة أردنية خارجية مع نسخ احتياطي تلقائي، دومين باسم الشركة/المصنع</td>
+                            <td><span class="tag-green">أولوية 1</span></td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>شعار الشركة</td>
+                            <td>استخدام اسم الشركة مؤقتاً إلى أن يتم تزويدنا بالشعار الرسمي</td>
+                            <td><span class="tag-blue">أولوية 3</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- ===== خارج النطاق ===== -->
+                <h3>ثانياً: خارج نطاق المرحلة الأولى <span class="tag-red">غير مشمول</span></h3>
+                <p>المكونات التالية غير مشمولة في المرحلة الأولى صراحةً، ويجوز إضافتها في مراحل لاحقة:</p>
+                <table class="scope-table">
+                    <thead>
+                        <tr>
+                            <th style="width:40%">المكون</th>
+                            <th style="width:30%">السبب</th>
+                            <th style="width:30%">المرحلة المتوقعة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>إشعارات داخل النظام</td><td>يزيد تعقيد MVP</td><td><span class="tag-blue">Phase 2</span></td></tr>
+                        <tr><td>تقرير الطلبات المتأخرة</td><td>تقرير إضافي — خارج الميزانية الحالية</td><td><span class="tag-blue">Phase 2</span></td></tr>
+                        <tr><td>تقرير التكلفة التفصيلية</td><td>يحتاج بيانات متراكمة أولاً</td><td><span class="tag-blue">Phase 2</span></td></tr>
+                        <tr><td>مقارنة تكلفة مخطط vs فعلي</td><td>يحتاج بيانات متراكمة — العميل مهتم بها لاحقاً</td><td><span class="tag-blue">Phase 2</span></td></tr>
+                        <tr><td>تفصيل ساعات العمال (كل عامل)</td><td>نبدأ بإجمالي الفريق — تفصيل لاحقاً</td><td><span class="tag-blue">Phase 2</span></td></tr>
+                        <tr><td>إشعارات واتساب</td><td>يحتاج تكامل خارجي — العميل يراها مفيدة لكن غير مستعجلة</td><td><span class="tag-amber">Phase 3</span></td></tr>
+                        <tr><td>الربط مع المخازن والمحاسبة والمشتريات</td><td>يزيد تعقيد MVP بشكل كبير</td><td><span class="tag-amber">Phase 3</span></td></tr>
+                        <tr><td>تطبيق جوال منفصل</td><td>Web responsive يكفي حالياً</td><td><span class="tag-amber">غير محدد</span></td></tr>
+                    </tbody>
+                </table>
+
+                <!-- ===== الشروط التجارية ===== -->
+                <h3>ثالثاً: الشروط التجارية المتفق عليها <span class="tag-green">مبدئياً</span></h3>
+                <table class="scope-table">
+                    <thead>
+                        <tr>
+                            <th style="width:35%">البند</th>
+                            <th style="width:65%">التفاصيل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>مدة الضمان</td>
+                            <td>3 أشهر من تاريخ التسليم النهائي (تغطية الأخطاء والمشاكل التقنية)</td>
+                        </tr>
+                        <tr>
+                            <td>الدعم الشهري بعد الضمان</td>
+                            <td>30–50 JOD شهرياً — يشمل إصلاح أخطاء، متابعة توقف، مساعدة مستخدمين، تعديلات بسيطة جداً. استجابة 24–48 ساعة حسب المشكلة. الميزات الجديدة أو الشاشات الجديدة بتكلفة مستقلة.</td>
+                        </tr>
+                        <tr>
+                            <td>نظام الدفع</td>
+                            <td>30% بداية العمل ← 40% عند تجربة النسخة الأولى ← 30% عند التسليم النهائي</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- ===== النقاط المعلقة ===== -->
+                <h3>رابعاً: نقاط بحاجة تأكيد إضافي <span class="tag-amber">معلقة</span></h3>
+                <table class="scope-table">
+                    <thead>
+                        <tr>
+                            <th style="width:35%">النقطة</th>
+                            <th style="width:45%">الوضع</th>
+                            <th style="width:20%">المسؤول</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>الدومين</td>
+                            <td>هل يوجد دومين حالي للشركة يمكن استخدامه؟ الاسم المقترح: <strong>alomran-factory.com</strong> أو باسم الشركة</td>
+                            <td>الإدارة / قسم IT</td>
+                        </tr>
+                        <tr>
+                            <td>مزود الاستضافة</td>
+                            <td>تفويض الاختيار لشركة Teranoo — سيتم اختيار الأنسب (Supernova / Planet) بناءً على الاستقرار والسعر والنسخ الاحتياطي</td>
+                            <td>Teranoo</td>
+                        </tr>
+                        <tr>
+                            <td>الشعار</td>
+                            <td>موجود — بانتظار تزويدنا بالملف من الإدارة/التسويق. إلى حينها، نستخدم اسم الشركة مؤقتاً</td>
+                            <td>م. سامر الخطيب</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p style="margin-top: 4mm; padding: 2mm 3mm; background: #fef3cd; border-radius: 4px; font-size: 10pt;">
+                    <strong>ملاحظة مهمة:</strong> هذه الوثيقة هي <strong>لتأكيد نطاق العمل فقط</strong>. سيتم إعداد عرض السعر الرسمي (Level 2 Quotation) بعد التوقيع على هذا التأكيد. التوقيع على هذه الوثيقة لا يُلزم أي من الطرفين مالياً، لكنه يُعتبر موافقة على النطاق المذكور.
+                </p>
+
+                <p style="margin-top: 3mm;">نأمل منكم مراجعة النطاق أعلاه وإعلامنا بأي تعديلات أو استفسارات. للتوقيع على ما ورد أعلاه، يرجى التوقيع في الخانة المخصصة أدناه.</p>
+
+                <p>وتفضلوا بقبول فائق الاحترام،</p>
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">جهة التنفيذ — Teranoo</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                    <div class="sign-box__line">التاريخ: .......................................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">العميل — شركة العمران الحديثة للمقاولات</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                    <div class="sign-box__line">التاريخ: .......................................</div>
+                    <div class="sign-box__line" style="margin-top:3mm;">الختم: .......................................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

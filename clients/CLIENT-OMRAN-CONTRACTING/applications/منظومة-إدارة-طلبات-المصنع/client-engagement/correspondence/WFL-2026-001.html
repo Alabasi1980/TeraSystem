@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطاب آلية عمل التطبيق - شركة العمران الحديثة للمقاولات</title>
+    <style>
+        :root {
+            --page-width: 210mm;
+            --page-height: 297mm;
+            --page-padding-x: 16mm;
+            --header-height: 34mm;
+            --header-gap: 7mm;
+            --footer-height: 20mm;
+            --footer-gap: 7mm;
+            --ink: #17233c;
+            --muted: #5c6784;
+            --line: #dfe6f2;
+            --soft: #f8faff;
+            --screen-bg: #eef2f7;
+            --screen-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        }
+
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+
+        body {
+            background: var(--screen-bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            line-height: 1.75;
+        }
+
+        .print-page {
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 16px auto;
+            background: #fff;
+            box-shadow: var(--screen-shadow);
+            overflow: hidden;
+        }
+
+        .print-table {
+            width: 100%;
+            min-height: var(--page-height);
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .print-table thead, .print-table tfoot { background: #fff; }
+        .print-table thead td, .print-table tfoot td, .print-table tbody td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .page-header, .page-footer {
+            padding-right: var(--page-padding-x);
+            padding-left: var(--page-padding-x);
+            background: #fff;
+        }
+
+        .page-header {
+            height: calc(var(--header-height) + var(--header-gap));
+            padding-top: 2mm;
+            padding-bottom: var(--header-gap);
+        }
+
+        .page-footer {
+            height: calc(var(--footer-height) + var(--footer-gap));
+            padding-top: var(--footer-gap);
+            padding-bottom: 2mm;
+        }
+
+        .page-header img, .page-footer img {
+            width: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .document { padding: 0 var(--page-padding-x); }
+
+        .doc__top {
+            display: flex;
+            justify-content: space-between;
+            gap: 6mm;
+            font-size: 10pt;
+            color: var(--muted);
+        }
+        .doc__top strong { color: var(--ink); }
+
+        .doc__chip {
+            display: flex;
+            width: fit-content;
+            justify-content: center;
+            margin: 3mm auto 0;
+            padding: 1.4mm 6mm;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--soft);
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+
+        .doc__subject {
+            margin: 3.5mm 0 0;
+            padding-bottom: 2.2mm;
+            border-bottom: 1px solid #e7edf7;
+            font-size: 11.5pt;
+            font-weight: 700;
+        }
+
+        .doc__meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2mm 6mm;
+            margin-top: 3mm;
+            font-size: 10pt;
+        }
+
+        .field {
+            display: flex;
+            gap: 2mm;
+            align-items: baseline;
+        }
+        .field__label { white-space: nowrap; font-weight: 700; }
+        .field__value {
+            flex: 1;
+            min-width: 0;
+            padding-bottom: 0.6mm;
+            border-bottom: 1px dotted #cbd6e8;
+            color: var(--muted);
+        }
+
+        .doc__recipient { margin-top: 4mm; font-size: 10.3pt; line-height: 1.6; }
+        .doc__recipient p, .doc__body p { margin: 0 0 2.4mm; }
+
+        .doc__body { margin-top: 2mm; font-size: 10.7pt; }
+
+        .doc__body h3 {
+            margin: 5mm 0 2mm;
+            font-size: 10.8pt;
+            break-after: avoid-page;
+            page-break-after: avoid;
+            padding: 1.5mm 0;
+        }
+
+        .doc__body h4 {
+            margin: 3.5mm 0 1.5mm;
+            font-size: 10.5pt;
+            break-after: avoid-page;
+        }
+
+        .doc__body ul {
+            margin: 0 0 2.4mm;
+            padding: 0 5mm 0 0;
+        }
+        .doc__body li { margin-bottom: 1.4mm; }
+
+        .no-break { break-inside: avoid-page; page-break-inside: avoid; }
+
+        .doc__sign {
+            display: flex;
+            gap: 10mm;
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e7edf7;
+        }
+
+        .sign-box { flex: 1; }
+        .sign-box__label { margin-bottom: 6mm; font-size: 10.2pt; font-weight: 700; }
+        .sign-box__line {
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px solid #9aa7c2;
+            color: var(--muted);
+            font-size: 9.7pt;
+        }
+
+        .flow-step {
+            margin: 3mm 0;
+            padding: 2mm 4mm;
+            border-radius: 4px;
+            border-right: 3px solid;
+        }
+
+        .step-1 { background: #f0f7ff; border-right-color: #1a56db; }
+        .step-2 { background: #f3faf3; border-right-color: #1a7230; }
+        .step-3 { background: #fffbeb; border-right-color: #856404; }
+        .step-4 { background: #fef2f2; border-right-color: #b91c1c; }
+        .step-5 { background: #f5f3ff; border-right-color: #6d28d9; }
+        .step-6 { background: #ecfdf5; border-right-color: #047857; }
+        .step-7 { background: #f8fafc; border-right-color: #475569; }
+
+        .flow-step strong { display: block; margin-bottom: 1mm; font-size: 10.8pt; }
+        .flow-step ul { margin: 1mm 0 0; padding: 0 4mm 0 0; }
+        .flow-step li { margin-bottom: 0.8mm; font-size: 10.3pt; }
+
+        .role-badge {
+            display: inline-block;
+            padding: 0.3mm 2.5mm;
+            border-radius: 3px;
+            font-size: 9pt;
+            font-weight: 700;
+        }
+        .role-requester { background: #dbeafe; color: #1e3a8a; }
+        .role-supervisor { background: #dcfce7; color: #166534; }
+        .role-manager { background: #f3e8ff; color: #581c87; }
+
+        .stage-flow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2mm;
+            margin: 2mm 0;
+            padding: 2mm;
+            background: var(--soft);
+            border-radius: 4px;
+        }
+
+        .stage-item {
+            flex: 1;
+            min-width: 60px;
+            text-align: center;
+            padding: 1.5mm 2mm;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            font-size: 9.5pt;
+            font-weight: 700;
+        }
+
+        .stage-item.green { border-color: #1a7230; color: #1a7230; background: #e4f4e6; }
+        .stage-item.amber { border-color: #856404; color: #856404; background: #fef3cd; }
+        .stage-item.blue { border-color: #1a56db; color: #1a56db; background: #e0edfc; }
+        .stage-item.red { border-color: #b91c1c; color: #b91c1c; background: #fde8e8; }
+        .stage-item.gray { border-color: #6b7280; color: #6b7280; background: #f3f4f6; }
+        .stage-arrow { font-size: 14pt; color: var(--muted); align-self: center; }
+
+        .dashboard-preview {
+            margin: 2mm 0;
+            padding: 2mm 3mm;
+            background: #f8fafc;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+        }
+
+        .dashboard-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1mm 0;
+            border-bottom: 1px dashed var(--line);
+            font-size: 9.5pt;
+        }
+        .dashboard-row:last-child { border-bottom: none; }
+
+        .dot-green { display: inline-block; width: 8px; height: 8px; background: #1a7230; border-radius: 50%; margin-left: 2mm; }
+        .dot-amber { display: inline-block; width: 8px; height: 8px; background: #856404; border-radius: 50%; margin-left: 2mm; }
+        .dot-red { display: inline-block; width: 8px; height: 8px; background: #b91c1c; border-radius: 50%; margin-left: 2mm; }
+        .dot-gray { display: inline-block; width: 8px; height: 8px; background: #6b7280; border-radius: 50%; margin-left: 2mm; }
+
+        @media print {
+            body { background: #fff; }
+            .print-page { width: 100%; min-height: 0; margin: 0; box-shadow: none; overflow: visible; }
+            .print-table { width: 100%; min-height: 0; }
+            .print-table thead { display: table-header-group; }
+            .print-table tfoot { display: table-footer-group; }
+            .print-table tbody { display: table-row-group; }
+        }
+    </style>
+</head>
+<body>
+    <main class="print-page">
+        <table class="print-table" role="presentation">
+            <thead>
+                <tr>
+                    <td>
+                        <header class="page-header" aria-hidden="true">
+                            <img src="../../../../branding/header.png" alt="Teranoo header">
+                        </header>
+                    </td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>
+                        <footer class="page-footer" aria-hidden="true">
+                            <img src="../../../../branding/footer.png" alt="Teranoo footer">
+                        </footer>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td>
+        <section class="document">
+            <div class="doc__top">
+                <div><strong>التاريخ:</strong> 2026/07/06</div>
+                <div><strong>الرقم:</strong> WFL-2026-001</div>
+            </div>
+
+            <div class="doc__chip">شرح آلية عمل التطبيق — Workflow Guide</div>
+
+            <p class="doc__subject">الموضوع: آلية عمل منظومة إدارة طلبات المصنع — دليل مبسط</p>
+
+            <div class="doc__meta-grid no-break">
+                <div class="field">
+                    <span class="field__label">إلى:</span>
+                    <span class="field__value">شركة العمران الحديثة للمقاولات — م. سامر الخطيب</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">المرجع:</span>
+                    <span class="field__value">خطاب تأكيد النطاق SCL-2026-002</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">نسخة إلى:</span>
+                    <span class="field__value">م. نادر العواملة — المدير التنفيذي</span>
+                </div>
+                <div class="field">
+                    <span class="field__label">مرفقات:</span>
+                    <span class="field__value">خطاب تأكيد النطاق (SCL-2026-002)</span>
+                </div>
+            </div>
+
+            <div class="doc__recipient no-break">
+                <p><strong>السادة شركة العمران الحديثة للمقاولات المحترمون،</strong></p>
+                <p>تحية طيبة وبعد،</p>
+            </div>
+
+            <div class="doc__body">
+
+                <p>بناءً على طلبكم، نقدم لكم شرحاً مبسطاً لآلية عمل <strong>منظومة إدارة طلبات المصنع</strong> خطوة بخطوة، ليسهل عليكم شرحه للإدارة العليا قبل اعتماد العرض النهائي.</p>
+
+                <!-- ===== الأدوار ===== -->
+                <h3>الأدوار في النظام</h3>
+                <p>التطبيق يحتوي على <strong>3 أدوار</strong>، كل دور يرى فقط ما يحتاجه:</p>
+                <ul>
+                    <li><span class="role-badge role-requester">مدخل طلب</span> — ينتمي لمشروع معين. يرى فقط طلبات مشروعه.</li>
+                    <li><span class="role-badge role-supervisor">مشرف مصنع</span> — يرى كل الطلبات النشطة ويحدّث حالتها ويسجل التكاليف.</li>
+                    <li><span class="role-badge role-manager">مدير</span> — يرى كل الطلبات ولوحة المتابعة والتقارير.</li>
+                </ul>
+
+                <!-- ===== مسار الطلب ===== -->
+                <h3>مسار الطلب — من البداية إلى التسليم</h3>
+
+                <div class="stage-flow">
+                    <div class="stage-item blue">طلب جديد</div>
+                    <span class="stage-arrow">←</span>
+                    <div class="stage-item amber">قيد التجهيز</div>
+                    <span class="stage-arrow">←</span>
+                    <div class="stage-item amber">قيد التصنيع</div>
+                    <span class="stage-arrow">←</span>
+                    <div class="stage-item blue">فحص الجودة</div>
+                    <span class="stage-arrow">←</span>
+                    <div class="stage-item green">تم التسليم</div>
+                    <div style="width:100%;height:1mm;"></div>
+                    <div class="stage-item gray" style="flex:0.5;">معلق</div>
+                </div>
+
+                <!-- ===== الخطوة 1 ===== -->
+                <div class="flow-step step-1 no-break">
+                    <strong>الخطوة 1: إنشاء الطلب <span class="role-badge role-requester">مدخل الطلب</span></strong>
+                    <ul>
+                        <li>موظف المشروع يسجل دخوله باسم المستخدم وكلمة السر.</li>
+                        <li>يضغط على <strong>"إنشاء طلب جديد"</strong>.</li>
+                        <li>يملأ البيانات: اسم القطعة أو الخدمة المطلوبة، الكمية، تاريخ التسليم المطلوب، الأولوية (عادي/مستعجل).</li>
+                        <li>يرفق المخططات أو القياسات إن وجدت (صورة أو ملف PDF).</li>
+                        <li>يضغط <strong>"إرسال الطلب"</strong>.</li>
+                        <li>النظام يصدر <strong>رقم طلب فريد</strong> ويظهر الطلب بحالة <strong>"طلب جديد"</strong>.</li>
+                    </ul>
+                </div>
+
+                <!-- ===== الخطوة 2 ===== -->
+                <div class="flow-step step-2 no-break">
+                    <strong>الخطوة 2: استقبال الطلب وفحصه <span class="role-badge role-supervisor">مشرف المصنع</span></strong>
+                    <ul>
+                        <li>مشرف المصنع يفتح لوحة المتابعة ويرى الطلب الجديد.</li>
+                        <li>يفحص الطلب:</li>
+                        <li style="list-style: none; margin-right: 4mm;">
+                            ✅ إذا كانت المخططات كافية والمواد متوفرة ← ينقل الطلب إلى <strong>"قيد التجهيز"</strong>.
+                        </li>
+                        <li style="list-style: none; margin-right: 4mm;">
+                            ⏸️ إذا كان في نقص ← يضغط <strong>"تعليق"</strong> ويختار السبب:
+                            <br>
+                            <span style="margin-right: 4mm; font-size: 10pt;">• ناقص مخطط / • ناقص مادة / • بانتظار موافقة المشروع / • بانتظار مقاس أو زيارة موقع</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- ===== الخطوة 3 ===== -->
+                <div class="flow-step step-3 no-break">
+                    <strong>الخطوة 3: التجهيز <span class="role-badge role-supervisor">مشرف المصنع</span></strong>
+                    <ul>
+                        <li>المشرف يجهز المواد والأدوات اللازمة للطلب.</li>
+                        <li>بعد الانتهاء من التجهيز ← ينقل الطلب إلى <strong>"قيد التصنيع"</strong>.</li>
+                    </ul>
+                </div>
+
+                <!-- ===== الخطوة 4 ===== -->
+                <div class="flow-step step-4 no-break">
+                    <strong>الخطوة 4: التصنيع + تسجيل التكاليف <span class="role-badge role-supervisor">مشرف المصنع</span></strong>
+                    <ul>
+                        <li>العمال يبدؤون التصنيع حسب المخططات.</li>
+                        <li>المشرف يسجل في الطلب:</li>
+                        <li style="list-style: none; margin-right: 4mm;">
+                            <strong>🕒 ساعات العمل:</strong> إجمالي عدد ساعات الفريق على هذا الطلب.<br>
+                            <strong>📦 المواد المستخدمة:</strong> اسم المادة، الكمية، التكلفة التقريبية.<br>
+                            <strong>💰 مصاريف إضافية:</strong> أي تكلفة خارجية (دهان، نقل، شغل خارجي).
+                        </li>
+                        <li><strong>النظام يحسب تلقائياً</strong> إجمالي التكلفة التقريبي = (المواد + ساعات العمل + المصاريف الإضافية).</li>
+                        <li>يمكن للمشرف إضافة <strong>تعليقات</strong> على الطلب (مثلاً: "تم تعديل المقاس بناءً على الموقع").</li>
+                    </ul>
+                </div>
+
+                <!-- ===== الخطوة 5 ===== -->
+                <div class="flow-step step-5 no-break">
+                    <strong>الخطوة 5: فحص الجودة <span class="role-badge role-supervisor">مشرف المصنع</span></strong>
+                    <ul>
+                        <li>بعد انتهاء التصنيع ← المشرف ينقل الطلب إلى <strong>"فحص الجودة"</strong>.</li>
+                        <li>يتأكد من مطابقة القطعة للمخططات والمواصفات.</li>
+                        <li>إذا في ملاحظات ← يسجلها في الطلب.</li>
+                        <li>إذا القطعة مطابقة ← ينقل الطلب إلى <strong>"تم التسليم"</strong>.</li>
+                    </ul>
+                </div>
+
+                <!-- ===== الخطوة 6 ===== -->
+                <div class="flow-step step-6 no-break">
+                    <strong>الخطوة 6: التسليم <span class="role-badge role-supervisor">مشرف المصنع</span></strong>
+                    <ul>
+                        <li>المشرف يضغط على زر <strong>"تسليم"</strong>.</li>
+                        <li>النظام يسجل تاريخ التسليم واسم المسلّم تلقائياً.</li>
+                        <li>الطلب يظهر بحالة <strong>"تم التسليم"</strong> مع لون <span style="color:#1a7230;font-weight:700;">🟢 أخضر</span>.</li>
+                        <li><span class="role-badge role-requester">مدخل الطلب</span> من المشروع يفتح التطبيق ويرى أن طلبه جاهز.</li>
+                    </ul>
+                </div>
+
+                <!-- ===== لوحة المتابعة ===== -->
+                <h3>لوحة المتابعة — ما يراه المدير</h3>
+
+                <div class="dashboard-preview">
+                    <div class="dashboard-row">
+                        <span><span class="dot-green"></span> قولبة عمود — <strong>تم التسليم</strong></span>
+                        <span style="color:var(--muted);">2026/07/06</span>
+                    </div>
+                    <div class="dashboard-row">
+                        <span><span class="dot-amber"></span> درج حديد — <strong>قيد التصنيع</strong></span>
+                        <span style="color:var(--muted);">تسليم: 2026/07/10</span>
+                    </div>
+                    <div class="dashboard-row">
+                        <span><span class="dot-red"></span> شباك ألمنيوم — <strong>🔴 متأخر! </strong></span>
+                        <span style="color:#b91c1c;font-weight:700;">تجاوز التسليم بيومين</span>
+                    </div>
+                    <div class="dashboard-row">
+                        <span><span class="dot-gray"></span> قاعدة خزان — <strong>⏸️ معلق — ناقص مادة</strong></span>
+                        <span style="color:var(--muted);">بانتظار التوريد</span>
+                    </div>
+                    <div class="dashboard-row">
+                        <span><span class="dot-amber"></span> سور معدني — <strong>قيد التجهيز</strong></span>
+                        <span style="color:var(--muted);">تسليم: 2026/07/15</span>
+                    </div>
+                </div>
+
+                <p>المدير يقدر <strong>بلمحة بصرية</strong> يعرف:</p>
+                <ul>
+                    <li><span style="color:#b91c1c;font-weight:700;">🔴</span> كم طلب <strong>متأخر</strong> (تجاوز تاريخ التسليم المطلوب).</li>
+                    <li><span style="color:#856404;font-weight:700;">🟡</span> كم طلب <strong>قيد التصنيع</strong> أو <strong>معلق</strong>.</li>
+                    <li><span style="color:#1a7230;font-weight:700;">🟢</span> كم طلب <strong>تم تسليمه</strong> مؤخراً.</li>
+                    <li>يضغط على أي طلب ليشوف <strong>كل تفاصيله</strong>: التكاليف، التعليقات، سجل الإجراءات.</li>
+                </ul>
+
+                <!-- ===== سجل الإجراءات ===== -->
+                <h3>سجل الإجراءات (Audit Trail)</h3>
+                <p>كل حركة مهمة على الطلب <strong>تُسجّل تلقائياً</strong>:</p>
+                <ul>
+                    <li>من <strong>أنشأ</strong> الطلب ومتى.</li>
+                    <li>من <strong>غيَّر الحالة</strong> (طلب جديد ← قيد التجهيز ← ...).</li>
+                    <li>من <strong>أضاف تكلفة</strong> (مواد، ساعات، مصاريف).</li>
+                    <li>من <strong>سلَّم</strong> الطلب ومتى.</li>
+                </ul>
+                <p>هذا السجل يضمن <strong>الشفافية</strong>: أي إجراء على الطلب موثق بالتاريخ والوقت واسم المستخدم.</p>
+
+                <!-- ===== التمييز البصري بدل الإشعارات ===== -->
+                <h3>التمييز البصري — بديل الإشعارات في المرحلة الأولى</h3>
+                <p>بدلاً من إشعارات فعلية (مؤجلة للمرحلة الثانية)، التطبيق في المرحلة الأولى يعتمد على:</p>
+                <ul>
+                    <li><strong>الألوان</strong> في لوحة المتابعة: 🟢 🟡 🔴 ⏸️ — تعطي فورية عن وضع كل طلب.</li>
+                    <li><strong>الطلبات المتأخرة</strong> تظهر تلقائياً باللون 🔴 أحمر — بدون تقرير منفصل.</li>
+                    <li>أي موظف يدخل التطبيق يشوف فوراً: هل في طلبات متأخرة؟ معلقة؟ جاهزة؟</li>
+                </ul>
+
+                <!-- ===== ملخص ===== -->
+                <h3>خلاصة — رحلة الطلب من البداية إلى النهاية</h3>
+                <div class="no-break" style="padding: 2mm 3mm; background: #f0f7ff; border-radius: 4px; margin: 2mm 0;">
+                    <p style="margin: 0; font-size: 10.3pt;">
+                        <strong>المشروع</strong> يُنشئ طلباً ← <strong>المصنع</strong> يستلمه ويجهزه ويصنعه ويسجل التكلفة ← <strong>فحص جودة</strong> ← <strong>تسليم</strong> ← <strong>المدير</strong> يتابع الكل من لوحة واحدة بالألوان.
+                        <br><br>
+                        <strong>كم يستغرق الطلب الواحد؟</strong> حسب حجم العمل — التطبيق لا يحدد وقتاً، بل يُظهر تاريخ التسليم المطلوب ويراقب التأخير تلقائياً.
+                        <br>
+                        <strong>ماذا لو تأخر الطلب؟</strong> يتحول لونه إلى 🔴 أحمر في لوحة المتابعة، والمدير يراه فوراً.
+                        <br>
+                        <strong>هل نقدر نعدّل على الطلب بعد ما صار "قيد التصنيع"؟</strong> نعم — المشرف يقدر يضيف مواد أو ساعات أو تعليقات في أي وقت.
+                    </p>
+                </div>
+
+                <p style="margin-top: 3mm;">نأمل أن يكون هذا الشرح واضحاً ومفيداً لتقديمه للإدارة العليا. نحن على استعداد لأي استفسار إضافي.</p>
+
+                <p>وتفضلوا بقبول فائق الاحترام،</p>
+            </div>
+
+            <div class="doc__sign no-break">
+                <div class="sign-box">
+                    <div class="sign-box__label">جهة التنفيذ — Teranoo</div>
+                    <div class="sign-box__line">الاسم: .......................................</div>
+                    <div class="sign-box__line">المسمى الوظيفي: .......................................</div>
+                    <div class="sign-box__line">التوقيع: .......................................</div>
+                    <div class="sign-box__line">التاريخ: .......................................</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-box__label">ملاحظات العميل</div>
+                    <div class="sign-box__line">.......................................</div>
+                    <div class="sign-box__line">.......................................</div>
+                </div>
+            </div>
+        </section>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

@@ -1,0 +1,196 @@
+﻿---
+title: ط§ظ„ط£ط¯ظˆط§طھ ط§ظ„ظ…ط®طµطµط©
+description: ط£ظ†ط´ط¦ ط£ط¯ظˆط§طھ ظٹظ…ظƒظ† ظ„ظ€ LLM ط§ط³طھط¯ط¹ط§ط¤ظ‡ط§ ظپظٹ opencode.
+---
+
+ط§ظ„ط£ط¯ظˆط§طھ ط§ظ„ظ…ط®طµطµط© ظ‡ظٹ ط¯ظˆط§ظ„ طھظ†ط´ط¦ظ‡ط§ ظٹظ…ظƒظ† ظ„ظ€ LLM ط§ط³طھط¯ط¹ط§ط¤ظ‡ط§ ط£ط«ظ†ط§ط، ط§ظ„ظ…ط­ط§ط¯ط«ط§طھ. طھط¹ظ…ظ„ ط¬ظ†ط¨ط§ ط¥ظ„ظ‰ ط¬ظ†ط¨ ظ…ط¹ [ط§ظ„ط£ط¯ظˆط§طھ ط§ظ„ظ…ط¯ظ…ط¬ط©](/docs/tools) ظپظٹ opencode ظ…ط«ظ„ `read` ظˆ`write` ظˆ`bash`.
+
+---
+
+## ط¥ظ†ط´ط§ط، ط£ط¯ط§ط©
+
+طھظڈط¹ط±ظ‘ظپ ط§ظ„ط£ط¯ظˆط§طھ ظƒظ…ظ„ظپط§طھ **TypeScript** ط£ظˆ **JavaScript**. ظ„ظƒظ† طھط¹ط±ظٹظپ ط§ظ„ط£ط¯ط§ط© ظٹظ…ظƒظ†ظ‡ ط§ط³طھط¯ط¹ط§ط، ط³ظƒط±ط¨طھط§طھ ظ…ظƒطھظˆط¨ط© **ط¨ط£ظٹ ظ„ط؛ط©** â€” ط¥ط° طھظڈط³طھط®ط¯ظ… TypeScript ط£ظˆ JavaScript ظپظ‚ط· ظ„طھط¹ط±ظٹظپ ط§ظ„ط£ط¯ط§ط© ظ†ظپط³ظ‡.
+
+---
+
+### ط§ظ„ظ…ظˆظ‚ط¹
+
+ظٹظ…ظƒظ† طھط¹ط±ظٹظپظ‡ط§:
+
+- ظ…ط­ظ„ظٹط§ ط¨ظˆط¶ط¹ظ‡ط§ ظپظٹ ظ…ط¬ظ„ط¯ `.opencode/tools/` ط¯ط§ط®ظ„ ظ…ط´ط±ظˆط¹ظƒ.
+- ط£ظˆ ط¹ط§ظ„ظ…ظٹط§ ط¨ظˆط¶ط¹ظ‡ط§ ظپظٹ `~/.config/opencode/tools/`.
+
+---
+
+### ط§ظ„ط¨ظ†ظٹط©
+
+ط£ط³ظ‡ظ„ ط·ط±ظٹظ‚ط© ظ„ط¥ظ†ط´ط§ط، ط£ط¯ظˆط§طھ ظ‡ظٹ ط§ط³طھط®ط¯ط§ظ… ط§ظ„ظ…ط³ط§ط¹ط¯ `tool()` ط§ظ„ط°ظٹ ظٹظˆظپط± ط£ظ…ط§ظ† ط§ظ„ط£ظ†ظˆط§ط¹ ظˆط§ظ„طھط­ظ‚ظ‚.
+
+```ts title=".opencode/tools/database.ts" {1}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Query the project database",
+  args: {
+    query: tool.schema.string().describe("SQL query to execute"),
+  },
+  async execute(args) {
+    // Your database logic here
+    return `Executed query: ${args.query}`
+  },
+})
+```
+
+ظٹطµط¨ط­ **ط§ط³ظ… ط§ظ„ظ…ظ„ظپ** ظ‡ظˆ **ط§ط³ظ… ط§ظ„ط£ط¯ط§ط©**. ط§ظ„ظ…ط«ط§ظ„ ط£ط¹ظ„ط§ظ‡ ظٹظ†ط´ط¦ ط£ط¯ط§ط© ط¨ط§ط³ظ… `database`.
+
+---
+
+#### ط¹ط¯ط© ط£ط¯ظˆط§طھ ظپظٹ ظ…ظ„ظپ ظˆط§ط­ط¯
+
+ظٹظ…ظƒظ†ظƒ ط£ظٹط¶ط§ طھطµط¯ظٹط± ط¹ط¯ط© ط£ط¯ظˆط§طھ ظ…ظ† ظ…ظ„ظپ ظˆط§ط­ط¯. ظٹطµط¨ط­ ظƒظ„ طھطµط¯ظٹط± **ط£ط¯ط§ط© ظ…ط³طھظ‚ظ„ط©** ط¨ط§ط³ظ… **`<filename>_<exportname>`**:
+
+```ts title=".opencode/tools/math.ts"
+import { tool } from "@tera-system/plugin"
+
+export const add = tool({
+  description: "Add two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a + args.b
+  },
+})
+
+export const multiply = tool({
+  description: "Multiply two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a * args.b
+  },
+})
+```
+
+ظٹظ†ط´ط¦ ظ‡ط°ط§ ط£ط¯ط§طھظٹظ†: `math_add` ظˆ`math_multiply`.
+
+---
+
+#### طھط¶ط§ط±ط¨ ط§ظ„ط£ط³ظ…ط§ط، ظ…ط¹ ط§ظ„ط£ط¯ظˆط§طھ ط§ظ„ظ…ط¯ظ…ط¬ط©
+
+طھظڈطµظ†ظ‘ظپ ط§ظ„ط£ط¯ظˆط§طھ ط§ظ„ظ…ط®طµطµط© ط­ط³ط¨ ط§ط³ظ… ط§ظ„ط£ط¯ط§ط©. ط¥ط°ط§ ط§ط³طھط®ط¯ظ…طھ ط£ط¯ط§ط© ظ…ط®طµطµط© ظ†ظپط³ ط§ط³ظ… ط£ط¯ط§ط© ظ…ط¯ظ…ط¬ط©طŒ ظپط¥ظ† ط§ظ„ط£ط¯ط§ط© ط§ظ„ظ…ط®طµطµط© طھط£ط®ط° ط§ظ„ط£ظˆظ„ظˆظٹط©.
+
+ط¹ظ„ظ‰ ط³ط¨ظٹظ„ ط§ظ„ظ…ط«ط§ظ„طŒ ظٹط³طھط¨ط¯ظ„ ظ‡ط°ط§ ط§ظ„ظ…ظ„ظپ ط£ط¯ط§ط© `bash` ط§ظ„ظ…ط¯ظ…ط¬ط©:
+
+```ts title=".opencode/tools/bash.ts"
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Restricted bash wrapper",
+  args: {
+    command: tool.schema.string(),
+  },
+  async execute(args) {
+    return `blocked: ${args.command}`
+  },
+})
+```
+
+:::note
+ظپط¶ظ‘ظ„ ط§ط³طھط®ط¯ط§ظ… ط£ط³ظ…ط§ط، ظپط±ظٹط¯ط© ظ…ط§ ظ„ظ… طھظƒظ† طھط±ظٹط¯ ط§ط³طھط¨ط¯ط§ظ„ ط£ط¯ط§ط© ظ…ط¯ظ…ط¬ط© ط¹ظ…ط¯ط§. ط¥ط°ط§ ظƒظ†طھ طھط±ظٹط¯ طھط¹ط·ظٹظ„ ط£ط¯ط§ط© ظ…ط¯ظ…ط¬ط© ظˆظ„ظƒظ† ظ„ط§ طھط±ظٹط¯ ط§ط³طھط¨ط¯ط§ظ„ظ‡ط§طŒ ط§ط³طھط®ط¯ظ… [ط§ظ„ط£ط°ظˆظ†ط§طھ](/docs/permissions).
+:::
+
+---
+
+### ط§ظ„ظˆط³ط§ط¦ط·
+
+ظٹظ…ظƒظ†ظƒ ط§ط³طھط®ط¯ط§ظ… `tool.schema`طŒ ظˆظ‡ظˆ ظپظٹ ط§ظ„ط£ط³ط§ط³ [Zod](https://zod.dev)طŒ ظ„طھط¹ط±ظٹظپ ط£ظ†ظˆط§ط¹ ط§ظ„ظˆط³ط§ط¦ط·.
+
+```ts "tool.schema"
+args: {
+  query: tool.schema.string().describe("SQL query to execute")
+}
+```
+
+ظٹظ…ظƒظ†ظƒ ط£ظٹط¶ط§ ط§ط³طھظٹط±ط§ط¯ [Zod](https://zod.dev) ظ…ط¨ط§ط´ط±ط© ظˆط¥ط±ط¬ط§ط¹ ظƒط§ط¦ظ† ط¹ط§ط¯ظٹ:
+
+```ts {6}
+import { z } from "zod"
+
+export default {
+  description: "Tool description",
+  args: {
+    param: z.string().describe("Parameter description"),
+  },
+  async execute(args, context) {
+    // Tool implementation
+    return "result"
+  },
+}
+```
+
+---
+
+### ط§ظ„ط³ظٹط§ظ‚
+
+طھط³طھظ‚ط¨ظ„ ط§ظ„ط£ط¯ظˆط§طھ ط³ظٹط§ظ‚ط§ ط­ظˆظ„ ط§ظ„ط¬ظ„ط³ط© ط§ظ„ط­ط§ظ„ظٹط©:
+
+```ts title=".opencode/tools/project.ts" {8}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Get project information",
+  args: {},
+  async execute(args, context) {
+    // Access context information
+    const { agent, sessionID, messageID, directory, worktree } = context
+    return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}, Directory: ${directory}, Worktree: ${worktree}`
+  },
+})
+```
+
+ط§ط³طھط®ط¯ظ… `context.directory` ظ„ط¯ظ„ظٹظ„ ط§ظ„ط¹ظ…ظ„ ط§ظ„ط®ط§طµ ط¨ط§ظ„ط¬ظ„ط³ط©.
+ط§ط³طھط®ط¯ظ… `context.worktree` ظ„ط¬ط°ط± ط´ط¬ط±ط© ط§ظ„ط¹ظ…ظ„ (worktree) ظپظٹ git.
+
+---
+
+## ط£ظ…ط«ظ„ط©
+
+### ظƒطھط§ط¨ط© ط£ط¯ط§ط© ط¨ظ„ط؛ط© Python
+
+ظٹظ…ظƒظ†ظƒ ظƒطھط§ط¨ط© ط£ط¯ظˆط§طھظƒ ط¨ط£ظٹ ظ„ط؛ط© طھط±ظٹط¯ظ‡ط§. ط¥ظ„ظٹظƒ ظ…ط«ط§ظ„ط§ ظٹط¬ظ…ط¹ ط±ظ‚ظ…ظٹظ† ط¨ط§ط³طھط®ط¯ط§ظ… Python.
+
+ط£ظˆظ„ط§طŒ ط£ظ†ط´ط¦ ط§ظ„ط£ط¯ط§ط© ظƒط³ظƒط±ط¨طھ Python:
+
+```python title=".opencode/tools/add.py"
+import sys
+
+a = int(sys.argv[1])
+b = int(sys.argv[2])
+print(a + b)
+```
+
+ط«ظ… ط£ظ†ط´ط¦ طھط¹ط±ظٹظپ ط§ظ„ط£ط¯ط§ط© ط§ظ„ط°ظٹ ظٹط³طھط¯ط¹ظٹظ‡:
+
+```ts title=".opencode/tools/python-add.ts" {10}
+import { tool } from "@tera-system/plugin"
+import path from "path"
+
+export default tool({
+  description: "Add two numbers using Python",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args, context) {
+    const script = path.join(context.worktree, ".opencode/tools/add.py")
+    const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
+    return result.trim()
+  },
+})
+```
+
+ظ‡ظ†ط§ ظ†ط³طھط®ط¯ظ… ط£ط¯ط§ط© [`Bun.$`](https://bun.com/docs/runtime/shell) ظ„طھط´ط؛ظٹظ„ ط³ظƒط±ط¨طھ Python.

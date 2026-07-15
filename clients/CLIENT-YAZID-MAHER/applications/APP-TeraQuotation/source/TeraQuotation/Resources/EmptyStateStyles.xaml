@@ -1,0 +1,108 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ════════════════════════════════════════════ -->
+    <!--  EmptyStateStyles.xaml                      -->
+    <!--  Empty state template and styles            -->
+    <!--  Source: 28_UI_UX_GUIDELINES.md §5.5         -->
+    <!-- ════════════════════════════════════════════ -->
+
+    <!-- ─── Empty State DataTemplate ─── -->
+    <!--
+        Usage:
+        <ContentControl ContentTemplate="{StaticResource EmptyStateTemplate}">
+            <views:EmptyStateViewModel Title="..." Description="..." />
+        </ContentControl>
+
+        Or use it as ContentTemplate for any ContentPresenter.
+
+        ViewModel properties expected:
+        - Title (string)
+        - Description (string)
+        - ActionText (string)
+        - ActionCommand (ICommand)
+    -->
+    <DataTemplate x:Key="EmptyStateTemplate">
+        <Border Background="Transparent"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Padding="40">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        MaxWidth="400">
+                <!-- Icon Placeholder -->
+                <Border Width="64"
+                        Height="64"
+                        CornerRadius="32"
+                        Background="{StaticResource BorderLightBrush}"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,16">
+                    <TextBlock Text="📋"
+                               FontSize="28"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Border>
+
+                <!-- Title -->
+                <TextBlock Text="{Binding Title}"
+                           FontSize="{StaticResource SectionTitleFontSize}"
+                           FontWeight="{StaticResource SectionTitleFontWeight}"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           Margin="0,0,0,8"
+                           FlowDirection="RightToLeft" />
+
+                <!-- Description -->
+                <TextBlock Text="{Binding Description}"
+                           FontSize="{StaticResource BodyFontSize}"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,20"
+                           FlowDirection="RightToLeft" />
+
+                <!-- Action Button -->
+                <Button Content="{Binding ActionText}"
+                        Command="{Binding ActionCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        HorizontalAlignment="Center"
+                        Padding="24,8"
+                        Visibility="{Binding ActionText, Converter={StaticResource NullToVis}}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <!-- ─── Simplified Empty State (TextBlock-based, no ViewModel) ─── -->
+    <!--
+        Usage in XAML directly:
+        <ContentControl Content="{Binding Items.Count, Converter={x:Static ...}}">
+            ... check for zero and show this ...
+        </ContentControl>
+
+        Or just drop the style on a TextBlock:
+
+        <TextBlock Style="{StaticResource EmptyStateTextStyle}"
+                   Text="لا توجد عناصر بعد" />
+    -->
+    <Style x:Key="EmptyStateTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource BodyFontSize}" />
+        <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="Margin" Value="20" />
+        <Setter Property="FlowDirection" Value="RightToLeft" />
+    </Style>
+
+    <!-- ─── Empty State Container Style ─── -->
+    <Style x:Key="EmptyStateContainerStyle" TargetType="Border">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Padding" Value="40" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+</ResourceDictionary>

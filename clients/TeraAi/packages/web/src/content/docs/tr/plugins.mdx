@@ -1,0 +1,388 @@
+﻿---
+title: Eklentiler
+description: OpenCode'u geniإںletmek iأ§in kendi eklentilerinizi yazؤ±n.
+---
+
+Eklentiler, أ§eإںitli olaylara baؤںlanarak ve davranؤ±إںؤ± أ¶zelleإںtirerek OpenCode'u geniإںletmenize olanak tanؤ±r. Yeni أ¶zellikler eklemek, harici hizmetlerle entegrasyon saؤںlamak veya OpenCode'un varsayؤ±lan davranؤ±إںؤ±nؤ± deؤںiإںtirmek iأ§in eklentiler oluإںturabilirsiniz.
+
+أ–rnekler iأ§in topluluk tarafؤ±ndan oluإںturulan [eklentilere](/docs/ecosystem#plugins) gأ¶z atؤ±n.
+
+---
+
+## Eklenti kullanؤ±mؤ±
+
+Eklentileri yأ¼klemenin iki yolu vardؤ±r.
+
+---
+
+### Yerel dosyalardan
+
+JavaScript veya TypeScript dosyalarؤ±nؤ± eklenti dizinine yerleإںtirin.
+
+- `.opencode/plugins/` - Proje dأ¼zeyinde eklentiler
+- `~/.config/opencode/plugins/` - Genel eklentiler
+
+Bu dizinlerdeki dosyalar baإںlangؤ±أ§ta otomatik olarak yأ¼klenir.
+
+---
+
+### npm'den
+
+Yapؤ±landؤ±rma dosyanؤ±zda npm paketlerini belirtin.
+
+```json title="opencode.json"
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-helicone-session", "opencode-wakatime", "@my-org/custom-plugin"]
+}
+```
+
+Hem normal hem de kapsamlؤ± npm paketleri desteklenir.
+
+[Ekosistem](/docs/ecosystem#plugins)'deki mevcut eklentilere gأ¶z atؤ±n.
+
+---
+
+### Eklentiler nasؤ±l kurulur?
+
+**npm eklentileri** baإںlangؤ±أ§ta Bun kullanؤ±larak otomatik olarak yأ¼klenir. Paketler ve baؤںؤ±mlؤ±lؤ±klarؤ± `~/.cache/opencode/node_modules/`'da أ¶nbelleؤںe alؤ±nؤ±r.
+
+**Yerel eklentiler** doؤںrudan eklenti dizininden yأ¼klenir. Harici paketleri kullanmak iأ§in, sisteminizin dizininde bir `package.json` oluإںturmanؤ±z (bkz. [Baؤںؤ±mlؤ±lؤ±klar](#dependencies)) veya eklentiyi npm ve [yapؤ±landؤ±rmanؤ±za eklemeniz](/docs/config#plugins) gerekir.
+
+---
+
+### Yأ¼kleme sؤ±rasؤ±
+
+Eklentiler tأ¼m kaynaklardan yأ¼klenir ve tأ¼m kancalar sؤ±rayla أ§alؤ±إںؤ±r. Yأ¼kleme sؤ±rasؤ± إںأ¶yledir:
+
+1. Global config (`~/.config/opencode/opencode.json`)
+2. Project config (`opencode.json`)
+3. Global eklenti dizini (`~/.config/opencode/plugins/`)
+4. Proje eklenti dizini (`.opencode/plugins/`)
+
+Aynؤ± ad ve sأ¼rأ¼me sahip yinelenen npm paketleri bir kez yأ¼klenir. Ancak benzer adlara sahip bir yerel eklenti ve bir npm eklentisinin her ikisi de ayrؤ± ayrؤ± yأ¼klenir.
+
+---
+
+## Eklenti oluإںturma
+
+Eklenti, bir veya daha fazla eklenti iإںlevini dؤ±إںa aktaran bir **JavaScript/TypeScript modأ¼lأ¼dأ¼r**. Her iإںlev bir baؤںlam nesnesi alؤ±r ve bir kanca nesnesi dأ¶ndأ¼rأ¼r.
+
+---
+
+### Baؤںؤ±mlؤ±lؤ±klar
+
+Yerel eklentiler ve أ¶zel araأ§lar harici npm paketlerini kullanabilir. ؤ°htiyacؤ±nؤ±z olan baؤںؤ±mlؤ±lؤ±klarؤ± iأ§eren config dizininize bir `package.json` ekleyin.
+
+```json title=".opencode/package.json"
+{
+  "dependencies": {
+    "shescape": "^2.1.0"
+  }
+}
+```
+
+OpenCode bunlarؤ± yأ¼klemek iأ§in baإںlangؤ±أ§ta `bun install` komutunu أ§alؤ±إںtؤ±rؤ±r. Eklentileriniz ve araأ§larؤ±nؤ±z daha sonra bunlarؤ± iأ§e aktarabilir.
+
+```ts title=".opencode/plugins/my-plugin.ts"
+import { escape } from "shescape"
+
+export const MyPlugin = async (ctx) => {
+  return {
+    "tool.execute.before": async (input, output) => {
+      if (input.tool === "bash") {
+        output.args.command = escape(output.args.command)
+      }
+    },
+  }
+}
+```
+
+---
+
+### Temel yapؤ±
+
+```js title=".opencode/plugins/example.js"
+export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
+  console.log("Plugin initialized!")
+
+  return {
+    // Hook implementations go here
+  }
+}
+```
+
+Eklenti iإںlevi إںunlarؤ± alؤ±r:
+
+- `project`: Mevcut proje bilgisi.
+- `directory`: Gأ¼ncel أ§alؤ±إںma dizini.
+- `worktree`: Git أ§alؤ±إںma aؤںacؤ± yolu.
+- `client`: Yapay zeka ile etkileإںim kurmak iأ§in bir OpenCode SDK istemcisi.
+- `$`: Bun'un komutlarؤ± yأ¼rأ¼tmek iأ§in kullandؤ±ؤںؤ± [shell API](https://bun.com/docs/runtime/shell).
+
+---
+
+### TypeScript desteؤںi
+
+TypeScript eklentileri iأ§in tأ¼rleri eklenti paketinden iأ§e aktarabilirsiniz:
+
+```ts title="my-plugin.ts" {1}
+import type { Plugin } from "@tera-system/plugin"
+
+export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
+  return {
+    // Type-safe hook implementations
+  }
+}
+```
+
+---
+
+### Olaylar
+
+Eklentiler aإںaؤںؤ±daki أ–rnekler bأ¶lأ¼mأ¼nde gأ¶rأ¼ldأ¼ؤںأ¼ gibi etkinliklere abone olabilirler. Burada mevcut farklؤ± etkinliklerin bir listesi bulunmaktadؤ±r.
+
+#### Komut Olaylarؤ±
+
+- `command.executed`
+
+#### Dosya Olaylarؤ±
+
+- `file.edited`
+- `file.watcher.updated`
+
+#### Kurulum Olaylarؤ±
+
+- `installation.updated`
+
+#### LSP Olaylarؤ±
+
+- `lsp.client.diagnostics`
+- `lsp.updated`
+
+#### Mesaj Olaylarؤ±
+
+- `message.part.removed`
+- `message.part.updated`
+- `message.removed`
+- `message.updated`
+
+#### ؤ°zin Olaylarؤ±
+
+- `permission.asked`
+- `permission.replied`
+
+#### Sunucu Olaylarؤ±
+
+- `server.connected`
+
+#### Oturum Olaylarؤ±
+
+- `session.created`
+- `session.compacted`
+- `session.deleted`
+- `session.diff`
+- `session.error`
+- `session.idle`
+- `session.status`
+- `session.updated`
+
+#### Yapؤ±lacaklar Olaylarؤ±
+
+- `todo.updated`
+
+#### Kabuk Olaylarؤ±
+
+- `shell.env`
+
+#### Araأ§ Olaylarؤ±
+
+- `tool.execute.after`
+- `tool.execute.before`
+
+#### TUI Olaylarؤ±
+
+- `tui.prompt.append`
+- `tui.command.execute`
+- `tui.toast.show`
+
+---
+
+## أ–rnekler
+
+OpenCode'u geniإںletmek iأ§in kullanabileceؤںiniz bazؤ± eklenti أ¶rneklerini burada bulabilirsiniz.
+
+---
+
+### Bildirim Gأ¶nderme
+
+Belirli olaylar meydana geldiؤںinde bildirim gأ¶nderin:
+
+```js title=".opencode/plugins/notification.js"
+export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
+  return {
+    event: async ({ event }) => {
+      // Send notification on session completion
+      if (event.type === "session.idle") {
+        await $`osascript -e 'display notification "Session completed!" with title "opencode"'`
+      }
+    },
+  }
+}
+```
+
+macOS'ta AppleScript'i أ§alؤ±إںtؤ±rmak iأ§in `osascript` kullanؤ±yoruz. Burada bildirim gأ¶ndermek iأ§in kullanؤ±yoruz.
+
+:::note
+OpenCode masaأ¼stأ¼ uygulamasؤ±nؤ± kullanؤ±yorsanؤ±z yanؤ±t hazؤ±r olduؤںunda veya oturum hatalarؤ± oluإںtuؤںunda otomatik olarak sistem bildirimleri gأ¶nderebilir.
+:::
+
+---
+
+### .env Korumasؤ±
+
+OpenCode'un `.env` dosyalarؤ±nؤ± okumasؤ±nؤ± أ¶nleyin:
+
+```javascript title=".opencode/plugins/env-protection.js"
+export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
+  return {
+    "tool.execute.before": async (input, output) => {
+      if (input.tool === "read" && output.args.filePath.includes(".env")) {
+        throw new Error("Do not read .env files")
+      }
+    },
+  }
+}
+```
+
+---
+
+### Ortam deؤںiإںkenlerini enjekte etme
+
+Ortam deؤںiإںkenlerini tأ¼m kabuk yأ¼rأ¼tmeye (AI araأ§larؤ± ve kullanؤ±cؤ± terminalleri) enjekte edin:
+
+```javascript title=".opencode/plugins/inject-env.js"
+export const InjectEnvPlugin = async () => {
+  return {
+    "shell.env": async (input, output) => {
+      output.env.MY_API_KEY = "secret"
+      output.env.PROJECT_ROOT = input.cwd
+    },
+  }
+}
+```
+
+---
+
+### أ–zel araأ§lar
+
+Eklentiler ayrؤ±ca OpenCode'a أ¶zel araأ§lar da ekleyebilir:
+
+```ts title=".opencode/plugins/custom-tools.ts"
+import { type Plugin, tool } from "@tera-system/plugin"
+
+export const CustomToolsPlugin: Plugin = async (ctx) => {
+  return {
+    tool: {
+      mytool: tool({
+        description: "This is a custom tool",
+        args: {
+          foo: tool.schema.string(),
+        },
+        async execute(args, context) {
+          const { directory, worktree } = context
+          return `Hello ${args.foo} from ${directory} (worktree: ${worktree})`
+        },
+      }),
+    },
+  }
+}
+```
+
+`tool` yardؤ±mcؤ±sؤ±, OpenCode'un أ§aؤںؤ±rabileceؤںi أ¶zel bir araأ§ oluإںturur. Bir Zod إںemasؤ± iإںlevini alؤ±r ve aإںaؤںؤ±dakileri iأ§eren bir araأ§ tanؤ±mؤ± dأ¶ndأ¼rأ¼r:
+
+- `description`: Araأ§ ne yapar?
+- `args`: Aracؤ±n argأ¼manlarؤ± iأ§in Zod إںemasؤ±
+- `execute`: Araأ§ أ§aؤںrؤ±ldؤ±ؤںؤ±nda أ§alؤ±إںan fonksiyon
+
+أ–zel araأ§larؤ±nؤ±z, yerleإںik araأ§larؤ±n yanؤ± sؤ±ra OpenCode'a da hazؤ±r olacaktؤ±r.
+
+:::note
+Eؤںer bir eklenti aracؤ± yerleإںik bir araأ§la aynؤ± adؤ± kullanؤ±rsa, eklenti aracؤ± أ¶ncelik kazanؤ±r.
+:::
+
+---
+
+### Gأ¼nlأ¼ؤںe kaydetme
+
+Yapؤ±landؤ±rؤ±lmؤ±إں gأ¼nlأ¼k kaydؤ± iأ§in `console.log` yerine `client.app.log()` kullanؤ±n:
+
+```ts title=".opencode/plugins/my-plugin.ts"
+export const MyPlugin = async ({ client }) => {
+  await client.app.log({
+    body: {
+      service: "my-plugin",
+      level: "info",
+      message: "Plugin initialized",
+      extra: { foo: "bar" },
+    },
+  })
+}
+```
+
+Seviyeler: `debug`, `info`, `warn`, `error`. Ayrؤ±ntؤ±lar iأ§in [SDK belgelerine](https://opencode.ai/docs/sdk) bakؤ±n.
+
+---
+
+### Sؤ±kؤ±إںtؤ±rma kancalarؤ±
+
+Bir oturum sؤ±kؤ±إںtؤ±rؤ±ldؤ±ؤںؤ±nda iأ§erilen baؤںlamؤ± أ¶zelleإںtirin:
+
+```ts title=".opencode/plugins/compaction.ts"
+import type { Plugin } from "@tera-system/plugin"
+
+export const CompactionPlugin: Plugin = async (ctx) => {
+  return {
+    "experimental.session.compacting": async (input, output) => {
+      // Inject additional context into the compaction prompt
+      output.context.push(`
+## Custom Context
+
+Include any state that should persist across compaction:
+- Current task status
+- Important decisions made
+- Files being actively worked on
+`)
+    },
+  }
+}
+```
+
+`experimental.session.compacting` kancasؤ±, LLM bir devam أ¶zeti oluإںturmadan أ¶nce tetiklenir. Varsayؤ±lan sؤ±kؤ±إںtؤ±rma isteminin kaأ§ؤ±racaؤںؤ± etki alanؤ±na أ¶zgأ¼ baؤںlamؤ± enjekte etmek iأ§in bunu kullanؤ±n.
+
+Ayrؤ±ca `output.prompt` ayarؤ±nؤ± yaparak sؤ±kؤ±إںtؤ±rma istemini tamamen deؤںiإںtirebilirsiniz:
+
+```ts title=".opencode/plugins/custom-compaction.ts"
+import type { Plugin } from "@tera-system/plugin"
+
+export const CustomCompactionPlugin: Plugin = async (ctx) => {
+  return {
+    "experimental.session.compacting": async (input, output) => {
+      // Replace the entire compaction prompt
+      output.prompt = `
+You are generating a continuation prompt for a multi-agent swarm session.
+
+Summarize:
+1. The current task and its status
+2. Which files are being modified and by whom
+3. Any blockers or dependencies between agents
+4. The next steps to complete the work
+
+Format as a structured prompt that a new agent can use to resume work.
+`
+    },
+  }
+}
+```
+
+`output.prompt` ayarlandؤ±ؤںؤ±nda, varsayؤ±lan sؤ±kؤ±إںtؤ±rma isteminin tamamen yerini alؤ±r. Bu durumda `output.context` dizisi dikkate alؤ±nmaz.

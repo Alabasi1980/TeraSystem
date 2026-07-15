@@ -1,0 +1,931 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.TableMappingsModel
+@{
+    ViewData["Title"] = "تعيينات الجداول";
+}
+
+<style>
+    .wd-page { max-width: 1100px; margin: 0 auto; padding: 0; }
+    .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
+    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
+    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
+    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
+
+    /* Table */
+    .wd-table-wrap {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        overflow-x: auto;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family: var(--font-ar);
+    }
+    .wd-table th {
+        background: var(--c-surface-muted);
+        color: var(--c-text-muted);
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        padding: 12px 16px;
+        text-align: start;
+        border-bottom: 1px solid var(--c-border);
+    }
+    .wd-table td {
+        padding: 12px 16px;
+        color: var(--c-text);
+        border-bottom: 1px solid var(--c-border);
+        vertical-align: middle;
+    }
+    .wd-table tr:last-child td { border-bottom: none; }
+    .wd-table tr:hover td { background: rgba(31,78,121,0.03); }
+
+    .wd-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .wd-badge--active { background: rgba(46,139,87,0.12); color: #2e8b57; }
+    .wd-badge--inactive { background: rgba(200,60,60,0.12); color: #c83c3c; }
+    .wd-badge--error { background: rgba(200,60,60,0.12); color: #c83c3c; }
+
+    .wd-truncate {
+        max-width: 240px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .wd-text-muted { color: var(--c-text-muted); font-size: 13px; }
+
+    .wd-actions { display: flex; gap: 6px; align-items: center; }
+
+    /* Toggle */
+    .wd-toggle { position: relative; width: 40px; height: 22px; flex: none; display: inline-block; }
+    .wd-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .wd-toggle__slider {
+        position: absolute; inset: 0; cursor: pointer;
+        background: var(--c-border); border-radius: var(--radius-full);
+        transition: background var(--dur-fast) var(--ease);
+    }
+    .wd-toggle__slider::before {
+        content: ''; position: absolute; width: 16px; height: 16px;
+        left: 3px; bottom: 3px; background: #fff;
+        border-radius: var(--radius-full);
+        transition: transform var(--dur-fast) var(--ease);
+    }
+    .wd-toggle input:checked + .wd-toggle__slider { background: var(--c-primary); }
+    .wd-toggle input:checked + .wd-toggle__slider::before { transform: translateX(18px); }
+
+    /* Empty state */
+    .wd-empty {
+        text-align: center; padding: 48px 16px;
+        color: var(--c-text-muted);
+    }
+    .wd-empty__icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+    .wd-empty__text { font-size: 15px; }
+
+    /* Toast */
+    .wd-toast-container {
+        position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
+        display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+    }
+    .wd-toast {
+        min-width: 240px; max-width: 360px; padding: 12px 16px;
+        border-radius: var(--radius-md);
+        color: #fff; box-shadow: var(--shadow-md);
+        display: flex; align-items: center; gap: 8px;
+        animation: wdToastIn var(--dur-norm) var(--ease);
+        font-size: 14px;
+    }
+    .wd-toast--success { background: var(--c-success); }
+    .wd-toast--error { background: var(--c-error); }
+
+    /* ─── Wizard Modal ─── */
+    .wm-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+        display: none; align-items: center; justify-content: center;
+        z-index: 1000;
+        backdrop-filter: blur(4px);
+        animation: wdFadeUp var(--dur-fast) var(--ease);
+    }
+    .wm-overlay.is-open { display: flex; }
+
+    .wm-modal {
+        background: var(--c-surface); border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+        width: 92%; max-width: 960px; max-height: 90vh;
+        display: flex; flex-direction: column;
+        animation: wdFadeUp var(--dur-norm) var(--ease);
+    }
+
+    .wm-modal__header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 20px 28px 0;
+    }
+    .wm-modal__title { font-size: 18px; font-weight: 700; color: var(--c-text); margin: 0; }
+    .wm-close-btn {
+        background: none; border: none; cursor: pointer;
+        font-size: 20px; color: var(--c-text-muted); padding: 4px 8px;
+        border-radius: var(--radius-md);
+        transition: all var(--dur-fast) var(--ease);
+    }
+    .wm-close-btn:hover { background: var(--c-surface-muted); color: var(--c-text); }
+
+    /* Step Indicator */
+    .wm-steps {
+        display: flex; align-items: center; gap: 0;
+        padding: 16px 28px 0;
+    }
+    .wm-step-indicator {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 13px; color: var(--c-text-muted); cursor: pointer;
+        padding: 8px 16px; border-radius: var(--radius-md);
+        transition: all var(--dur-fast) var(--ease);
+        white-space: nowrap;
+    }
+    .wm-step-indicator:hover { background: var(--c-surface-muted); }
+    .wm-step-num {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 26px; height: 26px; border-radius: 50%;
+        background: var(--c-surface-muted); color: var(--c-text-muted);
+        font-size: 12px; font-weight: 700;
+        transition: all var(--dur-fast) var(--ease);
+    }
+    .wm-step--active .wm-step-num {
+        background: var(--c-primary); color: #fff;
+    }
+    .wm-step--active { color: var(--c-primary); font-weight: 600; }
+    .wm-step--done .wm-step-num {
+        background: rgba(46,139,87,0.15); color: #2e8b57;
+    }
+    .wm-step--done { color: #2e8b57; }
+    .wm-step-connector {
+        flex: 1; height: 2px; background: var(--c-border);
+        min-width: 24px;
+    }
+    .wm-step--done + .wm-step-connector { background: #2e8b57; }
+
+    /* Modal body */
+    .wm-modal__body {
+        flex: 1; overflow-y: auto; padding: 20px 28px;
+    }
+
+    .wm-step-panel { display: none; }
+    .wm-step-panel--active { display: block; animation: wdFadeUp var(--dur-norm) var(--ease); }
+
+    /* Modal footer */
+    .wm-modal__footer {
+        display: flex; align-items: center; gap: 12px;
+        padding: 16px 28px 20px;
+        border-top: 1px solid var(--c-border);
+    }
+    .wm-modal__footer .wd-btn { min-width: 100px; }
+
+    /* ─── Source Type Cards ─── */
+    .wm-type-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .wm-source-type-card {
+        background: var(--c-surface); border: 2px solid var(--c-border);
+        border-radius: var(--radius-lg); padding: 24px 20px;
+        text-align: center; cursor: pointer;
+        transition: all var(--dur-fast) var(--ease);
+    }
+    .wm-source-type-card:hover {
+        border-color: var(--c-primary); transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    .wm-card--selected {
+        border-color: var(--c-primary) !important;
+        background: rgba(31,78,121,0.04);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+    .wm-type-icon { font-size: 32px; margin-bottom: 12px; }
+    .wm-type-name { font-size: 16px; font-weight: 700; color: var(--c-text); margin-bottom: 4px; }
+    .wm-type-desc { font-size: 13px; color: var(--c-text-muted); }
+
+    /* ─── Object List ─── */
+    .wm-search-bar {
+        display: flex; align-items: center; gap: 8px;
+        margin-bottom: 12px;
+    }
+    .wm-search-input {
+        flex: 1; font-family: var(--font-ar); font-size: 14px;
+        color: var(--c-text); border: 1px solid var(--c-border);
+        border-radius: var(--radius-md); padding: 10px 12px;
+        background: var(--c-surface);
+        transition: border-color var(--dur-fast) var(--ease);
+        box-sizing: border-box;
+    }
+    .wm-search-input:focus {
+        outline: none; border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+
+    .wm-object-list {
+        max-height: 380px; overflow-y: auto;
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+    }
+    .wm-object-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 16px; border-bottom: 1px solid var(--c-border);
+        cursor: pointer; transition: background var(--dur-fast) var(--ease);
+    }
+    .wm-object-item:last-child { border-bottom: none; }
+    .wm-object-item:hover { background: rgba(31,78,121,0.03); }
+    .wm-object-item--selected {
+        background: rgba(31,78,121,0.08) !important;
+        border-right: 3px solid var(--c-primary);
+    }
+    .wm-object-item__name {
+        font-family: monospace; font-size: 14px; font-weight: 600;
+        color: var(--c-text); flex: 1;
+    }
+    .wm-object-item__meta { display: flex; gap: 6px; align-items: center; }
+
+    /* Badges */
+    .wm-badge {
+        display: inline-block; padding: 2px 8px;
+        border-radius: var(--radius-full);
+        font-size: 11px; font-weight: 600;
+    }
+    .wm-badge--owner { background: rgba(31,78,121,0.1); color: var(--c-primary); }
+    .wm-badge--info { background: var(--c-surface-muted); color: var(--c-text-muted); }
+    .wm-badge--warning { background: rgba(200,120,20,0.12); color: #c87814; }
+    .wm-badge--oracle { background: rgba(200,60,60,0.08); color: #c83c3c; }
+    .wm-badge--sql { background: rgba(46,139,87,0.08); color: #2e8b57; }
+    .wm-badge--valid { background: rgba(46,139,87,0.12); color: #2e8b57; }
+    .wm-badge--error { background: rgba(200,60,60,0.12); color: #c83c3c; }
+
+    /* ─── Query Editor ─── */
+    .wm-query-section { display: flex; flex-direction: column; gap: 12px; }
+    .wm-query-editor {
+        width: 100%; min-height: 180px;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 13px; line-height: 1.6;
+        color: var(--c-text); background: var(--c-surface-muted);
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        padding: 12px; resize: vertical;
+        box-sizing: border-box;
+        direction: ltr; text-align: left;
+    }
+    .wm-query-editor:focus {
+        outline: none; border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+    .wm-query-actions { display: flex; gap: 8px; align-items: center; }
+    .wm-query-status {
+        display: flex; align-items: center; gap: 6px;
+        font-size: 13px; min-height: 20px;
+    }
+    .wm-query-status__text { }
+    .wm-text-success { color: #2e8b57; }
+    .wm-text-error { color: #c83c3c; }
+    .wm-query-validation-icon { font-size: 16px; font-weight: 700; }
+    .wm-spin { animation: wmSpin 1s linear infinite; }
+    @@keyframes wmSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ─── Preview Tabs ─── */
+    .wm-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--c-border); margin-bottom: 16px; }
+    .wm-tab-btn {
+        padding: 10px 20px; font-size: 13px; font-weight: 600;
+        color: var(--c-text-muted); background: none; border: none;
+        cursor: pointer; border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        transition: all var(--dur-fast) var(--ease);
+        font-family: var(--font-ar);
+    }
+    .wm-tab-btn:hover { color: var(--c-text); }
+    .wm-tab-btn--active {
+        color: var(--c-primary); border-bottom-color: var(--c-primary);
+    }
+    .wm-tab-panel { display: none; }
+    .wm-tab-panel--active { display: block; }
+
+    /* ─── Preview Table ─── */
+    .wm-preview-table-wrap {
+        overflow-x: auto; border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+    }
+    .wm-preview-table {
+        width: 100%; border-collapse: collapse;
+        font-size: 12px; font-family: 'Consolas', monospace;
+    }
+    .wm-preview-table th {
+        background: var(--c-surface-muted); padding: 8px 12px;
+        text-align: start; border-bottom: 1px solid var(--c-border);
+        white-space: nowrap;
+    }
+    .wm-col-name { font-weight: 600; color: var(--c-text); }
+    .wm-col-type { display: block; font-size: 10px; color: var(--c-text-muted); font-weight: 400; }
+    .wm-preview-table td {
+        padding: 6px 12px; border-bottom: 1px solid var(--c-border);
+        max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .wm-preview-table tr:hover td { background: rgba(31,78,121,0.02); }
+    .wm-null { color: var(--c-text-muted); font-style: italic; }
+    .wm-preview-meta {
+        padding: 8px 12px; font-size: 12px; color: var(--c-text-muted);
+        background: var(--c-surface-muted); border-radius: 0 0 var(--radius-md) var(--radius-md);
+    }
+
+    /* ─── Meta Table ─── */
+    .wm-meta-table {
+        width: 100%; border-collapse: collapse;
+        font-size: 13px; border: 1px solid var(--c-border);
+        border-radius: var(--radius-md); overflow: hidden;
+    }
+    .wm-meta-table th {
+        background: var(--c-surface-muted); padding: 10px 14px;
+        text-align: start; font-weight: 600; font-size: 12px;
+        border-bottom: 1px solid var(--c-border);
+    }
+    .wm-meta-table td {
+        padding: 8px 14px; border-bottom: 1px solid var(--c-border);
+    }
+    .wm-col-name-cell { font-family: monospace; font-weight: 600; }
+
+    /* ─── Target Section ─── */
+    .wm-target-section { display: flex; flex-direction: column; gap: 16px; }
+    .wm-target-row { display: grid; grid-template-columns: 1fr 140px; gap: 16px; }
+    .wm-field label {
+        display: block; font-size: 13px; font-weight: 600;
+        color: var(--c-text); margin-bottom: 6px;
+    }
+    .wm-input, .wm-select {
+        width: 100%; font-family: var(--font-ar);
+        font-size: 14px; color: var(--c-text);
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        padding: 10px 12px; background: var(--c-surface);
+        transition: border-color var(--dur-fast) var(--ease);
+        box-sizing: border-box;
+    }
+    .wm-input:focus, .wm-select:focus {
+        outline: none; border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+    .wm-input--mono { font-family: 'Consolas', monospace; direction: ltr; }
+    .wm-hint { font-size: 12px; color: var(--c-text-muted); margin-top: 4px; }
+
+    /* Summary Card */
+    .wm-summary {
+        background: var(--c-surface-muted); border: 1px solid var(--c-border);
+        border-radius: var(--radius-md); padding: 16px;
+    }
+    .wm-summary__title {
+        font-size: 14px; font-weight: 700; color: var(--c-text); margin: 0 0 12px;
+    }
+    .wm-summary__row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 6px 0; font-size: 13px;
+        border-bottom: 1px solid var(--c-border);
+    }
+    .wm-summary__row:last-child { border-bottom: none; }
+    .wm-summary__label { color: var(--c-text-muted); }
+    .wm-summary__value { font-weight: 600; color: var(--c-text); font-family: monospace; font-size: 13px; }
+
+    .wm-checkbox-row {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 13px; color: var(--c-text);
+    }
+    .wm-checkbox-row input[type="checkbox"] {
+        width: 16px; height: 16px; accent-color: var(--c-primary);
+    }
+
+    /* ─── Empty / Error States ─── */
+    .wm-empty-state {
+        text-align: center; padding: 36px 16px;
+        color: var(--c-text-muted);
+    }
+    .wm-empty-state--error { color: var(--c-error); }
+    .wm-empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+
+    /* ─── Skeleton Loading ─── */
+    .wm-skeleton-row {
+        display: flex; gap: 12px; padding: 12px 16px;
+        border-bottom: 1px solid var(--c-border);
+    }
+    .wm-skeleton {
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(31,78,121,0.06) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wmShimmer 1.5s infinite;
+        border-radius: var(--radius-md);
+    }
+    .wm-skeleton--badge { width: 80px; height: 22px; }
+    .wm-skeleton--text { flex: 1; height: 22px; }
+    .wm-skeleton--sm { width: 60px; }
+    .wm-skeleton--cell { flex: 1; height: 28px; }
+    .wm-skeleton-grid { padding: 8px; }
+    @@keyframes wmShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* Utility */
+    .wm-mt-2 { margin-top: 8px; }
+    .wm-hidden { display: none !important; }
+</style>
+
+<div class="wd-page">
+    <header class="wd-page__header">
+        <div class="wd-breadcrumb">
+            <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; تعيينات الجداول
+        </div>
+        <h2 class="wd-page__title">تعيينات الجداول</h2>
+        <p class="wd-page__subtitle">إدارة مصادر Oracle وجدول SQL Server المرتبطة بها. كل تعيين يُستخدم أثناء دورة المزامنة.</p>
+    </header>
+
+    <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+        <button type="button" class="wd-btn wd-btn--primary" onclick="openWizard()">
+            + إضافة تعيين
+        </button>
+    </div>
+
+    @if (Model.Mappings.Count == 0)
+    {
+        <div class="wd-table-wrap">
+            <div class="wd-empty">
+                <div class="wd-empty__icon">&#128203;</div>
+                <p class="wd-empty__text">لا توجد تعيينات جداول بعد.</p>
+                <p style="font-size:13px; color:var(--c-text-muted); margin-top:8px;">اضغط "إضافة تعيين" للبدء.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="wd-table-wrap">
+            <table class="wd-table">
+                <thead>
+                    <tr>
+                        <th>مصدر Oracle</th>
+                        <th>النوع</th>
+                        <th>جدول SQL Server</th>
+                        <th>الحالة</th>
+                        <th>آخر مزامنة</th>
+                        <th>السجلات</th>
+                        <th>خطأ</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Model.Mappings)
+                    {
+                        <tr>
+                            <td>
+                                <span class="wd-truncate" title="@m.OracleSource" style="font-family:monospace; font-size:13px;">
+                                    @m.OracleSource
+                                </span>
+                            </td>
+                            <td>
+                                <span class="wd-badge" style="background:rgba(31,78,121,0.1); color:var(--c-primary);">
+                                    @m.SourceType
+                                </span>
+                            </td>
+                            <td>
+                                <span class="wd-truncate" title="@m.SqlTargetTable" style="font-family:monospace; font-size:13px;">
+                                    @m.SqlTargetTable
+                                </span>
+                            </td>
+                            <td>
+                                <form method="post" asp-page-handler="Toggle" style="display:inline;">
+                                    <input type="hidden" name="id" value="@m.Id" />
+                                    <label class="wd-toggle">
+                                        <input type="submit" style="display:none;" />
+                                        <input type="checkbox" @(m.IsActive ? "checked" : "")
+                                               onchange="this.closest('form').submit()" />
+                                        <span class="wd-toggle__slider"></span>
+                                    </label>
+                                </form>
+                            </td>
+                            <td class="wd-text-muted">
+                                @if (m.LastSyncAt.HasValue)
+                                {
+                                    @m.LastSyncAt.Value.ToString("yyyy/MM/dd HH:mm")
+                                }
+                                else
+                                {
+                                    <span>--</span>
+                                }
+                            </td>
+                            <td class="wd-text-muted">
+                                @m.SyncRecordCount.ToString("N0")
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(m.ErrorMessage))
+                                {
+                                    <span class="wd-badge wd-badge--error" title="@m.ErrorMessage" style="cursor:pointer;">
+                                        &#9888; خطأ
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="wd-text-muted">--</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="wd-actions">
+                                    <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm"
+                                            onclick="openWizardForEdit(@m.Id, '@m.OracleSource', '@m.SourceType', '@m.SqlTargetTable')">
+                                        تعديل
+                                    </button>
+                                    <form method="post" asp-page-handler="PreviewSchema" style="display:inline;">
+                                        <input type="hidden" name="id" value="@m.Id" />
+                                        <button type="submit" class="wd-btn wd-btn--ghost wd-btn--sm">
+                                            مخطط
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-page-handler="ApplySchema" style="display:inline;"
+                                          onsubmit="return confirm('هل تريد تطبيق المخطط على SQL Server؟');">
+                                        <input type="hidden" name="id" value="@m.Id" />
+                                        <button type="submit" class="wd-btn wd-btn--success wd-btn--sm">
+                                            تطبيق
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-page-handler="Delete" style="display:inline;"
+                                          onsubmit="return confirm('هل تريد حذف هذا التعيين نهائياً؟');">
+                                        <input type="hidden" name="id" value="@m.Id" />
+                                        <button type="submit" class="wd-btn wd-btn--danger wd-btn--sm">
+                                            حذف
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (Model.ShowSchemaPreview && Model.SchemaDiff is not null)
+    {
+        <div style="background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--radius-lg); padding:16px; margin-top:24px;">
+            <div style="font-size:14px; font-weight:700; color:var(--c-text); margin:0 0 12px;">
+                معاينة المخطط: @Model.SchemaDiff.Summary
+            </div>
+
+            @if (!Model.SchemaDiff.HasChanges)
+            {
+                <p style="font-size:13px; color:var(--c-text-muted); margin:0;">
+                    المخطط متطابق. لا توجد تغييرات مطلوبة.
+                </p>
+            }
+            else
+            {
+                @if (Model.SchemaDiff.ColumnsToAdd.Count > 0)
+                {
+                    <div style="margin-bottom:12px;">
+                        <strong style="font-size:13px; color:var(--c-success);">أعمدة للتambah:</strong>
+                        @foreach (var col in Model.SchemaDiff.ColumnsToAdd)
+                        {
+                            <div style="padding:4px 0; font-size:13px; color:var(--c-success); border-bottom:1px solid var(--c-border);">
+                                + @col.ColumnName (@col.DataType)
+                            </div>
+                        }
+                    </div>
+                }
+
+                @if (Model.SchemaDiff.ColumnsToModify.Count > 0)
+                {
+                    <div style="margin-bottom:12px;">
+                        <strong style="font-size:13px; color:#b8860b;">أعمدة للتعديل:</strong>
+                        @foreach (var diff in Model.SchemaDiff.ColumnsToModify)
+                        {
+                            <div style="padding:4px 0; font-size:13px; color:#b8860b; border-bottom:1px solid var(--c-border);">
+                                ~ @diff.ColumnName: @diff.CurrentType &rarr; @diff.NewType
+                            </div>
+                        }
+                    </div>
+                }
+
+                @if (Model.SchemaDiff.ColumnsToRemove.Count > 0)
+                {
+                    <div style="margin-bottom:12px;">
+                        <strong style="font-size:13px; color:var(--c-error);">أعمدة للحذف:</strong>
+                        @foreach (var colName in Model.SchemaDiff.ColumnsToRemove)
+                        {
+                            <div style="padding:4px 0; font-size:13px; color:var(--c-error); border-bottom:1px solid var(--c-border);">
+                                - @colName
+                            </div>
+                        }
+                    </div>
+                }
+
+                <form method="post" asp-page-handler="ApplySchema" style="margin-top:12px;"
+                      onsubmit="return confirm('هل تريد تطبيق هذه التغييرات على SQL Server؟');">
+                    <input type="hidden" name="id" value="@Model.EditId" />
+                    <button type="submit" class="wd-btn wd-btn--primary wd-btn--sm">تطبيق التغييرات</button>
+                </form>
+            }
+        </div>
+    }
+</div>
+
+<!-- ═══════════════ Wizard Modal ═══════════════ -->
+<div class="wm-overlay" id="wm-overlay">
+    <div class="wm-modal">
+        <!-- Header -->
+        <div class="wm-modal__header">
+            <h3 class="wm-modal__title" id="wm-modal-title">إضافة تعيين جديد</h3>
+            <button type="button" class="wm-close-btn" onclick="window._wmWizard && window._wmWizard.close()" title="إغلاق">&times;</button>
+        </div>
+
+        <!-- Step Indicator -->
+        <nav class="wm-steps">
+            <div class="wm-step-indicator wm-step--active" data-step="1">
+                <span class="wm-step-num">1</span>
+                <span>نوع المصدر</span>
+            </div>
+            <div class="wm-step-connector"></div>
+            <div class="wm-step-indicator" data-step="2">
+                <span class="wm-step-num">2</span>
+                <span>مصدر Oracle</span>
+            </div>
+            <div class="wm-step-connector"></div>
+            <div class="wm-step-indicator" data-step="3">
+                <span class="wm-step-num">3</span>
+                <span>معاينة وفحص</span>
+            </div>
+            <div class="wm-step-connector"></div>
+            <div class="wm-step-indicator" data-step="4">
+                <span class="wm-step-num">4</span>
+                <span>الجدول الهدف</span>
+            </div>
+        </nav>
+
+        <!-- Body -->
+        <div class="wm-modal__body">
+            <!-- ═══ Step 1: Source Type ═══ -->
+            <div class="wm-step-panel wm-step-panel--active" data-step="1">
+                <p style="font-size:14px; color:var(--c-text-muted); margin:0 0 16px;">اختر نوع مصدر البيانات من Oracle:</p>
+                <div class="wm-type-cards">
+                    <div class="wm-source-type-card" data-type="Table">
+                        <div class="wm-type-icon">&#128451;</div>
+                        <div class="wm-type-name">جدول Oracle</div>
+                        <div class="wm-type-desc">استعراض الجداول المتاحة في قاعدة بيانات Oracle</div>
+                    </div>
+                    <div class="wm-source-type-card" data-type="View">
+                        <div class="wm-type-icon">&#128065;</div>
+                        <div class="wm-type-name">عرض Oracle</div>
+                        <div class="wm-type-desc">استعراض العروض (Views) المتاحة في قاعدة بيانات Oracle</div>
+                    </div>
+                    <div class="wm-source-type-card" data-type="Query">
+                        <div class="wm-type-icon">&#128196;</div>
+                        <div class="wm-type-name">استعلام مخصص</div>
+                        <div class="wm-type-desc">كتابة استعلام SQL مخصص لجلب البيانات من Oracle</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ Step 2: Oracle Source ═══ -->
+            <div class="wm-step-panel" data-step="2">
+                <!-- Table/View mode -->
+                <div id="wm-source-browse">
+                    <div class="wm-search-bar">
+                        <input type="text" class="wm-search-input" id="wm-search-input"
+                               placeholder="&#x2753; &#x628;&#x62D;&#x62B; &#x639;&#x646; &#x62C;&#x62F;&#x648;&#x644; &#x623;&#x648; &#x639;&#x631;&#x636;..." dir="rtl" />
+                        <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm"
+                                onclick="window._wmWizard && window._wmWizard.loadOracleObjects(window._wmWizard.state.sourceType)">
+                            &#x21BB; تحديث
+                        </button>
+                    </div>
+                    <div class="wm-object-list" id="wm-object-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Query mode -->
+                <div id="wm-source-query" class="wm-query-section" style="display:none;">
+                    <div class="wm-field">
+                        <label>استعلام SQL</label>
+                        <textarea class="wm-query-editor" id="wm-query-editor"
+                                  placeholder="SELECT COLUMN1, COLUMN2 FROM TABLE_NAME WHERE ...&#10;&#10;ملاحظة: فقط استعلامات SELECT مسموحة." dir="ltr"></textarea>
+                    </div>
+                    <div class="wm-query-actions">
+                        <button type="button" class="wd-btn wd-btn--primary wd-btn--sm" id="wm-btn-validate-query">
+                            &#x2714; فحص الاستعلام
+                        </button>
+                        <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm" id="wm-btn-preview-query">
+                            &#x1F441; معاينة البيانات
+                        </button>
+                    </div>
+                    <div class="wm-query-status" id="wm-query-status">
+                        <span class="wm-query-validation-icon" id="wm-query-validation-icon"></span>
+                        <span class="wm-query-status__text" id="wm-query-status-text"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ Step 3: Preview & Validate ═══ -->
+            <div class="wm-step-panel" data-step="3">
+                <div class="wm-tabs">
+                    <button type="button" class="wm-tab-btn wm-tab-btn--active" data-tab="preview">&#x1F441; معاينة البيانات</button>
+                    <button type="button" class="wm-tab-btn" data-tab="columns">&#x1F4CA; الأعمدة</button>
+                    <button type="button" class="wm-tab-btn" data-tab="schema">&#x1F50D; مقارنة الهدف</button>
+                </div>
+                <div class="wm-tab-panel wm-tab-panel--active" data-tab="preview">
+                    <div id="wm-preview-content">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="wm-tab-panel" data-tab="columns">
+                    <div id="wm-columns-content">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="wm-tab-panel" data-tab="schema">
+                    <div id="wm-schema-content">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ Step 4: SQL Target ═══ -->
+            <div class="wm-step-panel" data-step="4">
+                <div class="wm-target-section">
+                    <div class="wm-target-row">
+                        <div class="wm-field">
+                            <label for="wm-target-name">اسم الجدول الهدف</label>
+                            <input type="text" class="wm-input wm-input--mono" id="wm-target-name"
+                                   placeholder="stg_TABLE_NAME" dir="ltr" />
+                            <span class="wm-hint">يُنشأ تلقائياً من اسم المصدر. يمكن تغييره يدوياً.</span>
+                        </div>
+                        <div class="wm-field">
+                            <label for="wm-target-schema">الـ Schema</label>
+                            <select class="wm-select" id="wm-target-schema">
+                                <option value="dbo" selected>dbo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <label class="wm-checkbox-row">
+                            <input type="checkbox" id="wm-auto-create" />
+                            إنشاء الجدول تلقائياً إذا غير موجود
+                        </label>
+                        <label class="wm-checkbox-row">
+                            <input type="checkbox" id="wm-apply-schema" />
+                            تطبيق المخطط بعد الحفظ
+                        </label>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="wm-summary" id="wm-summary">
+                        <div class="wm-summary__title">ملخص التعيين</div>
+                        <div class="wm-summary__row">
+                            <span class="wm-summary__label">نوع المصدر</span>
+                            <span class="wm-summary__value" id="wm-sum-type">--</span>
+                        </div>
+                        <div class="wm-summary__row">
+                            <span class="wm-summary__label">مصدر Oracle</span>
+                            <span class="wm-summary__value" id="wm-sum-source">--</span>
+                        </div>
+                        <div class="wm-summary__row">
+                            <span class="wm-summary__label">جدول SQL Server</span>
+                            <span class="wm-summary__value" id="wm-sum-target">--</span>
+                        </div>
+                        <div class="wm-summary__row">
+                            <span class="wm-summary__label">عدد الأعمدة</span>
+                            <span class="wm-summary__value" id="wm-sum-columns">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="wm-modal__footer">
+            <button type="button" class="wd-btn wd-btn--ghost" id="wm-btn-cancel">إلغاء</button>
+            <div style="flex:1;"></div>
+            <button type="button" class="wd-btn wd-btn--ghost" id="wm-btn-prev" disabled>&#x2190; السابق</button>
+            <button type="button" class="wd-btn wd-btn--primary" id="wm-btn-next">التالي &#x2192;</button>
+            <button type="button" class="wd-btn wd-btn--primary" id="wm-btn-save" style="display:none;">&#x2714; حفظ التعيين</button>
+        </div>
+    </div>
+
+    <!-- Hidden form fields for POST -->
+    <form id="wm-form" method="post" style="display:none;">
+        <input type="hidden" asp-for="EditId" id="wm-h-editId" value="0" />
+        <input type="hidden" asp-for="OracleSource" id="wm-h-oracleSource" value="" />
+        <input type="hidden" asp-for="SourceType" id="wm-h-sourceType" value="" />
+        <input type="hidden" asp-for="SqlTargetTable" id="wm-h-sqlTargetTable" value="" />
+    </form>
+</div>
+
+@section Toast {
+    @if (!string.IsNullOrEmpty(Model.ToastMessage))
+    {
+        <div class="wd-toast wd-toast--@Model.ToastType" role="status">
+            <span>@(Model.ToastType == "success" ? "&#10003;" : "&#9888;")</span>
+            <span>@Model.ToastMessage</span>
+        </div>
+    }
+}
+
+<script src="~/js/table-mapping-wizard.js"></script>
+<script>
+    (function () {
+        var wizard = new TableMappingWizard({
+            listObjectsApiUrl: '/api/oracle-browser/list-objects',
+            previewApiUrl: '/api/oracle-browser/preview',
+            validateQueryApiUrl: '/api/oracle-browser/validate-query',
+            editMode: false,
+            initialData: null
+        });
+        window._wmWizard = wizard;
+
+        // Toggle source panels based on source type
+        var origSelectType = wizard.selectSourceType.bind(wizard);
+        wizard.selectSourceType = function (type, advance) {
+            origSelectType(type, advance);
+            var browsePanel = document.getElementById('wm-source-browse');
+            var queryPanel = document.getElementById('wm-source-query');
+            if (browsePanel && queryPanel) {
+                if (type === 'Query') {
+                    browsePanel.style.display = 'none';
+                    queryPanel.style.display = '';
+                } else {
+                    browsePanel.style.display = '';
+                    queryPanel.style.display = 'none';
+                }
+            }
+        };
+
+        // Show/hide next vs save buttons based on step
+        var origGoToStep = wizard.goToStep.bind(wizard);
+        wizard.goToStep = function (n) {
+            origGoToStep(n);
+            var nextBtn = document.getElementById('wm-btn-next');
+            var saveBtn = document.getElementById('wm-btn-save');
+            if (nextBtn && saveBtn) {
+                if (n === 4) {
+                    nextBtn.style.display = 'none';
+                    saveBtn.style.display = '';
+                } else {
+                    nextBtn.style.display = '';
+                    saveBtn.style.display = 'none';
+                }
+            }
+            // Update summary on step 4
+            if (n === 4) {
+                updateSummary();
+            }
+        };
+
+        function updateSummary() {
+            var s = wizard.state;
+            var sumType = document.getElementById('wm-sum-type');
+            var sumSource = document.getElementById('wm-sum-source');
+            var sumTarget = document.getElementById('wm-sum-target');
+            var sumCols = document.getElementById('wm-sum-columns');
+            if (sumType) sumType.textContent = s.sourceType || '--';
+            if (sumSource) sumSource.textContent = s.oracleSource || '--';
+            if (sumTarget) {
+                var t = document.getElementById('wm-target-name');
+                sumTarget.textContent = (t && t.value) || '--';
+            }
+            if (sumCols) {
+                var cols = 0;
+                if (s.previewResult && s.previewResult.columns) cols = s.previewResult.columns.length;
+                else if (s.queryColumns) cols = s.queryColumns.length;
+                sumCols.textContent = cols || '--';
+            }
+        }
+
+        // Global functions for inline onclick
+        window.openWizard = function () {
+            wizard.resetState();
+            document.getElementById('wm-modal-title').textContent = '\u0625\u0636\u0627\u0641\u0629 \u062A\u0639\u064A\u064A\u0646 \u062C\u062F\u064A\u062F';
+            document.getElementById('wm-btn-save').textContent = '\u2714 \u062D\u0641\u0638 \u0627\u0644\u062A\u0639\u064A\u064A\u0646';
+            document.getElementById('wm-btn-save').style.display = 'none';
+            document.getElementById('wm-btn-next').style.display = '';
+            wizard.open();
+        };
+
+        window.openWizardForEdit = function (id, oracleSource, sourceType, sqlTarget) {
+            document.getElementById('wm-modal-title').textContent = '\u0639\u062F\u0644 \u0627\u0644\u062A\u0639\u064A\u064A\u0646';
+            document.getElementById('wm-btn-save').textContent = '\u2714 \u062A\u062D\u062F\u064A\u062B \u0627\u0644\u062A\u0639\u064A\u064A\u0646';
+            document.getElementById('wm-btn-save').style.display = 'none';
+            document.getElementById('wm-btn-next').style.display = '';
+            wizard.open({
+                editId: id,
+                oracleSource: oracleSource,
+                sourceType: sourceType,
+                sqlTargetTable: sqlTarget
+            });
+        };
+
+        // Listen for target name input changes to update summary
+        var targetInput = document.getElementById('wm-target-name');
+        if (targetInput) {
+            targetInput.addEventListener('input', function () {
+                wizard.state.sqlTargetTable = this.value;
+            });
+        }
+    })();
+</script>

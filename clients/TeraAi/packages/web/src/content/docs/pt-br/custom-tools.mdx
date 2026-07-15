@@ -1,0 +1,196 @@
+﻿---
+title: Ferramentas Personalizadas
+description: Crie ferramentas que o LLM pode chamar no opencode.
+---
+
+Ferramentas personalizadas sأ£o funأ§أµes que vocأھ cria e que o LLM pode chamar durante as conversas. Elas funcionam junto com as [ferramentas integradas](/docs/tools) do opencode, como `read`, `write` e `bash`.
+
+---
+
+## Criando uma ferramenta
+
+As ferramentas sأ£o definidas como arquivos **TypeScript** ou **JavaScript**. No entanto, a definiأ§أ£o da ferramenta pode invocar scripts escritos em **qualquer linguagem** â€” TypeScript ou JavaScript أ© usado apenas para a definiأ§أ£o da ferramenta em si.
+
+---
+
+### Localizaأ§أ£o
+
+Elas podem ser definidas:
+
+- Localmente, colocando-as no diretأ³rio `.opencode/tools/` do seu projeto.
+- Ou globalmente, colocando-as em `~/.config/opencode/tools/`.
+
+---
+
+### Estrutura
+
+A maneira mais fأ،cil de criar ferramentas أ© usando o helper `tool()`, que fornece seguranأ§a de tipo e validaأ§أ£o.
+
+```ts title=".opencode/tools/database.ts" {1}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Consultar o banco de dados do projeto",
+  args: {
+    query: tool.schema.string().describe("Consulta SQL para executar"),
+  },
+  async execute(args) {
+    // Sua lأ³gica de banco de dados aqui
+    return `Consulta executada: ${args.query}`
+  },
+})
+```
+
+O **nome do arquivo** se torna o **nome da ferramenta**. O acima cria uma ferramenta `database`.
+
+---
+
+#### Mأ؛ltiplas ferramentas por arquivo
+
+Vocأھ tambأ©m pode exportar vأ،rias ferramentas de um أ؛nico arquivo. Cada exportaأ§أ£o se torna **uma ferramenta separada** com o nome **`<filename>_<exportname>`**:
+
+```ts title=".opencode/tools/math.ts"
+import { tool } from "@tera-system/plugin"
+
+export const add = tool({
+  description: "Adicionar dois nأ؛meros",
+  args: {
+    a: tool.schema.number().describe("Primeiro nأ؛mero"),
+    b: tool.schema.number().describe("Segundo nأ؛mero"),
+  },
+  async execute(args) {
+    return args.a + args.b
+  },
+})
+
+export const multiply = tool({
+  description: "Multiplicar dois nأ؛meros",
+  args: {
+    a: tool.schema.number().describe("Primeiro nأ؛mero"),
+    b: tool.schema.number().describe("Segundo nأ؛mero"),
+  },
+  async execute(args) {
+    return args.a * args.b
+  },
+})
+```
+
+Isso cria duas ferramentas: `math_add` e `math_multiply`.
+
+---
+
+#### Colisأµes de nome com ferramentas integradas
+
+Ferramentas personalizadas sأ£o chaveadas pelo nome da ferramenta. Se uma ferramenta personalizada usar o mesmo nome que uma ferramenta integrada, a ferramenta personalizada tem precedأھncia.
+
+Por exemplo, este arquivo substitui a ferramenta `bash` integrada:
+
+```ts title=".opencode/tools/bash.ts"
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Restricted bash wrapper",
+  args: {
+    command: tool.schema.string(),
+  },
+  async execute(args) {
+    return `blocked: ${args.command}`
+  },
+})
+```
+
+:::note
+Prefira nomes أ؛nicos, a menos que vocأھ queira intencionalmente substituir uma ferramenta integrada. Se vocأھ quiser desabilitar uma ferramenta integrada, mas nأ£o substituأ­-la, use [permissأµes](/docs/permissions).
+:::
+
+---
+
+### Argumentos
+
+Vocأھ pode usar `tool.schema`, que أ© apenas [Zod](https://zod.dev), para definir tipos de argumentos.
+
+```ts "tool.schema"
+args: {
+  query: tool.schema.string().describe("Consulta SQL para executar")
+}
+```
+
+Vocأھ tambأ©m pode importar [Zod](https://zod.dev) diretamente e retornar um objeto simples:
+
+```ts {6}
+import { z } from "zod"
+
+export default {
+  description: "Descriأ§أ£o da ferramenta",
+  args: {
+    param: z.string().describe("Descriأ§أ£o do parأ¢metro"),
+  },
+  async execute(args, context) {
+    // Implementaأ§أ£o da ferramenta
+    return "result"
+  },
+}
+```
+
+---
+
+### Contexto
+
+As ferramentas recebem contexto sobre a sessأ£o atual:
+
+```ts title=".opencode/tools/project.ts" {8}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Obter informaأ§أµes do projeto",
+  args: {},
+  async execute(args, context) {
+    // Acessar informaأ§أµes de contexto
+    const { agent, sessionID, messageID, directory, worktree } = context
+    return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}, Directory: ${directory}, Worktree: ${worktree}`
+  },
+})
+```
+
+Use `context.directory` para o diretأ³rio de trabalho da sessأ£o.
+Use `context.worktree` para a raiz do worktree do git.
+
+---
+
+## Exemplos
+
+### Escrevendo uma ferramenta em Python
+
+Vocأھ pode escrever suas ferramentas em qualquer linguagem que desejar. Aqui estأ، um exemplo que adiciona dois nأ؛meros usando Python.
+
+Primeiro, crie a ferramenta como um script Python:
+
+```python title=".opencode/tools/add.py"
+import sys
+
+a = int(sys.argv[1])
+b = int(sys.argv[2])
+print(a + b)
+```
+
+Em seguida, crie a definiأ§أ£o da ferramenta que a invoca:
+
+```ts title=".opencode/tools/python-add.ts" {10}
+import { tool } from "@tera-system/plugin"
+import path from "path"
+
+export default tool({
+  description: "Adicionar dois nأ؛meros usando Python",
+  args: {
+    a: tool.schema.number().describe("Primeiro nأ؛mero"),
+    b: tool.schema.number().describe("Segundo nأ؛mero"),
+  },
+  async execute(args, context) {
+    const script = path.join(context.worktree, ".opencode/tools/add.py")
+    const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
+    return result.trim()
+  },
+})
+```
+
+Aqui estamos usando o utilitأ،rio [`Bun.$`](https://bun.com/docs/runtime/shell) para executar o script Python.

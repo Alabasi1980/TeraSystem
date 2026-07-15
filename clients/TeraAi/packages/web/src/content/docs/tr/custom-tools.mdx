@@ -1,0 +1,196 @@
+﻿---
+title: أ–zel Araأ§lar
+description: LLM'un opencode'da أ§aؤںؤ±rabileceؤںi araأ§larؤ± birleإںtirebilir.
+---
+
+أ–zel araأ§lar, LLM'un konuإںmalar sؤ±rasؤ±nda arayabileceؤںi, oluإںturduؤںunuz iإںlevlerdir. opencode'un [built-in tools](/docs/tools) ile birlikte `read`, `write` ve `bash` gibi أ§alؤ±إںؤ±rlar.
+
+---
+
+## Araأ§ oluإںturma
+
+Araأ§lar **TypeScript** veya **JavaScript** dosyalarؤ± olarak tanؤ±mlanؤ±r. Ancak araأ§ tanؤ±mؤ± **herhangi bir dilde** yazؤ±lmؤ±إں komut dosyalarؤ±nؤ± أ§aؤںؤ±rabilir; TypeScript veya JavaScript yalnؤ±zca araأ§ tanؤ±mؤ±nؤ±n kendisi iأ§in kullanؤ±lؤ±r.
+
+---
+
+### Konum
+
+Bunlar tanؤ±mlanabilir:
+
+- Yerel olarak bunlarؤ± projenizin `.opencode/tools/` dizinine yerleإںtirerek.
+- Veya kأ¼resel olarak bunlarؤ± `~/.config/opencode/tools/` iأ§ine yerleإںtirerek.
+
+---
+
+### Yapؤ±
+
+Araأ§ oluإںturmanؤ±n en kolay yolu, tأ¼r gأ¼venliؤںi ve doؤںrulama saؤںlayan `tool()` yardؤ±mcؤ±sؤ±nؤ± kullanmaktؤ±r.
+
+```ts title=".opencode/tools/database.ts" {1}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Query the project database",
+  args: {
+    query: tool.schema.string().describe("SQL query to execute"),
+  },
+  async execute(args) {
+    // Your database logic here
+    return `Executed query: ${args.query}`
+  },
+})
+```
+
+**dosya adؤ±**, **araأ§ adؤ±** olur. Yukarؤ±dakiler bir `database` aracؤ± oluإںturur.
+
+---
+
+#### Dosya baإںؤ±na birden fazla araأ§
+
+Ayrؤ±ca tek bir dosyadan birden fazla aracؤ± dؤ±إںa aktarabilirsiniz. Her dؤ±إںa aktarma, **`<filename>_<exportname>`** adؤ±yla **ayrؤ± bir araأ§** haline gelir:
+
+```ts title=".opencode/tools/math.ts"
+import { tool } from "@tera-system/plugin"
+
+export const add = tool({
+  description: "Add two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a + args.b
+  },
+})
+
+export const multiply = tool({
+  description: "Multiply two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a * args.b
+  },
+})
+```
+
+Bu iki araأ§ oluإںturur: `math_add` ve `math_multiply`.
+
+---
+
+#### Yerleإںik araأ§larla ad أ§akؤ±إںmalarؤ±
+
+أ–zel araأ§lar, araأ§ adؤ±na gأ¶re anahtarlanؤ±r. أ–zel bir araأ§ yerleإںik bir araأ§la aynؤ± adؤ± kullanؤ±yorsa, أ¶zel araأ§ أ¶nceliklidir.
+
+أ–rneؤںin, bu dosya yerleإںik `bash` aracؤ±nؤ±n yerini alؤ±r:
+
+```ts title=".opencode/tools/bash.ts"
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Restricted bash wrapper",
+  args: {
+    command: tool.schema.string(),
+  },
+  async execute(args) {
+    return `blocked: ${args.command}`
+  },
+})
+```
+
+:::note
+Kasؤ±tlؤ± olarak yerleإںik bir aracؤ± deؤںiإںtirmek istemiyorsanؤ±z benzersiz adlarؤ± tercih edin. Yerleإںik bir aracؤ± devre dؤ±إںؤ± bؤ±rakmak ancak geأ§ersiz kؤ±lmak istemiyorsanؤ±z [izinleri](/docs/permissions) kullanؤ±n.
+:::
+
+---
+
+### Argأ¼manlar
+
+Baؤںؤ±msؤ±z deؤںiإںken tأ¼rlerini tanؤ±mlamak iأ§in yalnؤ±zca [Zod](https://zod.dev) olan `tool.schema` أ¶ؤںesini kullanabilirsiniz.
+
+```ts "tool.schema"
+args: {
+  query: tool.schema.string().describe("SQL query to execute")
+}
+```
+
+Ayrؤ±ca [Zod](https://zod.dev) أ¶ؤںesini doؤںrudan iأ§e aktarabilir ve dأ¼z bir nesne dأ¶ndأ¼rebilirsiniz:
+
+```ts {6}
+import { z } from "zod"
+
+export default {
+  description: "Tool description",
+  args: {
+    param: z.string().describe("Parameter description"),
+  },
+  async execute(args, context) {
+    // Tool implementation
+    return "result"
+  },
+}
+```
+
+---
+
+### Baؤںlam
+
+Araأ§lar geأ§erli oturumla ilgili baؤںlamؤ± alؤ±r:
+
+```ts title=".opencode/tools/project.ts" {8}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Get project information",
+  args: {},
+  async execute(args, context) {
+    // Access context information
+    const { agent, sessionID, messageID, directory, worktree } = context
+    return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}, Directory: ${directory}, Worktree: ${worktree}`
+  },
+})
+```
+
+Oturum أ§alؤ±إںma dizisi iأ§in `context.directory` kullanؤ±n.
+Git أ§alؤ±إںma aؤںacؤ± kأ¶kأ¼ iأ§in `context.worktree` kullanؤ±n.
+
+---
+
+## أ–rnekler
+
+### Python ile araأ§ yazma
+
+Araأ§larؤ±nؤ±zؤ± dilediؤںiniz dilde yazabilirsiniz. ؤ°إںte Python kullanarak iki sayؤ±yؤ± toplayan bir أ¶rnek.
+
+أ–ncelikle aracؤ± bir Python betiؤںi olarak oluإںturun:
+
+```python title=".opencode/tools/add.py"
+import sys
+
+a = int(sys.argv[1])
+b = int(sys.argv[2])
+print(a + b)
+```
+
+Ardؤ±ndan onu أ§aؤںؤ±ran araأ§ tanؤ±mؤ±nؤ± oluإںturun:
+
+```ts title=".opencode/tools/python-add.ts" {10}
+import { tool } from "@tera-system/plugin"
+import path from "path"
+
+export default tool({
+  description: "Add two numbers using Python",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args, context) {
+    const script = path.join(context.worktree, ".opencode/tools/add.py")
+    const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
+    return result.trim()
+  },
+})
+```
+
+Burada Python betiؤںini أ§alؤ±إںtؤ±rmak iأ§in [`Bun.$`](https://bun.com/docs/runtime/shell) yardؤ±mcؤ± programؤ±nؤ± kullanؤ±yoruz.

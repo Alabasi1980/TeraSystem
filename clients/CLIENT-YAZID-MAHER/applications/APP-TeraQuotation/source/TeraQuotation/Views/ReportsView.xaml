@@ -1,0 +1,410 @@
+<UserControl x:Class="TeraQuotation.Views.ReportsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:reports="clr-namespace:TeraQuotation.Models.Reports"
+             FlowDirection="RightToLeft"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1100">
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Row 0: Header -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="التقارير"
+                       FontSize="{StaticResource PageTitleFontSize}"
+                       FontWeight="{StaticResource PageTitleFontWeight}"
+                       VerticalAlignment="Center"
+                       Foreground="{StaticResource TextPrimaryBrush}" />
+            <Button Content="الصفحة الرئيسية" Command="{Binding HomeCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Margin="20,0,0,0"/>
+        </StackPanel>
+
+        <!-- Row 1: Report Selection Cards -->
+        <WrapPanel Grid.Row="1" Margin="0,0,0,20">
+            <!-- تقرير الموردين -->
+            <Border Style="{StaticResource CardStyle}" Padding="16"
+                    Margin="0,0,15,10" MinWidth="160" MinHeight="90">
+                <StackPanel VerticalAlignment="Center">
+                    <Button Content="📊 تقرير الموردين"
+                            Command="{Binding LoadSupplierReportCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            FontSize="14"/>
+                    <TextBlock Text="عرض تقارير الموردين وعدد العروض المرتبطة"
+                               Style="{StaticResource HelperTextStyle}"
+                               TextWrapping="Wrap" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- تقرير القطع -->
+            <Border Style="{StaticResource CardStyle}" Padding="16"
+                    Margin="0,0,15,10" MinWidth="160" MinHeight="90">
+                <StackPanel VerticalAlignment="Center">
+                    <Button Content="🔧 تقرير القطع"
+                            Command="{Binding LoadItemReportCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            FontSize="14"/>
+                    <TextBlock Text="عرض القطع الأكثر استخداماً في العروض"
+                               Style="{StaticResource HelperTextStyle}"
+                               TextWrapping="Wrap" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- إحصائيات -->
+            <Border Style="{StaticResource CardStyle}" Padding="16"
+                    Margin="0,0,15,10" MinWidth="160" MinHeight="90">
+                <StackPanel VerticalAlignment="Center">
+                    <Button Content="📈 إحصائيات"
+                            Command="{Binding LoadStatsReportCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            FontSize="14"/>
+                    <TextBlock Text="إحصائيات شاملة حول العروض والعمليات"
+                               Style="{StaticResource HelperTextStyle}"
+                               TextWrapping="Wrap" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- نسخ احتياطي -->
+            <Border Style="{StaticResource CardStyle}" Padding="16"
+                    Margin="0,0,15,10" MinWidth="160" MinHeight="90">
+                <StackPanel VerticalAlignment="Center">
+                    <Button Content="💾 نسخ احتياطي"
+                            Command="{Binding BackupCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            FontSize="14"/>
+                    <TextBlock Text="إدارة النسخ الاحتياطية والاستعادة"
+                               Style="{StaticResource HelperTextStyle}"
+                               TextWrapping="Wrap" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+        </WrapPanel>
+
+        <!-- Row 2: Results Area (scrollable) -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <!-- ============ Supplier Report ============ -->
+                <StackPanel Visibility="{Binding IsSupplierReport, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="{Binding ReportTitle}"
+                               Style="{StaticResource CardTitleStyle}"
+                               Margin="0,0,0,10" />
+                    <DataGrid ItemsSource="{Binding CurrentReport}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              CanUserAddRows="False" CanUserDeleteRows="False"
+                              CanUserReorderColumns="False" CanUserSortColumns="True"
+                              RowHeight="35"
+                              AlternatingRowBackground="{StaticResource AlternatingRowBrush}"
+                              Margin="0,0,0,10"
+                              BorderBrush="{StaticResource BorderBrush}"
+                              BorderThickness="1"
+                              GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="{StaticResource BorderBrush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="المورد" Binding="{Binding SupplierName}" Width="*" />
+                            <DataGridTextColumn Header="عدد العروض" Binding="{Binding QuotationCount}" Width="120" />
+                            <DataGridTextColumn Header="القطع" Binding="{Binding Items.Count, StringFormat='{}{0} قطعة'}" Width="120" />
+                        </DataGrid.Columns>
+                        <DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <ItemsControl ItemsSource="{Binding Items}" Margin="30,5">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="{StaticResource RadiusBadge}"
+                                                    Padding="6,2" Margin="3">
+                                                <TextBlock Text="{Binding}" FontSize="12"
+                                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>
+                    </DataGrid>
+                </StackPanel>
+
+                <!-- ============ Item Report ============ -->
+                <StackPanel Visibility="{Binding IsItemReport, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="{Binding ReportTitle}"
+                               Style="{StaticResource CardTitleStyle}"
+                               Margin="0,0,0,10" />
+                    <DataGrid ItemsSource="{Binding CurrentReport}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              CanUserAddRows="False" CanUserDeleteRows="False"
+                              CanUserReorderColumns="False" CanUserSortColumns="True"
+                              RowHeight="35"
+                              AlternatingRowBackground="{StaticResource AlternatingRowBrush}"
+                              Margin="0,0,0,10"
+                              BorderBrush="{StaticResource BorderBrush}"
+                              BorderThickness="1"
+                              GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="{StaticResource BorderBrush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="القطعة" Binding="{Binding ItemName}" Width="*" />
+                            <DataGridTextColumn Header="عدد مرات الظهور" Binding="{Binding UsageCount}" Width="140" />
+                            <DataGridTextColumn Header="أرقام العروض" Binding="{Binding QuotationNumbers.Count, StringFormat='{}{0} عرض'}" Width="120" />
+                        </DataGrid.Columns>
+                        <DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <ItemsControl ItemsSource="{Binding QuotationNumbers}" Margin="30,5">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="{StaticResource RadiusBadge}"
+                                                    Padding="6,2" Margin="3">
+                                                <TextBlock Text="{Binding}" FontSize="12"
+                                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>
+                    </DataGrid>
+                </StackPanel>
+
+                <!-- ============ Stats Report ============ -->
+                <StackPanel Visibility="{Binding IsStatsReport, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="{Binding ReportTitle}"
+                               Style="{StaticResource CardTitleStyle}"
+                               Margin="0,0,0,15" />
+
+                    <!-- Summary Cards Row -->
+                    <WrapPanel Margin="0,0,0,20">
+                        <!-- المجموع: Success -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,15" MinWidth="140"
+                                Background="{StaticResource SuccessBgBrush}">
+                            <StackPanel>
+                                <TextBlock Text="📋 المجموع" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.Total}" FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource SuccessBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- مسودة: Warning -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,15" MinWidth="140"
+                                Background="{StaticResource WarningBgBrush}">
+                            <StackPanel>
+                                <TextBlock Text="📝 مسودة" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.Draft}" FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource WarningBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- تم تحديث الأسعار: Info -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,15" MinWidth="140"
+                                Background="{StaticResource InfoBgBrush}">
+                            <StackPanel>
+                                <TextBlock Text="💰 تم تحديث الأسعار" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.UpdatedWithPrices}" FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource InfoBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- مطبوع: Neutral (light bg) -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,15" MinWidth="140"
+                                Background="{StaticResource BorderLightBrush}">
+                            <StackPanel>
+                                <TextBlock Text="🖨️ مطبوع" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.Printed}" FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource TextPrimaryBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- PDF: Info -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,15" MinWidth="140"
+                                Background="{StaticResource InfoBgBrush}">
+                            <StackPanel>
+                                <TextBlock Text="📄 PDF" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.PdfExported}" FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource InfoBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- أرسل عبر Outlook: Danger -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,15" MinWidth="140"
+                                Background="{StaticResource DangerBgBrush}">
+                            <StackPanel>
+                                <TextBlock Text="📧 أرسل عبر Outlook" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.SentViaOutlook}" FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource DangerBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- هذا الأسبوع: Success -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,15" MinWidth="140"
+                                Background="{StaticResource SuccessBgBrush}">
+                            <StackPanel>
+                                <TextBlock Text="📅 هذا الأسبوع" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.ThisWeek}" FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource SuccessBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- هذا الشهر: Info -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,15" MinWidth="140"
+                                Background="{StaticResource InfoBgBrush}">
+                            <StackPanel>
+                                <TextBlock Text="📅 هذا الشهر" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.ThisMonth}" FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource InfoBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+
+                    <!-- Top Supplier & Top Item -->
+                    <WrapPanel>
+                        <!-- أفضل مورد: Success -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,0" MinWidth="250"
+                                Background="{StaticResource SuccessBgBrush}">
+                            <StackPanel>
+                                <TextBlock Text="🏆 أفضل مورد" FontSize="14"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.TopSupplier, TargetNullValue='—'}"
+                                           FontSize="22" FontWeight="Bold"
+                                           Foreground="{StaticResource SuccessBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- أفضل قطعة: Warning -->
+                        <Border BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusCard}"
+                                Padding="20,15" Margin="0,0,15,0" MinWidth="250"
+                                Background="{StaticResource WarningBgBrush}">
+                            <StackPanel>
+                                <TextBlock Text="🏆 أفضل قطعة" FontSize="14"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding CurrentReport.TopItem, TargetNullValue='—'}"
+                                           FontSize="22" FontWeight="Bold"
+                                           Foreground="{StaticResource WarningBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+                </StackPanel>
+
+                <!-- ============ Backup ============ -->
+                <StackPanel Visibility="{Binding IsBackupVisible, Converter={StaticResource BoolToVis}}">
+                    <Border Style="{StaticResource SuccessCardStyle}"
+                            Padding="25">
+                        <StackPanel>
+                            <TextBlock Text="💾 النسخ الاحتياطي"
+                                       Style="{StaticResource CardTitleStyle}"
+                                       Margin="0,0,0,15" />
+                            <TextBlock Text="{Binding BackupMessage}"
+                                       FontSize="{StaticResource BodyFontSize}"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       TextWrapping="Wrap" Margin="0,0,0,15" />
+                            <Button Content="🔄 استعادة نسخة احتياطية"
+                                    Command="{Binding RestoreCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Height="40"
+                                    HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ============ Global Empty State (no report active) ============ -->
+                <ContentControl HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsSupplierReport}" Value="False" />
+                                        <Condition Binding="{Binding IsItemReport}" Value="False" />
+                                        <Condition Binding="{Binding IsStatsReport}" Value="False" />
+                                        <Condition Binding="{Binding IsBackupVisible}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                    <Border Background="Transparent"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Padding="40">
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    MaxWidth="400">
+                            <Border Width="64" Height="64"
+                                    CornerRadius="32"
+                                    Background="{StaticResource BorderLightBrush}"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,16">
+                                <TextBlock Text="📊"
+                                           FontSize="28"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock Text="اختر تقريراً لعرض النتائج"
+                                       FontSize="{StaticResource SectionTitleFontSize}"
+                                       FontWeight="{StaticResource SectionTitleFontWeight}"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       HorizontalAlignment="Center"
+                                       TextAlignment="Center"
+                                       Margin="0,0,0,8"
+                                       FlowDirection="RightToLeft" />
+                        </StackPanel>
+                    </Border>
+                </ContentControl>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

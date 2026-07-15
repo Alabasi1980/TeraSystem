@@ -1,0 +1,27 @@
+@page
+@model CreateModel
+@{
+    ViewData["Title"] = "إضافة بطاقة";
+    // This page redirects to the Card Builder wizard.
+    // The OnGet handler in CreateModel handles the redirect.
+}
+
+<div class="wd-breadcrumb-row">
+    <a href="/admin-secure-panel/Cards">البطاقات</a>
+    <span class="wd-sep">/</span>
+    <span>إضافة بطاقة</span>
+</div>
+
+<div class="wd-card wd-editor">
+    <div class="wd-card__header">
+        <h2 class="wd-card__title">جاري الانتقال إلى معالج إنشاء البطاقات...</h2>
+    </div>
+    <div class="wd-card__body">
+        <p class="wd-text--muted">إذا لم يتم تحويلك تلقائياً، <a href="/admin-secure-panel/Cards/Builder">اضغط هنا</a>.</p>
+    </div>
+</div>
+
+<script>
+    // Fallback redirect in case server-side redirect doesn't work
+    window.location.href = '/admin-secure-panel/Cards/Builder';
+</script>

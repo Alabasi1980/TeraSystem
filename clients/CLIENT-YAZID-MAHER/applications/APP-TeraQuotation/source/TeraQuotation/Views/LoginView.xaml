@@ -1,0 +1,88 @@
+<UserControl x:Class="TeraQuotation.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:TeraQuotation.ViewModels"
+             d:DataContext="{d:DesignInstance vm:LoginViewModel}"
+             FlowDirection="RightToLeft"
+             mc:Ignorable="d">
+    <Grid Background="{StaticResource AppBackgroundBrush}">
+        <Border Style="{StaticResource CardStyle}"
+                Width="380"
+                Padding="32"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel VerticalAlignment="Center">
+                <!-- Title -->
+                <TextBlock Text="TeraQuotation"
+                           FontSize="{StaticResource PageTitleFontSize}"
+                           FontWeight="{StaticResource PageTitleFontWeight}"
+                           Foreground="{StaticResource PrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,8"/>
+
+                <!-- Subtitle -->
+                <TextBlock Text="نظام إدارة عروض الأسعار"
+                           FontSize="{StaticResource HelperFontSize}"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,32"/>
+
+                <!-- First time setup mode header -->
+                <TextBlock Text="تعيين كلمة المرور"
+                           FontSize="{StaticResource SectionTitleFontSize}"
+                           FontWeight="{StaticResource SectionTitleFontWeight}"
+                           Visibility="{Binding IsFirstTime, Converter={StaticResource BoolToVis}}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,12"/>
+
+                <!-- Normal login mode header -->
+                <TextBlock Text="تسجيل الدخول"
+                           FontSize="{StaticResource SectionTitleFontSize}"
+                           FontWeight="{StaticResource SectionTitleFontWeight}"
+                           Visibility="{Binding IsFirstTime, Converter={StaticResource InverseBoolToVis}}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,12"/>
+
+                <!-- Password field label -->
+                <TextBlock Text="كلمة المرور"
+                           Style="{StaticResource FieldLabelStyle}"/>
+
+                <!-- Password field -->
+                <PasswordBox x:Name="PasswordInput"
+                             Style="{StaticResource PasswordBoxStyle}"/>
+
+                <!-- Error message -->
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Style="{StaticResource ValidationErrorStyle}"
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVis}}"
+                           HorizontalAlignment="Center"
+                           TextWrapping="Wrap"/>
+
+                <!-- Login button (normal mode) -->
+                <Button Content="دخول"
+                        Click="Login_Click"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Visibility="{Binding IsFirstTime, Converter={StaticResource InverseBoolToVis}}"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,20,0,0"/>
+
+                <!-- Set password button (first time mode) -->
+                <Button Content="تعيين كلمة المرور"
+                        Click="SetPassword_Click"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Visibility="{Binding IsFirstTime, Converter={StaticResource BoolToVis}}"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,20,0,0"/>
+
+                <!-- Loading indicator -->
+                <ProgressBar IsIndeterminate="True"
+                             Height="4"
+                             Margin="0,16,0,0"
+                             Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"
+                             Foreground="{StaticResource PrimaryBrush}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

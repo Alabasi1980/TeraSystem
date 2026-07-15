@@ -1,0 +1,21 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.LoginModel
+@{
+    ViewData["Title"] = "تسجيل الدخول - لوحة الإدارة";
+    Layout = "_Layout";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div role="alert">@Model.ErrorMessage</div>
+}
+
+<form method="post">
+    <div>
+        <label asp-for="Password">كلمة المرور</label>
+        <input asp-for="Password" type="password" autocomplete="current-password" />
+    </div>
+    <button type="submit">دخول</button>
+</form>

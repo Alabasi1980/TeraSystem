@@ -1,0 +1,747 @@
+<UserControl x:Class="TeraQuotation.Views.QuotationFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:TeraQuotation.ViewModels"
+             xmlns:models="clr-namespace:TeraQuotation.Models"
+             d:DataContext="{d:DesignInstance vm:QuotationFormViewModel}"
+             FlowDirection="RightToLeft"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1100">
+
+    <UserControl.Resources>
+        <!-- Local BooleanToVisibility for niche cases -->
+        <BooleanToVisibilityConverter x:Key="LocalBoolToVis"/>
+
+        <!-- Items for the part type ComboBox -->
+        <x:Array x:Key="PartTypeItems" Type="sys:String" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+            <sys:String>غير محدد</sys:String>
+            <sys:String>أصلي</sys:String>
+            <sys:String>تجاري</sys:String>
+            <sys:String>بديل</sys:String>
+        </x:Array>
+
+        <!-- DataTemplate for supplier mini-card in right panel -->
+        <DataTemplate x:Key="SupplierCardTemplate" DataType="models:Supplier">
+            <Border Style="{StaticResource CardStyle}" Padding="10,8" Margin="0,0,0,6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{Binding Name}"
+                                   FontSize="{StaticResource BodyFontSize}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock x:Name="SupplierStatusText"
+                                   FontSize="{StaticResource HelperFontSize}"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Text="لم يبدأ"/>
+                    </StackPanel>
+                    <Button Grid.Column="1"
+                            Content="&#x2715;"
+                            Click="RemoveSupplierChip_Click"
+                            Tag="{Binding}"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Foreground="{StaticResource DangerBrush}"
+                            FontSize="12"
+                            Padding="4,0"
+                            ToolTip="حذف المورد"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- DataTemplate for material card in center list -->
+        <DataTemplate x:Key="MaterialCardTemplate">
+            <Border Padding="12,10"
+                    Margin="0,0,0,6"
+                    Cursor="Hand">
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter Property="Background" Value="{StaticResource InfoBgBrush}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Item name + qty -->
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{Binding DisplayName}"
+                                   FontSize="{StaticResource BodyFontSize}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock FontSize="{StaticResource HelperFontSize}"
+                                   Foreground="{StaticResource TextSecondaryBrush}">
+                            <Run Text="{Binding Quantity, StringFormat={}{0:N0}}"/>
+                            <Run Text=" "/>
+                            <Run Text="{Binding Unit}"/>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <!-- Best price indicator -->
+                    <TextBlock Grid.Column="1"
+                               x:Name="BestPriceText"
+                               Visibility="Collapsed"
+                               FontSize="{StaticResource HelperFontSize}"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource BestPriceBrush}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+
+                    <!-- Status badge -->
+                    <Border Grid.Column="2"
+                            x:Name="ItemStatusBadge"
+                            Style="{StaticResource BaseBadgeStyle}"
+                            Background="{StaticResource BorderLightBrush}"
+                            VerticalAlignment="Center"
+                            Margin="0,0,8,0">
+                        <TextBlock x:Name="ItemStatusText"
+                                   Style="{StaticResource BadgeTextStyle}"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Text="لم يبدأ"/>
+                    </Border>
+
+                    <!-- Delete button -->
+                    <Button Grid.Column="3"
+                            Content="&#x2715;"
+                            Click="RemoveRow_Click"
+                            Tag="{Binding}"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Foreground="{StaticResource TextMutedBrush}"
+                            FontSize="12"
+                            Padding="4,0"
+                            ToolTip="حذف المادة"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- DataTemplate for supplier pricing entry in left panel -->
+        <DataTemplate x:Key="SupplierPricingTemplate">
+            <Border Style="{StaticResource CardStyle}"
+                    Padding="12,10"
+                    Margin="0,0,0,8">
+                <StackPanel>
+                    <!-- Supplier name -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding Name}"
+                                   FontSize="{StaticResource BodyFontSize}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,0,0,8"/>
+                        <Border Grid.Column="1"
+                                x:Name="PricingBestPriceBadge"
+                                Style="{StaticResource BestPriceBadgeStyle}"
+                                Visibility="Collapsed"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="أفضل سعر ✓"
+                                       Style="{StaticResource BadgeTextStyle}"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- Part Type -->
+                    <TextBlock Text="نوع / ماركة القطعة"
+                               Style="{StaticResource FieldLabelStyle}"/>
+                    <ComboBox x:Name="PartTypeCombo"
+                              ItemsSource="{StaticResource PartTypeItems}"
+                              Height="34"
+                              FontSize="{StaticResource BodyFontSize}"
+                              BorderBrush="{StaticResource BorderFieldBrush}"
+                              BorderThickness="1"
+                              Margin="0,0,0,8"
+                              SelectionChanged="PartTypeCombo_SelectionChanged"/>
+
+                    <!-- Price per unit -->
+                    <TextBlock Text="السعر للوحدة"
+                               Style="{StaticResource FieldLabelStyle}"/>
+                    <TextBox x:Name="PriceTextBox"
+                             TextChanged="PriceTextBox_TextChanged"
+                             HorizontalContentAlignment="Left"
+                             FlowDirection="LeftToRight"
+                             Style="{StaticResource TextBoxStyle}"
+                             Margin="0,0,0,8"/>
+
+                    <!-- Optional note -->
+                    <TextBlock Text="ملاحظة اختيارية"
+                               Style="{StaticResource FieldLabelStyle}"/>
+                    <TextBox x:Name="NoteTextBox"
+                             TextChanged="NoteTextBox_TextChanged"
+                             Style="{StaticResource TextBoxStyle}"
+                             Height="60"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!--  Root Grid: 4 rows (Header, Guidance, Content, ActionBar) -->
+    <!-- ══════════════════════════════════════════════ -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ══════════════════════════════════════════════ -->
+        <!--  Row 0: Header                                -->
+        <!-- ══════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                Style="{StaticResource CardWithPaddingStyle}"
+                Margin="0,0,0,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Back button -->
+                <Button Grid.Column="0"
+                        Content="← رجوع للقائمة"
+                        Command="{Binding GoToListCommand}"
+                        Style="{StaticResource GhostButtonStyle}"
+                        FontSize="{StaticResource BodyFontSize}"/>
+
+                <!-- Title + Quote number -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="16,0">
+                    <TextBlock Text="{Binding TitleText}"
+                               FontSize="{StaticResource PageTitleFontSize}"
+                               FontWeight="{StaticResource PageTitleFontWeight}"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Status badge -->
+                <ContentControl Grid.Column="2"
+                                Content="{Binding Status}"
+                                ContentTemplate="{StaticResource StatusBadgeTemplate}"
+                                VerticalAlignment="Center"
+                                Margin="0,0,12,0"/>
+
+                <!-- Last save indicator -->
+                <TextBlock Grid.Column="3"
+                           Text="{Binding LastSaveText}"
+                           FontSize="{StaticResource HelperFontSize}"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           VerticalAlignment="Center"/>
+
+                <!-- DB connection indicator -->
+                <StackPanel Grid.Column="4"
+                            Orientation="Horizontal"
+                            Margin="12,0,0,0"
+                            VerticalAlignment="Center">
+                    <Ellipse x:Name="FormConnectionDot"
+                             Width="6" Height="6"
+                             Fill="{StaticResource SuccessBrush}"
+                             Margin="0,0,4,0"
+                             VerticalAlignment="Center"/>
+                    <TextBlock x:Name="FormConnectionText"
+                               Text="متصلة"
+                               FontSize="11"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════ -->
+        <!--  Row 1: Guidance Strip                       -->
+        <!-- ══════════════════════════════════════════════ -->
+        <Border Grid.Row="1"
+                Background="{StaticResource InfoBgBrush}"
+                CornerRadius="{StaticResource RadiusCard}"
+                Padding="16,8"
+                Margin="0,0,0,12">
+            <TextBlock Text="{Binding GuidanceText}"
+                       FontSize="{StaticResource HelperFontSize}"
+                       Foreground="{StaticResource InfoBrush}"
+                       FontWeight="SemiBold"/>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════ -->
+        <!--  Row 2: Three-Column Content Area            -->
+        <!-- ══════════════════════════════════════════════ -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ══════════════════════════════════════ -->
+            <!--  Column 0: Right Panel — Details +    -->
+            <!--             Suppliers                  -->
+            <!-- ══════════════════════════════════════ -->
+            <ScrollViewer Grid.Column="0"
+                          VerticalScrollBarVisibility="Auto"
+                          Margin="0,0,0,0">
+                <StackPanel Margin="0,0,0,12">
+
+                    <!-- ── Quote Details Card ── -->
+                    <Border Style="{StaticResource CardWithPaddingStyle}"
+                            Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="تفاصيل العرض"
+                                       Style="{StaticResource CardTitleStyle}"/>
+
+                            <!-- Quote Number -->
+                            <TextBlock Text="رقم العرض"
+                                       Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox Text="{Binding QuoteNumber}"
+                                     IsReadOnly="True"
+                                     Style="{StaticResource ReadOnlyTextBoxStyle}"
+                                     Margin="0,0,0,8"/>
+
+                            <!-- Status -->
+                            <TextBlock Text="الحالة"
+                                       Style="{StaticResource FieldLabelStyle}"/>
+                            <ContentControl Content="{Binding Status}"
+                                            ContentTemplate="{StaticResource StatusBadgeTemplate}"
+                                            Margin="0,0,0,8"/>
+
+                            <!-- Date -->
+                            <TextBlock Text="التاريخ"
+                                       Style="{StaticResource FieldLabelStyle}"/>
+                            <DatePicker SelectedDate="{Binding Date}"
+                                        Style="{StaticResource DatePickerStyle}"
+                                        Margin="0,0,0,4"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ── Suppliers Section ── -->
+                    <Border Style="{StaticResource CardWithPaddingStyle}">
+                        <StackPanel>
+                            <TextBlock Text="الموردون"
+                                       Style="{StaticResource CardTitleStyle}"/>
+
+                            <!-- Empty state -->
+                            <TextBlock Text="لا يوجد موردون بعد. أضف الموردين الذين تريد مقارنة أسعارهم.">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource EmptyStateTextStyle}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedSuppliers.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <!-- Supplier cards -->
+                            <ItemsControl ItemsSource="{Binding SelectedSuppliers}"
+                                          ItemTemplate="{StaticResource SupplierCardTemplate}"
+                                          Visibility="{Binding SelectedSuppliers.Count, Converter={StaticResource InverseNullToBoolConverter}}"/>
+
+                            <!-- Max suppliers indicator -->
+                            <TextBlock Text="(الحد الأقصى 3 موردين)"
+                                       FontSize="{StaticResource HelperFontSize}"
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,4,0,4">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedSuppliers.Count}" Value="3">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <!-- Add Supplier button -->
+                            <Button Content="+ إضافة مورد"
+                                    Click="SupplierSearchButton_Click"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,4,0,0"
+                                    ToolTip="إضافة مورد جديد للعرض">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource SmallButtonStyle}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedSuppliers.Count}" Value="3">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- ══════════════════════════════════════ -->
+            <!--  Column 1: Center Panel — Materials   -->
+            <!-- ══════════════════════════════════════ -->
+            <Grid Grid.Column="1" Margin="12,0,12,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- ── Add Material Form ── -->
+                <Border Grid.Row="0"
+                        Style="{StaticResource CardWithPaddingStyle}"
+                        Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="المواد المطلوبة"
+                                   Style="{StaticResource CardTitleStyle}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Header labels -->
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                       Text="اسم المادة"
+                                       Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1"
+                                       Text="الكمية"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2"
+                                       Text="الوحدة"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       Margin="8,0,0,0"/>
+
+                            <!-- Item name with search button -->
+                            <Grid Grid.Row="1" Grid.Column="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="NewItemNameBox"
+                                         Grid.Column="0"
+                                         Style="{StaticResource TextBoxStyle}"
+                                         TextChanged="NewItemNameBox_TextChanged"
+                                         ToolTip="ابحث عن القطعة"/>
+                                <Button Grid.Column="1"
+                                        Content="🔍"
+                                        Click="ItemSearchFromAddForm_Click"
+                                        Style="{StaticResource GhostButtonStyle}"
+                                        FontSize="16"
+                                        Padding="6,0"
+                                        ToolTip="بحث عن قطعة"/>
+                            </Grid>
+
+                            <!-- Quantity -->
+                            <TextBox Grid.Row="1" Grid.Column="1"
+                                     x:Name="NewItemQuantityBox"
+                                     Text="1"
+                                     TextChanged="NewItemQuantityBox_TextChanged"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Margin="8,0,0,0"
+                                     FlowDirection="LeftToRight"
+                                     HorizontalContentAlignment="Center"/>
+
+                            <!-- Unit -->
+                            <TextBox Grid.Row="1" Grid.Column="2"
+                                     x:Name="NewItemUnitBox"
+                                     Text="قطعة"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Margin="8,0,0,0"/>
+
+                            <!-- Add button -->
+                            <Button Grid.Row="1" Grid.Column="3"
+                                    Content="+ إضافة مادة"
+                                    Click="AddMaterialFromForm_Click"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Height="38"
+                                    Margin="8,0,0,0"
+                                    Padding="12,0"/>
+
+                            <!-- Validation messages (Row 2) -->
+                            <TextBlock Grid.Row="2" Grid.Column="0"
+                                       x:Name="NewItemNameValidation"
+                                       Style="{StaticResource ValidationErrorStyle}"
+                                       Visibility="Collapsed"
+                                       Text="الرجاء اختيار مادة"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="1"
+                                       x:Name="NewItemQuantityValidation"
+                                       Style="{StaticResource ValidationErrorStyle}"
+                                       Visibility="Collapsed"
+                                       Text="أدخل رقماً صحيحاً"
+                                       Margin="8,0,0,0"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- ── Materials List ── -->
+                <Grid Grid.Row="1">
+                    <!-- Empty state -->
+                    <TextBlock Text="لا توجد مواد بعد. أضف أول مادة ليبدأ عرض السعر.">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource EmptyStateTextStyle}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Items.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <!-- Material items list -->
+                    <ListBox x:Name="MaterialsListBox"
+                             ItemsSource="{Binding Items}"
+                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                             ItemTemplate="{StaticResource MaterialCardTemplate}"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             Visibility="{Binding Items.Count, Converter={StaticResource InverseNullToBoolConverter}}">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </Grid>
+            </Grid>
+
+            <!-- ══════════════════════════════════════ -->
+            <!--  Column 2: Left Panel — Pricing       -->
+            <!--  (Collapsible, visible only when      -->
+            <!--   a material is selected)             -->
+            <!-- ══════════════════════════════════════ -->
+            <Border Grid.Column="2"
+                    Style="{StaticResource CardWithPaddingStyle}"
+                    Visibility="{Binding HasSelectedItem, Converter={StaticResource BoolToVis}}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+
+                        <!-- Pricing header -->
+                        <TextBlock Text="{Binding PricingPanelTitle}"
+                                   Style="{StaticResource CardTitleStyle}"
+                                   TextWrapping="Wrap"/>
+
+                        <!-- Quantity reminder -->
+                        <TextBlock Text="{Binding SelectedItemQuantityText}"
+                                   FontSize="{StaticResource HelperFontSize}"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Margin="0,0,0,12"/>
+
+                        <!-- Supplier pricing entries -->
+                        <ItemsControl x:Name="PricingItemsControl"
+                                      ItemsSource="{Binding SelectedSuppliers}"
+                                      ItemTemplate="{StaticResource SupplierPricingTemplate}"/>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Empty state for pricing panel when no material selected -->
+            <Border Grid.Column="2"
+                    Style="{StaticResource CardStyle}"
+                    Padding="20"
+                    Visibility="{Binding HasSelectedItem, Converter={StaticResource InverseBoolToVis}}">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="اختر مادة من القائمة"
+                               FontSize="{StaticResource SectionTitleFontSize}"
+                               FontWeight="{StaticResource SectionTitleFontWeight}"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,8"/>
+                    <TextBlock Text="سيظهر هنا تسعير الموردين للمادة المحددة."
+                               FontSize="{StaticResource BodyFontSize}"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+
+        <!-- ══════════════════════════════════════════════ -->
+        <!--  Row 3: Sticky Action Bar                     -->
+        <!-- ══════════════════════════════════════════════ -->
+        <Border Grid.Row="3"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="20,12">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        FlowDirection="RightToLeft">
+
+                <!-- Save Button (Primary) -->
+                <Button Content="حفظ العرض"
+                        Command="{Binding SaveAsyncCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Margin="0,0,0,0"/>
+
+                <!-- Print without prices -->
+                <Button Content="طباعة بدون أسعار"
+                        Command="{Binding PrintWithoutPricesCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Margin="8,0,0,0"
+                        IsEnabled="{Binding CanPrintWithoutPrices}">
+                    <Button.ToolTip>
+                        <TextBlock Text="أضف مادة واحدة على الأقل للطباعة"
+                                   Visibility="{Binding HasMaterials, Converter={StaticResource InverseBoolToVis}}"/>
+                    </Button.ToolTip>
+                </Button>
+
+                <!-- Print Final -->
+                <Button Content="طباعة نهائية"
+                        Command="{Binding PrintFinalCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Margin="8,0,0,0"
+                        IsEnabled="{Binding AllItemsPriced}">
+                    <Button.ToolTip>
+                        <TextBlock Text="أكمل أسعار كل المواد لتفعيل الطباعة النهائية"
+                                   Visibility="{Binding AllItemsPriced, Converter={StaticResource InverseBoolToVis}}"/>
+                    </Button.ToolTip>
+                </Button>
+
+                <!-- Export PDF -->
+                <Button Content="تصدير PDF"
+                        Command="{Binding ExportPdfCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Margin="8,0,0,0"
+                        IsEnabled="{Binding CanExportPdf}">
+                    <Button.ToolTip>
+                        <TextBlock Text="احفظ العرض أولاً قبل تصدير PDF"
+                                   Visibility="{Binding IsSaved, Converter={StaticResource InverseBoolToVis}}"/>
+                    </Button.ToolTip>
+                </Button>
+
+                <!-- Send via Outlook -->
+                <Button Content="إرسال عبر Outlook"
+                        Command="{Binding SendViaOutlookCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Margin="8,0,0,0"
+                        IsEnabled="{Binding CanSendOutlook}">
+                    <Button.ToolTip>
+                        <TextBlock Text="احفظ العرض أولاً، ثم يمكنك الإرسال عبر Outlook"
+                                   Visibility="{Binding IsSaved, Converter={StaticResource InverseBoolToVis}}"/>
+                    </Button.ToolTip>
+                </Button>
+
+            </StackPanel>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════ -->
+        <!--  Popups (لا يؤثرون على التخطيط — داخل Grid)   -->
+        <!-- ══════════════════════════════════════════════ -->
+
+        <!-- ─── Popup: بحث عن قطعة ─── -->
+        <Popup x:Name="ItemSearchPopup"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               Placement="Bottom"
+               PopupAnimation="Fade">
+            <Border Background="White" BorderBrush="#CCC"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="12" Width="380" MaxHeight="420" Margin="5">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12" Opacity="0.25" ShadowDepth="4"/>
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock Text="بحث عن قطعة"
+                               FontWeight="Bold" FontSize="15"
+                               Margin="0,0,0,8" Foreground="#333"/>
+                    <TextBox x:Name="ItemSearchBox"
+                             TextChanged="ItemSearchBox_TextChanged"
+                             Margin="0,0,0,8" Padding="8" FontSize="13"
+                             ToolTip="اكتب اسم القطعة للبحث"/>
+                    <Border BorderBrush="#EEE" BorderThickness="1"
+                            CornerRadius="4" MaxHeight="300">
+                        <ListBox x:Name="ItemResultsList"
+                                 ItemsSource="{Binding FilteredItems}"
+                                 DisplayMemberPath="Name"
+                                 SelectionChanged="ItemResults_SelectionChanged"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 BorderThickness="0"
+                                 Padding="4"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!-- ─── Popup: بحث عن مورد ─── -->
+        <Popup x:Name="SupplierSearchPopup"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               Placement="Bottom"
+               PopupAnimation="Fade">
+            <Border Background="White" BorderBrush="#CCC"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="12" Width="320" MaxHeight="380" Margin="5">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12" Opacity="0.25" ShadowDepth="4"/>
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock Text="بحث عن مورد"
+                               FontWeight="Bold" FontSize="15"
+                               Margin="0,0,0,8" Foreground="#333"/>
+                    <TextBox x:Name="SupplierSearchBox"
+                             TextChanged="SupplierSearchBox_TextChanged"
+                             Margin="0,0,0,8" Padding="8" FontSize="13"
+                             ToolTip="اكتب اسم المورد للبحث"/>
+                    <Border BorderBrush="#EEE" BorderThickness="1"
+                            CornerRadius="4" MaxHeight="260">
+                        <ListBox x:Name="SupplierResultsList"
+                                 ItemsSource="{Binding FilteredSuppliers}"
+                                 DisplayMemberPath="Name"
+                                 SelectionChanged="SupplierResults_SelectionChanged"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 BorderThickness="0"
+                                 Padding="4"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,196 @@
+﻿---
+title: Custom Tools
+description: Create tools the LLM can call in OpenCode.
+---
+
+custom toolى‌€ ëŒ€ي™” ى¤‘ LLMى‌´ يک¸ى¶œي•  ىˆک ى‍ˆëڈ„ë،‌ ى‚¬ىڑ©ى‍گê°€ ى§پى ‘ ë§Œë“  ي•¨ىˆکى‍…ë‹ˆë‹¤. `read`, `write`, `bash` ê°™ى‌€ OpenCodeى‌ک [built-in tools](/docs/tools)ى™€ ي•¨ê»ک ëڈ™ى‍‘ي•©ë‹ˆë‹¤.
+
+---
+
+## ëڈ„êµ¬ ë§Œë“¤ê¸°
+
+toolى‌€ **TypeScript** ëکگëٹ” **JavaScript** يŒŒى‌¼ë،œ ى •ى‌کي•©ë‹ˆë‹¤. ë‹¤ë§Œ tool ى •ى‌کى—گى„œ يک¸ى¶œي•کëٹ” ىٹ¤يپ¬ë¦½يٹ¸ëٹ” **ى–´ë–¤ ى–¸ى–´ë“ ** ى‚¬ىڑ©ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤. ى¦‰, TypeScript/JavaScriptëٹ” tool ى •ى‌ک ى‍گى²´ى—گë§Œ ي•„ىڑ”ي•©ë‹ˆë‹¤.
+
+---
+
+### ىœ„ى¹ک
+
+toolى‌€ ë‹¤ى‌Œ ىœ„ى¹کى—گ ë‘ک ىˆک ى‍ˆىٹµë‹ˆë‹¤.
+
+- ي”„ë،œى ‌يٹ¸ى‌ک `.opencode/tools/` ë””ë ‰ي† ë¦¬(ë،œى»¬)
+- `~/.config/opencode/tools/` ë””ë ‰ي† ë¦¬(ى „ى—­)
+
+---
+
+### êµ¬ى،°
+
+toolى‌„ ê°€ى‍¥ ى‰½ê²Œ ë§Œë“œëٹ” ë°©ë²•ى‌€ يƒ€ى‍… ى•ˆى •ى„±ê³¼ validationى‌„ ى œê³µي•کëٹ” `tool()` helperë¥¼ ى‚¬ىڑ©ي•کëٹ” ê²ƒى‍…ë‹ˆë‹¤.
+
+```ts title=".opencode/tools/database.ts" {1}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Query the project database",
+  args: {
+    query: tool.schema.string().describe("SQL query to execute"),
+  },
+  async execute(args) {
+    // Your database logic here
+    return `Executed query: ${args.query}`
+  },
+})
+```
+
+**يŒŒى‌¼ ى‌´ë¦„**ى‌´ **tool ى‌´ë¦„**ى‌´ ëگ©ë‹ˆë‹¤. ىœ„ ىکˆى‹œëٹ” `database` toolى‌„ ىƒ‌ى„±ي•©ë‹ˆë‹¤.
+
+---
+
+#### يŒŒى‌¼ ي•کë‚کى—گ ى—¬ëں¬ tool ى •ى‌ک
+
+ي•کë‚کى‌ک يŒŒى‌¼ى—گى„œ ى—¬ëں¬ toolى‌„ exportي•  ىˆکëڈ„ ى‍ˆىٹµë‹ˆë‹¤. ê°پ exportëٹ” **ë³„ëڈ„ى‌ک tool**ى‌´ ëگکë©° ى‌´ë¦„ى‌€ **`<filename>_<exportname>`** يک•ى‹‌ى‌„ ى‚¬ىڑ©ي•©ë‹ˆë‹¤.
+
+```ts title=".opencode/tools/math.ts"
+import { tool } from "@tera-system/plugin"
+
+export const add = tool({
+  description: "Add two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a + args.b
+  },
+})
+
+export const multiply = tool({
+  description: "Multiply two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a * args.b
+  },
+})
+```
+
+ى‌´ ê²½ىڑ° `math_add`, `math_multiply` ë‘گ toolى‌´ ىƒ‌ى„±ëگ©ë‹ˆë‹¤.
+
+---
+
+#### ê¸°ë³¸ ëڈ„êµ¬ى™€ ى‌´ë¦„ ى¶©ëڈŒ
+
+ى»¤ىٹ¤ي…€ ëڈ„êµ¬ëٹ” ëڈ„êµ¬ ى‌´ë¦„ىœ¼ë،œ ى‹‌ë³„ëگ©ë‹ˆë‹¤. ى»¤ىٹ¤ي…€ ëڈ„êµ¬ê°€ ê¸°ë³¸ ëڈ„êµ¬ى™€ ê°™ى‌€ ى‌´ë¦„ى‌„ ى‚¬ىڑ©ي•کë©´ ى»¤ىٹ¤ي…€ ëڈ„êµ¬ê°€ ىڑ°ى„ ىˆœىœ„ë¥¼ ê°–ىٹµë‹ˆë‹¤.
+
+ىکˆë¥¼ ë“¤ى–´, ى‌´ يŒŒى‌¼ى‌€ ê¸°ë³¸ `bash` ëڈ„êµ¬ë¥¼ ëŒ€ى²´ي•©ë‹ˆë‹¤:
+
+```ts title=".opencode/tools/bash.ts"
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Restricted bash wrapper",
+  args: {
+    command: tool.schema.string(),
+  },
+  async execute(args) {
+    return `blocked: ${args.command}`
+  },
+})
+```
+
+:::note
+ى‌کëڈ„ى پىœ¼ë،œ ê¸°ë³¸ ëڈ„êµ¬ë¥¼ ëŒ€ى²´ي•کë ¤ëٹ” ê²½ىڑ°ê°€ ى•„ë‹ˆë‌¼ë©´ ê³ ىœ ي•œ ى‌´ë¦„ى‌„ ى‚¬ىڑ©ي•کëٹ” ê²ƒى‌´ ى¢‹ىٹµë‹ˆë‹¤. ëڈ„êµ¬ë¥¼ ىک¤ë²„ë‌¼ى‌´ë“œي•کى§€ ى•ٹê³  ë¹„ي™œى„±ي™”ë§Œ ي•کë ¤ë©´ [permissions](/docs/permissions)ë¥¼ ى‚¬ىڑ©ي•کى„¸ىڑ”.
+:::
+
+---
+
+### ى‌¸ى‍گ
+
+ى‌¸ى‍گ يƒ€ى‍…ى‌€ `tool.schema`ë،œ ى •ى‌کي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤. `tool.schema`ëٹ” [Zod](https://zod.dev) ê¸°ë°کى‍…ë‹ˆë‹¤.
+
+```ts "tool.schema"
+args: {
+  query: tool.schema.string().describe("SQL query to execute")
+}
+```
+
+[Zod](https://zod.dev)ë¥¼ ى§پى ‘ importي•´ى„œ ى‌¼ë°ک ê°‌ى²´ë¥¼ ë°کي™کي•کëٹ” ë°©ى‹‌ëڈ„ ى‚¬ىڑ©ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤.
+
+```ts {6}
+import { z } from "zod"
+
+export default {
+  description: "Tool description",
+  args: {
+    param: z.string().describe("Parameter description"),
+  },
+  async execute(args, context) {
+    // Tool implementation
+    return "result"
+  },
+}
+```
+
+---
+
+### Context
+
+toolى‌€ يک„ى‍¬ ى„¸ى…کى‌ک context ى •ë³´ë¥¼ ى „ë‹¬ë°›ىٹµë‹ˆë‹¤.
+
+```ts title=".opencode/tools/project.ts" {8}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Get project information",
+  args: {},
+  async execute(args, context) {
+    // Access context information
+    const { agent, sessionID, messageID, directory, worktree } = context
+    return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}, Directory: ${directory}, Worktree: ${worktree}`
+  },
+})
+```
+
+ى„¸ى…ک ى‍‘ى—… ë””ë ‰ي† ë¦¬ëٹ” `context.directory`ë¥¼ ى‚¬ىڑ©ي•کى„¸ىڑ”.
+git worktree ë£¨يٹ¸ëٹ” `context.worktree`ë¥¼ ى‚¬ىڑ©ي•کى„¸ىڑ”.
+
+---
+
+## ىکˆى‹œ
+
+### Pythonىœ¼ë،œ tool ى‍‘ى„±
+
+toolى‌€ ى›گي•کëٹ” ى–¸ى–´ë،œ ى‍‘ى„±ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤. ى•„ë‍کëٹ” Pythonىœ¼ë،œ ë‘گ ىˆ«ى‍گë¥¼ ëچ”ي•کëٹ” ىکˆى‹œى‍…ë‹ˆë‹¤.
+
+ë¨¼ى € Python ىٹ¤يپ¬ë¦½يٹ¸ë،œ toolى‌„ ë§Œë“­ë‹ˆë‹¤.
+
+```python title=".opencode/tools/add.py"
+import sys
+
+a = int(sys.argv[1])
+b = int(sys.argv[2])
+print(a + b)
+```
+
+ê·¸ë‹¤ى‌Œ ى‌´ ىٹ¤يپ¬ë¦½يٹ¸ë¥¼ يک¸ى¶œي•کëٹ” tool ى •ى‌کë¥¼ ë§Œë“­ë‹ˆë‹¤.
+
+```ts title=".opencode/tools/python-add.ts" {10}
+import { tool } from "@tera-system/plugin"
+import path from "path"
+
+export default tool({
+  description: "Add two numbers using Python",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args, context) {
+    const script = path.join(context.worktree, ".opencode/tools/add.py")
+    const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
+    return result.trim()
+  },
+})
+```
+
+ى—¬ê¸°ى„œëٹ” Python ىٹ¤يپ¬ë¦½يٹ¸ë¥¼ ى‹¤ي–‰ي•کê¸° ىœ„ي•´ [`Bun.$`](https://bun.com/docs/runtime/shell) ىœ ي‹¸ë¦¬ي‹°ë¥¼ ى‚¬ىڑ©ي•©ë‹ˆë‹¤.

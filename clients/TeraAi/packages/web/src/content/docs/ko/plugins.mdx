@@ -1,0 +1,388 @@
+﻿---
+title: ي”Œëں¬ê·¸ى‌¸
+description: OpenCodeë¥¼ ي™•ى‍¥ي•کê¸° ىœ„ي•´ ى‍گى‹ ë§Œى‌ک ي”Œëں¬ê·¸ى‌¸ى‌„ ى‍‘ى„±ي•کى„¸ىڑ”.
+---
+
+ي”Œëں¬ê·¸ى‌¸ى‌€ ë‹¤ى–‘ي•œ ى‌´ë²¤يٹ¸ى™€ ى‚¬ىڑ©ى‍گ ى •ى‌ک ي–‰ëڈ™ىœ¼ë،œ ي›„ي‚¹ي•کى—¬ opencodeë¥¼ ي™•ى‍¥ ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤. ي”Œëں¬ê·¸ى‌¸ى‌„ ى‚¬ىڑ©ي•کى—¬ ىƒˆë،œىڑ´ ê¸°ëٹ¥ى‌„ ى¶”ê°€ي•کê±°ë‚ک, ى™¸ë¶€ ى„œë¹„ىٹ¤ى™€ ي†µي•©ي•کê±°ë‚ک, opencodeى‌ک ê¸°ë³¸ ëڈ™ى‍‘ى‌„ ىˆکى •ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤.
+
+ىکˆë¥¼ ë“¤ى–´, ى»¤ë®¤ë‹ˆي‹°ى—گ ى‌کي•´ ىƒ‌ى„± ëگœ [plugins](/docs/ecosystem#plugins)ë¥¼ ي™•ى‌¸ي•کى‹­ى‹œىک¤.
+
+---
+
+## ي”Œëں¬ê·¸ى‌¸ ى‚¬ىڑ©
+
+ي”Œëں¬ê·¸ى‌¸ى‌„ ë،œë“œي•کëٹ” ë‘گ ê°€ى§€ ë°©ë²•ى‌´ ى‍ˆىٹµë‹ˆë‹¤.
+
+---
+
+### ë،œى»¬ يŒŒى‌¼ى—گى„œ
+
+ي”Œëں¬ê·¸ى‌¸ ë””ë ‰ي† ë¦¬ى—گ JavaScript ëکگëٹ” TypeScript يŒŒى‌¼ى‌„ ë°°ى¹کي•©ë‹ˆë‹¤.
+
+- `.opencode/plugins/` - ي”„ë،œى ‌يٹ¸ ë ˆë²¨ ي”Œëں¬ê·¸ى‌¸
+- `~/.config/opencode/plugins/` - ê¸€ë،œë²Œ ي”Œëں¬ê·¸ى‌¸
+
+ى‌´ ë””ë ‰ي† ë¦¬ى‌ک يŒŒى‌¼ى‌€ ى‹œى‍‘ ى‹œ ى‍گëڈ™ىœ¼ë،œ ë،œë“œëگ©ë‹ˆë‹¤.
+
+---
+
+### npmى—گى„œ
+
+config يŒŒى‌¼ى—گ npm يŒ¨ي‚¤ى§€ë¥¼ ى§€ى •ي•©ë‹ˆë‹¤.
+
+```json title="opencode.json"
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-helicone-session", "opencode-wakatime", "@my-org/custom-plugin"]
+}
+```
+
+ى‌¼ë°ک يŒ¨ي‚¤ى§€ ë°ڈ ىٹ¤ى½”ي”„ npm يŒ¨ي‚¤ى§€ ëھ¨ë‘گ ى§€ى›گëگ©ë‹ˆë‹¤.
+
+[ecosystem](/docs/ecosystem#plugins)ى—گى„œ ى‚¬ىڑ©ي•  ىˆک ى‍ˆëٹ” ي”Œëں¬ê·¸ى‌¸ى‌„ ى°¾ى•„ë³´ى„¸ىڑ”.
+
+---
+
+### ي”Œëں¬ê·¸ى‌¸ى‌´ ى„¤ى¹کëگکëٹ” ë°©ë²•
+
+**npm ي”Œëں¬ê·¸ى‌¸**ى‌€ ى‹œى‍‘ى‹œ Bunى‌„ ى‚¬ىڑ©ي•کى—¬ ى‍گëڈ™ىœ¼ë،œ ى„¤ى¹کëگ©ë‹ˆë‹¤. يŒ¨ي‚¤ى§€ى™€ ê·¸ ى‌کى،´ى„±ى‌€ `~/.cache/opencode/node_modules/`ى—گ ى؛گى‹œëگ©ë‹ˆë‹¤.
+
+**ë،œى»¬ ي”Œëں¬ê·¸ى‌¸**ى‌€ ي”Œëں¬ê·¸ى‌¸ ë””ë ‰ي† ë¦¬ى—گى„œ ى§پى ‘ ë،œë“œëگ©ë‹ˆë‹¤. ى™¸ë¶€ يŒ¨ي‚¤ى§€ë¥¼ ى‚¬ىڑ©ي•کë ¤ë©´ êµ¬ى„± ë””ë ‰ي† ë¦¬ ë‚´ى—گ `package.json`ى‌„ ى‍‘ى„±ي•´ى•¼ ي•کê±°ë‚ک([ى‌کى،´ى„±](#ى‌کى،´ى„±) ى°¸ى،°), ي”Œëں¬ê·¸ى‌¸ى‌„ npmى—گ ê²Œى‹œي•کê³  [configى—گ ى¶”ê°€](/docs/config#plugins)ي•´ى•¼ ي•©ë‹ˆë‹¤.
+
+---
+
+### ë،œë“œ ىˆœى„œ
+
+ي”Œëں¬ê·¸ى‌¸ى‌€ ëھ¨ë“  ى†Œىٹ¤ى—گى„œ ë،œë“œëگکë©° ëھ¨ë“  ي›„يپ¬ëٹ” ىˆœى„œëŒ€ë،œ ى‹¤ي–‰ëگ©ë‹ˆë‹¤. ë،œë“œ ىˆœى„œëٹ” ë‹¤ى‌Œê³¼ ê°™ىٹµë‹ˆë‹¤:
+
+1. ê¸€ë،œë²Œ êµ¬ى„± (`~/.config/opencode/opencode.json`)
+2. ي”„ë،œى ‌يٹ¸ êµ¬ى„± (`opencode.json`)
+3. ê¸€ë،œë²Œ ي”Œëں¬ê·¸ى‌¸ ë””ë ‰ي† ë¦¬ (`~/.config/opencode/plugins/`)
+4. ي”„ë،œى ‌يٹ¸ ي”Œëں¬ê·¸ى‌¸ ë””ë ‰ي† ë¦¬ (`.opencode/plugins/`)
+
+ى¤‘ë³µëگœ ى‌´ë¦„ê³¼ ë²„ى „ى‌ک npm يŒ¨ي‚¤ى§€ëٹ” ي•œ ë²ˆë§Œ ë،œë“œëگ©ë‹ˆë‹¤. ي•کى§€ë§Œ ë،œى»¬ ي”Œëں¬ê·¸ى‌¸ê³¼ npm ي”Œëں¬ê·¸ى‌¸ى‌ک ى‌´ë¦„ى‌´ ë¹„ىٹ·ي•کëچ”ë‌¼ëڈ„ ë‘ک ë‹¤ ë³„ëڈ„ë،œ ë،œë“œëگ©ë‹ˆë‹¤.
+
+---
+
+## ي”Œëں¬ê·¸ى‌¸ ë§Œë“¤ê¸°
+
+ي”Œëں¬ê·¸ى‌¸ى‌€ ي•کë‚ک ى‌´ىƒپى‌ک ي”Œëں¬ê·¸ى‌¸ ي•¨ىˆکë¥¼ ë‚´ë³´ë‚´ëٹ” **JavaScript/TypeScript ëھ¨ë“ˆ**ى‍…ë‹ˆë‹¤. ê°پ ي•¨ىˆکëٹ” context ê°‌ى²´ë¥¼ ىˆکى‹ ي•کê³  hooks ê°‌ى²´ë¥¼ ë°کي™کي•©ë‹ˆë‹¤.
+
+---
+
+### ى‌کى،´ى„±
+
+ë،œى»¬ ي”Œëں¬ê·¸ى‌¸ ë°ڈ ى‚¬ىڑ©ى‍گ ى •ى‌ک ëڈ„êµ¬ëٹ” ى™¸ë¶€ npm يŒ¨ي‚¤ى§€ë¥¼ ى‚¬ىڑ©ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤. config ë””ë ‰ي† ë¦¬ى—گ `package.json`ى‌„ ى¶”ê°€ي•کê³  ي•„ىڑ”ي•œ ى‌کى،´ى„±ى‌„ ëھ…ى‹œي•کى‹­ى‹œىک¤.
+
+```json title=".opencode/package.json"
+{
+  "dependencies": {
+    "shescape": "^2.1.0"
+  }
+}
+```
+
+opencodeëٹ” ى‹œى‍‘ ى‹œ `bun install`ى‌„ ى‹¤ي–‰ي•کى—¬ ى‌´ë¥¼ ى„¤ى¹کي•©ë‹ˆë‹¤. ى‌´ي›„ ي”Œëں¬ê·¸ى‌¸ ë°ڈ ëڈ„êµ¬ى—گى„œ ê°€ى ¸ىک¬ ىˆک ى‍ˆىٹµë‹ˆë‹¤.
+
+```ts title=".opencode/plugins/my-plugin.ts"
+import { escape } from "shescape"
+
+export const MyPlugin = async (ctx) => {
+  return {
+    "tool.execute.before": async (input, output) => {
+      if (input.tool === "bash") {
+        output.args.command = escape(output.args.command)
+      }
+    },
+  }
+}
+```
+
+---
+
+### ê¸°ë³¸ êµ¬ى،°
+
+```js title=".opencode/plugins/example.js"
+export const MyPlugin = async ({ project, client, $, directory, worktree }) => {
+  console.log("Plugin initialized!")
+
+  return {
+    // Hook implementations go here
+  }
+}
+```
+
+ي”Œëں¬ê·¸ى‌¸ ي•¨ىˆکê°€ ë°›ëٹ” ى‌¸ى‍گ:
+
+- `project`: يک„ى‍¬ ي”„ë،œى ‌يٹ¸ ى •ë³´.
+- `directory`: يک„ى‍¬ ى‍‘ى—… ë””ë ‰ي† ë¦¬.
+- `worktree`: git worktree ê²½ë،œ.
+- `client`: AIى™€ ىƒپيک¸ ى‍‘ىڑ©ى‌„ ىœ„ي•œ opencode SDK يپ´ë‌¼ى‌´ى–¸يٹ¸.
+- `$`: ëھ…ë ¹ى–´ë¥¼ ى‹¤ي–‰ي•کê¸° ىœ„ي•œ Bunى‌ک [shell API](https://bun.com/docs/runtime/shell).
+
+---
+
+### TypeScript ى§€ى›گ
+
+TypeScript ي”Œëں¬ê·¸ى‌¸ى‌ک ê²½ىڑ° ي”Œëں¬ê·¸ى‌¸ يŒ¨ي‚¤ى§€ى—گى„œ يƒ€ى‍…ى‌„ ê°€ى ¸ىک¬ ىˆک ى‍ˆىٹµë‹ˆë‹¤.
+
+```ts title="my-plugin.ts" {1}
+import type { Plugin } from "@tera-system/plugin"
+
+export const MyPlugin: Plugin = async ({ project, client, $, directory, worktree }) => {
+  return {
+    // Type-safe hook implementations
+  }
+}
+```
+
+---
+
+### ى‌´ë²¤يٹ¸
+
+ي”Œëں¬ê·¸ى‌¸ى‌€ ى•„ë‍ک ىکˆى œ ى„¹ى…کى—گى„œ ë³¼ ىˆک ى‍ˆë“¯ى‌´ ى‌´ë²¤يٹ¸ë¥¼ êµ¬ëڈ…ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤. ى‚¬ىڑ© ê°€ëٹ¥ي•œ ى‌´ë²¤يٹ¸ ëھ©ë،‌ى‌€ ë‹¤ى‌Œê³¼ ê°™ىٹµë‹ˆë‹¤.
+
+#### ëھ…ë ¹ى–´ ى‌´ë²¤يٹ¸
+
+- `command.executed`
+
+#### يŒŒى‌¼ ى‌´ë²¤يٹ¸
+
+- `file.edited`
+- `file.watcher.updated`
+
+#### ى„¤ى¹ک ى‌´ë²¤يٹ¸
+
+- `installation.updated`
+
+#### LSP ى‌´ë²¤يٹ¸
+
+- `lsp.client.diagnostics`
+- `lsp.updated`
+
+#### ë©”ى‹œى§€ ى‌´ë²¤يٹ¸
+
+- `message.part.removed`
+- `message.part.updated`
+- `message.removed`
+- `message.updated`
+
+#### ê¶Œي•œ ى‌´ë²¤يٹ¸
+
+- `permission.asked`
+- `permission.replied`
+
+#### ى„œë²„ ى‌´ë²¤يٹ¸
+
+- `server.connected`
+
+#### ى„¸ى…ک ى‌´ë²¤يٹ¸
+
+- `session.created`
+- `session.compacted`
+- `session.deleted`
+- `session.diff`
+- `session.error`
+- `session.idle`
+- `session.status`
+- `session.updated`
+
+#### Todo ى‌´ë²¤يٹ¸
+
+- `todo.updated`
+
+#### ى…¸ ى‌´ë²¤يٹ¸
+
+- `shell.env`
+
+#### ëڈ„êµ¬ ى‌´ë²¤يٹ¸
+
+- `tool.execute.after`
+- `tool.execute.before`
+
+#### TUI ى‌´ë²¤يٹ¸
+
+- `tui.prompt.append`
+- `tui.command.execute`
+- `tui.toast.show`
+
+---
+
+## ىکˆى œ
+
+opencodeë¥¼ ي™•ى‍¥ي•کê¸° ىœ„ي•´ ى‚¬ىڑ©ي•  ىˆک ى‍ˆëٹ” ي”Œëں¬ê·¸ى‌¸ ىکˆى œى‍…ë‹ˆë‹¤.
+
+---
+
+### ى•Œë¦¼ ë³´ë‚´ê¸°
+
+يٹ¹ى • ى‌´ë²¤يٹ¸ê°€ ë°œىƒ‌ي•  ë•Œ ى•Œë¦¼ى‌„ ى „ى†،:
+
+```js title=".opencode/plugins/notification.js"
+export const NotificationPlugin = async ({ project, client, $, directory, worktree }) => {
+  return {
+    event: async ({ event }) => {
+      // Send notification on session completion
+      if (event.type === "session.idle") {
+        await $`osascript -e 'display notification "Session completed!" with title "opencode"'`
+      }
+    },
+  }
+}
+```
+
+macOSى—گى„œ AppleScriptë¥¼ ى‹¤ي–‰ي•کê¸° ىœ„ي•´ `osascript`ë¥¼ ى‚¬ىڑ©ي•کê³  ى‍ˆىٹµë‹ˆë‹¤. ى—¬ê¸°ى„œëٹ” ى•Œë¦¼ى‌„ ë³´ë‚´ëٹ” ëچ° ى‚¬ىڑ©ي•©ë‹ˆë‹¤.
+
+:::note
+opencode ëچ°ىٹ¤يپ¬ي†± ى•±ى‌„ ى‚¬ىڑ©ي•کëٹ” ê²½ىڑ° ى‌‘ë‹µى‌´ ى¤€ë¹„ëگکى–´ ى‍ˆê±°ë‚ک ى„¸ى…ک ىک¤ë¥کê°€ ى‍ˆى‌„ ë•Œ ى‹œىٹ¤ي…œ ى•Œë¦¼ى‌„ ى‍گëڈ™ىœ¼ë،œ ë³´ë‚¼ ىˆک ى‍ˆىٹµë‹ˆë‹¤.
+:::
+
+---
+
+### .env ë³´يک¸
+
+opencodeê°€ `.env` يŒŒى‌¼ى‌„ ى‌½ى§€ ëھ»ي•کëڈ„ë،‌ ë°©ى§€:
+
+```javascript title=".opencode/plugins/env-protection.js"
+export const EnvProtection = async ({ project, client, $, directory, worktree }) => {
+  return {
+    "tool.execute.before": async (input, output) => {
+      if (input.tool === "read" && output.args.filePath.includes(".env")) {
+        throw new Error("Do not read .env files")
+      }
+    },
+  }
+}
+```
+
+---
+
+### Inject ي™کê²½ ë³€ىˆک
+
+ëھ¨ë“  shell ى‹¤ي–‰(AI ëڈ„êµ¬ ë°ڈ ى‚¬ىڑ©ى‍گ terminal)ى—گ ي™کê²½ ë³€ىˆک ى£¼ى‍…:
+
+```javascript title=".opencode/plugins/inject-env.js"
+export const InjectEnvPlugin = async () => {
+  return {
+    "shell.env": async (input, output) => {
+      output.env.MY_API_KEY = "secret"
+      output.env.PROJECT_ROOT = input.cwd
+    },
+  }
+}
+```
+
+---
+
+### ى‚¬ىڑ©ى‍گ ى •ى‌ک ëڈ„êµ¬
+
+ي”Œëں¬ê·¸ى‌¸ى‌€ opencodeى—گ ى‚¬ىڑ©ى‍گ ى •ى‌ک ëڈ„êµ¬ë¥¼ ى¶”ê°€ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤:
+
+```ts title=".opencode/plugins/custom-tools.ts"
+import { type Plugin, tool } from "@tera-system/plugin"
+
+export const CustomToolsPlugin: Plugin = async (ctx) => {
+  return {
+    tool: {
+      mytool: tool({
+        description: "This is a custom tool",
+        args: {
+          foo: tool.schema.string(),
+        },
+        async execute(args, context) {
+          const { directory, worktree } = context
+          return `Hello ${args.foo} from ${directory} (worktree: ${worktree})`
+        },
+      }),
+    },
+  }
+}
+```
+
+`tool` helperëٹ” opencodeê°€ يک¸ى¶œي•  ىˆک ى‍ˆëٹ” ى‚¬ىڑ©ى‍گ ى •ى‌ک ëڈ„êµ¬ë¥¼ ë§Œë“­ë‹ˆë‹¤. Zod ىٹ¤ي‚¤ë§ˆ ي•¨ىˆکë¥¼ ë°›ê³  ë‹¤ى‌Œى‌„ يڈ¬ي•¨ي•کëٹ” ëڈ„êµ¬ ى •ى‌کë¥¼ ë°کي™کي•©ë‹ˆë‹¤:
+
+- `description`: ëڈ„êµ¬ê°€ ي•کëٹ” ى‌¼
+- `args`: ëڈ„êµ¬ى‌ک ى‌¸ىˆکى—گ ëŒ€ي•œ Zod ىٹ¤ي‚¤ë§ˆ
+- `execute`: ëڈ„êµ¬ê°€ يک¸ى¶œëگ  ë•Œ ى‹¤ي–‰ëگکëٹ” ي•¨ىˆک
+
+ى‚¬ىڑ©ى‍گ ى •ى‌ک ëڈ„êµ¬ëٹ” ë‚´ى‍¥ ëڈ„êµ¬ى™€ ي•¨ê»ک opencodeى—گى„œ ى‚¬ىڑ©ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤.
+
+:::note
+ي”Œëں¬ê·¸ى‌¸ ëڈ„êµ¬ê°€ ë‚´ى‍¥ ëڈ„êµ¬ى™€ ê°™ى‌€ ى‌´ë¦„ى‌„ ى‚¬ىڑ©ي•کë©´ ي”Œëں¬ê·¸ى‌¸ ëڈ„êµ¬ê°€ ىڑ°ى„ ىˆœىœ„ë¥¼ ê°–ىٹµë‹ˆë‹¤.
+:::
+
+---
+
+### ë،œê¹…
+
+êµ¬ى،°ي™”ëگœ ë،œê¹…ى‌„ ىœ„ي•´ `console.log` ëŒ€ى‹  `client.app.log()`ë¥¼ ى‚¬ىڑ©ي•کى‹­ى‹œىک¤:
+
+```ts title=".opencode/plugins/my-plugin.ts"
+export const MyPlugin = async ({ client }) => {
+  await client.app.log({
+    body: {
+      service: "my-plugin",
+      level: "info",
+      message: "Plugin initialized",
+      extra: { foo: "bar" },
+    },
+  })
+}
+```
+
+ë ˆë²¨: `debug`, `info`, `warn`, `error`. [SDK ë¬¸ى„œ](https://opencode.ai/docs/sdk)ë¥¼ ى°¸ê³ ي•کى„¸ىڑ”.
+
+---
+
+### Compaction ي›…
+
+ى„¸ى…کى‌´ ى••ى¶•ëگ  ë•Œ يڈ¬ي•¨ëگکëٹ” ى»¨ي…چىٹ¤يٹ¸ë¥¼ ى‚¬ىڑ©ى‍گ ى§€ى •ي•  ىˆک ى‍ˆىٹµë‹ˆë‹¤:
+
+```ts title=".opencode/plugins/compaction.ts"
+import type { Plugin } from "@tera-system/plugin"
+
+export const CompactionPlugin: Plugin = async (ctx) => {
+  return {
+    "experimental.session.compacting": async (input, output) => {
+      // Inject additional context into the compaction prompt
+      output.context.push(`
+## Custom Context
+
+Include any state that should persist across compaction:
+- Current task status
+- Important decisions made
+- Files being actively worked on
+`)
+    },
+  }
+}
+```
+
+`experimental.session.compacting` ي›…ى‌€ LLMى‌´ ى—°ى†چ ىڑ”ى•½ى‌„ ىƒ‌ى„±ي•کê¸° ى „ى—گ ى‹¤ي–‰ëگ©ë‹ˆë‹¤. ê¸°ë³¸ ى••ى¶• ي”„ë،¬ي”„يٹ¸ê°€ ë†“ى¹  ىˆک ى‍ˆëٹ” ëڈ„ë©”ى‌¸ë³„ ى»¨ي…چىٹ¤يٹ¸ë¥¼ ى£¼ى‍…ي•کëٹ” ëچ° ى‚¬ىڑ©ي•کى„¸ىڑ”.
+
+ëکگي•œ `output.prompt`ë¥¼ ى„¤ى •ي•کى—¬ ى••ى¶• ي”„ë،¬ي”„يٹ¸ë¥¼ ى™„ى „ي‍ˆ ëŒ€ى²´ي•  ىˆکëڈ„ ى‍ˆىٹµë‹ˆë‹¤:
+
+```ts title=".opencode/plugins/custom-compaction.ts"
+import type { Plugin } from "@tera-system/plugin"
+
+export const CustomCompactionPlugin: Plugin = async (ctx) => {
+  return {
+    "experimental.session.compacting": async (input, output) => {
+      // Replace the entire compaction prompt
+      output.prompt = `
+You are generating a continuation prompt for a multi-agent swarm session.
+
+Summarize:
+1. The current task and its status
+2. Which files are being modified and by whom
+3. Any blockers or dependencies between agents
+4. The next steps to complete the work
+
+Format as a structured prompt that a new agent can use to resume work.
+`
+    },
+  }
+}
+```
+
+`output.prompt`ê°€ ى„¤ى •ëگکë©´ ê¸°ë³¸ ى••ى¶• ي”„ë،¬ي”„يٹ¸ë¥¼ ى™„ى „ي‍ˆ ëŒ€ى²´ي•©ë‹ˆë‹¤. ى‌´ ê²½ىڑ° `output.context` ë°°ى—´ى‌€ ë¬´ى‹œëگ©ë‹ˆë‹¤.

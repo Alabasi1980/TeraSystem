@@ -1,0 +1,196 @@
+﻿---
+title: Narzؤ™dzia specjalistyczne
+description: Twأ³rz narzؤ™dzi, ktأ³re LLM mogؤ… byؤ‡ uruchamiane w otwartym kodzie.
+---
+
+Narzؤ™dzia specjalistyczne to funkcje, ktأ³re tworzysz i ktأ³re LLM moإ¼e wywoإ‚ywaؤ‡ podczas rozmأ³w. Wspأ³إ‚pracujؤ… one z [wbudowanymi narzؤ™dziami](/docs/tools) opencode, takimi jak `read`, `write` i `bash`.
+
+---
+
+## Tworzenie narzؤ™dzia
+
+Narzؤ™dzia tworzؤ… pliki **TypeScript** lub **JavaScript**. Definicja narzؤ™dzia moإ¼e byؤ‡ odwoإ‚ywana do skryptأ³w napisanych w **dowolnym jؤ™zyku** â€” TypeScript lub JavaScript sؤ… uإ¼ywane tylko w tym samym narzؤ™dziu.
+
+---
+
+### Lokalizacja
+
+Moإ¼na je uruchomiؤ‡:
+
+- Lokalnie, umieszczajؤ…c je w katalogu `.opencode/tools/` swojego projektu.
+- Lub globalnie, umieszczajؤ…c je w `~/.config/opencode/tools/`.
+
+---
+
+### Struktura
+
+Najإ‚atwiejszym sposobem tworzenia narzؤ™dzia jest pomocnika `tool()`, ktأ³ry zapewnia bezpieczeإ„stwo i sprawdzanie poprawnoإ›ci.
+
+```ts title=".opencode/tools/database.ts" {1}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Query the project database",
+  args: {
+    query: tool.schema.string().describe("SQL query to execute"),
+  },
+  async execute(args) {
+    // Your database logic here
+    return `Executed query: ${args.query}`
+  },
+})
+```
+
+**Nazwa pliku** staje siؤ™ **nazwؤ… narzؤ™dzia**. Pierwotne narzؤ™dzie `database`.
+
+---
+
+#### Wiele narzؤ™dzi na plik
+
+Moإ¼na takإ¼e eksportowaؤ‡ wiele narzؤ™dzi z jednego pliku. Kaإ¼dy eksport staje siؤ™ **oddzielnym jؤ™zykiem** o nazwie **`<filename>_<exportname>`**:
+
+```ts title=".opencode/tools/math.ts"
+import { tool } from "@tera-system/plugin"
+
+export const add = tool({
+  description: "Add two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a + args.b
+  },
+})
+
+export const multiply = tool({
+  description: "Multiply two numbers",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args) {
+    return args.a * args.b
+  },
+})
+```
+
+Tworzy to dwa narzؤ™dzia: `math_add` i `math_multiply`.
+
+---
+
+#### Kolizje nazw z wbudowanymi narzؤ™dziami
+
+Niestandardowe narzؤ™dzia sؤ… identyfikowane wedإ‚ug nazwy narzؤ™dzia. Jeإ›li niestandardowe narzؤ™dzie uإ¼ywa tej samej nazwy co wbudowane narzؤ™dzie, niestandardowe narzؤ™dzie ma pierwszeإ„stwo.
+
+Na przykإ‚ad ten plik zastؤ™puje wbudowane narzؤ™dzie `bash`:
+
+```ts title=".opencode/tools/bash.ts"
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Restricted bash wrapper",
+  args: {
+    command: tool.schema.string(),
+  },
+  async execute(args) {
+    return `blocked: ${args.command}`
+  },
+})
+```
+
+:::note
+Preferuj unikalne nazwy, chyba إ¼e celowo chcesz zastؤ…piؤ‡ wbudowane narzؤ™dzie. Jeإ›li chcesz wyإ‚ؤ…czyؤ‡ wbudowane narzؤ™dzie, ale go nie nadpisywaؤ‡, uإ¼yj [uprawnieإ„](/docs/permissions).
+:::
+
+---
+
+### Argumenty
+
+Do zdefiniowania argumentأ³w moإ¼na zastosowaؤ‡ `tool.schema`, czyli po prostu [Zod](https://zod.dev).
+
+```ts "tool.schema"
+args: {
+  query: tool.schema.string().describe("SQL query to execute")
+}
+```
+
+Moإ¼na takإ¼e bezpoإ›rednio zaimportowaؤ‡ [Zod](https://zod.dev) i zwyczajowo zwykإ‚y obiekt:
+
+```ts {6}
+import { z } from "zod"
+
+export default {
+  description: "Tool description",
+  args: {
+    param: z.string().describe("Parameter description"),
+  },
+  async execute(args, context) {
+    // Tool implementation
+    return "result"
+  },
+}
+```
+
+---
+
+### Kontekst
+
+Narzؤ™dzia kontekstowe charakterystycznej sesji:
+
+```ts title=".opencode/tools/project.ts" {8}
+import { tool } from "@tera-system/plugin"
+
+export default tool({
+  description: "Get project information",
+  args: {},
+  async execute(args, context) {
+    // Access context information
+    const { agent, sessionID, messageID, directory, worktree } = context
+    return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}, Directory: ${directory}, Worktree: ${worktree}`
+  },
+})
+```
+
+`context.directory` jako katalogowy pracodawczy.
+`context.worktree` dla katalogu gإ‚أ³wnego zwalczajؤ…cego git.
+
+---
+
+## Przykإ‚ad
+
+### Napisz narzؤ™dzie w Pythonie
+
+Moإ¼esz pisaؤ‡ swoje narzؤ™dzia w dowolnym jؤ™zyku. Oto przykإ‚ad dodania dwأ³ch liczb przy uإ¼yciu jؤ™zyka Python.
+
+Najpierw utwأ³rz narzؤ™dzie jako skrypt w jؤ™zyku Python:
+
+```python title=".opencode/tools/add.py"
+import sys
+
+a = int(sys.argv[1])
+b = int(sys.argv[2])
+print(a + b)
+```
+
+Nastؤ™pnie utwأ³rz definicjؤ™ narzؤ™dzia, ktأ³ra go wywoإ‚uje:
+
+```ts title=".opencode/tools/python-add.ts" {10}
+import { tool } from "@tera-system/plugin"
+import path from "path"
+
+export default tool({
+  description: "Add two numbers using Python",
+  args: {
+    a: tool.schema.number().describe("First number"),
+    b: tool.schema.number().describe("Second number"),
+  },
+  async execute(args, context) {
+    const script = path.join(context.worktree, ".opencode/tools/add.py")
+    const result = await Bun.$`python3 ${script} ${args.a} ${args.b}`.text()
+    return result.trim()
+  },
+})
+```
+
+Tutaj uإ¼ywamy narzؤ™dzia [`Bun.$`](https://bun.com/docs/runtime/shell) do uruchomienia skryptu w jؤ™zyku Python.
