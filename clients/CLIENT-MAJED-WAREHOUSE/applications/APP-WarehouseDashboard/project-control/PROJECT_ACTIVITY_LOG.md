@@ -16,6 +16,14 @@
 
 ## Activity Log
 
+## [2026-07-16 10:00] - COMMIT_AND_PUSH
+
+- Related Task: N/A
+- Actor: TeraAgent
+- Summary: Commit + force push to GitHub (master). Remote had unrelated history. User approved force push.
+- Decision / Result: ✅ Pushed all local commits to `https://github.com/Alabasi1980/TeraSystem.git`.
+- Next Action: Awaiting user instructions.
+
 ## [2026-07-16 10:55] - AUDIT_COMPLETED
 
 - Related Task: AUDIT-TASK-KPI-STEP4-READINESS-2026-07-16
@@ -507,77 +515,3 @@
 - Decision / Result: ✅ Task created + approved by user. Scope confirmed: Table+View+Query معاً. الاسم: Oracle Source Mapping Wizard.
 - Next Action: تفويض TASK-COD-029 إلى engineering-agent.
 
-## [2026-07-15 16:45] - TASK_ENH_COMPLETED
-
-- Related Task: TASK-ENH-LOGIN-001 (Login Page Creative Redesign)
-- Actor: TeraAgent + ui-designer
-- Summary: المستخدم طلب إعادة تصميم شاشة تسجيل الدخول بشكل إبداعي وعصري因为 التصميم الحالي كان بسيط وغير ملهم.
-- Decision / Result: ✅ Accepted. إعادة تصميم كاملة بأسلوب Split-Screen Premium: Panel أيسر gradient متحرك مع orbs عائمة + أيقونة مستودع glassmorphism + 3 مزايا. Panel أيمن نموذج دخول نظيف مع security badge + password toggle + submit shimmer + error shake animation. Self-contained page مع responsive. Build: 0 warnings, 0 errors.
-- Next Action: المستخدم يراجع التصميم ويطلب التعديلات التالية.
-
-## [2026-07-15 19:00] - UI_POLISH_COMPLETE
-
-- Related Task: UI Polish Roadmap (15 صفحة)
-- Actor: TeraAgent + ui-designer
-- Summary: اكتملت خطة البولش الشامل لجميع صفحات التطبيق:
-  • ✅ Header Topbar — تصميم احترافي + دعم لوجو
-  • ✅ Login — Premium Split-Screen مع animations
-  • ✅ Logout — تصميم وداع مع auto-redirect
-  • ✅ Admin Nav — SVG icons بدل emoji
-  • ✅ Public Dashboard — SVG icons في الفلاتر
-  • ✅ Sync Settings — أيقونات + تحسينات
-  • ✅ Sync Logs — SVG مستند
-  • ✅ Cards List — SVG grid
-  • ✅ Query Tester — SVG بحث
-  • ✅ Drill Down — SVG مخطط
-  • ✅ Sync Dashboard — 4 SVG icons
-  • ✅ Table Mappings — 6 SVG icons
-  • ✅ Card Builder — كان ممتازاً
-  • ✅ Drill Page — كان ممتازاً
-  • ✅ Cards Edit — كان ممتازاً
-  Build: 0 errors على جميع الصفحات.
-- Decision / Result: ✅ UI Polish Roadmap مكتملة.
-- Next Action: يحدده المستخدم.
-
-## [2026-07-15 19:10] - TASK_FIX_ACCEPTED
-
-- Related Task: TASK-KPI-FIX-001
-- Actor: TeraAgent + engineering-agent
-- Summary: اكتُشف أن Builder.cshtml.cs لا يحتوي على [BindProperty] للحقول الجديدة (KPI fields). هذا يعني أن الحقول المخفية في النموذج لن تُرقَّم عند الحفظ. الأجزاء الخمسة: (1) 14 BindProperty في BuilderModel، (2) 14 حقل في DashboardCardDto، (3) BuildDashboardCard() يُعيّن الحقول، (4) BuildCardFromRequest() يُعيّن الحقول، (5) PreviewRequest يحتوي الحقول.
-- Decision / Result: ✅ Accepted. Post-Execution Review PASS. Build succeeded: 0 warnings, 0 errors. الملف المعدل: Builder.cshtml.cs (532 → 695 سطر).
-- Next Action: اختبار End-to-End: إنشاء بطاقة KPI مع composite mode وحفظها وعرضها في Dashboard.
-
-## [2026-07-15 19:20] - TASK_FIX_ACCEPTED
-
-- Related Task: TASK-KPI-FIX-002
-- Actor: TeraAgent + engineering-agent
-- Summary: تسمية `OracleTable` إلى `SqlTable` + تحديث النصوص العربية في Builder.cshtml وBuilder.cshtml.cs وcard-builder.js. المستخدم أبلغ أن الخطوة 2 لا تعرض جداول SQL Server — السبب: القائمة المنسدلة كانت تستخدم "OracleTable" كقيمة ولا يوجد خيار SQL Server.
-- Decision / Result: ✅ Accepted. Post-Execution Review PASS. Build: 0 warnings, 0 errors. جميع مراجع OracleTable في الملفات الثلاثة تغيرت إلى SqlTable.
-- Next Action: اختبار End-to-End: إنشاء بطاقة KPI مع SqlTable كمصدر + حفظ + عرض في Dashboard.
-
-## [2026-07-15 19:30] - TASK_FIX_ACCEPTED
-
-- Related Task: Missing API .cshtml files
-- Actor: TeraAgent
-- Summary: المستخدم أبلغ أن قائمة جداول SQL Server فارغة في Builder الخطوة 2 رغم وجود تعيينات في قاعدة البيانات. التشخيص: ملفين `.cshtml` مفقودين من Razor Pages API: (1) `Pages/Api/TableMappings/Active.cshtml` — مطلوب لجلب التعيينات النشطة. (2) `Pages/Api/Dashboard/CardBuilder.cshtml` — مطلوب لمعاينة البطاقات. بدون هذه الملفات، الطلبات ترجع 404 أو خطأ صامت.
-- Decision / Result: ✅ أُنشئ الملفان المفقودان. Build succeeded: 0 warnings, 0 errors. تم التحقق من أن جميع ملفات API الأخرى مكتملة.
-- Next Action: المستخدم يعيد تشغيل التطبيق واختبار القائمة المنسدلة.
-
-## [2026-07-15 19:40] - TASK_FIX_ACCEPTED
-
-- Related Task: TASK-KPI-FIX-003
-- Actor: TeraAgent + engineering-agent
-- Summary: إعادة بناء نظام المزامنة التزايدية بالكامل. النظام أُنشئ جزئياً ثم تمت إزالته بالخطأ. الإصلاح شمل 5 أجزاء: (1) Models — إضافة SyncMode + IncrementalColumn إلى كلا النموذجين، (2) Wizard UI — إضافة الخطوة 5 (إعدادات المزامنة) مع radio cards، (3) JS — منطق sync mode + تحميل أعمدة التاريخ من Oracle، (4) SyncEngineService — قراءة الحقول + WHERE clause للمزامنة التزايدية + UpdateLastSyncAtAsync، (5) API Controller — إرجاع الحقول الجديدة.
-- Decision / Result: ✅ Accepted. Post-Execution Review PASS. Build: 0 warnings, 0 errors. 7 ملفات معدّلة.
-- Next Action: اختبار End-to-End: إنشاء تعيين مع مزامنة تزايدية + التحقق من أن Step 5 تظهر + اختبار المزامنة الفعلية.
-
-## [2026-07-16 14:00] - TASK_FEATURE_COMPLETE
-
-- Related Task: Add Name field to TableMappings
-- Actor: TeraAgent + engineering-agent
-- Summary: إضافة حقل "اسم التعيين" (Name) الفريد والإجباري إلى نظام تعيينات الجداول، ليكون المعرف الأساسي للتعيين في شاشة بناء البطاقات والمزامنة. التعديلات شملت:
-  - Batch 1: تحديث الـ ModelSnapshot وإضافة Migration `AddNameToTableMappings` (الخاصية كانت موجودة مسبقاً لكن بدون Migration)
-  - Batch 2: تحديث SyncEngineService + Active API + TableMappingController + SyncController + Sync Dashboard لقراءة Name
-  - Batch 3: تحديث Index.cshtml.cs (validation + اسم فريد) + Index.cshtml (عمود الاسم + حقل في الويزارد + ملخص) + table-mapping-wizard.js + card-builder.js
-- Decision / Result: ✅ Complete. Build: 0 warnings, 0 errors (كلا المشروعين Web + Api).
-- Next Action: تطبيق الـ Migration يدوياً على قاعدة البيانات + إعادة تشغيل الـ API + اختبار إنشاء تعيين جديد بالاسم.
