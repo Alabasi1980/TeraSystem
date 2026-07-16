@@ -10,6 +10,7 @@ namespace WarehouseDashboard.Web.Pages.Api.Dashboard;
 /// Generates a live preview for the Card Builder wizard.
 /// Accepts CardPreviewRequest, returns CardPreviewResult with chart config + sample data.
 /// </summary>
+[IgnoreAntiforgeryToken]
 public class CardBuilderModel : PageModel
 {
     private readonly CardBuilderService _cardBuilderService;

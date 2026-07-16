@@ -615,7 +615,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             window.wbBuilder = new CardBuilderWizard({
-                previewApiUrl: '/api/dashboard/cardbuilder/preview',
+                previewApiUrl: '/api/dashboard/cardbuilder?handler=Preview',
                 tablesApiUrl: '/api/tablemappings/active',
                 savedQueriesApiUrl: '/api/savedqueries',
                 cloneId: '@Model.Request.Query["clone"]',

@@ -1076,4 +1076,55 @@
   3. إزالة `task: ask` واستثناء Auditor من `.opencode/agents/monitor.md`.
   4. حذف `tera-system/engineering-governance/QUALITY_GATE_THRESHOLDS.md`.
   5. إزالة إدخالات Auditor الجديدة من `TeraSubAgents.md`, `AGENT_ACTIVATION_MATRIX.md`, `AGENT_DEPENDENCY_MAP.md`, `TeraPreExecutionGate.md`, `TeraPolicyMap.md`, و`ENGINEERING_AGENT_RESPONSIBILITIES.md`.
-  6. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.
+   6. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.
+
+---
+
+## SCP-2026-07-16-099 — إغلاق فجوات الموبايل (Mobile Gap Analysis — Phase 2)
+
+- **تاريخ:** 2026-07-16
+- **معرف التغيير:** SCP-2026-07-16-099
+- **مصدر الطلب:** Owner Improvement Request (Majed) — بعد Domain Research على 8 اتجاهات لـ Flutter Mobile Best Practices 2025-2026
+- **نوع التغيير:** Controlled System Evolution — Policy Update (Profile + Design Standards)
+- **الملفات المعدلة:**
+  - `tera-system/profiles/flutter-mobile.md` — تحديث 7 أقسام (§5, §6, §7, §9, §14, §16, §18) — الإصدار 1.0.0 ← 1.1.0
+  - `tera-system/design-system/MOBILE_UI_UX_STANDARDS.md` — تحديث 3 أقسام (§3, §9, §12) — الإصدار 1.0.0 ← 1.1.0
+- **ملفات جديدة:**
+  - `project-control/MOBILE_GAP_ANALYSIS.md` — تقرير الفجوات الكامل (مرجع)
+- **الفجوات المغلقة (21 فجوة — 6 حرجة، 11 متوسطة، 4 بسيطة):**
+  - **C1** SSL Certificate Pinning → flutter-mobile.md §16
+  - **C2** API Key Management Strategy → flutter-mobile.md §16
+  - **C3** CI/CD Pipeline Guidance → flutter-mobile.md §18
+  - **C4** Database Recommendation (Drift Default) → flutter-mobile.md §5
+  - **C5** OWASP Mobile Top 10 Framework → flutter-mobile.md §16
+  - **C6** Impeller Rendering Engine → flutter-mobile.md §14
+  - **M1-M4** Testing Pyramid, Mocktail, Patrol, Coverage Targets → flutter-mobile.md §9
+  - **M5** Pigeon for Platform Channels → flutter-mobile.md §6
+  - **M6** iOS Photos limited state → MOBILE_UI_UX_STANDARDS.md §9
+  - **M7** Android 13+ Notification Permission → flutter-mobile.md §7
+  - **M8** Arabic Font Recommendations → MOBILE_UI_UX_STANDARDS.md §12
+  - **M9** Arabic Plural Forms (6 forms) → MOBILE_UI_UX_STANDARDS.md §12
+  - **M10** Performance Budget Numbers → flutter-mobile.md §14
+  - **M11** ShaderWarmUp → flutter-mobile.md §14
+  - **B1** cacheWidth/cacheHeight → flutter-mobile.md §14
+  - **B3** Shorebird OTA → flutter-mobile.md §18
+  - **B4** Material You / Dynamic Color → MOBILE_UI_UX_STANDARDS.md §3
+  - **B5** Slang alternative localization → flutter-mobile.md §5
+- **الملخص:**
+  - تم إجراء Domain Research على 8 اتجاهات (Architecture, UI/UX, Testing, Security, Performance, CI/CD, Permissions, Localization) لتقييم جاهزية قدرة الموبايل في Tera.
+  - تمت مقارنة نتائج البحث مع ما لدينا في flutter-mobile.md و MOBILE_UI_UX_STANDARDS.md.
+  - 15 نقطة قوة مؤكدة (لا تحتاج تغيير)، و21 فجوة تم إغلاقها بالكامل.
+  - التحديثات تشمل: SSL pinning، إدارة API keys، CI/CD pipeline،OWASP، Impeller، هرم اختبارات، mocktail، Patrol، Pigeon، خطوط عربية، صيغ جمع عربية (6)، Material You، وغيرها.
+  - **المؤثرات غير المتأثرة:** Checklists (§20)، UI_ACCEPTANCE_GATE (11 خانة)، TERA_RUNTIME_PROTOCOLS (§19) — بقيت كما هي.
+- **الموافقة:** Majed — Approved (توجيه مباشر)
+- **التحقق من الصحة:**
+  - ✅ Anti-Bloat Gate PASS — ملفان محدثان فقط، لا عملاء جدد، لا طبقات جديدة
+  - ✅ All gaps verified closed — 21/21 gaps marked as closed in gap analysis
+  - ✅ Version updates recorded — flutter-mobile.md v1.1.0, MOBILE_UI_UX_STANDARDS.md v1.1.0
+  - ✅ Evolution log entry created
+- **المخاطر:** منخفض — جميع التحديثات تستند إلى مصادر Tier 1-2 (وثائق رسمية + معايير مجتمعية 2025-2026). لا تأثير على مسار الويب الحالي.
+- **ملاحظات الاسترجاع (Rollback):**
+  1. استرجاع `flutter-mobile.md` من git (v1.0.0)
+  2. استرجاع `MOBILE_UI_UX_STANDARDS.md` من git (v1.0.0)
+  3. حذف `project-control/MOBILE_GAP_ANALYSIS.md`
+  4. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md`

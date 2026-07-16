@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "WarehouseDashboard.Web\\WarehouseDashboard.Web.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "WarehouseDashboard.Api\\WarehouseDashboard.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

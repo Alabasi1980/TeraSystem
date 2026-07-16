@@ -56,7 +56,7 @@
   /* ===================================================================== */
   function CardBuilderWizard(opts) {
     this.opts = opts || {};
-    this.opts.previewApiUrl = this.opts.previewApiUrl || '/api/dashboard/cardbuilder/preview?handler=Preview';
+    this.opts.previewApiUrl = this.opts.previewApiUrl || '/api/dashboard/cardbuilder?handler=Preview';
     this.opts.tablesApiUrl = this.opts.tablesApiUrl || '/api/tablemappings/active';
     this.opts.savedQueriesApiUrl = this.opts.savedQueriesApiUrl || '/api/savedqueries';
 

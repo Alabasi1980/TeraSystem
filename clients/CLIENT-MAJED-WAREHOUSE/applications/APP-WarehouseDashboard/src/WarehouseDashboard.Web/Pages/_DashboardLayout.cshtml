@@ -1,3 +1,5 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
 @{
     // Public dashboard layout (Viewer is public — no admin auth).
     // Shares the Blue Identity design system via wwwroot/css/blue-theme.css
@@ -64,6 +66,17 @@
 
     @* Syncfusion scripts (CDN, matched to package 27.*) *@
     <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.min.js"></script>
+    @{
+        var syncfusionLicenseKey = Configuration["Syncfusion:LicenseKey"];
+    }
+    @if (!string.IsNullOrWhiteSpace(syncfusionLicenseKey))
+    {
+        <script>
+            if (window.ej && ej.base && typeof ej.base.registerLicense === 'function') {
+                ej.base.registerLicense('@syncfusionLicenseKey');
+            }
+        </script>
+    }
     <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.aspnetcore.min.js"></script>
 
     @* Shared dashboard utilities (toNum, formatNum, escapeHtml, showToast, wdEmptyHtml, wdErrorHtml) *@

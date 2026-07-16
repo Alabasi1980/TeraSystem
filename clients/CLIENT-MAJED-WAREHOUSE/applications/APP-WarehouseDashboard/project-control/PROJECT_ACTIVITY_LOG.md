@@ -16,6 +16,30 @@
 
 ## Activity Log
 
+## [2026-07-16 10:40] - TASK_FIX_APPLIED
+
+- Related Task: TASK-KPI-FIX-010
+- Actor: TeraAgent + engineering-agent
+- Summary: User reported Syncfusion trial banner still appears although a license key exists in configuration. Root cause identified: EJ2 JavaScript is loaded directly from CDN in layouts, so browser-side EJ2 license registration was also required.
+- Decision / Result: ✅ Added guarded browser-side `ej.base.registerLicense(...)` registration in `_DashboardLayout.cshtml` and `Cards/_CardsLayout.cshtml`, reading the key from `Configuration["Syncfusion:LicenseKey"]` without hardcoding it. Build attempt was blocked because the running Web app process locked the output executable.
+- Next Action: User stops the running Web app, restarts it, hard-refreshes the browser, and verifies the Syncfusion trial banner is gone.
+
+## [2026-07-16 10:33] - TASK_FIX_APPLIED
+
+- Related Task: TASK-KPI-FIX-009
+- Actor: TeraAgent + engineering-agent
+- Summary: User reported Card Builder preview route now reaches `/api/dashboard/cardbuilder?handler=Preview` but returns HTTP 400 with valid JSON payload. Root cause: Razor Pages antiforgery validation rejected AJAX JSON POST without request verification token.
+- Decision / Result: ✅ Applied endpoint-scoped fix by adding `[IgnoreAntiforgeryToken]` to `CardBuilderModel` in `Pages/Api/Dashboard/CardBuilder.cshtml.cs`. Build succeeded with 0 warnings and 0 errors.
+- Next Action: User restarts the Web app, hard-refreshes Card Builder, and verifies preview returns data and measurement field dropdown is populated.
+
+## [2026-07-16 10:30] - TASK_FIX_APPLIED
+
+- Related Task: TASK-KPI-FIX-008
+- Actor: TeraAgent + engineering-agent
+- Summary: User reported Card Builder preview still returned `POST /api/dashboard/cardbuilder/preview?handler=Preview` with HTTP 404. Root cause: Razor Pages handler route should be `/api/dashboard/cardbuilder?handler=Preview`; the extra `/preview` path segment points to a non-existent page route.
+- Decision / Result: ✅ Applied minimal URL fix in `Builder.cshtml` and `card-builder.js`. Verified both now use `/api/dashboard/cardbuilder?handler=Preview` and no remaining `/api/dashboard/cardbuilder/preview?handler=Preview` reference exists in JS/CSHTML files.
+- Next Action: User restarts the Web app, hard-refreshes Card Builder, and verifies preview returns HTTP 200 and field/measurement dropdown is populated.
+
 ## [2026-07-15 12:05] - TASK_FIX_ACCEPTED
 
 - Related Task: SyncLogs missing entries for trigger-selected

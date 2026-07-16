@@ -63,6 +63,14 @@ When targeting both Android and iOS:
 
 **Rule:** Do not force iOS users into Android navigation patterns or vice versa. Use platform detection for navigation style, date pickers, and dialog styles.
 
+### 3.4 Dynamic Color / Material You (Android 12+)
+
+- Android 12+ supports **Material You** dynamic color — the app color palette can adapt to the user wallpaper.
+- Use `DynamicColorBuilder` (or `ColorScheme.fromSeed`) to extract tonal colors.
+- Flutter M3 supports this natively with `useMaterial3: true` + `ColorScheme.fromSeed(seedColor: ...)`.
+- Allow users to toggle: "Follow system colors" vs "Use app theme" in settings.
+- Optional — do not force if the project has a fixed brand palette.
+
 ---
 
 ## 4. Touch Targets
@@ -163,6 +171,7 @@ Handle every permission state gracefully:
 | Denied | Show explanation + request again |
 | Permanently denied | Show explanation + "Open Settings" button |
 | Restricted (parental control) | Show "Not available" message |
+| Limited (iOS Photos only) | Explain user can add more photos; show system picker for individual additions |
 
 ### Rules
 - Request permissions **contextually** — when the user triggers the feature, not at app start.
@@ -221,6 +230,33 @@ For Arabic/RTL projects (Tera's primary market):
 - Icons: flip horizontally if they imply direction (arrows, chevrons).
 - Text alignment: auto-align with `TextAlign.start` / `TextAlign.end`.
 - Sliders and progress: reverse direction for RTL.
+
+### Arabic Typography
+
+| Guideline | Value |
+|-----------|-------|
+| Recommended fonts | Noto Sans Arabic (safe default), Cairo, Tajawal, IBM Plex Sans Arabic |
+| Font size vs Latin | Arabic text needs **10-15% larger** size than Latin equivalents for same readability |
+| Line height | Minimum **1.6x** for Arabic body text (vs 1.4x for English) |
+| fontFamilyFallback | Always include: `['Noto Sans Arabic', 'Roboto']` — ensures Arabic characters render correctly on all devices |
+| Font appearance | Arabic at weight 400 may appear thinner than Latin — consider weight 500 for body text |
+
+**Test rule:** Always compare Arabic and English side-by-side at the same font size. If Arabic appears thinner or smaller, adjust size/weight.
+
+### Arabic Plural Forms
+
+Arabic has **6 plural forms** — most apps only handle singular/plural (2 forms), which is incorrect for Arabic.
+
+| CLDR Category | Arabic Form | Example (مهمة) |
+|:---:|---|---|
+| =0 | لا مهمات | 0 tasks |
+| =1 | مهمة واحدة | 1 task |
+| =2 | مهمتان | 2 tasks |
+| few (3-10) | مهمات | 3-10 tasks |
+| many (11-99) | مهمة | 11-99 tasks |
+| other (100+) | مهمة | 100+ tasks |
+
+**Rule:** When using ARB files for Arabic, always define all 6 plural forms using ICU message format. Do not assume that singular/plural only handles Arabic — test with count=0, 1, 2, 3, 11, 100.
 
 ---
 
@@ -337,6 +373,8 @@ When the project is **Mobile**, the UI Acceptance Gate (from `UI_ACCEPTANCE_GATE
 
 ## 19. Version
 
-- **Version:** 1.0.0
-- **Last Updated:** 2026-07-15
+- **Version:** 1.1.0
+- **Last Updated:** 2026-07-16
+- **Updated Sections (v1.0 to v1.1):** §3 (Material You/Dynamic Color), §9 (iOS Photos limited state), §12 (Arabic typography, Arabic plural forms)
+- **Last Updated By:** Gap Analysis Closure (SCP-096 Phase 2)
 - **Maintainer:** TeraSystemEvolutionAgent (حارس)

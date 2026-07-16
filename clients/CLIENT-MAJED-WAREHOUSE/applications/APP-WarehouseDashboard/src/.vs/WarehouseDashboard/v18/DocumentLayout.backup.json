@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\clients\\CLIENT-MAJED-WAREHOUSE\\applications\\APP-WarehouseDashboard\\src\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4F53ED86-52E9-4B31-8FD0-987689C9C343}|WarehouseDashboard.Web\\WarehouseDashboard.Web.csproj|d:\\teranoo foundation\\terasystem\\terasystem-master\\clients\\client-majed-warehouse\\applications\\app-warehousedashboard\\src\\warehousedashboard.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4F53ED86-52E9-4B31-8FD0-987689C9C343}|WarehouseDashboard.Web\\WarehouseDashboard.Web.csproj|solutionrelative:warehousedashboard.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F53ED86-52E9-4B31-8FD0-987689C9C343}|WarehouseDashboard.Web\\WarehouseDashboard.Web.csproj|d:\\teranoo foundation\\terasystem\\terasystem-master\\clients\\client-majed-warehouse\\applications\\app-warehousedashboard\\src\\warehousedashboard.web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{4F53ED86-52E9-4B31-8FD0-987689C9C343}|WarehouseDashboard.Web\\WarehouseDashboard.Web.csproj|solutionrelative:warehousedashboard.web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F53ED86-52E9-4B31-8FD0-987689C9C343}|WarehouseDashboard.Web\\WarehouseDashboard.Web.csproj|d:\\teranoo foundation\\terasystem\\terasystem-master\\clients\\client-majed-warehouse\\applications\\app-warehousedashboard\\src\\warehousedashboard.web\\appsettings.production.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{4F53ED86-52E9-4B31-8FD0-987689C9C343}|WarehouseDashboard.Web\\WarehouseDashboard.Web.csproj|solutionrelative:warehousedashboard.web\\appsettings.production.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\clients\\CLIENT-MAJED-WAREHOUSE\\applications\\APP-WarehouseDashboard\\src\\WarehouseDashboard.Web\\Program.cs",
+              "RelativeDocumentMoniker": "WarehouseDashboard.Web\\Program.cs",
+              "ToolTip": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\clients\\CLIENT-MAJED-WAREHOUSE\\applications\\APP-WarehouseDashboard\\src\\WarehouseDashboard.Web\\Program.cs",
+              "RelativeToolTip": "WarehouseDashboard.Web\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-16T11:59:44.518Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\clients\\CLIENT-MAJED-WAREHOUSE\\applications\\APP-WarehouseDashboard\\src\\WarehouseDashboard.Web\\appsettings.json",
+              "RelativeDocumentMoniker": "WarehouseDashboard.Web\\appsettings.json",
+              "ToolTip": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\clients\\CLIENT-MAJED-WAREHOUSE\\applications\\APP-WarehouseDashboard\\src\\WarehouseDashboard.Web\\appsettings.json",
+              "RelativeToolTip": "WarehouseDashboard.Web\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAABvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-07-16T11:54:52.243Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.Production.json",
+              "DocumentMoniker": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\clients\\CLIENT-MAJED-WAREHOUSE\\applications\\APP-WarehouseDashboard\\src\\WarehouseDashboard.Web\\appsettings.Production.json",
+              "RelativeDocumentMoniker": "WarehouseDashboard.Web\\appsettings.Production.json",
+              "ToolTip": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\clients\\CLIENT-MAJED-WAREHOUSE\\applications\\APP-WarehouseDashboard\\src\\WarehouseDashboard.Web\\appsettings.Production.json",
+              "RelativeToolTip": "WarehouseDashboard.Web\\appsettings.Production.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAABvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-07-16T11:54:48.742Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

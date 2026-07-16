@@ -1,4 +1,4 @@
-using WarehouseDashboard.Web.Data;
+﻿using WarehouseDashboard.Web.Data;
 using WarehouseDashboard.Web.Infrastructure;
 using WarehouseDashboard.Web.Pages;
 using WarehouseDashboard.Web.Services;
