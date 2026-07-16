@@ -424,12 +424,13 @@ tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
 
 ---
 
-## 20. صلاحية استخدام Domain Research Agent و Domain Expert Agent
+## 20. صلاحية استخدام Domain Research Agent و Domain Expert Agent و Production ERP Expert
 
 لتعميق فهم المجال (Domain Depth) أثناء إنتاج blueprint، يملك مهندس صلاحية استدعاء:
 
 - `DomainResearchAgent` (باحث) — لجمع وتصنيف معلومات من المصادر الخارجية
 - `DomainExpertAgent` (خبير) — لتحليل المعرفة وإنتاج Domain Intelligence Report
+- `ProductionERPExpert` (خبير إنتاج) — لتحليل ومراجعة Production ERP عند وجود تصنيع/إنتاج
 
 ### 20.1 متى تستدعيهما؟
 
@@ -437,6 +438,7 @@ tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
 - عندما يحتوي handoff على معلومات مجال عامة غير كافية لتوصية دقيقة
 - عندما تحتاج إلى فهم best practices، معايير الصناعة، أو تصنيف MVP لمتطلبات مجال معين
 - عندما يكون تقييم الثقة (Self-Verification) لأي قسم من blueprint **Medium** أو **Low** بسبب نقص المعرفة بالمجال
+- عندما يتضمن الـ handoff أو الـ blueprint موديول إنتاج/تصنيع، BOM، Routing، MRP، WIP، Costing، Quality، Rework، أو Scrap
 
 ### 20.2 قواعد الاستدعاء
 
@@ -444,7 +446,7 @@ tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
 2. **Allowed Write Targets:** `project-preparation/` فقط — لأن مهندس ينتج في domain التحضير
 3. **المخرجات:** تحمل وسم `[Research Hint]` — لا تدخل الـ blueprint مباشرة دون تأكيد Majed
 4. **الاستدعاء:** عبر أداة `task` مع `subagent_type: "general"` و Objective واضح
-5. **التسلسل:** استدعِ DomainResearchAgent أولاً (جمع)، ثم DomainExpertAgent (تحليل) عند الحاجة
+5. **التسلسل:** استدعِ DomainResearchAgent أولاً (جمع)، ثم DomainExpertAgent (تحليل) عند الحاجة. عند وجود Production ERP، يمكن استدعاء ProductionERPExpert مباشرة إذا كانت المعرفة المحلية كافية، أو بعد البحث إذا كانت ناقصة.
 6. **التسجيل:** سجل كل استدعاء في `project-preparation/BLUEPRINT_DECISION_CANDIDATES.md`
 
 ### 20.3 الحدود (ممنوعات)
@@ -453,4 +455,4 @@ tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
 - لا تدخل [Research Hint] مباشرة في blueprint الأساسي — انتظر تأكيد Majed
 - لا تستدعي domain agents لأسئلة تنفيذية أو تقنية (هذه مهمة TeraAgent)
 - لا تستدعي domain agents لتقرر نيابة عن Majed — معلوماتك استرشادية فقط
-- لا تستدعي أي عميل فرعي آخر غير DomainResearchAgent و DomainExpertAgent
+- لا تستدعي أي عميل فرعي آخر غير DomainResearchAgent و DomainExpertAgent و ProductionERPExpert

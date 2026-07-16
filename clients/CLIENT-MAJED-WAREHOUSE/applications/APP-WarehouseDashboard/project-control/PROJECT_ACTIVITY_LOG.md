@@ -16,6 +16,14 @@
 
 ## Activity Log
 
+## [2026-07-16 10:55] - AUDIT_COMPLETED
+
+- Related Task: AUDIT-TASK-KPI-STEP4-READINESS-2026-07-16
+- Actor: TeraAgent + auditor
+- Summary: User requested comprehensive readiness analysis of Card Builder Step 4 KPI settings before testing. Auditor reviewed Step 4 UI, JavaScript wiring, backend save path, KPI model fields, service mapping, and runtime dashboard KPI usage.
+- Decision / Result: ❌ Audit status FAIL. Report written to `clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/project-control/audit-reports/AUDIT-TASK-KPI-STEP4-READINESS-2026-07-16.md`. Blocking issue: current builder save path simulates success and does not persist the card; service mapping also omits Step 4 KPI fields.
+- Next Action: Fix Step 4 persistence, validation, dropdown typing, and runtime alignment before asking user to manually test Step 4.
+
 ## [2026-07-16 10:40] - TASK_FIX_APPLIED
 
 - Related Task: TASK-KPI-FIX-010

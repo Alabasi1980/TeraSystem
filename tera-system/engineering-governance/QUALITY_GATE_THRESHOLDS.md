@@ -44,7 +44,7 @@ These are default signals, not hard failures.
 | Metric | Flag Candidate | Caution Candidate | Notes |
 |---|---:|---:|---|
 | Function length | 50+ lines | 100+ lines | Context matters; generated or algorithmic code may differ |
-| File length (production) | 300+ lines | 500+ lines | New large files need stronger justification |
+| File length (production) | 300+ lines | 500+ lines | New large files need stronger justification. Context override: files that exceed the Caution threshold but are structurally coherent (single responsibility, cohesive domain, no unrelated concerns mixed in) may be classified as FLAG instead of Caution. The heuristic is a signal for review, not an automatic severity. |
 | Parameter count | 7+ | 10+ | Prefer parameter object or clearer data model where appropriate |
 | Nesting depth | 4+ | 6+ | Manual readability signal |
 | TODO/FIXME/HACK in changed code | any | repeated or critical path | Must distinguish temporary note from hidden debt |
@@ -60,6 +60,8 @@ These are default signals, not hard failures.
 | QG-SEC-004 | Unsafe eval/command execution/deserialization in changed code | STOP / CAUTION |
 | QG-GOV-001 | Unauthorized permission expansion or scope expansion in changed work | STOP / CAUTION |
 | QG-ARCH-001 | New circular dependency proven by import chain or analyzer | CAUTION / STOP if architecture-critical |
+| QG-DB-001 | Migration Down() is not the inverse of Up() (e.g., drops index/constraint/column never created by Up()) | STOP |
+| QG-DB-002 | Migration alters data in a way that cannot be reversed (destructive UPDATE/DELETE without backup logic) | STOP / CAUTION |
 
 ## 6. Testing Adequacy Rules
 
@@ -92,6 +94,8 @@ Do not require ARIA where semantic HTML already provides the correct role/name/v
 Auditor reviews changed code first. Existing debt outside the diff is `BASELINE_DEBT`.
 
 Do not block a task for unrelated baseline debt unless it is critical and the current change exposes, worsens, or relies on it.
+
+Escalation: When a diff materially changes a component that already has a baseline gap (e.g., accessibility, error handling), and the change worsens the gap's impact or exposure, the Auditor may escalate the finding from BASELINE_DEBT to CAUTION or higher. Example: A modal with no focus trap that is expanded from 3 to 5 steps — the baseline gap now affects more user flows and is harder to escape.
 
 ## 9. Audit Modes
 

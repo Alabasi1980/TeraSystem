@@ -54,6 +54,22 @@ public class CardBuilderRequest
 
     /// <summary>Drill-down levels configuration (optional).</summary>
     public List<CardDrillDownInput> DrillDownLevels { get; set; } = new();
+
+    // === Advanced KPI Fields (Step 4) ===
+    public string ValueColumn { get; set; } = string.Empty;
+    public string DateColumn { get; set; } = string.Empty;
+    public string CategoryColumn { get; set; } = string.Empty;
+    public string KpiMode { get; set; } = "simple";
+    public bool ShowChange { get; set; } = false;
+    public string ChangeSource { get; set; } = "previousPeriod";
+    public bool ShowSparkline { get; set; } = false;
+    public int SparklineMonths { get; set; } = 6;
+    public bool ShowGrandTotal { get; set; } = false;
+    public string GrandTotalSource { get; set; } = "sameTable";
+    public string DateFilterMode { get; set; } = "dashboard";
+    public string FixedStartDate { get; set; } = string.Empty;
+    public string FixedEndDate { get; set; } = string.Empty;
+    public int RelativeDays { get; set; } = 30;
 }
 
 /// <summary>

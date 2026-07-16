@@ -12,15 +12,16 @@
 
 | Agent | يتم استدعاؤه بواسطة | يستدعي/يشير إلى | يقرأ من |
 |-------|-------------------|----------------|---------|
-| **tera.md** | — (الأب) | `ui-designer.md`, `engineering-agent.md`, `tera-software-designer.md`, `application-blueprint.md`, `domain-research-agent.md`, `domain-expert-agent.md`, `auditor.md` | `tera-system/*.md`, `project-preparation/`, `project-control/` |
+| **tera.md** | — (الأب) | `ui-designer.md`, `engineering-agent.md`, `tera-software-designer.md`, `application-blueprint.md`, `domain-research-agent.md`, `domain-expert-agent.md`, `production-erp-expert.md`, `auditor.md` | `tera-system/*.md`, `project-preparation/`, `project-control/` |
 | **ui-designer.md** | `tera.md`, `tera-system-evolution.md` (للأغراض النظامية) | `design-reviewer.md` (ناقد يراجعه) | `28_UI_UX_GUIDELINES.md`, `tera-system/design-system/*.md` |
 | **engineering-agent.md** | `tera.md` | `ui-designer.md` (مصمم يسبقه)، `tera-software-designer.md` (يسبقه للمهام المعقدة) | `TECHNICAL_SPECIFICATION.md`, `28_UI_UX_GUIDELINES.md` |
 | **tera-software-designer.md** | `tera.md` | `engineering-agent.md` (ينفذ الـ Spec) | `project-preparation/*.md`, `28_UI_UX_GUIDELINES.md`, `PROJECT_RULES.md` |
 | **design-reviewer.md** | — (مستقل — يستدعيه Majed) | `TeraAgent`, `EngineeringAgent` (مراجعة مخرجاتهم) | `28_UI_UX_GUIDELINES.md`, `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md` |
-| **tera-client-engagement.md** | — (مستقل — يستدعيه Majed) | `domain-research-agent.md`, `domain-expert-agent.md`, `application-blueprint.md` | `tera-system/client-helpers/*.md`, `tera-system/TeraPricingPolicy.md` |
-| **application-blueprint.md** | `tera-client-engagement.md`, `tera.md` | `domain-research-agent.md`, `domain-expert-agent.md` | `project-preparation/`, `client-engagement/` |
+| **tera-client-engagement.md** | — (مستقل — يستدعيه Majed) | `domain-research-agent.md`, `domain-expert-agent.md`, `production-erp-expert.md`, `application-blueprint.md` | `tera-system/client-helpers/*.md`, `tera-system/TeraPricingPolicy.md` |
+| **application-blueprint.md** | `tera-client-engagement.md`, `tera.md` | `domain-research-agent.md`, `domain-expert-agent.md`, `production-erp-expert.md` | `project-preparation/`, `client-engagement/` |
 | **domain-research-agent.md** | `tera-client-engagement.md`, `tera.md`, `application-blueprint.md`, `tera-system-evolution.md` | `domain-expert-agent.md` (يسلم له للتحليل) | — (بحث خارجي) |
 | **domain-expert-agent.md** | `tera-client-engagement.md`, `tera.md`, `application-blueprint.md`, `tera-system-evolution.md` | — | `domain-research-agent.md` (Domain Research Report) |
+| **production-erp-expert.md** | Majed مباشرة، `tera.md`, `tera-client-engagement.md`, `application-blueprint.md`؛ وEngineering/QA فقط عبر Tera-approved task scope | `domain-research-agent.md` عند نقص المعرفة وبقرار المستدعي | `tera-system/knowledge-base/manufacturing/`, ملفات discovery/blueprint المحددة |
 | **tera-system-evolution.md** | — (مستقل — يستدعيه Majed) | `ui-designer.md`, `domain-research-agent.md`, `domain-expert-agent.md` (للأغراض النظامية) | `tera-system/*.md`, `.opencode/agents/*.md` |
 | **tera-strategic-advisor.md** | — (مستقل — يستدعيه Majed فقط) | لا يستدعي عملاء ولا يديرهم؛ قد يوصي Majed بالرجوع إلى TeraAgent أو حارس أو غيرهم | ملفات وسياقات القرار فقط، مصادر خارجية عند الحاجة |
 | **auditor.md** | `tera.md`؛ و`monitor.md` فقط عند طلب Majed | يراجع مخرجات `tera.md`, `engineering-agent.md`؛ يحيل findings إلى `SecurityAgent`, `DesignReviewer`, `QAAndAcceptanceAgent`, أو `ProjectControlAgent` عبر الوكيل المستدعي | `project-control/*.md`, `project-control/audit-reports/`, `tera-system/engineering-governance/*.md`, الملفات المعدلة |
@@ -62,19 +63,20 @@ ui-designer.md
 
 | الملف | الحجم (سطور) | الحالة |
 |-------|-------------|--------|
-| `tera-system/TeraSubAgents.md` | 1,606 | 🔴 > 1000 — ملف Registry طويل تاريخياً؛ أضيف Auditor دون تقسيم استباقي لأن تقسيم TeraSubAgents يتم عند الحاجة الفعلية للتوليد لا الآن |
+| `tera-system/TeraSubAgents.md` | 1,672 | 🔴 > 1000 — ملف Registry طويل تاريخياً؛ أضيف ProductionERPExpert دون تقسيم استباقي لأن تقسيم TeraSubAgents يتم عند الحاجة الفعلية للتوليد لا الآن |
 | `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` | 1,186 | 🔴 تقسيم إجباري (> 1000) |
 | `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` | 1,110 | 🔴 تقسيم إجباري (> 1000) |
 | `tera.md` | 867 | 🟡 700–1000 — دراسة فصل منطقي لاحقاً؛ لا تقسيم الآن لأن التعديل Runtime summary محدود |
 | `tera-system/TeraPreExecutionGate.md` | 800 | 🟡 700–1000 — دراسة لاحقة عند تعديل كبير؛ لا تقسيم ضمن SCP-098 |
-| `tera-client-engagement.md` | 564 | 🟢 < 700 — لا حاجة |
+| `tera-client-engagement.md` | 749 | 🟡 700–1000 — دراسة فصل منطقي لاحقاً؛ لا تقسيم الآن لأن التعديل محدود لاستدعاء ProductionERPExpert |
 | `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` | 469 | 🟢 < 700 — لا حاجة |
 | `auditor.md` | 465 | 🟢 < 700 — لا حاجة |
 | `tera-system-evolution.md` | 451 | 🟢 < 700 — لا حاجة |
 | `tera-strategic-advisor.md` | 323 | 🟢 < 700 — لا حاجة |
 | `monitor.md` | 276 | 🟢 < 700 — لا حاجة |
 | `domain-expert-agent.md` | 398 | 🟢 < 700 — لا حاجة |
-| `application-blueprint.md` | 335 | 🟢 < 700 — لا حاجة |
+| `production-erp-expert.md` | 506 | 🟢 < 700 — لا حاجة |
+| `application-blueprint.md` | 458 | 🟢 < 700 — لا حاجة |
 | باقي ملفات agents | 180–322 | 🟢 < 700 — لا حاجة |
 
 **ملاحظة:** الملفات التي تتجاوز 700 سطر وقريبة من الحد (700–1000) ستتم دراستها عند الحاجة الفعلية للتعديل التالي.

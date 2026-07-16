@@ -70,6 +70,7 @@ Tera هو المسؤول الافتراضي عن قرار التفعيل. الع
 | PlanComplianceReviewAgent | `PLAN_COMPLIANCE_REVIEW_AGENT` | `REVIEW_NEEDED`: نهاية Phase، أو بعد دفعة مهام رئيسية، أو قبل قبول MVP | 5–6–7 | إذا كان التنفيذ متوافقًا بوضوح مع الخطة ولا توجد انحرافات ظاهرة | `PROJECT_MASTER_PLAN.md` + `TASK_REGISTRY.md` |
 | DomainResearchAgent | `DOMAIN_RESEARCH_AGENT` | `COMPLEXITY_SIGNAL / USER_REQUEST`: مجال غير مألوف، أو حاجة بحث خارجي | 1–2–3 | إذا كان المجال معروفًا بالكامل أو المستخدم قدم جميع المعلومات المطلوبة | Domain Research Brief من Tera |
 | DomainExpertAgent | `DOMAIN_EXPERT_AGENT` | `COMPLEXITY_SIGNAL`: بعد اكتمال Domain Research، أو عند الحاجة لتحليل متقدم | 2–3–4 | إذا لم يُظهر Domain Research نتائج تستدعي تحليلًا إضافيًا | Domain Research Report + Domain Research Brief |
+| ProductionERPExpert | `PRODUCTION_ERP_EXPERT` | `COMPLEXITY_SIGNAL / USER_REQUEST`: موديول تصنيع/إنتاج ERP، أو حاجة لتحليل BOM/Routing/MRP/WIP/Costing/Quality/Rework/Scrap أو مراجعة Production Blueprint | 1–5 | إذا كان المشروع لا يحتوي تصنيع/إنتاج، أو كانت الأسئلة CRUD عامة لا تحتاج خبرة Production ERP | Production context + ملفات discovery/blueprint ذات الصلة + KB index عند الحاجة |
 
 ---
 
@@ -149,6 +150,7 @@ Tera هو المسؤول الافتراضي عن قرار التفعيل. الع
 | PlanComplianceReviewAgent | نعم | قبل قبول مراحل |
 | DomainResearchAgent | اختياري | لمجالات ERP غير المألوفة |
 | DomainExpertAgent | اختياري | لتحليل متقدم للمجال |
+| ProductionERPExpert | نعم عند وجود موديول تصنيع/إنتاج | أساسي لمشاريع ERP التصنيعية أو أي Production module |
 | Client Engagement Agents | اختياري | إذا كان ERP لعميل خارجي |
 
 ### 3.4 مشروع SaaS (منصة خدمية)

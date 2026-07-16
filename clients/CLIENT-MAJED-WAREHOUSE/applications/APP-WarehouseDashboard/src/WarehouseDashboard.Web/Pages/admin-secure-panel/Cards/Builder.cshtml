@@ -147,7 +147,7 @@
                         </div>
                         <div class="wb-field">
                             <label class="wd-field__label" for="wb-measurement-field">الحقل/القياس</label>
-                            <select id="wb-measurement-field" class="wd-select" name="measurement" aria-describedby="wb-measurement-hint" disabled>
+                            <select id="wb-measurement-field" class="wd-select" aria-describedby="wb-measurement-hint" disabled>
                                 <option value="">اختر جدولاً أولاً</option>
                             </select>
                             <span id="wb-measurement-hint" class="wd-field__hint">الحقل الرقمي للرسوم أو القيمة للمؤشرات</span>
@@ -193,12 +193,11 @@
                         </div>
 
                         <div class="wd-field wd-field--full">
-                            <label class="wd-field__label" for="wb-measurement">القياس/الحقل <span class="wb-required" aria-hidden="true">*</span></label>
-                            <select id="wb-measurement" class="wd-select" name="measurement" required aria-required="true" aria-describedby="wb-measurement-hint2">
-                                <option value="">اختر قياساً...</option>
-                            </select>
-                            <span id="wb-measurement-hint2" class="wd-field__hint">يحدد بناءً على المصدر المختار</span>
-                            <span class="wd-error" data-for="measurement"></span>
+                            <label class="wd-field__label" for="wb-preview-sql">استعلام SQL (معاينة)</label>
+                            <textarea id="wb-preview-sql" class="wd-textarea" rows="3" readonly 
+                                      placeholder="سيظهر الاستعلام هنا بعد اختيار المصدر..." 
+                                      style="font-family: monospace; font-size: 0.85em; background: #f8f9fa; color: #495057; cursor: default;"></textarea>
+                            <span class="wd-field__hint">الاستعلام الذي سينفذ لجلب البيانات — للقراءة فقط</span>
                         </div>
 
                         <div class="wd-field wd-field--full">
@@ -253,7 +252,7 @@
                                 <span class="wd-field__hint">العمود الرقمي للقيمة الرئيسية</span>
                             </div>
                             <div class="wd-field">
-                                <label class="wd-field__label" for="wb-kpi-date-column">عمود التاريخ <span class="wb-required" aria-hidden="true">*</span></label>
+                                <label class="wd-field__label" for="wb-kpi-date-column">عمود التاريخ <span class="wb-required" id="wb-date-required-star" aria-hidden="true" style="display:none;">*</span></label>
                                 <select id="wb-kpi-date-column" class="wd-select" name="dateColumn">
                                     <option value="">اختر عموداً...</option>
                                 </select>

@@ -9,15 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 // ---------------------------------------------------------------------------
 // Syncfusion license is read from appsettings.json (Syncfusion:LicenseKey).
 // ---------------------------------------------------------------------------
-var syncLicense = builder.Configuration["Syncfusion:LicenseKey"]?.Trim();
+var syncLicense = builder.Configuration["Syncfusion:LicenseKey"];
 if (!string.IsNullOrWhiteSpace(syncLicense))
 {
     Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(syncLicense);
-    Console.WriteLine($"[INFO] Syncfusion license registered. Environment={builder.Environment.EnvironmentName}, Length={syncLicense.Length}.");
 }
 else
 {
-    Console.WriteLine($"[WARN] Syncfusion:LicenseKey not found in configuration. Environment={builder.Environment.EnvironmentName}. Syncfusion components will display a license warning.");
+    Console.WriteLine("[WARN] Syncfusion:LicenseKey not found in appsettings.json. " +
+                      "Syncfusion components will display a license warning.");
 }
 
 // ---------------------------------------------------------------------------

@@ -202,7 +202,7 @@ Do not block a task for old debt it did not create, except when the change expos
 
 | Rule Class | Meaning | Examples | Blocking Behavior |
 |---|---|---|---|
-| Hard rules | Direct safety/security/governance failures | real secrets, unauthorized permission expansion, unsafe raw query with user input, architecture-forbidden circular dependency | May produce `STOP` |
+| Hard rules | Direct safety/security/governance failures | real secrets, unauthorized permission expansion, unsafe raw query with user input, architecture-forbidden circular dependency, migration rollback integrity (Down ≠ inverse of Up) | May produce `STOP` |
 | Default heuristics | Useful indicators, not universal failures | function/file size, parameter count, TODO count, god-object suspicion | Findings only; severity depends on impact/context |
 | Project-calibrated rules | Need artifacts or baseline | coverage, duplication %, CBO, churn, vulnerability status | Cannot be asserted without evidence |
 
@@ -250,6 +250,8 @@ Overall result:
 | Only `FLAG` or resolved findings | `PASS` |
 | Required evidence missing | `DEFERRED` or `NEEDS_FIX` |
 
+Baseline escalation: Pre-existing issues in materially changed components may be escalated from `BASELINE_DEBT` to `CAUTION` if the diff worsens their impact or exposure (see QUALITY_GATE_THRESHOLDS §8).
+
 ---
 
 ## 9. P1 Foundation Checks
@@ -289,7 +291,7 @@ Use as findings, not automatic failures:
 - obvious mixed responsibilities
 - suspicious duplicate block in changed code
 
-Use `QUALITY_GATE_THRESHOLDS.md` for default thresholds and evidence requirements.
+Use `QUALITY_GATE_THRESHOLDS.md` for default thresholds and evidence requirements. File size exceeding threshold is a finding candidate. Cohesive single-responsibility files that exceed the Caution threshold may be classified as FLAG at Auditor judgment.
 
 ### 10.3 Testing Adequacy
 Do not run tests. Review evidence:

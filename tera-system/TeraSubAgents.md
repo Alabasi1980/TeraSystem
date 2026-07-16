@@ -85,11 +85,11 @@ Sub-agents must not create, activate, modify, or delegate to other sub-agents un
 - لا يوزع العمل على Agent آخر مباشرة.
 - إذا ظهرت حاجة إلى تخصص إضافي أو مراجعة مستقلة، يرفع ذلك إلى Tera، وTera وحده يقرر.
 
-**الاستثناءات — TCEA + ApplicationBlueprintAgent ↔ DomainResearchAgent + DomainExpertAgent:**
+**الاستثناءات — TCEA + ApplicationBlueprintAgent ↔ DomainResearchAgent + DomainExpertAgent + ProductionERPExpert:**
 
 ```text
 TCEA (مستشار) و ApplicationBlueprintAgent (مهندس) يملكان صلاحية استدعاء
-DomainResearchAgent و DomainExpertAgent مباشرة — دون المرور بـ Tera Agent —
+DomainResearchAgent و DomainExpertAgent و ProductionERPExpert مباشرة — دون المرور بـ Tera Agent —
 لاستخدام متخصص لمعلومات المجال.
 
 TCEA ← Consulting Mode (أثناء Discovery)
@@ -99,34 +99,36 @@ TCEA ← Consulting Mode (أثناء Discovery)
 **عند الاستدعاء من TCEA (مستشار):**
 
 ```text
-TCEA (مستشار) يملك صلاحية استدعاء DomainResearchAgent و DomainExpertAgent مباشرة —
+TCEA (مستشار) يملك صلاحية استدعاء DomainResearchAgent و DomainExpertAgent و ProductionERPExpert مباشرة —
 دون المرور بـ Tera Agent — للاستفادة من بحث وتحليل متخصص بمجال العميل
 أثناء Discovery أو عند اقتراح Value-Added Proposals.
 
 الشروط:
 1. DomainResearchAgent: بحث ويب موجه → ينتج Domain Research Report
 2. DomainExpertAgent: تحليل المعرفة → ينتج Domain Intelligence Report
-3. المخرجات تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed
-4. TCEA لا يدير أي من العميلين — يستدعيهما ويستلم النتيجة فقط
-5. كل استدعاء يُسجل في CLIENT_DECISION_LOG.md
-6. لا يجوز لـ TCEA استدعاء أي عميل فرعي آخر
+3. ProductionERPExpert: تحليل إنتاج/تصنيع ERP متخصص → ينتج Production ERP Analysis / Discovery Questions / Blueprint Review عند وجود Production trigger
+4. المخرجات تحمل وسم [Research Hint] أو Source Discipline labels — لا تدخل النطاق دون تأكيد Majed
+5. TCEA لا يدير أي من العملاء — يستدعيهم ويستلم النتيجة فقط
+6. كل استدعاء يُسجل في CLIENT_DECISION_LOG.md
+7. لا يجوز لـ TCEA استدعاء أي عميل فرعي آخر
 ```
 
 **عند الاستدعاء من ApplicationBlueprintAgent (مهندس):**
 
 ```text
-مهندس (ApplicationBlueprintAgent) يملك صلاحية استدعاء DomainResearchAgent و DomainExpertAgent
+مهندس (ApplicationBlueprintAgent) يملك صلاحية استدعاء DomainResearchAgent و DomainExpertAgent و ProductionERPExpert
 مباشرة — دون المرور بـ Tera Agent — لتعميق فهم المجال أثناء إنتاج APPLICATION_BLUEPRINT.md.
 
 الشروط:
 1. الوضع: Software Mode تلقائياً
 2. DomainResearchAgent: بحث ويب موجه → Domain Research Report
 3. DomainExpertAgent: تحليل وتحويل → Domain Intelligence Report (بتصنيف MVP)
-4. المخرجات تحمل وسم [Research Hint] — لا تدخل blueprint دون تأكيد Majed
-5. الكتابة في project-preparation/ فقط
-6. مهندس لا يدير أي من العميلين — يستدعيهما ويستلم النتيجة فقط
-7. كل استدعاء يُسجل في BLUEPRINT_DECISION_CANDIDATES.md أو BLUEPRINT_OPEN_QUESTIONS.md
-8. لا يجوز لمهندس استدعاء أي عميل فرعي آخر
+4. ProductionERPExpert: مراجعة وتحليل Production ERP عند وجود تصنيع/إنتاج → Manufacturing Blueprint Review / Open Questions / Risks
+5. المخرجات تحمل وسم [Research Hint] أو Source Discipline labels — لا تدخل blueprint دون تأكيد Majed
+6. الكتابة في project-preparation/ فقط
+7. مهندس لا يدير أي من العملاء — يستدعيهم ويستلم النتيجة فقط
+8. كل استدعاء يُسجل في BLUEPRINT_DECISION_CANDIDATES.md أو BLUEPRINT_OPEN_QUESTIONS.md
+9. لا يجوز لمهندس استدعاء أي عميل فرعي آخر
 ```
 
 **استثناء Auditor — Tera + Monitor:**
@@ -1283,6 +1285,70 @@ Plan Compliance Report
 | **Consulting Mode** | TCEA | Domain Intelligence Report + Knowledge Structure + Gap Analysis |
 
 > **التعريف الكامل:** `.opencode/agents/domain-expert-agent.md` — يحتوي جميع التفاصيل التشغيلية، حدود الصلاحيات، سير العمل لكل وضع، ومعايير القبول.
+
+
+---
+
+## 6.14 ProductionERPExpert — خبير إنتاج
+
+| البند | القيمة |
+|---|---|
+| اسم العميل | Production ERP Expert Agent |
+| اللقب | خبير إنتاج |
+| المعرّف | `PRODUCTION_ERP_EXPERT` |
+| الفئة | مشروط / Domain Intelligence / ERP Manufacturing |
+| ملف العميل | `.opencode/agents/production-erp-expert.md` |
+| شرط الاستدعاء | عند وجود موديول تصنيع/إنتاج داخل ERP، أو حاجة إلى تحليل BOM/Routing/MRP/WIP/Costing/Quality/Rework/Scrap/Production Testing. كما يمكن لـ Majed استدعاؤه مباشرة كمساعد شخصي في ERP Consulting. |
+
+### أوضاع الاستخدام
+
+| الوضع | المستدعي | المخرجات |
+|:------|:---------|:---------|
+| **Personal Mode** | Majed مباشرة | Manufacturing Analysis + Questions + Risks + Recommended Options |
+| **Discovery Mode** | TCEA | Production discovery questions + scope risks + required client confirmations |
+| **Blueprint Mode** | ApplicationBlueprintAgent | Manufacturing Blueprint Review + missing flows + open questions |
+| **Tera Support Mode** | TeraAgent | Domain constraints + production logic + data/workflow considerations |
+| **QA/Engineering Support** | عبر Tera-approved task scope | Test scenarios أو domain clarifications فقط |
+
+### يقرأ
+
+```text
+task description / Objective / Mode / Allowed Sources
+tera-system/knowledge-base/manufacturing/00_INDEX.md
+tera-system/knowledge-base/manufacturing/*.md فقط إذا كانت مرتبطة بالمهمة ومعلّمة READY
+project-preparation/ أو client-engagement/ الملفات التي يحددها المستدعي فقط
+مصادر رسمية خارجية عند الحاجة وبإذن البحث
+```
+
+### ينتج أو يساهم في
+
+```text
+MANUFACTURING_DISCOVERY_QUESTIONS.md
+PRODUCTION_SCOPE_ANALYSIS.md
+MANUFACTURING_PROCESS_MAP.md
+BOM_AND_ROUTING_ANALYSIS.md
+PRODUCTION_COSTING_ANALYSIS.md
+QUALITY_AND_REWORK_FLOW.md
+PRODUCTION_OPEN_QUESTIONS.md
+PRODUCTION_TEST_SCENARIOS.md
+MANUFACTURING_BLUEPRINT_REVIEW.md
+```
+
+### حدوده
+
+- لا يقود المشروع ولا يعتمد النطاق النهائي.
+- لا يقرر السعر أو السياسة المحاسبية النهائية.
+- لا يكتب كوداً ولا يصمم الحل التقني النهائي.
+- لا يحوّل توصياته إلى مهام تنفيذية.
+- لا يعامل `DRAFT_PLACEHOLDER` داخل knowledge-base كمصدر موثوق.
+- لا يقدم افتراضاً كحقيقة مؤكدة؛ يستخدم Source Discipline labels.
+
+### معايير القبول
+
+- كل توصية مهمة مصنفة: Confirmed / Research-Based / Recommendation / Assumption / Open Question / Risk / Constraint / Decision Needed.
+- يربط الإنتاج بالمخزون والتكلفة والجودة والمحاسبة عند الصلة.
+- لا يخترع متطلبات إنتاجية دون تأكيد.
+- يحدد فجوات الإنتاج الخطرة قبل blueprint أو التنفيذ.
 
 
 ### قاعدة منع الإفراط في التفويض

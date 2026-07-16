@@ -213,6 +213,7 @@
 | PlanComplianceReviewAgent | `PLAN_COMPLIANCE_REVIEW_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم التقرير فقط | يراجع توافق الخطة فقط |
 | DomainResearchAgent | `DOMAIN_RESEARCH_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم التقرير | يبحث فقط |
 | DomainExpertAgent | `DOMAIN_EXPERT_AGENT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم التحليل | يحلل فقط |
+| ProductionERPExpert | `PRODUCTION_ERP_EXPERT` | `READ_ONLY` | إلى `WRITE_DOCS` عند تسليم تحليل أو أسئلة أو مراجعة Blueprint ضمن Allowed Write Targets | مستشار Production ERP؛ لا يكتب كوداً ولا يقرر النطاق أو التكلفة النهائية |
 
 ### 3.3 عملاء التعامل مع العملاء الخارجيين
 

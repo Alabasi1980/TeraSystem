@@ -123,8 +123,23 @@ public class DashboardService
                 return result;
             }
 
-            // First cell drives KPI / Gauge cards.
-            result.KpiValue = rows[0].Values.FirstOrDefault();
+            // Use selected ValueColumn when available (KPI4-005); fallback to first cell.
+            if (!string.IsNullOrEmpty(card.ValueColumn))
+            {
+                var valueCol = card.ValueColumn.Trim('[', ']').Trim();
+                if (rows[0].TryGetValue(valueCol, out var val))
+                {
+                    result.KpiValue = val;
+                }
+                else
+                {
+                    result.KpiValue = rows[0].Values.FirstOrDefault();
+                }
+            }
+            else
+            {
+                result.KpiValue = rows[0].Values.FirstOrDefault();
+            }
 
             // Advanced KPI: Execute additional queries if needed
             if (card.ChartType.Equals("KPI", StringComparison.OrdinalIgnoreCase)

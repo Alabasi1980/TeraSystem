@@ -1076,55 +1076,65 @@
   3. إزالة `task: ask` واستثناء Auditor من `.opencode/agents/monitor.md`.
   4. حذف `tera-system/engineering-governance/QUALITY_GATE_THRESHOLDS.md`.
   5. إزالة إدخالات Auditor الجديدة من `TeraSubAgents.md`, `AGENT_ACTIVATION_MATRIX.md`, `AGENT_DEPENDENCY_MAP.md`, `TeraPreExecutionGate.md`, `TeraPolicyMap.md`, و`ENGINEERING_AGENT_RESPONSIBILITIES.md`.
-   6. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.
+  6. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.
 
 ---
 
-## SCP-2026-07-16-099 — إغلاق فجوات الموبايل (Mobile Gap Analysis — Phase 2)
+## SCP-2026-07-16-100 — إنشاء Production ERP Expert Agent وهيكل معرفة التصنيع
 
-- **تاريخ:** 2026-07-16
-- **معرف التغيير:** SCP-2026-07-16-099
-- **مصدر الطلب:** Owner Improvement Request (Majed) — بعد Domain Research على 8 اتجاهات لـ Flutter Mobile Best Practices 2025-2026
-- **نوع التغيير:** Controlled System Evolution — Policy Update (Profile + Design Standards)
-- **الملفات المعدلة:**
-  - `tera-system/profiles/flutter-mobile.md` — تحديث 7 أقسام (§5, §6, §7, §9, §14, §16, §18) — الإصدار 1.0.0 ← 1.1.0
-  - `tera-system/design-system/MOBILE_UI_UX_STANDARDS.md` — تحديث 3 أقسام (§3, §9, §12) — الإصدار 1.0.0 ← 1.1.0
-- **ملفات جديدة:**
-  - `project-control/MOBILE_GAP_ANALYSIS.md` — تقرير الفجوات الكامل (مرجع)
-- **الفجوات المغلقة (21 فجوة — 6 حرجة، 11 متوسطة، 4 بسيطة):**
-  - **C1** SSL Certificate Pinning → flutter-mobile.md §16
-  - **C2** API Key Management Strategy → flutter-mobile.md §16
-  - **C3** CI/CD Pipeline Guidance → flutter-mobile.md §18
-  - **C4** Database Recommendation (Drift Default) → flutter-mobile.md §5
-  - **C5** OWASP Mobile Top 10 Framework → flutter-mobile.md §16
-  - **C6** Impeller Rendering Engine → flutter-mobile.md §14
-  - **M1-M4** Testing Pyramid, Mocktail, Patrol, Coverage Targets → flutter-mobile.md §9
-  - **M5** Pigeon for Platform Channels → flutter-mobile.md §6
-  - **M6** iOS Photos limited state → MOBILE_UI_UX_STANDARDS.md §9
-  - **M7** Android 13+ Notification Permission → flutter-mobile.md §7
-  - **M8** Arabic Font Recommendations → MOBILE_UI_UX_STANDARDS.md §12
-  - **M9** Arabic Plural Forms (6 forms) → MOBILE_UI_UX_STANDARDS.md §12
-  - **M10** Performance Budget Numbers → flutter-mobile.md §14
-  - **M11** ShaderWarmUp → flutter-mobile.md §14
-  - **B1** cacheWidth/cacheHeight → flutter-mobile.md §14
-  - **B3** Shorebird OTA → flutter-mobile.md §18
-  - **B4** Material You / Dynamic Color → MOBILE_UI_UX_STANDARDS.md §3
-  - **B5** Slang alternative localization → flutter-mobile.md §5
-- **الملخص:**
-  - تم إجراء Domain Research على 8 اتجاهات (Architecture, UI/UX, Testing, Security, Performance, CI/CD, Permissions, Localization) لتقييم جاهزية قدرة الموبايل في Tera.
-  - تمت مقارنة نتائج البحث مع ما لدينا في flutter-mobile.md و MOBILE_UI_UX_STANDARDS.md.
-  - 15 نقطة قوة مؤكدة (لا تحتاج تغيير)، و21 فجوة تم إغلاقها بالكامل.
-  - التحديثات تشمل: SSL pinning، إدارة API keys، CI/CD pipeline،OWASP، Impeller، هرم اختبارات، mocktail، Patrol، Pigeon، خطوط عربية، صيغ جمع عربية (6)، Material You، وغيرها.
-  - **المؤثرات غير المتأثرة:** Checklists (§20)، UI_ACCEPTANCE_GATE (11 خانة)، TERA_RUNTIME_PROTOCOLS (§19) — بقيت كما هي.
-- **الموافقة:** Majed — Approved (توجيه مباشر)
-- **التحقق من الصحة:**
-  - ✅ Anti-Bloat Gate PASS — ملفان محدثان فقط، لا عملاء جدد، لا طبقات جديدة
-  - ✅ All gaps verified closed — 21/21 gaps marked as closed in gap analysis
-  - ✅ Version updates recorded — flutter-mobile.md v1.1.0, MOBILE_UI_UX_STANDARDS.md v1.1.0
-  - ✅ Evolution log entry created
-- **المخاطر:** منخفض — جميع التحديثات تستند إلى مصادر Tier 1-2 (وثائق رسمية + معايير مجتمعية 2025-2026). لا تأثير على مسار الويب الحالي.
-- **ملاحظات الاسترجاع (Rollback):**
-  1. استرجاع `flutter-mobile.md` من git (v1.0.0)
-  2. استرجاع `MOBILE_UI_UX_STANDARDS.md` من git (v1.0.0)
-  3. حذف `project-control/MOBILE_GAP_ANALYSIS.md`
-  4. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md`
+- تاريخ: 2026-07-16
+- معرف التغيير: SCP-2026-07-16-100
+- مصدر الطلب: Owner Improvement Request (Majed) — مساعد شخصي لعمل ERP Consulting في مجال Production + استخدام نظامي عند مشاريع Production ERP
+- نوع التغيير: New Agent / Domain Knowledge Structure / Governance Update
+- الملفات المنشأة:
+  - `.opencode/agents/production-erp-expert.md`
+  - `tera-system/knowledge-base/manufacturing/00_INDEX.md`
+  - `tera-system/knowledge-base/manufacturing/01_MANUFACTURING_ERP_CORE_CONCEPTS.md`
+  - `tera-system/knowledge-base/manufacturing/02_SAP_MANUFACTURING_RESEARCH.md`
+  - `tera-system/knowledge-base/manufacturing/03_DYNAMICS_365_MANUFACTURING_RESEARCH.md`
+  - `tera-system/knowledge-base/manufacturing/04_ORACLE_MANUFACTURING_RESEARCH.md`
+  - `tera-system/knowledge-base/manufacturing/05_ODOO_MANUFACTURING_RESEARCH.md`
+  - `tera-system/knowledge-base/manufacturing/06_ERPNEXT_MANUFACTURING_RESEARCH.md`
+  - `tera-system/knowledge-base/manufacturing/07_MANUFACTURING_COSTING_GUIDE.md`
+  - `tera-system/knowledge-base/manufacturing/08_PRODUCTION_DISCOVERY_QUESTIONS.md`
+  - `tera-system/knowledge-base/manufacturing/09_MANUFACTURING_BLUEPRINT_CHECKLIST.md`
+  - `tera-system/knowledge-base/manufacturing/10_PRODUCTION_TEST_SCENARIOS.md`
+  - `tera-system/knowledge-base/manufacturing/11_QUALITY_REWORK_AND_SCRAP_GUIDE.md`
+  - `tera-system/knowledge-base/manufacturing/12_MRP_AND_PLANNING_GUIDE.md`
+  - `tera-system/knowledge-base/manufacturing/13_LOCAL_AND_REGIONAL_MANUFACTURING_CONTEXT.md`
+  - `tera-system/knowledge-base/manufacturing/14_VENDOR_COMPARISON_MATRIX.md`
+- الملفات المعدلة:
+  - `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-16-100.md` — إنشاء المقترح وتحديث حالته إلى Approved
+  - `tera-system/TeraSubAgents.md` — تسجيل ProductionERPExpert وتوسيع استثناء TCEA/ApplicationBlueprint للعميل الجديد
+  - `tera-system/AGENT_ACTIVATION_MATRIX.md` — إضافة Trigger تفعيل ProductionERPExpert وصف ERP matrix
+  - `tera-system/AGENT_DEPENDENCY_MAP.md` — إضافة العلاقة وحجم الملف
+  - `tera-system/AGENT_PERMISSION_MODEL.md` — إضافة صلاحية `READ_ONLY` مع رفع محدود إلى `WRITE_DOCS`
+  - `tera-system/TeraPolicyMap.md` — إضافة مصدر حقيقة للمعرفة المتخصصة في Production ERP
+  - `tera-system/TeraArchitectureMap.md` — إضافة طبقة/دور `tera-system/knowledge-base/`
+  - `.opencode/agents/tera-client-engagement.md` — السماح باستدعاء ProductionERPExpert ضمن استثناء domain specialists
+  - `.opencode/agents/application-blueprint.md` — السماح باستخدام ProductionERPExpert في Blueprint Mode عند وجود Production ERP
+  - `project-control/SYSTEM_EVOLUTION_LOG.md` — هذا الإدخال
+- الملخص:
+  - تم إنشاء عميل `production-erp-expert` كخبير Production ERP فرعي لا يقود المشروع ولا يعتمد القرارات، بل ينتج تحليل، أسئلة، مخاطر، مراجعة Blueprint، وسيناريوهات اختبار.
+  - تم إضافة Personal Mode لاستخدام Majed المباشر كمساعد شخصي في ERP Consulting.
+  - تم إنشاء هيكل معرفة محلي بـ 14 ملفاً كما طلب Majed، وكلها مؤشرة كـ `DRAFT_PLACEHOLDER` حتى يملأها Majed ويحوّلها إلى `READY`.
+  - تم اعتماد قاعدة Local KB first مع منع اعتبار ملفات placeholder مصادر موثوقة.
+  - تم ربط العميل بـ TCEA وApplicationBlueprint وTeraAgent، مع إبقاء Engineering/QA ضمن Tera-approved task scope فقط.
+- الموافقة: Majed — Approved (`ابدأ التنفيذ`)
+- التحقق من الصحة:
+  - ✅ Anti-Bloat Gate PASS — عميل واحد متخصص، وKB مقسّم لأن العمل رسمي لـ Majed وليس مشروعاً تجريبياً فقط.
+  - ✅ Policy Map Check PASS — تم تحديث `TeraPolicyMap.md`.
+  - ✅ Architecture Map Check PASS — تم تحديث `TeraArchitectureMap.md` وإبقاء المعرفة داخل `tera-system/knowledge-base/`.
+  - ✅ No client-app contamination — لا توجد تعديلات مقصودة داخل `clients/` ضمن هذا التغيير؛ توجد تغييرات client سابقة في working tree غير مرتبطة.
+  - ✅ No unauthorized privilege expansion — العميل `READ_ONLY` افتراضياً ويرتفع إلى `WRITE_DOCS` فقط للتسليم ضمن Allowed Write Targets.
+  - ✅ No stale/broken references — grep check وجد المراجع الجديدة في ملفات الحوكمة والعملاء المرتبطين.
+  - ✅ File size gate — `production-erp-expert.md` = 506 سطر (<700)، لا حاجة للتقسيم. `tera-client-engagement.md` = 749 (🟡، دراسة لاحقة فقط)، و`TeraSubAgents.md` = 1,672 (Registry استثنائي قائم؛ لا تقسيم استباقي الآن). تم تحديث `AGENT_DEPENDENCY_MAP.md` بعد التدقيق الذاتي.
+  - ✅ Scoped `git diff --check` للملفات المعدلة في هذا التغيير PASS. ملاحظة: global `git diff --check` يفشل بسبب trailing whitespace قديم في ملف عميل غير مرتبط.
+- المخاطر:
+  - منخفض/متوسط: إضافة عميل جديد تزيد سطح الحوكمة، لكن الحاجة المهنية المباشرة والتخصص الدقيق يبررانها.
+  - منخفض: احتمال استخدام ملفات KB placeholder كمصادر؛ تم تخفيفه بقاعدة `DRAFT_PLACEHOLDER` و`READY`.
+- ملاحظات الاسترجاع (Rollback):
+  1. حذف `.opencode/agents/production-erp-expert.md`.
+  2. حذف `tera-system/knowledge-base/manufacturing/` إذا لم يكن Majed قد بدأ تعبئة الملفات.
+  3. إزالة إدخالات ProductionERPExpert من `TeraSubAgents.md`, `AGENT_ACTIVATION_MATRIX.md`, `AGENT_DEPENDENCY_MAP.md`, `AGENT_PERMISSION_MODEL.md`, `TeraPolicyMap.md`, `TeraArchitectureMap.md`, `tera-client-engagement.md`, و`application-blueprint.md`.
+  4. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.

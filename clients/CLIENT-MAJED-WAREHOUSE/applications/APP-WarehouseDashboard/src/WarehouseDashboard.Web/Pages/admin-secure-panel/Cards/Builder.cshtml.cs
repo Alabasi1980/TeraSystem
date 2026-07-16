@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WarehouseDashboard.Web.Data;
 using WarehouseDashboard.Web.Services;
 using WarehouseDashboard.Web.Models;
 
@@ -17,11 +18,13 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
     {
         private readonly CardBuilderService _cardBuilderService;
         private readonly ILogger<BuilderModel> _logger;
+        private readonly WarehouseDashboardDbContext _db;
 
-        public BuilderModel(CardBuilderService cardBuilderService, ILogger<BuilderModel> logger)
+        public BuilderModel(CardBuilderService cardBuilderService, ILogger<BuilderModel> logger, WarehouseDashboardDbContext db)
         {
             _cardBuilderService = cardBuilderService;
             _logger = logger;
+            _db = db;
         }
 
         /// <summary>
@@ -353,8 +356,37 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
 
                 if (action == "save" || action == "saveAndAddAnother")
                 {
-                    // In real implementation: call DashboardCardService.CreateAsync(card)
-                    // For now, simulate success
+                    var dto = card;
+                    var entity = new DashboardCard
+                    {
+                        Title = dto.Title?.Trim() ?? "",
+                        ChartType = dto.CardType ?? "",
+                        DataSourceType = dto.SourceType ?? "SQL Query",
+                        SqlQuery = dto.CustomSql ?? (dto.SourceId ?? ""),
+                        GridPositionX = dto.GridX ?? 0,
+                        GridPositionY = dto.GridY ?? 0,
+                        GridWidth = dto.GridWidth > 0 ? dto.GridWidth : 4,
+                        GridHeight = dto.GridHeight > 0 ? dto.GridHeight : 2,
+                        RefreshInterval = dto.RefreshIntervalSeconds,
+                        IsActive = dto.IsActive,
+                        ValueColumn = dto.ValueColumn ?? "",
+                        DateColumn = dto.DateColumn ?? "",
+                        CategoryColumn = dto.CategoryColumn ?? "",
+                        KpiMode = dto.KpiMode ?? "simple",
+                        ShowChange = dto.ShowChange,
+                        ChangeSource = dto.ChangeSource ?? "previousPeriod",
+                        ShowSparkline = dto.ShowSparkline,
+                        SparklineMonths = dto.SparklineMonths,
+                        ShowGrandTotal = dto.ShowGrandTotal,
+                        GrandTotalSource = dto.GrandTotalSource ?? "sameTable",
+                        DateFilterMode = dto.DateFilterMode ?? "dashboard",
+                        FixedStartDate = dto.FixedStartDate ?? "",
+                        FixedEndDate = dto.FixedEndDate ?? "",
+                        RelativeDays = dto.RelativeDays > 0 ? dto.RelativeDays : 30
+                    };
+                    _db.DashboardCards.Add(entity);
+                    await _db.SaveChangesAsync();
+
                     TempData["SuccessMessage"] = action == "saveAndAddAnother"
                         ? "تم حفظ البطاقة. جاري إنشاء بطاقة جديدة..."
                         : "تم حفظ البطاقة بنجاح.";

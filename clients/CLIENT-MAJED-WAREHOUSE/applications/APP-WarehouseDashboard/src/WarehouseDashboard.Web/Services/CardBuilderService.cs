@@ -146,27 +146,41 @@ public class CardBuilderService
     /// Builds a <see cref="DashboardCard"/> entity from the wizard request data.
     /// Does NOT persist — caller decides when to save.
     /// </summary>
-    public DashboardCard BuildCard(CardBuilderRequest request)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-
-        var card = new DashboardCard
+        public DashboardCard BuildCard(CardBuilderRequest request)
         {
-            Title = request.Title.Trim(),
-            ChartType = request.ChartType,
-            DataSourceType = request.DataSourceType,
-            SqlQuery = request.SqlQuery.Trim(),
-            GridPositionX = request.GridPositionX,
-            GridPositionY = request.GridPositionY,
-            GridWidth = request.GridWidth,
-            GridHeight = request.GridHeight,
-            RefreshInterval = request.RefreshInterval,
-            IsActive = request.IsActive
-            // CreatedAt / UpdatedAt are set by DB defaults (GETUTCDATE()).
-        };
+            ArgumentNullException.ThrowIfNull(request);
 
-        return card;
-    }
+            var card = new DashboardCard
+            {
+                Title = request.Title.Trim(),
+                ChartType = request.ChartType,
+                DataSourceType = request.DataSourceType,
+                SqlQuery = request.SqlQuery.Trim(),
+                GridPositionX = request.GridPositionX,
+                GridPositionY = request.GridPositionY,
+                GridWidth = request.GridWidth,
+                GridHeight = request.GridHeight,
+                RefreshInterval = request.RefreshInterval,
+                IsActive = request.IsActive,
+                // Advanced KPI
+                ValueColumn = request.ValueColumn ?? "",
+                DateColumn = request.DateColumn ?? "",
+                CategoryColumn = request.CategoryColumn ?? "",
+                KpiMode = request.KpiMode ?? "simple",
+                ShowChange = request.ShowChange,
+                ChangeSource = request.ChangeSource ?? "previousPeriod",
+                ShowSparkline = request.ShowSparkline,
+                SparklineMonths = request.SparklineMonths,
+                ShowGrandTotal = request.ShowGrandTotal,
+                GrandTotalSource = request.GrandTotalSource ?? "sameTable",
+                DateFilterMode = request.DateFilterMode ?? "dashboard",
+                FixedStartDate = request.FixedStartDate ?? "",
+                FixedEndDate = request.FixedEndDate ?? "",
+                RelativeDays = request.RelativeDays > 0 ? request.RelativeDays : 30
+            };
+
+            return card;
+        }
 
     /// <summary>
     /// Generates a live preview for the builder wizard Step 3/Preview pane.
@@ -309,20 +323,35 @@ public class CardBuilderService
             })
             .ToListAsync(ct);
 
-        return new CardBuilderRequest
-        {
-            Title = card.Title + " (نسخة)",
-            ChartType = card.ChartType,
-            DataSourceType = card.DataSourceType,
-            SqlQuery = card.SqlQuery,
-            GridPositionX = card.GridPositionX,
-            GridPositionY = card.GridPositionY,
-            GridWidth = card.GridWidth,
-            GridHeight = card.GridHeight,
-            RefreshInterval = card.RefreshInterval,
-            IsActive = card.IsActive,
-            DrillDownLevels = drillDowns
-        };
+            return new CardBuilderRequest
+            {
+                Title = card.Title + " (نسخة)",
+                ChartType = card.ChartType,
+                DataSourceType = card.DataSourceType,
+                SqlQuery = card.SqlQuery,
+                GridPositionX = card.GridPositionX,
+                GridPositionY = card.GridPositionY,
+                GridWidth = card.GridWidth,
+                GridHeight = card.GridHeight,
+                RefreshInterval = card.RefreshInterval,
+                IsActive = card.IsActive,
+                DrillDownLevels = drillDowns,
+                // Advanced KPI
+                ValueColumn = card.ValueColumn,
+                DateColumn = card.DateColumn,
+                CategoryColumn = card.CategoryColumn,
+                KpiMode = card.KpiMode,
+                ShowChange = card.ShowChange,
+                ChangeSource = card.ChangeSource,
+                ShowSparkline = card.ShowSparkline,
+                SparklineMonths = card.SparklineMonths,
+                ShowGrandTotal = card.ShowGrandTotal,
+                GrandTotalSource = card.GrandTotalSource,
+                DateFilterMode = card.DateFilterMode,
+                FixedStartDate = card.FixedStartDate,
+                FixedEndDate = card.FixedEndDate,
+                RelativeDays = card.RelativeDays
+            };
     }
 
     /// <summary>

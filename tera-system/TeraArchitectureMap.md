@@ -19,6 +19,7 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | Design governance | Controls design source decisions, design tokens, component rules, internal kits, and UI acceptance | `tera-system/design-system/`, `project-preparation/28_UI_UX_GUIDELINES.md`, `project-preparation/design-source/` |
 | Orchestration and gates | Controls delegation, task readiness, pre/post execution review, build mode, and project closure gates | `TeraPreExecutionGate.md`, `runtime/`, `project-control/` |
 | Technical specialization | Keeps stack-specific behavior outside the generic Tera system | `tera-system/profiles/` |
+| Domain knowledge specialization | Keeps reusable domain knowledge references outside generic agent prompts while allowing specialist agents to load only relevant knowledge | `tera-system/knowledge-base/` |
 | Sub-agent lifecycle | Defines, generates, narrows, activates, and reviews specialized agents | `TeraSubAgents.md`, `AGENT_GENERATION_TEMPLATE.md`, `generated-agents/`, `.opencode/agents/` |
 | Delivery, handoff, and closure | Produces final delivery readiness, release notes, client handover material, acceptance records, and closure reports | `project-control/DELIVERY_READINESS_REPORT.md`, `project-control/PROJECT_CLOSURE_REPORT.md`, `clients/.../delivery/` |
 
@@ -36,6 +37,7 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | `generated-agents/opencode/` | Draft generated agents | Active runtime without review/activation |
 | `tera-system/design-system/` | System design governance, schemas, gates, and internal kits | Project-specific design decisions or client raw assets |
 | `tera-system/profiles/` | Technology-specific execution rules | Generic project policy |
+| `tera-system/knowledge-base/` | Reusable domain knowledge references for specialist agents | Project-specific client facts, secrets, or unverified assumptions treated as confirmed sources |
 | `tera-workshop/` | System development and tooling files (templates, experiments, system-level outputs) | Core policy, project files, or runtime agents |
 
 ## 4. Core Flow

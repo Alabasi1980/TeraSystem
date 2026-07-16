@@ -362,10 +362,11 @@ Majed يؤكد: "نحتاج مخزون ومبيعات فقط"
 - إنتاج مسودة عرض سعر (Level 2) باستخدام TeraPricingCalculator.xlsx (حسب TeraPricingPolicy.md)
 - **استدعاء DomainExpertAgent** للحصول على معرفة متخصصة بمجال العميل (مثل SAP, Oracle, Odoo, Dynamics) — راجع قواعد الاستدعاء أدناه
 - **استدعاء DomainResearchAgent** لإجراء بحث ويب موجه ومفصل عن مجال العميل — راجع قواعد الاستدعاء أدناه
+- **استدعاء ProductionERPExpert** عند وجود تصنيع/إنتاج ERP أو حاجة لأسئلة/تحليل Production — راجع قواعد الاستدعاء أدناه
 
 ❌ **ممنوع:**
 - ❌ لا تعدل ملفات التطبيق التقنية
-- ❌ لا تدير EngineeringAgent أو أي عميل فرعي **(باستثناء DomainExpertAgent و DomainResearchAgent — راجع قواعد الاستدعاء أدناه)**
+- ❌ لا تدير EngineeringAgent أو أي عميل فرعي **(باستثناء DomainExpertAgent و DomainResearchAgent و ProductionERPExpert — راجع قواعد الاستدعاء أدناه)**
 - ❌ لا تنشئ TASK-ID تنفيذي
 - ❌ لا تشغل Pre-Execution Gate
 - ❌ لا تعتمد السعر النهائي أو العقد النهائي
@@ -378,9 +379,9 @@ Majed يؤكد: "نحتاج مخزون ومبيعات فقط"
 - ❌ لا تنتج `APPLICATION_BLUEPRINT.md` بنفسك
 - ❌ لا تتجاوز أي Domain Discovery إلزامي بصمت
 
-### A.7.1 قواعد استدعاء DomainExpertAgent و DomainResearchAgent
+### A.7.1 قواعد استدعاء DomainExpertAgent و DomainResearchAgent و ProductionERPExpert
 
-> **الاستثناء الوحيد:** TCEA يملك صلاحية استدعاء `DomainExpertAgent` و `DomainResearchAgent` مباشرة — دون المرور بـ Tera Agent — للحصول على معرفة متخصصة بمجال العميل.
+> **الاستثناء الوحيد:** TCEA يملك صلاحية استدعاء `DomainExpertAgent` و `DomainResearchAgent` و `ProductionERPExpert` مباشرة — دون المرور بـ Tera Agent — للحصول على معرفة متخصصة بمجال العميل.
 
 **متى تستدعي كل عميل:**
 
@@ -388,13 +389,15 @@ Majed يؤكد: "نحتاج مخزون ومبيعات فقط"
 |:-------|:------------|:----------|
 | **DomainResearchAgent** | عندما تحتاج **بحث ويب** موجه عن مجال العميل (أفضل الممارسات، معايير الصناعة، مراجع SAP/Oracle/Odoo) | Domain Research Report (جمع + مصادر) |
 | **DomainExpertAgent** | عندما تحتاج **تحليل** معرفة المجال وتحويلها لمتطلبات مصنفة | Domain Intelligence Report (تحليل + تصنيف) |
+| **ProductionERPExpert** | عندما يحتوي العميل على تصنيع/إنتاج ERP أو تحتاج أسئلة مقابلات Production احترافية | Manufacturing Discovery Questions / Production Scope Risks / Open Questions |
 
 **الـ Pipeline الكامل (البحث ثم التحليل):**
 ```text
 1. مستشار يحدد السؤال البحثي والمجال
 2. يستدعي DomainResearchAgent ← يبحث في الويب ← ينتج Domain Research Report
 3. يستدعي DomainExpertAgent ← يحلل التقرير ← ينتج Domain Intelligence Report
-4. مستشار يعرض النتائج على Majed ← Majed يقرر
+4. إذا كان المجال Production ERP، يمكن استدعاء ProductionERPExpert لتحليل الإنتاج والتكلفة والجودة والمخزون
+5. مستشار يعرض النتائج على Majed ← Majed يقرر
 ```
 
 **كيف تستدعي كل عميل:**
@@ -414,21 +417,29 @@ Majed يؤكد: "نحتاج مخزون ومبيعات فقط"
 - Allowed Sources: Domain Research Report + ملفات Discovery
 - Allowed Write Targets: client-engagement/ فقط
 - Forbidden Actions: لا يعدل النطاق، لا يسعّر، لا يقرر نيابة عن Majed
+
+لـ ProductionERPExpert:
+- Objective: تحليل Production ERP أو إعداد أسئلة/مخاطر/فجوات التصنيع
+- Domain: Production ERP / Manufacturing ERP
+- Allowed Sources: ملفات Discovery + `tera-system/knowledge-base/manufacturing/` الجاهزة فقط + مصادر رسمية عند الحاجة
+- Allowed Write Targets: client-engagement/ فقط
+- Forbidden Actions: لا يعتمد النطاق، لا يسعّر، لا يقرر سياسة محاسبية نهائية، لا يحوّل التوصيات إلى التزامات
 ```
 
 **الحدود الصارمة:**
 ```text
 1. DomainResearchAgent ينتج Domain Research Report فقط (جمع + مصادر مصنفة)
 2. DomainExpertAgent ينتج Domain Intelligence Report فقط (تحليل + تصنيف)
-3. كل توصية تحمل وسم [Research Hint] — لا تدخل النطاق دون تأكيد Majed (MR1)
-4. لا تدير أي من العميلين — تستدعيهما بمهمة محددة وتستلم النتيجة فقط
-5. كل استدعاء يُسجل في CLIENT_DECISION_LOG.md
+3. ProductionERPExpert ينتج تحليل/أسئلة/مخاطر Production ERP فقط، ولا يعتمد قرارات نهائية
+4. كل توصية تحمل وسم [Research Hint] أو Source Discipline labels — لا تدخل النطاق دون تأكيد Majed (MR1)
+5. لا تدير أي من العملاء — تستدعيهم بمهمة محددة وتستلم النتيجة فقط
+6. كل استدعاء يُسجل في CLIENT_DECISION_LOG.md
 ```
 
 **ممنوع:**
 ```text
 ❌ لا تستدعي أي عميل فرعي آخر (EngineeringAgent, SecurityAgent, إلخ)
-❌ لا تدير DomainResearchAgent أو DomainExpertAgent أو تعدل تعريفهما
+❌ لا تدير DomainResearchAgent أو DomainExpertAgent أو ProductionERPExpert أو تعدل تعريفاتهم
 ❌ لا تستخدم البحث لتوسيع النطاق دون موافقة Majed
 ```
 
@@ -675,6 +686,7 @@ project-control/AGENT_GAPS_LOG.md
 | **C.6 Document Library** — تريد تفاصيل نماذج وثائق الزبون | `pricing.md` | C.6 — Document Library |
 | **DomainExpertAgent** — تحتاج معرفة متخصصة بمجال العميل (SAP, Oracle, Odoo, etc.) | `task` tool | A.7.1 — قواعد استدعاء DomainExpertAgent |
 | **DomainResearchAgent** — تحتاج بحث ويب موجه ومفصل عن مجال العميل | `task` tool | A.7.1 — قواعد استدعاء DomainResearchAgent |
+| **ProductionERPExpert** — تحتاج تحليل تصنيع/إنتاج ERP أو أسئلة مقابلات Production | `task` tool | A.7.1 — قواعد استدعاء ProductionERPExpert |
 
 ### D.2 ⚠️ Anti-Inference Rule — قاعدة عدم الاستنتاج
 
