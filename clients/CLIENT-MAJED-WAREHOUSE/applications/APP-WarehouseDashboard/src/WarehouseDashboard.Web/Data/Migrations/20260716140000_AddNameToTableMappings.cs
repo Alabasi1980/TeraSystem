@@ -11,28 +11,16 @@ namespace WarehouseDashboard.Web.Data.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "Name",
                 table: "TableMappings",
-                type: "nvarchar(200)",
-                maxLength: 200,
+                type: "nvarchar(max)",
                 nullable: true);
 
             migrationBuilder.Sql("UPDATE TableMappings SET Name = OracleSource WHERE Name IS NULL");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "Name",
-                table: "TableMappings",
-                type: "nvarchar(200)",
-                maxLength: 200,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(200)",
-                oldMaxLength: 200,
-                oldNullable: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TableMappings_Name",
-                table: "TableMappings",
-                column: "Name",
-                unique: true);
+            // Use nvarchar(max) because OracleSource (used as Name seed data)
+            // can contain long SQL queries. A unique index on a max-length
+            // column is not supported, so the Name uniqueness constraint is
+            // enforced at the application layer (C# validation).
+            // The column stays NOT NULL as required by the model.
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

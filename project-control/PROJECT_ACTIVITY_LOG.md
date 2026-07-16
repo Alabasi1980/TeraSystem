@@ -568,3 +568,11 @@
 - Summary: 4 تقارير (موردين، قطع، إحصائيات) عبر IReportService + Backup/Restore SQLite. زر تقارير من Settings. 12 ملف، 0 Errors.
 - Decision / Result: ✅ Reports + Backup complete
 - Next Action: TASK-COD-009 — Outlook + Final Polish
+
+## [2026-07-16 16:00] - INTER-SESSION_SYNC: Tera1 → Tera2
+
+- Related Task: N/A (Cross-session coordination)
+- Actor: Tera1 (session 1) → Tera2 (session 2)
+- Summary: Tera1 confirmed the Name field feature was added successfully. Tera1 also modified `Builder.cshtml.cs` line 412 — changed `LoadOracleTablesAsync()` dropdown text from `t.OracleSource` to `t.Name` to match the new Name field. Tera2 verified the change is in place and consistent with Active.cshtml.cs and card-builder.js updates.
+- Decision / Result: ✅ Change confirmed. `Builder.cshtml.cs` uses `t.Name` in the Card Builder dropdown. No conflicts with Tera2's work.
+- Next Action: Continue with remaining tasks. If modifying `Builder.cshtml.cs`, read from disk first (Fresh File Read Rule).

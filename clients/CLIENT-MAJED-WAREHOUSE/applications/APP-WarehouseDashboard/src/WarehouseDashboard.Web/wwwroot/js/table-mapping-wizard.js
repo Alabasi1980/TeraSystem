@@ -947,11 +947,20 @@
   TableMappingWizard.prototype.open = function (editData) {
     if (editData) {
       this.bootstrapEditMode(editData);
-    } else {
-      this.goToStep(1);
     }
+    // Always call goToStep(1) so that updateStepUI() re-renders step panels
+    // right before the overlay becomes visible.  In edit mode the panels
+    // were hidden while the overlay was display:none; without this call the
+    // wdFadeUp animation on .wm-step-panel--active completes invisibly,
+    // leaving the modal body blank.
+    this.goToStep(1);
     var overlay = $('wm-overlay');
     if (overlay) {
+      // If the overlay is placed inside a transformed/container element,
+      // `position: fixed` can behave like `position: absolute`. Move the
+      // overlay to `document.body` so it positions relative to the viewport
+      // and centers correctly even when the page has transforms or animations.
+      if (overlay.parentElement !== document.body) document.body.appendChild(overlay);
       overlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
     }

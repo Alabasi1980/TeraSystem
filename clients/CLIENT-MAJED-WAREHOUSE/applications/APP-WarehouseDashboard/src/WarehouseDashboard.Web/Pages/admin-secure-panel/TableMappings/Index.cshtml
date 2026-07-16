@@ -117,15 +117,19 @@
         display: none; align-items: center; justify-content: center;
         z-index: 1000;
         backdrop-filter: blur(4px);
+    }
+    .wm-overlay.is-open {
+        display: flex;
         animation: wdFadeUp var(--dur-fast) var(--ease);
     }
-    .wm-overlay.is-open { display: flex; }
 
     .wm-modal {
         background: var(--c-surface); border: 1px solid var(--c-border);
         border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
         width: 92%; max-width: 960px; max-height: 90vh;
         display: flex; flex-direction: column;
+    }
+    .wm-overlay.is-open .wm-modal {
         animation: wdFadeUp var(--dur-norm) var(--ease);
     }
 

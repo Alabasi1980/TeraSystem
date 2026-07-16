@@ -409,7 +409,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 OracleTables = tables.Select(t => new SelectListItem
                 {
                     Value = t.SqlTargetTable,
-                    Text = $"{t.OracleSource} ({t.SqlTargetTable})"
+                    Text = $"{t.Name} ({t.SqlTargetTable})"
                 }).ToList();
             }
             catch (Exception ex)

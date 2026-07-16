@@ -14,7 +14,8 @@ public class TableMappingConfig
 
     /// <summary>Human-readable name for this mapping. Used as the primary identifier in Card Builder and UI. Must be unique.</summary>
     [Required]
-    [MaxLength(200)]
+    // No MaxLength — Name is seeded from OracleSource which can be a long query.
+    // Uniqueness is enforced at the application layer.
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
