@@ -17,7 +17,7 @@ namespace WarehouseDashboard.Web.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.28")
+                .HasAnnotation("ProductVersion", "8.0.29")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -94,6 +94,20 @@ namespace WarehouseDashboard.Web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CategoryColumn")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("ChangeSource")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("previousPeriod");
+
                     b.Property<string>("ChartType")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
@@ -108,6 +122,41 @@ namespace WarehouseDashboard.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(50)")
                         .HasDefaultValueSql("'SQL Query'");
+
+                    b.Property<string>("DateColumn")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("DateFilterMode")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("dashboard");
+
+                    b.Property<string>("FixedEndDate")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("FixedStartDate")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("GrandTotalSource")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("sameTable");
 
                     b.Property<int>("GridHeight")
                         .ValueGeneratedOnAdd()
@@ -134,10 +183,42 @@ namespace WarehouseDashboard.Web.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
+                    b.Property<string>("KpiMode")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("simple");
+
                     b.Property<int>("RefreshInterval")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
+
+                    b.Property<int>("RelativeDays")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(30);
+
+                    b.Property<bool>("ShowChange")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("ShowGrandTotal")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("ShowSparkline")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("SparklineMonths")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(6);
 
                     b.Property<string>("SqlQuery")
                         .IsRequired()
@@ -151,6 +232,13 @@ namespace WarehouseDashboard.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("ValueColumn")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasDefaultValue("");
 
                     b.HasKey("Id");
 
@@ -217,6 +305,10 @@ namespace WarehouseDashboard.Web.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<string>("IncrementalColumn")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -224,6 +316,11 @@ namespace WarehouseDashboard.Web.Migrations
 
                     b.Property<DateTime?>("LastSyncAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("OracleSource")
                         .IsRequired()
@@ -242,6 +339,13 @@ namespace WarehouseDashboard.Web.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("SyncMode")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasDefaultValue("Full");
+
                     b.Property<int>("SyncRecordCount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -256,6 +360,10 @@ namespace WarehouseDashboard.Web.Migrations
 
                     b.HasIndex("IsActive")
                         .HasDatabaseName("IX_TableMappings_IsActive");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_TableMappings_Name");
 
                     b.HasIndex("OracleSource")
                         .IsUnique()

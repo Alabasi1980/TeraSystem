@@ -26,6 +26,7 @@ builder.Services.AddSingleton<SqlServerLoadService>();
 builder.Services.AddSingleton<SyncEngineService>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<SyncEngineService>());
 builder.Services.AddSingleton<SyncRunLogStore>();
+builder.Services.AddSingleton<SyncRunProgressStore>();
 
 builder.Services.AddControllers();
 
@@ -53,6 +54,11 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Start the in-memory progress-store cleanup timer so that expired runs (older than 5 min)
+// are evicted every 60 seconds. Must happen after the service provider is built.
+var progressStore = app.Services.GetRequiredService<SyncRunProgressStore>();
+progressStore.Initialize();
 
 app.UseCors("AllowWeb");
 

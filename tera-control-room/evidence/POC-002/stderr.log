@@ -1,0 +1,2 @@
+objective must be a string >= 10 chars
+timeout_seconds must be > 0 and <= 3600

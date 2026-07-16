@@ -39,6 +39,9 @@ public class TableMappingsModel : PageModel
     public string SourceType { get; set; } = "Table";
 
     [BindProperty]
+    public string Name { get; set; } = string.Empty;
+
+    [BindProperty]
     public string SqlTargetTable { get; set; } = string.Empty;
 
     [BindProperty]
@@ -58,8 +61,31 @@ public class TableMappingsModel : PageModel
     public async Task OnGetAsync()
     {
         Mappings = await _db.TableMappings
-            .OrderBy(m => m.OracleSource)
+            .OrderBy(m => m.Name)
             .ToListAsync();
+    }
+
+    public async Task<IActionResult> OnGetMappingAsync(int id)
+    {
+        var mapping = await _db.TableMappings
+            .AsNoTracking()
+            .Where(m => m.Id == id)
+            .Select(m => new
+            {
+                editId = m.Id,
+                name = m.Name,
+                oracleSource = m.OracleSource,
+                sourceType = m.SourceType,
+                sqlTargetTable = m.SqlTargetTable
+            })
+            .FirstOrDefaultAsync();
+
+        if (mapping is null)
+        {
+            return NotFound();
+        }
+
+        return new JsonResult(mapping);
     }
 
     public async Task<IActionResult> OnPostAddAsync()
@@ -71,6 +97,14 @@ public class TableMappingsModel : PageModel
         }
 
         // Check uniqueness
+        if (await _db.TableMappings.AnyAsync(m => m.Name == Name))
+        {
+            ToastMessage = $"اسم التعيين '{Name}' مسجل مسبقاً.";
+            ToastType = "error";
+            await ReloadMappingsAsync();
+            return Page();
+        }
+
         if (await _db.TableMappings.AnyAsync(m => m.OracleSource == OracleSource))
         {
             ToastMessage = $"مصدر Oracle '{OracleSource}' مسجل مسبقاً.";
@@ -89,6 +123,7 @@ public class TableMappingsModel : PageModel
 
         var mapping = new TableMappingConfig
         {
+            Name = Name,
             OracleSource = OracleSource,
             SourceType = SourceType,
             SqlTargetTable = SqlTargetTable,
@@ -128,6 +163,14 @@ public class TableMappingsModel : PageModel
         }
 
         // Check uniqueness (excluding self)
+        if (await _db.TableMappings.AnyAsync(m => m.Id != EditId && m.Name == Name))
+        {
+            ToastMessage = $"اسم التعيين '{Name}' مسجل مسبقاً.";
+            ToastType = "error";
+            await ReloadMappingsAsync();
+            return Page();
+        }
+
         if (await _db.TableMappings.AnyAsync(m => m.Id != EditId && m.OracleSource == OracleSource))
         {
             ToastMessage = $"مصدر Oracle '{OracleSource}' مسجل مسبقاً.";
@@ -144,6 +187,7 @@ public class TableMappingsModel : PageModel
             return Page();
         }
 
+        mapping.Name = Name;
         mapping.OracleSource = OracleSource;
         mapping.SourceType = SourceType;
         mapping.SqlTargetTable = SqlTargetTable;
@@ -306,6 +350,13 @@ public class TableMappingsModel : PageModel
 
     private bool ValidateInput()
     {
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            ToastMessage = "اسم التعيين مطلوب.";
+            ToastType = "error";
+            return false;
+        }
+
         if (string.IsNullOrWhiteSpace(OracleSource))
         {
             ToastMessage = "مصدر Oracle مطلوب.";
@@ -333,7 +384,7 @@ public class TableMappingsModel : PageModel
     private async Task ReloadMappingsAsync()
     {
         Mappings = await _db.TableMappings
-            .OrderBy(m => m.OracleSource)
+            .OrderBy(m => m.Name)
             .ToListAsync();
     }
 }

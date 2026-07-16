@@ -1,0 +1,11 @@
+{
+  "name": "tera-control-room-poc",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "poc": "bun run source/tests/run-poc.ts",
+    "typecheck": "echo skip (Bun transpileOnly)"
+  },
+  "dependencies": {}
+}

@@ -51,6 +51,30 @@ public class CardEditorInput : IValidatableObject
 
     public bool IsActive { get; set; } = true;
 
+    // Advanced KPI: Column Mappings
+    public string ValueColumn { get; set; } = string.Empty;
+    public string DateColumn { get; set; } = string.Empty;
+    public string CategoryColumn { get; set; } = string.Empty;
+
+    // Advanced KPI: Mode & Change
+    public string KpiMode { get; set; } = "simple";
+    public bool ShowChange { get; set; } = false;
+    public string ChangeSource { get; set; } = "previousPeriod";
+
+    // Advanced KPI: Sparkline
+    public bool ShowSparkline { get; set; } = false;
+    public int SparklineMonths { get; set; } = 6;
+
+    // Advanced KPI: Grand Total
+    public bool ShowGrandTotal { get; set; } = false;
+    public string GrandTotalSource { get; set; } = "sameTable";
+
+    // Advanced KPI: Date Filter
+    public string DateFilterMode { get; set; } = "dashboard";
+    public string FixedStartDate { get; set; } = string.Empty;
+    public string FixedEndDate { get; set; } = string.Empty;
+    public int RelativeDays { get; set; } = 30;
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (!AllowedChartTypes.Contains(ChartType))

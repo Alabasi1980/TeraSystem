@@ -12,6 +12,11 @@ public class TableMappingConfig
 {
     public int Id { get; set; }
 
+    /// <summary>Human-readable name for this mapping. Used as the primary identifier in Card Builder and UI. Must be unique.</summary>
+    [Required]
+    [MaxLength(200)]
+    public string Name { get; set; } = string.Empty;
+
     /// <summary>
     /// Oracle source identifier: a table name, a view name, or a full SQL query.
     /// </summary>
@@ -51,4 +56,17 @@ public class TableMappingConfig
     /// <summary>Last error message from a failed sync (null if no error).</summary>
     [MaxLength(1000)]
     public string? ErrorMessage { get; set; }
+
+    /// <summary>
+    /// Sync strategy: "Full" (truncate + reload) or "Incremental" (append new rows only).
+    /// </summary>
+    [MaxLength(10)]
+    public string SyncMode { get; set; } = "Full";
+
+    /// <summary>
+    /// Oracle column name used for incremental watermarking (e.g. "LAST_UPDATE_DATE").
+    /// Only applicable when <see cref="SyncMode"/> is "Incremental".
+    /// </summary>
+    [MaxLength(128)]
+    public string? IncrementalColumn { get; set; }
 }

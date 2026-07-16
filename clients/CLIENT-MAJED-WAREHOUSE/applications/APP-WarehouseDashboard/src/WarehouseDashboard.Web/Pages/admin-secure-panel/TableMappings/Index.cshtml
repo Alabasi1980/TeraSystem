@@ -1,5 +1,6 @@
 @page
 @model WarehouseDashboard.Web.Pages.AdminSecurePanel.TableMappingsModel
+@using System.Text.Json
 @{
     ViewData["Title"] = "تعيينات الجداول";
 }
@@ -449,11 +450,29 @@
     @if (Model.Mappings.Count == 0)
     {
         <div class="wd-table-wrap">
-            <div class="wd-empty">
-                <div class="wd-empty__icon">&#128203;</div>
-                <p class="wd-empty__text">لا توجد تعيينات جداول بعد.</p>
-                <p style="font-size:13px; color:var(--c-text-muted); margin-top:8px;">اضغط "إضافة تعيين" للبدء.</p>
+        <div class="wd-empty">
+            <div class="wd-empty__icon" style="width:84px;height:84px;border-radius:var(--radius-xl);background:rgba(31,78,121,0.06);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84" fill="none">
+                    <!-- Background subtle server shape -->
+                    <rect x="14" y="24" width="56" height="36" rx="6" fill="rgba(31,78,121,0.08)" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.15"/>
+                    <rect x="22" y="38" width="40" height="3" rx="1.5" fill="currentColor" fill-opacity="0.12"/>
+                    <rect x="22" y="46" width="40" height="3" rx="1.5" fill="currentColor" fill-opacity="0.12"/>
+                    <rect x="22" y="30" width="40" height="3" rx="1.5" fill="currentColor" fill-opacity="0.12"/>
+                    <!-- Database cylinder -->
+                    <path d="M38 8 C38 8 42 5 46 8 L46 18 C46 18 42 21 38 18 Z" fill="rgba(31,78,121,0.12)" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.3"/>
+                    <ellipse cx="42" cy="13" rx="4" ry="2" fill="currentColor" fill-opacity="0.25"/>
+                    <!-- Database stack lines -->
+                    <line x1="38" y1="16" x2="38" y2="20" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.25"/>
+                    <line x1="46" y1="14" x2="46" y2="18" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.25"/>
+                    <!-- Plus sign -->
+                    <circle cx="54" cy="10" r="8" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.25"/>
+                    <line x1="54" y1="6" x2="54" y2="14" stroke="currentColor" stroke-width="1.8" stroke-opacity="0.5"/>
+                    <line x1="50" y1="10" x2="58" y2="10" stroke="currentColor" stroke-width="1.8" stroke-opacity="0.5"/>
+                </svg>
             </div>
+            <p class="wd-empty__text">لا توجد تعيينات جداول بعد.</p>
+            <p style="font-size:13px; color:var(--c-text-muted); margin-top:8px;">اضغط "إضافة تعيين" للبدء.</p>
+        </div>
         </div>
     }
     else
@@ -462,6 +481,7 @@
             <table class="wd-table">
                 <thead>
                     <tr>
+                        <th>الاسم</th>
                         <th>مصدر Oracle</th>
                         <th>النوع</th>
                         <th>جدول SQL Server</th>
@@ -476,6 +496,9 @@
                     @foreach (var m in Model.Mappings)
                     {
                         <tr>
+                            <td>
+                                <span style="font-weight:600; color:var(--c-text);">@m.Name</span>
+                            </td>
                             <td>
                                 <span class="wd-truncate" title="@m.OracleSource" style="font-family:monospace; font-size:13px;">
                                     @m.OracleSource
@@ -519,7 +542,7 @@
                                 @if (!string.IsNullOrEmpty(m.ErrorMessage))
                                 {
                                     <span class="wd-badge wd-badge--error" title="@m.ErrorMessage" style="cursor:pointer;">
-                                        &#9888; خطأ
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-inline-end:2px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> خطأ
                                     </span>
                                 }
                                 else
@@ -530,7 +553,7 @@
                             <td>
                                 <div class="wd-actions">
                                     <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm"
-                                            onclick="openWizardForEdit(@m.Id, '@m.OracleSource', '@m.SourceType', '@m.SqlTargetTable')">
+                                            onclick='openWizardForEdit(@m.Id, @JsonSerializer.Serialize(m.Name), @JsonSerializer.Serialize(m.OracleSource), @JsonSerializer.Serialize(m.SourceType), @JsonSerializer.Serialize(m.SqlTargetTable), @JsonSerializer.Serialize(m.SyncMode), @JsonSerializer.Serialize(m.IncrementalColumn ?? ""))'>
                                         تعديل
                                     </button>
                                     <form method="post" asp-page-handler="PreviewSchema" style="display:inline;">
@@ -656,6 +679,11 @@
                 <span class="wm-step-num">4</span>
                 <span>الجدول الهدف</span>
             </div>
+            <div class="wm-step-connector"></div>
+            <div class="wm-step-indicator" data-step="5">
+                <span class="wm-step-num">5</span>
+                <span>إعدادات المزامنة</span>
+            </div>
         </nav>
 
         <!-- Body -->
@@ -665,17 +693,17 @@
                 <p style="font-size:14px; color:var(--c-text-muted); margin:0 0 16px;">اختر نوع مصدر البيانات من Oracle:</p>
                 <div class="wm-type-cards">
                     <div class="wm-source-type-card" data-type="Table">
-                        <div class="wm-type-icon">&#128451;</div>
+                        <div class="wm-type-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
                         <div class="wm-type-name">جدول Oracle</div>
                         <div class="wm-type-desc">استعراض الجداول المتاحة في قاعدة بيانات Oracle</div>
                     </div>
                     <div class="wm-source-type-card" data-type="View">
-                        <div class="wm-type-icon">&#128065;</div>
+                        <div class="wm-type-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
                         <div class="wm-type-name">عرض Oracle</div>
                         <div class="wm-type-desc">استعراض العروض (Views) المتاحة في قاعدة بيانات Oracle</div>
                     </div>
                     <div class="wm-source-type-card" data-type="Query">
-                        <div class="wm-type-icon">&#128196;</div>
+                        <div class="wm-type-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
                         <div class="wm-type-name">استعلام مخصص</div>
                         <div class="wm-type-desc">كتابة استعلام SQL مخصص لجلب البيانات من Oracle</div>
                     </div>
@@ -774,12 +802,22 @@
                         </label>
                     </div>
 
+                    <div class="wm-field" style="margin-bottom:16px;">
+                        <label for="wm-mapping-name">اسم التعيين <span style="color:var(--c-error);">*</span></label>
+                        <input type="text" class="wm-input" id="wm-mapping-name" placeholder="مثال: مخزون المستودع" dir="rtl" />
+                        <span class="wm-hint">هذا الاسم سيظهر في شاشة بناء البطاقات للتعرّف على التعيين. يجب أن يكون فريداً.</span>
+                    </div>
+
                     <!-- Summary -->
                     <div class="wm-summary" id="wm-summary">
                         <div class="wm-summary__title">ملخص التعيين</div>
                         <div class="wm-summary__row">
                             <span class="wm-summary__label">نوع المصدر</span>
                             <span class="wm-summary__value" id="wm-sum-type">--</span>
+                        </div>
+                        <div class="wm-summary__row">
+                            <span class="wm-summary__label">اسم التعيين</span>
+                            <span class="wm-summary__value" id="wm-sum-name">--</span>
                         </div>
                         <div class="wm-summary__row">
                             <span class="wm-summary__label">مصدر Oracle</span>
@@ -793,6 +831,49 @@
                             <span class="wm-summary__label">عدد الأعمدة</span>
                             <span class="wm-summary__value" id="wm-sum-columns">--</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ Step 5: Sync Settings ═══ -->
+            <div class="wm-step-panel" data-step="5">
+                <p style="font-size:14px; color:var(--c-text-muted); margin:0 0 16px;">اختر طريقة المزامنة لهذا التعيين:</p>
+                <div class="wm-type-cards" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="wm-source-type-card wm-sync-mode-card" data-sync-mode="Full">
+                        <div class="wm-type-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        </div>
+                        <div class="wm-type-name">مزامنة كاملة</div>
+                        <div class="wm-type-desc">حذف كل البيانات القديمة وإعادة تحميلها من Oracle</div>
+                    </div>
+                    <div class="wm-source-type-card wm-sync-mode-card" data-sync-mode="Incremental">
+                        <div class="wm-type-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                        </div>
+                        <div class="wm-type-name">مزامنة تزايدية</div>
+                        <div class="wm-type-desc">إضافة البيانات الجديدة فقط منذ آخر مزامنة</div>
+                    </div>
+                </div>
+
+                <div id="wm-incremental-options" class="wm-hidden" style="margin-top:16px;">
+                    <div class="wm-field">
+                        <label for="wm-incremental-column">عمود التاريخ / التوقيت</label>
+                        <select class="wm-select" id="wm-incremental-column">
+                            <option value="">-- اختر عمود التاريخ --</option>
+                        </select>
+                        <span class="wm-hint">العمود المستخدم لتحديد البيانات الجديدة. يتم جلب الأعمدة المتوفرة من المصدر تلقائياً.</span>
+                    </div>
+                </div>
+
+                <div style="margin-top:20px; padding:12px; background:var(--c-surface-muted); border-radius:var(--radius-md); border:1px solid var(--c-border);">
+                    <div style="font-size:13px; font-weight:600; color:var(--c-text); margin-bottom:6px;">ملخص إعدادات المزامنة</div>
+                    <div class="wm-summary__row" style="border:none; padding:4px 0;">
+                        <span class="wm-summary__label">الوضع</span>
+                        <span class="wm-summary__value" id="wm-sum-sync-mode">مزامنة كاملة</span>
+                    </div>
+                    <div class="wm-summary__row" id="wm-sum-incr-row" style="border:none; padding:4px 0; display:none;">
+                        <span class="wm-summary__label">عمود المزامنة</span>
+                        <span class="wm-summary__value" id="wm-sum-incr-col">--</span>
                     </div>
                 </div>
             </div>
@@ -811,9 +892,12 @@
     <!-- Hidden form fields for POST -->
     <form id="wm-form" method="post" style="display:none;">
         <input type="hidden" asp-for="EditId" id="wm-h-editId" value="0" />
+        <input type="hidden" asp-for="Name" id="wm-h-name" value="" />
         <input type="hidden" asp-for="OracleSource" id="wm-h-oracleSource" value="" />
         <input type="hidden" asp-for="SourceType" id="wm-h-sourceType" value="" />
         <input type="hidden" asp-for="SqlTargetTable" id="wm-h-sqlTargetTable" value="" />
+        <input type="hidden" name="SyncMode" id="wm-h-syncMode" value="Full" />
+        <input type="hidden" name="IncrementalColumn" id="wm-h-incrementalColumn" value="" />
     </form>
 </div>
 
@@ -821,7 +905,7 @@
     @if (!string.IsNullOrEmpty(Model.ToastMessage))
     {
         <div class="wd-toast wd-toast--@Model.ToastType" role="status">
-            <span>@(Model.ToastType == "success" ? "&#10003;" : "&#9888;")</span>
+            <span>@if (Model.ToastType == "success"){<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}else{<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>}</span>
             <span>@Model.ToastMessage</span>
         </div>
     }
@@ -863,7 +947,7 @@
             var nextBtn = document.getElementById('wm-btn-next');
             var saveBtn = document.getElementById('wm-btn-save');
             if (nextBtn && saveBtn) {
-                if (n === 4) {
+                if (n === 5) {
                     nextBtn.style.display = 'none';
                     saveBtn.style.display = '';
                 } else {
@@ -875,15 +959,24 @@
             if (n === 4) {
                 updateSummary();
             }
+            // Auto-load date columns when entering step 5 in Incremental mode
+            if (n === 5) {
+                syncSyncSettingsUI();
+                if (wizard.state.syncMode === 'Incremental') {
+                    wizard.loadDateColumns();
+                }
+            }
         };
 
         function updateSummary() {
             var s = wizard.state;
             var sumType = document.getElementById('wm-sum-type');
+            var sumName = document.getElementById('wm-sum-name');
             var sumSource = document.getElementById('wm-sum-source');
             var sumTarget = document.getElementById('wm-sum-target');
             var sumCols = document.getElementById('wm-sum-columns');
             if (sumType) sumType.textContent = s.sourceType || '--';
+            if (sumName) sumName.textContent = s.name || '--';
             if (sumSource) sumSource.textContent = s.oracleSource || '--';
             if (sumTarget) {
                 var t = document.getElementById('wm-target-name');
@@ -897,9 +990,37 @@
             }
         }
 
+        function syncSyncSettingsUI() {
+            var s = wizard.state;
+            // Update radio card selection
+            var cards = document.querySelectorAll('.wm-sync-mode-card');
+            for (var i = 0; i < cards.length; i++) {
+                var mode = cards[i].getAttribute('data-sync-mode');
+                cards[i].classList.toggle('wm-card--selected', mode === s.syncMode);
+            }
+            // Show/hide incremental options
+            var incrOpts = document.getElementById('wm-incremental-options');
+            if (incrOpts) {
+                if (s.syncMode === 'Incremental') {
+                    incrOpts.classList.remove('wm-hidden');
+                } else {
+                    incrOpts.classList.add('wm-hidden');
+                }
+            }
+            // Update summary
+            var sumMode = document.getElementById('wm-sum-sync-mode');
+            var sumIncrRow = document.getElementById('wm-sum-incr-row');
+            var sumIncrCol = document.getElementById('wm-sum-incr-col');
+            if (sumMode) sumMode.textContent = s.syncMode === 'Incremental' ? 'مزامنة تزايدية' : 'مزامنة كاملة';
+            if (sumIncrRow) sumIncrRow.style.display = s.syncMode === 'Incremental' ? '' : 'none';
+            if (sumIncrCol) sumIncrCol.textContent = s.incrementalColumn || '--';
+        }
+
         // Global functions for inline onclick
         window.openWizard = function () {
             wizard.resetState();
+            var nameInput = document.getElementById('wm-mapping-name');
+            if (nameInput) nameInput.value = '';
             document.getElementById('wm-modal-title').textContent = '\u0625\u0636\u0627\u0641\u0629 \u062A\u0639\u064A\u064A\u0646 \u062C\u062F\u064A\u062F';
             document.getElementById('wm-btn-save').textContent = '\u2714 \u062D\u0641\u0638 \u0627\u0644\u062A\u0639\u064A\u064A\u0646';
             document.getElementById('wm-btn-save').style.display = 'none';
@@ -907,16 +1028,22 @@
             wizard.open();
         };
 
-        window.openWizardForEdit = function (id, oracleSource, sourceType, sqlTarget) {
+        window.openWizardForEdit = function (id, name, oracleSource, sourceType, sqlTarget, syncMode, incrementalColumn) {
+            wizard.resetState();
+            var nameInput = document.getElementById('wm-mapping-name');
+            if (nameInput) nameInput.value = name || '';
             document.getElementById('wm-modal-title').textContent = '\u0639\u062F\u0644 \u0627\u0644\u062A\u0639\u064A\u064A\u0646';
             document.getElementById('wm-btn-save').textContent = '\u2714 \u062A\u062D\u062F\u064A\u062B \u0627\u0644\u062A\u0639\u064A\u064A\u0646';
             document.getElementById('wm-btn-save').style.display = 'none';
             document.getElementById('wm-btn-next').style.display = '';
             wizard.open({
                 editId: id,
+                name: name || '',
                 oracleSource: oracleSource,
                 sourceType: sourceType,
-                sqlTargetTable: sqlTarget
+                sqlTargetTable: sqlTarget,
+                syncMode: syncMode || 'Full',
+                incrementalColumn: incrementalColumn || ''
             });
         };
 
@@ -925,6 +1052,14 @@
         if (targetInput) {
             targetInput.addEventListener('input', function () {
                 wizard.state.sqlTargetTable = this.value;
+            });
+        }
+
+        // Listen for name input changes to update wizard state
+        var mappingNameInput = document.getElementById('wm-mapping-name');
+        if (mappingNameInput) {
+            mappingNameInput.addEventListener('input', function () {
+                wizard.state.name = this.value;
             });
         }
     })();

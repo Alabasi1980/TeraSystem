@@ -2,20 +2,707 @@
 @model WarehouseDashboard.Web.Pages.AdminSecurePanel.LoginModel
 @{
     ViewData["Title"] = "تسجيل الدخول - لوحة الإدارة";
-    Layout = "_Layout";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Warehouse Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+           LOGIN PAGE — Premium Split-Screen Design
+           ============================================================
+           Design Concept: Immersive split-screen login.
+           Left panel: dark blue gradient with animated floating orbs,
+           warehouse branding, and security badge.
+           Right panel: clean white form with generous whitespace,
+           password toggle, and elegant interactions.
+           ============================================================ */
 
-<h2>@ViewData["Title"]</h2>
+        :root {
+            /* Blue Identity Palette */
+            --c-primary:        #1F4E79;
+            --c-primary-strong: #163A5A;
+            --c-primary-light:  #2563A0;
+            --c-secondary:      #2E6DA4;
+            --c-accent:         #0A2540;
+            --c-accent-soft:    #8FBCDE;
+            --c-bg:             #F3F7FB;
+            --c-surface:        #FFFFFF;
+            --c-surface-muted:  #EAF1F8;
+            --c-border:         #D4E2F0;
+            --c-text:           #102A43;
+            --c-text-muted:     #5B7A99;
+            --c-text-on-dark:   #C5D8E8;
+            --c-success:        #1E9E6A;
+            --c-warning:        #E0A106;
+            --c-error:          #D64545;
+            --c-error-bg:       #FEF2F2;
+            --c-error-border:   rgba(214, 69, 69, 0.2);
 
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div role="alert">@Model.ErrorMessage</div>
-}
+            /* Radius */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --radius-full: 999px;
 
-<form method="post">
-    <div>
-        <label asp-for="Password">كلمة المرور</label>
-        <input asp-for="Password" type="password" autocomplete="current-password" />
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(10, 37, 64, 0.06);
+            --shadow-md: 0 4px 16px rgba(10, 37, 64, 0.08);
+            --shadow-lg: 0 12px 40px rgba(10, 37, 64, 0.14);
+            --shadow-xl: 0 20px 60px rgba(10, 37, 64, 0.2);
+
+            /* Motion */
+            --dur-fast: 150ms;
+            --dur-norm: 280ms;
+            --dur-slow: 500ms;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-out: cubic-bezier(0, 0, 0.2, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+            /* Typography */
+            --font-ar: "Cairo", "Tajawal", Tahoma, sans-serif;
+        }
+
+        /* ===== Reset ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            font-family: var(--font-ar);
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--c-text);
+            background: var(--c-accent);
+            overflow-x: hidden;
+        }
+
+        /* ===== Split-Screen Shell ===== */
+        .login-shell {
+            display: flex;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+
+        /* ===== LEFT PANEL — Brand ===== */
+        .login-brand {
+            flex: 0 0 48%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 48px;
+            overflow: hidden;
+            background: linear-gradient(160deg, #0A2540 0%, #163A5A 35%, #1F4E79 65%, #2E6DA4 100%);
+            animation: brandGradientShift 12s ease-in-out infinite alternate;
+        }
+
+        @@keyframes brandGradientShift {
+            0%   { background-position: 0% 0%; }
+            50%  { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* Animated floating orbs */
+        .login-brand::before,
+        .login-brand::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .login-brand::before {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, #8FBCDE, transparent 70%);
+            top: -100px; right: -100px;
+            animation: orbFloat1 8s ease-in-out infinite;
+        }
+        .login-brand::after {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #2E6DA4, transparent 70%);
+            bottom: -80px; left: -60px;
+            animation: orbFloat2 10s ease-in-out infinite;
+        }
+
+        @@keyframes orbFloat1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-40px, 30px) scale(1.1); }
+        }
+        @@keyframes orbFloat2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -20px) scale(1.15); }
+        }
+
+        /* Extra subtle grid pattern */
+        .login-brand .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(143,188,222,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(143,188,222,0.04) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 400px;
+            animation: fadeInUp 0.8s var(--ease-out) both;
+            animation-delay: 0.2s;
+        }
+
+        /* Warehouse SVG icon */
+        .brand-icon {
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 28px;
+            border-radius: var(--radius-xl);
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        @@keyframes iconPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(143,188,222,0.2); }
+            50% { box-shadow: 0 0 0 12px rgba(143,188,222,0); }
+        }
+
+        .brand-icon svg {
+            width: 44px;
+            height: 44px;
+            color: #8FBCDE;
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .brand-subtitle {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--c-accent-soft);
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        /* Feature list */
+        .brand-features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: right;
+            direction: rtl;
+        }
+
+        .brand-feature {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: rgba(255,255,255,0.75);
+            font-size: 14px;
+            font-weight: 500;
+            animation: fadeInUp 0.6s var(--ease-out) both;
+        }
+        .brand-feature:nth-child(1) { animation-delay: 0.4s; }
+        .brand-feature:nth-child(2) { animation-delay: 0.55s; }
+        .brand-feature:nth-child(3) { animation-delay: 0.7s; }
+
+        .brand-feature-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .brand-feature-icon svg {
+            width: 18px;
+            height: 18px;
+            color: var(--c-accent-soft);
+        }
+
+        /* ===== RIGHT PANEL — Form ===== */
+        .login-form-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 48px 40px;
+            background: #FFFFFF;
+            position: relative;
+        }
+
+        .login-form-wrapper {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeInUp 0.7s var(--ease-out) both;
+            animation-delay: 0.15s;
+        }
+
+        /* Security badge */
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            background: var(--c-surface-muted);
+            border: 1px solid var(--c-border);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--c-text-muted);
+            margin-bottom: 32px;
+        }
+        .security-badge svg {
+            width: 14px;
+            height: 14px;
+            color: var(--c-primary);
+        }
+
+        .form-header {
+            margin-bottom: 36px;
+        }
+
+        .form-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--c-text);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .form-desc {
+            font-size: 15px;
+            color: var(--c-text-muted);
+            line-height: 1.6;
+        }
+
+        /* Error banner */
+        .error-banner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            background: var(--c-error-bg);
+            border: 1px solid var(--c-error-border);
+            color: var(--c-error);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            animation: shakeIn 0.4s var(--ease-spring) both;
+        }
+
+        .error-banner svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        @@keyframes shakeIn {
+            0% { opacity: 0; transform: translateX(-8px); }
+            50% { transform: translateX(4px); }
+            70% { transform: translateX(-2px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Form */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--c-text);
+        }
+
+        /* Password input group */
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            height: 52px;
+            padding: 0 52px 0 18px;
+            border: 1.5px solid var(--c-border);
+            border-radius: var(--radius-md);
+            background: var(--c-surface);
+            font-family: var(--font-ar);
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--c-text);
+            transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+            outline: none;
+        }
+
+        .input-group input::placeholder {
+            color: var(--c-text-muted);
+            font-weight: 400;
+        }
+
+        .input-group input:focus {
+            border-color: var(--c-primary);
+            box-shadow: 0 0 0 4px rgba(31, 78, 121, 0.1);
+        }
+
+        /* Password toggle button */
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            inset-inline-end: 4px;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: var(--c-text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+        }
+        .password-toggle:hover {
+            color: var(--c-primary);
+            background: var(--c-surface-muted);
+        }
+        .password-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+        .password-toggle .icon-hide { display: none; }
+        .password-toggle.active .icon-show { display: none; }
+        .password-toggle.active .icon-hide { display: block; }
+
+        /* Field error */
+        .field-error {
+            color: var(--c-error);
+            font-size: 13px;
+            font-weight: 500;
+            min-height: 0;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            position: relative;
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-strong) 100%);
+            color: #FFFFFF;
+            font-family: var(--font-ar);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+            box-shadow: 0 4px 16px rgba(31, 78, 121, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(31, 78, 121, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(31, 78, 121, 0.3);
+        }
+
+        /* Submit button shimmer on hover */
+        .submit-btn::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s var(--ease);
+        }
+        .submit-btn:hover::after {
+            left: 100%;
+        }
+
+        /* Loading state */
+        .submit-btn .btn-text { transition: opacity var(--dur-fast) var(--ease); }
+        .submit-btn .btn-spinner {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 22px; height: 22px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: #FFFFFF;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity var(--dur-fast) var(--ease);
+            animation: spin 0.7s linear infinite;
+        }
+        .submit-btn.loading .btn-text { opacity: 0; }
+        .submit-btn.loading .btn-spinner { opacity: 1; }
+
+        @@keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Footer */
+        .login-footer {
+            margin-top: 48px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--c-text-muted);
+            opacity: 0.7;
+        }
+
+        /* ===== Animations ===== */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== Responsive ===== */
+        @@media (max-width: 1024px) {
+            .login-brand {
+                flex: 0 0 42%;
+                padding: 36px;
+            }
+            .brand-title { font-size: 24px; }
+            .brand-subtitle { font-size: 14px; margin-bottom: 32px; }
+            .brand-icon { width: 72px; height: 72px; margin-bottom: 24px; }
+            .brand-icon svg { width: 36px; height: 36px; }
+            .brand-features { gap: 12px; }
+            .brand-feature { font-size: 13px; gap: 10px; }
+            .brand-feature-icon { width: 32px; height: 32px; }
+            .brand-feature-icon svg { width: 16px; height: 16px; }
+        }
+
+        @@media (max-width: 768px) {
+            .login-shell {
+                flex-direction: column;
+            }
+
+            .login-brand {
+                flex: none;
+                min-height: auto;
+                padding: 32px 24px 28px;
+            }
+
+            .brand-content {
+                animation-delay: 0.1s;
+            }
+
+            .brand-icon {
+                width: 56px;
+                height: 56px;
+                margin-bottom: 16px;
+            }
+            .brand-icon svg { width: 28px; height: 28px; }
+
+            .brand-title { font-size: 20px; margin-bottom: 4px; }
+            .brand-subtitle { font-size: 13px; margin-bottom: 0; }
+            .brand-features { display: none; }
+
+            .login-form-panel {
+                flex: 1;
+                padding: 32px 24px;
+            }
+
+            .form-title { font-size: 22px; }
+            .form-desc { font-size: 14px; }
+
+            .login-footer { margin-top: 32px; }
+        }
+
+        @@media (max-width: 375px) {
+            .login-form-panel {
+                padding: 24px 20px;
+            }
+            .form-title { font-size: 20px; }
+            .submit-btn { height: 48px; font-size: 15px; }
+            .input-group input { height: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-shell">
+        <!-- ===== LEFT PANEL: Brand & Illustration ===== -->
+        <div class="login-brand">
+            <div class="grid-overlay"></div>
+            <div class="brand-content">
+                <div class="brand-icon">
+                    <!-- Warehouse SVG -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 21V8l9-5 9 5v13" />
+                        <path d="M9 21V12h6v9" />
+                        <path d="M3 21h18" />
+                        <path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01" />
+                    </svg>
+                </div>
+                <h1 class="brand-title">Warehouse Dashboard</h1>
+                <p class="brand-subtitle">لوحة إدارة المستودعات</p>
+
+                <div class="brand-features">
+                    <div class="brand-feature">
+                        <div class="brand-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                <path d="M7 11V7a5 5 0 0110 0v4" />
+                            </svg>
+                        </div>
+                        <span>لوحة آمنة ومشفرة بالكامل</span>
+                    </div>
+                    <div class="brand-feature">
+                        <div class="brand-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20V10M18 20V4M6 20v-4" />
+                            </svg>
+                        </div>
+                        <span>تقارير وإحصائيات فورية</span>
+                    </div>
+                    <div class="brand-feature">
+                        <div class="brand-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                        </div>
+                        <span>تتبع المنتجات والمخزون لحظياً</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RIGHT PANEL: Login Form ===== -->
+        <div class="login-form-panel">
+            <div class="login-form-wrapper">
+                <div class="security-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                    بوابة محمية بأمان عالٍ
+                </div>
+
+                <div class="form-header">
+                    <h2 class="form-title">تسجيل الدخول</h2>
+                    <p class="form-desc">أدخل كلمة المرور للوصول إلى لوحة الإدارة.</p>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div role="alert" class="error-banner">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M15 9l-6 6M9 9l6 6" />
+                        </svg>
+                        @Model.ErrorMessage
+                    </div>
+                }
+
+                <form method="post" class="login-form" id="loginForm">
+                    <div class="form-field">
+                        <label for="Password" class="form-label">كلمة المرور</label>
+                        <div class="input-group">
+                            <input
+                                asp-for="Password"
+                                type="password"
+                                id="Password"
+                                autocomplete="current-password"
+                                placeholder="أدخل كلمة المرور هنا..."
+                            />
+                            <button type="button" class="password-toggle" id="togglePassword" aria-label="إظهار كلمة المرور">
+                                <svg class="icon-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+                                <svg class="icon-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" />
+                                    <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" />
+                                    <path d="M14.12 14.12a3 3 0 11-4.24-4.24" />
+                                    <line x1="1" y1="1" x2="23" y2="23" />
+                                </svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="field-error"></span>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-text">دخول</span>
+                        <span class="btn-spinner"></span>
+                    </button>
+                </form>
+
+                <p class="login-footer">
+                    © @DateTime.Now.Year Warehouse Dashboard — جميع الحقوق محفوظة
+                </p>
+            </div>
+        </div>
     </div>
-    <button type="submit">دخول</button>
-</form>
+
+    <script>
+        (function () {
+            // Password visibility toggle
+            var toggleBtn = document.getElementById('togglePassword');
+            var passwordInput = document.getElementById('Password');
+            if (toggleBtn && passwordInput) {
+                toggleBtn.addEventListener('click', function () {
+                    var isPassword = passwordInput.type === 'password';
+                    passwordInput.type = isPassword ? 'text' : 'password';
+                    toggleBtn.classList.toggle('active', isPassword);
+                    toggleBtn.setAttribute('aria-label', isPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور');
+                    passwordInput.focus();
+                });
+            }
+
+            // Submit loading state
+            var form = document.getElementById('loginForm');
+            var submitBtn = document.getElementById('submitBtn');
+            if (form && submitBtn) {
+                form.addEventListener('submit', function () {
+                    submitBtn.classList.add('loading');
+                    submitBtn.disabled = true;
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

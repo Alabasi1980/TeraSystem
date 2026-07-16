@@ -968,3 +968,53 @@
   3. `git checkout HEAD -- clients/CLIENT-OMRAN-CONTRACTING/` وإعادة تسميته يدوياً
   4. `git checkout HEAD -- clients/CLIENT-HUSAIN-ATTIYA/` وإعادة تسميته يدوياً
   5. إعادة الملفات المحدّثة من git (21 ملفاً)
+
+---
+
+## SCP-2026-07-16-096 — ضبط حجم تفويض العملاء الفرعيين
+
+- تاريخ: 2026-07-16
+- معرف التغيير: SCP-2026-07-16-096
+- مصدر الطلب: Owner Improvement Request (Majed)
+- نوع التغيير: Agent Improvement / Runtime Guardrail
+- الملفات المعدلة:
+  - `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-16-096.md` — إنشاء مقترح التغيير
+  - `.opencode/agents/tera.md` — إضافة Sub-Agent Delegation Size Rule وتحديث Last Synced
+  - `project-control/SYSTEM_EVOLUTION_LOG.md` — هذا الإدخال
+- الملخص:
+  - أُضيفت قاعدة تشغيلية تمنع TeraAgent من تفويض العملاء الفرعيين بمهام ضخمة أو متعددة المراحل دفعة واحدة.
+  - كل تفويض يجب أن يكون صغيراً أو متوسطاً، مرتبطاً بـ `TASK-ID` واضح، ومحدوداً بهدف واحد ومصادر/مسارات كتابة صريحة.
+  - إذا كان العمل كبيراً، يجب تقسيمه إلى `TASK-ID`s متتابعة أو batch صغير معتمد.
+  - يجب اتباع التسلسل: تفويض → handback → مراجعة فعلية → قبول/إصلاح/حظر/تأجيل → ثم التفويض التالي.
+- الموافقة: Majed — Approved (`موافق نفذ`)
+- التحقق من الصحة: Validation Passed (Anti-Bloat Gate PASS، Policy/Architecture Check PASS، No client-app contamination، No privilege expansion، no broken agent references، file size below mandatory split threshold، scoped git diff --check PASS للملفات المعدلة فقط. ملاحظة: global git diff --check يفشل بسبب trailing whitespace قديم في ملفات غير مرتبطة بهذا التغيير.)
+- المخاطر: منخفض — تقييد تشغيلي يزيد عدد دورات المراجعة لكنه يقلل أخطاء التفويض الكبير.
+- ملاحظات الاسترجاع (Rollback):
+  1. إزالة قسم `Sub-Agent Delegation Size Rule` من `.opencode/agents/tera.md`.
+  2. إعادة `Last Synced` إلى السطر السابق.
+  3. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.
+
+---
+
+## SCP-2026-07-16-097 — قاعدة قراءة الملف قبل تعديله للجلسات المتزامنة
+
+- تاريخ: 2026-07-16
+- معرف التغيير: SCP-2026-07-16-097
+- مصدر الطلب: Owner Improvement Request (Majed)
+- نوع التغيير: Agent Improvement / Runtime Guardrail
+- الملفات المعدلة:
+  - `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-16-097.md` — إنشاء مقترح التغيير
+  - `.opencode/agents/tera.md` — إضافة Fresh File Read Rule وتحديث Last Synced
+  - `project-control/SYSTEM_EVOLUTION_LOG.md` — هذا الإدخال
+- الملخص:
+  - أُضيفت قاعدة تشغيلية تلزم TeraAgent باعتبار ذاكرة الجلسة قديمة عند تعديل أي ملف موجود.
+  - قبل أي تعديل، يجب قراءة النسخة الحالية من القرص، وعدم الاعتماد على قراءة سابقة أو ذاكرة المحادثة.
+  - يجب تمرير نفس التعليمة للعملاء الفرعيين عند التفويض: اقرأ الملف الحالي أولاً، واحفظ التغييرات غير المرتبطة بالمهمة.
+  - إذا وُجدت تغييرات غير متوقعة أو تعارض مع عمل جلسة أخرى، لا تُحذف بصمت؛ يُوقف الجزء المتأثر ويُطلب قرار أو يسجل قرار قبل overwrite.
+- الموافقة: Majed — Approved (`موافق نفذ`)
+- التحقق من الصحة: Validation Passed (Anti-Bloat Gate PASS، Policy/Architecture Check PASS، No client-app contamination، No privilege expansion، no broken agent references، file size 833 lines = yellow range but below mandatory split threshold، scoped git diff --check PASS للملفات المعدلة فقط. ملاحظة: global git diff --check يفشل بسبب trailing whitespace قديم في ملفات غير مرتبطة بهذا التغيير.)
+- المخاطر: منخفض — يزيد قراءة الملفات قبل التعديل لكنه يمنع ضياع عمل جلسة أخرى.
+- ملاحظات الاسترجاع (Rollback):
+  1. إزالة قسم `Fresh File Read Rule` من `.opencode/agents/tera.md`.
+  2. إعادة `Last Synced` إلى السطر السابق.
+  3. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.

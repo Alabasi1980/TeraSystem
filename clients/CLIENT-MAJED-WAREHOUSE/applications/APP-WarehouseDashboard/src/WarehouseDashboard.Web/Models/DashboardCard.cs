@@ -52,6 +52,58 @@ public class DashboardCard
     /// <summary>Record last-update timestamp (DB default GETUTCDATE()).</summary>
     public DateTime UpdatedAt { get; set; }
 
+    // === Advanced KPI: Column Mappings ===
+
+    /// <summary>Numeric value column name (e.g., "Quantity", "Amount"). Used by KPI cards.</summary>
+    public string ValueColumn { get; set; } = string.Empty;
+
+    /// <summary>Date column name for time-based filtering (e.g., "ItemDate"). Used by KPI cards.</summary>
+    public string DateColumn { get; set; } = string.Empty;
+
+    /// <summary>Category column name for grouping (optional, e.g., "WarehouseId"). Used by KPI cards.</summary>
+    public string CategoryColumn { get; set; } = string.Empty;
+
+    // === Advanced KPI: Mode & Change Settings ===
+
+    /// <summary>KPI display mode: "simple" (value only), "withChange" (value + change %), "composite" (all). Default: "simple".</summary>
+    public string KpiMode { get; set; } = "simple";
+
+    /// <summary>Whether to show percentage change from previous period. Default: false.</summary>
+    public bool ShowChange { get; set; } = false;
+
+    /// <summary>Source for change comparison: "previousPeriod", "previousMonth", "previousYear", "customQuery". Default: "previousPeriod".</summary>
+    public string ChangeSource { get; set; } = "previousPeriod";
+
+    // === Advanced KPI: Sparkline Settings ===
+
+    /// <summary>Whether to show sparkline trend chart. Default: false.</summary>
+    public bool ShowSparkline { get; set; } = false;
+
+    /// <summary>Number of months for sparkline data (3, 6, or 12). Default: 6.</summary>
+    public int SparklineMonths { get; set; } = 6;
+
+    // === Advanced KPI: Grand Total Settings ===
+
+    /// <summary>Whether to show grand total value. Default: false.</summary>
+    public bool ShowGrandTotal { get; set; } = false;
+
+    /// <summary>Source for grand total: "sameTable" (no date filter), "customQuery", "savedQuery". Default: "sameTable".</summary>
+    public string GrandTotalSource { get; set; } = "sameTable";
+
+    // === Advanced KPI: Date Filter Settings ===
+
+    /// <summary>Date filter mode: "dashboard" (from dashboard filter), "fixed" (fixed date range), "relative" (last N days). Default: "dashboard".</summary>
+    public string DateFilterMode { get; set; } = "dashboard";
+
+    /// <summary>Fixed start date (ISO format) when DateFilterMode is "fixed". Default: empty.</summary>
+    public string FixedStartDate { get; set; } = string.Empty;
+
+    /// <summary>Fixed end date (ISO format) when DateFilterMode is "fixed". Default: empty.</summary>
+    public string FixedEndDate { get; set; } = string.Empty;
+
+    /// <summary>Number of days for relative date filter when DateFilterMode is "relative". Default: 30.</summary>
+    public int RelativeDays { get; set; } = 30;
+
     /// <summary>Drill-down levels belonging to this card.</summary>
     public ICollection<CardDrillDownLevel> DrillDownLevels { get; set; } = new List<CardDrillDownLevel>();
 }

@@ -24,17 +24,20 @@ public class SyncController : ControllerBase
 {
     private readonly SyncEngineService _syncEngine;
     private readonly SyncRunLogStore _logStore;
+    private readonly SyncRunProgressStore _progressStore;
     private readonly IConfiguration _configuration;
     private readonly ILogger<SyncController> _logger;
 
     public SyncController(
         SyncEngineService syncEngine,
         SyncRunLogStore logStore,
+        SyncRunProgressStore progressStore,
         IConfiguration configuration,
         ILogger<SyncController> logger)
     {
         _syncEngine = syncEngine;
         _logStore = logStore;
+        _progressStore = progressStore;
         _configuration = configuration;
         _logger = logger;
     }
@@ -86,6 +89,101 @@ public class SyncController : ControllerBase
     }
 
     /// <summary>
+    /// POST /api/sync/trigger-selected — triggers a sync cycle for the specified mapping IDs
+    /// only. Accepts a JSON body like <c>{ "mappingIds": [1, 3, 5] }</c>.
+    ///
+    /// Unlike <c>POST /api/sync/trigger</c>, this endpoint returns immediately with a
+    /// <c>runId</c> and executes the actual sync in a background task. The caller polls
+    /// <c>GET /api/sync/progress?runId=...</c> to watch live per-mapping progress.
+    ///
+    /// This endpoint does NOT acquire the engine's semaphore, so it can be called even while
+    /// the automatic background cycle is running.
+    ///
+    /// Returns <c>400 Bad Request</c> if <c>mappingIds</c> is null or empty.
+    /// </summary>
+    [HttpPost("trigger-selected")]
+    public async Task<IActionResult> TriggerSelected([FromBody] SelectedSyncRequest request, CancellationToken ct)
+    {
+        if (request?.MappingIds is null || request.MappingIds.Count == 0)
+        {
+            return BadRequest(new
+            {
+                status = "error",
+                message = "mappingIds is required and must not be empty."
+            });
+        }
+
+        var logRecord = _logStore.BeginRun("Manual (selected)");
+
+        _logger.LogInformation(
+            "Manual selected-sync triggered for {Count} mapping ID(s): [{Ids}]",
+            request.MappingIds.Count, string.Join(", ", request.MappingIds));
+
+        // Resolve mappings to populate display names in the progress run.
+        var mappings = await _syncEngine.LoadMappingsByIdsAsync(request.MappingIds, ct);
+        var run = _progressStore.CreateRun(request.MappingIds, mappings);
+
+        // Fire-and-forget: run the sync in the background. CancellationToken.None is
+        // intentional so the sync is not aborted when the HTTP request is cancelled.
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var result = await _syncEngine.RunSelectedMappingsAsync(
+                    request.MappingIds, CancellationToken.None, run);
+
+                _progressStore.CompleteRun(
+                    run.RunId,
+                    result.Status == "success" || result.Status == "partial"
+                        ? result.Status
+                        : "failed");
+
+                // Collect error messages from failed mappings so the log record is useful.
+                var failedErrors = result.Mappings
+                    .Where(m => m.Status == "failed" && !string.IsNullOrEmpty(m.Error))
+                    .Select(m => $"{m.TargetTable}: {m.Error}");
+                var combinedError = failedErrors.Any() ? string.Join("; ", failedErrors) : null;
+
+                _logStore.CompleteRun(logRecord, result.Status == "success" ? "Success" : result.Status == "partial" ? "Partial" : "Failed", result.TotalRows, combinedError);
+            }
+            catch (Exception ex)
+            {
+                _progressStore.CompleteRun(run.RunId, "failed");
+                _logStore.CompleteRun(logRecord, "Failed", 0, ex.Message);
+                _logger.LogError(ex, "Background sync run {RunId} failed.", run.RunId);
+            }
+        }, CancellationToken.None);
+
+        return Ok(new { runId = run.RunId, status = "started" });
+    }
+
+    /// <summary>
+    /// GET /api/sync/progress?runId={guid} — returns the current live progress of a background
+    /// sync run started by <c>POST /api/sync/trigger-selected</c>.
+    ///
+    /// Returns <c>404 Not Found</c> if the runId does not exist or has been cleaned up
+    /// (runs older than 5 minutes are evicted).
+    /// </summary>
+    [HttpGet("progress")]
+    public IActionResult Progress([FromQuery] Guid runId)
+    {
+        var run = _progressStore.GetRun(runId);
+        if (run is null)
+        {
+            return NotFound(new
+            {
+                status = "error",
+                message = "Run not found or expired."
+            });
+        }
+
+        // Update elapsed time on each poll so the caller always gets a fresh value.
+        run.ElapsedSeconds = Math.Round((DateTime.UtcNow - run.StartedAt).TotalSeconds, 1);
+
+        return Ok(run);
+    }
+
+    /// <summary>
     /// GET /api/sync/status — current runtime status of the sync engine.
     /// </summary>
     [HttpGet("status")]
@@ -121,6 +219,25 @@ public class SyncController : ControllerBase
         });
 
         return Ok(records);
+    }
+
+    /// <summary>
+    /// GET /api/sync/mappings — returns all active table mappings from the database.
+    /// Used by the Sync Dashboard to display the mappings table with checkboxes.
+    /// </summary>
+    [HttpGet("mappings")]
+    public async Task<IActionResult> Mappings(CancellationToken ct)
+    {
+        var mappings = await _syncEngine.LoadMappingsFromDbAsync(ct);
+        return Ok(mappings.Select(m => new
+        {
+            m.Id,
+            name = m.Name,
+            m.OracleSource,
+            m.SourceType,
+            m.SqlTargetTable,
+            isActive = true
+        }));
     }
 
     /// <summary>

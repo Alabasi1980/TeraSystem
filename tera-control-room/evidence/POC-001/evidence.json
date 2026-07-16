@@ -1,0 +1,77 @@
+{
+  "task_contract": {
+    "schema_version": "1.0",
+    "task_id": "POC-001",
+    "agent_id": "build",
+    "objective": "Create the file `tests/adapter-proof.txt` containing exactly the line: `Tera Control Room PoC works`.",
+    "working_directory": "(set by runner)",
+    "allowed_read_paths": [
+      "tests/**",
+      "README.md"
+    ],
+    "allowed_write_paths": [
+      "tests/**"
+    ],
+    "allowed_commands": [
+      "git status",
+      "git diff"
+    ],
+    "timeout_seconds": 180,
+    "expected_handback_schema": "handback-v1"
+  },
+  "started_at": "2026-07-15T18:42:19.419Z",
+  "finished_at": "2026-07-15T18:42:50.301Z",
+  "duration_ms": 30882,
+  "base_commit": "201f6d1cd2d456d8852fdfd7f6f125bb129085a5",
+  "head_commit": "201f6d1cd2d456d8852fdfd7f6f125bb129085a5",
+  "worktree_path": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\tera-control-room\\test-workspace\\wt-poc-POC-001-7a34a5",
+  "agent_profile": "build",
+  "adapter_command": "opencode run --agent build --dir \"<worktree>\" --format json --auto \"<prompt>\"",
+  "process_exit_code": 0,
+  "stdout_log": "[see sibling file: stdout.log — content redacted and truncated in JSON]",
+  "stderr_log": "[see sibling file: stderr.log — content redacted and truncated in JSON]",
+  "files_changed": [
+    "tests/adapter-proof.txt"
+  ],
+  "git_diff_path": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\tera-control-room\\evidence\\POC-001\\git.diff",
+  "handback": {
+    "schema_version": "1.0",
+    "task_id": "POC-001",
+    "agent_id": "build",
+    "status": "COMPLETED",
+    "summary": "Created tests/adapter-proof.txt containing the exact required line.",
+    "files_changed": [
+      "tests/adapter-proof.txt"
+    ],
+    "commands_executed": [
+      {
+        "command": "git status",
+        "exit_code": 0
+      },
+      {
+        "command": "git diff",
+        "exit_code": 0
+      },
+      {
+        "command": "git status",
+        "exit_code": 0
+      }
+    ],
+    "known_issues": [],
+    "recommended_next_action": "REVIEW"
+  },
+  "handback_validation": {
+    "valid": true,
+    "errors": []
+  },
+  "security_result": {
+    "classification": "ISOLATION_NOT_AVAILABLE",
+    "forbiddenFileCreated": false,
+    "dockerUsed": false,
+    "networkDisabled": false,
+    "notes": [
+      "docker daemon not reachable. Falling back to direct process spawn."
+    ]
+  },
+  "final_status": "COMPLETED"
+}

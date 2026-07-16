@@ -213,6 +213,22 @@ When the client's answer to this question is unclear, uncertain, or the client d
 - Q4.15: Does the application need webhooks or event-driven architecture?
 - Q4.16: Is there a dev/test/prod environment requirement?
 
+### Mobile-specific (when application type = Mobile)
+- Q4.17: Is the target platform Android, iOS, or both?
+- Q4.18: 🔍 Does the application need offline mode? What data should be available offline?
+- Q4.19: 🔍 Does the application need push notifications? (FCM, local, both)
+- Q4.20: Does the application need device hardware? (camera, GPS, fingerprint, NFC, Bluetooth, barcode scanner)
+- Q4.21: What is the minimum supported Android/iOS version?
+- Q4.22: Are there specific device classes to support? (phones only, tablets, foldables)
+- Q4.23: Will the app be published on Google Play, Apple App Store, or both?
+- Q4.24: Does the client have an Apple Developer account ($99/year)?
+- Q4.25: 🔍 Does the application need background execution? (location tracking, sync, music playback)
+- Q4.26: 🔍 Are there specific accessibility requirements? (screen readers, large fonts, high contrast)
+- Q4.27: 🔍 Does the application need cross-platform framework? (Flutter vs React Native vs native)
+- Q4.28: Does the client have existing APIs or will new APIs be built?
+- Q4.29: 🔍 Does the application need deep linking or universal links?
+- Q4.30: Is there a requirement for app widgets or home screen widgets?
+
 ---
 
 ## Domain 5: Design and UX

@@ -37,4 +37,24 @@ public class CardDataResult
 
     /// <summary>First cell of the first row — used by KPI / Gauge cards.</summary>
     public object? KpiValue { get; set; }
+
+    // === Advanced KPI Properties ===
+
+    /// <summary>Main KPI numeric value (extracted from ValueColumn).</summary>
+    public object? KpiMainValue { get; set; }
+
+    /// <summary>Change percentage from previous period (e.g., 12.5 for +12.5%).</summary>
+    public decimal? KpiChangePercent { get; set; }
+
+    /// <summary>Change direction: "up", "down", or "flat".</summary>
+    public string KpiChangeDirection { get; set; } = "flat";
+
+    /// <summary>Sparkline data points (monthly values for trend chart).</summary>
+    public List<Dictionary<string, object?>>? KpiSparklineData { get; set; }
+
+    /// <summary>Grand total value (all-time, no date filter).</summary>
+    public object? KpiGrandTotal { get; set; }
+
+    /// <summary>KPI display mode from card config: "simple", "withChange", "composite".</summary>
+    public string KpiMode { get; set; } = "simple";
 }

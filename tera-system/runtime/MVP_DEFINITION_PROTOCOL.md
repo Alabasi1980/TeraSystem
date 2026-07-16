@@ -120,7 +120,8 @@ This example shows how the protocol applies to the Material Request Management S
 | Approval routing by request value | **Phase 3** | Advanced workflow rule; additional configuration |
 | Advanced analytics dashboard | **Phase 3** | Depends on accumulated data from Core MVP |
 | Audit log (detailed) | **Phase 3** | Phase 2 simple logging is sufficient |
-| Native mobile app | **Later** | Expensive; PWA covers mobile needs initially |
+| Native mobile app | **Later** | Expensive; PWA covers mobile needs initially (web app example) |
+| Native mobile app (mobile-first product) | **Depending on product** | If the product IS mobile-first (delivery app, social app, field-service app), mobile is Core MVP, not Later. Do NOT auto-defer mobile when the product's primary value requires native capabilities (camera, GPS background, offline-first, push notifications, hardware access). |
 | ERP integration | **Later** | Enterprise-only; not in current scope |
 | Enforced budget limits per department | **Later** | Enterprise/complex; reporting-only is sufficient initially |
 | External procurement/purchase orders | **Out of Scope** | Not part of this system's vision |
@@ -137,6 +138,33 @@ This example shows how the protocol applies to the Material Request Management S
 
 ---
 
+## 8.1 Mobile Classification Rule
+
+When the application type is **Mobile** (Flutter / native):
+
+- Mobile-first products **must not** be auto-deferred to `Later` simply because they are mobile.
+- Apply the same classification criteria (necessity, dependency, risk, cost, size) without platform bias.
+- If the product's core value depends on mobile-native capabilities (camera, GPS, offline-first, push notifications, hardware sensors), those capabilities are Core MVP candidates, not automatically Phase 2+.
+- If the product can be delivered as PWA/Responsive Web with the same value, mobile-native can be deferred.
+
+### Classification examples for mobile products
+
+| Feature | Classification | Rationale |
+|---|---|---|
+| Camera capture (field-service app) | **Core MVP** | Primary workflow requires photo evidence |
+| GPS tracking (delivery app) | **Core MVP** | Core feature — cannot be replaced by PWA |
+| Push notifications (social app) | **Core MVP** | Primary engagement mechanism |
+| Offline support (field app) | **Core MVP** | Required where network coverage is unreliable |
+| Fingerprint/Face login | **Extended MVP** | Nice-to-have; email+password works initially |
+| Dark mode | **Extended MVP** | Usability improvement, not blocking |
+| Wear OS / watch app | **Phase 2** | Expands beyond phone; not MVP |
+| Tablet-adaptive layout | **Phase 2** | Phone layout works initially; tablet optimization is Phase 2 |
+| AR/VR features | **Phase 3 / Later** | Advanced capability, high complexity |
+
+For mobile product classification, also load `tera-system/profiles/flutter-mobile.md` and `tera-system/design-system/MOBILE_UI_UX_STANDARDS.md` during Discovery.
+
+---
+
 ## 9. References
 
 - `.opencode/agents/tera.md` — Section 13: Application Discovery & Intake Dialogue
@@ -144,3 +172,5 @@ This example shows how the protocol applies to the Material Request Management S
 - `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` — Section 6: Application Discovery Protocol
 - `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` — Section: MVP Definition Classification Checklist
 - `tera-system/runtime/TERA_RUNTIME_TEMPLATES.md` — Template: Application Understanding Summary, Phased Application Roadmap
+- `tera-system/profiles/flutter-mobile.md` — Flutter mobile technology profile
+- `tera-system/design-system/MOBILE_UI_UX_STANDARDS.md` — Mobile design standards

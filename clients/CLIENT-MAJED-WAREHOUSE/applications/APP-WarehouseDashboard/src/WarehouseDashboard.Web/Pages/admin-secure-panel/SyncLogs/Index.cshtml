@@ -76,7 +76,7 @@
             var refreshTimer = null;
             var REFRESH_INTERVAL = 30000; // 30 seconds
 
-            var apiBase = 'https://localhost:5001';
+            var apiBase = 'http://localhost:5001';
             try {
                 var metaTag = document.querySelector('meta[name="sync-api-base"]');
                 if (metaTag) { apiBase = metaTag.getAttribute('content'); }

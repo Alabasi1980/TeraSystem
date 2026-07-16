@@ -1,0 +1,6 @@
+{
+  "valid": false,
+  "errors": [
+    "agent_id identity mismatch: expected \"build\", got \"WRONG\""
+  ]
+}

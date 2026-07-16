@@ -49,7 +49,8 @@ public class TableMappingController : ControllerBase
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = """
                 SELECT Id, OracleSource, SourceType, SqlTargetTable, IsActive,
-                       CreatedAt, UpdatedAt, LastSyncAt, SyncRecordCount, ErrorMessage
+                       CreatedAt, UpdatedAt, LastSyncAt, SyncRecordCount, ErrorMessage,
+                       SyncMode, IncrementalColumn
                 FROM TableMappings
                 ORDER BY OracleSource
                 """;
@@ -73,7 +74,11 @@ public class TableMappingController : ControllerBase
                     syncRecordCount = reader.GetInt32(reader.GetOrdinal("SyncRecordCount")),
                     errorMessage = reader.IsDBNull(reader.GetOrdinal("ErrorMessage"))
                         ? null
-                        : reader.GetString(reader.GetOrdinal("ErrorMessage"))
+                        : reader.GetString(reader.GetOrdinal("ErrorMessage")),
+                    syncMode = reader.GetString(reader.GetOrdinal("SyncMode")),
+                    incrementalColumn = reader.IsDBNull(reader.GetOrdinal("IncrementalColumn"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("IncrementalColumn"))
                 });
             }
 
@@ -106,7 +111,7 @@ public class TableMappingController : ControllerBase
 
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = """
-                SELECT OracleSource, SourceType, SqlTargetTable
+                SELECT OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn
                 FROM TableMappings
                 WHERE IsActive = 1
                 ORDER BY OracleSource
@@ -120,7 +125,11 @@ public class TableMappingController : ControllerBase
                 {
                     OracleSource = reader.GetString(reader.GetOrdinal("OracleSource")),
                     SourceType = reader.GetString(reader.GetOrdinal("SourceType")),
-                    SqlTargetTable = reader.GetString(reader.GetOrdinal("SqlTargetTable"))
+                    SqlTargetTable = reader.GetString(reader.GetOrdinal("SqlTargetTable")),
+                    SyncMode = reader.GetString(reader.GetOrdinal("SyncMode")),
+                    IncrementalColumn = reader.IsDBNull(reader.GetOrdinal("IncrementalColumn"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("IncrementalColumn"))
                 });
             }
 
@@ -178,19 +187,21 @@ public class TableMappingController : ControllerBase
 
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = """
-                INSERT INTO TableMappings (OracleSource, SourceType, SqlTargetTable, IsActive, CreatedAt, UpdatedAt)
+                INSERT INTO TableMappings (OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, IsActive, CreatedAt, UpdatedAt)
                 OUTPUT INSERTED.Id
-                VALUES (@OracleSource, @SourceType, @SqlTargetTable, 1, GETUTCDATE(), GETUTCDATE())
+                VALUES (@OracleSource, @SourceType, @SqlTargetTable, @SyncMode, @IncrementalColumn, 1, GETUTCDATE(), GETUTCDATE())
                 """;
             cmd.Parameters.AddWithValue("@OracleSource", request.OracleSource);
             cmd.Parameters.AddWithValue("@SourceType", sourceType);
             cmd.Parameters.AddWithValue("@SqlTargetTable", request.SqlTargetTable);
+            cmd.Parameters.AddWithValue("@SyncMode", string.IsNullOrWhiteSpace(request.SyncMode) ? "Full" : request.SyncMode);
+            cmd.Parameters.AddWithValue("@IncrementalColumn", (object?)request.IncrementalColumn ?? DBNull.Value);
 
             var newId = await cmd.ExecuteScalarAsync(ct);
 
             _logger.LogInformation(
-                "Table mapping created: Id={Id}, '{Source}' -> '{Target}'.",
-                newId, request.OracleSource, request.SqlTargetTable);
+                "Table mapping created: Id={Id}, '{Source}' -> '{Target}' (mode={Mode}).",
+                newId, request.OracleSource, request.SqlTargetTable, request.SyncMode ?? "Full");
 
             return CreatedAtAction(nameof(GetAll), new { }, new
             {
@@ -198,6 +209,8 @@ public class TableMappingController : ControllerBase
                 oracleSource = request.OracleSource,
                 sourceType = sourceType,
                 sqlTargetTable = request.SqlTargetTable,
+                syncMode = request.SyncMode ?? "Full",
+                incrementalColumn = request.IncrementalColumn,
                 isActive = true
             });
         }
@@ -239,6 +252,8 @@ public class TableMappingController : ControllerBase
                 SET OracleSource = @OracleSource,
                     SourceType = @SourceType,
                     SqlTargetTable = @SqlTargetTable,
+                    SyncMode = @SyncMode,
+                    IncrementalColumn = @IncrementalColumn,
                     UpdatedAt = GETUTCDATE()
                 WHERE Id = @Id
                 """;
@@ -246,6 +261,8 @@ public class TableMappingController : ControllerBase
             cmd.Parameters.AddWithValue("@OracleSource", request.OracleSource);
             cmd.Parameters.AddWithValue("@SourceType", sourceType);
             cmd.Parameters.AddWithValue("@SqlTargetTable", request.SqlTargetTable);
+            cmd.Parameters.AddWithValue("@SyncMode", string.IsNullOrWhiteSpace(request.SyncMode) ? "Full" : request.SyncMode);
+            cmd.Parameters.AddWithValue("@IncrementalColumn", (object?)request.IncrementalColumn ?? DBNull.Value);
 
             var affected = await cmd.ExecuteNonQueryAsync(ct);
             if (affected == 0)
@@ -253,8 +270,16 @@ public class TableMappingController : ControllerBase
                 return NotFound(new { error = $"Mapping with Id={id} not found." });
             }
 
-            _logger.LogInformation("Table mapping {Id} updated.", id);
-            return Ok(new { id, oracleSource = request.OracleSource, sourceType, sqlTargetTable = request.SqlTargetTable });
+            _logger.LogInformation("Table mapping {Id} updated (mode={Mode}).", id, request.SyncMode ?? "Full");
+            return Ok(new
+            {
+                id,
+                oracleSource = request.OracleSource,
+                sourceType,
+                sqlTargetTable = request.SqlTargetTable,
+                syncMode = request.SyncMode ?? "Full",
+                incrementalColumn = request.IncrementalColumn
+            });
         }
         catch (Exception ex)
         {
@@ -366,4 +391,6 @@ public class CreateMappingRequest
     public string OracleSource { get; set; } = string.Empty;
     public string SourceType { get; set; } = "Table";
     public string SqlTargetTable { get; set; } = string.Empty;
+    public string SyncMode { get; set; } = "Full";
+    public string? IncrementalColumn { get; set; }
 }

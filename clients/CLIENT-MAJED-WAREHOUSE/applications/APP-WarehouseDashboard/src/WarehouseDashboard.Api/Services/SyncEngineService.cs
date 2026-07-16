@@ -33,6 +33,7 @@ public class SyncEngineService : BackgroundService
 {
     private readonly OracleExtractionService _oracle;
     private readonly SqlServerLoadService _load;
+    private readonly SyncRunProgressStore _progressStore;
     private readonly IConfiguration _configuration;
     private readonly ILogger<SyncEngineService> _logger;
     private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -83,11 +84,13 @@ public class SyncEngineService : BackgroundService
     public SyncEngineService(
         OracleExtractionService oracle,
         SqlServerLoadService load,
+        SyncRunProgressStore progressStore,
         IConfiguration configuration,
         ILogger<SyncEngineService> logger)
     {
         _oracle = oracle;
         _load = load;
+        _progressStore = progressStore;
         _configuration = configuration;
         _logger = logger;
 
@@ -134,10 +137,10 @@ public class SyncEngineService : BackgroundService
                 {
                     try
                     {
-                        var oracleSql = BuildOracleQuery(mapping);
+                        var oracleSql = BuildOracleQuery(mapping, mapping.LastSyncAt);
                         _logger.LogInformation(
-                            "Sync [{Target}] attempt {Attempt}/{Max}: extracting '{Source}'.",
-                            target, attempt, MaxRetries, mapping.OracleSource);
+                            "Sync [{Target}] attempt {Attempt}/{Max}: extracting '{Source}' (mode={Mode}).",
+                            target, attempt, MaxRetries, mapping.OracleSource, mapping.SyncMode);
 
                         var data = await _oracle.ExtractAsync(oracleSql, ct);
                         await _load.LoadTableAsync(target, data, ct);
@@ -146,6 +149,10 @@ public class SyncEngineService : BackgroundService
                             "Sync [{Target}] succeeded: {RowCount} row(s) loaded.", target, data.Rows.Count);
                         totalRows += data.Rows.Count;
                         succeeded = true;
+
+                        // Update watermark for incremental syncs.
+                        await UpdateLastSyncAtAsync(mapping.Id, data.Rows.Count, ct);
+
                         break;
                     }
                     catch (OperationCanceledException) when (ct.IsCancellationRequested)
@@ -223,6 +230,194 @@ public class SyncEngineService : BackgroundService
         {
             _semaphore.Release();
         }
+    }
+
+    /// <summary>
+    /// Runs a sync cycle for only the specified table mappings (by primary key). Unlike
+    /// <see cref="RunSyncOnceAsync"/> this method does NOT acquire the semaphore, so it can
+    /// be invoked manually (e.g. from the API) even while the automatic background cycle is
+    /// running. Returns detailed per-mapping results in a <see cref="SelectedSyncResult"/>.
+    /// </summary>
+    public async Task<SelectedSyncResult> RunSelectedMappingsAsync(
+        List<int> mappingIds,
+        CancellationToken ct,
+        SyncRunProgress? progress = null)
+    {
+        // Mark running and reset the per-run counters.
+        SetStatus(running: true, status: "Running (selected)", lastSyncTime: null, recordCount: 0);
+
+        _logger.LogInformation(
+            "Selected sync started for {Count} mapping(s).", mappingIds?.Count ?? 0);
+
+        var mappings = await LoadMappingsByIdsAsync(mappingIds ?? new List<int>(), ct);
+
+        if (mappings.Count == 0)
+        {
+            _logger.LogWarning(
+                "Selected sync: no active mappings found for the requested IDs. No work performed.");
+
+            SetStatus(running: false, status: "Success (none matched)", lastSyncTime: DateTime.UtcNow, recordCount: 0);
+
+            return new SelectedSyncResult
+            {
+                Status = "success",
+                TotalRows = 0,
+                Mappings = (mappingIds ?? new List<int>()).Select(id => new MappingSyncResult
+                {
+                    Id = id,
+                    TargetTable = "(not found)",
+                    Status = "skipped",
+                    Rows = 0,
+                    Error = "No active mapping matches this ID."
+                }).ToList()
+            };
+        }
+
+        var totalRows = 0;
+        var result = new SelectedSyncResult();
+        var runId = progress?.RunId ?? Guid.Empty;
+
+        foreach (var mapping in mappings)
+        {
+            if (mapping is null)
+                continue;
+
+            var target = mapping.SqlTargetTable;
+            var mappingResult = new MappingSyncResult
+            {
+                Id = mapping.Id,
+                TargetTable = target,
+                Status = "failed",
+                Rows = 0
+            };
+
+            // Signal progress: this mapping is now running.
+            _progressStore.UpdateMapping(runId, mapping.Id, "running", 0);
+
+            var succeeded = false;
+
+            for (var attempt = 1; attempt <= MaxRetries; attempt++)
+            {
+                try
+                {
+                    var oracleSql = BuildOracleQuery(mapping, mapping.LastSyncAt);
+                    _logger.LogInformation(
+                        "Selected sync [{Target}] (Id={Id}) attempt {Attempt}/{Max}: extracting '{Source}' (mode={Mode}).",
+                        target, mapping.Id, attempt, MaxRetries, mapping.OracleSource, mapping.SyncMode);
+
+                    var data = await _oracle.ExtractAsync(oracleSql, ct);
+
+                    // Signal progress: rows extracted, about to load.
+                    _progressStore.UpdateMapping(runId, mapping.Id, "running", data.Rows.Count);
+
+                    await _load.LoadTableAsync(target, data, ct);
+
+                    _logger.LogInformation(
+                        "Selected sync [{Target}] (Id={Id}) succeeded: {RowCount} row(s) loaded.",
+                        target, mapping.Id, data.Rows.Count);
+
+                    totalRows += data.Rows.Count;
+                    mappingResult.Rows = data.Rows.Count;
+                    mappingResult.Status = "success";
+                    succeeded = true;
+
+                    // Signal progress: mapping completed successfully.
+                    _progressStore.UpdateMapping(runId, mapping.Id, "completed", data.Rows.Count);
+
+                    // Update watermark for incremental syncs.
+                    await UpdateLastSyncAtAsync(mapping.Id, data.Rows.Count, ct);
+
+                    break;
+                }
+                catch (OperationCanceledException) when (ct.IsCancellationRequested)
+                {
+                    // Shutdown requested — abort the whole selected sync.
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex,
+                        "Selected sync [{Target}] (Id={Id}) attempt {Attempt}/{Max} failed: {Message}",
+                        target, mapping.Id, attempt, MaxRetries, ex.Message);
+
+                    if (attempt < MaxRetries)
+                    {
+                        try
+                        {
+                            await Task.Delay(RetryDelay, ct);
+                        }
+                        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+
+            if (!succeeded)
+            {
+                mappingResult.Status = "failed";
+                mappingResult.Rows = 0;
+                mappingResult.Error = $"Exhausted {MaxRetries} attempt(s). See logs for details.";
+                _logger.LogError(
+                    "Selected sync [{Target}] (Id={Id}) exhausted {Max} attempts and was skipped.",
+                    target, mapping.Id, MaxRetries);
+
+                // Signal progress: mapping failed after all retries.
+                _progressStore.UpdateMapping(runId, mapping.Id, "failed", 0, mappingResult.Error);
+            }
+
+            result.Mappings.Add(mappingResult);
+        }
+
+        // Determine overall status.
+        var successCount = result.Mappings.Count(m => m.Status == "success");
+        var failCount = result.Mappings.Count(m => m.Status == "failed");
+
+        if (failCount == 0)
+        {
+            result.Status = "success";
+        }
+        else if (successCount > 0)
+        {
+            result.Status = "partial";
+        }
+        else
+        {
+            result.Status = "failed";
+        }
+
+        result.TotalRows = totalRows;
+
+        _logger.LogInformation(
+            "Selected sync finished. Status={Status}, {TotalRows} row(s) loaded across {SuccessCount}/{TotalCount} mapping(s).",
+            result.Status, totalRows, successCount, result.Mappings.Count);
+
+        SetStatus(
+            running: false,
+            status: result.Status == "failed" ? "Failed" : "Success",
+            lastSyncTime: DateTime.UtcNow,
+            recordCount: totalRows);
+
+        // Persist the sync timestamp so the dashboard "last sync" indicator is current.
+        try
+        {
+            var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+            if (!string.IsNullOrWhiteSpace(connectionString))
+            {
+                await using var conn = new SqlConnection(connectionString);
+                await conn.OpenAsync(ct);
+                await using var cmd = conn.CreateCommand();
+                cmd.CommandText = "UPDATE SyncSettings SET LastSyncTimestamp = GETUTCDATE() WHERE Id = 1";
+                await cmd.ExecuteNonQueryAsync(ct);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Selected sync completed but failed to update LastSyncTimestamp in SyncSettings.");
+        }
+
+        return result;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -393,7 +588,7 @@ public class SyncEngineService : BackgroundService
     /// via the Admin Panel) are picked up without restarting the service.
     /// Returns an empty list if the DB is unreachable or the table doesn't exist yet.
     /// </summary>
-    private async Task<List<TableMapping>> LoadMappingsFromDbAsync(CancellationToken ct)
+    public async Task<List<TableMapping>> LoadMappingsFromDbAsync(CancellationToken ct)
     {
         var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
         if (string.IsNullOrWhiteSpace(connectionString))
@@ -409,7 +604,7 @@ public class SyncEngineService : BackgroundService
 
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = """
-                SELECT OracleSource, SourceType, SqlTargetTable
+                SELECT Id, OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, LastSyncAt
                 FROM TableMappings
                 WHERE IsActive = 1
                 ORDER BY OracleSource
@@ -421,9 +616,17 @@ public class SyncEngineService : BackgroundService
             {
                 mappings.Add(new TableMapping
                 {
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
                     OracleSource = reader.GetString(reader.GetOrdinal("OracleSource")),
                     SourceType = reader.GetString(reader.GetOrdinal("SourceType")),
-                    SqlTargetTable = reader.GetString(reader.GetOrdinal("SqlTargetTable"))
+                    SqlTargetTable = reader.GetString(reader.GetOrdinal("SqlTargetTable")),
+                    SyncMode = reader.GetString(reader.GetOrdinal("SyncMode")),
+                    IncrementalColumn = reader.IsDBNull(reader.GetOrdinal("IncrementalColumn"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("IncrementalColumn")),
+                    LastSyncAt = reader.IsDBNull(reader.GetOrdinal("LastSyncAt"))
+                        ? (DateTime?)null
+                        : reader.GetDateTime(reader.GetOrdinal("LastSyncAt"))
                 });
             }
 
@@ -437,7 +640,122 @@ public class SyncEngineService : BackgroundService
         }
     }
 
+    /// <summary>
+    /// Loads only the table mappings whose primary keys are in <paramref name="mappingIds"/>
+    /// and whose <c>IsActive</c> flag is <c>1</c>. Uses a parameterized IN clause to prevent
+    /// SQL injection. Returns an empty list if none of the requested IDs match active mappings.
+    /// </summary>
+    public async Task<List<TableMapping>> LoadMappingsByIdsAsync(List<int> mappingIds, CancellationToken ct)
+    {
+        if (mappingIds is null || mappingIds.Count == 0)
+        {
+            _logger.LogDebug("LoadMappingsByIdsAsync called with empty list. Returning no mappings.");
+            return new List<TableMapping>();
+        }
+
+        var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            _logger.LogDebug("SQL Server connection string is empty. No mappings loaded.");
+            return new List<TableMapping>();
+        }
+
+        try
+        {
+            await using var conn = new SqlConnection(connectionString);
+            await conn.OpenAsync(ct);
+
+            // Build a parameterized IN clause: WHERE Id IN (@p0, @p1, @p2, ...)
+            var paramNames = new List<string>();
+            var parameters = new List<SqlParameter>();
+            for (var i = 0; i < mappingIds.Count; i++)
+            {
+                var paramName = $"@p{i}";
+                paramNames.Add(paramName);
+                parameters.Add(new SqlParameter(paramName, System.Data.SqlDbType.Int) { Value = mappingIds[i] });
+            }
+
+            var inClause = string.Join(", ", paramNames);
+
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = $"""
+                SELECT Id, OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, LastSyncAt
+                FROM TableMappings
+                WHERE IsActive = 1
+                  AND Id IN ({inClause})
+                ORDER BY OracleSource
+                """;
+
+            cmd.Parameters.AddRange(parameters.ToArray());
+
+            var mappings = new List<TableMapping>();
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            while (await reader.ReadAsync(ct))
+            {
+                mappings.Add(new TableMapping
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    OracleSource = reader.GetString(reader.GetOrdinal("OracleSource")),
+                    SourceType = reader.GetString(reader.GetOrdinal("SourceType")),
+                    SqlTargetTable = reader.GetString(reader.GetOrdinal("SqlTargetTable")),
+                    SyncMode = reader.GetString(reader.GetOrdinal("SyncMode")),
+                    IncrementalColumn = reader.IsDBNull(reader.GetOrdinal("IncrementalColumn"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("IncrementalColumn")),
+                    LastSyncAt = reader.IsDBNull(reader.GetOrdinal("LastSyncAt"))
+                        ? (DateTime?)null
+                        : reader.GetDateTime(reader.GetOrdinal("LastSyncAt"))
+                });
+            }
+
+            _logger.LogInformation(
+                "Loaded {Count} mapping(s) from DB for requested IDs ({Requested} requested).",
+                mappings.Count, mappingIds.Count);
+
+            return mappings;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to load mappings by IDs from DB. Returning empty list.");
+            return new List<TableMapping>();
+        }
+    }
+
     // ---- Status helpers (all mutations go through _statusLock for visibility) ----------
+
+    /// <summary>
+    /// Updates the <c>LastSyncAt</c> watermark and <c>SyncRecordCount</c> for a successfully
+    /// synced mapping. Called after each successful extraction+load so that subsequent incremental
+    /// syncs use the correct boundary. Failures here are logged but never propagate — a failed
+    /// watermark update must not invalidate a successful data load.
+    /// </summary>
+    private async Task UpdateLastSyncAtAsync(int mappingId, int recordCount, CancellationToken ct)
+    {
+        try
+        {
+            var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+            if (string.IsNullOrWhiteSpace(connectionString)) return;
+
+            await using var conn = new SqlConnection(connectionString);
+            await conn.OpenAsync(ct);
+
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                UPDATE TableMappings
+                SET LastSyncAt = GETUTCDATE(),
+                    SyncRecordCount = @RecordCount,
+                    UpdatedAt = GETUTCDATE()
+                WHERE Id = @Id
+                """;
+            cmd.Parameters.AddWithValue("@Id", mappingId);
+            cmd.Parameters.AddWithValue("@RecordCount", recordCount);
+            await cmd.ExecuteNonQueryAsync(ct);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to update LastSyncAt for mapping {Id}. Incremental watermark may be stale.", mappingId);
+        }
+    }
 
     private void SetRunning(bool running)
     {
@@ -472,11 +790,18 @@ public class SyncEngineService : BackgroundService
     /// For a "Query" source the text is used verbatim (the extraction service still enforces
     /// read-only). For "Table"/"View" sources it is wrapped as SELECT * FROM &lt;source&gt;,
     /// with the source validated as a safe identifier to avoid injection.
+    ///
+    /// When <paramref name="mapping"/> uses <c>SyncMode = "Incremental"</c> with a valid
+    /// <c>IncrementalColumn</c> and a non-null <paramref name="lastSyncAt"/>, a
+    /// <c>WHERE</c> clause is appended to fetch only rows newer than the watermark.
     /// </summary>
-    private static string BuildOracleQuery(TableMapping mapping)
+    private static string BuildOracleQuery(TableMapping mapping, DateTime? lastSyncAt)
     {
         if (mapping.SourceType.Equals("Query", StringComparison.OrdinalIgnoreCase))
+        {
+            // For Query sources, incremental WHERE is not appended (user controls the query).
             return mapping.OracleSource;
+        }
 
         if (!IsSafeOracleIdentifier(mapping.OracleSource))
         {
@@ -485,7 +810,19 @@ public class SyncEngineService : BackgroundService
                 "(allowed: letters, digits, underscore, dot).");
         }
 
-        return $"SELECT * FROM {mapping.OracleSource}";
+        var query = $"SELECT * FROM {mapping.OracleSource}";
+
+        // Incremental WHERE clause: only for Table/View sources with a valid column and watermark.
+        if (mapping.SyncMode.Equals("Incremental", StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(mapping.IncrementalColumn) &&
+            lastSyncAt.HasValue &&
+            IsSafeOracleIdentifier(mapping.IncrementalColumn))
+        {
+            var ts = lastSyncAt.Value.ToString("yyyy-MM-dd HH:mm:ss");
+            query += $" WHERE {mapping.IncrementalColumn} > TIMESTAMP '{ts}'";
+        }
+
+        return query;
     }
 
     private static bool IsSafeOracleIdentifier(string identifier)

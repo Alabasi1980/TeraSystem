@@ -5,14 +5,15 @@
  *
  *  opts = {
  *    listObjectsApiUrl, previewApiUrl, validateQueryApiUrl,
- *    editMode, initialData: { editId, oracleSource, sourceType, sqlTargetTable }
+ *    editMode, initialData: { editId, oracleSource, sourceType, sqlTargetTable, syncMode, incrementalColumn }
  *  }
  *
- *  4-step wizard:
+ *  5-step wizard:
  *   Step 1 — Source Type (Table / View / Query)
  *   Step 2 — Oracle Source (searchable list or query editor)
  *   Step 3 — Preview & Validate (data grid, column metadata, schema diff)
- *   Step 4 — SQL Target (auto-suggested name, schema selection, save)
+ *   Step 4 — SQL Target (auto-suggested name, schema selection)
+ *   Step 5 — Sync Settings (Full / Incremental mode, date column selection)
  *
  *  Submits to existing form handlers: ?handler=Add | ?handler=Edit
  * ==========================================================================
@@ -49,6 +50,7 @@
     this.state = {
       step: 1,
       sourceType: '',        // 'Table' | 'View' | 'Query'
+      name: '',              // friendly mapping name
       oracleSource: '',      // e.g. 'NATEJSOFT.WAREHOUSE_STOCK'
       sqlTargetTable: '',    // target SQL Server table name
       editId: 0,
@@ -70,6 +72,10 @@
       autoCreateTable: false,
       applySchemaAfterSave: false,
       schema: 'dbo',
+
+      // Step 5 options
+      syncMode: 'Full',           // 'Full' | 'Incremental'
+      incrementalColumn: '',      // Oracle column name for incremental watermark
 
       // UI state
       objectsLoading: false,
@@ -94,6 +100,7 @@
     this.wireQueryEditor();
     this.wireStep3Tabs();
     this.wireTargetName();
+    this.wireSyncModeCards();
     this.wireNavButtons();
     this.wireKeyboard();
 
@@ -107,12 +114,18 @@
   TableMappingWizard.prototype.bootstrapEditMode = function (data) {
     this.state.editId = data.editId || 0;
     this.state.isEditing = data.editId > 0;
-    this.state.sourceType = data.sourceType || '';
+
+    // Step 1: highlight the correct card FIRST (selectSourceType resets
+    // oracleSource, queryText, previewResult, etc., so we apply edit
+    // data AFTER the reset).
+    this.selectSourceType(data.sourceType || '', false);
+
+    // Now apply the persisted edit data (after selectSourceType clears defaults)
+    this.state.name = data.name || '';
     this.state.oracleSource = data.oracleSource || '';
     this.state.sqlTargetTable = data.sqlTargetTable || '';
-
-    // Step 1: highlight the correct card
-    this.selectSourceType(this.state.sourceType, false);
+    this.state.syncMode = data.syncMode || 'Full';
+    this.state.incrementalColumn = data.incrementalColumn || '';
 
     // Step 2: prefill source
     if (this.state.sourceType === 'Query') {
@@ -141,7 +154,7 @@
 
   /* ─────────────────── STEP NAVIGATION ─────────────────── */
   TableMappingWizard.prototype.goToStep = function (n) {
-    if (n < 1 || n > 4) return;
+    if (n < 1 || n > 5) return;
     this.state.step = n;
     this.state.wizardInProgress = true;
     this.updateStepUI();
@@ -157,10 +170,13 @@
       this.suggestTargetName();
       this.loadSchemaDiff();
     }
+    if (n === 5 && this.state.syncMode === 'Incremental') {
+      this.loadDateColumns();
+    }
   };
 
   TableMappingWizard.prototype.nextStep = function () {
-    if (this.state.step >= 4) return;
+    if (this.state.step >= 5) return;
     if (!this.validateCurrentStep()) return;
     this.goToStep(this.state.step + 1);
   };
@@ -200,8 +216,8 @@
     var nextBtn = $('wm-btn-next');
     if (prevBtn) prevBtn.disabled = (step === 1);
     if (nextBtn) {
-      nextBtn.disabled = (step === 4);
-      nextBtn.style.display = (step === 4) ? 'none' : '';
+      nextBtn.disabled = (step === 5);
+      nextBtn.style.display = (step === 5) ? 'none' : '';
     }
   };
 
@@ -727,6 +743,150 @@
     this.state.sqlTargetTable = suggestion;
   };
 
+  /* ─────────────────── STEP 5: SYNC MODE ─────────────────── */
+  TableMappingWizard.prototype.wireSyncModeCards = function () {
+    var self = this;
+    var cards = document.querySelectorAll('.wm-sync-mode-card');
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].addEventListener('click', function () {
+        var mode = this.getAttribute('data-sync-mode');
+        self.setSyncMode(mode);
+      });
+    }
+
+    // Wire incremental column dropdown
+    var colSelect = $('wm-incremental-column');
+    if (colSelect) {
+      colSelect.addEventListener('change', function () {
+        self.state.incrementalColumn = colSelect.value;
+      });
+    }
+  };
+
+  TableMappingWizard.prototype.setSyncMode = function (mode) {
+    this.state.syncMode = mode || 'Full';
+    if (mode !== 'Incremental') {
+      this.state.incrementalColumn = '';
+    }
+
+    // Update card visuals
+    var cards = document.querySelectorAll('.wm-sync-mode-card');
+    for (var i = 0; i < cards.length; i++) {
+      var m = cards[i].getAttribute('data-sync-mode');
+      cards[i].classList.toggle('wm-card--selected', m === mode);
+    }
+
+    // Show/hide incremental options
+    var incrOpts = $('wm-incremental-options');
+    if (incrOpts) {
+      if (mode === 'Incremental') {
+        show(incrOpts);
+        this.loadDateColumns();
+      } else {
+        hide(incrOpts);
+      }
+    }
+
+    // Update summary
+    var sumMode = $('wm-sum-sync-mode');
+    var sumIncrRow = $('wm-sum-incr-row');
+    var sumIncrCol = $('wm-sum-incr-col');
+    if (sumMode) sumMode.textContent = mode === 'Incremental' ? 'مزامنة تزايدية' : 'مزامنة كاملة';
+    if (sumIncrRow) sumIncrRow.style.display = mode === 'Incremental' ? '' : 'none';
+    if (sumIncrCol) sumIncrCol.textContent = this.state.incrementalColumn || '--';
+  };
+
+  TableMappingWizard.prototype.loadDateColumns = function () {
+    var self = this;
+    var select = $('wm-incremental-column');
+    if (!select) return;
+    if (!this.state.oracleSource) return;
+
+    // Clear existing options except the placeholder
+    while (select.options.length > 1) {
+      select.remove(1);
+    }
+
+    // Add loading option
+    var loadingOpt = document.createElement('option');
+    loadingOpt.value = '';
+    loadingOpt.textContent = 'جاري تحميل الأعمدة...';
+    loadingOpt.disabled = true;
+    select.appendChild(loadingOpt);
+
+    // Use preview API to get column metadata
+    fetch(this.opts.previewApiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      body: JSON.stringify({ source: this.state.oracleSource, sourceType: this.state.sourceType, limit: 1 })
+    })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (result) {
+        // Remove loading option
+        if (select.options.length > 1) select.remove(1);
+
+        if (result.errorMessage || !result.columns) {
+          var errOpt = document.createElement('option');
+          errOpt.value = '';
+          errOpt.textContent = 'تعذر تحميل الأعمدة';
+          errOpt.disabled = true;
+          select.appendChild(errOpt);
+          return;
+        }
+
+        // Filter date/time columns
+        var dateTypes = ['DateTime', 'DateTime2', 'Date', 'Timestamp'];
+        var dateColumns = [];
+        for (var i = 0; i < result.columns.length; i++) {
+          var colType = (result.columnTypes[i] || '').toLowerCase();
+          var isDate = dateTypes.some(function (dt) {
+            return colType.indexOf(dt.toLowerCase()) >= 0;
+          });
+          if (isDate) {
+            dateColumns.push(result.columns[i]);
+          }
+        }
+
+        if (dateColumns.length === 0) {
+          var noOpt = document.createElement('option');
+          noOpt.value = '';
+          noOpt.textContent = 'لا توجد أعمدة تاريخ في المصدر';
+          noOpt.disabled = true;
+          select.appendChild(noOpt);
+          return;
+        }
+
+        for (var j = 0; j < dateColumns.length; j++) {
+          var opt = document.createElement('option');
+          opt.value = dateColumns[j];
+          opt.textContent = dateColumns[j];
+          select.appendChild(opt);
+        }
+
+        // Restore previous selection if valid
+        if (self.state.incrementalColumn) {
+          select.value = self.state.incrementalColumn;
+          if (select.value !== self.state.incrementalColumn) {
+            // Previous selection not found; reset
+            self.state.incrementalColumn = '';
+            select.value = '';
+          }
+        }
+      })
+      .catch(function () {
+        // Remove loading option
+        if (select.options.length > 1) select.remove(1);
+        var errOpt = document.createElement('option');
+        errOpt.value = '';
+        errOpt.textContent = 'تعذر تحميل الأعمدة';
+        errOpt.disabled = true;
+        select.appendChild(errOpt);
+      });
+  };
+
   /* ─────────────────── NAV BUTTONS ─────────────────── */
   TableMappingWizard.prototype.wireNavButtons = function () {
     var self = this;
@@ -760,15 +920,21 @@
     if (!this.validateCurrentStep()) return;
 
     // Sync hidden form fields
+    var nameInput = $('wm-h-name');
     var oracleInput = $('wm-h-oracleSource');
     var typeInput = $('wm-h-sourceType');
     var targetInput = $('wm-h-sqlTargetTable');
     var editIdInput = $('wm-h-editId');
+    var syncModeInput = $('wm-h-syncMode');
+    var incrColInput = $('wm-h-incrementalColumn');
 
+    if (nameInput) nameInput.value = this.state.name;
     if (oracleInput) oracleInput.value = this.state.oracleSource;
     if (typeInput) typeInput.value = this.state.sourceType;
     if (targetInput) targetInput.value = this.state.sqlTargetTable;
     if (editIdInput) editIdInput.value = this.state.editId || 0;
+    if (syncModeInput) syncModeInput.value = this.state.syncMode || 'Full';
+    if (incrColInput) incrColInput.value = this.state.incrementalColumn || '';
 
     // Set form action
     if (this.form) {
@@ -781,6 +947,8 @@
   TableMappingWizard.prototype.open = function (editData) {
     if (editData) {
       this.bootstrapEditMode(editData);
+    } else {
+      this.goToStep(1);
     }
     var overlay = $('wm-overlay');
     if (overlay) {
@@ -805,6 +973,7 @@
   TableMappingWizard.prototype.resetState = function () {
     this.state.step = 1;
     this.state.sourceType = '';
+    this.state.name = '';
     this.state.oracleSource = '';
     this.state.sqlTargetTable = '';
     this.state.selectedObject = null;
@@ -816,6 +985,8 @@
     this.state.searchQuery = '';
     this.state.wizardInProgress = false;
     this.state.activeTab = 'preview';
+    this.state.syncMode = 'Full';
+    this.state.incrementalColumn = '';
 
     // Reset UI
     var cards = document.querySelectorAll('.wm-source-type-card');
@@ -828,6 +999,20 @@
     if (searchInput) searchInput.value = '';
     var targetName = $('wm-target-name');
     if (targetName) targetName.value = '';
+
+    // Reset sync mode cards
+    var syncCards = document.querySelectorAll('.wm-sync-mode-card');
+    for (var k = 0; k < syncCards.length; k++) {
+      syncCards[k].classList.remove('wm-card--selected');
+    }
+    var incrOpts = $('wm-incremental-options');
+    if (incrOpts) hide(incrOpts);
+    var incrCol = $('wm-incremental-column');
+    if (incrCol) incrCol.value = '';
+    var sumMode = $('wm-sum-sync-mode');
+    if (sumMode) sumMode.textContent = 'مزامنة كاملة';
+    var sumIncrRow = $('wm-sum-incr-row');
+    if (sumIncrRow) sumIncrRow.style.display = 'none';
 
     this.updateStepUI();
     this.updateQueryStatus('neutral', '');

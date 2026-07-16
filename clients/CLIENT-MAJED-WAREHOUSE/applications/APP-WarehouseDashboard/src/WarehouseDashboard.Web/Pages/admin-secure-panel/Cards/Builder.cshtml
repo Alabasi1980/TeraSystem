@@ -28,8 +28,13 @@
                 <span class="wb-step__label">الحقول</span>
                 <span class="wb-step__bar" aria-hidden="true"></span>
             </li>
-            <li class="wb-step" data-step="4">
+            <li class="wb-step wb-step--kpi wd-hidden" data-step="4">
                 <span class="wb-step__number" aria-hidden="true">4</span>
+                <span class="wb-step__label">إعدادات KPI</span>
+                <span class="wb-step__bar" aria-hidden="true"></span>
+            </li>
+            <li class="wb-step" data-step="5">
+                <span class="wb-step__number" aria-hidden="true">5</span>
                 <span class="wb-step__label">الشكل</span>
             </li>
         </ol>
@@ -103,7 +108,7 @@
                         <select id="wb-source-type" class="wd-select wb-source-type-select" name="sourceType" aria-describedby="wb-source-type-hint">
                             <option value="Template">قالب جاهز (Template)</option>
                             <option value="SavedQuery">استعلام محفوظ</option>
-                            <option value="OracleTable">جدول/عرض Oracle</option>
+                            <option value="SqlTable">جدول SQL Server (المزامن)</option>
                             <option value="CustomSQL">استعلام SQL مخصص (متقدم)</option>
                         </select>
                         <span id="wb-source-type-hint" class="wd-field__hint">القوالب تملأ الحقول تلقائياً</span>
@@ -131,14 +136,14 @@
                         </div>
                     </div>
 
-                    <!-- Oracle Tables -->
-                    <div class="wb-source-panel wd-hidden" data-source="OracleTable" id="wb-panel-oracletable">
+                    <!-- SQL Server Tables (Synced) -->
+                    <div class="wb-source-panel wd-hidden" data-source="SqlTable" id="wb-panel-sqltable">
                         <div class="wb-field">
-                            <label class="wd-field__label" for="wb-oracle-table">جدول أو عرض Oracle</label>
-                            <select id="wb-oracle-table" class="wd-select wb-searchable-select" name="sourceId" aria-describedby="wb-oracle-table-hint">
+                            <label class="wd-field__label" for="wb-sql-table">جدول SQL Server</label>
+                            <select id="wb-sql-table" class="wd-select wb-searchable-select" name="sourceId" aria-describedby="wb-sql-table-hint">
                                 <option value="">ابحث أو اختر جدولاً...</option>
                             </select>
-                            <span id="wb-oracle-table-hint" class="wd-field__hint">جاري تحميل الجداول النشطة...</span>
+                            <span id="wb-sql-table-hint" class="wd-field__hint">اختر جدولاً مزامناً من SQL Server</span>
                         </div>
                         <div class="wb-field">
                             <label class="wd-field__label" for="wb-measurement-field">الحقل/القياس</label>
@@ -205,9 +210,140 @@
                     <div class="wb-step-panel__error wd-hidden" id="wb-step3-error" role="alert" aria-live="polite"></div>
                 </fieldset>
 
-                <!-- Step 4: Visual Settings -->
-                <fieldset class="wb-step-panel wd-hidden" data-step="4" aria-labelledby="wb-step4-title" role="group">
-                    <legend id="wb-step4-title" class="wb-step-panel__title">
+                <!-- Step 4: KPI Settings (only shown when chartType == 'KPI') -->
+                <fieldset class="wb-step-panel wd-hidden" data-step="4" aria-labelledby="wb-step4-kpi-title" role="group" id="wb-step-kpi">
+                    <legend id="wb-step4-kpi-title" class="wb-step-panel__title">
+                        <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-kpi"></use></svg>
+                        إعدادات المؤشر KPI
+                    </legend>
+                    <p class="wb-step-panel__hint">تكوين طريقة عرض المؤشر والبيانات المتعددة.</p>
+
+                    <!-- KPI Mode -->
+                    <div class="wb-visual-section">
+                        <h4 class="wb-visual-section__title">نوع المؤشر</h4>
+                        <div class="wb-kpi-mode-picker" id="wb-kpi-mode-picker" role="radiogroup" aria-label="نوع المؤشر">
+                            <label class="wb-kpi-mode-card" data-mode="simple" role="radio" aria-checked="true" tabindex="0">
+                                <span class="wb-kpi-mode-card__icon">📊</span>
+                                <span class="wb-kpi-mode-card__name">بسيط</span>
+                                <span class="wb-kpi-mode-card__desc">قيمة واحدة فقط</span>
+                            </label>
+                            <label class="wb-kpi-mode-card" data-mode="withChange" role="radio" aria-checked="false" tabindex="-1">
+                                <span class="wb-kpi-mode-card__icon">📈</span>
+                                <span class="wb-kpi-mode-card__name">مع تغير</span>
+                                <span class="wb-kpi-mode-card__desc">قيمة + نسبة التغير</span>
+                            </label>
+                            <label class="wb-kpi-mode-card" data-mode="composite" role="radio" aria-checked="false" tabindex="-1">
+                                <span class="wb-kpi-mode-card__icon">🎯</span>
+                                <span class="wb-kpi-mode-card__name">متقدم</span>
+                                <span class="wb-kpi-mode-card__desc">قيمة + تغير + Sparkline + إجمالي</span>
+                            </label>
+                        </div>
+                        <input type="hidden" name="kpiMode" id="wb-h-kpiMode" value="simple">
+                    </div>
+
+                    <!-- Column Mappings -->
+                    <div class="wb-visual-section">
+                        <h4 class="wb-visual-section__title">تعيينات الأعمدة</h4>
+                        <div class="wd-form__grid">
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-kpi-value-column">عمود القيمة <span class="wb-required" aria-hidden="true">*</span></label>
+                                <select id="wb-kpi-value-column" class="wd-select" name="valueColumn">
+                                    <option value="">اختر عموداً...</option>
+                                </select>
+                                <span class="wd-field__hint">العمود الرقمي للقيمة الرئيسية</span>
+                            </div>
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-kpi-date-column">عمود التاريخ <span class="wb-required" aria-hidden="true">*</span></label>
+                                <select id="wb-kpi-date-column" class="wd-select" name="dateColumn">
+                                    <option value="">اختر عموداً...</option>
+                                </select>
+                                <span class="wd-field__hint">عمود التاريخ للفلترة الزمنية</span>
+                            </div>
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-kpi-category-column">عمود التصنيف (اختياري)</label>
+                                <select id="wb-kpi-category-column" class="wd-select" name="categoryColumn">
+                                    <option value="">بدون تصنيف</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Change Settings (shown only for withChange and composite) -->
+                    <div class="wb-visual-section wb-kpi-section wb-kpi-change-section" id="wb-kpi-change-section" style="display:none;">
+                        <h4 class="wb-visual-section__title">إعدادات نسبة التغير</h4>
+                        <div class="wd-form__grid">
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-kpi-change-source">مقارنة بـ</label>
+                                <select id="wb-kpi-change-source" class="wd-select" name="changeSource">
+                                    <option value="previousPeriod">الفترة السابقة (30 يوم)</option>
+                                    <option value="previousMonth">الشهر السابق</option>
+                                    <option value="previousYear">السنة السابقة</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sparkline Settings (shown only for composite) -->
+                    <div class="wb-visual-section wb-kpi-section wb-kpi-sparkline-section" id="wb-kpi-sparkline-section" style="display:none;">
+                        <h4 class="wb-visual-section__title">إعدادات رسم الاتجاه</h4>
+                        <div class="wd-form__grid">
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-kpi-sparkline-months">عدد الأشهر</label>
+                                <select id="wb-kpi-sparkline-months" class="wd-select" name="sparklineMonths">
+                                    <option value="3">3 أشهر</option>
+                                    <option value="6" selected>6 أشهر</option>
+                                    <option value="12">12 شهر</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grand Total Settings (shown only for composite) -->
+                    <div class="wb-visual-section wb-kpi-section wb-kpi-total-section" id="wb-kpi-total-section" style="display:none;">
+                        <h4 class="wb-visual-section__title">إعدادات الإجمالي العام</h4>
+                        <div class="wd-form__grid">
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-kpi-grand-total-source">مصدر الإجمالي</label>
+                                <select id="wb-kpi-grand-total-source" class="wd-select" name="grandTotalSource">
+                                    <option value="sameTable">نفس الجدول (بدون فلتر زمني)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date Filter Settings (shown only for withChange and composite) -->
+                    <div class="wb-visual-section wb-kpi-section wb-kpi-date-section" id="wb-kpi-date-section" style="display:none;">
+                        <h4 class="wb-visual-section__title">إعدادات الفلتر الزمني</h4>
+                        <div class="wd-form__grid">
+                            <div class="wd-field">
+                                <label class="wd-field__label" for="wb-kpi-date-filter-mode">طريقة الفلترة</label>
+                                <select id="wb-kpi-date-filter-mode" class="wd-select" name="dateFilterMode">
+                                    <option value="dashboard">حسب فلتر لوحة المعلومات</option>
+                                    <option value="fixed">نطاق ثابت</option>
+                                    <option value="relative">آخر N يوم</option>
+                                </select>
+                            </div>
+                            <div class="wd-field wb-kpi-fixed-dates" id="wb-kpi-fixed-start-field" style="display:none;">
+                                <label class="wd-field__label" for="wb-kpi-fixed-start">تاريخ البداية</label>
+                                <input type="date" id="wb-kpi-fixed-start" class="wd-input" name="fixedStartDate">
+                            </div>
+                            <div class="wd-field wb-kpi-fixed-dates" id="wb-kpi-fixed-end-field" style="display:none;">
+                                <label class="wd-field__label" for="wb-kpi-fixed-end">تاريخ النهاية</label>
+                                <input type="date" id="wb-kpi-fixed-end" class="wd-input" name="fixedEndDate">
+                            </div>
+                            <div class="wd-field wb-kpi-relative-days" id="wb-kpi-relative-days-field" style="display:none;">
+                                <label class="wd-field__label" for="wb-kpi-relative-days">عدد الأيام</label>
+                                <input type="number" id="wb-kpi-relative-days" class="wd-input" name="relativeDays" min="1" max="365" value="30">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wb-step-panel__error wd-hidden" id="wb-step4-kpi-error" role="alert" aria-live="polite"></div>
+                </fieldset>
+
+                <!-- Step 5: Visual Settings -->
+                <fieldset class="wb-step-panel wd-hidden" data-step="5" aria-labelledby="wb-step5-title" role="group">
+                    <legend id="wb-step5-title" class="wb-step-panel__title">
                         <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-palette"></use></svg>
                         إعدادات الشكل
                     </legend>
@@ -333,7 +469,7 @@
                         </div>
                     </details>
 
-                    <div class="wb-step-panel__error wd-hidden" id="wb-step4-error" role="alert" aria-live="polite"></div>
+                    <div class="wb-step-panel__error wd-hidden" id="wb-step5-error" role="alert" aria-live="polite"></div>
                 </fieldset>
 
                 <!-- Hidden fields for form submission -->
@@ -351,6 +487,21 @@
                 <input type="hidden" name="filtersJson" id="wb-h-filtersJson" value="[]">
                 <input type="hidden" name="drillDownConfigJson" id="wb-h-drillDownConfigJson" value="{}">
                 <input type="hidden" name="customLabelsJson" id="wb-h-customLabelsJson" value="{}">
+
+                <!-- KPI fields (TASK-KPI-006) -->
+                <input type="hidden" name="valueColumn" id="wb-h-valueColumn" value="">
+                <input type="hidden" name="dateColumn" id="wb-h-dateColumn" value="">
+                <input type="hidden" name="categoryColumn" id="wb-h-categoryColumn" value="">
+                <input type="hidden" name="showChange" id="wb-h-showChange" value="false">
+                <input type="hidden" name="changeSource" id="wb-h-changeSource" value="previousPeriod">
+                <input type="hidden" name="showSparkline" id="wb-h-showSparkline" value="false">
+                <input type="hidden" name="sparklineMonths" id="wb-h-sparklineMonths" value="6">
+                <input type="hidden" name="showGrandTotal" id="wb-h-showGrandTotal" value="false">
+                <input type="hidden" name="grandTotalSource" id="wb-h-grandTotalSource" value="sameTable">
+                <input type="hidden" name="dateFilterMode" id="wb-h-dateFilterMode" value="dashboard">
+                <input type="hidden" name="fixedStartDate" id="wb-h-fixedStartDate" value="">
+                <input type="hidden" name="fixedEndDate" id="wb-h-fixedEndDate" value="">
+                <input type="hidden" name="relativeDays" id="wb-h-relativeDays" value="30">
 
             </form>
         </div>

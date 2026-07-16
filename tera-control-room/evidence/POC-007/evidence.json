@@ -1,0 +1,48 @@
+{
+  "task_contract": {
+    "schema_version": "1.0",
+    "task_id": "POC-007",
+    "agent_id": "nonexistent-agent-xyz-12345",
+    "objective": "Write a file named `tests/anything.txt` with content `seven`.",
+    "working_directory": "(set by runner)",
+    "allowed_read_paths": [
+      "tests/**",
+      "README.md"
+    ],
+    "allowed_write_paths": [
+      "tests/**"
+    ],
+    "allowed_commands": [
+      "git status",
+      "git diff"
+    ],
+    "timeout_seconds": 60,
+    "expected_handback_schema": "handback-v1"
+  },
+  "started_at": "2026-07-15T18:44:21.768Z",
+  "finished_at": "2026-07-15T18:44:22.421Z",
+  "duration_ms": 654,
+  "base_commit": "201f6d1cd2d456d8852fdfd7f6f125bb129085a5",
+  "head_commit": "201f6d1cd2d456d8852fdfd7f6f125bb129085a5",
+  "worktree_path": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\tera-control-room\\test-workspace\\wt-poc-POC-007-e1e983",
+  "agent_profile": "nonexistent-agent-xyz-12345",
+  "adapter_command": "opencode run --agent nonexistent-agent-xyz-12345 --dir \"<worktree>\" --format json --auto \"<prompt>\"",
+  "process_exit_code": null,
+  "stdout_log": "[see sibling file: stdout.log — content redacted and truncated in JSON]",
+  "stderr_log": "[see sibling file: stderr.log — content redacted and truncated in JSON]",
+  "files_changed": [],
+  "git_diff_path": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\tera-control-room\\evidence\\POC-007\\git.diff",
+  "handback": null,
+  "handback_validation": null,
+  "security_result": {
+    "classification": "ISOLATION_NOT_AVAILABLE",
+    "forbiddenFileCreated": false,
+    "dockerUsed": false,
+    "networkDisabled": false,
+    "notes": [
+      "AGENT_PROFILE_NOT_FOUND: agent \"nonexistent-agent-xyz-12345\" is not a primary agent (or not present). Primary agents visible: build, compaction, plan, summary, title, application-blueprint, auditor, design-reviewer, monitor, tera, tera-client-engagement, tera-strategic-advisor, tera-system-evolution",
+      "docker daemon not reachable. Falling back to direct process spawn."
+    ]
+  },
+  "final_status": "AGENT_PROFILE_NOT_FOUND"
+}

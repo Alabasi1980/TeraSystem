@@ -92,6 +92,62 @@ public class WarehouseDashboardDbContext : DbContext
                 .HasColumnType("datetime2")
                 .HasDefaultValueSql("GETUTCDATE()");
 
+            // Advanced KPI: Column Mappings
+            entity.Property(e => e.ValueColumn)
+                .HasMaxLength(100)
+                .HasDefaultValue("");
+
+            entity.Property(e => e.DateColumn)
+                .HasMaxLength(100)
+                .HasDefaultValue("");
+
+            entity.Property(e => e.CategoryColumn)
+                .HasMaxLength(100)
+                .HasDefaultValue("");
+
+            // Advanced KPI: Mode & Change
+            entity.Property(e => e.KpiMode)
+                .HasMaxLength(50)
+                .HasDefaultValue("simple");
+
+            entity.Property(e => e.ShowChange)
+                .HasDefaultValue(false);
+
+            entity.Property(e => e.ChangeSource)
+                .HasMaxLength(50)
+                .HasDefaultValue("previousPeriod");
+
+            // Advanced KPI: Sparkline
+            entity.Property(e => e.ShowSparkline)
+                .HasDefaultValue(false);
+
+            entity.Property(e => e.SparklineMonths)
+                .HasDefaultValue(6);
+
+            // Advanced KPI: Grand Total
+            entity.Property(e => e.ShowGrandTotal)
+                .HasDefaultValue(false);
+
+            entity.Property(e => e.GrandTotalSource)
+                .HasMaxLength(50)
+                .HasDefaultValue("sameTable");
+
+            // Advanced KPI: Date Filter
+            entity.Property(e => e.DateFilterMode)
+                .HasMaxLength(50)
+                .HasDefaultValue("dashboard");
+
+            entity.Property(e => e.FixedStartDate)
+                .HasMaxLength(50)
+                .HasDefaultValue("");
+
+            entity.Property(e => e.FixedEndDate)
+                .HasMaxLength(50)
+                .HasDefaultValue("");
+
+            entity.Property(e => e.RelativeDays)
+                .HasDefaultValue(30);
+
             // Indexes
             entity.HasIndex(e => e.IsActive)
                 .HasDatabaseName("IX_DashboardCards_IsActive");
@@ -194,6 +250,10 @@ public class WarehouseDashboardDbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(200);
 
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+
             entity.Property(e => e.SourceType)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -228,9 +288,20 @@ public class WarehouseDashboardDbContext : DbContext
                 .HasMaxLength(1000)
                 .IsRequired(false);
 
+            entity.Property(e => e.SyncMode)
+                .HasMaxLength(10)
+                .HasDefaultValue("Full");
+
+            entity.Property(e => e.IncrementalColumn)
+                .HasMaxLength(128);
+
             entity.HasIndex(e => e.OracleSource)
                 .IsUnique()
                 .HasDatabaseName("IX_TableMappings_OracleSource");
+
+            entity.HasIndex(e => e.Name)
+                .IsUnique()
+                .HasDatabaseName("IX_TableMappings_Name");
 
             entity.HasIndex(e => e.SqlTargetTable)
                 .IsUnique()

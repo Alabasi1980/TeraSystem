@@ -16,6 +16,86 @@
 
 ## Activity Log
 
+## [2026-07-15 12:05] - TASK_FIX_ACCEPTED
+
+- Related Task: SyncLogs missing entries for trigger-selected
+- Actor: TeraAgent + engineering-agent
+- Summary: User reported SyncLogs page shows empty despite running sync. Root cause: `POST /api/sync/trigger-selected` (used by "Sync Selected" and per-row sync buttons) did NOT record logs in `SyncRunLogStore` — only `POST /api/sync/trigger` (Sync All) did.
+- Decision / Result: ✅ Accepted. Added `_logStore.BeginRun("Manual (selected)")` before background task, and `_logStore.CompleteRun(...)` in both success and catch paths inside `TriggerSelected()`. Build succeeded with 0 warnings and 0 errors.
+- Next Action: User restarts API project, runs a sync, then checks SyncLogs page to verify entries appear.
+
+## [2026-07-15 11:55] - TASK_FIX_ACCEPTED
+
+- Related Task: SyncLogs HTTPS protocol fix
+- Actor: TeraAgent + engineering-agent
+- Summary: User reported SyncLogs page showing "Failed to fetch - ERR_SSL_PROTOCOL_ERROR". Root cause: hardcoded `https://localhost:5001` in JavaScript while API runs on `http://localhost:5001`.
+- Decision / Result: ✅ Accepted. Changed `var apiBase = 'https://localhost:5001'` to `var apiBase = 'http://localhost:5001'` in `SyncLogs/Index.cshtml` line 79. Build succeeded with 0 warnings and 0 errors.
+- Next Action: User refreshes SyncLogs page to verify logs load correctly.
+
+## [2026-07-15 11:53] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-ENH-001 / Sync Dashboard UI visibility fix
+- Actor: TeraAgent + ui-designer
+- Summary: User reported that `/admin-secure-panel/Sync` still displayed the skeleton loader and empty-state message even though the mappings table data was visible. UI Designer diagnosed that `.wd-skeleton-wrap` and `.wd-empty` explicit display rules were overriding the `hidden` attribute.
+- Decision / Result: ✅ Accepted. Applied scoped CSS fix in `Sync/Index.cshtml`: `.wd-page [hidden], .wd-hidden { display: none !important; }`. Verification build succeeded via temp output path with 0 warnings and 0 errors.
+- Next Action: User hard-refreshes the Sync page and confirms only the mappings table is visible when data exists.
+
+## [2026-07-15 10:45] - TASK_ACCEPTED
+
+- Related Task: TASK-COD-FIX-003
+- Actor: TeraAgent + engineering-agent
+- Summary: EngineeringAgent applied the surgical fix in `SchemaManagementService.GenerateCreateTableSql()` by removing the extra square-bracket wrapper around the already-quoted SQL Server table identifier.
+- Decision / Result: Post-Execution Review PASS. Tera reviewed the changed file and reran `dotnet build -c Release` successfully with 0 warnings and 0 errors. Accepted with live Admin Panel Apply Schema retest pending.
+- Next Action: User retests **تطبيق / Apply Schema** for the mapping. If it still fails, capture the new log/error and continue under a follow-up fix task.
+
+## [2026-07-15 11:00] - ENHANCEMENT_PLAN_CREATED
+
+- Related Task: N/A (new initiative)
+- Actor: TeraAgent
+- Summary: User requested advanced Sync page development. Created `enhancements/` folder under app root with comprehensive `SYNC_PAGE_ENHANCEMENT_PLAN.md` (12 tasks across 3 phases: P0 Basic, P1 Advanced, P2 Professional). Plan includes: Sync Dashboard UI, selective table sync, live progress bar, summary cards, incremental sync mode, advanced scheduling (Cron), data comparison, export, filters, notifications, persistent logs, and backup.
+- Decision / Result: ✅ Folder created + plan documented. User reviewed and approved.
+- Next Action: Await user confirmation to begin executing Phase P0 (TASK-ENH-001 to 004).
+
+## [2026-07-15 11:15] - TASK_ACCEPTED
+
+- Related Task: TASK-ENH-002
+- Actor: TeraAgent + engineering-agent
+- Summary: Completed selected-sync API. Added `SyncModels.cs` (SelectedSyncRequest, SelectedSyncResult, MappingSyncResult), updated `TableMapping.cs` with Id property, added `RunSelectedMappingsAsync` + `LoadMappingsByIdsAsync` to SyncEngineService, added `POST /api/sync/trigger-selected` endpoint to SyncController.
+- Decision / Result: ✅ Accepted. API builds clean (0 errors, 0 warnings).
+- Next Action: Create and delegate TASK-ENH-003 (Live Progress API).
+
+## [2026-07-15 11:25] - TASK_ACCEPTED
+
+- Related Task: TASK-ENH-003
+- Actor: TeraAgent + engineering-agent
+- Summary: Completed live progress API. Created `SyncRunProgressStore` (in-memory store with cleanup timer), added `SyncRunProgress` + `MappingProgress` models, modified `RunSelectedMappingsAsync` to report progress, changed `POST /api/sync/trigger-selected` to fire-and-forget with runId, added `GET /api/sync/progress?runId=GUID`.
+- Decision / Result: ✅ Accepted. API builds clean (0 errors, 0 warnings).
+- Next Action: Create TASK-ENH-001 (Sync Dashboard UI) with summary cards.
+
+## [2026-07-15 11:50] - P0_COMPLETE
+
+- Related Task: TASK-ENH-001
+- Actor: TeraAgent + engineering-agent
+- Summary: Completed Sync Dashboard UI. Created new Razor page at `/admin-secure-panel/Sync` with 4 summary cards, mappings table with checkboxes, live progress bars (polling every 2s), sync selected/all buttons, per-row single sync, and auto-refresh (30s). Added `GET /api/sync/mappings` endpoint. Updated admin panel navigation.
+- Decision / Result: ✅ P0 complete. Build: 0 errors, 0 warnings (both API + Web).
+- Next Action: Ask user to test the new Sync Dashboard and confirm, or proceed to P1 features.
+
+## [2026-07-15 10:35] - TASK_CREATED
+
+- Related Task: TASK-COD-FIX-003
+- Actor: TeraAgent
+- Summary: Diagnosed Apply Schema failure. The generated SQL was effectively double-quoting the SQL Server table identifier as `[[Items2]]`, which reproduces the same `Incorrect syntax near 'NVARCHAR'` SQL Server error.
+- Decision / Result: Created focused fix task to correct `SchemaManagementService.GenerateCreateTableSql()` table-name quoting. Pre-Execution Gate: PASS.
+- Next Action: Delegate TASK-COD-FIX-003 to engineering-agent for a surgical code fix and verification.
+
+## [2026-07-15 09:45] - PROJECT_STARTED_LOCALLY
+
+- Related Task: N/A (runtime)
+- Actor: TeraAgent
+- Summary: User requested to run the project (API+Web). Built solution successfully (0 errors, 0 warnings). Started both projects — API on http://localhost:5001, Web on http://localhost:5000.
+- Decision / Result: ✅ API health check PASS (200 - healthy). ✅ Web home page loads correctly (200 - Arabic/RTL Dashboard).
+- Next Action: Awaiting user feedback. Project is in Phase 7 (Delivery & Closure).
+
 ## [2026-07-12 23:50] - BATCH_D_COMPLETE
 
 - Related Task: TASK-PREP-008, TASK-PREP-009, TASK-PREP-010, TASK-PREP-011
@@ -394,3 +474,78 @@
 - Summary: المستخدم طلب تطوير مودال TableMappings إلى Oracle Source Mapping Wizard احترافي بـ 4 خطوات: (1) اختيار النوع Table/View/Query، (2) بحث أو كتابة مصدر Oracle، (3) معاينة بيانات + Schema، (4) إعداد SQL Target. النطاق يشمل: OracleSchemaService enhancements (5 خدمات جديدة)، 3 API endpoints جديدة، إعادة تصميم المودال بالكامل، وملف JS جديد. Query ميزة أساسية — تتضمن فحص الأعمدة وأنواعها قبل الحفظ. الربط البصري بين التعيينات مؤجل للمرحلة التالية.
 - Decision / Result: ✅ Task created + approved by user. Scope confirmed: Table+View+Query معاً. الاسم: Oracle Source Mapping Wizard.
 - Next Action: تفويض TASK-COD-029 إلى engineering-agent.
+
+## [2026-07-15 16:45] - TASK_ENH_COMPLETED
+
+- Related Task: TASK-ENH-LOGIN-001 (Login Page Creative Redesign)
+- Actor: TeraAgent + ui-designer
+- Summary: المستخدم طلب إعادة تصميم شاشة تسجيل الدخول بشكل إبداعي وعصري因为 التصميم الحالي كان بسيط وغير ملهم.
+- Decision / Result: ✅ Accepted. إعادة تصميم كاملة بأسلوب Split-Screen Premium: Panel أيسر gradient متحرك مع orbs عائمة + أيقونة مستودع glassmorphism + 3 مزايا. Panel أيمن نموذج دخول نظيف مع security badge + password toggle + submit shimmer + error shake animation. Self-contained page مع responsive. Build: 0 warnings, 0 errors.
+- Next Action: المستخدم يراجع التصميم ويطلب التعديلات التالية.
+
+## [2026-07-15 19:00] - UI_POLISH_COMPLETE
+
+- Related Task: UI Polish Roadmap (15 صفحة)
+- Actor: TeraAgent + ui-designer
+- Summary: اكتملت خطة البولش الشامل لجميع صفحات التطبيق:
+  • ✅ Header Topbar — تصميم احترافي + دعم لوجو
+  • ✅ Login — Premium Split-Screen مع animations
+  • ✅ Logout — تصميم وداع مع auto-redirect
+  • ✅ Admin Nav — SVG icons بدل emoji
+  • ✅ Public Dashboard — SVG icons في الفلاتر
+  • ✅ Sync Settings — أيقونات + تحسينات
+  • ✅ Sync Logs — SVG مستند
+  • ✅ Cards List — SVG grid
+  • ✅ Query Tester — SVG بحث
+  • ✅ Drill Down — SVG مخطط
+  • ✅ Sync Dashboard — 4 SVG icons
+  • ✅ Table Mappings — 6 SVG icons
+  • ✅ Card Builder — كان ممتازاً
+  • ✅ Drill Page — كان ممتازاً
+  • ✅ Cards Edit — كان ممتازاً
+  Build: 0 errors على جميع الصفحات.
+- Decision / Result: ✅ UI Polish Roadmap مكتملة.
+- Next Action: يحدده المستخدم.
+
+## [2026-07-15 19:10] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-KPI-FIX-001
+- Actor: TeraAgent + engineering-agent
+- Summary: اكتُشف أن Builder.cshtml.cs لا يحتوي على [BindProperty] للحقول الجديدة (KPI fields). هذا يعني أن الحقول المخفية في النموذج لن تُرقَّم عند الحفظ. الأجزاء الخمسة: (1) 14 BindProperty في BuilderModel، (2) 14 حقل في DashboardCardDto، (3) BuildDashboardCard() يُعيّن الحقول، (4) BuildCardFromRequest() يُعيّن الحقول، (5) PreviewRequest يحتوي الحقول.
+- Decision / Result: ✅ Accepted. Post-Execution Review PASS. Build succeeded: 0 warnings, 0 errors. الملف المعدل: Builder.cshtml.cs (532 → 695 سطر).
+- Next Action: اختبار End-to-End: إنشاء بطاقة KPI مع composite mode وحفظها وعرضها في Dashboard.
+
+## [2026-07-15 19:20] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-KPI-FIX-002
+- Actor: TeraAgent + engineering-agent
+- Summary: تسمية `OracleTable` إلى `SqlTable` + تحديث النصوص العربية في Builder.cshtml وBuilder.cshtml.cs وcard-builder.js. المستخدم أبلغ أن الخطوة 2 لا تعرض جداول SQL Server — السبب: القائمة المنسدلة كانت تستخدم "OracleTable" كقيمة ولا يوجد خيار SQL Server.
+- Decision / Result: ✅ Accepted. Post-Execution Review PASS. Build: 0 warnings, 0 errors. جميع مراجع OracleTable في الملفات الثلاثة تغيرت إلى SqlTable.
+- Next Action: اختبار End-to-End: إنشاء بطاقة KPI مع SqlTable كمصدر + حفظ + عرض في Dashboard.
+
+## [2026-07-15 19:30] - TASK_FIX_ACCEPTED
+
+- Related Task: Missing API .cshtml files
+- Actor: TeraAgent
+- Summary: المستخدم أبلغ أن قائمة جداول SQL Server فارغة في Builder الخطوة 2 رغم وجود تعيينات في قاعدة البيانات. التشخيص: ملفين `.cshtml` مفقودين من Razor Pages API: (1) `Pages/Api/TableMappings/Active.cshtml` — مطلوب لجلب التعيينات النشطة. (2) `Pages/Api/Dashboard/CardBuilder.cshtml` — مطلوب لمعاينة البطاقات. بدون هذه الملفات، الطلبات ترجع 404 أو خطأ صامت.
+- Decision / Result: ✅ أُنشئ الملفان المفقودان. Build succeeded: 0 warnings, 0 errors. تم التحقق من أن جميع ملفات API الأخرى مكتملة.
+- Next Action: المستخدم يعيد تشغيل التطبيق واختبار القائمة المنسدلة.
+
+## [2026-07-15 19:40] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-KPI-FIX-003
+- Actor: TeraAgent + engineering-agent
+- Summary: إعادة بناء نظام المزامنة التزايدية بالكامل. النظام أُنشئ جزئياً ثم تمت إزالته بالخطأ. الإصلاح شمل 5 أجزاء: (1) Models — إضافة SyncMode + IncrementalColumn إلى كلا النموذجين، (2) Wizard UI — إضافة الخطوة 5 (إعدادات المزامنة) مع radio cards، (3) JS — منطق sync mode + تحميل أعمدة التاريخ من Oracle، (4) SyncEngineService — قراءة الحقول + WHERE clause للمزامنة التزايدية + UpdateLastSyncAtAsync، (5) API Controller — إرجاع الحقول الجديدة.
+- Decision / Result: ✅ Accepted. Post-Execution Review PASS. Build: 0 warnings, 0 errors. 7 ملفات معدّلة.
+- Next Action: اختبار End-to-End: إنشاء تعيين مع مزامنة تزايدية + التحقق من أن Step 5 تظهر + اختبار المزامنة الفعلية.
+
+## [2026-07-16 14:00] - TASK_FEATURE_COMPLETE
+
+- Related Task: Add Name field to TableMappings
+- Actor: TeraAgent + engineering-agent
+- Summary: إضافة حقل "اسم التعيين" (Name) الفريد والإجباري إلى نظام تعيينات الجداول، ليكون المعرف الأساسي للتعيين في شاشة بناء البطاقات والمزامنة. التعديلات شملت:
+  - Batch 1: تحديث الـ ModelSnapshot وإضافة Migration `AddNameToTableMappings` (الخاصية كانت موجودة مسبقاً لكن بدون Migration)
+  - Batch 2: تحديث SyncEngineService + Active API + TableMappingController + SyncController + Sync Dashboard لقراءة Name
+  - Batch 3: تحديث Index.cshtml.cs (validation + اسم فريد) + Index.cshtml (عمود الاسم + حقل في الويزارد + ملخص) + table-mapping-wizard.js + card-builder.js
+- Decision / Result: ✅ Complete. Build: 0 warnings, 0 errors (كلا المشروعين Web + Api).
+- Next Action: تطبيق الـ Migration يدوياً على قاعدة البيانات + إعادة تشغيل الـ API + اختبار إنشاء تعيين جديد بالاسم.

@@ -24,9 +24,10 @@ public class OracleSchemaService
     }
 
     /// <summary>
-    /// Reads column metadata from Oracle ALL_TAB_COLUMNS for the given source
+    /// Reads column metadata from Oracle for the given source
     /// (table, view, or subquery-derived alias). For "Query" source types the
-    /// source is wrapped as a subquery to extract column metadata without data.
+    /// source is wrapped as a subquery to extract column metadata from the
+    /// DataReader schema table (works even when 0 rows are returned).
     /// </summary>
     public async Task<List<ColumnInfo>> GetOracleTableColumnsAsync(
         string oracleSource,
@@ -41,69 +42,87 @@ public class OracleSchemaService
             return columns;
         }
 
-        // Build the query based on source type
-        string sql;
-        if (sourceType.Equals("Query", StringComparison.OrdinalIgnoreCase))
-        {
-            // For queries, wrap as subquery to get column metadata without executing full data
-            sql = $"""
-                SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION, DATA_SCALE, NULLABLE
-                FROM ALL_TAB_COLUMNS
-                WHERE OWNER || '.' || TABLE_NAME IN (
-                    SELECT OWNER || '.' || TABLE_NAME FROM ALL_TABLES WHERE 1 = 0
-                )
-                """;
-            // Fallback: try to read from the source directly using column_name from a dummy query
-            sql = $"""
-                SELECT * FROM ({SanitizeQuery(oracleSource)}) WHERE ROWNUM <= 0
-                """;
-        }
-        else
-        {
-            // For Table/View: parse OWNER.TABLE or just TABLE
-            var (owner, tableName) = ParseOracleIdentifier(oracleSource);
-            sql = owner is null
-                ? $"""
-                    SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION, DATA_SCALE, NULLABLE
-                    FROM ALL_TAB_COLUMNS
-                    WHERE TABLE_NAME = '{EscapeSql(tableName)}'
-                    ORDER BY COLUMN_ID
-                    """
-                : $"""
-                    SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION, DATA_SCALE, NULLABLE
-                    FROM ALL_TAB_COLUMNS
-                    WHERE OWNER = '{EscapeSql(owner)}' AND TABLE_NAME = '{EscapeSql(tableName)}'
-                    ORDER BY COLUMN_ID
-                    """;
-        }
-
         try
         {
             await using var conn = new OracleConnection(_oracleConnectionString);
             await conn.OpenAsync(ct);
 
             await using var cmd = conn.CreateCommand();
-            cmd.CommandText = sql;
+
+            if (sourceType.Equals("Query", StringComparison.OrdinalIgnoreCase))
+            {
+                // For queries: use the DataReader's schema table to get column
+                // metadata, even when no rows are returned.
+                cmd.CommandText = $"SELECT * FROM ({SanitizeQuery(oracleSource)}) WHERE ROWNUM <= 0";
+            }
+            else
+            {
+                // For Table/View: parse OWNER.TABLE or just TABLE
+                var (owner, tableName) = ParseOracleIdentifier(oracleSource);
+                cmd.CommandText = owner is null
+                    ? $"""
+                        SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION, DATA_SCALE, NULLABLE
+                        FROM ALL_TAB_COLUMNS
+                        WHERE TABLE_NAME = '{EscapeSql(tableName)}'
+                        ORDER BY COLUMN_ID
+                        """
+                    : $"""
+                        SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION, DATA_SCALE, NULLABLE
+                        FROM ALL_TAB_COLUMNS
+                        WHERE OWNER = '{EscapeSql(owner)}' AND TABLE_NAME = '{EscapeSql(tableName)}'
+                        ORDER BY COLUMN_ID
+                        """;
+            }
+
             cmd.CommandTimeout = 30;
 
             await using var reader = await cmd.ExecuteReaderAsync(ct);
-            while (await reader.ReadAsync(ct))
+
+            if (sourceType.Equals("Query", StringComparison.OrdinalIgnoreCase))
             {
-                columns.Add(new ColumnInfo
+                // Read column metadata from the DataReader's schema table.
+                // GetSchemaTable() returns one row per column with SchemaTable
+                // metadata columns: ColumnName, DataType, ColumnSize, etc.
+                var schemaTable = reader.GetSchemaTable();
+                if (schemaTable is not null)
                 {
-                    ColumnName = reader.GetString(reader.GetOrdinal("COLUMN_NAME")),
-                    DataType = reader.GetString(reader.GetOrdinal("DATA_TYPE")),
-                    MaxLength = reader.IsDBNull(reader.GetOrdinal("DATA_LENGTH"))
-                        ? null
-                        : reader.GetInt32(reader.GetOrdinal("DATA_LENGTH")),
-                    Precision = reader.IsDBNull(reader.GetOrdinal("DATA_PRECISION"))
-                        ? null
-                        : reader.GetInt32(reader.GetOrdinal("DATA_PRECISION")),
-                    Scale = reader.IsDBNull(reader.GetOrdinal("DATA_SCALE"))
-                        ? null
-                        : reader.GetInt32(reader.GetOrdinal("DATA_SCALE")),
-                    IsNullable = reader.GetString(reader.GetOrdinal("NULLABLE")) == "Y"
-                });
+                    foreach (System.Data.DataRow row in schemaTable.Rows)
+                    {
+                        var colName = row["ColumnName"] as string ?? "";
+                        var dataType = row["DataType"] as Type;
+                        var colSize = row["ColumnSize"] as int?;
+
+                        columns.Add(new ColumnInfo
+                        {
+                            ColumnName = colName,
+                            DataType = dataType?.Name ?? "UNKNOWN",
+                            MaxLength = colSize,
+                            IsNullable = row["AllowDBNull"] as bool? ?? true
+                        });
+                    }
+                }
+            }
+            else
+            {
+                // Table/View: read from ALL_TAB_COLUMNS result rows
+                while (await reader.ReadAsync(ct))
+                {
+                    columns.Add(new ColumnInfo
+                    {
+                        ColumnName = reader.GetString(reader.GetOrdinal("COLUMN_NAME")),
+                        DataType = reader.GetString(reader.GetOrdinal("DATA_TYPE")),
+                        MaxLength = reader.IsDBNull(reader.GetOrdinal("DATA_LENGTH"))
+                            ? null
+                            : reader.GetInt32(reader.GetOrdinal("DATA_LENGTH")),
+                        Precision = reader.IsDBNull(reader.GetOrdinal("DATA_PRECISION"))
+                            ? null
+                            : reader.GetInt32(reader.GetOrdinal("DATA_PRECISION")),
+                        Scale = reader.IsDBNull(reader.GetOrdinal("DATA_SCALE"))
+                            ? null
+                            : reader.GetInt32(reader.GetOrdinal("DATA_SCALE")),
+                        IsNullable = reader.GetString(reader.GetOrdinal("NULLABLE")) == "Y"
+                    });
+                }
             }
         }
         catch (Exception ex)

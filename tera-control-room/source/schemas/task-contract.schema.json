@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tera.control-room/schemas/task-contract.schema.json",
+  "title": "Tera Control Room — Task Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "task_id",
+    "agent_id",
+    "objective",
+    "working_directory",
+    "allowed_read_paths",
+    "allowed_write_paths",
+    "allowed_commands",
+    "timeout_seconds",
+    "expected_handback_schema"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "task_id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$" },
+    "agent_id": { "type": "string", "minLength": 1 },
+    "objective": { "type": "string", "minLength": 10 },
+    "working_directory": { "type": "string", "minLength": 1 },
+    "allowed_read_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "allowed_write_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "allowed_commands": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "timeout_seconds": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 3600
+    },
+    "expected_handback_schema": { "type": "string", "const": "handback-v1" }
+  }
+}

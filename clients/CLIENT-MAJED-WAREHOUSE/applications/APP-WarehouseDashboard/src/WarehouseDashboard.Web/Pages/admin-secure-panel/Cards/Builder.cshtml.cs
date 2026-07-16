@@ -158,6 +158,106 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         [JsonPropertyName("customLabels")]
         public string CustomLabelsJson { get; set; } = "{}";
 
+        // === Advanced KPI Fields ===
+
+        /// <summary>
+        /// KPI calculation mode: simple, comparison, breakdown
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("kpiMode")]
+        public string KpiMode { get; set; } = "simple";
+
+        /// <summary>
+        /// Column name containing the numeric value for KPI calculation
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("valueColumn")]
+        public string ValueColumn { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Column name containing date data for time-based filtering
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("dateColumn")]
+        public string DateColumn { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Column name used for category grouping/breakdown
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("categoryColumn")]
+        public string CategoryColumn { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Whether to display change percentage on the KPI card
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("showChange")]
+        public bool ShowChange { get; set; } = false;
+
+        /// <summary>
+        /// Source for change calculation: previousPeriod, fixedBaseline, custom
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("changeSource")]
+        public string ChangeSource { get; set; } = "previousPeriod";
+
+        /// <summary>
+        /// Whether to display a sparkline trend line on the KPI card
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("showSparkline")]
+        public bool ShowSparkline { get; set; } = false;
+
+        /// <summary>
+        /// Number of months of historical data for sparkline rendering
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("sparklineMonths")]
+        public int SparklineMonths { get; set; } = 6;
+
+        /// <summary>
+        /// Whether to display a grand total row below the chart
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("showGrandTotal")]
+        public bool ShowGrandTotal { get; set; } = false;
+
+        /// <summary>
+        /// Data source for grand total: sameTable, separateQuery, manual
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("grandTotalSource")]
+        public string GrandTotalSource { get; set; } = "sameTable";
+
+        /// <summary>
+        /// Date filter mode: dashboard, fixed, relative, none
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("dateFilterMode")]
+        public string DateFilterMode { get; set; } = "dashboard";
+
+        /// <summary>
+        /// Fixed start date for date filter (yyyy-MM-dd)
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("fixedStartDate")]
+        public string FixedStartDate { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Fixed end date for date filter (yyyy-MM-dd)
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("fixedEndDate")]
+        public string FixedEndDate { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Number of days for relative date filter
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("relativeDays")]
+        public int RelativeDays { get; set; } = 30;
+
         /// <summary>
         /// Clone mode: pre-filled from existing card ID
         /// </summary>
@@ -226,7 +326,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         {
             new() { Id = "Template", Name = "قوالب جاهزة", Icon = "file-text", Description = "بطاقات معدة مسبقاً لسيناريوهات المخزن الشائعة" },
             new() { Id = "SavedQuery", Name = "استعلامات محفوظة", Icon = "database", Description = "استعلامات SQL محفوظة مسبقاً" },
-            new() { Id = "OracleTable", Name = "جداول Oracle", Icon = "server", Description = "جداول وعروض قاعدة البيانات المتاحة" },
+            new() { Id = "SqlTable", Name = "جداول SQL Server", Icon = "server", Description = "جداول وعروض قاعدة البيانات المتاحة" },
             new() { Id = "CustomSQL", Name = "SQL مخصص (متقدم)", Icon = "code", Description = "كتابة استعلام SQL يدوي", IsAdvanced = true }
         };
 
@@ -404,6 +504,21 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 FiltersJson = System.Text.Json.JsonSerializer.Serialize(Filters),
                 DrillDownConfigJson = DrillDownConfigJson,
                 CustomLabelsJson = CustomLabelsJson,
+                // Advanced KPI
+                KpiMode = KpiMode,
+                ValueColumn = ValueColumn,
+                DateColumn = DateColumn,
+                CategoryColumn = CategoryColumn,
+                ShowChange = ShowChange,
+                ChangeSource = ChangeSource,
+                ShowSparkline = ShowSparkline,
+                SparklineMonths = SparklineMonths,
+                ShowGrandTotal = ShowGrandTotal,
+                GrandTotalSource = GrandTotalSource,
+                DateFilterMode = DateFilterMode,
+                FixedStartDate = FixedStartDate,
+                FixedEndDate = FixedEndDate,
+                RelativeDays = RelativeDays,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -430,7 +545,22 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 ChartOptionsJson = request.ChartOptionsJson,
                 FiltersJson = System.Text.Json.JsonSerializer.Serialize(request.Filters),
                 DrillDownConfigJson = request.DrillDownConfigJson,
-                CustomLabelsJson = request.CustomLabelsJson
+                CustomLabelsJson = request.CustomLabelsJson,
+                // Advanced KPI
+                KpiMode = request.KpiMode,
+                ValueColumn = request.ValueColumn,
+                DateColumn = request.DateColumn,
+                CategoryColumn = request.CategoryColumn,
+                ShowChange = request.ShowChange,
+                ChangeSource = request.ChangeSource,
+                ShowSparkline = request.ShowSparkline,
+                SparklineMonths = request.SparklineMonths,
+                ShowGrandTotal = request.ShowGrandTotal,
+                GrandTotalSource = request.GrandTotalSource,
+                DateFilterMode = request.DateFilterMode,
+                FixedStartDate = request.FixedStartDate,
+                FixedEndDate = request.FixedEndDate,
+                RelativeDays = request.RelativeDays
             };
         }
 
@@ -504,6 +634,23 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string FiltersJson { get; set; } = string.Empty;
         public string DrillDownConfigJson { get; set; } = string.Empty;
         public string CustomLabelsJson { get; set; } = string.Empty;
+
+        // === Advanced KPI ===
+        public string KpiMode { get; set; } = "simple";
+        public string ValueColumn { get; set; } = string.Empty;
+        public string DateColumn { get; set; } = string.Empty;
+        public string CategoryColumn { get; set; } = string.Empty;
+        public bool ShowChange { get; set; } = false;
+        public string ChangeSource { get; set; } = "previousPeriod";
+        public bool ShowSparkline { get; set; } = false;
+        public int SparklineMonths { get; set; } = 6;
+        public bool ShowGrandTotal { get; set; } = false;
+        public string GrandTotalSource { get; set; } = "sameTable";
+        public string DateFilterMode { get; set; } = "dashboard";
+        public string FixedStartDate { get; set; } = string.Empty;
+        public string FixedEndDate { get; set; } = string.Empty;
+        public int RelativeDays { get; set; } = 30;
+
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
@@ -528,5 +675,21 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public Dictionary<string, string> Filters { get; set; } = new();
         public string DrillDownConfigJson { get; set; } = string.Empty;
         public string CustomLabelsJson { get; set; } = string.Empty;
+
+        // Advanced KPI
+        public string KpiMode { get; set; } = "simple";
+        public string ValueColumn { get; set; } = string.Empty;
+        public string DateColumn { get; set; } = string.Empty;
+        public string CategoryColumn { get; set; } = string.Empty;
+        public bool ShowChange { get; set; } = false;
+        public string ChangeSource { get; set; } = "previousPeriod";
+        public bool ShowSparkline { get; set; } = false;
+        public int SparklineMonths { get; set; } = 6;
+        public bool ShowGrandTotal { get; set; } = false;
+        public string GrandTotalSource { get; set; } = "sameTable";
+        public string DateFilterMode { get; set; } = "dashboard";
+        public string FixedStartDate { get; set; } = string.Empty;
+        public string FixedEndDate { get; set; } = string.Empty;
+        public int RelativeDays { get; set; } = 30;
     }
 }

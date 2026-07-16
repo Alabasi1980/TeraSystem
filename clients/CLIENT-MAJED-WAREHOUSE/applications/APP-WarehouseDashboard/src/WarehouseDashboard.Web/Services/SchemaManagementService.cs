@@ -171,7 +171,7 @@ public class SchemaManagementService
     private static string GenerateCreateTableSql(List<ColumnInfo> columns, string tableName)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"CREATE TABLE [{QuoteSqlServerIdentifier(tableName)}] (");
+        sb.AppendLine($"CREATE TABLE {QuoteSqlServerIdentifier(tableName)} (");
 
         for (var i = 0; i < columns.Count; i++)
         {

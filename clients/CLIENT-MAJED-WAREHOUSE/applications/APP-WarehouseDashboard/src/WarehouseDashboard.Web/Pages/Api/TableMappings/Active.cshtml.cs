@@ -24,10 +24,11 @@ public class ActiveModel : PageModel
         var mappings = await _db.TableMappings
             .AsNoTracking()
             .Where(t => t.IsActive)
-            .OrderBy(t => t.OracleSource)
+            .OrderBy(t => t.Name)
             .Select(t => new
             {
                 id = t.Id,
+                name = t.Name,
                 oracleSource = t.OracleSource,
                 sourceType = t.SourceType,
                 sqlTargetTable = t.SqlTargetTable

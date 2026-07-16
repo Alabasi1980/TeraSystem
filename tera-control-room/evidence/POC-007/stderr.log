@@ -1,0 +1,1 @@
+AGENT_PROFILE_NOT_FOUND: agent "nonexistent-agent-xyz-12345" is not a primary agent (or not present). Primary agents visible: build, compaction, plan, summary, title, application-blueprint, auditor, design-reviewer, monitor, tera, tera-client-engagement, tera-strategic-advisor, tera-system-evolution

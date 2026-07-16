@@ -79,6 +79,7 @@
             <div class="wd-actions">
                 <button id="runBtn" class="wd-btn" onclick="runQuery()">تشغيل</button>
                 <button class="wd-btn wd-btn--ghost" onclick="clearEditor()">مسح</button>
+                <button class="wd-btn wd-btn--ghost" id="copyBtn" onclick="copyResults()" disabled>نسخ</button>
                 <span id="meta" class="wd-meta"></span>
             </div>
         </div>
@@ -93,7 +94,12 @@
                 @for (int i = 0; i < 6; i++) { <div class="wd-skeleton__row"></div> }
             </div>
             <div id="emptyState" class="wd-empty">
-                <span class="wd-empty__icon">&#128270;</span>
+                <span class="wd-empty__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                </span>
                 نفِّذ استعلاماً لعرض النتائج هنا.
             </div>
             <div id="gridContainer" class="wd-grid"></div>
@@ -162,6 +168,7 @@
 
         if (!columns || columns.length === 0) {
             container.innerHTML = '<div class="wd-empty"><span class="wd-empty__icon">▦</span>لا توجد أعمدة في النتيجة.</div>';
+            document.getElementById('copyBtn').disabled = true;
             return;
         }
 
@@ -185,6 +192,29 @@
             gridLines: 'Horizontal'
         });
         gridInstance.appendTo(container);
+        document.getElementById('copyBtn').disabled = false;
+    }
+
+    function copyResults() {
+        if (!gridInstance) return;
+        var data = gridInstance.getCurrentViewRecords();
+        if (!data || data.length === 0) return;
+
+        var cols = gridInstance.columns;
+        var csv = cols.map(function(c) { return '"' + (c.headerText || c.field) + '"'; }).join(',') + '\n';
+        data.forEach(function(row) {
+            csv += cols.map(function(c) {
+                var val = row[c.field];
+                return val != null ? '"' + String(val).replace(/"/g, '""') + '"' : '""';
+            }).join(',') + '\n';
+        });
+
+        navigator.clipboard.writeText(csv).then(function() {
+            showToast('تم نسخ ' + data.length + ' صف إلى الحافظة.', 'success');
+            document.getElementById('copyBtn').disabled = false;
+        }).catch(function() {
+            showToast('تعذر النسخ إلى الحافظة.', 'error');
+        });
     }
 
     async function runQuery() {
@@ -216,6 +246,7 @@
                 document.getElementById('emptyState').hidden = false;
                 document.getElementById('emptyState').innerHTML =
                     '<span class="wd-empty__icon">⚠</span>' + escapeHtml(data.errorMessage || 'فشل تنفيذ الاستعلام.');
+                document.getElementById('copyBtn').disabled = true;
                 showToast(data.errorMessage || 'فشل تنفيذ الاستعلام.', 'error');
                 return;
             }
@@ -227,12 +258,14 @@
             if (data.rowCount === 0) {
                 document.getElementById('gridContainer').innerHTML =
                     '<div class="wd-empty"><span class="wd-empty__icon">✓</span>تم تنفيذ الاستعلام بنجاح لكن لم يُرجع أي صفوف.</div>';
+                document.getElementById('copyBtn').disabled = true;
             }
 
             showToast('تم تنفيذ الاستعلام بنجاح.', 'success');
         } catch (err) {
             document.getElementById('skeleton').hidden = true;
             document.getElementById('emptyState').hidden = false;
+            document.getElementById('copyBtn').disabled = true;
             setRunning(false);
             showToast('تعذر الاتصال بالخادم.', 'error');
         }
@@ -242,6 +275,7 @@
         document.getElementById('sqlInput').value = '';
         destroyGrid();
         document.getElementById('emptyState').hidden = false;
+        document.getElementById('copyBtn').disabled = true;
         document.getElementById('meta').textContent = '';
     }
 </script>

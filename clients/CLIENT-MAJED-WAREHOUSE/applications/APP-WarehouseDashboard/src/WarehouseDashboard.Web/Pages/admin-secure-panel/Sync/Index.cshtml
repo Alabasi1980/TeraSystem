@@ -1,0 +1,823 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.Sync.SyncDashboardModel
+@{
+    ViewData["Title"] = "شاشة المزامنة";
+}
+
+<style>
+    /* ─── Page layout ─── */
+    .wd-page { max-width: 1100px; margin: 0 auto; padding: 0; }
+    .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
+    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
+    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
+    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
+
+    /* ─── Summary cards row ─── */
+    .wd-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--sp-4);
+        margin-bottom: var(--sp-6);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-summary-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        padding: var(--sp-5) var(--sp-4);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-4);
+        transition: box-shadow var(--dur-norm) var(--ease);
+    }
+    .wd-summary-card:hover { box-shadow: var(--shadow-md); }
+    .wd-summary-card__icon {
+        width: 48px; height: 48px; flex: none;
+        border-radius: var(--radius-md);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px;
+    }
+    .wd-summary-card__icon--status { background: rgba(30, 158, 106, 0.12); color: var(--c-success); }
+    .wd-summary-card__icon--records { background: rgba(46, 109, 164, 0.12); color: var(--c-info); }
+    .wd-summary-card__icon--time { background: rgba(224, 161, 6, 0.12); color: var(--c-warning); }
+    .wd-summary-card__icon--config { background: rgba(91, 122, 153, 0.12); color: var(--c-text-muted); }
+    .wd-summary-card__body { min-width: 0; }
+    .wd-summary-card__value {
+        font-size: 20px; font-weight: 700; color: var(--c-text);
+        line-height: 1.3; margin: 0;
+    }
+    .wd-summary-card__label {
+        font-size: 12px; color: var(--c-text-muted);
+        margin: 2px 0 0;
+    }
+    .wd-summary-card__status-dot {
+        display: inline-block; width: 10px; height: 10px;
+        border-radius: var(--radius-full); margin-inline-end: 6px;
+    }
+    .wd-summary-card__status-dot--active { background: var(--c-success); }
+    .wd-summary-card__status-dot--inactive { background: var(--c-error); }
+
+    /* ─── Action bar ─── */
+    .wd-action-bar {
+        display: flex; align-items: center; gap: var(--sp-3);
+        margin-bottom: var(--sp-4);
+        flex-wrap: wrap;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-action-bar .wd-meta { font-size: 13px; color: var(--c-text-muted); margin-inline-start: auto; }
+
+    /* ─── Table ─── */
+    .wd-table-wrap {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        overflow-x: auto;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family: var(--font-ar);
+    }
+    .wd-table th {
+        background: var(--c-surface-muted);
+        color: var(--c-text-muted);
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        padding: 12px 16px;
+        text-align: start;
+        border-bottom: 1px solid var(--c-border);
+        white-space: nowrap;
+    }
+    .wd-table td {
+        padding: 12px 16px;
+        color: var(--c-text);
+        border-bottom: 1px solid var(--c-border);
+        vertical-align: middle;
+    }
+    .wd-table tr:last-child td { border-bottom: none; }
+    .wd-table tr:hover td { background: rgba(31,78,121,0.03); }
+    .wd-table .wd-col-check { width: 48px; text-align: center; }
+    .wd-table .wd-col-check input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--c-primary); }
+
+    .wd-badge {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 3px 10px; border-radius: var(--radius-full);
+        font-size: 12px; font-weight: 600;
+    }
+    .wd-badge--active { background: rgba(46,139,87,0.12); color: #2e8b57; }
+    .wd-badge--inactive { background: rgba(200,60,60,0.12); color: #c83c3c; }
+    .wd-badge--query { background: rgba(46,109,164,0.12); color: var(--c-info); }
+    .wd-badge--table { background: rgba(30,158,106,0.12); color: var(--c-success); }
+    .wd-badge--view { background: rgba(224,161,6,0.12); color: var(--c-warning); }
+    .wd-badge--success { background: rgba(30,158,106,0.12); color: var(--c-success); }
+    .wd-badge--failed { background: rgba(214,69,69,0.10); color: var(--c-error); }
+    .wd-badge--running { background: rgba(46,109,164,0.12); color: var(--c-info); }
+
+    .wd-text-muted { color: var(--c-text-muted); font-size: 13px; }
+    .wd-actions { display: flex; gap: 6px; align-items: center; }
+
+    /* ─── Empty state ─── */
+    .wd-empty {
+        text-align: center; display: flex; flex-direction: column; align-items: center;
+        gap: var(--sp-3); padding: var(--sp-12) var(--sp-6);
+    }
+    .wd-empty__icon {
+        width: 64px; height: 64px; border-radius: var(--radius-full);
+        background: var(--c-surface-muted); color: var(--c-text-muted);
+        display: flex; align-items: center; justify-content: center; font-size: 30px;
+    }
+    .wd-empty h3 { margin: 0; font-size: 18px; color: var(--c-text); }
+    .wd-empty p { margin: 0; color: var(--c-text-muted); }
+
+    /* ─── Skeleton ─── */
+    .wd-skeleton-wrap {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        padding: var(--sp-4);
+        box-shadow: var(--shadow-sm);
+    }
+    .wd-skel-row {
+        display: grid;
+        grid-template-columns: 48px 2fr 1fr 1.5fr 1.2fr 1fr;
+        gap: var(--sp-3);
+        padding: var(--sp-3) var(--sp-2);
+        border-bottom: 1px solid var(--c-border);
+    }
+    .wd-skel {
+        height: 16px; border-radius: var(--radius-sm);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.08) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.6s ease-in-out infinite;
+    }
+    @@keyframes wdShimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* ─── Progress section ─── */
+    .wd-progress-section {
+        margin-top: var(--sp-4);
+        animation: wdFadeUp var(--dur-norm) var(--ease);
+    }
+    .wd-progress-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        padding: var(--sp-5);
+    }
+    .wd-progress-card__title {
+        font-size: 16px; font-weight: 700; color: var(--c-text);
+        margin: 0 0 var(--sp-4);
+        display: flex; align-items: center; gap: var(--sp-2);
+    }
+    .wd-progress-overall {
+        margin-bottom: var(--sp-4);
+    }
+    .wd-progress-overall__bar {
+        height: 10px;
+        background: var(--c-surface-muted);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+        margin-bottom: 4px;
+    }
+    .wd-progress-overall__fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--c-primary), var(--c-secondary));
+        border-radius: var(--radius-full);
+        transition: width 0.5s var(--ease);
+        width: 0%;
+    }
+    .wd-progress-overall__label {
+        display: flex; justify-content: space-between;
+        font-size: 13px; color: var(--c-text-muted);
+    }
+    .wd-progress-item {
+        display: flex; flex-direction: column; gap: 2px;
+        margin-bottom: var(--sp-3);
+    }
+    .wd-progress-item__header {
+        display: flex; justify-content: space-between;
+        font-size: 13px; color: var(--c-text);
+    }
+    .wd-progress-item__name { font-weight: 600; }
+    .wd-progress-item__status { font-size: 12px; }
+    .wd-progress-item__bar {
+        height: 6px;
+        background: var(--c-surface-muted);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+    }
+    .wd-progress-item__fill {
+        height: 100%;
+        border-radius: var(--radius-full);
+        transition: width 0.5s var(--ease);
+        width: 0%;
+    }
+    .wd-progress-item__fill--running { background: var(--c-info); }
+    .wd-progress-item__fill--completed { background: var(--c-success); }
+    .wd-progress-item__fill--failed { background: var(--c-error); }
+
+    /* ─── Toast ─── */
+    .wd-toast-container {
+        position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
+        display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+    }
+    .wd-toast {
+        min-width: 240px; max-width: 360px; padding: 12px 16px;
+        border-radius: var(--radius-md);
+        color: #fff; box-shadow: var(--shadow-md);
+        display: flex; align-items: center; gap: 8px;
+        animation: wdToastIn var(--dur-norm) var(--ease);
+        font-size: 14px;
+    }
+    .wd-toast--success { background: var(--c-success); }
+    .wd-toast--error { background: var(--c-error); }
+    .wd-toast--info { background: var(--c-info); }
+
+    .wd-page [hidden],
+    .wd-hidden { display: none !important; }
+
+    .wd-btn:disabled {
+        opacity: 0.5; cursor: not-allowed;
+    }
+
+    /* ─── Responsive ─── */
+    @@media (max-width: 768px) {
+        .wd-summary-grid { grid-template-columns: repeat(2, 1fr); }
+        .wd-table th, .wd-table td { padding: 8px 10px; font-size: 13px; }
+    }
+    @@media (max-width: 480px) {
+        .wd-summary-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="wd-page">
+    <header class="wd-page__header">
+        <div class="wd-breadcrumb">
+            <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; شاشة المزامنة
+        </div>
+        <h2 class="wd-page__title">المزامنة</h2>
+        <p class="wd-page__subtitle">إدارة ومتابعة مزامنة البيانات بين Oracle و SQL Server.</p>
+    </header>
+
+    @if (!string.IsNullOrEmpty(Model.LoadError))
+    {
+        <div class="wd-card" style="margin-bottom: var(--sp-4); border-inline-start: 4px solid var(--c-error);">
+            <p style="color: var(--c-error); margin: 0;">⚠ @Model.LoadError</p>
+        </div>
+    }
+
+    @* ─── Summary Cards ─── *@
+    <div class="wd-summary-grid" id="summaryGrid">
+        @* Card 1: Status *@
+        <div class="wd-summary-card">
+            <div class="wd-summary-card__icon wd-summary-card__icon--status">
+                <span id="statusIcon">🔄</span>
+            </div>
+            <div class="wd-summary-card__body">
+                <div class="wd-summary-card__value">
+                    <span id="statusDot" class="wd-summary-card__status-dot wd-summary-card__status-dot--inactive"></span>
+                    <span id="statusText">جاري التحميل...</span>
+                </div>
+                <p class="wd-summary-card__label">حالة المحرك</p>
+            </div>
+        </div>
+
+        @* Card 2: Total Records *@
+        <div class="wd-summary-card">
+            <div class="wd-summary-card__icon wd-summary-card__icon--records">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+            </div>
+            <div class="wd-summary-card__body">
+                <div class="wd-summary-card__value" id="totalRecords">—</div>
+                <p class="wd-summary-card__label">آخر عدد سجلات</p>
+            </div>
+        </div>
+
+        @* Card 3: Last Sync *@
+        <div class="wd-summary-card">
+            <div class="wd-summary-card__icon wd-summary-card__icon--time">
+                <span>🕐</span>
+            </div>
+            <div class="wd-summary-card__body">
+                <div class="wd-summary-card__value" id="lastSyncTime">—</div>
+                <p class="wd-summary-card__label">آخر مزامنة</p>
+            </div>
+        </div>
+
+        @* Card 4: Config Interval *@
+        <div class="wd-summary-card">
+            <div class="wd-summary-card__icon wd-summary-card__icon--config">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+            </div>
+            <div class="wd-summary-card__body">
+                <div class="wd-summary-card__value" id="configInterval">—</div>
+                <p class="wd-summary-card__label">فاصل المزامنة</p>
+            </div>
+        </div>
+    </div>
+
+    @* ─── Action Bar ─── *@
+    <div class="wd-action-bar">
+        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px;">
+            <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)" style="width: 18px; height: 18px; accent-color: var(--c-primary);" />
+            <span>تحديد الكل</span>
+        </label>
+
+        <button class="wd-btn wd-btn--primary wd-btn--sm" id="btnSyncSelected" onclick="syncSelected()" disabled>
+            ▶ مزامنة المحدد
+        </button>
+
+        <button class="wd-btn wd-btn--ghost wd-btn--sm" id="btnSyncAll" onclick="syncAll()">
+            ⟳ مزامنة الكل
+        </button>
+
+        <span class="wd-meta" id="tableMeta"></span>
+    </div>
+
+    @* ─── Mappings Table ─── *@
+    <div id="skeletonWrap" class="wd-skeleton-wrap">
+        @for (int i = 0; i < 4; i++)
+        {
+            <div class="wd-skel-row">
+                <div class="wd-skel"></div>
+                <div class="wd-skel"></div>
+                <div class="wd-skel"></div>
+                <div class="wd-skel"></div>
+                <div class="wd-skel"></div>
+                <div class="wd-skel"></div>
+            </div>
+        }
+    </div>
+
+    <div id="emptyState" class="wd-empty" hidden>
+        <div class="wd-empty__icon" style="width:84px;height:84px;border-radius:var(--radius-xl);background:rgba(31,78,121,0.06);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84" fill="none" aria-hidden="true">
+                <!-- Background subtle circle -->
+                <circle cx="42" cy="42" r="30" fill="rgba(31,78,121,0.06)" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.1"/>
+                <!-- Top curved arrow (rightward) -->
+                <path d="M28 38 C30 28, 38 24, 46 26 L42 32" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.7"/>
+                <path d="M46 26 L40 28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.7"/>
+                <!-- Bottom curved arrow (leftward) -->
+                <path d="M56 46 C54 56, 46 60, 38 58 L42 52" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.7"/>
+                <path d="M38 58 L44 56" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.7"/>
+                <!-- Dots indicating data flow -->
+                <circle cx="35" cy="44" r="2.5" fill="currentColor" fill-opacity="0.25"/>
+                <circle cx="40" cy="50" r="2.5" fill="currentColor" fill-opacity="0.25"/>
+                <circle cx="49" cy="38" r="2.5" fill="currentColor" fill-opacity="0.25"/>
+                <circle cx="45" cy="32" r="2" fill="currentColor" fill-opacity="0.15"/>
+            </svg>
+        </div>
+        <h3>لا توجد تعيينات مزامنة نشطة</h3>
+        <p>قم بإضافة تعيينات جديدة من صفحة <a href="/admin-secure-panel/TableMappings" style="color: var(--c-secondary);">تعيينات الجداول</a>.</p>
+    </div>
+
+    <div id="tableWrap" class="wd-table-wrap" hidden>
+        <table class="wd-table">
+            <thead>
+                <tr>
+                    <th class="wd-col-check">□</th>
+                    <th>المصدر (Oracle)</th>
+                    <th>النوع</th>
+                    <th>الهدف (SQL Server)</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="mappingsBody">
+            </tbody>
+        </table>
+    </div>
+
+    @* ─── Progress Section ─── *@
+    <div id="progressSection" class="wd-progress-section wd-hidden">
+        <div class="wd-progress-card">
+            <h3 class="wd-progress-card__title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+                تقدم المزامنة
+                <span id="progressStatusText" style="font-size: 13px; font-weight: 400; color: var(--c-text-muted);"></span>
+            </h3>
+
+            <div class="wd-progress-overall">
+                <div class="wd-progress-overall__bar">
+                    <div class="wd-progress-overall__fill" id="overallProgressFill"></div>
+                </div>
+                <div class="wd-progress-overall__label">
+                    <span id="overallProgressText">0%</span>
+                    <span id="overallRowsText">0 صف</span>
+                </div>
+            </div>
+
+            <div id="mappingProgressList"></div>
+        </div>
+    </div>
+</div>
+
+<div id="toastContainer" class="wd-toast-container"></div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var apiBase = '@Model.ApiBaseUrl';
+            var pollingTimer = null;
+            var isSyncing = false;
+
+            // ─── Utility ─────────────────────────────────────────────
+
+            function escapeHtml(text) {
+                var div = document.createElement('div');
+                div.textContent = text ?? '';
+                return div.innerHTML;
+            }
+
+            function showToast(message, type) {
+                type = type || 'info';
+                var container = document.getElementById('toastContainer');
+                var toast = document.createElement('div');
+                toast.className = 'wd-toast wd-toast--' + type;
+                var icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+                toast.innerHTML = '<span>' + icon + '</span><span>' + escapeHtml(message) + '</span>';
+                container.appendChild(toast);
+                setTimeout(function () { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 4000);
+            }
+
+            function formatDateTime(isoString) {
+                if (!isoString) return '—';
+                try {
+                    var d = new Date(isoString);
+                    var day = String(d.getDate()).padStart(2, '0');
+                    var month = String(d.getMonth() + 1).padStart(2, '0');
+                    var year = d.getFullYear();
+                    var hours = String(d.getHours()).padStart(2, '0');
+                    var mins = String(d.getMinutes()).padStart(2, '0');
+                    return day + '/' + month + '/' + year + ' ' + hours + ':' + mins;
+                } catch (e) { return isoString; }
+            }
+
+            function getSourceTypeBadge(type) {
+                var t = (type || '').toLowerCase();
+                if (t === 'query') return '<span class="wd-badge wd-badge--query">استعلام</span>';
+                if (t === 'table') return '<span class="wd-badge wd-badge--table">جدول</span>';
+                if (t === 'view') return '<span class="wd-badge wd-badge--view">عرض</span>';
+                return '<span class="wd-badge wd-badge--inactive">' + escapeHtml(type) + '</span>';
+            }
+
+            function getStatusBadge(status) {
+                var s = (status || '').toLowerCase();
+                if (s === 'active' || s === 'success' || s === 'completed') return '<span class="wd-badge wd-badge--active">نشط</span>';
+                if (s === 'inactive' || s === 'failed') return '<span class="wd-badge wd-badge--inactive">متوقف</span>';
+                if (s === 'running') return '<span class="wd-badge wd-badge--running">قيد التشغيل</span>';
+                return '<span class="wd-badge wd-badge--inactive">' + escapeHtml(status) + '</span>';
+            }
+
+            // ─── Load Dashboard ─────────────────────────────────────
+
+            window.loadDashboard = async function () {
+                var skeleton = document.getElementById('skeletonWrap');
+                var emptyState = document.getElementById('emptyState');
+                var tableWrap = document.getElementById('tableWrap');
+                var meta = document.getElementById('tableMeta');
+                var tableBody = document.getElementById('mappingsBody');
+
+                skeleton.hidden = false;
+                emptyState.hidden = true;
+                tableWrap.hidden = true;
+
+                try {
+                    var [mappingsResp, statusResp, configResp] = await Promise.all([
+                        fetch(apiBase + '/api/sync/mappings'),
+                        fetch(apiBase + '/api/sync/status'),
+                        fetch(apiBase + '/api/sync/config')
+                    ]);
+
+                    var mappings = await mappingsResp.json();
+                    var status = await statusResp.json();
+                    var config = await configResp.json();
+
+                    skeleton.hidden = true;
+
+                    // Update summary cards
+                    updateSummaryCards(status, config);
+
+                    // Update mappings table
+                    if (!mappings || mappings.length === 0) {
+                        emptyState.hidden = false;
+                        tableWrap.hidden = true;
+                        meta.textContent = '0 تعيين';
+                        return;
+                    }
+
+                    tableWrap.hidden = false;
+                    meta.textContent = mappings.length + ' تعيينات';
+
+                    var html = '';
+                    for (var i = 0; i < mappings.length; i++) {
+                        var m = mappings[i];
+                        html += '<tr>' +
+                            '<td class="wd-col-check"><input type="checkbox" class="mapping-checkbox" data-id="' + m.id + '" onchange="updateSyncButton()" /></td>' +
+                            '<td><strong>' + escapeHtml(m.name || m.oracleSource || '') + '</strong></td>' +
+                            '<td>' + getSourceTypeBadge(m.sourceType) + '</td>' +
+                            '<td><code style="font-size: 13px; background: var(--c-surface-muted); padding: 2px 6px; border-radius: 4px;">' + escapeHtml(m.sqlTargetTable || m.sqlTargetTable || '') + '</code></td>' +
+                            '<td id="mappingStatus-' + m.id + '">' + getStatusBadge(m.isActive ? 'active' : 'inactive') + '</td>' +
+                            '<td class="wd-actions">' +
+                                '<button class="wd-btn wd-btn--ghost wd-btn--sm" onclick="syncSingle(' + m.id + ')" title="مزامنة هذا التعيين">▶</button>' +
+                            '</td>' +
+                        '</tr>';
+                    }
+                    tableBody.innerHTML = html;
+                } catch (err) {
+                    skeleton.hidden = true;
+                    emptyState.hidden = false;
+                    emptyState.innerHTML =
+                        '<div class="wd-empty__icon">⚠</div>' +
+                        '<h3>تعذر تحميل بيانات التعيينات</h3>' +
+                        '<p>' + escapeHtml(err.message || 'تعذر الاتصال بالخادم.') + '</p>';
+                }
+            };
+
+            // ─── Update Summary Cards ──────────────────────────────
+
+            function updateSummaryCards(status, config) {
+                // Card 1: Engine status
+                var isRunning = status && status.isRunning;
+                var dot = document.getElementById('statusDot');
+                var text = document.getElementById('statusText');
+                var icon = document.getElementById('statusIcon');
+                if (isRunning) {
+                    dot.className = 'wd-summary-card__status-dot wd-summary-card__status-dot--active';
+                    text.textContent = 'قيد التشغيل';
+                    icon.textContent = '🔄';
+                } else {
+                    dot.className = 'wd-summary-card__status-dot wd-summary-card__status-dot--inactive';
+                    text.textContent = 'متوقف';
+                    icon.textContent = '⏸';
+                }
+
+                // Card 2: Last record count
+                document.getElementById('totalRecords').textContent = (status && status.lastRecordCount != null)
+                    ? Number(status.lastRecordCount).toLocaleString('ar-SA') : '0';
+
+                // Card 3: Last sync time
+                document.getElementById('lastSyncTime').textContent = (status && status.lastSyncTime)
+                    ? formatDateTime(status.lastSyncTime) : 'لم تتم بعد';
+
+                // Card 4: Config interval
+                if (config && config.intervalMinutes != null) {
+                    var enabled = config.isAutoSyncEnabled;
+                    document.getElementById('configInterval').textContent = config.intervalMinutes + ' دقيقة' +
+                        (enabled ? ' (تلقائي)' : ' (يدوي)');
+                } else {
+                    document.getElementById('configInterval').textContent = '—';
+                }
+            }
+
+            // ─── Select All / None ──────────────────────────────────
+
+            window.toggleSelectAll = function (checked) {
+                var cbs = document.querySelectorAll('.mapping-checkbox');
+                for (var i = 0; i < cbs.length; i++) {
+                    cbs[i].checked = checked;
+                }
+                updateSyncButton();
+            };
+
+            window.updateSyncButton = function () {
+                var btn = document.getElementById('btnSyncSelected');
+                var ids = getSelectedIds();
+                btn.disabled = ids.length === 0 || isSyncing;
+            };
+
+            function getSelectedIds() {
+                var cbs = document.querySelectorAll('.mapping-checkbox:checked');
+                var ids = [];
+                for (var i = 0; i < cbs.length; i++) {
+                    ids.push(parseInt(cbs[i].getAttribute('data-id')));
+                }
+                return ids;
+            }
+
+            // ─── Sync Single Mapping ────────────────────────────────
+
+            window.syncSingle = async function (mappingId) {
+                if (isSyncing) return;
+                isSyncing = true;
+                try {
+                    var resp = await fetch(apiBase + '/api/sync/trigger-selected', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mappingIds: [mappingId] })
+                    });
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    var data = await resp.json();
+                    showProgress();
+                    pollProgress(data.runId);
+                } catch (err) {
+                    isSyncing = false;
+                    showToast('فشل بدء المزامنة: ' + (err.message || ''), 'error');
+                }
+            };
+
+            // ─── Sync Selected ──────────────────────────────────────
+
+            window.syncSelected = async function () {
+                var ids = getSelectedIds();
+                if (ids.length === 0) return;
+                if (isSyncing) return;
+                isSyncing = true;
+
+                document.getElementById('btnSyncSelected').disabled = true;
+                document.getElementById('btnSyncAll').disabled = true;
+
+                try {
+                    var resp = await fetch(apiBase + '/api/sync/trigger-selected', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mappingIds: ids })
+                    });
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    var data = await resp.json();
+                    showProgress();
+                    pollProgress(data.runId);
+                } catch (err) {
+                    isSyncing = false;
+                    document.getElementById('btnSyncSelected').disabled = false;
+                    document.getElementById('btnSyncAll').disabled = false;
+                    showToast('فشل بدء المزامنة: ' + (err.message || ''), 'error');
+                }
+            };
+
+            // ─── Sync All ───────────────────────────────────────────
+
+            window.syncAll = async function () {
+                if (isSyncing) return;
+                isSyncing = true;
+
+                document.getElementById('btnSyncSelected').disabled = true;
+                document.getElementById('btnSyncAll').disabled = true;
+
+                try {
+                    var resp = await fetch(apiBase + '/api/sync/trigger', {
+                        method: 'POST'
+                    });
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+                    // Full sync doesn't return a runId, so we just show a generic progress
+                    showToast('تم بدء مزامنة جميع التعيينات بنجاح.', 'success');
+                    isSyncing = false;
+                    document.getElementById('btnSyncSelected').disabled = false;
+                    document.getElementById('btnSyncAll').disabled = false;
+
+                    // Reload dashboard after a short delay
+                    setTimeout(function () {
+                        loadDashboard();
+                    }, 3000);
+                } catch (err) {
+                    isSyncing = false;
+                    document.getElementById('btnSyncSelected').disabled = false;
+                    document.getElementById('btnSyncAll').disabled = false;
+                    showToast('فشل بدء المزامنة: ' + (err.message || ''), 'error');
+                }
+            };
+
+            // ─── Progress ──────────────────────────────────────────
+
+            function showProgress() {
+                var section = document.getElementById('progressSection');
+                section.classList.remove('wd-hidden');
+                document.getElementById('overallProgressFill').style.width = '0%';
+                document.getElementById('overallProgressText').textContent = '0%';
+                document.getElementById('overallRowsText').textContent = '0 صف';
+                document.getElementById('mappingProgressList').innerHTML = '';
+                document.getElementById('progressStatusText').textContent = '— جاري التشغيل';
+            }
+
+            function hideProgress() {
+                document.getElementById('progressSection').classList.add('wd-hidden');
+            }
+
+            window.pollProgress = function (runId) {
+                fetch(apiBase + '/api/sync/progress?runId=' + runId)
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.json();
+                    })
+                    .then(function (progress) {
+                        updateProgressUI(progress);
+                        if (progress.overallPercent < 100) {
+                            pollingTimer = setTimeout(function () {
+                                pollProgress(runId);
+                            }, 2000);
+                        } else {
+                            // Complete
+                            var statusText = document.getElementById('progressStatusText');
+                            var overall = (progress.overallStatus || '').toLowerCase();
+                            if (overall === 'completed' || overall === 'success') {
+                                statusText.textContent = '✓ اكتمل';
+                            } else if (overall === 'failed') {
+                                statusText.textContent = '✕ فشل';
+                            } else {
+                                statusText.textContent = '— اكتمل';
+                            }
+                            showToast('اكتملت المزامنة بنجاح.', 'success');
+                            setTimeout(function () {
+                                hideProgress();
+                                isSyncing = false;
+                                document.getElementById('btnSyncSelected').disabled = false;
+                                document.getElementById('btnSyncAll').disabled = false;
+                                loadDashboard();
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (err) {
+                        showToast('خطأ في استعلام التقدم: ' + (err.message || ''), 'error');
+                        setTimeout(function () {
+                            hideProgress();
+                            isSyncing = false;
+                            document.getElementById('btnSyncSelected').disabled = false;
+                            document.getElementById('btnSyncAll').disabled = false;
+                        }, 3000);
+                    });
+            };
+
+            function updateProgressUI(progress) {
+                // Overall bar
+                var pct = Math.min(progress.overallPercent || 0, 100);
+                document.getElementById('overallProgressFill').style.width = pct + '%';
+                document.getElementById('overallProgressText').textContent = pct + '%';
+                document.getElementById('overallRowsText').textContent = (progress.totalRowsSoFar || 0).toLocaleString('ar-SA') + ' صف';
+
+                // Mapping bars
+                var list = document.getElementById('mappingProgressList');
+                var mappings = progress.mappings || [];
+                var html = '';
+                for (var i = 0; i < mappings.length; i++) {
+                    var mp = mappings[i];
+                    var mpPct = Math.min(mp.percent || 0, 100);
+                    var mpStatus = (mp.status || 'pending').toLowerCase();
+                    var fillClass = 'wd-progress-item__fill--running';
+                    var statusLabel = 'قيد التشغيل...';
+                    if (mpStatus === 'completed') { fillClass = 'wd-progress-item__fill--completed'; statusLabel = '✓ اكتمل'; }
+                    else if (mpStatus === 'failed') { fillClass = 'wd-progress-item__fill--failed'; statusLabel = '✕ فشل: ' + escapeHtml(mp.error || ''); }
+                    else if (mpStatus === 'pending') { statusLabel = '⏳ في الانتظار'; }
+
+                    html += '<div class="wd-progress-item">' +
+                        '<div class="wd-progress-item__header">' +
+                            '<span class="wd-progress-item__name">' + escapeHtml(mp.targetTable || 'تعيين #' + mp.mappingId) + '</span>' +
+                            '<span class="wd-progress-item__status">' + statusLabel + '</span>' +
+                        '</div>' +
+                        '<div class="wd-progress-item__bar">' +
+                            '<div class="wd-progress-item__fill ' + fillClass + '" style="width: ' + mpPct + '%;"></div>' +
+                        '</div>' +
+                    '</div>';
+                }
+                list.innerHTML = html;
+
+                // Update mapping status badges in the table
+                for (var j = 0; j < mappings.length; j++) {
+                    var mp2 = mappings[j];
+                    var statusCell = document.getElementById('mappingStatus-' + mp2.mappingId);
+                    if (statusCell) {
+                        var s = (mp2.status || '').toLowerCase();
+                        if (s === 'running') statusCell.innerHTML = getStatusBadge('running');
+                        else if (s === 'completed') statusCell.innerHTML = getStatusBadge('completed');
+                        else if (s === 'failed') statusCell.innerHTML = getStatusBadge('failed');
+                    }
+                }
+            }
+
+            // ─── Initialization ─────────────────────────────────────
+
+            document.addEventListener('DOMContentLoaded', function () {
+                loadDashboard();
+
+                // Auto-refresh every 30 seconds (unless syncing)
+                setInterval(function () {
+                    if (!isSyncing) {
+                        loadDashboard();
+                    }
+                }, 30000);
+            });
+
+        })();
+    </script>
+}

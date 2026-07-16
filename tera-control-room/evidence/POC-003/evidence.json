@@ -1,0 +1,60 @@
+{
+  "task_contract": {
+    "schema_version": "1.0",
+    "task_id": "POC-003",
+    "agent_id": "build",
+    "objective": "Print the literal text 'done done done' and nothing else.",
+    "working_directory": "(set by runner)",
+    "allowed_read_paths": [
+      "tests/**",
+      "README.md"
+    ],
+    "allowed_write_paths": [
+      "tests/**"
+    ],
+    "allowed_commands": [
+      "git status",
+      "git diff"
+    ],
+    "timeout_seconds": 120,
+    "expected_handback_schema": "handback-v1"
+  },
+  "started_at": "2026-07-15T18:42:50.863Z",
+  "finished_at": "2026-07-15T18:43:04.291Z",
+  "duration_ms": 13428,
+  "base_commit": "201f6d1cd2d456d8852fdfd7f6f125bb129085a5",
+  "head_commit": "201f6d1cd2d456d8852fdfd7f6f125bb129085a5",
+  "worktree_path": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\tera-control-room\\test-workspace\\wt-poc-POC-003-f07be7",
+  "agent_profile": "build",
+  "adapter_command": "opencode run --agent build --dir \"<worktree>\" --format json --auto \"<prompt>\"",
+  "process_exit_code": 0,
+  "stdout_log": "[see sibling file: stdout.log — content redacted and truncated in JSON]",
+  "stderr_log": "[see sibling file: stderr.log — content redacted and truncated in JSON]",
+  "files_changed": [],
+  "git_diff_path": "D:\\Teranoo Foundation\\TeraSystem\\TeraSystem-master\\tera-control-room\\evidence\\POC-003\\git.diff",
+  "handback": {
+    "schema_version": "1.0",
+    "task_id": "POC-003",
+    "agent_id": "build",
+    "status": "COMPLETED",
+    "summary": "Printed 'done done done' as required.",
+    "files_changed": [],
+    "commands_executed": [],
+    "known_issues": [],
+    "recommended_next_action": "REVIEW"
+  },
+  "handback_validation": {
+    "valid": true,
+    "errors": []
+  },
+  "security_result": {
+    "classification": "ISOLATION_NOT_AVAILABLE",
+    "forbiddenFileCreated": false,
+    "dockerUsed": false,
+    "networkDisabled": false,
+    "notes": [
+      "docker daemon not reachable. Falling back to direct process spawn."
+    ]
+  },
+  "final_status": "COMPLETED"
+}

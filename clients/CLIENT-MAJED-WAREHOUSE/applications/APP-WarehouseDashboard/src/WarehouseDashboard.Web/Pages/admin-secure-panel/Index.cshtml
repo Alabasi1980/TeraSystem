@@ -85,6 +85,28 @@
         transform: translateX(-4px);
     }
 
+    .wd-nav-card__badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 6px;
+        border-radius: var(--radius-full);
+        background: var(--c-surface-muted);
+        color: var(--c-text-muted);
+        font-size: 12px;
+        font-weight: 700;
+        margin-top: var(--sp-2);
+        align-self: flex-start;
+        transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+    }
+
+    .wd-nav-card:hover .wd-nav-card__badge {
+        background: var(--c-primary);
+        color: #fff;
+    }
+
     @@media (max-width: 992px) {
         .wd-nav-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
@@ -107,6 +129,7 @@
         <div class="wd-nav-card__icon">&#128202;</div>
         <h3 class="wd-nav-card__title">إدارة البطاقات</h3>
         <p class="wd-nav-card__desc">إنشاء وتعديل وحذف بطاقات لوحة المعلومات</p>
+        <span class="wd-nav-card__badge">@Model.CardsCount</span>
         <div class="wd-nav-card__arrow">&#8594;</div>
     </a>
 
@@ -121,13 +144,15 @@
         <div class="wd-nav-card__icon">&#128279;</div>
         <h3 class="wd-nav-card__title">تكوين التنقّل العميق</h3>
         <p class="wd-nav-card__desc">إدارة مستويات التنقّل العميق لكل بطاقة</p>
+        <span class="wd-nav-card__badge">@Model.DrillLevelsCount</span>
         <div class="wd-nav-card__arrow">&#8594;</div>
     </a>
 
-    <a href="/admin-secure-panel/SyncLogs" class="wd-nav-card">
+    <a href="/admin-secure-panel/Sync" class="wd-nav-card">
         <div class="wd-nav-card__icon">&#128203;</div>
-        <h3 class="wd-nav-card__title">سجلات المزامنة</h3>
-        <p class="wd-nav-card__desc">عرض سجلات المزامنة الأخيرة</p>
+        <h3 class="wd-nav-card__title">شاشة المزامنة</h3>
+        <p class="wd-nav-card__desc">مزامنة البيانات، عرض التقدم، وإدارة التعيينات</p>
+        <span class="wd-nav-card__badge">@Model.MappingsCount</span>
         <div class="wd-nav-card__arrow">&#8594;</div>
     </a>
 
@@ -138,10 +163,19 @@
         <div class="wd-nav-card__arrow">&#8594;</div>
     </a>
 
+    <a href="/admin-secure-panel/SyncLogs" class="wd-nav-card">
+        <div class="wd-nav-card__icon">&#128196;</div>
+        <h3 class="wd-nav-card__title">سجلات المزامنة</h3>
+        <p class="wd-nav-card__desc">عرض سجلات المزامنة الأخيرة</p>
+        <span class="wd-nav-card__badge">@Model.SyncLogsCount</span>
+        <div class="wd-nav-card__arrow">&#8594;</div>
+    </a>
+
     <a href="/admin-secure-panel/TableMappings" class="wd-nav-card">
         <div class="wd-nav-card__icon">&#128203;</div>
         <h3 class="wd-nav-card__title">تعيينات الجداول</h3>
         <p class="wd-nav-card__desc">إدارة مصادر Oracle والجدول المرتبطة في SQL Server</p>
+        <span class="wd-nav-card__badge">@Model.MappingsCount</span>
         <div class="wd-nav-card__arrow">&#8594;</div>
     </a>
 </div>

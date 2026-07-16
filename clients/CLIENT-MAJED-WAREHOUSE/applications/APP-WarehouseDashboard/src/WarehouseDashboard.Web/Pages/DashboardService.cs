@@ -125,6 +125,86 @@ public class DashboardService
 
             // First cell drives KPI / Gauge cards.
             result.KpiValue = rows[0].Values.FirstOrDefault();
+
+            // Advanced KPI: Execute additional queries if needed
+            if (card.ChartType.Equals("KPI", StringComparison.OrdinalIgnoreCase)
+                && !string.IsNullOrEmpty(card.KpiMode)
+                && card.KpiMode != "simple")
+            {
+                result.KpiMode = card.KpiMode;
+
+                // Extract main KPI value from the base query result
+                if (rows.Count > 0 && !string.IsNullOrEmpty(card.ValueColumn))
+                {
+                    var valueCol = card.ValueColumn.Trim('[', ']').Trim();
+                    if (rows[0].TryGetValue(valueCol, out var mainVal))
+                    {
+                        result.KpiMainValue = mainVal;
+                    }
+                    else
+                    {
+                        // Fallback: use first numeric value
+                        result.KpiMainValue = rows[0].Values.FirstOrDefault();
+                    }
+                }
+
+                // Build and execute additional KPI queries
+                var kpiQueries = KpiQueryBuilder.Build(card);
+
+                // Execute change query
+                if (kpiQueries.ChangeSql != null)
+                {
+                    try
+                    {
+                        var prevValue = await ExecuteScalarQueryAsync(kpiQueries.ChangeSql, ct);
+                        if (prevValue != null && prevValue != DBNull.Value)
+                        {
+                            var current = Convert.ToDouble(result.KpiMainValue ?? 0);
+                            var previous = Convert.ToDouble(prevValue);
+
+                            if (previous != 0)
+                            {
+                                var changePercent = ((current - previous) / Math.Abs(previous)) * 100;
+                                result.KpiChangePercent = Math.Round((decimal)changePercent, 1);
+                                result.KpiChangeDirection = changePercent > 0 ? "up" : changePercent < 0 ? "down" : "flat";
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log but don't fail the whole card
+                        result.ErrorMessage = $"Change query failed: {DataHelper.Sanitize(ex.Message)}";
+                    }
+                }
+
+                // Execute sparkline query
+                if (kpiQueries.SparklineSql != null)
+                {
+                    try
+                    {
+                        result.KpiSparklineData = await ExecuteQueryAsync(kpiQueries.SparklineSql, ct);
+                    }
+                    catch (Exception ex)
+                    {
+                        result.ErrorMessage = $"Sparkline query failed: {DataHelper.Sanitize(ex.Message)}";
+                    }
+                }
+
+                // Execute grand total query
+                if (kpiQueries.GrandTotalSql != null)
+                {
+                    try
+                    {
+                        var grandTotal = await ExecuteScalarQueryAsync(kpiQueries.GrandTotalSql, ct);
+                        result.KpiGrandTotal = grandTotal;
+                    }
+                    catch (Exception ex)
+                    {
+                        result.ErrorMessage = $"Grand total query failed: {DataHelper.Sanitize(ex.Message)}";
+                    }
+                }
+            }
+
             result.Status = "success";
         }
         catch (Exception ex)
@@ -228,5 +308,64 @@ public class DashboardService
         }
 
         return card.SqlQuery;
+    }
+
+    /// <summary>
+    /// Executes a SQL query and returns the first column of the first row (scalar value).
+    /// Used by KPI queries that return a single aggregate value.
+    /// </summary>
+    private async Task<object?> ExecuteScalarQueryAsync(string sql, CancellationToken ct)
+    {
+        var connTemplate = _config.GetConnectionString("SqlServer") ?? string.Empty;
+        var connString = ConnectionStringHelper.Resolve(connTemplate);
+
+        if (string.IsNullOrWhiteSpace(connString))
+            return null;
+
+        await using var conn = new SqlConnection(connString);
+        await conn.OpenAsync(ct);
+
+        await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 30 };
+        var result = await cmd.ExecuteScalarAsync(ct);
+        return result;
+    }
+
+    /// <summary>
+    /// Executes a SQL query and returns all rows as a list of dictionaries.
+    /// Used by KPI sparkline queries that return multiple rows.
+    /// </summary>
+    private async Task<List<Dictionary<string, object?>>> ExecuteQueryAsync(string sql, CancellationToken ct)
+    {
+        var connTemplate = _config.GetConnectionString("SqlServer") ?? string.Empty;
+        var connString = ConnectionStringHelper.Resolve(connTemplate);
+
+        if (string.IsNullOrWhiteSpace(connString))
+            return new List<Dictionary<string, object?>>();
+
+        await using var conn = new SqlConnection(connString);
+        await conn.OpenAsync(ct);
+
+        await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 30 };
+        await using var reader = await cmd.ExecuteReaderAsync(ct);
+
+        var colCount = reader.FieldCount;
+        var columns = new List<string>(colCount);
+        for (var i = 0; i < colCount; i++)
+        {
+            columns.Add(reader.GetName(i) is { Length: > 0 } name ? name : $"Column{i + 1}");
+        }
+
+        var rows = new List<Dictionary<string, object?>>();
+        while (await reader.ReadAsync(ct))
+        {
+            var row = new Dictionary<string, object?>(colCount, StringComparer.OrdinalIgnoreCase);
+            for (var i = 0; i < colCount; i++)
+            {
+                row[columns[i]] = DataHelper.ConvertCell(reader.GetValue(i));
+            }
+            rows.Add(row);
+        }
+
+        return rows;
     }
 }
