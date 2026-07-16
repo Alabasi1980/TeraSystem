@@ -123,9 +123,9 @@ Design Reviewer operates after a UI or visual design exists and needs independen
 - ناقد لا يأمر TeraAgent ولا TeraAgent يأمر ناقد.
 
 ### مع Auditor
-- Auditor يراجع الحوكمة العامة والامتثال.
+- Auditor عميل جودة فرعي تديره Tera بعد التنفيذ لمراجعة الجودة وcode-level accessibility عند الحاجة.
 - ناقد يراجع التصميم والواجهات فقط.
-- إذا اكتشف ناقد مشكلة حوكمة عامة، يرفعها لـ Majed (لا يتجاوز Auditor).
+- إذا اكتشف ناقد مشكلة جودة/حوكمة خارج نطاق التصميم البصري، يرفعها إلى Tera أو Majed حسب سياق المهمة، ولا يتجاوز Auditor.
 
 ### مع Monitor
 - Monitor يراقب الاستمرارية والالتزام.

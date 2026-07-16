@@ -67,13 +67,14 @@ This section only documents the engineering-adjacent boundary.
 
 ### 5.1 Core methodology
 
-Auditor follows a 6-stage graded methodology defined in `.opencode/agents/auditor.md` §5:
-1. **Understand** — read project context and active tasks.
-2. **Verify Documentation** — check Handback, Compliance Record, Activity Log.
-3. **Engineering Review** — follow `ENGINEERING_REVIEW_CHECKLIST.md` (12 sections).
-4. **Reconcile** — cross-check Handback vs Git diff vs Compliance Record.
-5. **Report** — classify findings (PASS / NEEDS_FIX / BLOCKED / DEFERRED).
-6. **Recommend** — clear action to Majed.
+Auditor is a Tera-managed quality gate sub-agent. It follows the diff-first, evidence-based methodology defined in `.opencode/agents/auditor.md`:
+
+1. Confirm authorized invocation by Tera or Monitor.
+2. Review changed code/files first, then directly affected units.
+3. Verify documentation, Handback, Compliance Record, and available evidence artifacts.
+4. Apply P1/P2 quality checks using `QUALITY_GATE_THRESHOLDS.md`.
+5. Classify findings as STOP / CAUTION / FLAG / BASELINE_DEBT.
+6. Produce a QUAUD report and return it to the orchestrator.
 
 ### 5.2 Engineering review scope
 
@@ -88,20 +89,21 @@ When code or implementation output is in scope, Auditor must review:
 
 Auditor must not focus only on superficial formatting or minor documentation issues.
 
-### 5.3 Cumulative audit
+### 5.3 Audit reports
 
-Auditor does not start from zero each session. The last audit point is recorded in `PROJECT_ACTIVITY_LOG.md`. Auditor resumes from that point.
+Auditor writes formal reports only under `project-control/audit-reports/` when that path is included in Allowed Write Targets, and returns a summary to the invoking orchestrator.
 
 ### 5.4 Uncertainty protocol
 
 When documentation is missing, sources conflict, or the audit scope is unclear, Auditor must:
-1. Use `WebSearch`/`WebFetch` for verification.
-2. If uncertainty remains, issue an `UNCERTAINTY_NOTICE` to Majed and stop.
-3. Never guess or fabricate audit findings.
+1. Ask the orchestrator for the missing evidence or allowed artifact.
+2. Use external verification only when allowed and relevant.
+3. Return `DEFERRED` or `NEEDS_FIX` when evidence is insufficient.
+4. Never guess or fabricate audit findings.
 
 ### 5.5 Authority
 
-Auditor remains advisory unless the owner grants specific action permissions (e.g., local git commit).
+Auditor remains advisory and cannot approve, close, commit, or implement. Findings become executable only when Tera, Monitor, ProjectControlAgent, or Majed converts them into tasks/issues.
 
 ---
 

@@ -10,7 +10,9 @@
 
 > **لا يتم تفعيل العميل لأنه موجود، بل لأنه مطلوب بسبب Trigger واضح.**
 
-Tera هو المسؤول الوحيد عن قرار التفعيل. العميل لا يُفعّل نفسه ولا يُفعّل عملاء آخرين.
+Tera هو المسؤول الافتراضي عن قرار التفعيل. العميل لا يُفعّل نفسه ولا يُفعّل عملاء آخرين.
+
+استثناء محدود: `Monitor` يستطيع استدعاء `Auditor` فقط عندما يطلب Majed من Monitor مراجعة/تحدي عمل Tera بجودة مستقلة.
 
 ---
 
@@ -26,6 +28,8 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | `USER_REQUEST` | طلب مباشر من المستخدم | "أضف Domain Research" → DomainResearchAgent |
 | `EXTERNAL_FACTOR` | عامل خارجي | مشروع عميل خارجي → Client Engagement Agents |
 | `REVIEW_NEEDED` | حاجة مراجعة | بعد عدة مهام تنفيذية → QualityReviewCoordinatorAgent |
+| `TASK_COMPLETED` | اكتمال مهمة تنفيذية تحتاج مراجعة بعد التنفيذ | TASK-COD حساس اكتمل → Auditor |
+| `QUALITY_SIGNAL` | ظهور مؤشر جودة أو أثر معماري يحتاج تدقيق | تعقيد/اختبارات ناقصة/تضخم diff → Auditor |
 | `PHASE_7_GATE` | بداية Phase 7 | QAAndAcceptanceAgent + DocumentationHandoverAgent |
 
 ---
@@ -44,6 +48,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | SolutionArchitectureAgent | `SOLUTION_ARCH_AGENT` | `PHASE_GATE`: قبل التنفيذ (Phase 5) | 5 | إذا كان المشروع صغيرًا جدًا والتقنيات محددة مسبقًا بدون قرارات معمارية مؤثرة | `08_TECHNICAL_ARCHITECTURE.md` أو `00_PROJECT_INPUTS.md` |
 | EngineeringAgent | `ENGINEERING_AGENT` | `PHASE_GATE`: عند وجود مهمة تنفيذية مع `Pre-Execution Gate: PASS` | 6 | لا يُفعّل بدون `TASK-COD-*` معتمد. لا يُفعّل لتحضير أو تحليل | ملفات التحليل والتصميم المعتمدة + `TASK-ID` + `Pre-Execution Gate: PASS` |
 | QAAndAcceptanceAgent | `QA_ACCEPTANCE_AGENT` | **Planning Mode:** `PHASE_GATE` + `DOCUMENT_READY`: قبل إعداد خطة التنفيذ. **Execution Mode:** `DOCUMENT_READY`: بعد تنفيذ `TASK-COD-*` يحتاج تحقق فعلي (build/test/run/connect). **كلا الوضعين:** قبل Phase 7 وقبل قبول أي مرحلة | 5–6–7 | **Planning Mode:** إذا كانت المهمة بسيطة ومعايير القبول واضحة ويمكن لـ Tera كتابتها مباشرة. **Execution Mode:** إذا كانت المهمة لا تحتاج اختبار CLI (مثل وثائق أو تحضير) | `10_TESTING_AND_ACCEPTANCE.md` (Planning) أو ملف `TASK-COD-*` المنفذ + معايير القبول (Execution) |
+| Auditor | `AUDITOR` | `TASK_COMPLETED` + `RISK_SIGNAL` / `QUALITY_SIGNAL` / `REVIEW_NEEDED`: بعد مهمة تنفيذية ذات مخاطرة أو أثر جودة؛ ويستدعيه Monitor فقط بطلب Majed | 6 | إذا كانت المهمة وثائقية أو صغيرة منخفضة المخاطر وقرار Tera هو `AUDITOR_REVIEW_NOT_REQUIRED` مع سبب موثق | ملف المهمة + Handback + diff/changed files + QA/Security/analyzer evidence عند وجودها + `QUALITY_GATE_THRESHOLDS.md` |
 | DocumentationHandoverAgent | `DOC_HANDOVER_AGENT` | `PHASE_7_GATE`: عند قرب التسليم أو في Phase 7 | 7 | إذا كان المشروع داخليًا small ولن يُسلّم لطرف آخر | ملفات التحليل والتصميم المعتمدة |
 
 ---
@@ -115,6 +120,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | ReportingAnalyticsAgent | اختياري | إذا كان هناك Dashboard |
 | ProjectControlAgent | اختياري | عند تعدد المهمات |
 | SoftwareDesignerAgent | اختياري | عند تعقيد المهمات |
+| Auditor | اختياري | مطلوب فقط عند risk/architecture/quality trigger بعد التنفيذ |
 
 ### 3.3 مشروع ERP (نظام تخطيط موارد مؤسسة)
 
@@ -139,6 +145,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 | ProjectControlAgent | نعم | إدارة تتبع متقدمة |
 | SoftwareDesignerAgent | نعم | مهام متعددة ومعقدة تحتاج Technical Specification |
 | QualityReviewCoordinatorAgent | نعم | بعد مجموعات مهام |
+| Auditor | نعم | بعد المهام الحساسة أو ذات الأثر المعماري/الجودة |
 | PlanComplianceReviewAgent | نعم | قبل قبول مراحل |
 | DomainResearchAgent | اختياري | لمجالات ERP غير المألوفة |
 | DomainExpertAgent | اختياري | لتحليل متقدم للمجال |
@@ -173,6 +180,7 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 
 ```
 تفعيل العميل يتم بقرار من Tera فقط، استنادًا إلى Trigger واضح.
+الاستثناء الوحيد في v1: Monitor → Auditor بطلب Majed الصريح.
 لا يتم تفعيل العميل تلقائيًا لمجرد دخول مرحلة أو وجود ملف جاهز.
 ```
 
@@ -211,7 +219,8 @@ Tera هو المسؤول الوحيد عن قرار التفعيل. العميل
 
 ## 5. تسجيل قرار التفعيل
 
-عند تفعيل أي عميل فرعي، يسجل Tera في `PROJECT_ACTIVITY_LOG.md`:
+عند تفعيل أي عميل فرعي، يسجل Tera في `PROJECT_ACTIVITY_LOG.md`.
+وعند استدعاء Monitor لـ Auditor بطلب Majed، يسجل Monitor ذلك في تقريره أو في السجل المتاح له:
 
 ```
 - Agent ID

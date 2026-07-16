@@ -358,15 +358,17 @@ If approved changes cause operational friction:
 
 This change is **not purely additive**; it changes Auditor's authority model and runtime invocation path.
 
-## Approval Required
-Yes — Majed approval is required before implementation.
+## Approval
+Approved by Majed for implementation on 2026-07-16.
 
-## Decisions Required Before Implementation
+## Approved Decisions
 
-1. Confirm Auditor frontmatter should change from `mode: primary` to `mode: subagent`.
-2. Confirm authorized orchestrators for v1 are only `TeraAgent` and `Monitor`.
-3. Confirm whether Auditor writes no files and returns reports to the orchestrator, or may write audit reports to `project-control/audit-reports/` in a later phase.
-4. Confirm whether P1 only should be implemented first, or P1 + P2 together.
+1. Auditor frontmatter changes from `mode: primary` to `mode: subagent`.
+2. Authorized orchestrators for v1 are only `TeraAgent` and `Monitor`.
+3. Auditor may write formal Markdown audit reports to `project-control/audit-reports/` while remaining read-only for the rest of the system and application.
+4. Auditor must also return a copy/summary of the report to the invoking orchestrator.
+5. Execute P1 + P2 together.
+6. Defer P3/P4/P5 until operational results and calibration are reviewed.
 
 ## Research Reference
 Full research findings archived in:

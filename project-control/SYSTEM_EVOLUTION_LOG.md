@@ -1018,3 +1018,62 @@
   1. إزالة قسم `Fresh File Read Rule` من `.opencode/agents/tera.md`.
   2. إعادة `Last Synced` إلى السطر السابق.
   3. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.
+
+---
+
+## SCP-2026-07-16-098 — تحويل Auditor إلى Quality Gate Sub-Agent
+
+- تاريخ: 2026-07-16
+- معرف التغيير: SCP-2026-07-16-098
+- مصدر الطلب: Owner Improvement Request (Majed) + Research-to-System Change + Expert Review
+- نوع التغيير: Agent Role Conversion / Quality Gate Governance / Runtime Integration
+- الملفات المعدلة:
+  - `.opencode/agents/auditor.md` — تحويله إلى `mode: subagent` مع P1/P2، diff-first، evidence model، QUAUD report، وكتابة تقارير محدودة داخل `project-control/audit-reports/`
+  - `.opencode/agents/tera.md` — إضافة قرار Auditor Quality Gate بعد التنفيذ وتحديث Last Synced
+  - `.opencode/agents/monitor.md` — إضافة `task: ask` كاستثناء محدود لاستدعاء Auditor بطلب Majed
+  - `.opencode/agents/design-reviewer.md` — تحديث حدود العلاقة مع Auditor بعد تحوله إلى sub-agent
+  - `tera-system/TeraSubAgents.md` — تسجيل Auditor كعميل جودة فرعي + استثناء Monitor→Auditor + حدود التقارير
+  - `tera-system/AGENT_ACTIVATION_MATRIX.md` — إضافة Trigger types وصف Auditor activation
+  - `tera-system/AGENT_DEPENDENCY_MAP.md` — تحديث علاقات Auditor وMonitor وTera + تنبيهات الحجم
+  - `tera-system/TeraPreExecutionGate.md` — إضافة Auditor review decision إلى Post-Execution Review Gate
+  - `tera-system/TeraPolicyMap.md` — تحديث مصدر Auditor وإضافة `QUALITY_GATE_THRESHOLDS.md`
+  - `tera-system/engineering-governance/ENGINEERING_AGENT_RESPONSIBILITIES.md` — تحديث حدود Auditor الهندسية
+  - `tera-system/engineering-governance/QUALITY_GATE_THRESHOLDS.md` — ملف جديد لعتبات الجودة وEvidence model
+  - `project-control/archive/SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-16-098.md` — تحديث حالة الموافقة والقرارات المعتمدة
+  - `project-control/archive/RESEARCH_TO_SYSTEM_CHANGE_REPORT_AUDITOR_TRANSFORMATION.md` — تقرير البحث والتحليل المرجعي
+  - `project-control/SYSTEM_EVOLUTION_LOG.md` — هذا الإدخال
+- الملخص:
+  - تم تحويل Auditor من عميل مستقل يدوي إلى **Quality Gate Sub-Agent** تحت إدارة Tera، مع استثناء Monitor بطلب Majed.
+  - تمت إضافة حالات قرار Auditor Review: `REQUIRED`, `RECOMMENDED`, `NOT_REQUIRED`, `WAIVED_BY_MAJED`.
+  - تم اعتماد سياسة Diff-first و`BASELINE_DEBT` لمنع حظر المهام بسبب ديون قديمة غير مرتبطة.
+  - تم فصل القواعد إلى Hard rules وDefault heuristics وProject-calibrated rules.
+  - تم منع اختراع metrics دون Evidence artifact، خصوصاً coverage/duplication/CBO/churn/vulnerabilities.
+  - تم تنفيذ P1 + P2 فقط: Foundation + Core Checks، وتأجيل P3/P4/P5 للمعايرة بعد التشغيل.
+  - تم السماح لـ Auditor بكتابة تقارير Markdown رسمية فقط داخل `project-control/audit-reports/` إذا كان المسار ضمن Allowed Write Targets، مع إعادة ملخص للوكيل المستدعي.
+  - Findings لا تصبح أوامر تنفيذ مباشرة؛ يجب تحويلها إلى Tasks/Issues عبر Tera/Monitor/ProjectControl/Majed.
+- الموافقة: Majed — Approved SCP-2026-07-16-098 v2 with decisions:
+  - `auditor.md` يتحول إلى `mode: subagent`.
+  - المستدعيان المصرحان في v1: `TeraAgent` و`Monitor` فقط.
+  - Auditor يكتب تقاريره في `project-control/audit-reports/` مع بقاءه read-only لبقية النظام.
+  - تنفيذ P1 + P2 معاً، وتأجيل P3/P4/P5.
+- التحقق من الصحة:
+  - ✅ Anti-Bloat Gate PASS — لا عميل جديد؛ تم تطوير Auditor الموجود، ووضعت العتبات في ملف مرجعي بدل تضخيم agent prompt.
+  - ✅ Consistency with Dependency Map — تم تحديث `AGENT_DEPENDENCY_MAP.md`.
+  - ✅ Policy Map Check PASS — تم تحديث `TeraPolicyMap.md` بمصدر `QUALITY_GATE_THRESHOLDS.md`.
+  - ✅ Architecture Map Check PASS — لا طبقة جديدة؛ الملف الجديد داخل `engineering-governance/`.
+  - ✅ No client-app contamination — الملفات المعدلة ضمن `.opencode/`, `tera-system/`, و`project-control/` فقط. ملاحظة: توجد ملفات client untracked مسبقاً في `git status` ليست من هذا التغيير ولم تُلمس.
+  - ✅ No unauthorized privilege expansion — توسع الكتابة لـ Auditor محدود بتقارير audit فقط، وMonitor `task: ask` محدود إلى Auditor فقط بطلب Majed.
+  - ✅ No stale Auditor manual-activation references in active agent files — grep check PASS للعبارات القديمة المستهدفة.
+  - ✅ File size gate — `auditor.md` = 465 (<700)، `monitor.md` = 276 (<700)، `tera.md` = 867 (🟡 700–1000، لا تقسيم الآن)، `TeraSubAgents.md` = 1606 (استثناء Registry قائم).
+  - ✅ `git diff --check` PASS.
+- المخاطر:
+  - متوسط: إدخال Auditor كـ sub-agent قد يزيد دورة المراجعة بعد المهام الحساسة. التخفيف: triggers مركبة وAudit Modes وDiff-first.
+  - متوسط: احتمال over-blocking بسبب heuristics. التخفيف: threshold = finding candidate فقط، وليس severity تلقائي.
+  - منخفض: تداخل مع QA/Security/DesignReviewer. التخفيف: حدود إحالة واضحة.
+- ملاحظات الاسترجاع (Rollback):
+  1. استعادة `.opencode/agents/auditor.md` إلى النموذج السابق أو إزالة تحويل subagent.
+  2. إزالة Auditor Quality Gate من `.opencode/agents/tera.md`.
+  3. إزالة `task: ask` واستثناء Auditor من `.opencode/agents/monitor.md`.
+  4. حذف `tera-system/engineering-governance/QUALITY_GATE_THRESHOLDS.md`.
+  5. إزالة إدخالات Auditor الجديدة من `TeraSubAgents.md`, `AGENT_ACTIVATION_MATRIX.md`, `AGENT_DEPENDENCY_MAP.md`, `TeraPreExecutionGate.md`, `TeraPolicyMap.md`, و`ENGINEERING_AGENT_RESPONSIBILITIES.md`.
+  6. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.

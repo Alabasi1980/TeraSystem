@@ -129,6 +129,24 @@ TCEA (مستشار) يملك صلاحية استدعاء DomainResearchAgent و 
 8. لا يجوز لمهندس استدعاء أي عميل فرعي آخر
 ```
 
+**استثناء Auditor — Tera + Monitor:**
+
+```text
+Auditor (مُدقق) هو عميل جودة فرعي، وليس عميلاً رئيسياً مستقلاً في التشغيل الطبيعي.
+
+المستدعون المصرح لهم في v1:
+1. TeraAgent — بعد مهام التنفيذ وفق قرار Auditor Review Decision.
+2. Monitor — فقط عندما يطلب Majed من Monitor تحدي أو التحقق من عمل Tera بجودة مستقلة.
+
+الشروط:
+1. التفويض يجب أن يكون مرتبطاً بمهمة/دفعة محددة.
+2. المراجعة Diff-first وليست فحصاً مفتوحاً للمشروع كله.
+3. Auditor يكتب فقط تقارير Markdown داخل `project-control/audit-reports/` إذا كان ذلك ضمن Allowed Write Targets.
+4. Auditor لا يطلب من EngineeringAgent أو أي عميل آخر تنفيذ إصلاحات مباشرة.
+5. findings لا تصبح أوامر تنفيذ إلا بعد تحويلها إلى Tasks/Issues بواسطة Tera أو Monitor أو Majed.
+6. لا يجوز لأي عميل رئيسي آخر استدعاء Auditor دون SCP لاحق.
+```
+
 ### 3.2.2 Model Capability Gate لا يستبدل العملاء المختصين
 
 `Model Capability Gate` is a Tera-side assessment only.
@@ -195,6 +213,7 @@ but the generic sub-agent registry in `TeraSubAgents.md` must remain stack-neutr
 - العميل لا يخاطب عميلًا آخر مباشرة، ولا يفوّضه، ولا يعدّل تعريفه.
 - إذا احتاج العميل إلى نتيجة من عميل آخر، يرفع الطلب إلى Tera.
 - Tera هو المنسق الوحيد والموزع الوحيد للمهام.
+- الاستثناء الوحيد في v1: Monitor يستطيع استدعاء Auditor فقط عندما يطلب Majed ذلك صراحة للتحقق من عمل Tera.
 - أي خرق لقاعدة التواصل المباشر يُسجل كـ `Issue` ويُرفع إلى Tera فورًا.
 
 ---
@@ -565,6 +584,67 @@ tera-system/design-system/ كمرجع fallback يحدده Tera فقط
 | **Execution Mode** | تشغيل اختبارات CLI فعلياً وإنتاج تقارير نتائج رسمية | `RUN_TESTS` + bash |
 
 > **التعريف الكامل:** `.opencode/agents/qa-agent.md` — يحتوي جميع التفاصيل التشغيلية، حدود الصلاحيات، سير العمل لكل وضع، نموذج التقرير، ومعايير القبول.
+
+---
+
+## 5.7.1 Quality Gate Auditor — مُدقق
+
+| البند | القيمة |
+|---|---|
+| اسم العميل | Quality Gate Auditor |
+| المعرّف | `AUDITOR` |
+| الفئة | أساسي / مراجعة جودة بعد التنفيذ |
+| ملف العميل | `.opencode/agents/auditor.md` |
+| الدور | تدقيق جودة Diff-first بعد التنفيذ: توثيق، نطاق، أدلة، جودة كود، P1/P2 security hygiene، اختبار كفاية أدلة، وfindings قابلة للتنفيذ |
+
+### متى يستدعيه Tera؟
+
+- بعد Post-Execution Review عندما تكون الحالة `AUDITOR_REVIEW_REQUIRED`.
+- عند `AUDITOR_REVIEW_RECOMMENDED` إذا رأى Tera أن المخاطر أو الغموض تستحق مراجعة مستقلة.
+- عند طلب Majed مراجعة جودة من خلال Tera.
+
+### متى يستدعيه Monitor؟
+
+- فقط عندما يطلب Majed من Monitor التحقق من عمل Tera أو تحديه بجودة مستقلة.
+
+### يقرأ
+
+```text
+project-control/PROJECT_STATE.md
+project-control/TASK_REGISTRY.md
+project-control/tasks/[TASK-ID].md
+project-control/PROJECT_ACTIVITY_LOG.md عند الحاجة
+project-control/test-reports/ عند وجود QA evidence
+الملفات المعدلة أو diff summary التي يحددها المستدعي
+tera-system/engineering-governance/QUALITY_GATE_THRESHOLDS.md
+tera-system/engineering-governance/ENGINEERING_REVIEW_CHECKLIST.md عند مراجعة code/structure
+```
+
+### ينتج
+
+```text
+project-control/audit-reports/QUAUD-[TASK-ID]-YYYY-MM-DD-NNN.md
+```
+
+ويعيد نسخة مختصرة للوكيل المستدعي.
+
+### حدوده
+
+- لا يكتب أو يعدّل كود التطبيق.
+- لا يشغل اختبارات؛ يقرأ QA evidence فقط.
+- لا يقوم بمراجعة بصرية؛ يحيل لـ DesignReviewer عند الحاجة.
+- لا يقوم بتحليل أمني عميق؛ يحيل لـ SecurityAgent عند الحاجة.
+- لا يقبل المهمة ولا يغلقها.
+- لا يحوّل findings إلى Tasks أو Issues بنفسه.
+- لا يخترع metrics دون evidence artifact.
+
+### معايير القبول
+
+- التقرير Diff-first ومربوط بمهمة أو دفعة محددة.
+- كل finding يحتوي Evidence وSeverity وRecommended Action وRequired Owner.
+- يميز بين Changed Code و`BASELINE_DEBT`.
+- لا يحتوي أسراراً حقيقية أو بيانات غير منقحة.
+- يستخدم STOP / CAUTION / FLAG دون تحويل heuristics إلى blockers تلقائياً.
 
 ---
 
@@ -1247,6 +1327,10 @@ Plan Compliance Report
 | UI Visual Design vs Engineering | UIVisualDesigner يحدد القواعد البصرية. Engineering ينفذ ولا يخترع الستايل |
 | Data Design vs Architecture | Data يحدد ماذا نخزن. Architecture تحدد كيف تُبنى الطبقات |
 | QA vs Security | QA يختبر الوظيفة. Security يراجع الحماية |
+| Auditor vs QA | Auditor يراجع جودة الأدلة والكود ولا يشغل اختبارات. QA يشغل الاختبارات وينتج تقارير تنفيذ فعلية |
+| Auditor vs Security | Auditor يفحص hygiene patterns فقط. SecurityAgent يحلل الأمن العميق والمنطق الحساس |
+| Auditor vs DesignReviewer | Auditor يراجع code-level accessibility. DesignReviewer يراجع الجودة البصرية وتجربة الواجهة |
+| Auditor vs Monitor | Auditor يراجع الجودة. Monitor يراجع مطابقة التنفيذ للخطة |
 | Documentation vs Tera | Documentation يوثق. تيرا يقرر الجاهزية والتسليم |
 | ProjectControl vs Tera | ProjectControl يسجل المهام والقرارات والحالات. تيرا يقرر القبول والإغلاق والخطوة التالية |
 
@@ -1341,6 +1425,7 @@ Documentation Status:
 - لا يعتمد Tera على تقرير العميل الفرعي وحده في الحكم على نجاح المهمة التنفيذية.
 - إذا استخدمت المهمة secret حقيقيًا، يجب أن يكون handback بصيغة redacted فقط، مثل `[REDACTED]` أو `local environment secret`.
 - يمنع على أي عميل فرعي إعادة كتابة كلمة مرور أو token أو connection string حقيقي داخل handback أو task file أو سجل.
+- Auditor تحديداً يوثق تقاريره الرسمية في `project-control/audit-reports/` عندما يكون هذا المسار ضمن Allowed Write Targets، ويعيد ملخصاً للوكيل المستدعي.
 - إذا ظهرت مخالفات بعد التنفيذ، تعاد المهمة إلى `Needs Fix` أو `Blocked` أو تبقى `Submitted` بحسب نتيجة المراجعة.
 - يجب تسجيل حدث التوثيق في `project-control/PROJECT_ACTIVITY_LOG.md`.
 - إذا لم يتم توثيق التسليم داخل ملف المهمة، تكون حالة المهمة `Submitted` فقط ولا يجوز تحويلها إلى `Accepted` أو `Closed`.

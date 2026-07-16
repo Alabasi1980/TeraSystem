@@ -488,6 +488,7 @@ tera-system/runtime/TERA_RUNTIME_TEMPLATES.md Section 32
 | 29 | هل تم تصنيف أي تعديل خارج Allowed Write Targets إلى `Approved deviation` أو `Needs user approval` أو `Reverted`؟ | Yes / N/A |
 | 30 | هل قرر Tera بوضوح إن كانت المهمة تحتاج مراجعة مستقلة من `ProjectControlAgent` أو `SecurityAgent` أو `QAAndAcceptanceAgent`؟ | Yes |
 | 31 | إذا كانت المهمة UI/Frontend، هل اجتازت `tera-system/design-system/UI_ACCEPTANCE_GATE.md`؟ | Yes / N/A |
+| 32 | هل سجل Tera قرار Auditor Review بوضوح: `REQUIRED` / `RECOMMENDED` / `NOT_REQUIRED` / `WAIVED_BY_MAJED`؟ | Yes |
 
 ### Control Files Review Rule
 
@@ -578,6 +579,7 @@ Root Cause: Tera delegation used a framework scaffold command without the requir
 - `ProjectControlAgent` عندما تكون الحاجة إلى مراجعة السجلات، الاتساق، التسلسل، أو اكتمال التوثيق.
 - `SecurityAgent` عندما تشمل المهمة `Auth`, `JWT`, `Cookies`, `Middleware`, `Proxy`, `API Routes`, `Server Actions`, `Permissions`, `Role checks`, `Data Mutations`, `Secrets`, `Config`, أو أي سلوك أمني مشابه.
 - `QAAndAcceptanceAgent` عندما تشمل المهمة `UI`, `Workflow`, أو `Acceptance Criteria` تحتاج تحققًا وظيفيًا مستقلًا.
+- `Auditor` عندما تظهر محفزات جودة بعد التنفيذ: مخاطرة أمنية سطحية، أثر معماري، diff كبير، module/service جديد، shared component، public API، complexity/test gap، أو طلب Majed عبر Tera/Monitor.
 
 إذا قرر Tera أن المراجعة المستقلة غير مطلوبة، يجب أن يذكر السبب داخل نتيجة المراجعة بعد التنفيذ.
 
@@ -667,6 +669,7 @@ Cleanup required
 | No duplicate project-control IDs created | PASS / FAIL | ... |
 | Any out-of-target changes classified | PASS / FAIL / N/A | ... |
 | Independent review decision recorded | PASS / FAIL | ... |
+| Auditor review decision recorded | PASS / FAIL | REQUIRED / RECOMMENDED / NOT_REQUIRED / WAIVED_BY_MAJED + reason |
 
 Gate Status: PASS / NEEDS_FIX / BLOCKED
 
@@ -680,6 +683,7 @@ Independent Review:
 - ProjectControlAgent: Required / Not Required
 - SecurityAgent: Required / Not Required
 - QAAndAcceptanceAgent: Required / Not Required
+- Auditor: Required / Recommended / Not Required / Waived by Majed
 
 Deviation Classification:
 - Approved deviation / Needs user approval / Reverted / N/A
