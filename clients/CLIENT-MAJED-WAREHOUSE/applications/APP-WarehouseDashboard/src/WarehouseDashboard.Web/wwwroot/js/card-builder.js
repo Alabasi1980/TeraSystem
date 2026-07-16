@@ -56,7 +56,7 @@
   /* ===================================================================== */
   function CardBuilderWizard(opts) {
     this.opts = opts || {};
-    this.opts.previewApiUrl = this.opts.previewApiUrl || '/api/dashboard/cardbuilder/preview';
+    this.opts.previewApiUrl = this.opts.previewApiUrl || '/api/dashboard/cardbuilder/preview?handler=Preview';
     this.opts.tablesApiUrl = this.opts.tablesApiUrl || '/api/tablemappings/active';
     this.opts.savedQueriesApiUrl = this.opts.savedQueriesApiUrl || '/api/savedqueries';
 
@@ -350,17 +350,19 @@
     this.showSourcePanel('Template');
 
     var sql = t.sqlQueryTemplate;
+
+    // Try to find a matching table, but don't require it
     var matched = this.findTableForSource(t.requiredOracleSource);
     if (matched) {
       sql = sql.replace(/\{TableName\}/g, matched.sqlTargetTable);
       this.state.sourceId = matched.sqlTargetTable;
     } else if (this.tables.length) {
+      // No exact match — use the first available table silently
       sql = sql.replace(/\{TableName\}/g, this.tables[0].sqlTargetTable);
       this.state.sourceId = this.tables[0].sqlTargetTable;
-      this.toast('لم يُعثر على مصدر Oracle مطابق للقالب «' + escapeHtml(t.requiredOracleSource) + '» — تم استخدام أول جدول متاح.', 'info');
     } else {
+      // No tables at all — leave {TableName} as placeholder
       this.state.sourceId = t.id;
-      this.toast('لا يوجد جدول Oracle مطابق للقالب «' + escapeHtml(t.requiredOracleSource) + '». اختر مصدراً آخر أو جدولاً يدوياً.', 'info');
     }
     if ($('wb-h-sourceId')) $('wb-h-sourceId').value = this.state.sourceId;
     this.state.previewSql = sql;

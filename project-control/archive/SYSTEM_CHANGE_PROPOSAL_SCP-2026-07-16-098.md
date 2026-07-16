@@ -1,265 +1,380 @@
 # SYSTEM_CHANGE_PROPOSAL_SCP-2026-07-16-098.md
 
 ## Title
-Transform Auditor into Quality Gate Auditor — World-Class Quality Review with Research-Backed Thresholds
+Convert Auditor into a Tera-Managed Quality Gate Sub-Agent — Diff-First, Evidence-Based Quality Review
+
+## Revision
+- **Version:** v2
+- **Revision Source:** Majed clarification + expert review
+- **Revision Result:** Previous draft `NEEDS_FIX` findings incorporated.
 
 ## Request Type
-Agent Role Expansion + System Integration
+Agent Role Conversion + Quality Gate Governance + Runtime Integration
 
 ## Problem
 
-The Auditor agent currently operates as a documentation/compliance reviewer with6 roles and a6-phase methodology focused on:
-- Documentation completeness
-- Compliance record verification
-- Basic engineering governance (unit boundaries, bloat, UI/Logic separation)
-- Handback reconciliation
+The current Auditor agent is defined as an independent governance session agent, manually activated by Majed. That no longer matches the agreed operating model.
 
-**Missing capabilities:**
-1. No code quality metrics (complexity, duplication, function/file size)
-2. No architecture smell detection (god objects, circular deps, layering violations)
-3. No security hygiene patterns (OWASP-based hardcoded secrets, injection, crypto checks)
-4. No testing adequacy verification (coverage indicators, test-to-code ratio)
-5. No file/module structure health analysis
-6. No UI code-level audit (ARIA, responsive, component reuse)
-7. No maintainability assessment (TODO tracking, deprecated patterns, churn signals)
-8. No tiered severity model (STOP/CAUTION/FLAG)
-9. No activation triggers in AGENT_ACTIVATION_MATRIX — only manual activation
-10. No integration with Tera's task completion workflow
+Majed clarified that Auditor should become a **sub-agent under Tera or another authorized primary agent**, not a separately summoned agent by Majed during normal work. Majed may still request an Auditor review indirectly through Monitor when he does not trust Tera's own review.
 
-Meanwhile, the system has:
-- QA Agent handling **functional testing** (build/test/run) — not quality patterns
-- Monitor handling **plan compliance** — not code quality
-- DesignReviewer handling **visual design** — not UI code patterns
-- SecurityAgent handling **deep security analysis** — not hygiene patterns
-- Tera's Post-Execution Gate handling **operational checks** — not quality metrics
+The previous SCP draft also had quality-governance issues:
 
-There is a clear gap: no agent performs **world-class quality auditing** with research-backed thresholds.
+1. It treated Auditor as both manually activated by Majed and invoked by Tera, creating an authority contradiction.
+2. It treated several research thresholds as hard universal pass/fail rules.
+3. It did not define a strict evidence model for metrics that require analyzers or artifacts.
+4. It did not make the audit scope explicitly `diff-first`.
+5. It blurred `STOP` and `CAUTION` severity behavior.
+6. It overstated what a read-only Auditor can prove without tests, CI history, or analyzers.
+7. It used imprecise UI accessibility language such as "missing ARIA".
+8. It mentioned implementation waves without defining their content.
 
 ## Evidence
 
-### Research Sources (20 references, 8 Tier-1 authorities)
-- SonarQube "Sonar Way" & "Sonar Way for AI Code" (2026)
-- SEI/CMU ATAM Method
-- Nielsen Norman Group — 10 Usability Heuristics
-- OWASP Secure Code Review Cheat Sheet
-- Google Engineering Practices
-- Microsoft Maintainability Index
-- WCAG 2.2 (W3C/Deque)
-- ISO/IEC 25010:2023
-- McCabe (1976) — Cyclomatic Complexity
-- Hatton (1997) — Optimal Module Size
-- And10 additional Tier-2 sources
+### Current Auditor State
 
-### Key Thresholds (Industry Consensus)
+- `.opencode/agents/auditor.md` currently defines Auditor as independent and manually activated by Majed.
+- `AGENT_ACTIVATION_MATRIX.md` does not include Auditor as a Tera-managed quality sub-agent.
+- `AGENT_DEPENDENCY_MAP.md` lists `auditor.md` as invoked by Majed only.
+- `TeraPreExecutionGate.md` Post-Execution Review Gate references independent review decisions for ProjectControlAgent, SecurityAgent, and QAAndAcceptanceAgent, but not Auditor.
 
-| Metric | Warning | Critical | Source |
-|:-------|:-------:|:--------:|:------:|
-| Cyclomatic Complexity | 10 | 20+ | McCabe, SonarQube |
-| Code Duplication | 5% | 10%+ | SonarQube |
-| Function Length | 50 lines | 100+ | Kiuwan, Matklad |
-| File Length (production) | 300 lines | 500+ | Microsoft Monodex |
-| Function Parameters | 7 | 10+ | KindaTechnical |
-| Technical Debt Ratio | 10% | 20%+ | SonarQube SQALE |
+### Research Basis
 
-### Current State Gap Analysis
+The research report archived at:
 
-| Capability | Auditor Current | Research Standard | Gap |
-|:-----------|:---------------:|:-----------------:|:---:|
-| Code Quality Metrics | ❌ | Full SonarQube thresholds | 🔴 Large |
-| Architecture Review | ❌ | Fitness functions + smell detection | 🔴 Large |
-| Security Hygiene | ❌ | OWASP patterns | 🔴 Large |
-| Testing Adequacy | ❌ | Coverage indicators + ratio checks | 🟡 Medium |
-| File Structure | Partial (bloat only) | Size thresholds + split criteria | 🟡 Medium |
-| UI Code Audit | ❌ | ARIA + responsive + component checks | 🟡 Medium |
-| Maintainability | ❌ | TDR + deprecated patterns + churn | 🟡 Medium |
-| Severity Model | 4-level (PASS/NEEDS_FIX/BLOCKED/DEFERRED) | STOP/CAUTION/FLAG tiering | 🟡 Needs upgrade |
-| Activation Triggers | ❌ Manual only | 5 defined triggers | 🔴 Large |
-| System Integration | ❌ Not in activation matrix | Integrated with Tera workflow | 🔴 Large |
+```text
+project-control/archive/RESEARCH_TO_SYSTEM_CHANGE_REPORT_AUDITOR_TRANSFORMATION.md
+```
+
+reviewed 20 sources, including SonarQube, SEI/CMU ATAM, OWASP, Google Engineering Practices, Microsoft Maintainability Index, WCAG 2.2, ISO/IEC 25010, McCabe complexity, and Hatton module-size research.
+
+The research supports using quality thresholds as **default heuristics and evidence-backed indicators**, not as automatic universal failure rules except for hard safety/security violations.
 
 ## Affected Files
 
 | File | Change Type | Description |
 |:-----|:-----------:|:------------|
-| `.opencode/agents/auditor.md` | **Major Expansion** | Add 7 quality check domains, severity model, quality output format, referral protocol. Target: ~550 lines (from 363) |
-| `.opencode/agents/tera.md` | **Minor Addition** | Add Auditor Quality Gate step in post-task workflow section |
-| `tera-system/AGENT_ACTIVATION_MATRIX.md` | **New Entry** | Add Auditor row with 5 activation triggers |
-| `tera-system/AGENT_DEPENDENCY_MAP.md` | **Update** | Update Auditor row: now invoked by Tera (not just Majed), adds referrals to SecurityAgent/DesignReviewer |
-| `tera-system/engineering-governance/QUALITY_GATE_THRESHOLDS.md` | **New File** | Reference document with research-backed thresholds, project-phase adjustments, intensity matrix |
+| `.opencode/agents/auditor.md` | Major role conversion | Convert from primary/manual agent to quality-review sub-agent; add diff-first scope, evidence model, severity model, report format, and referral protocol. |
+| `.opencode/agents/tera.md` | Runtime integration | Add compact Auditor quality-gate invocation logic after important implementation tasks. |
+| `.opencode/agents/monitor.md` | Governance path update | Allow Monitor, when explicitly asked by Majed, to request Auditor review as an independent check of Tera's work. |
+| `tera-system/TeraSubAgents.md` | Registry update | Register Auditor as a quality gate sub-agent and define authorized orchestrators. |
+| `tera-system/AGENT_ACTIVATION_MATRIX.md` | Trigger update | Add Auditor triggers using risk, architecture, change-size, quality-signal, and explicit-request categories. |
+| `tera-system/AGENT_DEPENDENCY_MAP.md` | Relationship update | Change Auditor invocation from Majed-only to authorized orchestrators: Tera by default, Monitor by Majed request. |
+| `tera-system/TeraPreExecutionGate.md` | Gate update | Add Auditor to Post-Execution independent review decision as a quality-review gate, separate from QA/Security/ProjectControl. |
+| `tera-system/engineering-governance/QUALITY_GATE_THRESHOLDS.md` | New reference file | Store rule classes, evidence requirements, thresholds, calibration notes, and examples. |
+| `tera-system/TeraPolicyMap.md` | Map update | Register the new threshold reference as the source for quality-gate thresholds. |
+
+**No `TeraArchitectureMap.md` change expected** because the new threshold file remains inside the existing engineering-governance area and does not create a new architectural layer.
 
 ## Proposed Change
 
-### 1. Auditor Agent Expansion (`.opencode/agents/auditor.md`)
+### 1. Authority Model Correction
 
-**Keep intact:** Identity, position in system, reference hierarchy, 6-phase methodology, commit protocol, self-improvement suggestions, forbidden actions.
-
-**Add new sections:**
-
-#### A. Quality Gate Check Domains (7 domains)
-
-| # | Domain | What It Checks | Severity |
-|:--|:-------|:---------------|:--------:|
-| 1 | **Code Quality** | Complexity (≤10/≤20), duplication (≤5%/≤10%), function length (≤50/≤100), file length (≤300/≤500), parameters (≤7/≤10), nesting (≤4/≤6) | STOP/CAUTION/FLAG |
-| 2 | **Architecture Health** | God objects (>500 lines, >20 methods), circular deps, layering violations, tight coupling (CBO>7), feature envy, shotgun surgery | STOP/CAUTION/FLAG |
-| 3 | **File Structure** | Size thresholds per category, split criteria, naming consistency, config vs code separation | CAUTION/FLAG |
-| 4 | **Security Hygiene** | Hardcoded credentials, SQL concatenation, unsafe deserialization, missing input validation, weak crypto, missing HTTPS | STOP/CAUTION |
-| 5 | **Testing Adequacy** | Test existence, test-to-code ratio (≥0.5), coverage indicators, missing test categories, flaky test signals | CAUTION/FLAG |
-| 6 | **UI Code Quality** | ARIA attributes, responsive breakpoints, component duplication, state management patterns, loading/error states | CAUTION/FLAG |
-| 7 | **Maintainability** | TODO/FIXME/HACK count, deprecated API usage, configuration drift, dependency freshness | FLAG |
-
-#### B. Severity Model (STOP/CAUTION/FLAG)
-
-| Signal | Meaning | Action |
-|:-------|:--------|:-------|
-| **STOP** | Critical: hardcoded secret, zero test assertions, architecture-breaking violation | Block acceptance — must fix before close |
-| **CAUTION** | High: complexity >20, file >500, missing ARIA, test ratio <0.2 | Block acceptance — fix or override with justification |
-| **FLAG** | Medium: complexity 10-20, file 300-500, TODO count high, coverage gap | Report only — no block, recommended improvements |
-
-#### C. Quality Output Format (QUAUD Report)
+Convert Auditor from:
 
 ```text
-Audit ID: QUAUD-YYYY-MM-DD-NNN
-Task Reviewed: [TASK-ID]
-Audit Mode: Light / Standard / Full
-
-Quality Gate Results:
-| # | Domain | Result | Findings Count | STOP | CAUTION | FLAG |
-Findings:
-| Finding ID | Domain | Severity | Description | File:Line | Recommended Action |
-
-Summary:
-- Total Findings: X
-- STOP: X (must fix)
-- CAUTION: X (fix or override)
-- FLAG: X (recommended)
-
-Overall Quality Gate: PASS / NEEDS_FIX / BLOCKED
+Independent primary/manual governance session agent
 ```
 
-#### D. Intensity Matrix
-
-| Task Complexity | Audit Mode | Domains Checked | Detail Level |
-|:---------------:|:----------:|:---------------:|:------------:|
-| Simple (1-3 files, documentation, config) | Light | Code Quality + File Structure | Quick scan |
-| Standard (4-10 files, feature implementation) | Standard | All 7 domains | Full scan |
-| Critical (auth, payments, multi-file, architectural) | Full | All 7 domains + deep analysis | Exhaustive |
-
-#### E. Referral Protocol
-
-| Finding Type | Refer To | Action |
-|:-------------|:---------|:-------|
-| Deep security vulnerability (auth logic, crypto design) | SecurityAgent | Flag + referral note |
-| Visual design/UX quality | DesignReviewer | Flag + referral note |
-| Functional test failure | QA Agent | Flag + referral note (Auditor doesn't run tests) |
-| Plan compliance issue | Monitor | Flag + referral note |
-| Architecture decision needed | Majed | Flag + recommendation |
-
-### 2. Tera Agent Integration (`.opencode/agents/tera.md`)
-
-Add to post-task workflow:
+to:
 
 ```text
-### Auditor Quality Gate (after important tasks)
-
-After completing any of the following task types, Tera should consider
-invoking Auditor for quality gate review:
-
-- Tasks touching > 3 files
-- Tasks involving auth, payments, or security-sensitive code
-- Tasks creating new modules or services
-- Tasks modifying architecture or shared components
-- Tasks the user explicitly requests quality review for
-
-The quality gate review is separate from Tera's Post-Execution Review Gate.
-Tera's gate checks operational compliance (scope, secrets, write targets).
-Auditor's gate checks quality metrics (complexity, patterns, maintainability).
-
-Decision: invoke Auditor or skip (with reason documented).
+Tera-managed Quality Gate Sub-Agent
 ```
 
-### 3. Activation Matrix Entry
+Authorized orchestrators:
+
+| Orchestrator | When Allowed |
+|:-------------|:-------------|
+| `TeraAgent` | Normal post-execution quality review for application tasks. |
+| `Monitor` | When Majed asks Monitor to verify or challenge Tera's work and Monitor needs Auditor quality review. |
+| Other primary agents | Not allowed by default; must be added explicitly through future SCP if needed. |
+
+Majed does not normally activate Auditor directly. Majed may request an authorized primary agent, such as Monitor, to obtain an Auditor review.
+
+### 2. Activation Decision Model
+
+Tera, or another authorized orchestrator, must classify every completed implementation task as one of:
 
 ```text
-| مُدقق | `AUDITOR` | `TASK_COMPLETED`: بعد مهمة تنفيذية مهمة (>3 ملفات، auth/payments، module جديد، تغيير معماري) | 6 | إذا كانت المهمة بسيطة (1-3 ملفات، وثائق، config) ويمكن لـ Tera فحصها مباشرة | ملف المهمة + git diff + ملفات مرجعية Auditor |
+AUDITOR_REVIEW_REQUIRED
+AUDITOR_REVIEW_RECOMMENDED
+AUDITOR_REVIEW_NOT_REQUIRED
+AUDITOR_REVIEW_WAIVED_BY_MAJED
 ```
 
-### 4. Dependency Map Update
+Rules:
+
+- `REQUIRED` means the orchestrator must invoke Auditor before final acceptance or must record an explicit Majed waiver.
+- `RECOMMENDED` means the orchestrator may proceed without Auditor only with a documented reason.
+- `NOT_REQUIRED` must include a short reason.
+- `WAIVED_BY_MAJED` must name the reason and the risk accepted.
+
+### 3. Activation Triggers
+
+File count alone is not a sufficient trigger. Use compound triggers:
+
+| Trigger Class | Required When | Recommended When |
+|:--------------|:--------------|:-----------------|
+| Risk trigger | Auth, authorization, payments, secrets, migrations, data mutation, config/security-sensitive logic | Non-sensitive config or environment handling |
+| Architecture trigger | New module/service, shared component, public API, dependency direction change, cross-layer change | Refactor affecting one bounded module |
+| Change-size trigger | Large diff, many files, or multi-module change; file count is supporting evidence only | 4-10 files or moderate diff |
+| Quality-signal trigger | Post-execution review found complexity, missing tests, suspicious coupling, or scope side effect | Heuristic threshold exceeded without clear impact |
+| Explicit request | Majed asks through Tera/Monitor or another approved orchestrator | Majed asks for advisory check |
+
+Examples:
+
+- One-file authentication change can be `REQUIRED`.
+- Twenty-file rename-only change can be `NOT_REQUIRED` or `RECOMMENDED` depending on risk.
+
+### 4. Diff-First Audit Scope
+
+Auditor must review in this order:
+
+1. Changed code and newly added code.
+2. Directly affected neighboring units.
+3. Wider architecture only when the diff introduces architectural risk.
+4. Existing issues outside the diff are recorded as `BASELINE_DEBT`.
+
+Acceptance rule:
+
+- A task must not be blocked for old debt it did not create, except when the change exposes, worsens, or relies on a critical existing risk such as leaked secrets or unsafe authorization.
+
+### 5. Rule Classes
+
+Quality rules must be split into three classes:
+
+| Rule Class | Meaning | Examples | Blocking Behavior |
+|:-----------|:--------|:---------|:------------------|
+| Hard rules | Safety/security/governance failures with direct risk | Real secrets, unauthorized permission expansion, circular dependency forbidden by architecture, unsafe raw query with user input | Can produce `STOP` |
+| Default heuristics | Useful quality indicators, not universal failures | Function length, file length, parameter count, TODO count, god-object suspicion | Produce findings; severity depends on context and impact |
+| Project-calibrated rules | Rules that require project baseline, language, or artifact | Coverage, duplication %, CBO, churn, dependency vulnerability status | Cannot be asserted without evidence artifact |
+
+Core rule:
 
 ```text
-| **auditor.md** | — (مستقل — يستدعيه Majed) + `tera.md` (quality gate بعد مهام مهمة) | يراجع مخرجات `tera.md`, `engineering-agent.md` — يحيل إلى `security-agent.md` (أمان عميق)، `design-reviewer.md` (تصميم بصري)، `qa-agent.md` (اختبار وظيفي)، `monitor.md` (مطابقة الخطة) | `project-control/*.md`, `tera-system/*.md`, ملفات الكود المُعدَّلة |
+Exceeding a threshold creates a finding, not an automatic severity.
+Severity depends on impact, context, evidence quality, and whether the issue is new in the diff.
 ```
 
-### 5. Threshold Reference File (New)
+### 6. Evidence Model
 
-Create `tera-system/engineering-governance/QUALITY_GATE_THRESHOLDS.md` containing:
-- Consolidated threshold table with research sources
-- Project-phase adjustments (new project = strict, legacy = baseline + improve)
-- Project-size intensity matrix
-- Language-specific adjustments note
-- Calibration protocol (quarterly review)
+Auditor is read-only and must not invent metrics. Every numeric finding must state its evidence source.
+
+| Metric / Finding Type | Required Evidence Source |
+|:----------------------|:-------------------------|
+| File/function size | Direct file reading is enough. |
+| Function complexity | Analyzer report, AST-based evidence, or clearly traceable manual reasoning. |
+| Duplication percentage | Static analyzer report only; otherwise report as suspected duplication, not a percentage. |
+| Coverage | QA report or coverage artifact only. |
+| Flaky tests | QA/CI history only. |
+| Vulnerable dependency | SecurityAgent report, dependency scanner, or authoritative advisory. |
+| Dependency freshness | Not a finding by itself; only vulnerability, EOL, incompatibility, or unused dependency matters. |
+| Technical Debt Ratio | Tool report only. |
+| CBO / coupling metrics | Analyzer or explicit import/dependency evidence. |
+| Circular dependency | Dependency analyzer or clear import-chain evidence. |
+| Code churn | Git history evidence. |
+
+### 7. Severity Model
+
+Use finding-level severity:
+
+| Severity | Meaning | Acceptance Behavior |
+|:---------|:--------|:--------------------|
+| `STOP` | Critical violation; ordinary waiver not allowed | Overall gate becomes `BLOCKED` |
+| `CAUTION` | Significant risk needing fix, explicit acceptance, or documented waiver | Overall gate becomes `NEEDS_FIX` while open; multiple CAUTIONs may escalate |
+| `FLAG` | Advisory improvement or baseline debt | Does not block `PASS` by itself |
+
+Overall gate result:
+
+| Condition | Result |
+|:----------|:-------|
+| Any open `STOP` | `BLOCKED` |
+| No STOP, but open `CAUTION` | `NEEDS_FIX` |
+| Only `FLAG` or resolved findings | `PASS` |
+| Required evidence missing | `DEFERRED` or `NEEDS_FIX`, depending on whether the missing evidence is required for acceptance |
+
+### 8. Quality Domains
+
+Auditor will review these domains, with boundaries:
+
+| Domain | Auditor Checks | Boundaries |
+|:-------|:---------------|:-----------|
+| Code Quality | Directly visible size, nesting, naming, obvious complexity, analyzer-provided complexity when available | Does not run linters/tests; does not invent metrics |
+| Architecture Health | New module boundaries, dependency direction, circular imports, shared-component misuse, layer violations | Full ATAM or architecture decisions stay outside scope |
+| File Structure | Oversized files, misplaced code/config, mixed responsibilities, unsafe generated files | Size thresholds are heuristics |
+| Security Hygiene | Secrets, unsafe raw queries, unsafe eval/deserialization, weak crypto, unsafe config patterns | Deep auth logic or penetration/security testing goes to SecurityAgent |
+| Testing Adequacy | Whether behavior changed, relevant tests exist, QA artifact exists, critical paths have visible test coverage | Does not run tests; test-to-code ratio is advisory only |
+| UI Code Accessibility | Semantic HTML, accessible names, form labels, keyboard access, focus/loading/error states, invalid ARIA usage | Visual aesthetics go to DesignReviewer |
+| Maintainability | TODO/FIXME/HACK in changed code, deprecated APIs, suspicious workarounds, baseline debt notes | TDR/churn only with evidence artifacts |
+
+### 9. Testing Review Reset
+
+Auditor must not treat `test-to-code ratio >= 0.5` as a hard rule.
+
+Auditor should ask:
+
+- Did the task change behavior that should be testable?
+- Are relevant tests present for the changed behavior?
+- Do tests cover normal, failure, and edge paths when applicable?
+- Is there evidence from QA or coverage artifacts?
+- Is there critical logic with no visible related test?
+- Are assertions meaningful, or is the test only superficial?
+
+`Zero assertions` is not automatically `STOP`; snapshot tests, property-based tests, exception-based tests, fixtures, and setup files require context.
+
+### 10. UI Accessibility Reset
+
+Replace "missing ARIA" with accurate accessibility checks:
+
+- Missing accessible name for interactive controls.
+- Non-semantic elements used as controls without keyboard support.
+- Missing or incorrect label-field relationships.
+- Incorrect or conflicting ARIA.
+- Missing focus, loading, error, or disabled-state handling where relevant.
+- Responsive breakpoints or touch targets only when visible from code or design rules.
+
+### 11. Audit Modes by Change Type
+
+| Change Type | Audit Mode | Domains |
+|:------------|:----------:|:--------|
+| Documentation only | Governance/document consistency | No code quality scan |
+| Configuration | Light | Security hygiene + config correctness + scope compliance |
+| Small code change | Light/Standard | Code quality + testing adequacy |
+| UI change | Standard | Code quality + UI accessibility + testing adequacy |
+| Architecture/security-sensitive | Full risk-based | All applicable domains |
+
+Rename `Full = Exhaustive` to:
+
+```text
+Expanded risk-based review of all applicable domains.
+```
+
+No claim of exhaustive proof is allowed.
+
+### 12. Output Format
+
+Auditor output should use a structured `QUAUD` report:
+
+```text
+Audit ID:
+Task Reviewed:
+Invoked By: Tera / Monitor / Other approved orchestrator
+Audit Mode: Documentation / Light / Standard / Full Risk-Based
+Scope: Changed Code / Affected Units / Expanded Risk Scope
+Evidence Sources Used:
+
+Overall Quality Gate: PASS / NEEDS_FIX / BLOCKED / DEFERRED
+
+Findings Summary:
+- STOP:
+- CAUTION:
+- FLAG:
+- BASELINE_DEBT:
+
+Finding:
+  Finding ID:
+  Rule ID:
+  Domain:
+  Severity:
+  Location:
+  Evidence:
+  Expected Standard:
+  Observed Condition:
+  Impact:
+  Recommended Action:
+  Changed Code / Baseline:
+  Confidence: High / Medium / Low
+  Blocking: Yes / No
+  Blocking Reason:
+  Waiver Allowed: Yes / No
+  Required Owner:
+  Referral:
+  Status: Open / Accepted / Deferred / Resolved
+```
+
+### 13. Implementation Phases
+
+Do not implement all quality domains at once. Use staged rollout:
+
+| Phase | Content | Acceptance Criteria |
+|:------|:--------|:--------------------|
+| P1 Foundation | Sub-agent conversion, authorized orchestrators, severity model, diff-first scope, QUAUD report | Auditor can be invoked by Tera/Monitor and produce structured evidence-based reports |
+| P2 Core Checks | Secrets, obvious unsafe patterns, file/function size heuristics, test existence, circular import evidence | High-value checks work without heavy tooling |
+| P3 Architecture/UI | Layering, dependency direction, semantic accessibility, state/loading/error patterns | Risk findings are contextual and referral-safe |
+| P4 Evidence Integration | Consume QA, SecurityAgent, coverage, analyzer, and CI artifacts when available | Auditor stops inventing unavailable metrics and cites artifacts |
+| P5 Calibration | Legacy baseline, false-positive review, language/profile adjustments | Thresholds become calibrated per project type and stack |
 
 ## Why This Is Necessary
 
-1. **System truth**: Auditor currently does not reflect what a quality auditor should do in 2026. The6 roles are process-oriented; quality auditing requires metric-oriented checks.
-
-2. **Research-backed**: All thresholds come from 20 authoritative sources (8 Tier-1). This is not opinion — it's industry consensus.
-
-3. **Clear gap**: No other agent handles code quality metrics, architecture smells, security hygiene patterns, or testing adequacy verification. QA does functional testing. Monitor does plan compliance. There's a hole.
-
-4. **AI code quality**: SonarQube now has a specific "Sonar Way for AI Code" gate. Our system generates code via AI agents — we need quality gates calibrated for that.
-
-5. **Defense in depth**: Auditor overlapping slightly with Post-Execution Gate on security patterns is intentional — multiple checkpoints catch more issues.
-
-6. **Proportional cost**: The intensity matrix (Light/Standard/Full) prevents Auditor from being heavy on simple tasks.
+1. Auditor's current independent/manual model no longer matches Majed's desired operating model.
+2. Tera needs a specialized quality sub-agent because Tera's Post-Execution Gate checks operational compliance, not deep quality signals.
+3. QA, Monitor, DesignReviewer, and SecurityAgent each cover different concerns; Auditor fills the quality-review gap without taking over their work.
+4. Research-backed thresholds are useful only when evidence, context, and diff scope are respected.
+5. The revised model prevents quality review from becoming noisy, over-blocking, or falsely precise.
 
 ## Rejected Alternatives
 
 | Alternative | Why Rejected |
 |:------------|:-------------|
-| Expand QA Agent to include quality auditing | QA is functional testing (runs CLI commands). Quality auditing is pattern analysis (reads code). Different capabilities, different permissions. |
-| Create separate "QualityAuditorAgent" | Anti-bloat: we already have Auditor. Expanding it is simpler than adding a new agent + activation triggers + dependency mapping. |
-| Let Tera self-audit quality in Post-Execution Gate | Tera already handles operational checks (scope, secrets, write targets). Adding quality metrics would make Tera's gate too heavy and violate separation of concerns. |
-| Skip quality auditing entirely | Unacceptable: AI-generated code needs quality gates. Industry best practice is mandatory. |
-| Implement all thresholds immediately | Too heavy. P1-P6 priority with4 implementation waves: Foundation → Core → Advanced → Tooling. |
+| Keep Auditor as Majed-manual primary agent | Conflicts with Majed's clarified model: Auditor should be a sub-agent managed by Tera or an authorized primary agent. |
+| Let Tera only classify and wait for Majed direct activation | Too slow and contradicts the sub-agent model. Majed can still waive or request review through Monitor. |
+| Expand QA Agent into quality auditor | QA runs functional tests; Auditor reads and analyzes quality evidence. Different role and permission model. |
+| Create a new QualityAuditorAgent | Anti-bloat violation; existing Auditor is the correct agent to evolve. |
+| Make thresholds hard global rules | Produces false failures; many thresholds are heuristics or project-calibrated. |
+| Full all-domain review after every task | Too expensive and noisy; diff-first + trigger-based review is safer. |
 
 ## Anti-Bloat Check
 
 | Question | Answer |
 |:---------|:-------|
-| What problem does this solve? | Auditor lacks code quality, architecture, security hygiene, and testing adequacy review capabilities |
-| Why not modify existing engineering governance files? | Those files are process checklists; quality thresholds need a dedicated reference with research sources |
-| Why not expand QA agent? | QA = functional testing (bash/CLI), Auditor = quality analysis (read/grep). Different capabilities. |
-| Will this reduce or increase complexity? | Net increase in Auditor scope, but bounded by intensity matrix and clear exclusions |
-| Negative token impact? | Mitigated: Light mode for simple tasks, Full only for critical. Proportional to task complexity. |
-| Smaller alternative? | No — quality auditing is inherently multi-domain. Splitting would create coordination overhead. |
-| File size impact? | Auditor: 363 → ~550 lines. Still under 700 threshold. No split needed. |
+| What problem does this solve? | No sub-agent currently performs evidence-based code quality, architecture, maintainability, UI-code, and security-hygiene review after implementation. |
+| Why not use an existing file only? | Auditor file needs role conversion; thresholds need a compact central reference to avoid bloating the agent prompt. |
+| Why not use an existing agent? | QA tests, Monitor checks plan compliance, DesignReviewer checks visual design, SecurityAgent performs deep security. None owns quality gate auditing. |
+| Does this reduce or increase complexity? | It increases capability but controls complexity through authorized orchestrators, diff-first scope, staged rollout, and evidence rules. |
+| Token impact? | Controlled by audit modes and compact threshold reference. No full-project scan by default. |
+| Smaller alternative? | Only adding a note to Tera would be insufficient; quality review needs a defined agent contract. |
+| File size impact? | Auditor likely remains under the 700-line split threshold if written compactly and thresholds stay in a reference file. |
 
 ## Risk
 
 | Risk | Likelihood | Impact | Mitigation |
 |:-----|:----------:|:------:|:-----------|
-| Auditor becomes too heavy | Medium | Medium | Intensity matrix: Light for simple tasks, Full only for critical |
-| Overlap with QA agent | Low | Medium | Clear boundary: Auditor = quality patterns (read), QA = functional testing (run) |
-| Overlap with Post-Execution Gate | Medium | Low | Intentional defense-in-depth on security patterns only |
-| Too many STOP findings on existing code | High | High | New code only for strict thresholds; legacy gets advisory/FLAG |
-| False positives | Medium | Medium | < 15% false positive budget; quarterly calibration |
-| File size exceeds 700 | Low | Low | Current: 363 → ~550. Safe margin. Monitor after changes. |
+| Over-broad invocation by "any main agent" | Medium | High | Only Tera and Monitor are authorized in this SCP; others require future SCP. |
+| Auditor over-blocks due to heuristics | Medium | High | Thresholds create findings, not automatic severity. |
+| Metrics invented without tools | Medium | High | Evidence model prohibits unsupported numeric claims. |
+| Auditor overlaps QA/Security/DesignReviewer | Medium | Medium | Referral protocol and boundaries define ownership. |
+| Legacy debt blocks unrelated work | Medium | Medium | Diff-first scope and `BASELINE_DEBT` rule. |
+| Runtime bloat in Tera | Low | Medium | Tera receives compact trigger summary only; details stay in Auditor and threshold reference. |
 
 ## Rollback Plan
 
-1. Revert `.opencode/agents/auditor.md` to pre-SCP-098 version
-2. Remove Auditor row from `AGENT_ACTIVATION_MATRIX.md`
-3. Remove Auditor quality gate step from `.opencode/agents/tera.md`
-4. Revert `AGENT_DEPENDENCY_MAP.md` to previous version
-5. Delete `QUALITY_GATE_THRESHOLDS.md` if created
-6. All changes are additive — no existing content is modified, only additions
+If approved changes cause operational friction:
+
+1. Revert `.opencode/agents/auditor.md` to independent/manual model.
+2. Remove Auditor entries from `TeraSubAgents.md` and `AGENT_ACTIVATION_MATRIX.md`.
+3. Remove Auditor invocation logic from `.opencode/agents/tera.md` and `.opencode/agents/monitor.md`.
+4. Revert `AGENT_DEPENDENCY_MAP.md` and `TeraPreExecutionGate.md` updates.
+5. Remove `QUALITY_GATE_THRESHOLDS.md` and its `TeraPolicyMap.md` entry if no longer used.
+
+This change is **not purely additive**; it changes Auditor's authority model and runtime invocation path.
 
 ## Approval Required
-Yes — Majed approval required before any file modifications.
+Yes — Majed approval is required before implementation.
+
+## Decisions Required Before Implementation
+
+1. Confirm Auditor frontmatter should change from `mode: primary` to `mode: subagent`.
+2. Confirm authorized orchestrators for v1 are only `TeraAgent` and `Monitor`.
+3. Confirm whether Auditor writes no files and returns reports to the orchestrator, or may write audit reports to `project-control/audit-reports/` in a later phase.
+4. Confirm whether P1 only should be implemented first, or P1 + P2 together.
 
 ## Research Reference
 Full research findings archived in:
-`project-control/archive/RESEARCH_TO_SYSTEM_CHANGE_REPORT_AUDITOR_TRANSFORMATION.md`
+
+```text
+project-control/archive/RESEARCH_TO_SYSTEM_CHANGE_REPORT_AUDITOR_TRANSFORMATION.md
+```
 
 Research agents used:
-- `domain-research-agent` — data gathering (20 sources)
-- `domain-expert-agent` — analysis and recommendations (8 sections)
+- `domain-research-agent` — data gathering from 20 sources
+- `domain-expert-agent` — analysis and recommendations
