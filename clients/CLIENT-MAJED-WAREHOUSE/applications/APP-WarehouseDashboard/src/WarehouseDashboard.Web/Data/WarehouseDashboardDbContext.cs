@@ -78,6 +78,10 @@ public class WarehouseDashboardDbContext : DbContext
                 .IsRequired()
                 .HasDefaultValue(0);
 
+            entity.Property(e => e.ColorPalette)
+                .HasMaxLength(50)
+                .HasDefaultValue("primary");
+
             entity.Property(e => e.IsActive)
                 .IsRequired()
                 .HasDefaultValue(true);

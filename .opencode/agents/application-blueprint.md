@@ -432,7 +432,7 @@ tera-system/TERA_CONTINUOUS_IMPROVEMENT_POLICY.md
 - `DomainExpertAgent` (خبير) — لتحليل المعرفة وإنتاج Domain Intelligence Report
 - `ProductionERPExpert` (خبير إنتاج) — لتحليل ومراجعة Production ERP عند وجود تصنيع/إنتاج
 
-### 20.1 متى تستدعيهما؟
+### 20.1 متى تستدعي هؤلاء العملاء؟
 
 - عندما يكون المجال غير مألوف لك (مقاولات، محاماة، BI، طب، تعليم...)
 - عندما يحتوي handoff على معلومات مجال عامة غير كافية لتوصية دقيقة

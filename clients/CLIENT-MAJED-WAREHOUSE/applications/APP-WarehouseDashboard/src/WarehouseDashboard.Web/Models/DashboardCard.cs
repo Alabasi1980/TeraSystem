@@ -43,6 +43,9 @@ public class DashboardCard
     /// <summary>Auto-refresh interval in seconds (0 = no auto-refresh). Default 0. CHECK: >= 0.</summary>
     public int RefreshInterval { get; set; }
 
+    /// <summary>Color palette ID (e.g., "primary", "secondary", "accent"). Default: "primary".</summary>
+    public string ColorPalette { get; set; } = "primary";
+
     /// <summary>Whether the card is shown on the dashboard (1 = visible, 0 = hidden). Default true.</summary>
     public bool IsActive { get; set; } = true;
 

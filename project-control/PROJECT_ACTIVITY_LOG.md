@@ -16,6 +16,126 @@
 
 ## Activity Log
 
+## [2026-07-17 00:00] - FIX_TASK_OPENED
+
+- Related Task: TASK-KPI-FIX-016
+- Actor: Tera
+- Summary: Created approved task to simplify Card Builder KPI data flow: Step 2 becomes source-only, while Step 4 becomes the canonical KPI value-column selection step.
+- Decision / Result: TASK-KPI-FIX-016 created with explicit UX decision, acceptance criteria, allowed write targets, and UI empty-state requirement.
+- Next Action: Delegate the approved task to EngineeringAgent for implementation within the two allowed files only.
+
+## [2026-07-17 00:05] - ENGINEERING_IMPLEMENTATION_HANDBACK
+
+- Related Task: TASK-KPI-FIX-016
+- Actor: EngineeringAgent → Tera
+- Summary: EngineeringAgent implemented source-only Step 2, moved canonical KPI value mapping to Step 4, added robust numeric detection, auto-selection, and inline empty-state messaging.
+- Decision / Result: Handback received. Normal build was blocked by running app file locks; fallback compile verification to a temp output folder succeeded with 0 warnings and 0 errors.
+- Next Action: Tera performs post-execution review and asks Majed to restart/rebuild/hard refresh for browser validation.
+
+## [2026-07-17 00:10] - POST_EXECUTION_REVIEW
+
+- Related Task: TASK-KPI-FIX-016
+- Actor: Tera
+- Summary: Reviewed diff for `Builder.cshtml` and `card-builder.js`, confirmed allowed write targets, no secrets, and scope alignment with the approved UX decision.
+- Decision / Result: Post-Execution Review PASS by code/diff review and compile fallback. Auditor Review Decision: NOT_REQUIRED because this is a focused two-file UI/data-flow fix with no auth/security/database/API surface changes.
+- Next Action: Majed should stop the running app, rebuild/restart, hard refresh, and validate Step 2 → Step 4 in the browser.
+
+## [2026-07-17 01:00] - FIX_TASK_OPENED
+
+- Related Task: TASK-KPI-FIX-017
+- Actor: Tera
+- Summary: Created approved task to simplify Step 5 (Visual Settings). Removed 2 dead sections (chart-options, advanced accordion), fixed ColorPalette save loss, and removed 6 dead backend properties.
+- Decision / Result: TASK-KPI-FIX-017 created with detailed scope across 4 files. Based on QUAUD-STEP5 audit findings (2 STOP, 4 CAUTION, 3 FLAG).
+- Next Action: Delegate to EngineeringAgent.
+
+## [2026-07-17 01:10] - ENGINEERING_IMPLEMENTATION_HANDBACK
+
+- Related Task: TASK-KPI-FIX-017
+- Actor: EngineeringAgent → Tera
+- Summary: EngineeringAgent implemented all changes: removed dead sections from Builder.cshtml, removed wireFilters/addFilterRow/collectFilters from card-builder.js, cleaned syncHiddenInputs, removed 6 dead backend properties from Builder.cshtml.cs, added ColorPalette to DashboardCard.cs entity, and added ColorPalette save in OnPostAsync.
+- Decision / Result: Build succeeded with 0 warnings, 0 errors. Unrelated appsettings.Production.json change reverted.
+- Next Action: Tera post-execution review.
+
+## [2026-07-17 01:15] - POST_EXECUTION_REVIEW
+
+- Related Task: TASK-KPI-FIX-017
+- Actor: Tera
+- Summary: Reviewed diff for all 4 changed files. Confirmed scope, allowed write targets, no secrets, no unrelated changes. Auditor review: NOT_REQUIRED — focused cleanup based on Auditor's own findings.
+- Decision / Result: Post-Execution Review PASS. Task accepted.
+- Next Action: Majed rebuilds, hard refreshes, and validates Step 5.
+
+## [2026-07-17 02:00] - FIX_TASK_OPENED (P0 — Save Pipeline)
+
+- Related Task: TASK-KPI-FIX-018
+- Actor: Tera
+- Summary: Created P0 task to fix card save pipeline. Based on QUAUD-SAVE-DASHBOARD-PIPELINE audit findings (4 STOP). Fixes: SqlQuery not saving, DataSourceType wrong values, TempData key mismatch, "التالي" button visible on last step.
+- Decision / Result: TASK-KPI-FIX-018 created with 5 precise fixes across 3 files.
+- Next Action: Delegate to EngineeringAgent.
+
+## [2026-07-17 02:10] - ENGINEERING_IMPLEMENTATION_HANDBACK (FIX-018)
+
+- Related Task: TASK-KPI-FIX-018
+- Actor: EngineeringAgent → Tera
+- Summary: EngineeringAgent implemented all 5 fixes. Added wb-h-sqlQuery hidden input + sync. Fixed OnPostAsync SqlQuery/DataSourceType logic. Added SqlQuery BindProperty + DTO field. Fixed TempData key to ToastMessage. Hid "التالي" on last step.
+- Decision / Result: Build 0 warnings, 0 errors. Unrelated appsettings.json license key change reverted.
+- Next Action: Tera post-execution review + user validation.
+
+## [2026-07-17 02:15] - POST_EXECUTION_REVIEW (FIX-018)
+
+- Related Task: TASK-KPI-FIX-018
+- Actor: Tera
+- Summary: Reviewed all changes. Scope, targets, acceptance criteria all met. No secrets. No unrelated changes.
+- Decision / Result: Task accepted and closed. Ready for user validation.
+- Next Action: Majed rebuilds, hard refreshes, and tests end-to-end card save and dashboard display.
+
+## [2026-07-17 02:30] - FIX_TASK_OPENED (FIX-019 — CustomSQL Listener)
+
+- Related Task: TASK-KPI-FIX-019
+- Actor: Tera
+- Summary: Created task to fix missing CustomSQL textarea input listener. `wireFields()` did not wire `wb-custom-sql`, so `state.customSql` never updated on user input.
+- Decision / Result: Task created with precise one-function fix scope.
+- Next Action: Delegate to EngineeringAgent.
+
+## [2026-07-17 02:35] - ENGINEERING_IMPLEMENTATION_HANDBACK (FIX-019)
+
+- Related Task: TASK-KPI-FIX-019
+- Actor: EngineeringAgent → Tera
+- Summary: Added `cs = $('wb-custom-sql')` + input listener to `wireFields()`. Listener syncs `state.customSql`, `state.previewSql`, hidden input, schedules debounced preview, and updates validation.
+- Decision / Result: Build 0 warnings, 0 errors. No unrelated changes.
+- Next Action: Tera post-execution review + closure.
+
+## [2026-07-17 02:40] - POST_EXECUTION_REVIEW (FIX-019)
+
+- Related Task: TASK-KPI-FIX-019
+- Actor: Tera
+- Summary: Verified the change in `wireFields()`. Exactly matches the spec. Build passes.
+- Decision / Result: Task accepted and closed.
+- Next Action: Majed rebuilds and tests all fixes end-to-end.
+
+## [2026-07-17 03:00] - FIX_TASK_OPENED (FIX-020 — DashboardCards Schema)
+
+- Related Task: TASK-KPI-FIX-020
+- Actor: Tera
+- Summary: Created P0 database migration task after user reported that saving completed wizard cards inserted no rows into `DashboardCards`. Investigation showed likely schema drift: `ColorPalette` exists in entity but not migrations/snapshot, and current entity requires advanced KPI columns not guaranteed by initial migration.
+- Decision / Result: TASK-KPI-FIX-020 created as explicit database-apply task to repair `DashboardCards` schema and add visible server-side save errors.
+- Next Action: Delegate to EngineeringAgent with approved `dotnet ef database update` side effect.
+
+## [2026-07-17 03:10] - ENGINEERING_IMPLEMENTATION_HANDBACK (FIX-020)
+
+- Related Task: TASK-KPI-FIX-020
+- Actor: EngineeringAgent → Tera
+- Summary: EngineeringAgent added `ColorPalette` DbContext config, created guarded repair migration `20260717134445_RepairDashboardCardsSchemaForBuilderSave`, applied `dotnet ef database update`, verified actual `DashboardCards` schema contains required builder/KPI columns, and added model-level validation summary to Builder page.
+- Decision / Result: Build succeeded with 0 warnings and 0 errors. Database update succeeded. No test card data created.
+- Next Action: Tera review and Auditor verification before closure.
+
+## [2026-07-17 03:20] - AUDITOR_REVIEW (FIX-020)
+
+- Related Task: TASK-KPI-FIX-020
+- Actor: Auditor → Tera
+- Summary: Auditor verified DbContext ColorPalette config, guarded repair migration coverage for all required `DashboardCards` columns, Builder validation summary, migration consistency, and engineering evidence of successful DB update/build/schema verification.
+- Decision / Result: Quality Gate PASS. STOP: 0, CAUTION: 0, FLAG: 1 (no actual test card insert performed by EngineeringAgent). Tera accepted and closed TASK-KPI-FIX-020.
+- Next Action: Majed restarts app and performs real end-to-end save test through UI.
+
 ## [2026-07-10 18:20] - PHASE_4_2_EXECUTION_PREP
 
 - Related Task: TASK-COD-001

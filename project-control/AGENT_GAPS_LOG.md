@@ -54,6 +54,21 @@ Only then changes are implemented.
 
 ---
 
+## GAP-003 — Verification fallback needed when running app locks normal dotnet build
+
+- **Title:** أوامر التحقق لا توضّح مساراً بديلاً عند قفل ملفات build بسبب تشغيل التطبيق
+- **Agent:** EngineeringAgent / Tera workflow
+- **Gap Type:** Improvement / Documentation Gap
+- **Severity:** Low
+- **Description:** أثناء TASK-KPI-FIX-016 فشل `dotnet build` العادي بسبب قفل ملفات `bin\Debug\net8.0` من عملية تشغيل التطبيق، رغم أن التجميع نفسه يمكن التحقق منه بنجاح باستخدام مجلد output مؤقت.
+- **Evidence:** EngineeringAgent reported normal `dotnet build` blocked by running `WarehouseDashboard.Web` process, while `dotnet build -o C:\Users\Fares\AppData\Local\Temp\opencode\WarehouseDashboard-build-check` succeeded with 0 warnings and 0 errors.
+- **Impact:** قد تظهر المهمة كأنها فشلت رغم أن الكود يترجم بنجاح، مما يربك قبول المهام عندما يكون التطبيق قيد التشغيل محلياً.
+- **Recommended Action:** إضافة إرشاد رسمي في بروتوكول/قوالب التفويض يسمح بفحص compile fallback إلى مجلد مؤقت عند وجود file lock، مع تسجيل ذلك كتحقق بديل وليس بديلاً عن إعادة تشغيل التطبيق قبل التشغيل الفعلي.
+- **Suggested Target File:** `tera-system/runtime/TERA_RUNTIME_PROTOCOLS.md` أو قوالب التفويض ذات الصلة
+- **Status:** Pending
+
+---
+
 ## GAP-001 — EngineeringAgent يكتب الكود في المسار الخطأ
 
 - **Title:** EngineeringAgent لا يلتزم بمسار مشروع العميل عند إنشاء الملفات

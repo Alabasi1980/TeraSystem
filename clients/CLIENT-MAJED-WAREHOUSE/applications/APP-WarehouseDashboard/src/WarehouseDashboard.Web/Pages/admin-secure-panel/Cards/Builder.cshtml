@@ -45,6 +45,8 @@
         <div class="wb-form-pane">
             <form method="post" id="wb-form" class="wb-form" novalidate>
 
+                <div asp-validation-summary="ModelOnly" class="wd-error"></div>
+
                 <!-- Step 1: Type Picker -->
                 <fieldset class="wb-step-panel" data-step="1" aria-labelledby="wb-step1-title" role="group">
                     <legend id="wb-step1-title" class="wb-step-panel__title">
@@ -145,13 +147,6 @@
                             </select>
                             <span id="wb-sql-table-hint" class="wd-field__hint">اختر جدولاً مزامناً من SQL Server</span>
                         </div>
-                        <div class="wb-field">
-                            <label class="wd-field__label" for="wb-measurement-field">الحقل/القياس</label>
-                            <select id="wb-measurement-field" class="wd-select" aria-describedby="wb-measurement-hint" disabled>
-                                <option value="">اختر جدولاً أولاً</option>
-                            </select>
-                            <span id="wb-measurement-hint" class="wd-field__hint">الحقل الرقمي للرسوم أو القيمة للمؤشرات</span>
-                        </div>
                     </div>
 
                     <!-- Custom SQL (Advanced) -->
@@ -160,11 +155,6 @@
                             <label class="wd-field__label" for="wb-custom-sql">استعلام SQL مخصص</label>
                             <textarea id="wb-custom-sql" class="wd-textarea wb-sql-textarea" name="customSql" rows="8" placeholder="SELECT column1, column2 FROM table WHERE condition..." aria-describedby="wb-custom-sql-hint"></textarea>
                             <span id="wb-custom-sql-hint" class="wd-field__hint">استخدم هذا للخبراء فقط. يجب أن يعيد أعمدة قابلة للتمثيل البياني.</span>
-                        </div>
-                        <div class="wb-field">
-                            <label class="wd-field__label" for="wb-sql-measurement">الحقل/القياس</label>
-                            <input type="text" id="wb-sql-measurement" class="wd-input" name="measurement" placeholder="اسم العمود الرقمي" aria-describedby="wb-sql-measurement-hint">
-                            <span id="wb-sql-measurement-hint" class="wd-field__hint">أدخل اسم العمود الرقمي يدوياً</span>
                         </div>
                     </div>
 
@@ -246,10 +236,11 @@
                         <div class="wd-form__grid">
                             <div class="wd-field">
                                 <label class="wd-field__label" for="wb-kpi-value-column">عمود القيمة <span class="wb-required" aria-hidden="true">*</span></label>
-                                <select id="wb-kpi-value-column" class="wd-select" name="valueColumn">
+                                <select id="wb-kpi-value-column" class="wd-select" name="valueColumn" aria-describedby="wb-kpi-value-column-hint wb-kpi-value-column-message">
                                     <option value="">اختر عموداً...</option>
                                 </select>
-                                <span class="wd-field__hint">العمود الرقمي للقيمة الرئيسية</span>
+                                <span id="wb-kpi-value-column-hint" class="wd-field__hint">العمود الرقمي للقيمة الرئيسية</span>
+                                <span id="wb-kpi-value-column-message" class="wd-error wd-hidden" role="status" aria-live="polite"></span>
                             </div>
                             <div class="wd-field">
                                 <label class="wd-field__label" for="wb-kpi-date-column">عمود التاريخ <span class="wb-required" id="wb-date-required-star" aria-hidden="true" style="display:none;">*</span></label>
@@ -345,6 +336,7 @@
                     <legend id="wb-step5-title" class="wb-step-panel__title">
                         <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-palette"></use></svg>
                         إعدادات الشكل
+                        <span class="wb-step-panel__badge" id="wb-chart-type-badge"></span>
                     </legend>
                     <p class="wb-step-panel__hint">تحكم في الحجم، الموضع، الألوان، والتحديث التلقائي.</p>
 
@@ -396,77 +388,9 @@
                         </div>
                     </div>
 
-                    <!-- Chart-specific options (collapsible) -->
-                    <div class="wb-visual-section">
-                        <h4 class="wb-visual-section__title">خيارات نوع الرسم <span class="wb-visual-section__badge" id="wb-chart-options-badge">مطوية</span></h4>
-                        <details class="wb-chart-options" id="wb-chart-options">
-                            <summary class="wb-chart-options__summary">
-                                <span>إظهار/إخفاء خيارات <span id="wb-chart-type-name">الرسم</span></span>
-                                <svg class="wb-icon wb-chart-options__chevron" aria-hidden="true"><use href="#wb-icon-chevron-down"></use></svg>
-                            </summary>
-                            <div class="wb-chart-options__content" id="wb-chart-options-content">
-                                <!-- Injected by JS based on card type -->
-                            </div>
-                        </details>
-                    </div>
 
-                    <!-- Advanced Accordion -->
-                    <details class="wb-advanced-accordion" id="wb-advanced-accordion">
-                        <summary class="wb-advanced-accordion__summary">
-                            <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-settings"></use></svg>
-                            <span>خيارات متقدمة</span>
-                            <svg class="wb-icon wb-advanced-accordion__chevron" aria-hidden="true"><use href="#wb-icon-chevron-down"></use></svg>
-                        </summary>
-                        <div class="wb-advanced-accordion__content">
-                            <div class="wb-advanced-section">
-                                <h5 class="wb-advanced-section__title">فلاتر البيانات (اختياري)</h5>
-                                <div id="wb-filters-container" class="wb-filters-list">
-                                    <div class="wb-filter-row">
-                                        <input type="text" class="wd-input wb-filter-key" placeholder="المفتاح (مثال: WarehouseId)" aria-label="مفتاح الفلتر">
-                                        <input type="text" class="wd-input wb-filter-value" placeholder="القيمة (مثال: 1)" aria-label="قيمة الفلتر">
-                                        <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm wb-filter-remove" aria-label="إزالة الفلتر"><svg class="wb-icon"><use href="#wb-icon-trash"></use></svg></button>
-                                    </div>
-                                </div>
-                                <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm" id="wb-add-filter">
-                                    <svg class="wb-icon" aria-hidden="true"><use href="#wb-icon-plus"></use></svg>
-                                    إضافة فلتر
-                                </button>
-                            </div>
 
-                            <div class="wb-advanced-section">
-                                <h5 class="wb-advanced-section__title">تكوين Drill-down (اختياري)</h5>
-                                <div class="wd-form__grid">
-                                    <div class="wd-field">
-                                        <label class="wd-field__label" for="wb-drill-level">مستوى الحفر</label>
-                                        <select id="wb-drill-level" class="wd-select" name="drillLevel">
-                                            <option value="">لا يوجد</option>
-                                            <option value="warehouse">مستودع</option>
-                                            <option value="item">صنف</option>
-                                            <option value="transaction">معاملة</option>
-                                        </select>
-                                    </div>
-                                    <div class="wd-field">
-                                        <label class="wd-field__label" for="wb-drill-field">الحقل المرتبط</label>
-                                        <input type="text" id="wb-drill-field" class="wd-input" name="drillField" placeholder="مثال: WarehouseId">
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="wb-advanced-section">
-                                <h5 class="wb-advanced-section__title">تسميات وتلميحات مخصصة (اختياري)</h5>
-                                <div class="wd-form__grid">
-                                    <div class="wd-field">
-                                        <label class="wd-field__label" for="wb-custom-label">تسمية مخصصة للمحور Y</label>
-                                        <input type="text" id="wb-custom-label" class="wd-input" name="customLabel" placeholder="مثال: الكمية (وحدة)">
-                                    </div>
-                                    <div class="wd-field">
-                                        <label class="wd-field__label" for="wb-tooltip-format">تنسيق التلميح</label>
-                                        <input type="text" id="wb-tooltip-format" class="wd-input" name="tooltipFormat" placeholder="مثال: {value:N0} وحدة">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
 
                     <div class="wb-step-panel__error wd-hidden" id="wb-step5-error" role="alert" aria-live="polite"></div>
                 </fieldset>
@@ -482,10 +406,9 @@
                 <input type="hidden" name="gridY" id="wb-h-gridY" value="">
                 <input type="hidden" name="colorPalette" id="wb-h-colorPalette" value="primary">
                 <input type="hidden" name="refreshInterval" id="wb-h-refreshInterval" value="300">
-                <input type="hidden" name="chartOptionsJson" id="wb-h-chartOptionsJson" value="{}">
-                <input type="hidden" name="filtersJson" id="wb-h-filtersJson" value="[]">
-                <input type="hidden" name="drillDownConfigJson" id="wb-h-drillDownConfigJson" value="{}">
-                <input type="hidden" name="customLabelsJson" id="wb-h-customLabelsJson" value="{}">
+
+                <!-- SQL Query to execute for card data -->
+                <input type="hidden" name="sqlQuery" id="wb-h-sqlQuery" value="">
 
                 <!-- KPI fields (TASK-KPI-006) -->
                 <input type="hidden" name="valueColumn" id="wb-h-valueColumn" value="">
@@ -610,7 +533,7 @@
 
 @section Scripts {
     <script src="~/js/card-templates.js"></script>
-    <script src="~/js/card-builder.js"></script>
+    <script src="~/js/card-builder.js?v=20260717"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             window.wbBuilder = new CardBuilderWizard({
@@ -624,8 +547,7 @@
                     sourceId: '@Model.SourceId',
                     customSql: '@Model.CustomSql',
                     title: '@Model.Title',
-                    displayName: '@Model.DisplayName',
-                    measurement: '@Model.Measurement'
+                    displayName: '@Model.DisplayName'
                 }
             });
         });

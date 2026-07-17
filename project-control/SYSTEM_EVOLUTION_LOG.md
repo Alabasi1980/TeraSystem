@@ -1138,3 +1138,12 @@
   2. حذف `tera-system/knowledge-base/manufacturing/` إذا لم يكن Majed قد بدأ تعبئة الملفات.
   3. إزالة إدخالات ProductionERPExpert من `TeraSubAgents.md`, `AGENT_ACTIVATION_MATRIX.md`, `AGENT_DEPENDENCY_MAP.md`, `AGENT_PERMISSION_MODEL.md`, `TeraPolicyMap.md`, `TeraArchitectureMap.md`, `tera-client-engagement.md`, و`application-blueprint.md`.
   4. إزالة هذا الإدخال من `SYSTEM_EVOLUTION_LOG.md` إذا نُفذ rollback.
+
+### متابعة تدقيق Auditor — 2026-07-16
+
+- تقرير التدقيق المعتمد: `project-control/audit-reports/QUAUD-SCP-2026-07-16-100-2026-07-16-002.md`
+- النتيجة: `PASS_WITH_FLAGS`
+- تم إصلاح ملاحظتين غير حرجتين فوراً بعد موافقة Majed:
+  1. `FLAG-001`: توضيح أن ProductionERPExpert لا يستدعي DomainResearchAgent بنفسه، بل يطلب من المستدعي/المنسق اتخاذ القرار.
+  2. `FLAG-003`: تعديل صياغة عنوان `application-blueprint.md` من المثنى إلى الجمع لأن القسم أصبح يشمل ثلاثة عملاء.
+- الحالة بعد المتابعة: لا توجد STOP أو CAUTION مفتوحة من تدقيق Auditor؛ تبقى ملاحظات KB غير الجاهزة كشرط استخدام طبيعي حتى يضع Majed الملفات بحالة `READY`.

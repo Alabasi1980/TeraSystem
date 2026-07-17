@@ -76,13 +76,6 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string DisplayName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Measurement/Field selected from source (required for non-KPI types)
-        /// </summary>
-        [BindProperty]
-        [JsonPropertyName("measurement")]
-        public string Measurement { get; set; } = string.Empty;
-
-        /// <summary>
         /// Grid column span (1-12)
         /// </summary>
         [BindProperty]
@@ -126,40 +119,10 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         [JsonPropertyName("refreshInterval")]
         public int RefreshInterval { get; set; } = 0;
 
-        /// <summary>
-        /// Chart-specific options (JSON)
-        /// </summary>
+        /// <summary>SQL query to execute for card data.</summary>
         [BindProperty]
-        [JsonPropertyName("chartOptions")]
-        public string ChartOptionsJson { get; set; } = "{}";
-
-        /// <summary>
-        /// Filters as key-value pairs (Advanced accordion)
-        /// </summary>
-        [BindProperty]
-        [JsonPropertyName("filters")]
-        public Dictionary<string, string> Filters { get; set; } = new();
-
-        /// <summary>
-        /// Filters serialized as JSON (Advanced accordion) — used for clone pre-fill and round-tripping.
-        /// </summary>
-        [BindProperty]
-        [JsonPropertyName("filtersJson")]
-        public string FiltersJson { get; set; } = "{}";
-
-        /// <summary>
-        /// Drill-down configuration (Advanced accordion)
-        /// </summary>
-        [BindProperty]
-        [JsonPropertyName("drillDownConfig")]
-        public string DrillDownConfigJson { get; set; } = "{}";
-
-        /// <summary>
-        /// Custom labels/tooltips (Advanced accordion)
-        /// </summary>
-        [BindProperty]
-        [JsonPropertyName("customLabels")]
-        public string CustomLabelsJson { get; set; } = "{}";
+        [JsonPropertyName("sqlQuery")]
+        public string SqlQuery { get; set; } = string.Empty;
 
         // === Advanced KPI Fields ===
 
@@ -279,11 +242,6 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public List<SelectListItem> OracleTables { get; set; } = new();
 
         /// <summary>
-        /// Available measurements for selected source (Step 3)
-        /// </summary>
-        public List<SelectListItem> AvailableMeasurements { get; set; } = new();
-
-        /// <summary>
         /// Available color palettes
         /// </summary>
         public List<ColorPaletteOption> ColorPalettes { get; set; } = new()
@@ -361,13 +319,14 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                     {
                         Title = dto.Title?.Trim() ?? "",
                         ChartType = dto.CardType ?? "",
-                        DataSourceType = dto.SourceType ?? "SQL Query",
-                        SqlQuery = dto.CustomSql ?? (dto.SourceId ?? ""),
+                        DataSourceType = dto.SourceType == "SqlTable" ? "View" : "SQL Query",
+                        SqlQuery = dto.SqlQuery,
                         GridPositionX = dto.GridX ?? 0,
                         GridPositionY = dto.GridY ?? 0,
                         GridWidth = dto.GridWidth > 0 ? dto.GridWidth : 4,
                         GridHeight = dto.GridHeight > 0 ? dto.GridHeight : 2,
                         RefreshInterval = dto.RefreshIntervalSeconds,
+                        ColorPalette = dto.ColorPalette ?? "primary",
                         IsActive = dto.IsActive,
                         ValueColumn = dto.ValueColumn ?? "",
                         DateColumn = dto.DateColumn ?? "",
@@ -387,9 +346,10 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                     _db.DashboardCards.Add(entity);
                     await _db.SaveChangesAsync();
 
-                    TempData["SuccessMessage"] = action == "saveAndAddAnother"
+                    TempData["ToastMessage"] = action == "saveAndAddAnother"
                         ? "تم حفظ البطاقة. جاري إنشاء بطاقة جديدة..."
                         : "تم حفظ البطاقة بنجاح.";
+                    TempData["ToastType"] = "success";
 
                     if (action == "saveAndAddAnother")
                     {
@@ -484,17 +444,12 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 CustomSql  = req.SqlQuery;
                 Title      = req.Title;
                 DisplayName= req.Title;
-                Measurement = string.Empty;
                 GridWidth  = req.GridWidth;
                 GridHeight = req.GridHeight;
                 GridX      = req.GridPositionX;
                 GridY      = req.GridPositionY;
                 ColorPalette = "primary";
                 RefreshInterval = req.RefreshInterval;
-                ChartOptionsJson   = "{}";
-                FiltersJson        = System.Text.Json.JsonSerializer.Serialize(req.DrillDownLevels ?? new List<CardDrillDownInput>());
-                DrillDownConfigJson = "{}";
-                CustomLabelsJson    = "{}";
 
                 // Mark as clone (new card, not update)
                 CloneId = string.Empty;
@@ -523,19 +478,15 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 SourceType = SourceType,
                 SourceId = SourceId,
                 CustomSql = SourceType == "CustomSQL" ? CustomSql : null,
+                SqlQuery = SqlQuery,
                 Title = Title,
                 DisplayName = DisplayName,
-                Measurement = Measurement,
                 GridWidth = GridWidth,
                 GridHeight = GridHeight,
                 GridX = GridX >= 0 ? GridX : null,
                 GridY = GridY >= 0 ? GridY : null,
                 ColorPalette = ColorPalette,
                 RefreshIntervalSeconds = RefreshInterval,
-                ChartOptionsJson = ChartOptionsJson,
-                FiltersJson = System.Text.Json.JsonSerializer.Serialize(Filters),
-                DrillDownConfigJson = DrillDownConfigJson,
-                CustomLabelsJson = CustomLabelsJson,
                 // Advanced KPI
                 KpiMode = KpiMode,
                 ValueColumn = ValueColumn,
@@ -565,19 +516,15 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 SourceType = request.SourceType,
                 SourceId = request.SourceId,
                 CustomSql = request.CustomSql,
+                SqlQuery = request.SqlQuery,
                 Title = request.Title,
                 DisplayName = request.DisplayName,
-                Measurement = request.Measurement,
                 GridWidth = request.GridWidth,
                 GridHeight = request.GridHeight,
                 GridX = request.GridX,
                 GridY = request.GridY,
                 ColorPalette = request.ColorPalette,
                 RefreshIntervalSeconds = request.RefreshInterval,
-                ChartOptionsJson = request.ChartOptionsJson,
-                FiltersJson = System.Text.Json.JsonSerializer.Serialize(request.Filters),
-                DrillDownConfigJson = request.DrillDownConfigJson,
-                CustomLabelsJson = request.CustomLabelsJson,
                 // Advanced KPI
                 KpiMode = request.KpiMode,
                 ValueColumn = request.ValueColumn,
@@ -653,19 +600,15 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string SourceType { get; set; } = string.Empty;
         public string SourceId { get; set; } = string.Empty;
         public string? CustomSql { get; set; }
+        public string SqlQuery { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
-        public string? Measurement { get; set; }
         public int GridWidth { get; set; }
         public int GridHeight { get; set; }
         public int? GridX { get; set; }
         public int? GridY { get; set; }
         public string ColorPalette { get; set; } = string.Empty;
         public int RefreshIntervalSeconds { get; set; }
-        public string ChartOptionsJson { get; set; } = string.Empty;
-        public string FiltersJson { get; set; } = string.Empty;
-        public string DrillDownConfigJson { get; set; } = string.Empty;
-        public string CustomLabelsJson { get; set; } = string.Empty;
 
         // === Advanced KPI ===
         public string KpiMode { get; set; } = "simple";
@@ -694,19 +637,15 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string SourceType { get; set; } = string.Empty;
         public string SourceId { get; set; } = string.Empty;
         public string CustomSql { get; set; } = string.Empty;
+        public string SqlQuery { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
-        public string Measurement { get; set; } = string.Empty;
         public int GridWidth { get; set; }
         public int GridHeight { get; set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
         public string ColorPalette { get; set; } = string.Empty;
         public int RefreshInterval { get; set; }
-        public string ChartOptionsJson { get; set; } = string.Empty;
-        public Dictionary<string, string> Filters { get; set; } = new();
-        public string DrillDownConfigJson { get; set; } = string.Empty;
-        public string CustomLabelsJson { get; set; } = string.Empty;
 
         // Advanced KPI
         public string KpiMode { get; set; } = "simple";
