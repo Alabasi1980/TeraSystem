@@ -1,4 +1,4 @@
-# Tera Architecture Map
+﻿# Tera Architecture Map
 
 ## 1. Purpose
 
@@ -38,6 +38,7 @@ It is a map, not a policy source. Rules remain in the files listed in `TeraPolic
 | `tera-system/design-system/` | System design governance, schemas, gates, and internal kits | Project-specific design decisions or client raw assets |
 | `tera-system/profiles/` | Technology-specific execution rules | Generic project policy |
 | `tera-system/knowledge-base/` | Reusable domain knowledge references for specialist agents | Project-specific client facts, secrets, or unverified assumptions treated as confirmed sources |
+| `tera-system/engineering-helpers/` | Shared engineering reference files (core rules, standards) used by all engineering agents | Language-specific profiles (those go in `tera-system/profiles/`) |
 | `tera-workshop/` | System development and tooling files (templates, experiments, system-level outputs) | Core policy, project files, or runtime agents |
 
 ## 4. Core Flow

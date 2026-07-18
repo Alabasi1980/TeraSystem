@@ -1,4 +1,4 @@
-# Tera Policy Map
+﻿# Tera Policy Map
 
 ## 1. Purpose
 
@@ -80,6 +80,8 @@ Project files record project-specific decisions.
 | User guide | `tera-system/TERA_USER_GUIDE.md` | Not applicable | User-facing prompts and usage examples. |
 | System maintenance | `tera-system/TeraSystemMaintenanceChecklist.md` | `.opencode/agents/tera.md` | Use when modifying Tera itself. |
 | Agent dependency map | `tera-system/AGENT_DEPENDENCY_MAP.md` | `tera-system/AGENT_DEPENDENCY_MAP.md` | Cross-references between agent files; safe edit order; file size alerts. Read before editing any agent file. |
+| Engineering agent core | `tera-system/engineering-helpers/engineering-agent-core.md` | `.opencode/agents/engineering-agent.md`, `.opencode/agents/engineering-agent-dotnet.md` | Shared engineering rules for ALL engineering agents. Must be read before every task. |
+| .NET Engineering agent | `.opencode/agents/engineering-agent-dotnet.md` | `tera-system/TeraSubAgents.md`, `tera-system/AGENT_ACTIVATION_MATRIX.md`, `tera-system/AGENT_DEPENDENCY_MAP.md` | Specialized .NET/C# engineering agent. Used for .NET tasks instead of the general engineering-agent.md. |
 | Scenario stress tests | `tera-system/TeraScenarioStressTests.md` | Not applicable | Used for validation, not daily runtime. |
 | Client workspace guide | `clients/README.md` | Not applicable | Folder usage guide only; policies remain in `tera-system/`. |
 

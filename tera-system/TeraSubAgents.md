@@ -1,4 +1,4 @@
-# TeraSubAgents.md
+﻿# TeraSubAgents.md
 
 # سجل العملاء الفرعيين لمنظومة Tera Agent
 
@@ -526,25 +526,30 @@ project-preparation/design-source/ عند توفيره من Tera
 
 ---
 
-## 5.6 EngineeringAgent
+## 5.6 EngineeringAgent (عام — Fallback)
 
 | البند | القيمة |
 |---|---|
-| اسم العميل | Engineering Agent |
+| اسم العميل | Engineering Agent (عام) |
 | المعرّف | `ENGINEERING_AGENT` |
 | الفئة | أساسي |
 | ملف العميل | `.opencode/agents/engineering-agent.md` |
-| الدور | تنفيذ المهام البرمجية بعد اعتماد التحليل والتصميم |
+| الدور | تنفيذ المهام البرمجية — عام للغات التي ليس لها متخصص |
 
 ### متى يستدعيه تيرا؟
 
 - بعد اعتماد ملفات التحليل والتصميم الأساسية.
-- عند وجود مهمة برمجية محددة.
-- عند الحاجة لتعديل أو إصلاح أو بناء مكون.
+- عند وجود مهمة برمجية محددة بلغة **ليس لها عميل متخصص**.
+- عند الحاجة لتعديل أو إصلاح أو بناء مكون بلغة عامة.
+
+### ملاحظة مهمة
+
+إذا كانت المهمة **.NET / C#** → استخدم `engineering-agent-dotnet.md` بدلاً من هذا العميل.
 
 ### يقرأ
 
 ```text
+tera-system/engineering-helpers/engineering-agent-core.md  ← إلزامي
 03_MODULES_AND_FEATURES.md
 06_DATA_MODEL_PREPARATION.md
 07_SCREENS_AND_UI_STRUCTURE.md
@@ -568,7 +573,53 @@ tera-system/design-system/ كمرجع fallback يحدده Tera فقط
 
 ---
 
-## 5.7 QAAndAcceptanceAgent
+## 5.7 EngineeringAgent (.NET متخصص)
+
+| البند | القيمة |
+|---|---|
+| اسم العميل | .NET Engineering Agent |
+| المعرّف | `ENGINEERING_AGENT_DOTNET` |
+| الفئة | أساسي — متخصص |
+| ملف العميل | `.opencode/agents/engineering-agent-dotnet.md` |
+| الدور | تنفيذ المهام البرمجية — متخصص في .NET / C# / ASP.NET Core / EF Core |
+
+### متى يستدعيه تيرا؟
+
+- عندما تكون المهمة **.NET / C#** تحديداً.
+- عندما يكون الـ Active Technology Profile من عائلة .NET (Blazor, Razor Pages, Web API, WPF, MAUI).
+- عند الحاجة لخبرة عميقة في .NET (async/await, EF Core, Middleware, DI).
+
+### لا يُستخدم لـ
+
+- Node.js / TypeScript / Python / Java — استخدم `engineering-agent.md` العام لهذه اللغات.
+
+### يقرأ
+
+```text
+tera-system/engineering-helpers/engineering-agent-core.md  ← إلزامي
+tera-system/profiles/[ACTIVE_PROFILE].md                    ← الملف التعريفي النشط
+03_MODULES_AND_FEATURES.md
+06_DATA_MODEL_PREPARATION.md
+07_SCREENS_AND_UI_STRUCTURE.md
+08_TECHNICAL_ARCHITECTURE.md
+09_IMPLEMENTATION_PLAN.md
+10_TESTING_AND_ACCEPTANCE.md
+28_UI_UX_GUIDELINES.md إلزامي لأي مهمة UI/Frontend ذات ستايل بصري
+```
+
+### ينتج أو يساهم في
+
+- كود .NET / C# متخصص.
+- Controllers, Services, Middleware, Background Services.
+- EF Core Migrations و DbContext.
+- Integration Tests (WebApplicationFactory).
+- ملاحظات تنفيذ خاصة بـ .NET.
+
+> **التعريف الكامل:** `.opencode/agents/engineering-agent-dotnet.md` — يحتوي التخصص العميق في .NET، الممارسات الإلزامية، الأخطاء الشائعة التي يتجنبها، والأدوات الموصى بها.
+
+---
+
+## 5.8 QAAndAcceptanceAgent
 
 | البند | القيمة |
 |---|---|
@@ -589,7 +640,7 @@ tera-system/design-system/ كمرجع fallback يحدده Tera فقط
 
 ---
 
-## 5.7.1 Quality Gate Auditor — مُدقق
+## 5.8.1 Quality Gate Auditor — مُدقق
 
 | البند | القيمة |
 |---|---|
@@ -650,7 +701,7 @@ project-control/audit-reports/QUAUD-[TASK-ID]-YYYY-MM-DD-NNN.md
 
 ---
 
-## 5.8 DocumentationHandoverAgent
+## 5.9 DocumentationHandoverAgent
 
 | البند | القيمة |
 |---|---|

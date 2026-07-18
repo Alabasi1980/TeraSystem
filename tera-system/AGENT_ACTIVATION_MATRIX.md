@@ -1,4 +1,4 @@
-# AGENT_ACTIVATION_MATRIX.md
+﻿# AGENT_ACTIVATION_MATRIX.md
 
 # مصفوفة تفعيل العملاء الفرعيين — Sub-Agent Activation Matrix
 
@@ -46,7 +46,8 @@ Tera هو المسؤول الافتراضي عن قرار التفعيل. الع
 | UIVisualDesignerAgent | `UI_VISUAL_DESIGNER_AGENT` | `COMPLEXITY_SIGNAL`: وجود Frontend مهم أو مصدر تصميم (Figma, getdesign.md, screenshots) | 4–5 | إذا كان المشروع API-only، أو UI بسيط جدًا بدون متطلبات بصرية | `07_SCREENS_AND_UI_STRUCTURE.md` + مصدر التصميم |
 | DataDesignAgent | `DATA_DESIGN_AGENT` | `DOCUMENT_READY`: بعد وضوح الموديولات والعمليات | 4 | إذا كان التطبيق لا يملك بيانات مترابطة (مثل موقع بسيط بمحتوى ثابت) | `03_MODULES_AND_FEATURES.md` + `05_BUSINESS_WORKFLOWS.md` |
 | SolutionArchitectureAgent | `SOLUTION_ARCH_AGENT` | `PHASE_GATE`: قبل التنفيذ (Phase 5) | 5 | إذا كان المشروع صغيرًا جدًا والتقنيات محددة مسبقًا بدون قرارات معمارية مؤثرة | `08_TECHNICAL_ARCHITECTURE.md` أو `00_PROJECT_INPUTS.md` |
-| EngineeringAgent | `ENGINEERING_AGENT` | `PHASE_GATE`: عند وجود مهمة تنفيذية مع `Pre-Execution Gate: PASS` | 6 | لا يُفعّل بدون `TASK-COD-*` معتمد. لا يُفعّل لتحضير أو تحليل | ملفات التحليل والتصميم المعتمدة + `TASK-ID` + `Pre-Execution Gate: PASS` |
+| EngineeringAgent (عام — Fallback) | `ENGINEERING_AGENT` | `PHASE_GATE`: عند وجود مهمة تنفيذية مع `Pre-Execution Gate: PASS` | 6 | لا يُفعّل بدون `TASK-COD-*` معتمد. لا يُفعّل لتحضير أو تحليل. لا يُستخدم لمهام .NET (استخدم المتخصص) | ملفات التحليل والتصميم المعتمدة + `TASK-ID` + `Pre-Execution Gate: PASS` |
+| EngineeringAgent (.NET متخصص) | `ENGINEERING_AGENT_DOTNET` | `PHASE_GATE`: لمهمة .NET/C# تنفيذية مع `Pre-Execution Gate: PASS` | 6 | لا يُفعّل لمهام غير .NET (JavaScript, Python, Java...). لا يُفعّل بدون active .NET profile | ملفات التحليل والتصميم المعتمدة + `TASK-ID` + `Pre-Execution Gate: PASS` + active .NET profile |
 | QAAndAcceptanceAgent | `QA_ACCEPTANCE_AGENT` | **Planning Mode:** `PHASE_GATE` + `DOCUMENT_READY`: قبل إعداد خطة التنفيذ. **Execution Mode:** `DOCUMENT_READY`: بعد تنفيذ `TASK-COD-*` يحتاج تحقق فعلي (build/test/run/connect). **كلا الوضعين:** قبل Phase 7 وقبل قبول أي مرحلة | 5–6–7 | **Planning Mode:** إذا كانت المهمة بسيطة ومعايير القبول واضحة ويمكن لـ Tera كتابتها مباشرة. **Execution Mode:** إذا كانت المهمة لا تحتاج اختبار CLI (مثل وثائق أو تحضير) | `10_TESTING_AND_ACCEPTANCE.md` (Planning) أو ملف `TASK-COD-*` المنفذ + معايير القبول (Execution) |
 | Auditor | `AUDITOR` | `TASK_COMPLETED` + `RISK_SIGNAL` / `QUALITY_SIGNAL` / `REVIEW_NEEDED`: بعد مهمة تنفيذية ذات مخاطرة أو أثر جودة؛ ويستدعيه Monitor فقط بطلب Majed | 6 | إذا كانت المهمة وثائقية أو صغيرة منخفضة المخاطر وقرار Tera هو `AUDITOR_REVIEW_NOT_REQUIRED` مع سبب موثق | ملف المهمة + Handback + diff/changed files + QA/Security/analyzer evidence عند وجودها + `QUALITY_GATE_THRESHOLDS.md` |
 | DocumentationHandoverAgent | `DOC_HANDOVER_AGENT` | `PHASE_7_GATE`: عند قرب التسليم أو في Phase 7 | 7 | إذا كان المشروع داخليًا small ولن يُسلّم لطرف آخر | ملفات التحليل والتصميم المعتمدة |
@@ -97,7 +98,8 @@ Tera هو المسؤول الافتراضي عن قرار التفعيل. الع
 | UIVisualDesignerAgent | لا | إلا إذا قدم المستخدم ألوانًا أو مصدر تصميم |
 | DataDesignAgent | اختياري | إذا كانت البيانات مترابطة |
 | SolutionArchitectureAgent | لا | التقنيات محددة مسبقًا |
-| EngineeringAgent | نعم | مع `Pre-Execution Gate: PASS` |
+| EngineeringAgent (عام) | نعم | مع `Pre-Execution Gate: PASS` — لمهام غير .NET |
+| EngineeringAgent (.NET) | اختياري | إذا كانت المهمة .NET/C# |
 | QAAndAcceptanceAgent | اختياري | يمكن لـ Tera مراجعة المهمة مباشرة |
 | DocumentationHandoverAgent | لا | |
 | SecurityAgent | لا | إلا إذا كان هناك Auth |
@@ -133,7 +135,8 @@ Tera هو المسؤول الافتراضي عن قرار التفعيل. الع
 | UIVisualDesignerAgent | نعم | إذا كان UI مهمًا |
 | DataDesignAgent | نعم | أساسي |
 | SolutionArchitectureAgent | نعم | |
-| EngineeringAgent | نعم | مع تفعيل متكرر عبر موديولات متعددة |
+| EngineeringAgent (عام) | نعم | مع تفعيل متكرر — للغات غير .NET |
+| EngineeringAgent (.NET) | نعم | مع تفعيل متكرر — لمهام .NET/C# |
 | QAAndAcceptanceAgent | نعم | |
 | DocumentationHandoverAgent | نعم | ERP يحتاج توثيق تسليم كامل |
 | SecurityAgent | نعم | ERP يحتوي صلاحيات وبيانات حساسة |
@@ -163,7 +166,8 @@ Tera هو المسؤول الافتراضي عن قرار التفعيل. الع
 | UIVisualDesignerAgent | نعم | UI مهم لـ SaaS |
 | DataDesignAgent | نعم | |
 | SolutionArchitectureAgent | نعم | |
-| EngineeringAgent | نعم | |
+| EngineeringAgent (عام) | نعم | للغات غير .NET |
+| EngineeringAgent (.NET) | نعم | إذا كانت المهمة .NET/C# |
 | QAAndAcceptanceAgent | نعم | |
 | DocumentationHandoverAgent | نعم | توثيق للمستخدمين |
 | SecurityAgent | نعم | Auth/Multi-tenant أساسي |

@@ -1,4 +1,4 @@
-# AGENT_DEPENDENCY_MAP.md
+﻿# AGENT_DEPENDENCY_MAP.md
 
 ## الغرض
 خريطة العلاقات بين ملفات العملاء في `.opencode/agents/`. تساعد في:
@@ -12,10 +12,11 @@
 
 | Agent | يتم استدعاؤه بواسطة | يستدعي/يشير إلى | يقرأ من |
 |-------|-------------------|----------------|---------|
-| **tera.md** | — (الأب) | `ui-designer.md`, `engineering-agent.md`, `tera-software-designer.md`, `application-blueprint.md`, `domain-research-agent.md`, `domain-expert-agent.md`, `production-erp-expert.md`, `auditor.md` | `tera-system/*.md`, `project-preparation/`, `project-control/` |
+| **tera.md** | — (الأب) | `ui-designer.md`, `engineering-agent.md`, `engineering-agent-dotnet.md` (.NET specialist), `tera-software-designer.md`, `application-blueprint.md`, `domain-research-agent.md`, `domain-expert-agent.md`, `production-erp-expert.md`, `auditor.md` | `tera-system/*.md`, `project-preparation/`, `project-control/` |
 | **ui-designer.md** | `tera.md`, `tera-system-evolution.md` (للأغراض النظامية) | `design-reviewer.md` (ناقد يراجعه) | `28_UI_UX_GUIDELINES.md`, `tera-system/design-system/*.md` |
-| **engineering-agent.md** | `tera.md` | `ui-designer.md` (مصمم يسبقه)، `tera-software-designer.md` (يسبقه للمهام المعقدة) | `TECHNICAL_SPECIFICATION.md`, `28_UI_UX_GUIDELINES.md` |
-| **tera-software-designer.md** | `tera.md` | `engineering-agent.md` (ينفذ الـ Spec) | `project-preparation/*.md`, `28_UI_UX_GUIDELINES.md`, `PROJECT_RULES.md` |
+| **engineering-agent.md** | `tera.md` | `ui-designer.md` (مصمم يسبقه)، `tera-software-designer.md` (يسبقه للمهام المعقدة)؛ يقرأ `engineering-agent-core.md` كمرجع إلزامي | `tera-system/engineering-helpers/engineering-agent-core.md`, `TECHNICAL_SPECIFICATION.md`, `28_UI_UX_GUIDELINES.md` |
+| **engineering-agent-dotnet.md** | `tera.md` | .NET specialist — يقرأ `engineering-agent-core.md` كمرجع إلزامي + profile نشط | `tera-system/engineering-helpers/engineering-agent-core.md`, `tera-system/profiles/[ACTIVE_PROFILE].md`, `TECHNICAL_SPECIFICATION.md` |
+| **tera-software-designer.md** | `tera.md` | `engineering-agent.md` أو `engineering-agent-dotnet.md` (ينفذ الـ Spec) | `project-preparation/*.md`, `28_UI_UX_GUIDELINES.md`, `PROJECT_RULES.md` |
 | **design-reviewer.md** | — (مستقل — يستدعيه Majed) | `TeraAgent`, `EngineeringAgent` (مراجعة مخرجاتهم) | `28_UI_UX_GUIDELINES.md`, `tera-system/design-system/DESIGN_REVIEW_STANDARDS.md` |
 | **tera-client-engagement.md** | — (مستقل — يستدعيه Majed) | `domain-research-agent.md`, `domain-expert-agent.md`, `production-erp-expert.md`, `application-blueprint.md` | `tera-system/client-helpers/*.md`, `tera-system/TeraPricingPolicy.md` |
 | **application-blueprint.md** | `tera-client-engagement.md`, `tera.md` | `domain-research-agent.md`, `domain-expert-agent.md`, `production-erp-expert.md` | `project-preparation/`, `client-engagement/` |
@@ -71,6 +72,8 @@ ui-designer.md
 | `tera-client-engagement.md` | 749 | 🟡 700–1000 — دراسة فصل منطقي لاحقاً؛ لا تقسيم الآن لأن التعديل محدود لاستدعاء ProductionERPExpert |
 | `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` | 469 | 🟢 < 700 — لا حاجة |
 | `auditor.md` | 465 | 🟢 < 700 — لا حاجة |
+| `engineering-agent-dotnet.md` | 310 | 🟢 < 700 — لا حاجة |
+| `tera-system/engineering-helpers/engineering-agent-core.md` | 240 | 🟢 < 700 — لا حاجة |
 | `tera-system-evolution.md` | 451 | 🟢 < 700 — لا حاجة |
 | `tera-strategic-advisor.md` | 323 | 🟢 < 700 — لا حاجة |
 | `monitor.md` | 276 | 🟢 < 700 — لا حاجة |

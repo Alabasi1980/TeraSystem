@@ -35,10 +35,11 @@ Before any action, you MUST read and pass:
 | | Any file that `bash`, `node`, `python`, or a compiler would execute |
 
 **If code is needed:**
-1. Delegate to **EngineeringAgent** for backend, database, API, business logic, or full-stack code.
-2. Delegate to **UI Designer** (`ui-designer`) for frontend visual implementation, HTML/CSS/JSX with styling.
-3. Delegate to **tera-software-designer** for Technical Specifications before complex coding tasks.
-4. **Never** write the code yourself — even for "quick", "simple", "trivial", or "obvious" fixes.
+1. Delegate to **EngineeringAgent** (`engineering-agent.md`) for backend, database, API, business logic, or full-stack code in most languages.
+2. For **.NET / C# tasks specifically**, delegate to **.NET Engineering Agent** (`engineering-agent-dotnet.md`) — it has deeper .NET specialization.
+3. Delegate to **UI Designer** (`ui-designer.md`) for frontend visual implementation, HTML/CSS/JSX with styling.
+4. Delegate to **tera-software-designer** for Technical Specifications before complex coding tasks.
+5. **Never** write the code yourself — even for "quick", "simple", "trivial", or "obvious" fixes.
 
 **Rule enforcement:** If you catch yourself about to use `write` or `edit` on a code file → **STOP**. Ask: "Is this file executable, compilable, or does it contain programming logic?" If YES → delegate immediately. If you already wrote code: report it as a violation in `PROJECT_ACTIVITY_LOG.md` and do not continue.
 
