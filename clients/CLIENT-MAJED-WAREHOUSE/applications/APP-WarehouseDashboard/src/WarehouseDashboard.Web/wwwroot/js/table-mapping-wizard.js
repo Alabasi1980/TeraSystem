@@ -66,7 +66,8 @@
       // Step 3 data
       previewResult: null,   // DataPreviewResult
       schemaDiff: null,      // SchemaDiffResult
-      activeTab: 'preview',  // 'preview' | 'columns' | 'schema',
+      activeTab: 'preview',  // 'preview' | 'columns' | 'schema' | 'mapping',
+      columnMappings: [],   // array of column mapping objects for the editor
 
       // Step 4 options
       autoCreateTable: false,
@@ -101,6 +102,7 @@
     this.wireStep3Tabs();
     this.wireTargetName();
     this.wireSyncModeCards();
+    this.wireColumnMappingEvents();
     this.wireNavButtons();
     this.wireKeyboard();
 
@@ -579,6 +581,11 @@
         } else {
           self.renderPreviewGrid(result);
           self.renderColumnMetadata(result);
+          // Use Oracle native types for column mapping if available, fallback to .NET types
+          var mappingTypes = (result.oracleColumnTypes && result.oracleColumnTypes.length > 0)
+            ? result.oracleColumnTypes : result.columnTypes;
+          self.generateColumnMappings(result.columns, mappingTypes);
+          self.renderColumnMappingEditor();
         }
       })
       .catch(function (err) {
@@ -710,6 +717,345 @@
       '<div class="wm-empty-state">' +
         '<p>سيتم عرض مقارنة المخطط بعد حفظ التعيين.</p>' +
       '</div>';
+  };
+
+  /* ─────────────────── STEP 3: COLUMN MAPPING EDITOR ─────────────────── */
+
+  TableMappingWizard.prototype.wireColumnMappingEvents = function () {
+    var self = this;
+    var container = $('wm-column-mapping-content');
+    if (!container) return;
+
+    // Input: text/number fields
+    container.addEventListener('input', function (e) {
+      var target = e.target;
+      var row = target.closest('.wm-col-map-row');
+      if (!row) return;
+      var idx = parseInt(row.getAttribute('data-index'), 10);
+      if (isNaN(idx)) return;
+
+      if (target.classList.contains('wm-col-map-sql-name')) {
+        self.updateColumnMappingField(idx, 'sqlColumnName', target.value);
+      } else if (target.classList.contains('wm-col-map-length')) {
+        self.updateColumnMappingField(idx, 'sqlMaxLength', target.value ? parseInt(target.value, 10) : null);
+      } else if (target.classList.contains('wm-col-map-precision')) {
+        self.updateColumnMappingField(idx, 'sqlPrecision', target.value ? parseInt(target.value, 10) : null);
+      } else if (target.classList.contains('wm-col-map-scale')) {
+        self.updateColumnMappingField(idx, 'sqlScale', target.value ? parseInt(target.value, 10) : null);
+      } else if (target.classList.contains('wm-col-map-default')) {
+        self.updateColumnMappingField(idx, 'defaultValue', target.value || null);
+      }
+    });
+
+    // Change: select and checkbox
+    container.addEventListener('change', function (e) {
+      var target = e.target;
+      var row = target.closest('.wm-col-map-row');
+      if (!row) return;
+      var idx = parseInt(row.getAttribute('data-index'), 10);
+      if (isNaN(idx)) return;
+
+      if (target.classList.contains('wm-col-map-type')) {
+        self.updateColumnMappingField(idx, 'sqlDataType', target.value);
+        self.showHideConditionalFields(row, target.value);
+      } else if (target.classList.contains('wm-col-map-nullable')) {
+        self.updateColumnMappingField(idx, 'isNullable', target.checked);
+      } else if (target.classList.contains('wm-col-map-excluded')) {
+        self.updateColumnMappingField(idx, 'isExcluded', target.checked);
+        row.classList.toggle('wm-col-map-excluded', target.checked);
+        var summaryEl = $('wm-col-map-summary');
+        if (summaryEl) summaryEl.textContent = self.getColumnMappingSummary();
+      }
+    });
+
+    // Click: reset buttons
+    container.addEventListener('click', function (e) {
+      var target = e.target;
+      if (target.classList.contains('wm-col-map-reset-btn')) {
+        var row = target.closest('.wm-col-map-row');
+        if (!row) return;
+        var idx = parseInt(row.getAttribute('data-index'), 10);
+        if (!isNaN(idx)) self.resetColumnMappingToDefault(idx);
+      } else if (target.classList.contains('wm-btn-reset-all')) {
+        self.resetAllColumnMappings();
+      }
+    });
+  };
+
+  TableMappingWizard.prototype.parseOracleType = function (typeStr) {
+    var result = { baseType: '', maxLength: null, precision: null, scale: null };
+    if (!typeStr) return result;
+    var match = typeStr.match(/^(\w+)(?:\s*\((\d+)(?:\s*,\s*(\d+))?\))?/i);
+    if (match) {
+      result.baseType = match[1].toUpperCase();
+      if (match[2] !== undefined) {
+        if (result.baseType === 'NUMBER') {
+          result.precision = parseInt(match[2], 10);
+          result.scale = match[3] !== undefined ? parseInt(match[3], 10) : 0;
+        } else {
+          result.maxLength = parseInt(match[2], 10);
+        }
+      }
+    } else {
+      result.baseType = typeStr;
+    }
+    return result;
+  };
+
+  TableMappingWizard.prototype.autoSuggestSqlType = function (oracleType) {
+    var t = (oracleType || '').trim();
+    var upper = t.toUpperCase();
+
+    // .NET type mappings (from the existing typeMap in renderColumnMetadata)
+    if (t === 'String') return 'NVARCHAR(MAX)';
+    if (t === 'Decimal') return 'DECIMAL';
+    if (t === 'Int32') return 'INT';
+    if (t === 'Int64') return 'BIGINT';
+    if (t === 'DateTime') return 'DATETIME2';
+    if (t === 'Double') return 'FLOAT';
+    if (t === 'Boolean') return 'BIT';
+    if (t === 'Byte[]') return 'VARBINARY(MAX)';
+
+    // Oracle type mappings
+    if (upper.indexOf('VARCHAR2') >= 0 || upper.indexOf('VARCHAR') >= 0) {
+      var parsed = this.parseOracleType(t);
+      if (parsed.maxLength && parsed.maxLength > 4000) return 'NVARCHAR(MAX)';
+      return 'NVARCHAR';
+    }
+    if (upper.indexOf('CHAR') >= 0 && upper.indexOf('VARCHAR') < 0) return 'NCHAR';
+    if (upper.indexOf('NUMBER') >= 0) {
+      var parsed = this.parseOracleType(t);
+      if (parsed.scale === null) return 'DECIMAL';
+      if (parsed.scale === 0) {
+        if (parsed.precision !== null && parsed.precision <= 9) return 'INT';
+        if (parsed.precision !== null && parsed.precision <= 18) return 'BIGINT';
+        return 'DECIMAL';
+      }
+      return 'DECIMAL';
+    }
+    if (upper.indexOf('TIMESTAMP') >= 0) return 'DATETIME2';
+    if (upper.indexOf('DATE') >= 0) return 'DATETIME2';
+    if (upper.indexOf('CLOB') >= 0) return 'NVARCHAR(MAX)';
+    if (upper.indexOf('BLOB') >= 0) return 'VARBINARY(MAX)';
+    if (upper.indexOf('INTEGER') >= 0 || upper === 'INT') return 'INT';
+    if (upper.indexOf('FLOAT') >= 0) return 'FLOAT';
+    if (upper.indexOf('DOUBLE') >= 0) return 'FLOAT';
+
+    return 'NVARCHAR(MAX)';
+  };
+
+  TableMappingWizard.prototype.generateColumnMappings = function (columns, columnTypes) {
+    if (!columns || !Array.isArray(columns)) return;
+    var self = this;
+    var mappings = [];
+    for (var i = 0; i < columns.length; i++) {
+      var oracleType = (columnTypes && columnTypes[i]) || '';
+      var parsed = self.parseOracleType(oracleType);
+      var suggested = self.autoSuggestSqlType(oracleType);
+      var mapping = {
+        oracleColumnName: columns[i],
+        oracleDataType: oracleType,
+        sqlColumnName: columns[i],
+        sqlDataType: suggested,
+        sqlMaxLength: parsed.maxLength,
+        sqlPrecision: (parsed.baseType === 'NUMBER') ? parsed.precision : null,
+        sqlScale: (parsed.baseType === 'NUMBER') ? parsed.scale : null,
+        isNullable: true,
+        isExcluded: false,
+        defaultValue: null,
+        sortOrder: i
+      };
+      mappings.push(mapping);
+    }
+    this.state.columnMappings = mappings;
+  };
+
+  TableMappingWizard.prototype.getColumnMappingSummary = function () {
+    var mappings = this.state.columnMappings || [];
+    var total = mappings.length;
+    var active = 0;
+    for (var i = 0; i < mappings.length; i++) {
+      if (!mappings[i].isExcluded) active++;
+    }
+    var excluded = total - active;
+    return '\u0639\u062F\u062F \u0627\u0644\u0623\u0639\u0645\u062F\u0629: ' + total + ' | \u0646\u0634\u0637: ' + active + ' | \u0645\u0633\u062A\u0628\u0639\u062F: ' + excluded;
+  };
+
+  TableMappingWizard.prototype.renderColumnMappingEditor = function () {
+    var container = $('wm-column-mapping-content');
+    if (!container) return;
+
+    var mappings = this.state.columnMappings || [];
+    if (mappings.length === 0) {
+      container.innerHTML =
+        '<div class="wm-empty-state">' +
+          '<div class="wm-empty-icon">&#128202;</div>' +
+          '<p>\u0644\u0645 \u064A\u062A\u0645 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0623\u0639\u0645\u062F\u0629 \u0628\u0639\u062F. \u0642\u0645 \u0628\u062A\u062D\u0645\u064A\u0644 \u0645\u0639\u0627\u064A\u0646\u0629 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A \u0623\u0648\u0644\u0627\u064B.</p>' +
+        '</div>';
+      return;
+    }
+
+    var html = '';
+
+    // Summary header
+    html += '<div class="wm-col-map-header">' +
+        '<span id="wm-col-map-summary">' + this.getColumnMappingSummary() + '</span>' +
+        '<button type="button" class="wm-btn-reset-all wd-btn wd-btn--ghost wd-btn--sm">&#x27F3; \u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u0627\u0642\u062A\u0631\u0627\u062D \u0627\u0644\u062A\u0644\u0642\u0627\u0626\u064A \u0644\u062C\u0645\u064A\u0639 \u0627\u0644\u0623\u0639\u0645\u062F\u0629</button>' +
+    '</div>';
+
+    // Table
+    html += '<div class="wm-col-map-table-wrap">';
+    html += '<table class="wm-col-map-table">';
+    html += '<thead><tr>' +
+        '<th>Oracle</th>' +
+        '<th>Oracle Type</th>' +
+        '<th>SQL Column Name</th>' +
+        '<th>SQL Type</th>' +
+        '<th>Length</th>' +
+        '<th>Precision</th>' +
+        '<th>Scale</th>' +
+        '<th>Nullable</th>' +
+        '<th>Excluded</th>' +
+        '<th>Default</th>' +
+        '<th></th>' +
+    '</tr></thead>';
+    html += '<tbody id="wm-col-map-tbody">';
+
+    for (var i = 0; i < mappings.length; i++) {
+      html += this.renderColumnMappingRow(mappings[i], i);
+    }
+
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+  };
+
+  TableMappingWizard.prototype.renderColumnMappingRow = function (mapping, index) {
+    var sqlTypes = ['NVARCHAR','VARCHAR','NCHAR','CHAR','INT','BIGINT','SMALLINT','TINYINT','DECIMAL','NUMERIC','FLOAT','REAL','DATETIME2','DATE','TIME','DATETIMEOFFSET','BIT','NVARCHAR(MAX)','VARCHAR(MAX)','VARBINARY(MAX)','TEXT','NTEXT','MONEY','UNIQUEIDENTIFIER'];
+
+    var typeOptions = '';
+    for (var t = 0; t < sqlTypes.length; t++) {
+      var selected = (mapping.sqlDataType === sqlTypes[t]) ? ' selected' : '';
+      typeOptions += '<option value="' + sqlTypes[t] + '"' + selected + '>' + sqlTypes[t] + '</option>';
+    }
+
+    var isMaxType = (mapping.sqlDataType || '').indexOf('(MAX)') >= 0;
+    var needsLength = !isMaxType && ['NVARCHAR','VARCHAR','NCHAR','CHAR','VARBINARY'].indexOf(mapping.sqlDataType) >= 0;
+    var needsPrecScale = ['DECIMAL','NUMERIC'].indexOf(mapping.sqlDataType) >= 0;
+
+    var lengthStyle = needsLength ? '' : 'display:none;';
+    var precStyle = needsPrecScale ? '' : 'display:none;';
+    var scaleStyle = needsPrecScale ? '' : 'display:none;';
+
+    var excludedClass = mapping.isExcluded ? ' wm-col-map-excluded' : '';
+
+    var html = '<tr class="wm-col-map-row' + excludedClass + '" data-index="' + index + '">';
+
+    // Oracle Column Name (read-only span)
+    html += '<td><span class="wm-col-name-cell">' + escapeHtml(mapping.oracleColumnName) + '</span></td>';
+
+    // Oracle Type (read-only span)
+    html += '<td><span class="wm-col-type-label">' + escapeHtml(mapping.oracleDataType) + '</span></td>';
+
+    // SQL Column Name (text input)
+    html += '<td><input type="text" class="wm-col-map-input wm-col-map-sql-name" value="' + escapeHtml(mapping.sqlColumnName || '') + '" style="width:120px;" dir="ltr" /></td>';
+
+    // SQL Data Type (select dropdown)
+    html += '<td><select class="wm-col-map-select wm-col-map-type" style="width:120px;">' + typeOptions + '</select></td>';
+
+    // Length
+    html += '<td><input type="number" class="wm-col-map-input wm-col-map-length" value="' + (mapping.sqlMaxLength != null ? mapping.sqlMaxLength : '') + '" style="width:70px;' + lengthStyle + '" min="1" /></td>';
+
+    // Precision
+    html += '<td><input type="number" class="wm-col-map-input wm-col-map-precision" value="' + (mapping.sqlPrecision != null ? mapping.sqlPrecision : '') + '" style="width:70px;' + precStyle + '" min="1" /></td>';
+
+    // Scale
+    html += '<td><input type="number" class="wm-col-map-input wm-col-map-scale" value="' + (mapping.sqlScale != null ? mapping.sqlScale : '') + '" style="width:70px;' + scaleStyle + '" min="0" /></td>';
+
+    // Nullable
+    html += '<td style="text-align:center;"><input type="checkbox" class="wm-col-map-checkbox wm-col-map-nullable" ' + (mapping.isNullable ? 'checked' : '') + ' /></td>';
+
+    // Excluded
+    html += '<td style="text-align:center;"><input type="checkbox" class="wm-col-map-checkbox wm-col-map-excluded" ' + (mapping.isExcluded ? 'checked' : '') + ' /></td>';
+
+    // Default Value
+    html += '<td><input type="text" class="wm-col-map-input wm-col-map-default" value="' + escapeHtml(mapping.defaultValue || '') + '" style="width:90px;" dir="ltr" /></td>';
+
+    // Reset button
+    html += '<td><button type="button" class="wm-col-map-reset-btn" title="\u0625\u0639\u0627\u062F\u0629 \u062A\u0639\u064A\u064A\u0646 \u0625\u0644\u0649 \u0627\u0644\u0627\u0641\u062A\u0631\u0627\u0636\u064A">&#x27F3;</button></td>';
+
+    html += '</tr>';
+    return html;
+  };
+
+  TableMappingWizard.prototype.updateColumnMappingField = function (index, field, value) {
+    var mappings = this.state.columnMappings;
+    if (!mappings || index < 0 || index >= mappings.length) return;
+    mappings[index][field] = value;
+  };
+
+  TableMappingWizard.prototype.showHideConditionalFields = function (row, sqlDataType) {
+    var lengthInput = row.querySelector('.wm-col-map-length');
+    var precisionInput = row.querySelector('.wm-col-map-precision');
+    var scaleInput = row.querySelector('.wm-col-map-scale');
+
+    var isMaxType = (sqlDataType || '').indexOf('(MAX)') >= 0;
+    var needsLength = !isMaxType && ['NVARCHAR','VARCHAR','NCHAR','CHAR','VARBINARY'].indexOf(sqlDataType) >= 0;
+    var needsPrecScale = ['DECIMAL','NUMERIC'].indexOf(sqlDataType) >= 0;
+
+    if (lengthInput) lengthInput.style.display = needsLength ? '' : 'none';
+    if (precisionInput) precisionInput.style.display = needsPrecScale ? '' : 'none';
+    if (scaleInput) scaleInput.style.display = needsPrecScale ? '' : 'none';
+  };
+
+  TableMappingWizard.prototype.resetColumnMappingToDefault = function (index) {
+    var mappings = this.state.columnMappings;
+    if (!mappings || index < 0 || index >= mappings.length) return;
+    var orig = mappings[index];
+    var parsed = this.parseOracleType(orig.oracleDataType);
+    var suggested = this.autoSuggestSqlType(orig.oracleDataType);
+
+    mappings[index].sqlColumnName = orig.oracleColumnName;
+    mappings[index].sqlDataType = suggested;
+    mappings[index].sqlMaxLength = parsed.maxLength;
+    mappings[index].sqlPrecision = (parsed.baseType === 'NUMBER') ? parsed.precision : null;
+    mappings[index].sqlScale = (parsed.baseType === 'NUMBER') ? parsed.scale : null;
+    mappings[index].isNullable = true;
+    mappings[index].isExcluded = false;
+    mappings[index].defaultValue = null;
+
+    this.renderColumnMappingEditor();
+  };
+
+  TableMappingWizard.prototype.resetAllColumnMappings = function () {
+    var mappings = this.state.columnMappings;
+    if (!mappings) return;
+    var self = this;
+    for (var i = 0; i < mappings.length; i++) {
+      var orig = mappings[i];
+      var parsed = self.parseOracleType(orig.oracleDataType);
+      var suggested = self.autoSuggestSqlType(orig.oracleDataType);
+
+      mappings[i].sqlColumnName = orig.oracleColumnName;
+      mappings[i].sqlDataType = suggested;
+      mappings[i].sqlMaxLength = parsed.maxLength;
+      mappings[i].sqlPrecision = (parsed.baseType === 'NUMBER') ? parsed.precision : null;
+      mappings[i].sqlScale = (parsed.baseType === 'NUMBER') ? parsed.scale : null;
+      mappings[i].isNullable = true;
+      mappings[i].isExcluded = false;
+      mappings[i].defaultValue = null;
+    }
+    this.renderColumnMappingEditor();
+  };
+
+  TableMappingWizard.prototype.getColumnMappingsJson = function () {
+    return JSON.stringify(this.state.columnMappings || []);
+  };
+
+  TableMappingWizard.prototype.syncColumnMappingsHiddenField = function () {
+    var field = $('wm-h-columnMappingsJson');
+    if (field) {
+      field.value = this.getColumnMappingsJson();
+    }
   };
 
   /* ─────────────────── STEP 4: TARGET NAME ─────────────────── */
@@ -936,6 +1282,9 @@
     if (syncModeInput) syncModeInput.value = this.state.syncMode || 'Full';
     if (incrColInput) incrColInput.value = this.state.incrementalColumn || '';
 
+    // Sync column mappings to hidden field
+    this.syncColumnMappingsHiddenField();
+
     // Set form action
     if (this.form) {
       this.form.action = this.state.isEditing ? '?handler=Edit' : '?handler=Add';
@@ -993,6 +1342,7 @@
     this.state.oracleObjects = [];
     this.state.searchQuery = '';
     this.state.wizardInProgress = false;
+    this.state.columnMappings = [];
     this.state.activeTab = 'preview';
     this.state.syncMode = 'Full';
     this.state.incrementalColumn = '';

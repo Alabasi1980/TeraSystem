@@ -71,6 +71,12 @@
 | PLAN-CARD-BUILDER | Card Builder UX Plan (visual, mouse-friendly) | TeraAgent | 🟡 Draft | PREP | 2026-07-14 |
 | TASK-COD-FIX-021 | Fix Card Builder Save Antiforgery Token | engineering-agent | ✅ Accepted (fallback build PASS) | FIX | 2026-07-18 |
 | TASK-COD-FIX-022A | Fix Card Builder ModelState Save Return + Safe Save Diagnostics | engineering-agent | ✅ Accepted (build PASS) | FIX | 2026-07-18 |
+| TASK-COD-FIX-022B | Fix Optional BindProperty Required Validation | engineering-agent | ✅ Accepted (fallback build PASS) | FIX | 2026-07-18 |
+| TASK-COD-FIX-024 | Fix SqlTable DataSourceType Mapping and Legacy Render Guard | engineering-agent | ✅ Accepted (fallback build PASS) | FIX | 2026-07-18 |
+| TASK-COD-FIX-025 | Fix TableMappings Anti-Forgery Token | engineering-agent | ✅ Accepted (build PASS) | FIX | 2026-07-18 |
+| TASK-COD-COL-001 | ColumnMapping Entity + DbContext + Migration | engineering-agent | ✅ Accepted (build PASS) | COL | 2026-07-18 |
+| TASK-COD-COL-002 | Column Mapping Editor UI — Wizard Tab + JS Logic | engineering-agent | ✅ Accepted (build PASS) | COL | 2026-07-18 |
+| TASK-COD-COL-003 | Backend: Save/Load Column Mappings + Schema Generation Updates | engineering-agent | ✅ Accepted (build PASS) | COL | 2026-07-18 |
 
 ---
 

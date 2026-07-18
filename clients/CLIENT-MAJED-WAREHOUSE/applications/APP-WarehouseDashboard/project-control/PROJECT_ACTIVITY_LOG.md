@@ -567,3 +567,99 @@
 - Summary: EngineeringAgent fixed the current ModelState save-return risk by making `GridX`/`GridY` nullable, normalizing blank/negative values to automatic placement, removing duplicate visible `sourceType` posting, improving validation summary visibility, adding safe save diagnostics, and cache-busting `card-builder.js`.
 - Decision / Result: Post-Execution Review PASS. `dotnet build` succeeded with 0 warnings and 0 errors. Task accepted as code fix for Auditor findings F-006/F-007/F-015 subset.
 - Next Action: Majed should restart/hard-refresh and test Step 5 save again. If save redirects to Cards Index and row appears in `DashboardCards`, proceed to next planned fix for dashboard render: SqlTable DataSourceType mapping / Chart.js preview migration.
+
+## [2026-07-18 11:35] - SAVE_FAILURE_DIAGNOSIS
+
+- Related Task: TASK-COD-FIX-022A / Proposed TASK-COD-FIX-022B
+- Actor: Majed → TeraAgent
+- Summary: After TASK-COD-FIX-022A, the Card Builder save request now surfaces ModelState errors instead of failing silently. Browser-visible errors: CustomSql field is required, FixedStartDate field is required, FixedEndDate field is required, CloneId field is required, TemplateId field is required.
+- Decision / Result: Current blocker is ASP.NET Core nullable reference type implicit required validation on optional string BindProperty fields. These fields are optional in the wizard but declared as non-nullable strings, so empty/missing values invalidate ModelState before save.
+- Next Action: Create focused TASK-COD-FIX-022B to mark optional string BindProperty fields nullable or otherwise remove them from required validation, preserving required validation only for Title/DisplayName and essential fields.
+
+## [2026-07-18 11:45] - TASK_FIX_APPROVED
+
+- Related Task: TASK-COD-FIX-022B
+- Actor: TeraAgent
+- Summary: Majed approved focused fix after ModelState errors showed optional wizard fields (`CustomSql`, `FixedStartDate`, `FixedEndDate`, `CloneId`, `TemplateId`) are treated as required and block save.
+- Decision / Result: TASK-COD-FIX-022B approved with Pre-Execution Gate PASS. Scope limited to optional BindProperty validation and conditional validation; no preview migration, DB/schema, package, or redesign work.
+- Next Action: Delegate TASK-COD-FIX-022B to EngineeringAgent.
+
+## [2026-07-18 12:00] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-COD-FIX-022B
+- Actor: EngineeringAgent → TeraAgent
+- Summary: EngineeringAgent fixed ASP.NET Core implicit required validation for optional wizard fields by making optional string BindProperties nullable and adding conditional validation for CustomSQL and fixed date mode only.
+- Decision / Result: Post-Execution Review PASS. Normal build was blocked by running app executable lock, but fallback build succeeded with 0 warnings and 0 errors. Task accepted as code fix for the observed ModelState errors.
+- Next Action: Majed should restart/hard-refresh and test normal SqlTable KPI save again. Expected next result: either redirect to Cards Index with a new DashboardCards row, or a new explicit validation/save error from diagnostics.
+
+## [2026-07-18 13:00] - AUDITOR_QUALITY_GATE: TableMappings Page Full Audit
+
+- Related Task: AUDIT-TABLEMAPPINGS-001
+- Actor: Tera → Auditor → Tera
+- Summary: تم تفعيل المدقق لتدقيق شامل لصفحة TableMappings — إدارة تعيينات Oracle إلى SQL Server والمعالج بـ 5 خطوات. التدقيق شمل 12 ملفاً (واجهة، JS، API، خدمات، نماذج).
+- Decision / Result: **Overall Quality Gate: BLOCKED** — 2 STOP, 12 CAUTION, 14 FLAG. التقرير الكامل: `project-control/audit-reports/QUAUD-TABLEMAPPINGS-001-2026-07-18-001.md`
+- Next Action: بدء المسار A — إصلاح F-001 (Anti-Forgery Token).
+
+## [2026-07-18 13:15] - TASK_FIX_APPROVED
+
+- Related Task: TASK-COD-FIX-025
+- Actor: TeraAgent
+- Summary: Majed approved Path A — fixing TableMappings anti-forgery token first before discussing column mapping feature.
+- Decision / Result: TASK-COD-FIX-025 approved with Pre-Execution Gate PASS. Scope: add anti-forgery token to the hidden wizard form in `Index.cshtml`.
+- Next Action: Delegate TASK-COD-FIX-025 to EngineeringAgent.
+
+## [2026-07-18 13:25] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-COD-FIX-025
+- Actor: EngineeringAgent → TeraAgent
+- Summary: EngineeringAgent added `@Html.AntiForgeryToken()` inside the hidden wizard form in `TableMappings/Index.cshtml`. Verified inline forms with `asp-page-handler` auto-generate the token. No other files modified.
+- Decision / Result: Post-Execution Review PASS. Surgical one-line fix. Build verification: normal build succeeded with 0 warnings and 0 errors. Task accepted. Auditor finding F-001 resolved.
+- Next Action: Majed should restart the app and test TableMappings wizard save. After that, we can discuss the next step — likely Path B (column-level type mapping feature).
+
+## [2026-07-18 13:40] - PHASE_A_STARTED
+
+- Related Task: TASK-COD-COL-001
+- Actor: TeraAgent
+- Summary: بدأنا Phase A — Column-Level Type Mapping Editor. الخطة موثقة في `PHASE_A_COLUMN_MAPPING_PLAN.md`. أول مهمة: إنشاء Entity + DbContext + Migration لجدول ColumnMappings.
+- Decision / Result: TASK-COD-COL-001 approved with Pre-Execution Gate PASS.
+- Next Action: تفويض TASK-COD-COL-001 لـ EngineeringAgent لإنشاء النموذج والـ Migration.
+
+## [2026-07-18 13:50] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-COD-COL-001
+- Actor: EngineeringAgent → TeraAgent
+- Summary: EngineeringAgent created `ColumnMapping.cs` entity, added `ColumnMappings` navigation property to `TableMappingConfig`, added `DbSet<ColumnMapping>` + Fluent API config in `DbContext`, and generated migration `20260718083448_AddColumnMappings`. Build succeeded.
+- Decision / Result: Post-Execution Review PASS. All acceptance criteria met. جدول ColumnMappings جاهز مع العلاقة CASCADE و unique index.
+- Next Action: البدء بـ TASK-COD-COL-002 — واجهة محرر الأعمدة داخل الـ Wizard.
+
+## [2026-07-18 14:15] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-COD-COL-002
+- Actor: EngineeringAgent → TeraAgent
+- Summary: EngineeringAgent implemented the Column Mapping Editor UI: 4th tab in Step 3 with editable table for all columns (name, type, length, precision, scale, nullable, excluded, default). Auto-suggest logic for Oracle to SQL type mapping. Build succeeded.
+- Decision / Result: ✅ Accepted. Frontend column mapping editor complete (440 lines added). No server-side changes.
+- Next Action: TASK-COD-COL-003 — Backend save/load + schema generation updates.
+
+## [2026-07-18 14:30] - TASK_FIX_APPROVED
+
+- Related Task: TASK-COD-COL-003
+- Actor: TeraAgent
+- Summary: Majed approved continuing Phase A. Column mapping data model (COL-001) and UI editor (COL-002) are complete. Now building the backend save/load and schema generation updates.
+- Decision / Result: TASK-COD-COL-003 approved.
+- Next Action: تفويض TASK-COD-COL-003 لـ EngineeringAgent لربط الحفظ وتحديث Schema Management.
+
+## [2026-07-18 15:30] - FIX: OracleColumnTypes for Auto-Suggest
+
+- Related Task: Phase A — Column Mapping
+- Actor: TeraAgent
+- Summary: User reported all columns saved as NVARCHAR(MAX). Root cause: Preview API was returning .NET type names only (String, Decimal, etc.) without Oracle length info. Fixed by adding `OracleColumnTypes` to `DataPreviewResult` and populating it from `ALL_TAB_COLUMNS` for Table/View sources. JS updated to use Oracle types when available.
+- Decision / Result: Fix implemented in `OracleSchemaService.cs` (DataPreviewResult + PreviewDataAsync) and `table-mapping-wizard.js` (generateColumnMappings). Build succeeded.
+- Next Action: User restarts app and tests column mapping creation again.
+
+## [2026-07-18 14:50] - PHASE_A_COMPLETE
+
+- Related Task: TASK-COD-COL-003
+- Actor: EngineeringAgent → TeraAgent
+- Summary: EngineeringAgent completed Phase A backend: save/load ColumnMappings, edit mode support, schema generation with overrides, and CompareSchemasAsync respects overridden types. Build succeeded.
+- Decision / Result: ✅ Phase A — Column-Level Type Mapping Editor COMPLETE. Three tasks: data model (COL-001), UI editor (COL-002), backend save/load + schema generation (COL-003). Total: 3 tasks, all accepted.
+- Next Action: User to restart app and test the full column mapping workflow. After verification, discuss remaining items from the plan.

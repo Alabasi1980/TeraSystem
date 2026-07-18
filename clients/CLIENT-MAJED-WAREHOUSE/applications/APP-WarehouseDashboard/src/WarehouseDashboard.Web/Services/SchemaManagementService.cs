@@ -1,6 +1,7 @@
 using System.Data;
 using System.Text;
 using Microsoft.Data.SqlClient;
+using WarehouseDashboard.Web.Models;
 
 namespace WarehouseDashboard.Web.Services;
 
@@ -28,12 +29,14 @@ public class SchemaManagementService
 
     /// <summary>
     /// Creates a SQL Server table matching the Oracle source schema.
-    /// The table is created with a staging prefix (stg_) convention.
+    /// When <paramref name="columnOverrides"/> is provided, excluded columns are
+    /// skipped and overridden names/types/nullability are applied.
     /// </summary>
     public async Task CreateTableFromOracleAsync(
         string oracleSource,
         string targetTable,
         string sourceType = "Table",
+        List<ColumnMapping>? columnOverrides = null,
         CancellationToken ct = default)
     {
         var columns = await _oracleSchema.GetOracleTableColumnsAsync(oracleSource, sourceType, ct);
@@ -44,7 +47,7 @@ public class SchemaManagementService
                 "Check that the source exists and the Oracle connection is working.");
         }
 
-        var createSql = GenerateCreateTableSql(columns, targetTable);
+        var createSql = GenerateCreateTableSql(columns, targetTable, columnOverrides);
         _logger.LogInformation("Creating table '{Table}' with {Count} columns.", targetTable, columns.Count);
 
         await ExecuteNonQueryAsync(createSql, ct);
@@ -52,10 +55,13 @@ public class SchemaManagementService
 
     /// <summary>
     /// Applies a schema diff (add columns, modify types, drop columns) to an existing table.
+    /// When <paramref name="columnOverrides"/> is provided, excluded columns are
+    /// skipped and overridden names/types/nullability are applied.
     /// </summary>
     public async Task ApplySchemaChangesAsync(
         string targetTable,
         SchemaDiffResult diff,
+        List<ColumnMapping>? columnOverrides = null,
         CancellationToken ct = default)
     {
         if (!diff.HasChanges)
@@ -64,7 +70,7 @@ public class SchemaManagementService
             return;
         }
 
-        var statements = GenerateAlterStatements(diff, targetTable);
+        var statements = GenerateAlterStatements(diff, targetTable, columnOverrides);
         if (statements.Count == 0)
         {
             _logger.LogInformation("No ALTER statements generated for '{Table}'.", targetTable);
@@ -102,39 +108,88 @@ public class SchemaManagementService
 
     /// <summary>
     /// Generates ALTER TABLE SQL statements from a schema diff for preview purposes.
+    /// When <paramref name="columnOverrides"/> is provided, overridden names, types,
+    /// nullability, and exclusion are applied to the generated statements.
     /// Does NOT execute them.
     /// </summary>
-    public List<string> GenerateAlterStatements(SchemaDiffResult diff, string targetTable)
+    public List<string> GenerateAlterStatements(
+        SchemaDiffResult diff,
+        string targetTable,
+        List<ColumnMapping>? columnOverrides = null)
     {
         var statements = new List<string>();
         var safeName = QuoteSqlServerIdentifier(targetTable);
 
+        // Build a lookup of overrides keyed by OracleColumnName
+        var overrideDict = columnOverrides?
+            .GroupBy(o => o.OracleColumnName, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
         // ADD columns
         foreach (var col in diff.ColumnsToAdd)
         {
-            var sqlType = OracleSchemaService.MapOracleToSqlServer(col);
-            var nullable = col.IsNullable ? "NULL" : "NOT NULL";
+            string colName;
+            string sqlType;
+            bool isNullable;
+
+            if (overrideDict is not null &&
+                overrideDict.TryGetValue(col.ColumnName, out var ov))
+            {
+                if (ov.IsExcluded) continue;
+                colName = !string.IsNullOrWhiteSpace(ov.SqlColumnName)
+                    ? ov.SqlColumnName
+                    : col.ColumnName;
+                sqlType = OracleSchemaService.FormatOverrideType(ov);
+                isNullable = ov.IsNullable;
+            }
+            else
+            {
+                colName = col.ColumnName;
+                sqlType = OracleSchemaService.MapOracleToSqlServer(col);
+                isNullable = col.IsNullable;
+            }
+
+            var nullable = isNullable ? "NULL" : "NOT NULL";
             var defaultClause = GetDefaultValueForType(sqlType);
 
             if (defaultClause is not null)
             {
-                statements.Add($"ALTER TABLE {safeName} ADD [{col.ColumnName}] {sqlType} {nullable} DEFAULT {defaultClause};");
+                statements.Add($"ALTER TABLE {safeName} ADD [{colName}] {sqlType} {nullable} DEFAULT {defaultClause};");
             }
             else
             {
-                statements.Add($"ALTER TABLE {safeName} ADD [{col.ColumnName}] {sqlType} {nullable};");
+                statements.Add($"ALTER TABLE {safeName} ADD [{colName}] {sqlType} {nullable};");
             }
         }
 
         // ALTER (modify) columns
         foreach (var colDiff in diff.ColumnsToModify)
         {
-            statements.Add($"ALTER TABLE {safeName} ALTER COLUMN [{colDiff.ColumnName}] {colDiff.NewType};");
+            if (overrideDict is not null &&
+                overrideDict.TryGetValue(colDiff.ColumnName, out var ov))
+            {
+                if (ov.IsExcluded) continue;
+                var newType = OracleSchemaService.FormatOverrideType(ov);
+                statements.Add($"ALTER TABLE {safeName} ALTER COLUMN [{colDiff.ColumnName}] {newType};");
+            }
+            else
+            {
+                statements.Add($"ALTER TABLE {safeName} ALTER COLUMN [{colDiff.ColumnName}] {colDiff.NewType};");
+            }
         }
 
         // DROP columns
         foreach (var colName in diff.ColumnsToRemove)
         {
+            // Skip if the column is excluded via override (matched by SqlColumnName)
+            if (overrideDict is not null &&
+                overrideDict.Values.Any(o =>
+                    o.IsExcluded &&
+                    string.Equals(o.SqlColumnName, colName, StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
             statements.Add($"ALTER TABLE {safeName} DROP COLUMN [{colName}];");
         }
 
@@ -167,20 +222,56 @@ public class SchemaManagementService
 
     /// <summary>
     /// Generates a CREATE TABLE statement from Oracle column metadata.
+    /// When <paramref name="columnOverrides"/> is provided, excluded columns are
+    /// skipped and overridden names, types, and nullability are applied.
     /// </summary>
-    private static string GenerateCreateTableSql(List<ColumnInfo> columns, string tableName)
+    private static string GenerateCreateTableSql(
+        List<ColumnInfo> columns,
+        string tableName,
+        List<ColumnMapping>? columnOverrides = null)
     {
+        // Build a lookup of overrides keyed by OracleColumnName
+        var overrideDict = columnOverrides?
+            .GroupBy(o => o.OracleColumnName, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
         var sb = new StringBuilder();
         sb.AppendLine($"CREATE TABLE {QuoteSqlServerIdentifier(tableName)} (");
 
-        for (var i = 0; i < columns.Count; i++)
-        {
-            var col = columns[i];
-            var sqlType = OracleSchemaService.MapOracleToSqlServer(col);
-            var nullable = col.IsNullable ? "NULL" : "NOT NULL";
-            var comma = i < columns.Count - 1 ? "," : "";
+        // Filter out excluded columns, then iterate
+        var visibleColumns = columns.Where(c =>
+            overrideDict is null ||
+            !overrideDict.TryGetValue(c.ColumnName, out var ov) ||
+            !ov.IsExcluded).ToList();
 
-            sb.AppendLine($"    [{col.ColumnName}] {sqlType} {nullable}{comma}");
+        for (var i = 0; i < visibleColumns.Count; i++)
+        {
+            var col = visibleColumns[i];
+
+            string colName;
+            string sqlType;
+            bool isNullable;
+
+            if (overrideDict is not null &&
+                overrideDict.TryGetValue(col.ColumnName, out var ov))
+            {
+                colName = !string.IsNullOrWhiteSpace(ov.SqlColumnName)
+                    ? ov.SqlColumnName
+                    : col.ColumnName;
+                sqlType = OracleSchemaService.FormatOverrideType(ov);
+                isNullable = ov.IsNullable;
+            }
+            else
+            {
+                colName = col.ColumnName;
+                sqlType = OracleSchemaService.MapOracleToSqlServer(col);
+                isNullable = col.IsNullable;
+            }
+
+            var nullable = isNullable ? "NULL" : "NOT NULL";
+            var comma = i < visibleColumns.Count - 1 ? "," : "";
+
+            sb.AppendLine($"    [{colName}] {sqlType} {nullable}{comma}");
         }
 
         sb.AppendLine(");");

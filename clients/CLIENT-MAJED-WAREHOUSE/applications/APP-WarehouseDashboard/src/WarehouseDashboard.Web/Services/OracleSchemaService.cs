@@ -2,6 +2,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
 using WarehouseDashboard.Web.Infrastructure;
+using WarehouseDashboard.Web.Models;
 
 namespace WarehouseDashboard.Web.Services;
 
@@ -212,22 +213,38 @@ public class OracleSchemaService
     /// <summary>
     /// Compares Oracle source columns against SQL Server target columns and
     /// returns a diff report showing what needs to be added, removed, or modified.
+    /// When <paramref name="columnOverrides"/> is provided, excluded columns are
+    /// skipped and overridden SQL types are used for type comparison.
     /// </summary>
     public async Task<SchemaDiffResult> CompareSchemasAsync(
         string oracleSource,
         string targetTable,
         string sourceType = "Table",
+        List<ColumnMapping>? columnOverrides = null,
         CancellationToken ct = default)
     {
         var oracleColumns = await GetOracleTableColumnsAsync(oracleSource, sourceType, ct);
         var sqlColumns = await GetSqlServerTableColumnsAsync(targetTable, ct);
 
+        // Build a lookup of overrides keyed by OracleColumnName
+        var overrideDict = columnOverrides?
+            .GroupBy(o => o.OracleColumnName, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
         var result = new SchemaDiffResult();
 
-        // If SQL target doesn't exist (empty), all Oracle columns need to be added
+        // If SQL target doesn't exist (empty), only non-excluded Oracle columns need to be added
         if (sqlColumns.Count == 0)
         {
-            result.ColumnsToAdd = oracleColumns;
+            foreach (var col in oracleColumns)
+            {
+                if (overrideDict is not null &&
+                    overrideDict.TryGetValue(col.ColumnName, out var ov) && ov.IsExcluded)
+                {
+                    continue; // Skip excluded columns
+                }
+                result.ColumnsToAdd.Add(col);
+            }
             return result;
         }
 
@@ -235,19 +252,30 @@ public class OracleSchemaService
 
         foreach (var oracleCol in oracleColumns)
         {
+            // Skip columns excluded via override
+            if (overrideDict is not null &&
+                overrideDict.TryGetValue(oracleCol.ColumnName, out var ov) && ov.IsExcluded)
+            {
+                continue;
+            }
+
             if (sqlColumnDict.TryGetValue(oracleCol.ColumnName, out var sqlCol))
             {
-                // Column exists — check if type needs modification
-                var oracleSqlServerType = MapOracleToSqlServer(oracleCol);
+                // Column exists — determine the effective SQL type using overrides if available
+                var effectiveType = overrideDict is not null &&
+                                    overrideDict.TryGetValue(oracleCol.ColumnName, out var ov2)
+                    ? FormatOverrideType(ov2)
+                    : MapOracleToSqlServer(oracleCol);
+
                 var currentSqlServerType = FormatSqlServerType(sqlCol);
 
-                if (!string.Equals(oracleSqlServerType, currentSqlServerType, StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(effectiveType, currentSqlServerType, StringComparison.OrdinalIgnoreCase))
                 {
                     result.ColumnsToModify.Add(new ColumnDiff
                     {
                         ColumnName = oracleCol.ColumnName,
                         CurrentType = currentSqlServerType,
-                        NewType = oracleSqlServerType
+                        NewType = effectiveType
                     });
                 }
             }
@@ -267,6 +295,14 @@ public class OracleSchemaService
         {
             if (!oracleColumnNames.Contains(sqlCol.ColumnName))
             {
+                // Skip if this column is excluded via override (matched by SqlColumnName)
+                if (overrideDict is not null &&
+                    overrideDict.Values.Any(o =>
+                        o.IsExcluded && string.Equals(o.SqlColumnName, sqlCol.ColumnName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    continue;
+                }
+
                 result.ColumnsToRemove.Add(sqlCol.ColumnName);
             }
         }
@@ -356,6 +392,47 @@ public class OracleSchemaService
 
         // NUMBER(p,s) — decimal
         return $"DECIMAL({p}, {s})";
+    }
+
+    /// <summary>
+    /// Formats a SQL Server column type string from a <see cref="ColumnMapping"/> override.
+    /// Used by <see cref="CompareSchemasAsync"/> and <see cref="SchemaManagementService"/>
+    /// to resolve the effective SQL type when a column has a user-defined override.
+    /// </summary>
+    public static string FormatOverrideType(ColumnMapping mapping)
+    {
+        var type = (mapping.SqlDataType ?? "NVARCHAR(MAX)").Trim();
+        if (string.IsNullOrWhiteSpace(type))
+            return "NVARCHAR(MAX)";
+
+        var upper = type.ToUpperInvariant();
+
+        // Types that take a length parameter
+        if (upper is "NVARCHAR" or "VARCHAR" or "NCHAR" or "CHAR" or "VARBINARY")
+        {
+            if (mapping.SqlMaxLength.HasValue && mapping.SqlMaxLength.Value > 0)
+                return $"{type}({mapping.SqlMaxLength})";
+
+            return upper switch
+            {
+                "NVARCHAR" or "VARCHAR" or "VARBINARY" => $"{type}(MAX)",
+                "NCHAR" or "CHAR" => $"{type}(1)",
+                _ => $"{type}(MAX)"
+            };
+        }
+
+        // Types that take precision / scale
+        if (upper is "DECIMAL" or "NUMERIC")
+        {
+            if (mapping.SqlPrecision.HasValue)
+                return mapping.SqlScale.HasValue
+                    ? $"DECIMAL({mapping.SqlPrecision},{mapping.SqlScale})"
+                    : $"DECIMAL({mapping.SqlPrecision})";
+            return "DECIMAL(18,2)";
+        }
+
+        // Fully specified types (INT, BIGINT, BIT, DATETIME2, FLOAT, etc.)
+        return type;
     }
 
     /// <summary>
@@ -504,6 +581,38 @@ public class OracleSchemaService
             countCmd.CommandTimeout = 10;
             var totalObj = await countCmd.ExecuteScalarAsync(ct);
             result.TotalRows = totalObj is not null ? Convert.ToInt32(totalObj) : 0;
+
+            // For Table/View sources, also fetch Oracle native type names for accurate column mapping
+            if (!sourceType.Equals("Query", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var columnInfo = await GetOracleTableColumnsAsync(oracleSource, sourceType, ct);
+                    result.OracleColumnTypes = columnInfo.Select(c =>
+                    {
+                        var type = c.DataType;
+                        if (type.Equals("VARCHAR2", StringComparison.OrdinalIgnoreCase))
+                            return c.MaxLength.HasValue ? $"VARCHAR2({c.MaxLength})" : "VARCHAR2(4000)";
+                        if (type.Equals("CHAR", StringComparison.OrdinalIgnoreCase))
+                            return c.MaxLength.HasValue ? $"CHAR({c.MaxLength})" : "CHAR(1)";
+                        if (type.Equals("NUMBER", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (c.Precision.HasValue && c.Scale.HasValue)
+                                return $"NUMBER({c.Precision},{c.Scale})";
+                            if (c.Precision.HasValue)
+                                return $"NUMBER({c.Precision})";
+                            return "NUMBER";
+                        }
+                        if (c.MaxLength.HasValue)
+                            return $"{type}({c.MaxLength})";
+                        return type;
+                    }).ToList();
+                }
+                catch
+                {
+                    // OracleColumnTypes is optional; fallback to .NET types in JS
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -784,8 +893,16 @@ public class OracleObject
 /// </summary>
 public class DataPreviewResult
 {
+    /// <summary>Column names from the query result (in order).</summary>
     public List<string> Columns { get; set; } = new();
+
+    /// <summary>.NET type names for each column (e.g. "String", "Decimal", "DateTime").</summary>
     public List<string> ColumnTypes { get; set; } = new();
+
+    /// <summary>Oracle native type names for each column (e.g. "VARCHAR2(255)", "NUMBER(10,2)", "DATE").
+    /// Only populated for Table/View source types. For Query sources this list is empty.</summary>
+    public List<string> OracleColumnTypes { get; set; } = new();
+
     public List<Dictionary<string, object?>> Rows { get; set; } = new();
     public int TotalRows { get; set; }
     public string? ErrorMessage { get; set; }

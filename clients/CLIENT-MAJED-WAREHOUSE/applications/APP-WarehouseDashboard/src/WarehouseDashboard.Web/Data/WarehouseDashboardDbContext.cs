@@ -20,6 +20,7 @@ public class WarehouseDashboardDbContext : DbContext
     public DbSet<SyncSetting> SyncSettings => Set<SyncSetting>();
     public DbSet<AdminPassword> AdminPasswords => Set<AdminPassword>();
     public DbSet<TableMappingConfig> TableMappings => Set<TableMappingConfig>();
+    public DbSet<ColumnMapping> ColumnMappings => Set<ColumnMapping>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -313,6 +314,60 @@ public class WarehouseDashboardDbContext : DbContext
 
             entity.HasIndex(e => e.IsActive)
                 .HasDatabaseName("IX_TableMappings_IsActive");
+        });
+
+        // -------------------------------------------------------------------
+        // ColumnMappings (TASK-COD-COL-001) — per-column type overrides
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<ColumnMapping>(entity =>
+        {
+            entity.ToTable("ColumnMappings");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.OracleColumnName)
+                .IsRequired()
+                .HasMaxLength(128);
+
+            entity.Property(e => e.SqlColumnName)
+                .IsRequired()
+                .HasMaxLength(128);
+
+            entity.Property(e => e.SqlDataType)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            entity.Property(e => e.SqlMaxLength);
+            entity.Property(e => e.SqlPrecision);
+            entity.Property(e => e.SqlScale);
+
+            entity.Property(e => e.IsNullable)
+                .HasDefaultValue(true);
+
+            entity.Property(e => e.IsExcluded)
+                .HasDefaultValue(false);
+
+            entity.Property(e => e.DefaultValue)
+                .HasMaxLength(500)
+                .IsRequired(false);
+
+            entity.Property(e => e.TransformationExpression)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.SortOrder)
+                .HasDefaultValue(0);
+
+            // FK → TableMappings (CASCADE delete)
+            entity.HasOne(e => e.TableMappingConfig)
+                .WithMany(t => t.ColumnMappings)
+                .HasForeignKey(e => e.TableMappingConfigId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Unique index per mapping + column
+            entity.HasIndex(e => new { e.TableMappingConfigId, e.OracleColumnName })
+                .IsUnique()
+                .HasDatabaseName("IX_ColumnMappings_TableMappingConfigId_OracleColumnName");
         });
     }
 }

@@ -70,4 +70,11 @@ public class TableMappingConfig
     /// </summary>
     [MaxLength(128)]
     public string? IncrementalColumn { get; set; }
+
+    /// <summary>
+    /// Per-column type overrides for this mapping.
+    /// Each <see cref="ColumnMapping"/> defines the SQL Server name, data type,
+    /// length/precision/scale, nullability, exclusion, and default value for a column.
+    /// </summary>
+    public ICollection<ColumnMapping>? ColumnMappings { get; set; }
 }

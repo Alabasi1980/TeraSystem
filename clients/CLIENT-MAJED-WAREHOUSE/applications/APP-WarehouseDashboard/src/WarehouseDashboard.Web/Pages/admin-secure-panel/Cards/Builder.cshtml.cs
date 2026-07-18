@@ -46,14 +46,14 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         /// </summary>
         [BindProperty]
         [JsonPropertyName("sourceId")]
-        public string SourceId { get; set; } = string.Empty;
+        public string? SourceId { get; set; }
 
         /// <summary>
         /// Custom SQL query (Advanced accordion)
         /// </summary>
         [BindProperty]
         [JsonPropertyName("customSql")]
-        public string CustomSql { get; set; } = string.Empty;
+        public string? CustomSql { get; set; }
 
         /// <summary>
         /// Card title (required)
@@ -138,21 +138,21 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         /// </summary>
         [BindProperty]
         [JsonPropertyName("valueColumn")]
-        public string ValueColumn { get; set; } = string.Empty;
+        public string? ValueColumn { get; set; }
 
         /// <summary>
         /// Column name containing date data for time-based filtering
         /// </summary>
         [BindProperty]
         [JsonPropertyName("dateColumn")]
-        public string DateColumn { get; set; } = string.Empty;
+        public string? DateColumn { get; set; }
 
         /// <summary>
         /// Column name used for category grouping/breakdown
         /// </summary>
         [BindProperty]
         [JsonPropertyName("categoryColumn")]
-        public string CategoryColumn { get; set; } = string.Empty;
+        public string? CategoryColumn { get; set; }
 
         /// <summary>
         /// Whether to display change percentage on the KPI card
@@ -208,14 +208,14 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         /// </summary>
         [BindProperty]
         [JsonPropertyName("fixedStartDate")]
-        public string FixedStartDate { get; set; } = string.Empty;
+        public string? FixedStartDate { get; set; }
 
         /// <summary>
         /// Fixed end date for date filter (yyyy-MM-dd)
         /// </summary>
         [BindProperty]
         [JsonPropertyName("fixedEndDate")]
-        public string FixedEndDate { get; set; } = string.Empty;
+        public string? FixedEndDate { get; set; }
 
         /// <summary>
         /// Number of days for relative date filter
@@ -228,13 +228,13 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         /// Clone mode: pre-filled from existing card ID
         /// </summary>
         [BindProperty(SupportsGet = true)]
-        public string CloneId { get; set; } = string.Empty;
+        public string? CloneId { get; set; }
 
         /// <summary>
         /// Template ID to pre-fill from (Step 2)
         /// </summary>
         [BindProperty(SupportsGet = true)]
-        public string TemplateId { get; set; } = string.Empty;
+        public string? TemplateId { get; set; }
 
         /// <summary>
         /// Available Oracle tables for Step 2 dropdown
@@ -306,6 +306,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
 
             // Load reference data for validation errors
             await LoadOracleTablesAsync();
+
+            ValidateConditionalPostFields();
 
             _logger.LogInformation("Card Builder POST ModelState valid: {IsValid}", ModelState.IsValid);
 
@@ -486,8 +488,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
             {
                 CardType = CardType,
                 SourceType = SourceType,
-                SourceId = SourceId,
-                CustomSql = SourceType == "CustomSQL" ? CustomSql : null,
+                SourceId = SourceId ?? string.Empty,
+                CustomSql = SourceType == "CustomSQL" ? CustomSql?.Trim() : null,
                 SqlQuery = SqlQuery,
                 Title = Title,
                 DisplayName = DisplayName,
@@ -499,9 +501,9 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 RefreshIntervalSeconds = RefreshInterval,
                 // Advanced KPI
                 KpiMode = KpiMode,
-                ValueColumn = ValueColumn,
-                DateColumn = DateColumn,
-                CategoryColumn = CategoryColumn,
+                ValueColumn = ValueColumn ?? string.Empty,
+                DateColumn = DateColumn ?? string.Empty,
+                CategoryColumn = CategoryColumn ?? string.Empty,
                 ShowChange = ShowChange,
                 ChangeSource = ChangeSource,
                 ShowSparkline = ShowSparkline,
@@ -509,13 +511,37 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 ShowGrandTotal = ShowGrandTotal,
                 GrandTotalSource = GrandTotalSource,
                 DateFilterMode = DateFilterMode,
-                FixedStartDate = FixedStartDate,
-                FixedEndDate = FixedEndDate,
+                FixedStartDate = FixedStartDate ?? string.Empty,
+                FixedEndDate = FixedEndDate ?? string.Empty,
                 RelativeDays = RelativeDays,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
+        }
+
+        private void ValidateConditionalPostFields()
+        {
+            if (string.Equals(SourceType, "CustomSQL", StringComparison.OrdinalIgnoreCase)
+                && string.IsNullOrWhiteSpace(CustomSql))
+            {
+                ModelState.AddModelError(nameof(CustomSql), "استعلام SQL المخصص مطلوب عند اختيار مصدر SQL مخصص.");
+            }
+
+            if (!string.Equals(DateFilterMode, "fixed", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(FixedStartDate))
+            {
+                ModelState.AddModelError(nameof(FixedStartDate), "تاريخ البداية مطلوب عند اختيار نطاق زمني ثابت.");
+            }
+
+            if (string.IsNullOrWhiteSpace(FixedEndDate))
+            {
+                ModelState.AddModelError(nameof(FixedEndDate), "تاريخ النهاية مطلوب عند اختيار نطاق زمني ثابت.");
+            }
         }
 
         private void LogModelStateErrors()

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WarehouseDashboard.Web.Data;
 
@@ -11,9 +12,11 @@ using WarehouseDashboard.Web.Data;
 namespace WarehouseDashboard.Web.Migrations
 {
     [DbContext(typeof(WarehouseDashboardDbContext))]
-    partial class WarehouseDashboardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260718083448_AddColumnMappings")]
+    partial class AddColumnMappings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

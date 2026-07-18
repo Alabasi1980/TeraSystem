@@ -315,6 +315,90 @@
     .wm-tab-panel { display: none; }
     .wm-tab-panel--active { display: block; }
 
+    /* ─── Column Mapping Editor ─── */
+    .wm-col-map-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 8px 0; margin-bottom: 8px;
+        font-size: 13px; color: var(--c-text-muted);
+    }
+    .wm-col-map-header span { font-weight: 600; }
+    .wm-col-map-table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+    }
+    .wm-col-map-table {
+        width: 100%; border-collapse: collapse;
+        font-size: 12px;
+    }
+    .wm-col-map-table th {
+        background: var(--c-surface-muted);
+        padding: 8px 10px; text-align: start;
+        border-bottom: 1px solid var(--c-border);
+        white-space: nowrap;
+        font-weight: 600; font-size: 11px;
+        color: var(--c-text-muted);
+    }
+    .wm-col-map-table td {
+        padding: 6px 8px;
+        border-bottom: 1px solid var(--c-border);
+        vertical-align: middle;
+    }
+    .wm-col-map-row:hover td {
+        background: rgba(31,78,121,0.03);
+    }
+    .wm-col-map-row.wm-col-map-excluded td {
+        opacity: 0.45;
+        background: var(--c-surface-muted);
+    }
+    .wm-col-map-input {
+        font-family: 'Consolas', monospace;
+        font-size: 12px; color: var(--c-text);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        padding: 4px 6px; background: var(--c-surface);
+        transition: border-color var(--dur-fast) var(--ease);
+        box-sizing: border-box;
+    }
+    .wm-col-map-input:focus {
+        outline: none;
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 2px rgba(31,78,121,0.12);
+    }
+    .wm-col-map-select {
+        font-family: 'Consolas', monospace;
+        font-size: 12px; color: var(--c-text);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        padding: 4px 4px; background: var(--c-surface);
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+    .wm-col-map-select:focus {
+        outline: none;
+        border-color: var(--c-primary);
+    }
+    .wm-col-map-checkbox {
+        width: 15px; height: 15px;
+        accent-color: var(--c-primary);
+        cursor: pointer;
+    }
+    .wm-col-map-reset-btn {
+        background: none; border: 1px solid transparent;
+        cursor: pointer; font-size: 14px; color: var(--c-text-muted);
+        padding: 2px 6px; border-radius: var(--radius-sm);
+        transition: all var(--dur-fast) var(--ease);
+    }
+    .wm-col-map-reset-btn:hover {
+        background: var(--c-surface-muted);
+        color: var(--c-primary);
+        border-color: var(--c-border);
+    }
+    .wm-col-type-label {
+        font-family: monospace; font-size: 11px;
+        color: var(--c-text-muted); direction: ltr; display: inline-block;
+    }
+
     /* ─── Preview Table ─── */
     .wm-preview-table-wrap {
         overflow-x: auto; border: 1px solid var(--c-border);
@@ -759,6 +843,7 @@
                     <button type="button" class="wm-tab-btn wm-tab-btn--active" data-tab="preview">&#x1F441; معاينة البيانات</button>
                     <button type="button" class="wm-tab-btn" data-tab="columns">&#x1F4CA; الأعمدة</button>
                     <button type="button" class="wm-tab-btn" data-tab="schema">&#x1F50D; مقارنة الهدف</button>
+                    <button type="button" class="wm-tab-btn" data-tab="mapping">تعيين الأعمدة</button>
                 </div>
                 <div class="wm-tab-panel wm-tab-panel--active" data-tab="preview">
                     <div id="wm-preview-content">
@@ -772,6 +857,11 @@
                 </div>
                 <div class="wm-tab-panel" data-tab="schema">
                     <div id="wm-schema-content">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="wm-tab-panel" data-tab="mapping">
+                    <div id="wm-column-mapping-content">
                         <!-- Populated by JS -->
                     </div>
                 </div>
@@ -895,6 +985,7 @@
 
     <!-- Hidden form fields for POST -->
     <form id="wm-form" method="post" style="display:none;">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="EditId" id="wm-h-editId" value="0" />
         <input type="hidden" asp-for="Name" id="wm-h-name" value="" />
         <input type="hidden" asp-for="OracleSource" id="wm-h-oracleSource" value="" />
@@ -902,6 +993,7 @@
         <input type="hidden" asp-for="SqlTargetTable" id="wm-h-sqlTargetTable" value="" />
         <input type="hidden" name="SyncMode" id="wm-h-syncMode" value="Full" />
         <input type="hidden" name="IncrementalColumn" id="wm-h-incrementalColumn" value="" />
+        <textarea id="wm-h-columnMappingsJson" name="ColumnMappingsJson" style="display:none;"></textarea>
     </form>
 </div>
 
