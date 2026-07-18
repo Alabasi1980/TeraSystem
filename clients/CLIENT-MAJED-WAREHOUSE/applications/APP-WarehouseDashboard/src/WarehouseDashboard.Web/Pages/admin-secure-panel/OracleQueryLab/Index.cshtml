@@ -1,0 +1,540 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.OracleQueryLab.OracleQueryLabModel
+@{
+    ViewData["Title"] = "مختبِّر استعلامات Oracle";
+}
+@Html.AntiForgeryToken()
+
+<style>
+    .wd-page { max-width: 1200px; margin: 0 auto; padding: 0; }
+    .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
+    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
+    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
+    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
+
+    .wd-label { display: block; font-size: 13px; font-weight: 600; color: var(--c-text-muted); margin-bottom: 6px; }
+    .wd-textarea, .wd-input, .wd-select {
+        width: 100%; font-family: var(--font-ar);
+        font-size: 14px; color: var(--c-text);
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        padding: 10px 12px; background: var(--c-surface);
+        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    }
+    .wd-textarea {
+        min-height: 160px; resize: vertical; direction: ltr; text-align: start;
+        font-family: "Courier New", monospace; line-height: 1.5;
+    }
+    .wd-textarea:focus, .wd-input:focus, .wd-select:focus {
+        outline: none; border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+
+    .wd-actions { display: flex; align-items: center; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+    .wd-meta { font-size: 13px; color: var(--c-text-muted); margin-right: auto; }
+
+    .wd-grid { margin-top: 8px; min-height: 80px; }
+
+    .wd-skeleton { padding: 12px; }
+    .wd-skeleton__row {
+        height: 18px; margin-bottom: 12px; border-radius: 6px;
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, #dbe7f3 37%, var(--c-surface-muted) 63%);
+        background-size: 400% 100%;
+        animation: wdShimmer 1.2s ease-in-out infinite;
+    }
+
+    .wd-toast-container {
+        position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
+        display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+    }
+    .wd-toast {
+        min-width: 240px; max-width: 360px; padding: 12px 16px; border-radius: var(--radius-md);
+        color: #fff; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 8px;
+        animation: wdToastIn var(--dur-norm) var(--ease);
+        font-size: 14px;
+    }
+    .wd-toast--success { background: var(--c-success); }
+    .wd-toast--error { background: var(--c-error); }
+    .wd-toast--warning { background: var(--c-warning); color: #3a2c00; }
+    .wd-toast--info { background: var(--c-secondary); }
+
+    /* Two-column layout */
+    .wd-layout-two { display: grid; grid-template-columns: 1fr 340px; gap: var(--sp-5); margin-bottom: var(--sp-5); }
+    .wd-layout-two > .wd-card--editor { min-width: 0; }
+
+    /* Schema panel */
+    .wd-schema-search {
+        width: 100%; padding: 8px 10px; font-size: 13px;
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        background: var(--c-surface); color: var(--c-text); margin-bottom: 10px;
+        transition: border-color var(--dur-fast) var(--ease);
+    }
+    .wd-schema-search:focus {
+        outline: none; border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+    .wd-schema-list {
+        max-height: 260px; overflow-y: auto; list-style: none; padding: 0; margin: 0;
+    }
+    .wd-schema-list__item {
+        padding: 8px 10px; cursor: pointer; border-radius: var(--radius-sm);
+        font-size: 13px; color: var(--c-text);
+        transition: background var(--dur-fast) var(--ease);
+    }
+    .wd-schema-list__item:hover { background: var(--c-surface-muted); }
+    .wd-schema-list__item--active { background: rgba(46, 109, 164, 0.12); font-weight: 600; }
+
+    .wd-schema-columns {
+        margin-top: 10px; max-height: 220px; overflow-y: auto; list-style: none; padding: 0; margin-left: 0;
+    }
+    .wd-schema-columns__item {
+        padding: 5px 10px 5px 22px; font-size: 12px; color: var(--c-text-muted);
+        cursor: pointer; border-radius: var(--radius-sm);
+        transition: background var(--dur-fast) var(--ease);
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .wd-schema-columns__item:hover { background: var(--c-surface-muted); color: var(--c-text); }
+    .wd-schema-columns__type { font-size: 11px; color: var(--c-text-muted); opacity: .7; }
+    .wd-schema-columns__title {
+        font-size: 13px; font-weight: 600; color: var(--c-text-muted); margin: 8px 0 4px;
+        padding: 0 10px;
+    }
+
+    /* Saved queries bar */
+    .wd-saved-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .wd-saved-select {
+        flex: 1; font-size: 13px; padding: 6px 8px; color: var(--c-text);
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        background: var(--c-surface);
+    }
+
+    [hidden] { display: none !important; }
+
+    @@media (max-width: 900px) {
+        .wd-layout-two { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="wd-page">
+    <header class="wd-page__header">
+        <div class="wd-breadcrumb">
+            <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; مختبِّر استعلامات Oracle
+        </div>
+        <h2 class="wd-page__title">مختبِّر استعلامات Oracle</h2>
+        <p class="wd-page__subtitle">اختبار استعلامات Oracle قبل إسنادها للبطاقات</p>
+    </header>
+
+    <div class="wd-layout-two">
+        <!-- Editor card -->
+        <section class="wd-card wd-card--editor">
+            <div class="wd-card__header">
+                <span class="wd-card__title">الاستعلام</span>
+                <span class="wd-badge wd-badge--success">Oracle</span>
+            </div>
+            <div class="wd-card__body">
+                <label class="wd-label" for="sqlInput">استعلام Oracle SQL</label>
+                <textarea id="sqlInput" class="wd-textarea" placeholder="SELECT * FROM ALL_TABLES WHERE ROWNUM &lt;= 10">SELECT 1 AS test_value FROM DUAL</textarea>
+
+                <div class="wd-actions">
+                    <button id="runBtn" class="wd-btn" onclick="runQuery()">تشغيل</button>
+                    <button class="wd-btn wd-btn--ghost" onclick="clearEditor()">مسح</button>
+                    <button class="wd-btn wd-btn--ghost" id="copyBtn" onclick="copyResults()" disabled>نسخ CSV</button>
+                    <span id="meta" class="wd-meta"></span>
+                </div>
+
+                <div class="wd-saved-row">
+                    <label class="wd-label" for="savedSelect" style="margin-bottom:0;white-space:nowrap;">استعلام محفوظ:</label>
+                    <select id="savedSelect" class="wd-saved-select" onchange="loadSavedQuery(this.value)">
+                        <option value="">— اختر استعلاماً محفوظاً —</option>
+                    </select>
+                    <button class="wd-btn wd-btn--ghost" onclick="saveCurrentQuery()" title="حفظ الاستعلام الحالي">حفظ</button>
+                    <button class="wd-btn wd-btn--ghost" onclick="deleteSavedQuery()" title="حذف الاستعلام المحدد">حذف</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schema browser card -->
+        <section class="wd-card">
+            <div class="wd-card__header">
+                <span class="wd-card__title">مخطط قاعدة البيانات</span>
+                <button class="wd-btn wd-btn--ghost" onclick="loadSchema()" style="font-size:12px;padding:4px 10px;">تحديث</button>
+            </div>
+            <div class="wd-card__body">
+                <input id="schemaSearch" class="wd-schema-search" type="text" placeholder="بحث في الجداول..." oninput="filterTables(this.value)">
+                <ul id="schemaList" class="wd-schema-list"></ul>
+                <div id="schemaColumns"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Results card -->
+    <section class="wd-card">
+        <div class="wd-card__header">
+            <span class="wd-card__title">النتائج</span>
+        </div>
+        <div class="wd-card__body">
+            <div id="skeleton" class="wd-skeleton" hidden>
+                @for (int i = 0; i < 6; i++) { <div class="wd-skeleton__row"></div> }
+            </div>
+            <div id="emptyState" class="wd-empty">
+                <span class="wd-empty__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                </span>
+                نفِّذ استعلاماً لعرض النتائج هنا.
+            </div>
+            <div id="gridContainer" class="wd-grid"></div>
+        </div>
+    </section>
+</div>
+
+<div id="toastContainer" class="wd-toast-container"></div>
+
+<script>
+    // ─── State ──────────────────────────────────────────────────────
+    let currentColumns = [];
+    let currentRows = [];
+    let allSchemaTables = [];
+
+    // ─── Helpers ────────────────────────────────────────────────────
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text ?? '';
+        return div.innerHTML;
+    }
+
+    function showToast(message, type) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'wd-toast wd-toast--' + (type || 'info');
+        const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠' : 'ℹ';
+        toast.innerHTML = '<span>' + icon + '</span><span>' + escapeHtml(message) + '</span>';
+        container.appendChild(toast);
+        setTimeout(function () {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(8px)';
+            setTimeout(function () { toast.remove(); }, 240);
+        }, 3500);
+    }
+
+    function setRunning(running) {
+        document.getElementById('runBtn').disabled = running;
+        document.getElementById('runBtn').textContent = running ? 'جارٍ التنفيذ...' : 'تشغيل';
+    }
+
+    function showSkeleton(show) {
+        document.getElementById('skeleton').hidden = !show;
+        if (show) { document.getElementById('emptyState').hidden = true; destroyGrid(); }
+    }
+
+    function destroyGrid() {
+        currentColumns = [];
+        currentRows = [];
+        document.getElementById('gridContainer').innerHTML = '';
+    }
+
+    // ─── Core: Run Query ────────────────────────────────────────────
+    async function runQuery() {
+        const sql = document.getElementById('sqlInput').value;
+        if (!sql.trim()) {
+            showToast('الرجاء إدخال استعلام Oracle.', 'warning');
+            return;
+        }
+
+        setRunning(true);
+        showSkeleton(true);
+        document.getElementById('meta').textContent = '';
+
+        try {
+            const token = document.querySelector('input[name=__RequestVerificationToken]').value;
+            const resp = await fetch('?handler=Run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ sql: sql })
+            });
+            const data = await resp.json();
+            document.getElementById('skeleton').hidden = true;
+            setRunning(false);
+
+            if (!data.success) {
+                document.getElementById('emptyState').hidden = false;
+                document.getElementById('emptyState').innerHTML =
+                    '<span class="wd-empty__icon">⚠</span>' + escapeHtml(data.errorMessage || 'فشل تنفيذ الاستعلام.');
+                document.getElementById('copyBtn').disabled = true;
+                showToast(data.errorMessage || 'فشل تنفيذ الاستعلام.', 'error');
+                return;
+            }
+
+            renderGrid(data.columns, data.rows);
+            document.getElementById('meta').textContent =
+                'النتائج: ' + data.rowCount + ' صف · الزمن: ' + data.elapsedMilliseconds + ' مللي ثانية';
+
+            if (data.rowCount === 0) {
+                document.getElementById('gridContainer').innerHTML =
+                    '<div class="wd-empty"><span class="wd-empty__icon">✓</span>تم تنفيذ الاستعلام بنجاح لكن لم يُرجع أي صفوف.</div>';
+                document.getElementById('copyBtn').disabled = true;
+            }
+
+            showToast('تم تنفيذ الاستعلام بنجاح.', 'success');
+        } catch (err) {
+            document.getElementById('skeleton').hidden = true;
+            document.getElementById('emptyState').hidden = false;
+            document.getElementById('copyBtn').disabled = true;
+            setRunning(false);
+            showToast('تعذر الاتصال بالخادم.', 'error');
+        }
+    }
+
+    // ─── Grid Rendering ─────────────────────────────────────────────
+    function mapType(clrType) {
+        switch ((clrType || '').toLowerCase()) {
+            case 'int32': case 'int64': case 'int16': case 'decimal':
+            case 'double': case 'single': case 'byte': case 'sbyte':
+                return 'number';
+            case 'datetime': case 'datetimeoffset': case 'timespan':
+                return 'datetime';
+            case 'boolean':
+                return 'boolean';
+            default:
+                return 'string';
+        }
+    }
+
+    function renderGrid(columns, rows) {
+        destroyGrid();
+        const container = document.getElementById('gridContainer');
+        document.getElementById('emptyState').hidden = true;
+
+        if (!columns || columns.length === 0) {
+            container.innerHTML = '<div class="wd-empty"><span class="wd-empty__icon">▦</span>لا توجد أعمدة في النتيجة.</div>';
+            document.getElementById('copyBtn').disabled = true;
+            return;
+        }
+
+        currentColumns = columns;
+        currentRows = rows;
+
+        var html = '<table class="wd-table" style="width:100%;border-collapse:collapse;font-size:13px;">';
+        html += '<thead><tr>';
+        columns.forEach(function(c) {
+            var align = mapType(c.dataType) === 'number' ? 'right' : 'left';
+            html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:' + align + ';border-bottom:1px solid var(--c-border);white-space:nowrap;">' + escapeHtml(c.name) + '</th>';
+        });
+        html += '</tr></thead><tbody>';
+        rows.forEach(function(r, idx) {
+            html += '<tr style="border-bottom:1px solid var(--c-border);' + (idx % 2 === 0 ? '' : 'background:#F7FAFD;') + '">';
+            columns.forEach(function(c) {
+                var val = r[c.name];
+                var align = mapType(c.dataType) === 'number' ? 'right' : 'left';
+                html += '<td style="padding:6px 12px;text-align:' + align + ';">' + escapeHtml(val != null ? String(val) : '') + '</td>';
+            });
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+        document.getElementById('copyBtn').disabled = false;
+    }
+
+    // ─── Copy CSV ───────────────────────────────────────────────────
+    function copyResults() {
+        if (!currentRows || currentRows.length === 0) return;
+        var cols = currentColumns;
+        var csv = cols.map(function(c) { return '"' + (c.name || '') + '"'; }).join(',') + '\n';
+        currentRows.forEach(function(row) {
+            csv += cols.map(function(c) {
+                var val = row[c.name];
+                return val != null ? '"' + String(val).replace(/"/g, '""') + '"' : '""';
+            }).join(',') + '\n';
+        });
+        navigator.clipboard.writeText(csv).then(function() {
+            showToast('تم نسخ ' + currentRows.length + ' صف إلى الحافظة كـ CSV.', 'success');
+        }).catch(function() {
+            showToast('تعذر النسخ إلى الحافظة.', 'error');
+        });
+    }
+
+    // ─── Clear ──────────────────────────────────────────────────────
+    function clearEditor() {
+        document.getElementById('sqlInput').value = '';
+        destroyGrid();
+        document.getElementById('emptyState').hidden = false;
+        document.getElementById('copyBtn').disabled = true;
+        document.getElementById('meta').textContent = '';
+    }
+
+    // ─── Schema Browser ─────────────────────────────────────────────
+    async function loadSchema() {
+        try {
+            const token = document.querySelector('input[name=__RequestVerificationToken]').value;
+            const resp = await fetch('?handler=Schema', {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                }
+            });
+            const data = await resp.json();
+            if (!data.success) {
+                showToast(data.errorMessage || 'تعذر تحميل المخطط.', 'error');
+                return;
+            }
+            allSchemaTables = data.tables || [];
+            renderTableList(allSchemaTables);
+            showToast('تم تحميل المخطط بنجاح (' + allSchemaTables.length + ' جدول).', 'success');
+        } catch (err) {
+            showToast('تعذر الاتصال بالخادم أثناء تحميل المخطط.', 'error');
+        }
+    }
+
+    function renderTableList(tables) {
+        var list = document.getElementById('schemaList');
+        if (!tables || tables.length === 0) {
+            list.innerHTML = '<li style="padding:10px;font-size:13px;color:var(--c-text-muted);">لا توجد جداول.</li>';
+            return;
+        }
+        var html = '';
+        tables.forEach(function(t) {
+            html += '<li class="wd-schema-list__item" onclick="loadTableColumns(\'' + escapeHtml(t.name) + '\', this)">' + escapeHtml(t.name) + '</li>';
+        });
+        list.innerHTML = html;
+        document.getElementById('schemaColumns').innerHTML = '';
+    }
+
+    function filterTables(query) {
+        var q = (query || '').toLowerCase();
+        if (!q) {
+            renderTableList(allSchemaTables);
+            return;
+        }
+        var filtered = allSchemaTables.filter(function(t) {
+            return t.name.toLowerCase().indexOf(q) !== -1;
+        });
+        renderTableList(filtered);
+    }
+
+    function loadTableColumns(tableName, element) {
+        // Highlight active table
+        var items = document.querySelectorAll('.wd-schema-list__item');
+        items.forEach(function(item) { item.classList.remove('wd-schema-list__item--active'); });
+        if (element) element.classList.add('wd-schema-list__item--active');
+
+        var table = allSchemaTables.find(function(t) { return t.name === tableName; });
+        var container = document.getElementById('schemaColumns');
+        if (!table || !table.columns || table.columns.length === 0) {
+            container.innerHTML = '<div class="wd-schema-columns__title">الأعمدة</div><div style="padding:5px 10px 5px 22px;font-size:12px;color:var(--c-text-muted);">لا توجد أعمدة.</div>';
+            return;
+        }
+
+        var html = '<div class="wd-schema-columns__title">الأعمدة — ' + escapeHtml(tableName) + '</div>';
+        html += '<ul class="wd-schema-columns">';
+        table.columns.forEach(function(col) {
+            var label = escapeHtml(col.name) + '  <span class="wd-schema-columns__type">' + escapeHtml(col.dataType) + '</span>';
+            html += '<li class="wd-schema-columns__item" onclick="insertAtCursor(\'' + escapeHtml(col.name).replace(/'/g, "\\'") + '\')">' + label + '</li>';
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+    }
+
+    function insertAtCursor(text) {
+        var ta = document.getElementById('sqlInput');
+        var start = ta.selectionStart;
+        var end = ta.selectionEnd;
+        var before = ta.value.substring(0, start);
+        var after = ta.value.substring(end);
+        // Add a space before if needed
+        var sep = (before.length > 0 && !before.endsWith(' ') && !before.endsWith('\n')) ? ' ' : '';
+        ta.value = before + sep + text + after;
+        ta.focus();
+        ta.selectionStart = ta.selectionEnd = start + sep.length + text.length;
+    }
+
+    // ─── Saved Queries (localStorage) ───────────────────────────────
+    const STORAGE_KEY = 'oracleQueryLab_savedQueries';
+
+    function loadSavedQueries() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function populateSavedDropdown() {
+        var queries = loadSavedQueries();
+        var sel = document.getElementById('savedSelect');
+        sel.innerHTML = '<option value="">— اختر استعلاماً محفوظاً —</option>';
+        queries.forEach(function(q, i) {
+            var opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = q.name || ('استعلام ' + i);
+            sel.appendChild(opt);
+        });
+    }
+
+    function saveCurrentQuery() {
+        var sql = document.getElementById('sqlInput').value;
+        if (!sql.trim()) {
+            showToast('لا يوجد استعلام لحفظه.', 'warning');
+            return;
+        }
+        var queries = loadSavedQueries();
+        var now = new Date();
+        var defaultName = 'استعلام ' + now.getFullYear() + '-' +
+            String(now.getMonth() + 1).padStart(2, '0') + '-' +
+            String(now.getDate()).padStart(2, '0') + ' ' +
+            String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0');
+        var name = prompt('اسم الاستعلام:', defaultName);
+        if (name === null) return; // cancelled
+        if (!name.trim()) name = defaultName;
+
+        queries.push({ name: name.trim(), sql: sql, date: now.toISOString() });
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(queries));
+        } catch (e) {
+            showToast('تعذر الحفظ — مساحة التخزين ممتلئة.', 'error');
+            return;
+        }
+        populateSavedDropdown();
+        showToast('تم حفظ الاستعلام.', 'success');
+    }
+
+    function loadSavedQuery(index) {
+        if (index === '' || index === null) return;
+        var queries = loadSavedQueries();
+        var q = queries[parseInt(index)];
+        if (q && q.sql) {
+            document.getElementById('sqlInput').value = q.sql;
+            showToast('تم تحميل الاستعلام المحفوظ.', 'info');
+        }
+    }
+
+    function deleteSavedQuery() {
+        var sel = document.getElementById('savedSelect');
+        var idx = sel.value;
+        if (idx === '' || idx === null) {
+            showToast('اختر استعلاماً أولاً.', 'warning');
+            return;
+        }
+        var queries = loadSavedQueries();
+        var i = parseInt(idx);
+        if (i >= 0 && i < queries.length) {
+            var name = queries[i].name;
+            queries.splice(i, 1);
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(queries));
+            } catch (e) { /* ignore */ }
+            populateSavedDropdown();
+            showToast('تم حذف "' + name + '".', 'success');
+        }
+    }
+
+    // ─── Init ───────────────────────────────────────────────────────
+    populateSavedDropdown();
+    loadSchema();
+</script>
