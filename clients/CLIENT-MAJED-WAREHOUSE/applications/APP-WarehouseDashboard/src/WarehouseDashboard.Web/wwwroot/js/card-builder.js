@@ -59,6 +59,9 @@
     this.opts.previewApiUrl = this.opts.previewApiUrl || '/api/dashboard/cardbuilder?handler=Preview';
     this.opts.tablesApiUrl = this.opts.tablesApiUrl || '/api/tablemappings/active';
     this.opts.savedQueriesApiUrl = this.opts.savedQueriesApiUrl || '/api/savedqueries';
+    this.opts.editId = this.opts.editId || '';
+    this.opts.initialData = this.opts.initialData || null;
+    this.editMode = !!this.opts.editId;
 
     this.state = {
       step: 1,
@@ -76,7 +79,22 @@
       palette: 'primary',
       refreshInterval: 300,
       title: '',
-      displayName: ''
+      displayName: '',
+      aggregationType: 'Sum',
+      kpiMode: 'simple',
+      valueColumn: '',
+      dateColumn: '',
+      categoryColumn: '',
+      showChange: false,
+      changeSource: 'previousPeriod',
+      showSparkline: false,
+      sparklineMonths: 6,
+      showGrandTotal: false,
+      grandTotalSource: 'sameTable',
+      dateFilterMode: 'dashboard',
+      fixedStartDate: '',
+      fixedEndDate: '',
+      relativeDays: 30
     };
 
     this.tables = [];
@@ -97,6 +115,8 @@
     if (!this.form) { return; }
 
     this.readInitialDom();
+    // Show saved SQL query in preview textarea immediately (edit mode fix)
+    this.updateSqlDisplay();
     this.renderTemplates();
     this.renderPalettes();
     this.wireTypePicker();
@@ -126,18 +146,47 @@
 
   CardBuilderWizard.prototype.readInitialDom = function () {
     var s = this.state;
-    s.cardType = ($('wb-h-cardType').value) || 'KPI';
-    s.sourceType = ($('wb-h-sourceType').value) || 'Template';
-    s.sourceId = $('wb-h-sourceId').value || '';
-    s.customSql = $('wb-h-customSql').value || '';
-    s.gridWidth = parseInt($('wb-h-gridWidth').value, 10) || 4;
-    s.gridHeight = parseInt($('wb-h-gridHeight').value, 10) || 2;
-    s.gridX = $('wb-h-gridX').value || '';
-    s.gridY = $('wb-h-gridY').value || '';
-    s.palette = $('wb-h-colorPalette').value || 'primary';
-    s.refreshInterval = parseInt($('wb-h-refreshInterval').value, 10) || 300;
-    s.title = $('wb-title').value || '';
-    s.displayName = $('wb-display-name').value || '';
+    var id = this.opts.initialData || {};
+
+    s.cardType = id.cardType || ($('wb-h-cardType').value) || 'KPI';
+    s.sourceType = id.sourceType || ($('wb-h-sourceType').value) || 'Template';
+    s.sourceId = id.sourceId != null ? id.sourceId : ($('wb-h-sourceId').value || '');
+    s.customSql = id.customSql != null ? id.customSql : ($('wb-h-customSql').value || '');
+    s.gridWidth = parseInt(id.gridWidth != null ? id.gridWidth : $('wb-h-gridWidth').value, 10) || 4;
+    s.gridHeight = parseInt(id.gridHeight != null ? id.gridHeight : $('wb-h-gridHeight').value, 10) || 2;
+    s.gridX = id.gridX != null ? id.gridX : ($('wb-h-gridX').value || '');
+    s.gridY = id.gridY != null ? id.gridY : ($('wb-h-gridY').value || '');
+    s.palette = id.colorPalette != null ? id.colorPalette : ($('wb-h-colorPalette').value || 'primary');
+    s.refreshInterval = parseInt(id.refreshInterval != null ? id.refreshInterval : $('wb-h-refreshInterval').value, 10) || 300;
+    s.title = id.title != null ? id.title : ($('wb-title').value || '');
+    s.description = id.description != null ? id.description : ($('wb-h-description').value || '');
+    s.aggregationType = id.aggregationType != null ? id.aggregationType : ($('wb-h-aggregationType').value || 'Sum');
+    s.originalSourceType = id.originalSourceType != null ? id.originalSourceType : ($('wb-h-originalSourceType').value || 'SqlTable');
+    s.originalSourceId = id.originalSourceId != null ? id.originalSourceId : ($('wb-h-originalSourceId').value || '');
+    s.kpiMode = id.kpiMode != null ? id.kpiMode : ($('wb-h-kpiMode').value || 'simple');
+    s.valueColumn = id.valueColumn != null ? id.valueColumn : ($('wb-h-valueColumn').value || '');
+    s.dateColumn = id.dateColumn != null ? id.dateColumn : ($('wb-h-dateColumn').value || '');
+    s.categoryColumn = id.categoryColumn != null ? id.categoryColumn : ($('wb-h-categoryColumn').value || '');
+    s.showChange = this.parseBool(id.showChange != null ? id.showChange : $('wb-h-showChange').value);
+    s.changeSource = id.changeSource != null ? id.changeSource : ($('wb-h-changeSource').value || 'previousPeriod');
+    s.showSparkline = this.parseBool(id.showSparkline != null ? id.showSparkline : $('wb-h-showSparkline').value);
+    s.sparklineMonths = parseInt(id.sparklineMonths != null ? id.sparklineMonths : $('wb-h-sparklineMonths').value, 10) || 6;
+    s.showGrandTotal = this.parseBool(id.showGrandTotal != null ? id.showGrandTotal : $('wb-h-showGrandTotal').value);
+    s.grandTotalSource = id.grandTotalSource != null ? id.grandTotalSource : ($('wb-h-grandTotalSource').value || 'sameTable');
+    s.dateFilterMode = id.dateFilterMode != null ? id.dateFilterMode : ($('wb-h-dateFilterMode').value || 'dashboard');
+    s.fixedStartDate = id.fixedStartDate != null ? id.fixedStartDate : ($('wb-h-fixedStartDate').value || '');
+    s.fixedEndDate = id.fixedEndDate != null ? id.fixedEndDate : ($('wb-h-fixedEndDate').value || '');
+    s.relativeDays = parseInt(id.relativeDays != null ? id.relativeDays : $('wb-h-relativeDays').value, 10) || 30;
+    s.previewSql = id.sqlQuery != null ? id.sqlQuery : ($('wb-h-sqlQuery').value || '');
+
+    // Edit-mode safety: older/server-rendered cards may carry the SQL in sqlQuery
+    // while the CustomSQL textarea value is empty. For CustomSQL, the textarea,
+    // preview SQL and posted customSql must all start from the persisted query.
+    if (s.sourceType === 'CustomSQL') {
+      if (!s.customSql && s.previewSql) s.customSql = s.previewSql;
+      if (!s.previewSql && s.customSql) s.previewSql = s.customSql;
+    }
+
     // reflect into the visible (display) controls too
     if ($('wb-grid-width')) $('wb-grid-width').value = s.gridWidth;
     if ($('wb-grid-height')) $('wb-grid-height').value = s.gridHeight;
@@ -145,8 +194,20 @@
     if ($('wb-grid-y')) $('wb-grid-y').value = s.gridY;
     if ($('wb-refresh-interval')) $('wb-refresh-interval').value = String(s.refreshInterval);
     if ($('wb-custom-sql')) $('wb-custom-sql').value = s.customSql;
+    if ($('wb-title')) $('wb-title').value = s.title;
+    if ($('wb-description')) $('wb-description').value = s.description;
+    if ($('wb-h-description')) $('wb-h-description').value = s.description;
+    if ($('wb-aggregation-type')) $('wb-aggregation-type').value = s.aggregationType;
     var st = $('wb-source-type'); if (st) st.value = s.sourceType;
-    if (s.sourceType === 'CustomSQL') s.previewSql = s.customSql.trim();
+    if ($('wb-h-sourceType')) $('wb-h-sourceType').value = s.sourceType;
+    if ($('wb-h-customSql')) $('wb-h-customSql').value = s.customSql;
+    if ($('wb-h-sqlQuery')) $('wb-h-sqlQuery').value = s.previewSql;
+  };
+
+  CardBuilderWizard.prototype.parseBool = function (v) {
+    if (typeof v === 'boolean') return v;
+    if (v === null || v === undefined) return false;
+    return String(v).toLowerCase() === 'true';
   };
 
   CardBuilderWizard.prototype.applyInitialUi = function () {
@@ -160,7 +221,98 @@
     // source panel
     this.showSourcePanel(this.state.sourceType);
     this.resetTemplateSelection();
+    this.applyInitialPalette();
+    this.applyInitialKpiSettings();
     this.updateStepUI();
+  };
+
+  CardBuilderWizard.prototype.applyInitialPalette = function () {
+    var self = this;
+    var btns = document.querySelectorAll('.wb-palette-picker [data-palette]');
+    Array.prototype.forEach.call(btns, function (b) {
+      var active = b.getAttribute('data-palette') === self.state.palette;
+      b.setAttribute('aria-pressed', active ? 'true' : 'false');
+      b.style.borderColor = active ? 'var(--c-primary)' : '';
+    });
+  };
+
+  CardBuilderWizard.prototype.applyInitialKpiSettings = function () {
+    if (this.state.cardType !== 'KPI') return;
+
+    var kpiMode = this.state.kpiMode || 'simple';
+    var hiddenInput = $('wb-h-kpiMode');
+    if (hiddenInput) hiddenInput.value = kpiMode;
+
+    // select the correct mode card
+    var modeCards = document.querySelectorAll('.wb-kpi-mode-card');
+    Array.prototype.forEach.call(modeCards, function (c) {
+      var active = c.getAttribute('data-mode') === kpiMode;
+      c.setAttribute('aria-checked', active ? 'true' : 'false');
+      c.setAttribute('tabindex', active ? '0' : '-1');
+    });
+
+    // trigger click on the selected mode card to apply section visibility
+    var selected = document.querySelector('.wb-kpi-mode-card[data-mode="' + kpiMode + '"]');
+    if (selected) selected.click();
+
+    // Pre-populate column dropdowns with saved values immediately (edit mode fix)
+    // This ensures saved values are visible before the preview API completes
+    var valueCol = $('wb-kpi-value-column');
+    var dateCol = $('wb-kpi-date-column');
+    var categoryCol = $('wb-kpi-category-column');
+    this.addSavedKpiOption(valueCol, this.state.valueColumn);
+    this.addSavedKpiOption(dateCol, this.state.dateColumn);
+    this.addSavedKpiOption(categoryCol, this.state.categoryColumn);
+    if (valueCol && this.state.valueColumn) valueCol.value = this.state.valueColumn;
+    if (dateCol && this.state.dateColumn) dateCol.value = this.state.dateColumn;
+    if (categoryCol && this.state.categoryColumn) categoryCol.value = this.state.categoryColumn;
+
+    var changeSource = $('wb-kpi-change-source');
+    if (changeSource && this.state.changeSource) changeSource.value = this.state.changeSource;
+
+    var sparklineMonths = $('wb-kpi-sparkline-months');
+    if (sparklineMonths) sparklineMonths.value = String(this.state.sparklineMonths);
+
+    var grandTotalSource = $('wb-kpi-grand-total-source');
+    if (grandTotalSource && this.state.grandTotalSource) grandTotalSource.value = this.state.grandTotalSource;
+
+    var dateFilterMode = $('wb-kpi-date-filter-mode');
+    if (dateFilterMode) {
+      dateFilterMode.value = this.state.dateFilterMode;
+      this.applyDateFilterMode(this.state.dateFilterMode);
+    }
+
+    var fixedStart = $('wb-kpi-fixed-start');
+    var fixedEnd = $('wb-kpi-fixed-end');
+    var relativeDays = $('wb-kpi-relative-days');
+    if (fixedStart && this.state.fixedStartDate) fixedStart.value = this.state.fixedStartDate;
+    if (fixedEnd && this.state.fixedEndDate) fixedEnd.value = this.state.fixedEndDate;
+    if (relativeDays) relativeDays.value = String(this.state.relativeDays);
+
+    this.syncKpiHiddenFields();
+  };
+
+  CardBuilderWizard.prototype.applyDateFilterMode = function (mode) {
+    var fixedStart = $('wb-kpi-fixed-start-field');
+    var fixedEnd = $('wb-kpi-fixed-end-field');
+    var relativeDays = $('wb-kpi-relative-days-field');
+    if (fixedStart) fixedStart.style.display = mode === 'fixed' ? '' : 'none';
+    if (fixedEnd) fixedEnd.style.display = mode === 'fixed' ? '' : 'none';
+    if (relativeDays) relativeDays.style.display = mode === 'relative' ? '' : 'none';
+  };
+
+  /* ---------- Helper: ensure saved KPI column value is an option (edit mode fix) ---------- */
+  CardBuilderWizard.prototype.addSavedKpiOption = function (sel, value) {
+    if (!sel || !value) return;
+    // Check if value already exists as an option
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === value) return; // already present
+    }
+    // Add it as a temporary option so it shows in the UI immediately
+    var opt = document.createElement('option');
+    opt.value = value;
+    opt.textContent = value + ' (محفوظ)';
+    sel.appendChild(opt);
   };
 
   /* ----------------------- STEP NAV ----------------------- */
@@ -174,7 +326,7 @@
   };
 
   CardBuilderWizard.prototype.next = function () {
-    var maxStep = this.isKpiStepVisible() ? 5 : 4;
+    var maxStep = 5;
     if (this.state.step >= maxStep) return;
     if (!this.validateStep(this.state.step)) return;
     this.goToStep(this.state.step + 1);
@@ -184,14 +336,13 @@
     this.goToStep(this.state.step - 1);
   };
   CardBuilderWizard.prototype.goToStep = function (n) {
+    var currentStep = this.state.step;
     // Skip step 4 (KPI) when chartType is not KPI
     if (n === 4 && !this.isKpiStepVisible()) {
-      n = 5;
+      n = currentStep > 4 ? 3 : 5;
     }
-    // If going backwards from step 5 and KPI not visible, go to step 3
-    if (n === 4 && !this.isKpiStepVisible()) {
-      n = 3;
-    }
+    if (n < 1) n = 1;
+    if (n > 5) n = 5;
     this.state.step = n;
     this.updateStepUI();
     this.updateFooter();
@@ -236,8 +387,7 @@
         else if (this.state.sourceType === 'CustomSQL') msg = 'أدخل استعلام SQL في الخانة المخصصة.';
       }
     } else if (step === 3) {
-      if (!this.state.title.trim()) msg = 'الرجاء إدخال العنوان.';
-      else if (!this.state.displayName.trim()) msg = 'الرجاء إدخال اسم العرض.';
+      if (!this.state.title.trim()) msg = 'الرجاء إدخال اسم البطاقة.';
     } else if (step === 4 && this.isKpiStepVisible()) {
       var valCol = $('wb-kpi-value-column');
       var dateCol = $('wb-kpi-date-column');
@@ -495,9 +645,9 @@
   /* ----------------------- FIELDS (Step 3) ----------------------- */
   CardBuilderWizard.prototype.wireFields = function () {
     var self = this;
-    var title = $('wb-title'), dn = $('wb-display-name'), cs = $('wb-custom-sql');
+    var title = $('wb-title'), desc = $('wb-description'), cs = $('wb-custom-sql');
     if (title) title.addEventListener('input', function () { self.state.title = title.value; self.updateFooter(); });
-    if (dn) dn.addEventListener('input', function () { self.state.displayName = dn.value; self.updateFooter(); });
+    if (desc) desc.addEventListener('input', function () { self.state.description = desc.value; if ($('wb-h-description')) $('wb-h-description').value = desc.value; });
     if (cs) cs.addEventListener('input', function () {
         self.state.customSql = cs.value;
         self.state.previewSql = cs.value;
@@ -720,11 +870,12 @@
     }
     var numeric = this.detectNumeric(columns, sampleData);
     var dateCols = this.detectDateColumns(columns, sampleData);
-    this.updateKpiValueColumnOptions(numeric);
+    // Restore saved column values after repopulation (edit mode fix)
+    this.updateKpiValueColumnOptions(numeric, this.state.valueColumn);
 
     var kpiDateCol = $('wb-kpi-date-column');
     if (kpiDateCol) {
-      var curDate = kpiDateCol.value;
+      var curDate = kpiDateCol.value || this.state.dateColumn;
       kpiDateCol.innerHTML = '<option value="">اختر عموداً...</option>';
       (dateCols || []).forEach(function (col) {
         kpiDateCol.innerHTML += '<option value="' + escapeHtml(col) + '">' + escapeHtml(col) + '</option>';
@@ -734,22 +885,22 @@
 
     var kpiCategoryCol = $('wb-kpi-category-column');
     if (kpiCategoryCol) {
-      var curCat = kpiCategoryCol.value;
+      var curCat = kpiCategoryCol.value || this.state.categoryColumn;
       kpiCategoryCol.innerHTML = '<option value="">بدون تصنيف</option>';
       (columns || []).forEach(function (col) {
         kpiCategoryCol.innerHTML += '<option value="' + escapeHtml(col) + '">' + escapeHtml(col) + '</option>';
       });
-      if (curCat) kpiCategoryCol.value = curCat;
+      if (curCat && columns.indexOf(curCat) >= 0) kpiCategoryCol.value = curCat;
     }
     this.updateFooter();
   };
 
-  CardBuilderWizard.prototype.updateKpiValueColumnOptions = function (numericColumns) {
+  CardBuilderWizard.prototype.updateKpiValueColumnOptions = function (numericColumns, savedValue) {
     var sel = $('wb-kpi-value-column');
     var msg = $('wb-kpi-value-column-message');
     if (!sel) return;
 
-    var previousValue = sel.value;
+    var previousValue = savedValue || sel.value;
     sel.innerHTML = '';
 
     if (!numericColumns || !numericColumns.length) {
@@ -883,7 +1034,7 @@
   };
 
   CardBuilderWizard.prototype.canSave = function () {
-    var hasBasic = !!this.state.cardType && this.hasSource() && !!this.state.title.trim() && !!this.state.displayName.trim();
+    var hasBasic = !!this.state.cardType && this.hasSource() && !!this.state.title.trim();
     if (!hasBasic) return false;
 
     if (this.isKpiStepVisible()) {
@@ -914,7 +1065,7 @@
   CardBuilderWizard.prototype.updateFooter = function () {
     var prev = $('wb-btn-prev'), next = $('wb-btn-next'), save = $('wb-btn-save'), saveAdd = $('wb-btn-save-add');
     var step = this.state.step;
-    var maxStep = this.isKpiStepVisible() ? 5 : 4;
+    var maxStep = 5;
     if (prev) { prev.disabled = (step === 1); prev.setAttribute('aria-disabled', step === 1 ? 'true' : 'false'); }
     if (next) {
       if (step >= maxStep) {
@@ -935,7 +1086,7 @@
   CardBuilderWizard.prototype.validateStepSilent = function (step) {
     if (step === 1) return true;
     if (step === 2) return this.hasSource();
-    if (step === 3) return !!this.state.title.trim() && !!this.state.displayName.trim();
+    if (step === 3) return !!this.state.title.trim();
     if (step === 4 && this.isKpiStepVisible()) {
       var valCol = $('wb-kpi-value-column');
       var dateCol = $('wb-kpi-date-column');
@@ -1057,12 +1208,17 @@
     if ($('wb-h-sourceType')) $('wb-h-sourceType').value = s.sourceType;
     if ($('wb-h-sourceId')) $('wb-h-sourceId').value = s.sourceId;
     if ($('wb-h-customSql')) $('wb-h-customSql').value = s.customSql;
+    if ($('wb-h-description')) $('wb-h-description').value = s.description || '';
     if ($('wb-h-gridWidth')) $('wb-h-gridWidth').value = s.gridWidth;
     if ($('wb-h-gridHeight')) $('wb-h-gridHeight').value = s.gridHeight;
     if ($('wb-h-gridX')) $('wb-h-gridX').value = s.gridX;
     if ($('wb-h-gridY')) $('wb-h-gridY').value = s.gridY;
     if ($('wb-h-colorPalette')) $('wb-h-colorPalette').value = s.palette;
     if ($('wb-h-refreshInterval')) $('wb-h-refreshInterval').value = s.refreshInterval;
+
+    // Sync original source type (TASK-COD-028)
+    if ($('wb-h-originalSourceType')) $('wb-h-originalSourceType').value = s.sourceType;
+    if ($('wb-h-originalSourceId')) $('wb-h-originalSourceId').value = s.sourceId;
 
     // Sync SqlQuery — build proper SQL based on source type
     var sqlQuery = '';
@@ -1127,7 +1283,7 @@
     if (!this.form) return;
     if (!this.canSave()) {
       // surface the offending step error and jump there
-      var target = !this.hasSource() ? 2 : ((!this.state.title.trim() || !this.state.displayName.trim()) ? 3 : (this.isKpiStepVisible() ? 4 : 3));
+      var target = !this.hasSource() ? 2 : (!this.state.title.trim() ? 3 : (this.isKpiStepVisible() ? 4 : 3));
       this.goToStep(target);
       this.validateStep(target);
       this.toast('يرجى إكمال الحقول المطلوبة قبل الحفظ.', 'error');
@@ -1165,7 +1321,6 @@
         if (!data) return;
         if (data.chartType && data.chartType !== self.state.cardType) self.selectType(data.chartType);
         if (data.title && !self.state.title) { self.state.title = data.title; if ($('wb-title')) $('wb-title').value = data.title; }
-        if (data.displayName && !self.state.displayName) { self.state.displayName = data.displayName; if ($('wb-display-name')) $('wb-display-name').value = data.displayName; }
         if (data.sqlQuery && !self.state.customSql) {
           self.state.customSql = data.sqlQuery;
           self.state.previewSql = data.sqlQuery;

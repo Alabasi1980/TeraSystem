@@ -1,7 +1,7 @@
 # PROJECT_STATE.md
 
 > **Purpose:** Compact project memory to reduce re-reading files.
-> **Last Updated:** 2026-07-18 (TASK-COD-026 KPI Aggregation Type accepted)
+> **Last Updated:** 2026-07-18 (TASK-COD-028 Wizard Source State fix accepted)
 
 ---
 
@@ -83,8 +83,10 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 | TASK-COD-025 | Dynamic Table Mappings | ✅ Accepted (build PASS) | engineering-agent |
 | TASK-COD-FIX-001 | Critical Bug Fixes | ✅ Accepted (11/11 AC) | engineering-agent |
 | TASK-COD-026 | KPI Aggregation Type | ✅ Accepted (build PASS) | engineering-agent |
+| TASK-COD-027 | Edit Card via Builder | ✅ Accepted (build PASS) | engineering-agent |
+| TASK-COD-028 | Store & Restore Wizard Source State | ✅ Accepted (build PASS) | engineering-agent-dotnet |
 
-**ALL 25 Implementation Tasks + 1 FIX + 1 Enhancement = COMPLETE ✅**
+**ALL Tasks + 3 Enhancements = COMPLETE ✅**
 
 **R1 Resolved:** Oracle 19c reachable at 10.10.1.1, ODP.NET works, SYSDATE query successful (2026-07-13)
 

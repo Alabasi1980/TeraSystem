@@ -25,8 +25,8 @@
 | **production-erp-expert.md** | Majed مباشرة، `tera.md`, `tera-client-engagement.md`, `application-blueprint.md`؛ وEngineering/QA فقط عبر Tera-approved task scope | `domain-research-agent.md` عند نقص المعرفة وبقرار المستدعي | `tera-system/knowledge-base/manufacturing/`, ملفات discovery/blueprint المحددة |
 | **tera-system-evolution.md** | — (مستقل — يستدعيه Majed) | `ui-designer.md`, `domain-research-agent.md`, `domain-expert-agent.md` (للأغراض النظامية) | `tera-system/*.md`, `.opencode/agents/*.md` |
 | **tera-strategic-advisor.md** | — (مستقل — يستدعيه Majed فقط) | لا يستدعي عملاء ولا يديرهم؛ قد يوصي Majed بالرجوع إلى TeraAgent أو حارس أو غيرهم | ملفات وسياقات القرار فقط، مصادر خارجية عند الحاجة |
-| **auditor.md** | `tera.md`؛ و`monitor.md` فقط عند طلب Majed | يراجع مخرجات `tera.md`, `engineering-agent.md`؛ يحيل findings إلى `SecurityAgent`, `DesignReviewer`, `QAAndAcceptanceAgent`, أو `ProjectControlAgent` عبر الوكيل المستدعي | `project-control/*.md`, `project-control/audit-reports/`, `tera-system/engineering-governance/*.md`, الملفات المعدلة |
-| **monitor.md** | — (مستقل — يستدعيه Majed) | يراجع مخرجات `tera.md`, `engineering-agent.md`; قد يستدعي `auditor.md` فقط عندما يطلب Majed تحدي/تحقق جودة مستقل | `project-control/*.md`, `tera-system/*.md` |
+| **auditor.md** | `tera.md`؛ و`monitor.md` فقط عند طلب Majed | يراجع مخرجات `tera.md`, `engineering-agent.md`, `engineering-agent-dotnet.md`؛ يحيل findings إلى `SecurityAgent`, `DesignReviewer`, `QAAndAcceptanceAgent`, أو `ProjectControlAgent` عبر الوكيل المستدعي | `project-control/*.md`, `project-control/audit-reports/`, `tera-system/engineering-governance/*.md`, الملفات المعدلة |
+| **monitor.md** | — (مستقل — يستدعيه Majed) | يراجع مخرجات `tera.md`, `engineering-agent.md`, `engineering-agent-dotnet.md`; قد يستدعي `auditor.md` فقط عندما يطلب Majed تحدي/تحقق جودة مستقل | `project-control/*.md`, `tera-system/*.md` |
 | **QAAndAcceptanceAgent** | `tera.md` (يُفعّله Tera) | لا يستدعي عملاء آخرين | ملفات التحضير، ملفات المهمة المنفذة، logs، مخرجات CLI |
 | **qa-agent.md** | `tera.md` (يُفعّله Tera) | لا يستدعي عملاء آخرين | ملفات التحضير، ملفات المهمة، logs، مخرجات CLI، `project-control/test-reports/` |
 
@@ -72,8 +72,9 @@ ui-designer.md
 | `tera-client-engagement.md` | 749 | 🟡 700–1000 — دراسة فصل منطقي لاحقاً؛ لا تقسيم الآن لأن التعديل محدود لاستدعاء ProductionERPExpert |
 | `tera-system/runtime/TERA_RUNTIME_CHECKLISTS.md` | 469 | 🟢 < 700 — لا حاجة |
 | `auditor.md` | 465 | 🟢 < 700 — لا حاجة |
-| `engineering-agent-dotnet.md` | 310 | 🟢 < 700 — لا حاجة |
-| `tera-system/engineering-helpers/engineering-agent-core.md` | 240 | 🟢 < 700 — لا حاجة |
+| `engineering-agent-dotnet.md` | 209 | 🟢 < 700 — لا حاجة |
+| `engineering-agent.md` | 56 | 🟢 < 700 — fallback compact; no duplicated core rules |
+| `tera-system/engineering-helpers/engineering-agent-core.md` | 127 | 🟢 < 700 — no language-specific content |
 | `tera-system-evolution.md` | 451 | 🟢 < 700 — لا حاجة |
 | `tera-strategic-advisor.md` | 323 | 🟢 < 700 — لا حاجة |
 | `monitor.md` | 276 | 🟢 < 700 — لا حاجة |

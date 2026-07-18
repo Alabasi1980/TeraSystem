@@ -1,5 +1,6 @@
 @page
 @model WarehouseDashboard.Web.Pages.admin_secure_panel.Cards.BuilderModel
+@using System.Text.Json
 @{
     Layout = "_CardsLayout";
     ViewData["Title"] = "منشئ البطاقات البصري";
@@ -171,16 +172,10 @@
                     <p class="wb-step-panel__hint">الحقول المطلوبة موضحة بنجمة. الباقي اختياري.</p>
 
                     <div class="wd-form__grid">
-                        <div class="wd-field">
-                            <label class="wd-field__label" for="wb-title">العنوان <span class="wb-required" aria-hidden="true">*</span></label>
+                        <div class="wd-field wd-field--full">
+                            <label class="wd-field__label" for="wb-title">اسم البطاقة <span class="wb-required" aria-hidden="true">*</span></label>
                             <input type="text" id="wb-title" class="wd-input" name="title" value="@Model.Title" required aria-required="true" maxlength="100" placeholder="مثال: إجمالي المخزون الشهري">
                             <span class="wd-error" data-for="title"></span>
-                        </div>
-
-                        <div class="wd-field">
-                            <label class="wd-field__label" for="wb-display-name">اسم العرض <span class="wb-required" aria-hidden="true">*</span></label>
-                            <input type="text" id="wb-display-name" class="wd-input" name="displayName" required aria-required="true" maxlength="100" placeholder="مثال: إجمالي المخزون">
-                            <span class="wd-error" data-for="displayName"></span>
                         </div>
 
                         <div class="wd-field wd-field--full">
@@ -410,35 +405,43 @@
                 </fieldset>
 
                 <!-- Hidden fields for form submission -->
+                <input type="hidden" name="editId" id="wb-h-editId" value="@Model.EditId" />
                 <input type="hidden" name="cardType" id="wb-h-cardType" value="@Model.CardType">
                 <input type="hidden" name="sourceType" id="wb-h-sourceType" value="@Model.SourceType">
                 <input type="hidden" name="sourceId" id="wb-h-sourceId" value="@Model.SourceId">
                 <input type="hidden" name="customSql" id="wb-h-customSql" value="@Model.CustomSql">
-                <input type="hidden" name="gridWidth" id="wb-h-gridWidth" value="4">
-                <input type="hidden" name="gridHeight" id="wb-h-gridHeight" value="2">
-                <input type="hidden" name="gridX" id="wb-h-gridX" value="">
-                <input type="hidden" name="gridY" id="wb-h-gridY" value="">
-                <input type="hidden" name="colorPalette" id="wb-h-colorPalette" value="primary">
-                <input type="hidden" name="refreshInterval" id="wb-h-refreshInterval" value="300">
+                <input type="hidden" name="gridWidth" id="wb-h-gridWidth" value="@Model.GridWidth">
+                <input type="hidden" name="gridHeight" id="wb-h-gridHeight" value="@Model.GridHeight">
+                <input type="hidden" name="gridX" id="wb-h-gridX" value="@Model.GridX">
+                <input type="hidden" name="gridY" id="wb-h-gridY" value="@Model.GridY">
+                <input type="hidden" name="colorPalette" id="wb-h-colorPalette" value="@Model.ColorPalette">
+                <input type="hidden" name="refreshInterval" id="wb-h-refreshInterval" value="@Model.RefreshInterval">
 
                 <!-- SQL Query to execute for card data -->
-                <input type="hidden" name="sqlQuery" id="wb-h-sqlQuery" value="">
+                <input type="hidden" name="sqlQuery" id="wb-h-sqlQuery" value="@Model.SqlQuery">
+
+                <!-- Card description (tooltip) -->
+                <input type="hidden" name="description" id="wb-h-description" value="@Model.Description">
 
                 <!-- KPI fields (TASK-KPI-006) -->
-                <input type="hidden" name="valueColumn" id="wb-h-valueColumn" value="">
-                <input type="hidden" name="dateColumn" id="wb-h-dateColumn" value="">
-                <input type="hidden" name="categoryColumn" id="wb-h-categoryColumn" value="">
-                <input type="hidden" name="showChange" id="wb-h-showChange" value="false">
-                <input type="hidden" name="changeSource" id="wb-h-changeSource" value="previousPeriod">
-                <input type="hidden" name="showSparkline" id="wb-h-showSparkline" value="false">
-                <input type="hidden" name="sparklineMonths" id="wb-h-sparklineMonths" value="6">
-                <input type="hidden" name="showGrandTotal" id="wb-h-showGrandTotal" value="false">
-                <input type="hidden" name="grandTotalSource" id="wb-h-grandTotalSource" value="sameTable">
-                <input type="hidden" name="dateFilterMode" id="wb-h-dateFilterMode" value="dashboard">
-                <input type="hidden" name="fixedStartDate" id="wb-h-fixedStartDate" value="">
-                <input type="hidden" name="fixedEndDate" id="wb-h-fixedEndDate" value="">
-                <input type="hidden" name="relativeDays" id="wb-h-relativeDays" value="30">
-                <input type="hidden" name="aggregationType" id="wb-h-aggregationType" value="Sum">
+                <input type="hidden" name="valueColumn" id="wb-h-valueColumn" value="@Model.ValueColumn">
+                <input type="hidden" name="dateColumn" id="wb-h-dateColumn" value="@Model.DateColumn">
+                <input type="hidden" name="categoryColumn" id="wb-h-categoryColumn" value="@Model.CategoryColumn">
+                <input type="hidden" name="showChange" id="wb-h-showChange" value="@Model.ShowChange.ToString().ToLower()">
+                <input type="hidden" name="changeSource" id="wb-h-changeSource" value="@Model.ChangeSource">
+                <input type="hidden" name="showSparkline" id="wb-h-showSparkline" value="@Model.ShowSparkline.ToString().ToLower()">
+                <input type="hidden" name="sparklineMonths" id="wb-h-sparklineMonths" value="@Model.SparklineMonths">
+                <input type="hidden" name="showGrandTotal" id="wb-h-showGrandTotal" value="@Model.ShowGrandTotal.ToString().ToLower()">
+                <input type="hidden" name="grandTotalSource" id="wb-h-grandTotalSource" value="@Model.GrandTotalSource">
+                <input type="hidden" name="dateFilterMode" id="wb-h-dateFilterMode" value="@Model.DateFilterMode">
+                <input type="hidden" name="fixedStartDate" id="wb-h-fixedStartDate" value="@Model.FixedStartDate">
+                <input type="hidden" name="fixedEndDate" id="wb-h-fixedEndDate" value="@Model.FixedEndDate">
+                <input type="hidden" name="relativeDays" id="wb-h-relativeDays" value="@Model.RelativeDays">
+                <input type="hidden" name="aggregationType" id="wb-h-aggregationType" value="@Model.AggregationType">
+
+                <!-- Builder Original Source Type (TASK-COD-028) -->
+                <input type="hidden" name="originalSourceType" id="wb-h-originalSourceType" value="@Model.OriginalSourceType">
+                <input type="hidden" name="originalSourceId" id="wb-h-originalSourceId" value="@Model.OriginalSourceId">
 
             </form>
         </div>
@@ -548,7 +551,7 @@
 
 @section Scripts {
     <script src="~/js/card-templates.js"></script>
-    <script src="~/js/card-builder.js?v=20260718-022A"></script>
+    <script src="~/js/card-builder.js?v=20260718-023A"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             window.wbBuilder = new CardBuilderWizard({
@@ -556,13 +559,38 @@
                 tablesApiUrl: '/api/tablemappings/active',
                 savedQueriesApiUrl: '/api/savedqueries',
                 cloneId: '@Model.Request.Query["clone"]',
+                editId: '@Model.EditId',
                 initialData: {
-                    cardType: '@Model.CardType',
-                    sourceType: '@Model.SourceType',
-                    sourceId: '@Model.SourceId',
-                    customSql: '@Model.CustomSql',
-                    title: '@Model.Title',
-                    displayName: '@Model.DisplayName'
+                    cardType: @Html.Raw(Json.Serialize(Model.CardType)),
+                    sourceType: @Html.Raw(Json.Serialize(Model.SourceType)),
+                    sourceId: @Html.Raw(Json.Serialize(Model.SourceId)),
+                    customSql: @Html.Raw(Json.Serialize(Model.CustomSql)),
+                    title: @Html.Raw(Json.Serialize(Model.Title)),
+                    aggregationType: @Html.Raw(Json.Serialize(Model.AggregationType)),
+                    gridWidth: @Html.Raw(Json.Serialize(Model.GridWidth)),
+                    gridHeight: @Html.Raw(Json.Serialize(Model.GridHeight)),
+                    gridX: @Html.Raw(Json.Serialize(Model.GridX)),
+                    gridY: @Html.Raw(Json.Serialize(Model.GridY)),
+                    colorPalette: @Html.Raw(Json.Serialize(Model.ColorPalette)),
+                    refreshInterval: @Html.Raw(Json.Serialize(Model.RefreshInterval)),
+                    sqlQuery: @Html.Raw(Json.Serialize(Model.SqlQuery)),
+                    description: @Html.Raw(Json.Serialize(Model.Description)),
+                    kpiMode: @Html.Raw(Json.Serialize(Model.KpiMode)),
+                    valueColumn: @Html.Raw(Json.Serialize(Model.ValueColumn)),
+                    dateColumn: @Html.Raw(Json.Serialize(Model.DateColumn)),
+                    categoryColumn: @Html.Raw(Json.Serialize(Model.CategoryColumn)),
+                    showChange: @Html.Raw(Json.Serialize(Model.ShowChange)),
+                    changeSource: @Html.Raw(Json.Serialize(Model.ChangeSource)),
+                    showSparkline: @Html.Raw(Json.Serialize(Model.ShowSparkline)),
+                    sparklineMonths: @Html.Raw(Json.Serialize(Model.SparklineMonths)),
+                    showGrandTotal: @Html.Raw(Json.Serialize(Model.ShowGrandTotal)),
+                    grandTotalSource: @Html.Raw(Json.Serialize(Model.GrandTotalSource)),
+                    dateFilterMode: @Html.Raw(Json.Serialize(Model.DateFilterMode)),
+                    fixedStartDate: @Html.Raw(Json.Serialize(Model.FixedStartDate)),
+                    fixedEndDate: @Html.Raw(Json.Serialize(Model.FixedEndDate)),
+                    relativeDays: @Html.Raw(Json.Serialize(Model.RelativeDays)),
+                    originalSourceType: @Html.Raw(Json.Serialize(Model.OriginalSourceType)),
+                    originalSourceId: @Html.Raw(Json.Serialize(Model.OriginalSourceId))
                 }
             });
 

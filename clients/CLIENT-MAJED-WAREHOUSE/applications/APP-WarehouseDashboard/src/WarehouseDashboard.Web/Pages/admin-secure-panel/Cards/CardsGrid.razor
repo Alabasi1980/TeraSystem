@@ -28,9 +28,9 @@
         <RadzenDataGridColumn Property="GridWidth" Title="العرض" Width="75" TextAlign="Radzen.TextAlign.Right" />
         <RadzenDataGridColumn Property="GridHeight" Title="الارتفاع" Width="75" TextAlign="Radzen.TextAlign.Right" />
         <RadzenDataGridColumn Property="RefreshInterval" Title="تحديث (ث)" Width="95" TextAlign="Radzen.TextAlign.Right" />
-        <RadzenDataGridColumn Title="إجراءات" Width="150" TextAlign="Radzen.TextAlign.Center">
+        <RadzenDataGridColumn Title="إجراءات" Width="120" TextAlign="Radzen.TextAlign.Center">
             <Template Context="item">
-                <a class="wd-link" href="/admin-secure-panel/Cards/Edit?id=@item.Id">تعديل</a>
+                <a class="wd-link" href="/admin-secure-panel/Cards/Builder?edit=@item.Id">تعديل</a>
                 <button type="button" class="wd-link wd-link--danger" onclick="wdConfirmDelete(@item.Id)">حذف</button>
             </Template>
         </RadzenDataGridColumn>

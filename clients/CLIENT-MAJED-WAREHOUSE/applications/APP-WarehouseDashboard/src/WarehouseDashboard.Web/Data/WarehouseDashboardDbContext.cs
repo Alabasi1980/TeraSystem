@@ -46,6 +46,10 @@ public class WarehouseDashboardDbContext : DbContext
                 .IsRequired()
                 .HasColumnType("nvarchar(200)");
 
+            entity.Property(e => e.Description)
+                .HasColumnType("nvarchar(500)")
+                .HasDefaultValue("");
+
             entity.Property(e => e.ChartType)
                 .IsRequired()
                 .HasColumnType("nvarchar(50)");

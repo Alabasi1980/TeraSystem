@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using WarehouseDashboard.Web.Data;
 using WarehouseDashboard.Web.Services;
 using WarehouseDashboard.Web.Models;
@@ -66,14 +68,18 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string Title { get; set; } = string.Empty;
 
         /// <summary>
-        /// Display name shown on card (required)
+        /// Display name shown on card (optional — maps to Title)
         /// </summary>
         [BindProperty]
         [JsonPropertyName("displayName")]
-        [Required(ErrorMessage = "اسم العرض مطلوب")]
-        [StringLength(80, ErrorMessage = "اسم العرض لا يتجاوز 80 حرف")]
-        [Display(Name = "اسم العرض")]
         public string DisplayName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Optional description shown as tooltip on the card
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
 
         /// <summary>
         /// Grid column span (1-12)
@@ -231,11 +237,35 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         [JsonPropertyName("aggregationType")]
         public string AggregationType { get; set; } = "Sum";
 
+        // === Builder Original Source Type (TASK-COD-028) ===
+
+        /// <summary>
+        /// Original SourceType from Step 2: "Template", "SavedQuery", "SqlTable", "CustomSQL".
+        /// Default: "SqlTable". Persisted so the Builder wizard can be reconstructed on edit.
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("originalSourceType")]
+        public string OriginalSourceType { get; set; } = "SqlTable";
+
+        /// <summary>
+        /// Source-specific identifier: table name for SqlTable, template ID for Template, query ID for SavedQuery.
+        /// Empty for CustomSQL. Default: "".
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("originalSourceId")]
+        public string OriginalSourceId { get; set; } = "";
+
         /// <summary>
         /// Clone mode: pre-filled from existing card ID
         /// </summary>
         [BindProperty(SupportsGet = true)]
         public string? CloneId { get; set; }
+
+        /// <summary>
+        /// Edit mode: load existing card ID into the wizard
+        /// </summary>
+        [BindProperty(SupportsGet = true)]
+        public string? EditId { get; set; }
 
         /// <summary>
         /// Template ID to pre-fill from (Step 2)
@@ -300,8 +330,10 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
 
         public async Task OnGetAsync()
         {
+            NormalizeGetAliases();
             await LoadOracleTablesAsync();
             await LoadCloneDataAsync();
+            await LoadEditDataAsync();
             await LoadTemplateDataAsync();
         }
 
@@ -332,9 +364,34 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 if (action == "save" || action == "saveAndAddAnother")
                 {
                     var dto = card;
+
+                    if (!string.IsNullOrWhiteSpace(EditId) && int.TryParse(EditId, out var editId))
+                    {
+                        var existing = await _db.DashboardCards.FindAsync(editId);
+                        if (existing is null)
+                        {
+                            ModelState.AddModelError(string.Empty, "البطاقة المطلوب تعديلها غير موجودة.");
+                            return Page();
+                        }
+
+                        var originalIsActive = existing.IsActive;
+                        MapDtoToEntity(dto, existing);
+                        existing.IsActive = originalIsActive;
+                        existing.UpdatedAt = DateTime.UtcNow;
+
+                        _logger.LogInformation("Card Builder SaveChangesAsync starting for edit {EditId}", editId);
+                        await _db.SaveChangesAsync();
+                        _logger.LogInformation("Card Builder SaveChangesAsync completed. Updated DashboardCard id: {DashboardCardId}", existing.Id);
+
+                        TempData["ToastMessage"] = "تم تحديث البطاقة بنجاح.";
+                        TempData["ToastType"] = "success";
+                        return RedirectToPage("/admin-secure-panel/Cards/Index");
+                    }
+
                     var entity = new DashboardCard
                     {
                         Title = dto.Title?.Trim() ?? "",
+                        Description = dto.Description ?? "",
                         ChartType = dto.CardType ?? "",
                         DataSourceType = dto.SourceType == "SqlTable" ? "View" : "SQL Query",
                         SqlQuery = dto.SqlQuery,
@@ -359,7 +416,11 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                         FixedStartDate = dto.FixedStartDate ?? "",
                         FixedEndDate = dto.FixedEndDate ?? "",
                         RelativeDays = dto.RelativeDays > 0 ? dto.RelativeDays : 30,
-                        AggregationType = dto.AggregationType ?? "Sum"
+                        AggregationType = dto.AggregationType ?? "Sum",
+                        OriginalSourceType = dto.OriginalSourceType,
+                        OriginalSourceId = dto.OriginalSourceId ?? "",
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
                     };
                     _db.DashboardCards.Add(entity);
                     _logger.LogInformation("Card Builder SaveChangesAsync starting for action {Action}", action);
@@ -412,6 +473,21 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         }
 
 
+
+        private void NormalizeGetAliases()
+        {
+            if (string.IsNullOrWhiteSpace(EditId)
+                && Request.Query.TryGetValue("edit", out var editValues))
+            {
+                EditId = editValues.ToString();
+            }
+
+            if (string.IsNullOrWhiteSpace(CloneId)
+                && Request.Query.TryGetValue("clone", out var cloneValues))
+            {
+                CloneId = cloneValues.ToString();
+            }
+        }
 
         private async Task LoadOracleTablesAsync()
         {
@@ -481,6 +557,146 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
             }
         }
 
+        private async Task LoadEditDataAsync()
+        {
+            if (string.IsNullOrWhiteSpace(EditId))
+                return;
+
+            if (!int.TryParse(EditId, out var editId))
+            {
+                _logger.LogWarning("Invalid edit id {EditId}", EditId);
+                return;
+            }
+
+            try
+            {
+                var card = await _db.DashboardCards
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Id == editId);
+
+                if (card is null)
+                {
+                    _logger.LogWarning("Card {EditId} not found for edit", editId);
+                    return;
+                }
+
+                CardType = card.ChartType;
+                Title = card.Title;
+                Description = card.Description;
+                DisplayName = card.Title;
+                GridWidth = card.GridWidth;
+                GridHeight = card.GridHeight;
+                GridX = card.GridPositionX;
+                GridY = card.GridPositionY;
+                ColorPalette = card.ColorPalette;
+                RefreshInterval = card.RefreshInterval;
+                SqlQuery = card.SqlQuery;
+                KpiMode = card.KpiMode;
+                ValueColumn = card.ValueColumn;
+                DateColumn = card.DateColumn;
+                CategoryColumn = card.CategoryColumn;
+                ShowChange = card.ShowChange;
+                ChangeSource = card.ChangeSource;
+                ShowSparkline = card.ShowSparkline;
+                SparklineMonths = card.SparklineMonths;
+                ShowGrandTotal = card.ShowGrandTotal;
+                GrandTotalSource = card.GrandTotalSource;
+                DateFilterMode = card.DateFilterMode;
+                FixedStartDate = card.FixedStartDate;
+                FixedEndDate = card.FixedEndDate;
+                RelativeDays = card.RelativeDays;
+                AggregationType = card.AggregationType;
+
+                // OriginalSourceType mapping: use card.OriginalSourceType to reconstruct Step 2 exactly.
+                OriginalSourceType = card.OriginalSourceType;
+                OriginalSourceId = card.OriginalSourceId;
+
+                if (!string.IsNullOrEmpty(card.OriginalSourceType))
+                {
+                    SourceType = card.OriginalSourceType;
+
+                    if (card.OriginalSourceType == "SqlTable")
+                    {
+                        SourceId = card.OriginalSourceId;
+                        CustomSql = string.Empty;
+                    }
+                    else if (card.OriginalSourceType == "CustomSQL")
+                    {
+                        SourceId = string.Empty;
+                        CustomSql = card.SqlQuery;
+                    }
+                    else // Template / SavedQuery
+                    {
+                        SourceId = card.OriginalSourceId;
+                        CustomSql = card.SqlQuery;
+                    }
+                }
+                else
+                {
+                    // Fallback for old cards (before migration): parse from DataSourceType
+                    if (string.Equals(card.DataSourceType, "View", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var match = Regex.Match(card.SqlQuery ?? "", @"FROM\s+\[([^\]]+)\]", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+                        if (match.Success)
+                        {
+                            SourceType = "SqlTable";
+                            SourceId = match.Groups[1].Value;
+                            CustomSql = string.Empty;
+                        }
+                        else
+                        {
+                            SourceType = "CustomSQL";
+                            SourceId = string.Empty;
+                            CustomSql = card.SqlQuery;
+                        }
+                    }
+                    else
+                    {
+                        SourceType = "CustomSQL";
+                        SourceId = string.Empty;
+                        CustomSql = card.SqlQuery;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Could not load edit data for {EditId}", EditId);
+            }
+        }
+
+        private static void MapDtoToEntity(DashboardCardDto dto, DashboardCard entity)
+        {
+            entity.Title = dto.Title?.Trim() ?? "";
+            entity.Description = dto.Description ?? "";
+            entity.ChartType = dto.CardType ?? "";
+            entity.DataSourceType = dto.SourceType == "SqlTable" ? "View" : "SQL Query";
+            entity.SqlQuery = dto.SqlQuery;
+            entity.GridPositionX = dto.GridX ?? 0;
+            entity.GridPositionY = dto.GridY ?? 0;
+            entity.GridWidth = dto.GridWidth > 0 ? dto.GridWidth : 4;
+            entity.GridHeight = dto.GridHeight > 0 ? dto.GridHeight : 2;
+            entity.RefreshInterval = dto.RefreshIntervalSeconds;
+            entity.ColorPalette = dto.ColorPalette ?? "primary";
+            entity.IsActive = dto.IsActive;
+            entity.ValueColumn = dto.ValueColumn ?? "";
+            entity.DateColumn = dto.DateColumn ?? "";
+            entity.CategoryColumn = dto.CategoryColumn ?? "";
+            entity.KpiMode = dto.KpiMode ?? "simple";
+            entity.ShowChange = dto.ShowChange;
+            entity.ChangeSource = dto.ChangeSource ?? "previousPeriod";
+            entity.ShowSparkline = dto.ShowSparkline;
+            entity.SparklineMonths = dto.SparklineMonths;
+            entity.ShowGrandTotal = dto.ShowGrandTotal;
+            entity.GrandTotalSource = dto.GrandTotalSource ?? "sameTable";
+            entity.DateFilterMode = dto.DateFilterMode ?? "dashboard";
+            entity.FixedStartDate = dto.FixedStartDate ?? "";
+            entity.FixedEndDate = dto.FixedEndDate ?? "";
+            entity.RelativeDays = dto.RelativeDays > 0 ? dto.RelativeDays : 30;
+            entity.AggregationType = dto.AggregationType ?? "Sum";
+            entity.OriginalSourceType = dto.OriginalSourceType ?? "SqlTable";
+            entity.OriginalSourceId = dto.OriginalSourceId ?? "";
+        }
+
         private async Task LoadTemplateDataAsync()
         {
             if (string.IsNullOrEmpty(TemplateId))
@@ -502,6 +718,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 SqlQuery = SqlQuery,
                 Title = Title,
                 DisplayName = DisplayName,
+                Description = Description ?? string.Empty,
                 GridWidth = GridWidth,
                 GridHeight = GridHeight,
                 GridX = GridX.HasValue && GridX.Value >= 0 ? GridX.Value : null,
@@ -524,6 +741,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 FixedEndDate = FixedEndDate ?? string.Empty,
                 RelativeDays = RelativeDays,
                 AggregationType = AggregationType ?? "Sum",
+                OriginalSourceType = OriginalSourceType ?? SourceType,  // fallback to current sourceType
+                OriginalSourceId = OriginalSourceId ?? SourceId ?? "",
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -593,6 +812,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 SqlQuery = request.SqlQuery,
                 Title = request.Title,
                 DisplayName = request.DisplayName,
+                Description = request.Description,
                 GridWidth = request.GridWidth,
                 GridHeight = request.GridHeight,
                 GridX = request.GridX,
@@ -614,7 +834,11 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 FixedStartDate = request.FixedStartDate,
                 FixedEndDate = request.FixedEndDate,
                 RelativeDays = request.RelativeDays,
-                AggregationType = request.AggregationType
+                AggregationType = request.AggregationType,
+
+                // Builder Original Source Type
+                OriginalSourceType = request.OriginalSourceType,
+                OriginalSourceId = request.OriginalSourceId
             };
         }
 
@@ -678,6 +902,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string SqlQuery { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public int GridWidth { get; set; }
         public int GridHeight { get; set; }
         public int? GridX { get; set; }
@@ -702,6 +927,10 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public int RelativeDays { get; set; } = 30;
         public string AggregationType { get; set; } = "Sum";
 
+        // === Builder Original Source Type (TASK-COD-028) ===
+        public string OriginalSourceType { get; set; } = "SqlTable";
+        public string OriginalSourceId { get; set; } = "";
+
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
@@ -716,6 +945,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string SqlQuery { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public int GridWidth { get; set; }
         public int GridHeight { get; set; }
         public int GridX { get; set; }
@@ -739,5 +969,9 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string FixedEndDate { get; set; } = string.Empty;
         public int RelativeDays { get; set; } = 30;
         public string AggregationType { get; set; } = "Sum";
+
+        // === Builder Original Source Type (TASK-COD-028) ===
+        public string OriginalSourceType { get; set; } = "SqlTable";
+        public string OriginalSourceId { get; set; } = "";
     }
 }

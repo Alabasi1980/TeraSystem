@@ -12,6 +12,9 @@ public class DashboardCard
     /// <summary>Display title of the card (max 200 chars).</summary>
     public string Title { get; set; } = string.Empty;
 
+    /// <summary>Optional description shown as tooltip on the card (max 500 chars).</summary>
+    public string Description { get; set; } = string.Empty;
+
     /// <summary>
     /// Chart type: one of <c>Bar, Line, Pie, KPI, Table, Gauge</c> (max 50 chars).
     /// Enforced by CHECK constraint <c>CK_DashboardCards_ChartType</c>.
@@ -112,6 +115,18 @@ public class DashboardCard
     /// Default: "Sum". Only applied when ChartType == "KPI".
     /// </summary>
     public string AggregationType { get; set; } = "Sum";
+
+    /// <summary>
+    /// Original SourceType from Step 2 of the Card Builder: "Template", "SavedQuery", "SqlTable", "CustomSQL".
+    /// Default: "SqlTable". This is the value of the source dropdown at card creation.
+    /// </summary>
+    public string OriginalSourceType { get; set; } = "SqlTable";
+
+    /// <summary>
+    /// Source-specific identifier: table name for SqlTable, template ID for Template, query ID for SavedQuery.
+    /// Empty for CustomSQL. Used to reconstruct the Step 2 selection when editing.
+    /// </summary>
+    public string OriginalSourceId { get; set; } = "";
 
     /// <summary>Drill-down levels belonging to this card.</summary>
     public ICollection<CardDrillDownLevel> DrillDownLevels { get; set; } = new List<CardDrillDownLevel>();
