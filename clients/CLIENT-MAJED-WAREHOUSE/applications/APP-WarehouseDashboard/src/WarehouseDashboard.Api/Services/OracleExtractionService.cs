@@ -1,6 +1,8 @@
 using System.Data;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using WarehouseDashboard.Api.Infrastructure;
 
 namespace WarehouseDashboard.Api.Services;
@@ -23,6 +25,7 @@ namespace WarehouseDashboard.Api.Services;
 public class OracleExtractionService
 {
     private readonly string _connectionString;
+    private readonly ILogger<OracleExtractionService> _logger;
 
     /// <summary>
     /// Initializes the service and resolves the Oracle connection string from
@@ -30,11 +33,13 @@ public class OracleExtractionService
     /// variable (via <see cref="ConnectionStringHelper.ResolveOracle"/>).
     /// The password is read at runtime only — never from source or config files.
     /// </summary>
-    public OracleExtractionService(IConfiguration configuration)
+    public OracleExtractionService(IConfiguration configuration, ILogger<OracleExtractionService> logger)
     {
         ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(logger);
 
         _connectionString = ConnectionStringHelper.ResolveOracle(configuration);
+        _logger = logger;
 
         if (string.IsNullOrWhiteSpace(_connectionString))
         {
@@ -55,7 +60,10 @@ public class OracleExtractionService
     /// <exception cref="InvalidOperationException">
     /// When the statement is not read-only, or when an Oracle failure occurs (wrapped with query context).
     /// </exception>
-    public async Task<DataTable> ExtractAsync(string oracleSql, CancellationToken cancellationToken = default)
+    public async Task<DataTable> ExtractAsync(
+        string oracleSql,
+        IReadOnlySet<string>? numericTextColumns = null,
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(oracleSql))
         {
@@ -82,11 +90,46 @@ public class OracleExtractionService
 
             using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
-            var table = new DataTable();
-            // DataTable.Load preserves column names exactly and infers .NET types from
-            // the reader's schema (ODP.NET GetFieldType), e.g. NUMBER(p,0) -> long/int,
-            // NUMBER(p,s) -> decimal, DATE/TIMESTAMP -> DateTime, CLOB -> string, BLOB -> byte[].
-            table.Load(reader);
+            // Load schema from reader (column names + ODP.NET inferred types)
+            // We use a two-phase approach to handle Oracle NUMBER values that overflow
+            // .NET decimal (38-digit NUMBER vs 29-digit decimal max). Phase 1 loads schema
+            // only; Phase 2 reads rows with per-cell overflow protection.
+            var schemaTable = reader.GetSchemaTable();
+            var table = BuildDataTableFromSchema(schemaTable, numericTextColumns);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                var row = table.NewRow();
+                for (var i = 0; i < reader.FieldCount; i++)
+                {
+                    if (reader.IsDBNull(i))
+                    {
+                        row[i] = DBNull.Value;
+                    }
+                    else
+                    {
+                        if (IsNumericTextColumn(reader.GetName(i), numericTextColumns))
+                        {
+                            row[i] = GetOracleValueAsExactString(reader, i);
+                            continue;
+                        }
+
+                        try
+                        {
+                            row[i] = reader.GetValue(i);
+                        }
+                        catch (Exception ex) when (ex is OverflowException || ex is InvalidCastException)
+                        {
+                            var colName = i < table.Columns.Count ? table.Columns[i].ColumnName : "?";
+                            _logger.LogWarning(
+                                "Oracle extraction overflow on non-NumericText column #{ColIdx} '{ColName}': {Error}. " +
+                                "Setting to NULL. Mark this mapping column as NumericText to preserve oversized NUMBER values.",
+                                i, colName, ex.Message);
+                            row[i] = DBNull.Value;
+                        }
+                    }
+                }
+                table.Rows.Add(row);
+            }
             return table;
         }
         catch (OracleException ex)
@@ -96,6 +139,51 @@ public class OracleExtractionService
                 $"Oracle extraction failed. ORA-{ex.Number}: {ex.Message}. " +
                 $"Query context: '{Truncate(oracleSql, 200)}'.", ex);
         }
+    }
+
+    /// <summary>
+    /// Builds a <see cref="DataTable"/> from a schema table returned by
+    /// <see cref="System.Data.Common.DbDataReader.GetSchemaTable()"/>.
+    /// Each row in the schema table describes one result-set column.
+    /// </summary>
+    private static DataTable BuildDataTableFromSchema(
+        DataTable? schemaTable,
+        IReadOnlySet<string>? numericTextColumns)
+    {
+        var table = new DataTable();
+        if (schemaTable is null) return table;
+
+        var colNameCol = schemaTable.Columns["ColumnName"];
+        var dataTypeCol = schemaTable.Columns["DataType"];
+        var allowDBNullCol = schemaTable.Columns["AllowDBNull"];
+
+        foreach (System.Data.DataRow schemaRow in schemaTable.Rows)
+        {
+            var name = colNameCol is not null ? schemaRow[colNameCol] as string ?? "Column" + table.Columns.Count : "Column" + table.Columns.Count;
+            var type = IsNumericTextColumn(name, numericTextColumns)
+                ? typeof(string)
+                : dataTypeCol is not null ? schemaRow[dataTypeCol] as Type ?? typeof(string) : typeof(string);
+            var allowNull = allowDBNullCol is not null && schemaRow[allowDBNullCol] is bool b && b;
+            table.Columns.Add(new DataColumn(name, type) { AllowDBNull = allowNull });
+        }
+
+        return table;
+    }
+
+    private static bool IsNumericTextColumn(string columnName, IReadOnlySet<string>? numericTextColumns)
+    {
+        return numericTextColumns is not null && numericTextColumns.Contains(columnName);
+    }
+
+    private static string GetOracleValueAsExactString(OracleDataReader reader, int ordinal)
+    {
+        var value = reader.GetOracleValue(ordinal);
+        return value switch
+        {
+            OracleDecimal oracleDecimal => oracleDecimal.ToString(),
+            INullable { IsNull: true } => string.Empty,
+            _ => Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty
+        };
     }
 
     /// <summary>

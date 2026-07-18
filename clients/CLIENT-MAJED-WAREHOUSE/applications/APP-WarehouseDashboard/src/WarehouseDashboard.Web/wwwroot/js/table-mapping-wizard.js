@@ -5,7 +5,7 @@
  *
  *  opts = {
  *    listObjectsApiUrl, previewApiUrl, validateQueryApiUrl,
- *    editMode, initialData: { editId, oracleSource, sourceType, sqlTargetTable, syncMode, incrementalColumn }
+ *    editMode, initialData: { editId, oracleSource, sourceType, sqlTargetTable, syncMode, incrementalColumn, columnMappings }
  *  }
  *
  *  5-step wizard:
@@ -128,6 +128,10 @@
     this.state.sqlTargetTable = data.sqlTargetTable || '';
     this.state.syncMode = data.syncMode || 'Full';
     this.state.incrementalColumn = data.incrementalColumn || '';
+    this.state.columnMappings = this.normalizePersistedColumnMappings(data.columnMappings || []);
+    if (this.state.columnMappings.length > 0) {
+      this.renderColumnMappingEditor();
+    }
 
     // Step 2: prefill source
     if (this.state.sourceType === 'Query') {
@@ -585,6 +589,14 @@
           var mappingTypes = (result.oracleColumnTypes && result.oracleColumnTypes.length > 0)
             ? result.oracleColumnTypes : result.columnTypes;
           self.generateColumnMappings(result.columns, mappingTypes);
+          console.info('[WM-DIAG preview]', {
+            source: source,
+            sourceType: sourceType,
+            columns: (result.columns || []).slice(0, 5),
+            columnTypes: (result.columnTypes || []).slice(0, 5),
+            oracleColumnTypes: (result.oracleColumnTypes || []).slice(0, 5),
+            mappingTypesSelected: (mappingTypes || []).slice(0, 5)
+          });
           self.renderColumnMappingEditor();
         }
       })
@@ -669,21 +681,13 @@
       '<th>العمود</th><th>نوع البيانات</th><th>النوع المقترح في SQL Server</th>' +
     '</tr></thead><tbody>';
 
-    // Oracle-to-SQL type mapping (mirrors the backend logic for display)
-    var typeMap = {
-      'String': 'NVARCHAR(MAX)',
-      'Decimal': 'DECIMAL(38,10)',
-      'Int32': 'INT',
-      'Int64': 'BIGINT',
-      'DateTime': 'DATETIME2',
-      'Double': 'FLOAT',
-      'Boolean': 'BIT',
-      'Byte[]': 'VARBINARY(MAX)'
-    };
+    var displayTypes = (result.oracleColumnTypes && result.oracleColumnTypes.length > 0)
+      ? result.oracleColumnTypes
+      : result.columnTypes;
 
     for (var i = 0; i < result.columns.length; i++) {
-      var oracleType = result.columnTypes[i] || 'UNKNOWN';
-      var sqlType = typeMap[oracleType] || 'NVARCHAR(MAX)';
+      var oracleType = (displayTypes && displayTypes[i]) || 'UNKNOWN';
+      var sqlType = this.formatSuggestedSqlType(oracleType);
       html += '<tr>' +
         '<td class="wm-col-name-cell">' + escapeHtml(result.columns[i]) + '</td>' +
         '<td><span class="wm-badge wm-badge--oracle">' + escapeHtml(oracleType) + '</span></td>' +
@@ -757,7 +761,10 @@
 
       if (target.classList.contains('wm-col-map-type')) {
         self.updateColumnMappingField(idx, 'sqlDataType', target.value);
+        self.autoNumericTextForRow(idx);
         self.showHideConditionalFields(row, target.value);
+      } else if (target.classList.contains('wm-col-map-numeric-text')) {
+        self.updateColumnMappingField(idx, 'isNumericText', target.checked);
       } else if (target.classList.contains('wm-col-map-nullable')) {
         self.updateColumnMappingField(idx, 'isNullable', target.checked);
       } else if (target.classList.contains('wm-col-map-excluded')) {
@@ -844,15 +851,38 @@
     return 'NVARCHAR(MAX)';
   };
 
+  TableMappingWizard.prototype.formatSuggestedSqlType = function (oracleType) {
+    var suggested = this.autoSuggestSqlType(oracleType);
+    var parsed = this.parseOracleType(oracleType);
+
+    if (['NVARCHAR','VARCHAR','NCHAR','CHAR','VARBINARY'].indexOf(suggested) >= 0) {
+      return parsed.maxLength ? suggested + '(' + parsed.maxLength + ')' : suggested + '(MAX)';
+    }
+
+    if ((suggested === 'DECIMAL' || suggested === 'NUMERIC') && parsed.precision !== null) {
+      return parsed.scale !== null
+        ? suggested + '(' + parsed.precision + ',' + parsed.scale + ')'
+        : suggested + '(' + parsed.precision + ')';
+    }
+
+    return suggested;
+  };
+
   TableMappingWizard.prototype.generateColumnMappings = function (columns, columnTypes) {
     if (!columns || !Array.isArray(columns)) return;
     var self = this;
     var mappings = [];
+    var persisted = this.state.isEditing ? this.state.columnMappings || [] : [];
+    var persistedByOracle = {};
+    for (var p = 0; p < persisted.length; p++) {
+      var key = self.normalizeColumnName(persisted[p].oracleColumnName);
+      if (key && !persistedByOracle[key]) persistedByOracle[key] = persisted[p];
+    }
     for (var i = 0; i < columns.length; i++) {
       var oracleType = (columnTypes && columnTypes[i]) || '';
       var parsed = self.parseOracleType(oracleType);
       var suggested = self.autoSuggestSqlType(oracleType);
-      var mapping = {
+      var generated = {
         oracleColumnName: columns[i],
         oracleDataType: oracleType,
         sqlColumnName: columns[i],
@@ -862,12 +892,79 @@
         sqlScale: (parsed.baseType === 'NUMBER') ? parsed.scale : null,
         isNullable: true,
         isExcluded: false,
+        isNumericText: self.shouldDefaultNumericText(suggested, parsed),
         defaultValue: null,
         sortOrder: i
       };
+      var existing = persistedByOracle[self.normalizeColumnName(columns[i])];
+      var mapping = existing ? self.mergeColumnMapping(existing, generated, i) : generated;
       mappings.push(mapping);
     }
     this.state.columnMappings = mappings;
+  };
+
+  TableMappingWizard.prototype.normalizeColumnName = function (value) {
+    return (value || '').toString().trim().toUpperCase();
+  };
+
+  TableMappingWizard.prototype.normalizePersistedColumnMappings = function (mappings) {
+    if (!Array.isArray(mappings)) return [];
+    var self = this;
+    return mappings.map(function (m, index) {
+      return self.mergeColumnMapping(m, {
+        oracleColumnName: m.oracleColumnName || '',
+        oracleDataType: m.oracleDataType || '',
+        sqlColumnName: m.sqlColumnName || m.oracleColumnName || '',
+        sqlDataType: m.sqlDataType || 'NVARCHAR(MAX)',
+        sqlMaxLength: m.sqlMaxLength == null ? null : m.sqlMaxLength,
+        sqlPrecision: m.sqlPrecision == null ? null : m.sqlPrecision,
+        sqlScale: m.sqlScale == null ? null : m.sqlScale,
+        isNullable: m.isNullable !== false,
+        isExcluded: m.isExcluded === true,
+        isNumericText: m.isNumericText === true,
+        defaultValue: m.defaultValue || null,
+        sortOrder: m.sortOrder == null ? index : m.sortOrder
+      }, m.sortOrder == null ? index : m.sortOrder);
+    });
+  };
+
+  TableMappingWizard.prototype.mergeColumnMapping = function (persisted, generated, sortOrder) {
+    return {
+      oracleColumnName: persisted.oracleColumnName || generated.oracleColumnName,
+      oracleDataType: generated.oracleDataType || persisted.oracleDataType || '',
+      sqlColumnName: isBlank(persisted.sqlColumnName) ? generated.sqlColumnName : persisted.sqlColumnName,
+      sqlDataType: isBlank(persisted.sqlDataType) ? generated.sqlDataType : persisted.sqlDataType,
+      sqlMaxLength: persisted.sqlMaxLength == null ? generated.sqlMaxLength : persisted.sqlMaxLength,
+      sqlPrecision: persisted.sqlPrecision == null ? generated.sqlPrecision : persisted.sqlPrecision,
+      sqlScale: persisted.sqlScale == null ? generated.sqlScale : persisted.sqlScale,
+      isNullable: persisted.isNullable !== undefined && persisted.isNullable !== null ? persisted.isNullable : generated.isNullable,
+      isExcluded: persisted.isExcluded === true,
+      isNumericText: persisted.isNumericText !== undefined && persisted.isNumericText !== null ? persisted.isNumericText === true : generated.isNumericText === true,
+      defaultValue: persisted.defaultValue || null,
+      sortOrder: sortOrder
+    };
+  };
+
+  TableMappingWizard.prototype.shouldDefaultNumericText = function (sqlDataType, parsedOracleType) {
+    return parsedOracleType && parsedOracleType.baseType === 'NUMBER' && this.isTextSqlType(sqlDataType);
+  };
+
+  TableMappingWizard.prototype.isTextSqlType = function (sqlDataType) {
+    var upper = (sqlDataType || '').toUpperCase();
+    return upper === 'NVARCHAR' || upper === 'VARCHAR' || upper === 'NVARCHAR(MAX)' || upper === 'VARCHAR(MAX)';
+  };
+
+  TableMappingWizard.prototype.autoNumericTextForRow = function (index) {
+    var mappings = this.state.columnMappings;
+    if (!mappings || index < 0 || index >= mappings.length) return;
+    var mapping = mappings[index];
+    var parsed = this.parseOracleType(mapping.oracleDataType);
+    if (parsed.baseType === 'NUMBER' && this.isTextSqlType(mapping.sqlDataType)) {
+      mapping.isNumericText = true;
+    } else if (!this.isTextSqlType(mapping.sqlDataType)) {
+      mapping.isNumericText = false;
+    }
+    this.renderColumnMappingEditor();
   };
 
   TableMappingWizard.prototype.getColumnMappingSummary = function () {
@@ -914,6 +1011,7 @@
         '<th>Length</th>' +
         '<th>Precision</th>' +
         '<th>Scale</th>' +
+        '<th>Numeric text</th>' +
         '<th>Nullable</th>' +
         '<th>Excluded</th>' +
         '<th>Default</th>' +
@@ -971,6 +1069,10 @@
     // Scale
     html += '<td><input type="number" class="wm-col-map-input wm-col-map-scale" value="' + (mapping.sqlScale != null ? mapping.sqlScale : '') + '" style="width:70px;' + scaleStyle + '" min="0" /></td>';
 
+    // Numeric text
+    var numericTextDisabled = this.isTextSqlType(mapping.sqlDataType) ? '' : ' disabled';
+    html += '<td style="text-align:center;"><input type="checkbox" class="wm-col-map-checkbox wm-col-map-numeric-text" ' + (mapping.isNumericText ? 'checked' : '') + numericTextDisabled + ' title="Preserve Oracle NUMBER as text, but treat as numeric in generated cards" /></td>';
+
     // Nullable
     html += '<td style="text-align:center;"><input type="checkbox" class="wm-col-map-checkbox wm-col-map-nullable" ' + (mapping.isNullable ? 'checked' : '') + ' /></td>';
 
@@ -1021,6 +1123,7 @@
     mappings[index].sqlScale = (parsed.baseType === 'NUMBER') ? parsed.scale : null;
     mappings[index].isNullable = true;
     mappings[index].isExcluded = false;
+    mappings[index].isNumericText = this.shouldDefaultNumericText(suggested, parsed);
     mappings[index].defaultValue = null;
 
     this.renderColumnMappingEditor();
@@ -1042,6 +1145,7 @@
       mappings[i].sqlScale = (parsed.baseType === 'NUMBER') ? parsed.scale : null;
       mappings[i].isNullable = true;
       mappings[i].isExcluded = false;
+      mappings[i].isNumericText = self.shouldDefaultNumericText(suggested, parsed);
       mappings[i].defaultValue = null;
     }
     this.renderColumnMappingEditor();
@@ -1284,6 +1388,11 @@
 
     // Sync column mappings to hidden field
     this.syncColumnMappingsHiddenField();
+    var columnMappingsField = $('wm-h-columnMappingsJson');
+    console.info('[WM-DIAG submit]', {
+      columnMappings: (this.state.columnMappings || []).slice(0, 5),
+      columnMappingsJsonPrefix: columnMappingsField ? (columnMappingsField.value || '').slice(0, 500) : ''
+    });
 
     // Set form action
     if (this.form) {

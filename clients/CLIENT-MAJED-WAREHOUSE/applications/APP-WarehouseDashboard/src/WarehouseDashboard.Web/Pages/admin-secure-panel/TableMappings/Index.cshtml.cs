@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +67,7 @@ public class TableMappingsModel : PageModel
     public async Task OnGetAsync()
     {
         Mappings = await _db.TableMappings
+            .Include(m => m.ColumnMappings)
             .OrderBy(m => m.Name)
             .ToListAsync();
     }
@@ -105,6 +107,7 @@ public class TableMappingsModel : PageModel
                 sqlScale = cm.SqlScale,
                 isNullable = cm.IsNullable,
                 isExcluded = cm.IsExcluded,
+                isNumericText = cm.IsNumericText,
                 defaultValue = cm.DefaultValue,
                 sortOrder = cm.SortOrder
             })
@@ -170,6 +173,7 @@ public class TableMappingsModel : PageModel
 
         // Save column mappings from wizard JSON
         await SaveColumnMappingsAsync(mapping.Id, ColumnMappingsJson);
+        await _db.SaveChangesAsync();
 
         _logger.LogInformation(
             "Table mapping added: '{Source}' -> '{Target}'.", OracleSource, SqlTargetTable);
@@ -197,14 +201,6 @@ public class TableMappingsModel : PageModel
             await ReloadMappingsAsync();
             return Page();
         }
-
-        // Remove existing column mappings — they will be replaced by wizard JSON
-        var existingMappings = await _db.ColumnMappings
-            .Where(cm => cm.TableMappingConfigId == EditId)
-            .ToListAsync();
-        _db.ColumnMappings.RemoveRange(existingMappings);
-        // Commit deletions first so the unique index does not conflict with new inserts
-        await _db.SaveChangesAsync();
 
         // Check uniqueness (excluding self)
         if (await _db.TableMappings.AnyAsync(m => m.Id != EditId && m.Name == Name))
@@ -236,6 +232,14 @@ public class TableMappingsModel : PageModel
         mapping.SourceType = SourceType;
         mapping.SqlTargetTable = SqlTargetTable;
         mapping.UpdatedAt = DateTime.UtcNow;
+
+        // Remove existing column mappings only after validation succeeds — they will be replaced by wizard JSON.
+        var existingMappings = await _db.ColumnMappings
+            .Where(cm => cm.TableMappingConfigId == EditId)
+            .ToListAsync();
+        _db.ColumnMappings.RemoveRange(existingMappings);
+        // Commit deletions first so the unique index does not conflict with new inserts.
+        await _db.SaveChangesAsync();
 
         // Save column mappings from wizard JSON (replaces old ones)
         await SaveColumnMappingsAsync(EditId, ColumnMappingsJson);
@@ -444,6 +448,7 @@ public class TableMappingsModel : PageModel
     private async Task ReloadMappingsAsync()
     {
         Mappings = await _db.TableMappings
+            .Include(m => m.ColumnMappings)
             .OrderBy(m => m.Name)
             .ToListAsync();
     }
@@ -454,10 +459,51 @@ public class TableMappingsModel : PageModel
     /// </summary>
     private async Task SaveColumnMappingsAsync(int mappingId, string? columnMappingsJson)
     {
-        if (string.IsNullOrWhiteSpace(columnMappingsJson))
-            return;
+        var rawJsonLength = columnMappingsJson?.Length ?? 0;
+        var rawJsonPrefix = columnMappingsJson is null
+            ? string.Empty
+            : columnMappingsJson[..Math.Min(columnMappingsJson.Length, 500)];
 
-        var dtos = JsonSerializer.Deserialize<List<ColumnMappingDto>>(columnMappingsJson);
+        if (string.IsNullOrWhiteSpace(columnMappingsJson))
+        {
+            _logger.LogInformation(
+                "[WM-DIAG SaveColumnMappings] mappingId={MappingId}, rawJsonLength={RawJsonLength}, rawJsonPrefix={RawJsonPrefix}, dtoCount={DtoCount}",
+                mappingId,
+                rawJsonLength,
+                rawJsonPrefix,
+                0);
+            return;
+        }
+
+        var dtos = JsonSerializer.Deserialize<List<ColumnMappingDto>>(
+            columnMappingsJson,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        _logger.LogInformation(
+            "[WM-DIAG SaveColumnMappings] mappingId={MappingId}, rawJsonLength={RawJsonLength}, rawJsonPrefix={RawJsonPrefix}, dtoCount={DtoCount}",
+            mappingId,
+            rawJsonLength,
+            rawJsonPrefix,
+            dtos?.Count ?? 0);
+
+        if (dtos is not null)
+        {
+            foreach (var dto in dtos.Take(5))
+            {
+                _logger.LogInformation(
+                    "[WM-DIAG SaveColumnMappings DTO] oracleColumnName={OracleColumnName}, oracleDataType={OracleDataType}, sqlColumnName={SqlColumnName}, sqlDataType={SqlDataType}, sqlMaxLength={SqlMaxLength}, sqlPrecision={SqlPrecision}, sqlScale={SqlScale}, isExcluded={IsExcluded}, isNumericText={IsNumericText}",
+                    dto.OracleColumnName,
+                    dto.OracleDataType,
+                    dto.SqlColumnName,
+                    dto.SqlDataType,
+                    dto.SqlMaxLength,
+                    dto.SqlPrecision,
+                    dto.SqlScale,
+                    dto.IsExcluded,
+                    dto.IsNumericText);
+            }
+        }
+
         if (dtos?.Count > 0)
         {
             foreach (var dto in dtos)
@@ -466,7 +512,7 @@ public class TableMappingsModel : PageModel
                 if (string.IsNullOrWhiteSpace(dto.OracleColumnName))
                     continue;
 
-                _db.ColumnMappings.Add(new ColumnMapping
+                var columnMapping = new ColumnMapping
                 {
                     TableMappingConfigId = mappingId,
                     OracleColumnName = dto.OracleColumnName ?? "",
@@ -477,9 +523,29 @@ public class TableMappingsModel : PageModel
                     SqlScale = dto.SqlScale,
                     IsNullable = dto.IsNullable,
                     IsExcluded = dto.IsExcluded,
+                    IsNumericText = dto.IsNumericText,
                     DefaultValue = dto.DefaultValue,
                     SortOrder = dto.SortOrder
-                });
+                };
+
+                _db.ColumnMappings.Add(columnMapping);
+            }
+
+            foreach (var columnMapping in _db.ChangeTracker.Entries<ColumnMapping>()
+                .Where(e => e.State == EntityState.Added && e.Entity.TableMappingConfigId == mappingId)
+                .Select(e => e.Entity)
+                .Take(5))
+            {
+                _logger.LogInformation(
+                    "[WM-DIAG SaveColumnMappings Entity] oracleColumnName={OracleColumnName}, sqlColumnName={SqlColumnName}, sqlDataType={SqlDataType}, sqlMaxLength={SqlMaxLength}, sqlPrecision={SqlPrecision}, sqlScale={SqlScale}, isExcluded={IsExcluded}, isNumericText={IsNumericText}",
+                    columnMapping.OracleColumnName,
+                    columnMapping.SqlColumnName,
+                    columnMapping.SqlDataType,
+                    columnMapping.SqlMaxLength,
+                    columnMapping.SqlPrecision,
+                    columnMapping.SqlScale,
+                    columnMapping.IsExcluded,
+                    columnMapping.IsNumericText);
             }
         }
     }
@@ -490,14 +556,39 @@ public class TableMappingsModel : PageModel
 /// </summary>
 public class ColumnMappingDto
 {
+    [JsonPropertyName("oracleColumnName")]
     public string OracleColumnName { get; set; } = "";
+
+    [JsonPropertyName("oracleDataType")]
+    public string? OracleDataType { get; set; }
+
+    [JsonPropertyName("sqlColumnName")]
     public string? SqlColumnName { get; set; }
+
+    [JsonPropertyName("sqlDataType")]
     public string? SqlDataType { get; set; }
+
+    [JsonPropertyName("sqlMaxLength")]
     public int? SqlMaxLength { get; set; }
+
+    [JsonPropertyName("sqlPrecision")]
     public int? SqlPrecision { get; set; }
+
+    [JsonPropertyName("sqlScale")]
     public int? SqlScale { get; set; }
+
+    [JsonPropertyName("isNullable")]
     public bool IsNullable { get; set; } = true;
+
+    [JsonPropertyName("isExcluded")]
     public bool IsExcluded { get; set; }
+
+    [JsonPropertyName("isNumericText")]
+    public bool IsNumericText { get; set; }
+
+    [JsonPropertyName("defaultValue")]
     public string? DefaultValue { get; set; }
+
+    [JsonPropertyName("sortOrder")]
     public int SortOrder { get; set; }
 }

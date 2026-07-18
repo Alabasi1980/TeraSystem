@@ -272,6 +272,7 @@ public class CardBuilderService
     public async Task<List<TableMappingConfig>> GetAvailableTablesAsync(CancellationToken ct = default)
     {
         return await _db.TableMappings
+            .Include(t => t.ColumnMappings)
             .Where(t => t.IsActive)
             .OrderBy(t => t.OracleSource)
             .ToListAsync(ct);

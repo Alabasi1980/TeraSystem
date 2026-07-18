@@ -1069,7 +1069,7 @@
     if (s.sourceType === 'Template' || s.sourceType === 'SavedQuery') {
       sqlQuery = s.previewSql || '';
     } else if (s.sourceType === 'SqlTable') {
-      sqlQuery = s.selectedTable ? 'SELECT * FROM [' + s.selectedTable.sqlTargetTable + ']' : '';
+      sqlQuery = this.buildSqlTableQueryForSave();
     } else if (s.sourceType === 'CustomSQL') {
       sqlQuery = s.customSql || '';
     }
@@ -1077,6 +1077,30 @@
 
     // Sync KPI hidden fields (TASK-KPI-006)
     this.syncKpiHiddenFields();
+  };
+
+  CardBuilderWizard.prototype.buildSqlTableQueryForSave = function () {
+    var table = this.state.selectedTable;
+    if (!table || !table.sqlTargetTable) return '';
+
+    if (this.state.cardType === 'KPI') {
+      var valueColumn = $('wb-kpi-value-column') ? $('wb-kpi-value-column').value : '';
+      if (valueColumn) {
+        return 'SELECT SUM(' + this.buildNumericExpression(table, valueColumn) + ') AS [' + valueColumn + '] FROM [' + table.sqlTargetTable + ']';
+      }
+    }
+
+    return 'SELECT * FROM [' + table.sqlTargetTable + ']';
+  };
+
+  CardBuilderWizard.prototype.buildNumericExpression = function (table, columnName) {
+    var safeColumn = '[' + String(columnName || '').replace(/[\[\];]/g, '').trim() + ']';
+    var numericTextColumns = table && Array.isArray(table.numericTextColumns) ? table.numericTextColumns : [];
+    var isNumericText = numericTextColumns.some(function (c) {
+      return String(c || '').toLowerCase() === String(columnName || '').toLowerCase();
+    });
+
+    return isNumericText ? 'TRY_CAST(' + safeColumn + ' AS DECIMAL(28,6))' : safeColumn;
   };
 
   CardBuilderWizard.prototype.syncKpiHiddenFields = function () {

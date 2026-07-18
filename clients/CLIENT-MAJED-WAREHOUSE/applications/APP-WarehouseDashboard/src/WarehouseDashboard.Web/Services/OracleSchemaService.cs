@@ -189,10 +189,10 @@ public class OracleSchemaService
                         : reader.GetInt32(reader.GetOrdinal("MAX_LENGTH")),
                     Precision = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION"))
                         ? null
-                        : (int)reader.GetByte(reader.GetOrdinal("NUMERIC_PRECISION")),
+                        : Convert.ToInt32(reader.GetValue(reader.GetOrdinal("NUMERIC_PRECISION"))),
                     Scale = reader.IsDBNull(reader.GetOrdinal("NUMERIC_SCALE"))
                         ? null
-                        : (int)reader.GetByte(reader.GetOrdinal("NUMERIC_SCALE")),
+                        : Convert.ToInt32(reader.GetValue(reader.GetOrdinal("NUMERIC_SCALE"))),
                     IsNullable = reader.GetString(reader.GetOrdinal("IS_NULLABLE")) == "YES"
                 });
             }
@@ -200,7 +200,7 @@ public class OracleSchemaService
         catch (SqlException ex) when (ex.Number == 208) // Invalid object name
         {
             // Table doesn't exist yet — return empty list
-            _logger.LogInformation("Target table '{Table}' does not exist yet.", targetTable);
+            _logger.LogInformation("Target table '{Table}' does not exist yet (Error 208).", targetTable);
         }
         catch (Exception ex)
         {
@@ -231,6 +231,19 @@ public class OracleSchemaService
             .GroupBy(o => o.OracleColumnName, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
 
+        // [WM-DIAG SCHEMA] Section A: Log entry state
+        var oracleFirst15 = string.Join(", ", oracleColumns.Take(15).Select(c => c.ColumnName));
+        var sqlFirst15 = string.Join(", ", sqlColumns.Take(15).Select(c => c.ColumnName));
+        _logger.LogInformation(
+            "[WM-DIAG SCHEMA] A) Oracle columns: {OracleCount} - [{OracleFirst15}]",
+            oracleColumns.Count, oracleFirst15);
+        _logger.LogInformation(
+            "[WM-DIAG SCHEMA] A) SQL columns: {SqlCount} - [{SqlFirst15}]",
+            sqlColumns.Count, sqlFirst15);
+        _logger.LogInformation(
+            "[WM-DIAG SCHEMA] A) Override count: {OverrideCount}",
+            overrideDict?.Count ?? 0);
+
         var result = new SchemaDiffResult();
 
         // If SQL target doesn't exist (empty), only non-excluded Oracle columns need to be added
@@ -238,76 +251,194 @@ public class OracleSchemaService
         {
             foreach (var col in oracleColumns)
             {
-                if (overrideDict is not null &&
-                    overrideDict.TryGetValue(col.ColumnName, out var ov) && ov.IsExcluded)
+                var columnOverride = overrideDict is not null &&
+                                     overrideDict.TryGetValue(col.ColumnName, out var ov)
+                    ? ov
+                    : null;
+
+                if (columnOverride?.IsExcluded == true)
                 {
                     continue; // Skip excluded columns
                 }
-                result.ColumnsToAdd.Add(col);
+
+                result.ColumnsToAdd.Add(CloneWithColumnName(
+                    col,
+                    GetEffectiveSqlColumnName(col, columnOverride)));
             }
             return result;
         }
 
-        var sqlColumnDict = sqlColumns.ToDictionary(c => c.ColumnName, StringComparer.OrdinalIgnoreCase);
+        var sqlColumnDict = sqlColumns
+            .GroupBy(c => NormalizeColumnName(c.ColumnName), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
 
+        var diagIndex = 0;
         foreach (var oracleCol in oracleColumns)
         {
+            diagIndex++;
+            var isDiag = diagIndex <= 20;
+
+            var columnOverride = overrideDict is not null &&
+                                 overrideDict.TryGetValue(oracleCol.ColumnName, out var ov)
+                ? ov
+                : null;
+
             // Skip columns excluded via override
-            if (overrideDict is not null &&
-                overrideDict.TryGetValue(oracleCol.ColumnName, out var ov) && ov.IsExcluded)
+            if (columnOverride?.IsExcluded == true)
             {
+                if (isDiag)
+                {
+                    _logger.LogInformation(
+                        "[WM-DIAG SCHEMA] B) Col #{Idx}: SKIP (excluded) OracleCol={OracleCol}",
+                        diagIndex, oracleCol.ColumnName);
+                }
                 continue;
             }
 
-            if (sqlColumnDict.TryGetValue(oracleCol.ColumnName, out var sqlCol))
+            var effectiveSqlName = GetEffectiveSqlColumnName(oracleCol, columnOverride);
+            var effectiveSqlKey = NormalizeColumnName(effectiveSqlName);
+
+            if (isDiag)
+            {
+                var overrideFound = columnOverride is not null;
+                _logger.LogInformation(
+                    "[WM-DIAG SCHEMA] B) Col #{Idx}: OracleCol={OracleCol}, OracleType={OracleType}, OverrideFound={OverrideFound}",
+                    diagIndex, oracleCol.ColumnName, oracleCol.DataType, overrideFound);
+                if (overrideFound)
+                {
+                    _logger.LogInformation(
+                        "[WM-DIAG SCHEMA] B) Override: SqlCol={SqlCol}, SqlType={SqlType}, SqlMaxLen={SqlMaxLen}",
+                        columnOverride!.SqlColumnName, columnOverride.SqlDataType, columnOverride.SqlMaxLength);
+                }
+                _logger.LogInformation(
+                    "[WM-DIAG SCHEMA] B) EffectiveSqlName={EffName}, EffectiveSqlKey={EffKey}",
+                    effectiveSqlName, effectiveSqlKey);
+            }
+
+            if (sqlColumnDict.TryGetValue(effectiveSqlKey, out var sqlCol))
             {
                 // Column exists — determine the effective SQL type using overrides if available
-                var effectiveType = overrideDict is not null &&
-                                    overrideDict.TryGetValue(oracleCol.ColumnName, out var ov2)
-                    ? FormatOverrideType(ov2)
+                var effectiveType = columnOverride is not null
+                    ? FormatOverrideType(columnOverride)
                     : MapOracleToSqlServer(oracleCol);
 
                 var currentSqlServerType = FormatSqlServerType(sqlCol);
 
+                if (isDiag)
+                {
+                    _logger.LogInformation(
+                        "[WM-DIAG SCHEMA] B) => FOUND in sqlColumnDict: sqlCol={SqlCol}, sqlType={SqlType}, effectiveType={EffType}",
+                        sqlCol.ColumnName, currentSqlServerType, effectiveType);
+                }
+
                 if (!string.Equals(effectiveType, currentSqlServerType, StringComparison.OrdinalIgnoreCase))
                 {
+                    if (isDiag)
+                    {
+                        _logger.LogInformation(
+                            "[WM-DIAG SCHEMA] B) => MODIFY: key={Key}, current={CurrType}, new={NewType}",
+                            effectiveSqlKey, currentSqlServerType, effectiveType);
+                    }
                     result.ColumnsToModify.Add(new ColumnDiff
                     {
-                        ColumnName = oracleCol.ColumnName,
+                        ColumnName = effectiveSqlName,
                         CurrentType = currentSqlServerType,
                         NewType = effectiveType
                     });
                 }
+                else
+                {
+                    if (isDiag)
+                    {
+                        _logger.LogInformation(
+                            "[WM-DIAG SCHEMA] B) => SKIP (exists): key={Key}, sqlCol={SqlCol}",
+                            effectiveSqlKey, sqlCol.ColumnName);
+                    }
+                }
             }
             else
             {
+                if (isDiag)
+                {
+                    _logger.LogInformation(
+                        "[WM-DIAG SCHEMA] B) => ADD: key={Key} (not found in sqlColumnDict)",
+                        effectiveSqlKey);
+                }
                 // Column exists in Oracle but not in SQL Server
-                result.ColumnsToAdd.Add(oracleCol);
+                result.ColumnsToAdd.Add(CloneWithColumnName(oracleCol, effectiveSqlName));
             }
         }
 
+        // [WM-DIAG SCHEMA] Section C: Log final diff lists
+        _logger.LogInformation(
+            "[WM-DIAG SCHEMA] C) ColumnsToAdd = [{AddList}]",
+            string.Join(", ", result.ColumnsToAdd.Select(c => c.ColumnName)));
+        _logger.LogInformation(
+            "[WM-DIAG SCHEMA] C) ColumnsToModify = [{ModList}]",
+            string.Join(", ", result.ColumnsToModify.Select(c => c.ColumnName)));
+        _logger.LogInformation(
+            "[WM-DIAG SCHEMA] C) ColumnsToRemove = [{RemList}]",
+            string.Join(", ", result.ColumnsToRemove));
+
         // Check for columns in SQL Server that are not in Oracle (candidates for removal)
         var oracleColumnNames = oracleColumns
-            .Select(c => c.ColumnName)
+            .Where(c => overrideDict is null ||
+                        !overrideDict.TryGetValue(c.ColumnName, out var ov) ||
+                        !ov.IsExcluded)
+            .Select(c =>
+            {
+                var ov = overrideDict is not null && overrideDict.TryGetValue(c.ColumnName, out var mapping)
+                    ? mapping
+                    : null;
+                return NormalizeColumnName(GetEffectiveSqlColumnName(c, ov));
+            })
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         foreach (var sqlCol in sqlColumns)
         {
-            if (!oracleColumnNames.Contains(sqlCol.ColumnName))
+            if (!oracleColumnNames.Contains(NormalizeColumnName(sqlCol.ColumnName)))
             {
                 // Skip if this column is excluded via override (matched by SqlColumnName)
                 if (overrideDict is not null &&
                     overrideDict.Values.Any(o =>
                         o.IsExcluded && string.Equals(o.SqlColumnName, sqlCol.ColumnName, StringComparison.OrdinalIgnoreCase)))
                 {
+                    _logger.LogInformation(
+                        "[WM-DIAG SCHEMA] D) SQL column '{SqlCol}' NOT in oracle columns but is excluded via override — NOT removing.",
+                        sqlCol.ColumnName);
                     continue;
                 }
 
+                _logger.LogInformation(
+                    "[WM-DIAG SCHEMA] D) SQL column '{SqlCol}' NOT in oracle columns — will be REMOVED.",
+                    sqlCol.ColumnName);
                 result.ColumnsToRemove.Add(sqlCol.ColumnName);
             }
         }
 
         return result;
+    }
+
+    private static string GetEffectiveSqlColumnName(ColumnInfo oracleColumn, ColumnMapping? mapping)
+    {
+        return string.IsNullOrWhiteSpace(mapping?.SqlColumnName)
+            ? oracleColumn.ColumnName.Trim()
+            : mapping.SqlColumnName.Trim();
+    }
+
+    private static string NormalizeColumnName(string value) => value.Trim().ToUpperInvariant();
+
+    private static ColumnInfo CloneWithColumnName(ColumnInfo column, string columnName)
+    {
+        return new ColumnInfo
+        {
+            ColumnName = columnName,
+            DataType = column.DataType,
+            MaxLength = column.MaxLength,
+            IsNullable = column.IsNullable,
+            Precision = column.Precision,
+            Scale = column.Scale
+        };
     }
 
     /// <summary>
@@ -401,6 +532,9 @@ public class OracleSchemaService
     /// </summary>
     public static string FormatOverrideType(ColumnMapping mapping)
     {
+        if (mapping.IsNumericText)
+            return FormatNumericTextType(mapping);
+
         var type = (mapping.SqlDataType ?? "NVARCHAR(MAX)").Trim();
         if (string.IsNullOrWhiteSpace(type))
             return "NVARCHAR(MAX)";
@@ -433,6 +567,17 @@ public class OracleSchemaService
 
         // Fully specified types (INT, BIGINT, BIT, DATETIME2, FLOAT, etc.)
         return type;
+    }
+
+    private static string FormatNumericTextType(ColumnMapping mapping)
+    {
+        var type = (mapping.SqlDataType ?? "NVARCHAR").Trim().ToUpperInvariant();
+        var storageType = type is "VARCHAR" or "VARCHAR(MAX)" ? "VARCHAR" : "NVARCHAR";
+
+        if (mapping.SqlMaxLength.HasValue && mapping.SqlMaxLength.Value > 0)
+            return $"{storageType}({mapping.SqlMaxLength})";
+
+        return $"{storageType}(MAX)";
     }
 
     /// <summary>

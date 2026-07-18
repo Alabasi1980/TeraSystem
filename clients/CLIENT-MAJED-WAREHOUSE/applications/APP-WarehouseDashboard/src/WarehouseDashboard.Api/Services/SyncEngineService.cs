@@ -142,7 +142,7 @@ public class SyncEngineService : BackgroundService
                             "Sync [{Target}] attempt {Attempt}/{Max}: extracting '{Source}' (mode={Mode}).",
                             target, attempt, MaxRetries, mapping.OracleSource, mapping.SyncMode);
 
-                        var data = await _oracle.ExtractAsync(oracleSql, ct);
+                        var data = await _oracle.ExtractAsync(oracleSql, mapping.NumericTextColumns, ct);
                         await _load.LoadTableAsync(target, data, ct);
 
                         _logger.LogInformation(
@@ -305,7 +305,7 @@ public class SyncEngineService : BackgroundService
                         "Selected sync [{Target}] (Id={Id}) attempt {Attempt}/{Max}: extracting '{Source}' (mode={Mode}).",
                         target, mapping.Id, attempt, MaxRetries, mapping.OracleSource, mapping.SyncMode);
 
-                    var data = await _oracle.ExtractAsync(oracleSql, ct);
+                    var data = await _oracle.ExtractAsync(oracleSql, mapping.NumericTextColumns, ct);
 
                     // Signal progress: rows extracted, about to load.
                     _progressStore.UpdateMapping(runId, mapping.Id, "running", data.Rows.Count);
@@ -630,6 +630,8 @@ public class SyncEngineService : BackgroundService
                 });
             }
 
+            await LoadNumericTextColumnsAsync(conn, mappings, ct);
+
             _logger.LogInformation("Loaded {Count} active mapping(s) from DB.", mappings.Count);
             return mappings;
         }
@@ -708,6 +710,8 @@ public class SyncEngineService : BackgroundService
                 });
             }
 
+            await LoadNumericTextColumnsAsync(conn, mappings, ct);
+
             _logger.LogInformation(
                 "Loaded {Count} mapping(s) from DB for requested IDs ({Requested} requested).",
                 mappings.Count, mappingIds.Count);
@@ -718,6 +722,48 @@ public class SyncEngineService : BackgroundService
         {
             _logger.LogWarning(ex, "Failed to load mappings by IDs from DB. Returning empty list.");
             return new List<TableMapping>();
+        }
+    }
+
+    private static async Task LoadNumericTextColumnsAsync(
+        SqlConnection conn,
+        List<TableMapping> mappings,
+        CancellationToken ct)
+    {
+        if (mappings.Count == 0)
+            return;
+
+        var mappingById = mappings.ToDictionary(m => m.Id);
+        var paramNames = new List<string>();
+        await using var cmd = conn.CreateCommand();
+
+        for (var i = 0; i < mappings.Count; i++)
+        {
+            var name = $"@id{i}";
+            paramNames.Add(name);
+            cmd.Parameters.Add(new SqlParameter(name, System.Data.SqlDbType.Int) { Value = mappings[i].Id });
+        }
+
+        cmd.CommandText = $"""
+            SELECT TableMappingConfigId, OracleColumnName, SqlColumnName
+            FROM ColumnMappings
+            WHERE IsNumericText = 1
+              AND IsExcluded = 0
+              AND TableMappingConfigId IN ({string.Join(", ", paramNames)})
+            """;
+
+        await using var reader = await cmd.ExecuteReaderAsync(ct);
+        while (await reader.ReadAsync(ct))
+        {
+            var mappingId = reader.GetInt32(reader.GetOrdinal("TableMappingConfigId"));
+            if (!mappingById.TryGetValue(mappingId, out var mapping))
+                continue;
+
+            if (!reader.IsDBNull(reader.GetOrdinal("OracleColumnName")))
+                mapping.NumericTextColumns.Add(reader.GetString(reader.GetOrdinal("OracleColumnName")));
+
+            if (!reader.IsDBNull(reader.GetOrdinal("SqlColumnName")))
+                mapping.NumericTextColumns.Add(reader.GetString(reader.GetOrdinal("SqlColumnName")));
         }
     }
 

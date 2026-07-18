@@ -23,18 +23,25 @@ public class ActiveModel : PageModel
     {
         var mappings = await _db.TableMappings
             .AsNoTracking()
+            .Include(t => t.ColumnMappings)
             .Where(t => t.IsActive)
             .OrderBy(t => t.Name)
-            .Select(t => new
+            .ToListAsync(cancellationToken);
+
+        var result = mappings.Select(t => new
             {
                 id = t.Id,
                 name = t.Name,
                 oracleSource = t.OracleSource,
                 sourceType = t.SourceType,
-                sqlTargetTable = t.SqlTargetTable
+                sqlTargetTable = t.SqlTargetTable,
+                numericTextColumns = (t.ColumnMappings ?? new List<ColumnMapping>())
+                    .Where(cm => cm.IsNumericText && !cm.IsExcluded)
+                    .Select(cm => cm.SqlColumnName)
+                    .ToList()
             })
-            .ToListAsync(cancellationToken);
+            .ToList();
 
-        return new JsonResult(mappings);
+        return new JsonResult(result);
     }
 }

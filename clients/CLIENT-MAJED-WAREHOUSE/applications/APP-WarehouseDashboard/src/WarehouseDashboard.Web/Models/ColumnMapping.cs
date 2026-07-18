@@ -38,6 +38,13 @@ public class ColumnMapping
     /// <summary>Whether this column is excluded from sync operations.</summary>
     public bool IsExcluded { get; set; }
 
+    /// <summary>
+    /// SQL storage is text, but the source value is semantically numeric.
+    /// Used to preserve oversized Oracle NUMBER values exactly during sync and
+    /// to let generated cards/reports cast the text with TRY_CAST when possible.
+    /// </summary>
+    public bool IsNumericText { get; set; }
+
     /// <summary>Default value expression for the column (e.g. "GETUTCDATE()").</summary>
     public string? DefaultValue { get; set; }
 

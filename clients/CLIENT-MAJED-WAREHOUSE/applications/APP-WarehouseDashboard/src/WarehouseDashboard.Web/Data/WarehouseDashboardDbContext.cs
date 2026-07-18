@@ -347,6 +347,9 @@ public class WarehouseDashboardDbContext : DbContext
             entity.Property(e => e.IsExcluded)
                 .HasDefaultValue(false);
 
+            entity.Property(e => e.IsNumericText)
+                .HasDefaultValue(false);
+
             entity.Property(e => e.DefaultValue)
                 .HasMaxLength(500)
                 .IsRequired(false);

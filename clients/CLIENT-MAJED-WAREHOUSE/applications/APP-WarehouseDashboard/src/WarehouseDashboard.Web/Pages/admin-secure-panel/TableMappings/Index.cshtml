@@ -641,7 +641,7 @@
                             <td>
                                 <div class="wd-actions">
                                     <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm"
-                                            onclick='openWizardForEdit(@m.Id, @JsonSerializer.Serialize(m.Name), @JsonSerializer.Serialize(m.OracleSource), @JsonSerializer.Serialize(m.SourceType), @JsonSerializer.Serialize(m.SqlTargetTable), @JsonSerializer.Serialize(m.SyncMode), @JsonSerializer.Serialize(m.IncrementalColumn ?? ""))'>
+                                            onclick='openWizardForEdit(@m.Id, @JsonSerializer.Serialize(m.Name), @JsonSerializer.Serialize(m.OracleSource), @JsonSerializer.Serialize(m.SourceType), @JsonSerializer.Serialize(m.SqlTargetTable), @JsonSerializer.Serialize(m.SyncMode), @JsonSerializer.Serialize(m.IncrementalColumn ?? ""), @JsonSerializer.Serialize((m.ColumnMappings ?? Array.Empty<WarehouseDashboard.Web.Models.ColumnMapping>()).OrderBy(cm => cm.SortOrder).Select(cm => new { oracleColumnName = cm.OracleColumnName, sqlColumnName = cm.SqlColumnName, sqlDataType = cm.SqlDataType, sqlMaxLength = cm.SqlMaxLength, sqlPrecision = cm.SqlPrecision, sqlScale = cm.SqlScale, isNullable = cm.IsNullable, isExcluded = cm.IsExcluded, isNumericText = cm.IsNumericText, defaultValue = cm.DefaultValue, sortOrder = cm.SortOrder })))'>
                                         تعديل
                                     </button>
                                     <form method="post" asp-page-handler="PreviewSchema" style="display:inline;">
@@ -1007,7 +1007,7 @@
     }
 }
 
-<script src="~/js/table-mapping-wizard.js"></script>
+<script src="~/js/table-mapping-wizard.js" asp-append-version="true"></script>
 <script>
     (function () {
         var wizard = new TableMappingWizard({
@@ -1124,7 +1124,7 @@
             wizard.open();
         };
 
-        window.openWizardForEdit = function (id, name, oracleSource, sourceType, sqlTarget, syncMode, incrementalColumn) {
+        window.openWizardForEdit = function (id, name, oracleSource, sourceType, sqlTarget, syncMode, incrementalColumn, columnMappings) {
             wizard.resetState();
             var nameInput = document.getElementById('wm-mapping-name');
             if (nameInput) nameInput.value = name || '';
@@ -1139,7 +1139,8 @@
                 sourceType: sourceType,
                 sqlTargetTable: sqlTarget,
                 syncMode: syncMode || 'Full',
-                incrementalColumn: incrementalColumn || ''
+                incrementalColumn: incrementalColumn || '',
+                columnMappings: Array.isArray(columnMappings) ? columnMappings : []
             });
         };
 

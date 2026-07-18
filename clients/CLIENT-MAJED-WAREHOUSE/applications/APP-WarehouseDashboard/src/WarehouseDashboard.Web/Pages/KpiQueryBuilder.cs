@@ -54,7 +54,7 @@ public static class KpiQueryBuilder
     private static string BuildChangeQuery(DashboardCard card)
     {
         var baseQuery = card.SqlQuery.Trim().TrimEnd(';');
-        var valueCol = SanitizeIdentifier(card.ValueColumn);
+        var valueCol = NumericExpression(card.ValueColumn);
         var dateCol = SanitizeIdentifier(card.DateColumn);
 
         // Determine the date range for the previous period
@@ -72,7 +72,7 @@ public static class KpiQueryBuilder
     private static string BuildSparklineQuery(DashboardCard card)
     {
         var baseQuery = card.SqlQuery.Trim().TrimEnd(';');
-        var valueCol = SanitizeIdentifier(card.ValueColumn);
+        var valueCol = NumericExpression(card.ValueColumn);
         var dateCol = SanitizeIdentifier(card.DateColumn);
         var months = card.SparklineMonths > 0 ? card.SparklineMonths : 6;
 
@@ -92,7 +92,7 @@ public static class KpiQueryBuilder
     private static string BuildGrandTotalQuery(DashboardCard card)
     {
         var baseQuery = card.SqlQuery.Trim().TrimEnd(';');
-        var valueCol = SanitizeIdentifier(card.ValueColumn);
+        var valueCol = NumericExpression(card.ValueColumn);
 
         // For grand total, we use the base query without any date filter
         return $"SELECT SUM({valueCol}) AS GrandTotal FROM ({baseQuery}) AS _base";
@@ -131,6 +131,11 @@ public static class KpiQueryBuilder
     {
         var cleaned = name.Replace("[", "").Replace("]", "").Replace(";", "").Trim();
         return $"[{cleaned}]";
+    }
+
+    private static string NumericExpression(string name)
+    {
+        return $"TRY_CAST({SanitizeIdentifier(name)} AS DECIMAL(28,6))";
     }
 }
 

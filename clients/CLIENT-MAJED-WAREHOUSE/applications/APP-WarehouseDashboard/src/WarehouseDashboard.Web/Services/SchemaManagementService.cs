@@ -49,6 +49,7 @@ public class SchemaManagementService
 
         var createSql = GenerateCreateTableSql(columns, targetTable, columnOverrides);
         _logger.LogInformation("Creating table '{Table}' with {Count} columns.", targetTable, columns.Count);
+        LogEffectiveOverrideTypes(targetTable, columns, columnOverrides);
 
         await ExecuteNonQueryAsync(createSql, ct);
     }
@@ -71,6 +72,7 @@ public class SchemaManagementService
         }
 
         var statements = GenerateAlterStatements(diff, targetTable, columnOverrides);
+        LogEffectiveAlterOverrideTypes(targetTable, diff, columnOverrides);
         if (statements.Count == 0)
         {
             _logger.LogInformation("No ALTER statements generated for '{Table}'.", targetTable);
@@ -124,6 +126,7 @@ public class SchemaManagementService
         var overrideDict = columnOverrides?
             .GroupBy(o => o.OracleColumnName, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+        var generatedAddColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         // ADD columns
         foreach (var col in diff.ColumnsToAdd)
@@ -132,8 +135,7 @@ public class SchemaManagementService
             string sqlType;
             bool isNullable;
 
-            if (overrideDict is not null &&
-                overrideDict.TryGetValue(col.ColumnName, out var ov))
+            if (TryFindOverride(col.ColumnName, overrideDict, out var ov))
             {
                 if (ov.IsExcluded) continue;
                 colName = !string.IsNullOrWhiteSpace(ov.SqlColumnName)
@@ -147,6 +149,15 @@ public class SchemaManagementService
                 colName = col.ColumnName;
                 sqlType = OracleSchemaService.MapOracleToSqlServer(col);
                 isNullable = col.IsNullable;
+            }
+
+            if (!generatedAddColumns.Add(colName.Trim()))
+            {
+                _logger.LogWarning(
+                    "Skipping duplicate ADD COLUMN statement for '{Column}' on '{Table}'.",
+                    colName,
+                    targetTable);
+                continue;
             }
 
             var nullable = isNullable ? "NULL" : "NOT NULL";
@@ -165,8 +176,7 @@ public class SchemaManagementService
         // ALTER (modify) columns
         foreach (var colDiff in diff.ColumnsToModify)
         {
-            if (overrideDict is not null &&
-                overrideDict.TryGetValue(colDiff.ColumnName, out var ov))
+            if (TryFindOverride(colDiff.ColumnName, overrideDict, out var ov))
             {
                 if (ov.IsExcluded) continue;
                 var newType = OracleSchemaService.FormatOverrideType(ov);
@@ -194,6 +204,89 @@ public class SchemaManagementService
         }
 
         return statements;
+    }
+
+    private static bool TryFindOverride(
+        string columnName,
+        Dictionary<string, ColumnMapping>? overrideDict,
+        out ColumnMapping mapping)
+    {
+        mapping = null!;
+        if (overrideDict is null)
+            return false;
+
+        if (overrideDict.TryGetValue(columnName, out mapping!))
+            return true;
+
+        var match = overrideDict.Values.FirstOrDefault(o =>
+            string.Equals(o.SqlColumnName?.Trim(), columnName.Trim(), StringComparison.OrdinalIgnoreCase));
+        if (match is null)
+            return false;
+
+        mapping = match;
+        return true;
+    }
+
+    private void LogEffectiveOverrideTypes(
+        string targetTable,
+        List<ColumnInfo> columns,
+        List<ColumnMapping>? columnOverrides)
+    {
+        if (columnOverrides is null || columnOverrides.Count == 0)
+            return;
+
+        var overrideDict = columnOverrides
+            .GroupBy(o => o.OracleColumnName, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var col in columns.Take(5))
+        {
+            if (!overrideDict.TryGetValue(col.ColumnName, out var ov))
+                continue;
+
+            _logger.LogInformation(
+                "[WM-DIAG DDL OverrideType] targetTable={TargetTable}, oracleColumnName={OracleColumnName}, sqlColumnName={SqlColumnName}, sqlDataType={SqlDataType}, sqlMaxLength={SqlMaxLength}, sqlPrecision={SqlPrecision}, sqlScale={SqlScale}, effectiveType={EffectiveType}, isExcluded={IsExcluded}",
+                targetTable,
+                ov.OracleColumnName,
+                ov.SqlColumnName,
+                ov.SqlDataType,
+                ov.SqlMaxLength,
+                ov.SqlPrecision,
+                ov.SqlScale,
+                OracleSchemaService.FormatOverrideType(ov),
+                ov.IsExcluded);
+        }
+    }
+
+    private void LogEffectiveAlterOverrideTypes(
+        string targetTable,
+        SchemaDiffResult diff,
+        List<ColumnMapping>? columnOverrides)
+    {
+        if (columnOverrides is null || columnOverrides.Count == 0)
+            return;
+
+        var overrideDict = columnOverrides
+            .GroupBy(o => o.OracleColumnName, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var columnName in diff.ColumnsToAdd.Select(c => c.ColumnName).Concat(diff.ColumnsToModify.Select(c => c.ColumnName)).Take(5))
+        {
+            if (!overrideDict.TryGetValue(columnName, out var ov))
+                continue;
+
+            _logger.LogInformation(
+                "[WM-DIAG DDL OverrideType] targetTable={TargetTable}, oracleColumnName={OracleColumnName}, sqlColumnName={SqlColumnName}, sqlDataType={SqlDataType}, sqlMaxLength={SqlMaxLength}, sqlPrecision={SqlPrecision}, sqlScale={SqlScale}, effectiveType={EffectiveType}, isExcluded={IsExcluded}",
+                targetTable,
+                ov.OracleColumnName,
+                ov.SqlColumnName,
+                ov.SqlDataType,
+                ov.SqlMaxLength,
+                ov.SqlPrecision,
+                ov.SqlScale,
+                OracleSchemaService.FormatOverrideType(ov),
+                ov.IsExcluded);
+        }
     }
 
     /// <summary>

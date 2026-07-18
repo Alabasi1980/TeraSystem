@@ -54,4 +54,10 @@ public class TableMapping
     /// boundary for incremental syncs.
     /// </summary>
     public DateTime? LastSyncAt { get; set; }
+
+    /// <summary>
+    /// Source/target column names that must be extracted as text even when Oracle reports NUMBER.
+    /// This preserves values that overflow ODP.NET/.NET decimal while SQL Server stores NVARCHAR.
+    /// </summary>
+    public HashSet<string> NumericTextColumns { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 }

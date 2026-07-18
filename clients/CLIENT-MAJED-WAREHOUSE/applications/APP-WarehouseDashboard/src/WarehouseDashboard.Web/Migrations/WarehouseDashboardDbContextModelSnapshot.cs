@@ -103,6 +103,11 @@ namespace WarehouseDashboard.Web.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsNumericText")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("IsNullable")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
