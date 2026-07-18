@@ -107,6 +107,12 @@ public class DashboardCard
     /// <summary>Number of days for relative date filter when DateFilterMode is "relative". Default: 30.</summary>
     public int RelativeDays { get; set; } = 30;
 
+    /// <summary>
+    /// Aggregation method for KPI ValueColumn: "Sum", "Count", "Avg", "Min", "Max", "None".
+    /// Default: "Sum". Only applied when ChartType == "KPI".
+    /// </summary>
+    public string AggregationType { get; set; } = "Sum";
+
     /// <summary>Drill-down levels belonging to this card.</summary>
     public ICollection<CardDrillDownLevel> DrillDownLevels { get; set; } = new List<CardDrillDownLevel>();
 }

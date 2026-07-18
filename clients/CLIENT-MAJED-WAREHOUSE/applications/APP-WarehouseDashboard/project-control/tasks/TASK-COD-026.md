@@ -1,127 +1,236 @@
-# TASK-COD-026 — Card Builder Visual UX (Wizard + Live Preview)
+# TASK-COD-026 — KPI Aggregation Type (Dynamic Calculation Mode)
 
-| البند | القيمة |
-|---|---|
-| **المعرف** | TASK-COD-026 |
-| **المجموعة** | B10 — UX Enhancement |
-| **المرحلة** | Phase 6 — Implementation (Enhancement) |
-| **الوكيل** | ui-designer + engineering-agent |
-| **التقدير** | 25–35h |
-| **التبعية** | TASK-COD-009 ✅, TASK-COD-010 ✅, TASK-COD-011 ✅ |
-| **الأولوية** | High |
-| **الحالة** | 🟢 Accepted (UI Complete) — HTML/CSS/Code-behind ✅ + JS (2 files) ✅ by re-delegated ui-designer |
+> **Status:** ✅ Accepted  
+> **Agent:** engineering-agent  
+> **Created:** 2026-07-18  
+> **Completed:** 2026-07-18  
+> **Phase:** 6 (Implementation)  
+> **Priority:** High  
+> **Build:** PASS (0 warnings, 0 errors)
 
 ---
 
-## 1. الهدف
+## 1. Objective
 
-استبدال صفحة إنشاء البطاقة الحالية (`Cards/Create`) بـ **منشئ بصري تفاعلي (Card Builder Wizard)** سهل الاستخدام للمستخدم العادي: خطوات قليلة، اختيارات بالنقر، معاينة حية، وقوالب جاهزة.
+Add an **AggregationType** field to KPI cards so the user can choose how the `ValueColumn` is calculated:
+- **Sum** (default) — `SUM(column)` — total of all rows
+- **Count** — `COUNT(column)` — number of rows
+- **Avg** — `AVG(column)` — average value
+- **Min** — `MIN(column)` — smallest value
+- **Max** — `MAX(column)` — largest value
+- **None** — raw value (current behavior, first row)
 
-## 2. المرجع التصميمي
+### Problem Solved
 
-`project-preparation/CARD_BUILDER_UX_PLAN.md` — الخطة المعتمدة.
+Currently, `DashboardService` reads `rows[0][ValueColumn]` — the first row only. For a KPI showing "Total Invoices" with 1000 rows, it displays one row's value (~2,100) instead of the sum (1,652,027).
 
-## 3. المتطلبات الوظيفية
+---
 
-### 3.1 Wizard من 4 خطوات
-| الخطوة | العنوان | التفاعل |
+## 2. Acceptance Criteria
+
+| # | Criterion | Test |
 |---|---|---|
-| 1 | **اختيار النوع** | 6 بطاقات قابلة للنقر (KPI, Bar, Line, Pie, Table, Gauge) مع أيقونة + اسم |
-| 2 | **اختيار المصدر** | قائمة منسدلة مع بحث: Template / Saved Query / Oracle Table / Custom SQL (متقدم) |
-| 3 | **الحقول الأساسية** | العنوان (نص)، اسم العرض (نص)، القياس/الحقل (من قائمة منسدلة حسب المصدر) |
-| 4 | **الشكل** | الحجم (Tiles 1–12)، الموضع (X/Y أو auto)، الألوان (من الباليت الأزرق)، التحديث (دقيقة/ساعة/إيقاف) |
+| AC-1 | `DashboardCard.AggregationType` property exists with default `"Sum"` | DB migration + model check |
+| AC-2 | Builder Step 3 shows Aggregation dropdown (only when KPI type selected) | UI check |
+| AC-3 | Builder saves `AggregationType` to DB correctly | Create card → verify DB |
+| AC-4 | `DashboardService.BuildSql()` wraps query with aggregation when `AggregationType != "None"` | API response check |
+| AC-5 | Each aggregation type produces correct SQL | Unit/integration test |
+| AC-6 | Edit page shows AggregationType dropdown | UI check |
+| AC-7 | Clone preserves AggregationType | Clone card → verify |
+| AC-8 | Non-KPI cards ignore AggregationType (no wrapping) | Bar/Line card still works |
+| AC-9 | Build succeeds with no errors | `dotnet build` PASS |
 
-### 3.2 معاينة حية (Live Preview)
-- لوحة جانبية أو سفلية تعرض البطاقة كما ستبدو فعليًا.
-- تتحدث فوريًا عند أي تغيير في الخطوات.
-- نفس محرك الرسم المستخدم في لوحة التحكم (`DashboardService` + Syncfusion).
+---
 
-### 3.3 قوالب جاهزة (Templates)
-- 4–6 قوالب شائعة مخزنة مسبقًا (مثلاً: KPI إجمالي المخزون، Bar اتجاه المبيعات، Pie توزيع الأصناف، Table حركة المخزون).
-- عند اختيار Template في الخطوة 2، تُملأ الخطوات 3–4 مسبقًا.
+## 3. Files to Modify
 
-### 3.4 نسخ بطاقة موجودة (Clone)
-- زر “نسخ” في قائمة البطاقات (`Cards/Index`) يفتح الـ Wizard مع إعدادات البطاقة المحددة.
+### 3.1 Model — Add Property
 
-### 3.5 خيارات متقدمة (Accordion)
-- مخفية افتراضيًا.
-- عند التوسيع: SQL يدوي، فلاتر، Drill-down config، تسميات مخصصة، استعلامات مخصصة.
+**File:** `src/WarehouseDashboard.Web/Models/DashboardCard.cs`
 
-### 3.6 أزرار التنقل
-- **التالي / السابق** — تنقل بين الخطوات.
-- **حفظ** — ينشئ البطاقة ويعود للقائمة.
-- **حفظ وإضافة أخرى** — ينشئ البطاقة ويفتح Wizard جديدًا.
-
-## 4. المكونات التقنية
-
-### 4.1 الواجهة (ui-designer)
-| الملف | الوصف |
-|---|---|
-| `Pages/admin-secure-panel/Cards/Builder.cshtml` | الصفحة الرئيسية للـ Wizard (Layout: `_CardsLayout`) |
-| `Pages/admin-secure-panel/Cards/Builder.cshtml.cs` | PageModel مع منطق الخطوات، التحقق، الحفظ |
-| `Pages/admin-secure-panel/Cards/BuilderSteps/*.cshtml` | Partials لكل خطوة (اختياري للتنظيم) |
-| `wwwroot/js/card-builder.js` | منطق الجانب العميل: معاينة حية، تنقل، تحقق |
-| `wwwroot/css/card-builder.css` | تنسيقات خاصة بالـ Wizard (تستخدم توكنات `blue-theme.css`) |
-
-### 4.2 الخدمة/المنطق (engineering-agent)
-| الملف | الوصف |
-|---|---|
-| `Services/CardBuilderService.cs` | خدمة بناء كائن `DashboardCard` من بيانات الـ Wizard |
-| `Pages/Api/Dashboard/CardBuilder.cshtml.cs` | Endpoint للمعاينة الحية (POST JSON → يعيد HTML/JSON للبطاقة) |
-| تعديل `DashboardService` | إضافة دالة `GetPreviewAsync(CardPreviewRequest)` |
-
-### 4.3 تحديثات قائمة البطاقات
-- `Cards/Index.cshtml` — إضافة زر “نسخ” لكل صف + تغيير “جديد” ليفتح Builder.
-- `Cards/Create.cshtml` — **إزالة** أو إعادة توجيه للـ Builder.
-
-## 5. Allowed Write Targets
-
-```
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/Builder.cshtml
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/Builder.cshtml.cs
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/BuilderSteps/
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/wwwroot/js/card-builder.js
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/wwwroot/css/card-builder.css
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/Services/CardBuilderService.cs
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/Pages/Api/Dashboard/CardBuilder.cshtml.cs
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/Pages/Shared/DashboardService.cs
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/Index.cshtml
-clients/CLIENT-MAJED-WAREHOUSE/applications/APP-WarehouseDashboard/src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/Create.cshtml
+Add after line 108 (`RelativeDays`):
+```csharp
+/// <summary>
+/// Aggregation method for KPI ValueColumn: "Sum", "Count", "Avg", "Min", "Max", "None".
+/// Default: "Sum". Only applied when ChartType == "KPI".
+/// </summary>
+public string AggregationType { get; set; } = "Sum";
 ```
 
-## 6. معايير القبول
+### 3.2 Input Model — Add Property + Validation
 
-| # | المعيار | Status |
+**File:** `src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/CardEditorInput.cs`
+
+Add after `RelativeDays` (line 76):
+```csharp
+public string AggregationType { get; set; } = "Sum";
+```
+
+Add to `AllowedChartTypes` validation — no change needed (it's independent of chart type).
+
+Add static list:
+```csharp
+public static readonly string[] AllowedAggregationTypes = { "Sum", "Count", "Avg", "Min", "Max", "None" };
+
+public static List<SelectOption> AggregationTypeOptions =>
+    AllowedAggregationTypes.Select(x => new SelectOption(x, x)).ToList();
+```
+
+### 3.3 Builder PageModel — Bind Property
+
+**File:** `src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/Builder.cshtml.cs`
+
+Add BindProperty after `RelativeDays`:
+```csharp
+[BindProperty]
+[JsonPropertyName("aggregationType")]
+public string AggregationType { get; set; } = "Sum";
+```
+
+Update `BuildDashboardCard()` — add `AggregationType = AggregationType`.
+
+Update `BuildCardFromRequest()` — add `AggregationType = request.AggregationType`.
+
+Update `PreviewRequest` class — add `public string AggregationType { get; set; } = "Sum";`.
+
+Update `DashboardCardDto` class — add `public string AggregationType { get; set; } = "Sum";`.
+
+Update `LoadCloneDataAsync()` — add `AggregationType = req.AggregationType ?? "Sum"`.
+
+### 3.4 Builder UI — Add Dropdown
+
+**File:** `src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/Builder.cshtml`
+
+In Step 3 (Basic Fields), after the `wb-preview-sql` textarea and before the `wb-description` field, add:
+
+```html
+<div class="wd-field" id="wb-aggregation-field" style="display:none;">
+    <label class="wd-field__label" for="wb-aggregation-type">طريقة الحساب</label>
+    <select id="wb-aggregation-type" class="wd-select" name="aggregationType" aria-describedby="wb-aggregation-hint">
+        <option value="Sum">Sum — المجموع</option>
+        <option value="Count">Count — العدد</option>
+        <option value="Avg">Avg — المتوسط</option>
+        <option value="Min">Min — الأدنى</option>
+        <option value="Max">Max — الأعلى</option>
+        <option value="None">None — القيمة الخام</option>
+    </select>
+    <span id="wb-aggregation-hint" class="wd-field__hint">كيف يُحسب الرقم من العامود المختار</span>
+</div>
+```
+
+Add hidden field for form submission (near other hidden fields):
+```html
+<input type="hidden" name="aggregationType" id="wb-h-aggregationType" value="Sum">
+```
+
+### 3.5 DashboardService — Apply Aggregation in SQL
+
+**File:** `src/WarehouseDashboard.Web/Pages/DashboardService.cs`
+
+Modify `BuildSql()` method:
+
+```csharp
+private static string BuildSql(DashboardCard card)
+{
+    var baseSql = card.DataSourceType.Equals("View", StringComparison.OrdinalIgnoreCase)
+        ? $"SELECT * FROM [{card.SqlQuery.Trim().TrimEnd(';').Trim()}]"
+        : card.SqlQuery;
+
+    // KPI aggregation: wrap base query
+    if (card.ChartType.Equals("KPI", StringComparison.OrdinalIgnoreCase)
+        && !string.IsNullOrEmpty(card.AggregationType)
+        && card.AggregationType != "None"
+        && !string.IsNullOrEmpty(card.ValueColumn))
+    {
+        var col = card.ValueColumn.Trim('[', ']').Trim();
+        var aggFunc = card.AggregationType.ToUpperInvariant(); // SUM, COUNT, AVG, MIN, MAX
+        return $"SELECT {aggFunc}([{col}]) AS [{col}] FROM ({baseSql.TrimEnd(';')}) AS _agg_src";
+    }
+
+    return baseSql;
+}
+```
+
+**Important:** The column alias in the outer SELECT must match `ValueColumn` so `rows[0].TryGetValue(valueCol, ...)` still works.
+
+### 3.6 Edit PageModel — Bind Property
+
+**File:** `src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/Edit.cshtml.cs`
+
+In `OnGetAsync` — add `AggregationType = card.AggregationType ?? "Sum"` to the Input mapping.
+
+In `OnPostAsync` — add `card.AggregationType = Input.AggregationType` to the update logic.
+
+### 3.7 Edit UI — Add Dropdown
+
+**File:** `src/WarehouseDashboard.Web/Pages/admin-secure-panel/Cards/Edit.cshtml`
+
+Add after the `IsActive` checkbox field:
+```html
+<div class="wd-field">
+    <label asp-for="Input.AggregationType">طريقة الحساب (KPI)</label>
+    <select asp-for="Input.AggregationType" class="wd-select" asp-items="@(new SelectList(Model.AggregationTypeOptions, "Value", "Text"))">
+        <option value="">اختر...</option>
+    </select>
+</div>
+```
+
+In `EditModel` — add:
+```csharp
+public List<SelectOption> AggregationTypeOptions => CardEditorInput.AggregationTypeOptions;
+```
+
+---
+
+## 4. Allowed Write Targets
+
+```
+D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Models\DashboardCard.cs
+D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Pages\admin-secure-panel\Cards\CardEditorInput.cs
+D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Pages\admin-secure-panel\Cards\Builder.cshtml.cs
+D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Pages\admin-secure-panel\Cards\Builder.cshtml
+D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Pages\DashboardService.cs
+D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Pages\admin-secure-panel\Cards\Edit.cshtml.cs
+D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Pages\admin-secure-panel\Cards\Edit.cshtml
+```
+
+---
+
+## 5. Allowed Tools
+
+- `read` — read existing files before editing
+- `edit` — modify existing files
+- `bash` — `dotnet build` to verify compilation
+- `glob` / `grep` — find files and search code
+
+---
+
+## 6. Expected SQL Behavior
+
+| AggregationType | Generated SQL | Result |
 |---|---|---|
-| AC-1 | Wizard من 4 خطوات يعمل بالكامل | ⬜ |
-| AC-2 | معاينة حية تتحدث عند كل تغيير | ⬜ |
-| AC-3 | 4+ قوالب جاهزة متاحة | ⬜ |
-| AC-3 | زر “نسخ” في القائمة يفتح Builder بإعدادات البطاقة | ⬜ |
-| AC-4 | خيارات متقدمة مخفية (Accordion) | ⬜ |
-| AC-5 | لا حقول SQL إجبارية للمستخدم العادي | ⬜ |
-| AC-6 | التصميم متماشٍ مع `_CardsLayout` + `blue-theme.css` | ⬜ |
-| AC-7 | RTL، عربي، خطوط Cairo | ⬜ |
-| AC-8 | `dotnet build -c Release` = 0 errors / 0 warnings | ⬜ |
-| AC-9 | لا secrets hardcoded | ⬜ |
+| Sum | `SELECT SUM([FINAL_SUM_INVOICE]) AS [FINAL_SUM_INVOICE] FROM (...)` | 1,652,027 |
+| Count | `SELECT COUNT([FINAL_SUM_INVOICE]) AS [FINAL_SUM_INVOICE] FROM (...)` | 1000 |
+| Avg | `SELECT AVG([FINAL_SUM_INVOICE]) AS [FINAL_SUM_INVOICE] FROM (...)` | 1,652.03 |
+| Min | `SELECT MIN([FINAL_SUM_INVOICE]) AS [FINAL_SUM_INVOICE] FROM (...)` | smallest |
+| Max | `SELECT MAX([FINAL_SUM_INVOICE]) AS [FINAL_SUM_INVOICE] FROM (...)` | largest |
+| None | `SELECT * FROM [stg_st_invoice]` (raw) | first row |
 
-## 7. ملاحظات تنفيذية
+---
 
-- **لا تغيير** على نموذج `DashboardCard` أو جداول DB.
-- المعاينة الحية تستدعي نفس المنطق المستخدم في لوحة التحكم لضمان التطابق 100%.
-- الـ Templates تخزن كبيانات ثابتة (JSON/Resource) أو في DB لاحقًا — حاليًا في كود الخدمة.
-- `CardBuilderService` تعيد كائن `DashboardCard` جاهز للحفظ عبر EF Core المعتاد.
+## 7. Risk
 
-## 8. التبعية
+**Low** — Additive change. No existing behavior altered when `AggregationType = "None"` or for non-KPI cards.
 
-- تعتمد على `DashboardService` الحالي + `DashboardCard` model + Syncfusion Grid/Charts.
-- `ui-designer` مسؤولة عن: UI، Wizard flow، Preview pane، CSS، JS.
-- `engineering-agent` مسؤولة عن: `CardBuilderService`، Preview API، دمج الخدمة، تحديث Index/Create.
+---
 
-## 9. التسلسل المقترح
+## 8. Delegation Instructions
 
-1. `ui-designer` — Builder UI (Layout, Steps, Preview pane, CSS, JS)
-2. `engineering-agent` — `CardBuilderService` + Preview API
-3. دمج: ربط UI بالخدمة، اختبار المعاينة الحية
-4. تحديث `Index` (إضافة Clone، تحويل New → Builder)
-5. إزالة/إعادة توجيه `Create.cshtml`
-6. بناء نهائي + تحقق القبول
+Before editing any existing file, read the current file from disk first. Preserve unrelated changes, including changes made by another Tera session or sub-agent. Do not overwrite, revert, or delete unrelated changes based on memory or an older snapshot.
+
+Execute `dotnet build` after all edits to verify compilation. Return the build output in your handback.
+
+---
+
+> **Assigned by:** TeraAgent — 2026-07-18  
+> **Task ID:** TASK-COD-026

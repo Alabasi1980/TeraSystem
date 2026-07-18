@@ -75,6 +75,14 @@ public class CardEditorInput : IValidatableObject
     public string FixedEndDate { get; set; } = string.Empty;
     public int RelativeDays { get; set; } = 30;
 
+    // Advanced KPI: Aggregation Type
+    public string AggregationType { get; set; } = "Sum";
+
+    public static readonly string[] AllowedAggregationTypes = { "Sum", "Count", "Avg", "Min", "Max", "None" };
+
+    public static List<SelectOption> AggregationTypeOptions =>
+        AllowedAggregationTypes.Select(x => new SelectOption(x, x)).ToList();
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (!AllowedChartTypes.Contains(ChartType))

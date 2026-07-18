@@ -70,6 +70,9 @@ public class CardBuilderRequest
     public string FixedStartDate { get; set; } = string.Empty;
     public string FixedEndDate { get; set; } = string.Empty;
     public int RelativeDays { get; set; } = 30;
+
+    /// <summary>Aggregation method for KPI ValueColumn: Sum, Count, Avg, Min, Max, None.</summary>
+    public string AggregationType { get; set; } = "Sum";
 }
 
 /// <summary>

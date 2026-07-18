@@ -315,14 +315,30 @@ public class DashboardService
     /// </summary>
     private static string BuildSql(DashboardCard card)
     {
+        string baseSql;
         if (card.DataSourceType.Equals("View", StringComparison.OrdinalIgnoreCase))
         {
             var viewName = card.SqlQuery.Trim().TrimEnd(';').Trim();
             var safe = viewName.StartsWith("[", StringComparison.Ordinal) ? viewName : $"[{viewName}]";
-            return $"SELECT * FROM {safe}";
+            baseSql = $"SELECT * FROM {safe}";
+        }
+        else
+        {
+            baseSql = card.SqlQuery;
         }
 
-        return card.SqlQuery;
+        // KPI aggregation: wrap base query when AggregationType is not "None"
+        if (card.ChartType.Equals("KPI", StringComparison.OrdinalIgnoreCase)
+            && !string.IsNullOrEmpty(card.AggregationType)
+            && card.AggregationType != "None"
+            && !string.IsNullOrEmpty(card.ValueColumn))
+        {
+            var col = card.ValueColumn.Trim('[', ']').Trim();
+            var aggFunc = card.AggregationType.ToUpperInvariant(); // SUM, COUNT, AVG, MIN, MAX
+            return $"SELECT {aggFunc}([{col}]) AS [{col}] FROM ({baseSql.TrimEnd(';')}) AS _agg_src";
+        }
+
+        return baseSql;
     }
 
     /// <summary>

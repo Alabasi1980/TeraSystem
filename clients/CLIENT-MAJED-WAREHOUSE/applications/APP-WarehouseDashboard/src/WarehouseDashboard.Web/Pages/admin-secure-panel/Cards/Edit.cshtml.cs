@@ -23,6 +23,7 @@ public class EditModel : PageModel
 
     public List<SelectOption> ChartTypeOptions => CardEditorInput.ChartTypeOptions;
     public List<SelectOption> DataSourceTypeOptions => CardEditorInput.DataSourceTypeOptions;
+    public List<SelectOption> AggregationTypeOptions => CardEditorInput.AggregationTypeOptions;
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
@@ -43,7 +44,8 @@ public class EditModel : PageModel
             GridWidth = card.GridWidth,
             GridHeight = card.GridHeight,
             RefreshInterval = card.RefreshInterval,
-            IsActive = card.IsActive
+            IsActive = card.IsActive,
+            AggregationType = card.AggregationType ?? "Sum"
         };
 
         return Page();
@@ -74,6 +76,7 @@ public class EditModel : PageModel
         card.GridHeight = Input.GridHeight;
         card.RefreshInterval = Input.RefreshInterval;
         card.IsActive = Input.IsActive;
+        card.AggregationType = Input.AggregationType ?? "Sum";
         // UpdatedAt is handled by the DB default (GETUTCDATE()) on update.
 
         await _db.SaveChangesAsync();

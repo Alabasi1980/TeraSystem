@@ -225,6 +225,13 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public int RelativeDays { get; set; } = 30;
 
         /// <summary>
+        /// Aggregation method for KPI ValueColumn: Sum, Count, Avg, Min, Max, None
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("aggregationType")]
+        public string AggregationType { get; set; } = "Sum";
+
+        /// <summary>
         /// Clone mode: pre-filled from existing card ID
         /// </summary>
         [BindProperty(SupportsGet = true)]
@@ -351,7 +358,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                         DateFilterMode = dto.DateFilterMode ?? "dashboard",
                         FixedStartDate = dto.FixedStartDate ?? "",
                         FixedEndDate = dto.FixedEndDate ?? "",
-                        RelativeDays = dto.RelativeDays > 0 ? dto.RelativeDays : 30
+                        RelativeDays = dto.RelativeDays > 0 ? dto.RelativeDays : 30,
+                        AggregationType = dto.AggregationType ?? "Sum"
                     };
                     _db.DashboardCards.Add(entity);
                     _logger.LogInformation("Card Builder SaveChangesAsync starting for action {Action}", action);
@@ -462,6 +470,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 GridY      = req.GridPositionY;
                 ColorPalette = "primary";
                 RefreshInterval = req.RefreshInterval;
+                AggregationType = req.AggregationType ?? "Sum";
 
                 // Mark as clone (new card, not update)
                 CloneId = string.Empty;
@@ -514,6 +523,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 FixedStartDate = FixedStartDate ?? string.Empty,
                 FixedEndDate = FixedEndDate ?? string.Empty,
                 RelativeDays = RelativeDays,
+                AggregationType = AggregationType ?? "Sum",
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -603,7 +613,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 DateFilterMode = request.DateFilterMode,
                 FixedStartDate = request.FixedStartDate,
                 FixedEndDate = request.FixedEndDate,
-                RelativeDays = request.RelativeDays
+                RelativeDays = request.RelativeDays,
+                AggregationType = request.AggregationType
             };
         }
 
@@ -689,6 +700,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string FixedStartDate { get; set; } = string.Empty;
         public string FixedEndDate { get; set; } = string.Empty;
         public int RelativeDays { get; set; } = 30;
+        public string AggregationType { get; set; } = "Sum";
 
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -726,5 +738,6 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string FixedStartDate { get; set; } = string.Empty;
         public string FixedEndDate { get; set; } = string.Empty;
         public int RelativeDays { get; set; } = 30;
+        public string AggregationType { get; set; } = "Sum";
     }
 }

@@ -191,6 +191,19 @@
                             <span class="wd-field__hint">الاستعلام الذي سينفذ لجلب البيانات — للقراءة فقط</span>
                         </div>
 
+                        <div class="wd-field" id="wb-aggregation-field" style="display:none;">
+                            <label class="wd-field__label" for="wb-aggregation-type">طريقة الحساب</label>
+                            <select id="wb-aggregation-type" class="wd-select" name="aggregationType" aria-describedby="wb-aggregation-hint">
+                                <option value="Sum">Sum — المجموع</option>
+                                <option value="Count">Count — العدد</option>
+                                <option value="Avg">Avg — المتوسط</option>
+                                <option value="Min">Min — الأدنى</option>
+                                <option value="Max">Max — الأعلى</option>
+                                <option value="None">None — القيمة الخام</option>
+                            </select>
+                            <span id="wb-aggregation-hint" class="wd-field__hint">كيف يُحسب الرقم من العامود المختار</span>
+                        </div>
+
                         <div class="wd-field wd-field--full">
                             <label class="wd-field__label" for="wb-description">الوصف (اختياري)</label>
                             <textarea id="wb-description" class="wd-textarea" name="description" rows="3" placeholder="وصف مختصر للبطاقة يظهر في التلميحات..."></textarea>
@@ -425,6 +438,7 @@
                 <input type="hidden" name="fixedStartDate" id="wb-h-fixedStartDate" value="">
                 <input type="hidden" name="fixedEndDate" id="wb-h-fixedEndDate" value="">
                 <input type="hidden" name="relativeDays" id="wb-h-relativeDays" value="30">
+                <input type="hidden" name="aggregationType" id="wb-h-aggregationType" value="Sum">
 
             </form>
         </div>
@@ -551,6 +565,35 @@
                     displayName: '@Model.DisplayName'
                 }
             });
+
+            // === Aggregation Type: show/hide based on card type ===
+            var aggField = document.getElementById('wb-aggregation-field');
+            var aggSelect = document.getElementById('wb-aggregation-type');
+            var aggHidden = document.getElementById('wb-h-aggregationType');
+            var typePicker = document.getElementById('wb-type-picker');
+
+            function updateAggVisibility() {
+                if (!typePicker || !aggField) return;
+                var selected = typePicker.querySelector('[aria-checked="true"]');
+                var isKpi = selected && selected.getAttribute('data-type') === 'KPI';
+                aggField.style.display = isKpi ? '' : 'none';
+            }
+
+            if (typePicker) {
+                typePicker.addEventListener('click', function(e) {
+                    var card = e.target.closest('[data-type]');
+                    if (card) setTimeout(updateAggVisibility, 50);
+                });
+            }
+
+            if (aggSelect && aggHidden) {
+                aggSelect.addEventListener('change', function() {
+                    aggHidden.value = this.value;
+                });
+            }
+
+            // Initial state
+            updateAggVisibility();
         });
     </script>
 }

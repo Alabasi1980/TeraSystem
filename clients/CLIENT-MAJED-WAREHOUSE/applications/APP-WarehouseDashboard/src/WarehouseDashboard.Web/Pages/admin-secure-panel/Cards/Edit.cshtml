@@ -81,6 +81,13 @@
                     <span>نشط (معروضة في اللوحة)</span>
                 </label>
             </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.AggregationType">طريقة الحساب (KPI)</label>
+                <select asp-for="Input.AggregationType" class="wd-select" asp-items="@(new SelectList(Model.AggregationTypeOptions, "Value", "Text"))">
+                    <option value="">اختر...</option>
+                </select>
+            </div>
         </div>
 
         <div class="wd-form__actions">

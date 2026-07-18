@@ -351,7 +351,8 @@ public class CardBuilderService
                 DateFilterMode = card.DateFilterMode,
                 FixedStartDate = card.FixedStartDate,
                 FixedEndDate = card.FixedEndDate,
-                RelativeDays = card.RelativeDays
+                RelativeDays = card.RelativeDays,
+                AggregationType = card.AggregationType ?? "Sum"
             };
     }
 
