@@ -328,14 +328,22 @@ public class DashboardService
         }
 
         // KPI aggregation: wrap base query when AggregationType is not "None"
+        // Skip if the query already contains an aggregate function (built by card-builder.js for SqlTable sources)
         if (card.ChartType.Equals("KPI", StringComparison.OrdinalIgnoreCase)
             && !string.IsNullOrEmpty(card.AggregationType)
             && card.AggregationType != "None"
             && !string.IsNullOrEmpty(card.ValueColumn))
         {
+            var upperSql = baseSql.ToUpperInvariant();
+            var alreadyAggregated = upperSql.Contains("SUM(") || upperSql.Contains("COUNT(")
+                                     || upperSql.Contains("AVG(") || upperSql.Contains("MIN(")
+                                     || upperSql.Contains("MAX(");
+            if (alreadyAggregated)
+                return baseSql;
+
             var col = card.ValueColumn.Trim('[', ']').Trim();
             var aggFunc = card.AggregationType.ToUpperInvariant(); // SUM, COUNT, AVG, MIN, MAX
-            return $"SELECT {aggFunc}([{col}]) AS [{col}] FROM ({baseSql.TrimEnd(';')}) AS _agg_src";
+            return $"SELECT {aggFunc}([{col}]) AS [{col}] FROM ({baseSql.TrimEnd(';')}) _agg_src";
         }
 
         return baseSql;
