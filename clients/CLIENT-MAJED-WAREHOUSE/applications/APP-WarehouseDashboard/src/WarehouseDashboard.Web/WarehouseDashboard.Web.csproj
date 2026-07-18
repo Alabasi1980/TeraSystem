@@ -13,8 +13,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.*">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <!-- Syncfusion UI components for Razor Pages (Dashboard + Admin) -->
-    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="27.*" />
+    <!-- Radzen Blazor UI components -->
+    <PackageReference Include="Radzen.Blazor" Version="5.*" />
     <!-- BCrypt password hashing for the Admin Panel (single shared password, Phase 1) -->
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.*" />
     <!-- Oracle source (schema introspection for dynamic table mappings) -->

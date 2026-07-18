@@ -130,14 +130,14 @@ public class CardPreviewRequest
 }
 
 /// <summary>
-/// Result returned by the Preview API containing chart configuration and sample data for Syncfusion.
+/// Result returned by the Preview API containing chart configuration and sample data.
 /// </summary>
 public class CardPreviewResult
 {
     /// <summary>Chart type as sent in the request.</summary>
     public string ChartType { get; set; } = string.Empty;
 
-    /// <summary>Syncfusion chart configuration object (series, axes, legend, etc.).</summary>
+    /// <summary>Chart configuration object (series, axes, legend, etc.).</summary>
     public object? ChartConfig { get; set; }
 
     /// <summary>Sample data rows (limited to PreviewRowLimit).</summary>
@@ -199,6 +199,6 @@ public class CardTemplate
 }
 
 /// <summary>
-/// Syncfusion dropdown option.
+/// Dropdown option.
 /// </summary>
 public record SelectOption(string Value, string Text);

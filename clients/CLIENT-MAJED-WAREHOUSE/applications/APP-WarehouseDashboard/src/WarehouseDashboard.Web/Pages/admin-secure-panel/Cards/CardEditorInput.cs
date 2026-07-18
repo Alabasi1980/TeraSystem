@@ -93,5 +93,5 @@ public class CardEditorInput : IValidatableObject
     }
 }
 
-/// <summary>Simple value/text pair for Syncfusion dropdown data sources.</summary>
+/// <summary>Simple value/text pair for dropdown data sources.</summary>
 public record SelectOption(string Value, string Text);

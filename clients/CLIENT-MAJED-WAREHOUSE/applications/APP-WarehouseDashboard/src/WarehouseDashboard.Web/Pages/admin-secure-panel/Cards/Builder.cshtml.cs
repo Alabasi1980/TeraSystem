@@ -545,7 +545,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
 
         private string RenderPreview(DashboardCardDto card)
         {
-            // In real implementation, this would render a partial view with Syncfusion component
+            // In real implementation, this would render a partial view with chart component
             // For now, return a placeholder that the JS will replace with actual component
             return $@"
                 <div class='wb-preview-card' data-card-type='{card.CardType}'>
@@ -554,7 +554,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                         <div class='wb-skeleton-chart'></div>
                     </div>
                     <div class='wb-preview-content' style='display:none;'>
-                        <!-- Syncfusion component rendered by card-builder.js -->
+                        <!-- Chart component rendered by card-builder.js -->
                     </div>
                 </div>";
         }

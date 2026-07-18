@@ -1,9 +1,6 @@
-@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
-
 @{
     // Public dashboard layout (Viewer is public — no admin auth).
     // Shares the Blue Identity design system via wwwroot/css/blue-theme.css
-    // and the exact Syncfusion CDN (27.2.3) used by the admin pages.
     Layout = null;
 }
 <!DOCTYPE html>
@@ -17,11 +14,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-    @* Syncfusion Bootstrap5 theme (CDN, version matched to the installed package 27.*) *@
-    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.2.3/bootstrap5.css" />
-
     @* Shared design system — single source of truth for the Blue Identity palette *@
     <link rel="stylesheet" href="~/css/blue-theme.css" />
+
+    @* Chart.js (MIT license, no build step) *@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 <body class="wd-app">
     <header class="wd-topbar">
@@ -63,21 +60,6 @@
     </main>
 
     <div id="wd-toast-host" class="wd-toast-host" aria-live="polite" aria-atomic="true"></div>
-
-    @* Syncfusion scripts (CDN, matched to package 27.*) *@
-    <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.min.js"></script>
-    @{
-        var syncfusionLicenseKey = Configuration["Syncfusion:LicenseKey"];
-    }
-    @if (!string.IsNullOrWhiteSpace(syncfusionLicenseKey))
-    {
-        <script>
-            if (window.ej && ej.base && typeof ej.base.registerLicense === 'function') {
-                ej.base.registerLicense('@syncfusionLicenseKey');
-            }
-        </script>
-    }
-    <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.aspnetcore.min.js"></script>
 
     @* Shared dashboard utilities (toNum, formatNum, escapeHtml, showToast, wdEmptyHtml, wdErrorHtml) *@
     <script src="~/js/dashboard-utils.js"></script>

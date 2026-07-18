@@ -1,5 +1,3 @@
-@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
-
 @{
     // Self-contained admin layout for the Cards CRUD area.
     // Kept inside the Cards folder so it does not touch the global _Layout.
@@ -17,11 +15,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-    @* Syncfusion Bootstrap5 theme (CDN, version matched to the installed package 27.*) *@
-    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.2.3/bootstrap5.css" />
-
     @* Shared design system — single source of truth for the Blue Identity palette *@
     <link rel="stylesheet" href="~/css/blue-theme.css" />
+
+    @* Chart.js (MIT license, no build step) *@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
     <style>
         /* All design tokens now come from blue-theme.css — no duplicate :root here.
@@ -125,6 +123,20 @@
         .wd-field label { font-size: 13px; font-weight: 600; color: var(--c-text); }
         .wd-field .wd-error { color: var(--c-error); font-size: 12px; }
 
+        /* ===== Standard form controls ===== */
+        .wd-input, .wd-select, .wd-textarea {
+            width: 100%; font-family: var(--font-ar);
+            font-size: 14px; color: var(--c-text);
+            border: 1px solid var(--c-border); border-radius: var(--radius-md);
+            padding: 10px 12px; background: var(--c-surface);
+            transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+        }
+        .wd-textarea { min-height: 100px; resize: vertical; }
+        .wd-input:focus, .wd-select:focus, .wd-textarea:focus {
+            outline: none; border-color: var(--c-primary);
+            box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+        }
+
         .wd-form__actions {
             display: flex; align-items: center; gap: var(--sp-3);
             margin-top: var(--sp-6);
@@ -132,11 +144,11 @@
             border-top: 1px solid var(--c-border);
         }
 
-        /* ===== Syncfusion grid tuning §2.3 ===== */
-        .wd-sync-grid { border-radius: var(--radius-md); overflow: hidden; }
-        .wd-sync-grid .e-headercell { background: var(--c-surface-muted); color: var(--c-text); font-weight: 600; }
-        .wd-sync-grid .e-rowcell { color: var(--c-text); }
-        .wd-sync-grid .e-altrow { background: #F7FAFD; }
+        /* ===== Radzen grid tuning §2.3 ===== */
+        .wd-radzen-grid { border-radius: var(--radius-md); overflow: hidden; }
+        .wd-radzen-grid .rz-datatable-thead th { background: var(--c-surface-muted); color: var(--c-text); font-weight: 600; }
+        .wd-radzen-grid .rz-datatable-data td { color: var(--c-text); }
+        .wd-radzen-grid .rz-datatable-even { background: #F7FAFD; }
 
         /* ===== Grid wrapper + skeleton ===== */
         .wd-grid-wrap { display: none; }
@@ -283,21 +295,6 @@
     <div id="wd-toast-host" class="wd-toast-host" aria-live="polite" aria-atomic="true">
         @await RenderSectionAsync("Toast", required: false)
     </div>
-
-    @* Syncfusion scripts (CDN, matched to package 27.*) *@
-    <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.min.js"></script>
-    @{
-        var syncfusionLicenseKey = Configuration["Syncfusion:LicenseKey"];
-    }
-    @if (!string.IsNullOrWhiteSpace(syncfusionLicenseKey))
-    {
-        <script>
-            if (window.ej && ej.base && typeof ej.base.registerLicense === 'function') {
-                ej.base.registerLicense('@syncfusionLicenseKey');
-            }
-        </script>
-    }
-    <script src="https://cdn.syncfusion.com/ej2/27.2.3/dist/ej2.aspnetcore.min.js"></script>
 
     @* ===== Keyboard Shortcuts HUD ===== *@
     <div id="wd-shortcuts-hud" class="wd-hud" role="dialog" aria-label="اختصارات لوحة المفاتيح" hidden>

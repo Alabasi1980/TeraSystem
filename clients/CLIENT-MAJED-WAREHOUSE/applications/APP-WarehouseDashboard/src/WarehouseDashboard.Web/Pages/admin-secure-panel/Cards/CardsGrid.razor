@@ -1,0 +1,49 @@
+@namespace WarehouseDashboard.Web.Pages.AdminSecurePanel.Cards
+@*
+    Blazor component: RadzenDataGrid for the Cards management page.
+    Embeddable from Razor Pages via <component> tag helper.
+    Receives card data as JSON (Razor Pages can't pass complex params directly).
+*@
+
+<RadzenDataGrid Data="@_cards" AllowPaging="true" AllowSorting="true" class="wd-radzen-grid"
+                AllowColumnResize="true" PageSize="12">
+    <Columns>
+        <RadzenDataGridColumn Property="Title" Title="العنوان" Width="170" />
+        <RadzenDataGridColumn Property="ChartType" Title="النوع" Width="90" TextAlign="Radzen.TextAlign.Left" />
+        <RadzenDataGridColumn Property="DataSourceType" Title="المصدر" Width="100" />
+        <RadzenDataGridColumn Property="IsActive" Title="نشط" Width="80">
+            <Template Context="item">
+                @if (item.IsActive)
+                {
+                    <span class="wd-badge wd-badge--on">نعم</span>
+                }
+                else
+                {
+                    <span class="wd-badge wd-badge--off">لا</span>
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Property="GridPositionX" Title="X" Width="60" TextAlign="Radzen.TextAlign.Right" />
+        <RadzenDataGridColumn Property="GridPositionY" Title="Y" Width="60" TextAlign="Radzen.TextAlign.Right" />
+        <RadzenDataGridColumn Property="GridWidth" Title="العرض" Width="75" TextAlign="Radzen.TextAlign.Right" />
+        <RadzenDataGridColumn Property="GridHeight" Title="الارتفاع" Width="75" TextAlign="Radzen.TextAlign.Right" />
+        <RadzenDataGridColumn Property="RefreshInterval" Title="تحديث (ث)" Width="95" TextAlign="Radzen.TextAlign.Right" />
+        <RadzenDataGridColumn Title="إجراءات" Width="150" TextAlign="Radzen.TextAlign.Center">
+            <Template Context="item">
+                <a class="wd-link" href="/admin-secure-panel/Cards/Edit?id=@item.Id">تعديل</a>
+                <button type="button" class="wd-link wd-link--danger" onclick="wdConfirmDelete(@item.Id)">حذف</button>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    [Parameter] public string CardsJson { get; set; } = "[]";
+
+    private List<CardRow> _cards = new();
+
+    protected override void OnInitialized()
+    {
+        _cards = System.Text.Json.JsonSerializer.Deserialize<List<CardRow>>(CardsJson) ?? new();
+    }
+}

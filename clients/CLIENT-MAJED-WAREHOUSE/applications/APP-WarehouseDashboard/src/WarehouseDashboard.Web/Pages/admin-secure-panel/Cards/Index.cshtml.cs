@@ -7,7 +7,7 @@ using WarehouseDashboard.Web.Models;
 namespace WarehouseDashboard.Web.Pages.AdminSecurePanel.Cards;
 
 /// <summary>
-/// Lists all <see cref="DashboardCard"/> configurations in a Syncfusion Grid and
+/// Lists all <see cref="DashboardCard"/> configurations in a data grid and
 /// exposes POST handlers for Delete and Clone actions.
 /// Reachable only when authenticated (AdminAuthMiddleware).
 /// </summary>

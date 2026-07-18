@@ -3,22 +3,9 @@ using WarehouseDashboard.Web.Infrastructure;
 using WarehouseDashboard.Web.Pages;
 using WarehouseDashboard.Web.Services;
 using Microsoft.EntityFrameworkCore;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// ---------------------------------------------------------------------------
-// Syncfusion license is read from appsettings.json (Syncfusion:LicenseKey).
-// ---------------------------------------------------------------------------
-var syncLicense = builder.Configuration["Syncfusion:LicenseKey"];
-if (!string.IsNullOrWhiteSpace(syncLicense))
-{
-    Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(syncLicense);
-}
-else
-{
-    Console.WriteLine("[WARN] Syncfusion:LicenseKey not found in appsettings.json. " +
-                      "Syncfusion components will display a license warning.");
-}
 
 // ---------------------------------------------------------------------------
 // EF Core DbContext (placeholder).
@@ -46,6 +33,10 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+// Radzen Blazor components
+builder.Services.AddRadzenComponents();
 
 // DashboardService: registered as Scoped so it gets a fresh DbContext per request.
 builder.Services.AddScoped<DashboardService>();
@@ -83,5 +74,8 @@ app.UseAuthorization();
 // Protects /admin-secure-panel/* (Login/Logout excluded) — see AdminAuthMiddleware.
 app.UseMiddleware<AdminAuthMiddleware>();
 app.MapRazorPages();
+
+// Blazor SignalR hub for interactive Radzen components
+app.MapBlazorHub();
 
 app.Run();

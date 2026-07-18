@@ -362,7 +362,7 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
 .wd-empty p { margin: 0; color: var(--c-text-muted); }
 .wd-empty--error .wd-empty__icon { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
 
-/* ============================ Syncfusion grid tuning (§2.3) ============================ */
+/* ============================ DataGrid tuning (§2.3) ============================ */
 .wd-sync-grid { border-radius: var(--radius-md); overflow: hidden; }
 .wd-sync-grid .e-headercell { background: var(--c-surface-muted); color: var(--c-text); font-weight: 600; }
 .wd-sync-grid .e-rowcell { color: var(--c-text); }

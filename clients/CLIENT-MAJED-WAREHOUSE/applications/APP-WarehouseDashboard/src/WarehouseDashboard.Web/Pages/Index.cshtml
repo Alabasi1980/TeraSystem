@@ -419,31 +419,29 @@ else
                     return { label: r.Month || r.month || '', value: toNum(r.MonthlyValue || r.monthlyValue || 0) };
                 });
 
-                var chart = new ej.charts.Chart({
-                    theme: 'Bootstrap5',
-                    series: [{
-                        type: 'Line',
-                        dataSource: chartData,
-                        xName: 'label',
-                        yName: 'value',
-                        width: 2,
-                        marker: { visible: false },
-                        fill: '#1F4E79'
-                    }],
-                    primaryXAxis: {
-                        valueType: 'Category',
-                        majorGridLines: { width: 0 },
-                        labelStyle: { color: '#5B7A99', fontSize: '10px' }
+                var chart = new Chart(container, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.map(function(r) { return r.label; }),
+                        datasets: [{
+                            data: chartData.map(function(r) { return r.value; }),
+                            borderColor: '#1F4E79',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: false,
+                            tension: 0.3
+                        }]
                     },
-                    primaryYAxis: {
-                        majorGridLines: { width: 0 },
-                        labelStyle: { display: false }
-                    },
-                    tooltip: { enable: true, fill: '#0A2540', textStyle: { color: '#ffffff' } },
-                    width: '100%',
-                    height: '60px'
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { enabled: true, backgroundColor: '#0A2540', titleColor: '#fff', bodyColor: '#fff' } },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        }
+                    }
                 });
-                chart.appendTo(container);
             }
 
             function clearBody(el) {
@@ -496,96 +494,101 @@ else
                 var data = (card.rows || []).map(function (r) {
                     return { label: r[cols[0]], value: toNum(r[cols[1]]) };
                 });
-                var typeMap = { Bar: 'Column', Line: 'Line', Pie: 'Pie' };
-                var type = typeMap[card.chartType] || 'Column';
+                var typeMap = { Bar: 'bar', Line: 'line', Pie: 'pie' };
+                var type = typeMap[card.chartType] || 'bar';
                 var isPie = card.chartType === 'Pie';
 
-                var chart = new ej.charts.Chart({
-                    theme: 'Bootstrap5',
-                    palette: PALETTE,
-                    primaryXAxis: {
-                        valueType: 'Category',
-                        labelStyle: { color: '#5B7A99' },
-                        lineStyle: { color: '#D4E2F0' },
-                        majorGridLines: { width: 0 },
-                        title: isPie ? '' : (cols[0] || '')
+                var chartConfig = {
+                    type: type,
+                    data: {
+                        labels: data.map(function(r) { return r.label; }),
+                        datasets: [{
+                            label: card.title,
+                            data: data.map(function(r) { return r.value; }),
+                            backgroundColor: isPie ? PALETTE : '#1F4E79',
+                            borderColor: isPie ? undefined : '#1F4E79',
+                            borderWidth: isPie ? 0 : 1,
+                            borderRadius: card.chartType === 'Bar' ? 4 : 0,
+                            fill: card.chartType === 'Line',
+                            tension: card.chartType === 'Line' ? 0.3 : 0,
+                            pointRadius: card.chartType === 'Line' ? 3 : undefined,
+                            pointBackgroundColor: card.chartType === 'Line' ? '#1F4E79' : undefined
+                        }]
                     },
-                    primaryYAxis: {
-                        labelStyle: { color: '#5B7A99' },
-                        lineStyle: { color: '#D4E2F0' },
-                        majorGridLines: { color: '#D4E2F0', width: 0.5 }
-                    },
-                    legendSettings: { visible: isPie, position: 'Bottom', textStyle: { color: '#5B7A99' } },
-                    tooltip: { enable: true, fill: '#0A2540', textStyle: { color: '#ffffff' } },
-                    series: [{
-                        type: type,
-                        dataSource: data,
-                        xName: 'label',
-                        yName: 'value',
-                        name: card.title,
-                        cornerRadius: card.chartType === 'Bar' ? { topLeft: 4, topRight: 4 } : undefined,
-                        marker: card.chartType === 'Line' ? { visible: true, width: 2, height: 6 } : undefined,
-                        dataLabel: isPie ? { visible: true, position: 'Outside' } : { visible: false },
-                        width: card.chartType === 'Line' ? 2 : undefined
-                    }],
-                    width: '100%',
-                    height: '100%'
-                });
-                chart.appendTo(viz);
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: isPie, position: 'bottom', labels: { color: '#5B7A99' } },
+                            tooltip: { backgroundColor: '#0A2540' }
+                        },
+                        scales: isPie ? {} : {
+                            x: { grid: { display: false }, ticks: { color: '#5B7A99' } },
+                            y: { grid: { color: '#D4E2F0' }, ticks: { color: '#5B7A99' } }
+                        }
+                    }
+                };
+
+                var chart = new Chart(viz, chartConfig);
                 CHARTS[card.cardId] = { control: chart, kind: 'chart' };
             }
 
             function wdRenderGauge(viz, card) {
                 var val = toNum(card.kpiValue);
                 var max = val <= 0 ? 100 : (val <= 100 ? 100 : Math.ceil(val * 1.2));
-                var gauge = new ej.circulargauge.CircularGauge({
-                    theme: 'Bootstrap5',
-                    axes: [{
-                        minimum: 0,
-                        maximum: max,
-                        radius: '100%',
-                        startAngle: 200, endAngle: 160,
-                        pointers: [{
-                            value: val, type: 'RangeBar', radius: '100%', pointerWidth: 6,
-                            color: '#1F4E79', cap: { radius: 0 },
-                            animation: { enable: true, duration: 900 }
-                        }],
-                        lineStyle: { width: 8, color: '#D4E2F0' },
-                        majorTicks: { color: '#D4E2F0', height: 0 },
-                        minorTicks: { height: 0 },
-                        labelStyle: { color: '#5B7A99', font: { size: '12px' } },
-                        ranges: [{ start: 0, end: val, startWidth: 8, endWidth: 8, color: '#2E6DA4', radius: '100%' }]
-                    }],
-                    annotations: [{
-                        content: '<div style="font-size:22px;font-weight:700;color:#102A43">' + escapeHtml(formatNum(val)) + '</div>',
-                        radius: '0%', angle: 0, zIndex: '1'
-                    }],
-                    width: '100%',
-                    height: '100%'
+                var chart = new Chart(viz, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [val, max - val],
+                            backgroundColor: ['#2E6DA4', '#D4E2F0'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        circumference: 270,
+                        rotation: 225,
+                        cutout: '75%',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        }
+                    },
+                    plugins: [{
+                        id: 'gaugeText',
+                        afterDraw: function(chart) {
+                            var ctx = chart.ctx;
+                            var centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+                            var centerY = (chart.chartArea.top + chart.chartArea.bottom) / 2;
+                            ctx.save();
+                            ctx.font = 'bold 22px Cairo';
+                            ctx.fillStyle = '#102A43';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(formatNum(val), centerX, centerY);
+                            ctx.restore();
+                        }
+                    }]
                 });
-                gauge.appendTo(viz);
-                CHARTS[card.cardId] = { control: gauge, kind: 'gauge' };
+                CHARTS[card.cardId] = { control: chart, kind: 'gauge' };
             }
 
             function wdRenderGrid(viz, card) {
-                var cols = (card.columns || []).map(function (c) {
-                    var sample = card.rows && card.rows.length ? card.rows[0][c] : null;
-                    return { field: c, headerText: c, textAlign: isNum(sample) ? 'Right' : 'Left', width: 120 };
+                var cols = card.columns || [];
+                var rows = card.rows || [];
+                var html = '<table class="wd-table" style="width:100%;border-collapse:collapse;">';
+                html += '<thead><tr>';
+                cols.forEach(function(c) { html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">' + escapeHtml(c) + '</th>'; });
+                html += '</tr></thead><tbody>';
+                rows.forEach(function(r) {
+                    html += '<tr style="border-bottom:1px solid var(--c-border);cursor:pointer;">';
+                    cols.forEach(function(c) { html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(String(r[c] ?? '')) + '</td>'; });
+                    html += '</tr>';
                 });
-                var grid = new ej.grids.Grid({
-                    theme: 'Bootstrap5',
-                    dataSource: card.rows || [],
-                    columns: cols,
-                    allowPaging: (card.rows || []).length > 10,
-                    pageSize: 10,
-                    allowSorting: true,
-                    gridLines: 'Horizontal',
-                    cssClass: 'wd-sync-grid',
-                    width: '100%',
-                    height: '100%'
-                });
-                grid.appendTo(viz);
-                CHARTS[card.cardId] = { control: grid, kind: 'grid' };
+                html += '</tbody></table>';
+                viz.innerHTML = html;
             }
 
             function wdLoadCard(id, showSkeleton) {
@@ -668,9 +671,8 @@ else
             window.addEventListener('resize', function () {
                 clearTimeout(rt);
                 rt = setTimeout(function () {
-                    Object.keys(CHARTS).forEach(function (k) {
-                        try { CHARTS[k].control.refresh(); } catch (e) { /* noop */ }
-                    });
+                    // Chart.js handles responsive resize automatically.
+                    // The CHARTS map is kept for potential future use.
                 }, 200);
             });
         })();

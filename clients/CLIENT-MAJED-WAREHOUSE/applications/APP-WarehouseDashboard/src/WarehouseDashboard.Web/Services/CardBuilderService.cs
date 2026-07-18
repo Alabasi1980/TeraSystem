@@ -184,7 +184,7 @@ public class CardBuilderService
 
     /// <summary>
     /// Generates a live preview for the builder wizard Step 3/Preview pane.
-    /// Executes the provided query (limited rows) and builds a Syncfusion-ready chart config.
+    /// Executes the provided query (limited rows) and builds a chart config.
     /// </summary>
     public async Task<CardPreviewResult> GetPreviewAsync(CardPreviewRequest request, CancellationToken ct = default)
     {
@@ -378,7 +378,7 @@ public class CardBuilderService
     }
 
     /// <summary>
-    /// Builds a minimal Syncfusion chart configuration object for the preview.
+    /// Builds a minimal chart configuration object for the preview.
     /// Returns an anonymous object that serializes to the expected JSON shape.
     /// </summary>
     private static object BuildChartConfig(string chartType, List<string> columns, List<Dictionary<string, object?>> rows)

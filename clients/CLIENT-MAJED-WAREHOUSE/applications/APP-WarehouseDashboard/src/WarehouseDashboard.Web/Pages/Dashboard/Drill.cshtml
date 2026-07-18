@@ -157,67 +157,110 @@
             function renderChart(viz, data) {
                 var cols = data.columns;
                 var rows = (data.rows || []).map(function (r) { return { label: r[cols[0]], value: toNum(r[cols[1]]) }; });
-                var typeMap = { Bar: 'Column', Line: 'Line', Pie: 'Pie' };
-                var type = typeMap[data.chartType] || 'Column';
+                var typeMap = { Bar: 'bar', Line: 'line', Pie: 'pie' };
+                var type = typeMap[data.chartType] || 'bar';
                 var isPie = data.chartType === 'Pie';
-                var chart = new ej.charts.Chart({
-                    theme: 'Bootstrap5', palette: PALETTE,
-                    primaryXAxis: { valueType: 'Category', labelStyle: { color: '#5B7A99' }, lineStyle: { color: '#D4E2F0' }, majorGridLines: { width: 0 }, title: isPie ? '' : (cols[0] || '') },
-                    primaryYAxis: { labelStyle: { color: '#5B7A99' }, lineStyle: { color: '#D4E2F0' }, majorGridLines: { color: '#D4E2F0', width: 0.5 } },
-                    legendSettings: { visible: isPie, position: 'Bottom', textStyle: { color: '#5B7A99' } },
-                    tooltip: { enable: true, fill: '#0A2540', textStyle: { color: '#ffffff' } },
-                    series: [{
-                        type: type, dataSource: rows, xName: 'label', yName: 'value', name: data.displayName,
-                        cornerRadius: data.chartType === 'Bar' ? { topLeft: 4, topRight: 4 } : undefined,
-                        marker: data.chartType === 'Line' ? { visible: true, width: 2, height: 6 } : undefined,
-                        dataLabel: isPie ? { visible: true, position: 'Outside' } : { visible: false },
-                        width: data.chartType === 'Line' ? 2 : undefined
-                    }],
-                    pointClick: data.hasNextLevel ? function (args) { wdDrillInto(args.point ? args.point.x : null); } : undefined,
-                    width: '100%', height: '100%'
-                });
-                chart.appendTo(viz);
+
+                var chartConfig = {
+                    type: type,
+                    data: {
+                        labels: rows.map(function(r) { return r.label; }),
+                        datasets: [{
+                            label: data.displayName,
+                            data: rows.map(function(r) { return r.value; }),
+                            backgroundColor: isPie ? PALETTE : '#1F4E79',
+                            borderColor: isPie ? undefined : '#1F4E79',
+                            borderWidth: isPie ? 0 : 1,
+                            borderRadius: data.chartType === 'Bar' ? 4 : 0,
+                            fill: data.chartType === 'Line',
+                            tension: data.chartType === 'Line' ? 0.3 : 0,
+                            pointRadius: data.chartType === 'Line' ? 3 : undefined,
+                            pointBackgroundColor: data.chartType === 'Line' ? '#1F4E79' : undefined
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        onClick: data.hasNextLevel ? function(evt, elements) {
+                            if (elements && elements.length > 0) {
+                                var idx = elements[0].index;
+                                wdDrillInto(rows[idx] ? rows[idx].label : null);
+                            }
+                        } : undefined,
+                        plugins: {
+                            legend: { display: isPie, position: 'bottom', labels: { color: '#5B7A99' } },
+                            tooltip: { backgroundColor: '#0A2540' }
+                        },
+                        scales: isPie ? {} : {
+                            x: { grid: { display: false }, ticks: { color: '#5B7A99' } },
+                            y: { grid: { color: '#D4E2F0' }, ticks: { color: '#5B7A99' } }
+                        }
+                    }
+                };
+
+                new Chart(viz, chartConfig);
             }
             function renderGauge(viz, data) {
                 var val = toNum(data.kpiValue);
                 var max = val <= 0 ? 100 : (val <= 100 ? 100 : Math.ceil(val * 1.2));
-                var gauge = new ej.circulargauge.CircularGauge({
-                    theme: 'Bootstrap5',
-                    axes: [{
-                        minimum: 0, maximum: max, radius: '100%', startAngle: 200, endAngle: 160,
-                        pointers: [{ value: val, type: 'RangeBar', radius: '100%', pointerWidth: 6, color: '#1F4E79', cap: { radius: 0 }, animation: { enable: true, duration: 900 } }],
-                        lineStyle: { width: 8, color: '#D4E2F0' }, majorTicks: { color: '#D4E2F0', height: 0 }, minorTicks: { height: 0 },
-                        labelStyle: { color: '#5B7A99', font: { size: '12px' } },
-                        ranges: [{ start: 0, end: val, startWidth: 8, endWidth: 8, color: '#2E6DA4', radius: '100%' }]
-                    }],
-                    annotations: [{ content: '<div style="font-size:22px;font-weight:700;color:#102A43">' + escapeHtml(formatNum(val)) + '</div>', radius: '0%', angle: 0, zIndex: '1' }],
-                    pointerClick: data.hasNextLevel ? function () { wdDrillInto(val); } : undefined,
-                    width: '100%', height: '100%'
+                var chart = new Chart(viz, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [val, max - val],
+                            backgroundColor: ['#2E6DA4', '#D4E2F0'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        circumference: 270,
+                        rotation: 225,
+                        cutout: '75%',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        onClick: data.hasNextLevel ? function() { wdDrillInto(val); } : undefined,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        }
+                    },
+                    plugins: [{
+                        id: 'gaugeText',
+                        afterDraw: function(chart) {
+                            var ctx = chart.ctx;
+                            var centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+                            var centerY = (chart.chartArea.top + chart.chartArea.bottom) / 2;
+                            ctx.save();
+                            ctx.font = 'bold 22px Cairo';
+                            ctx.fillStyle = '#102A43';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(formatNum(val), centerX, centerY);
+                            ctx.restore();
+                        }
+                    }]
                 });
-                gauge.appendTo(viz);
             }
             function renderGrid(viz, data) {
-                var cols = (data.columns || []).map(function (c) {
-                    var sample = data.rows && data.rows.length ? data.rows[0][c] : null;
-                    return { field: c, headerText: c, textAlign: isNum(sample) ? 'Right' : 'Left', width: 120 };
-                });
+                var cols = data.columns || [];
+                var rows = data.rows || [];
+                var html = '<table class="wd-table" style="width:100%;border-collapse:collapse;">';
+                html += '<thead><tr>';
+                cols.forEach(function(c) { html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">' + escapeHtml(c) + '</th>'; });
                 if (data.hasNextLevel) {
-                    cols.push({ headerText: '', width: 96, commands: [{ type: 'Drill', buttonOption: { content: 'تعمّق', cssClass: 'e-info' } }] });
+                    html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:center;border-bottom:1px solid var(--c-border);width:96px;">إجراءات</th>';
                 }
-                var grid = new ej.grids.Grid({
-                    theme: 'Bootstrap5', dataSource: data.rows || [], columns: cols,
-                    allowPaging: (data.rows || []).length > 10, pageSize: 10, allowSorting: true,
-                    gridLines: 'Horizontal', cssClass: 'wd-sync-grid', width: '100%', height: '100%',
-                    rowSelected: data.hasNextLevel ? function (args) { wdDrillInto(args.data[data.columns[0]]); } : undefined
+                html += '</tr></thead><tbody>';
+                rows.forEach(function(r) {
+                    html += '<tr style="border-bottom:1px solid var(--c-border);' + (data.hasNextLevel ? 'cursor:pointer;' : '') + '">';
+                    cols.forEach(function(c) { html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(String(r[c] ?? '')) + '</td>'; });
+                    if (data.hasNextLevel) {
+                        html += '<td style="padding:8px 12px;text-align:center;"><button class="wd-btn wd-btn--sm" onclick="wdDrillInto(\'' + escapeHtml(String(r[cols[0]]).replace(/'/g, "\\'")) + '\')">تعمّق</button></td>';
+                    }
+                    html += '</tr>';
                 });
-                if (data.hasNextLevel) {
-                    grid.commandClicked = function (args) {
-                        if (args.commandColumn && args.commandColumn.type === 'Drill') {
-                            wdDrillInto(args.rowData[data.columns[0]]);
-                        }
-                    };
-                }
-                grid.appendTo(viz);
+                html += '</tbody></table>';
+                viz.innerHTML = html;
             }
             function renderLevel(data) {
                 var host = document.getElementById('wd-drill-host');

@@ -25,21 +25,8 @@
 else
 {
     <div class="wd-grid-wrap" id="wdGridWrap">
-        <ejs-grid id="cardsGrid" dataSource="@Model.Cards" allowPaging="true" allowSorting="true"
-                  gridLines="Horizontal" cssClass="wd-sync-grid" created="wdOnGridCreated">
-            <e-grid-columns>
-                <e-grid-column field="Title" headerText="العنوان" width="170"></e-grid-column>
-                <e-grid-column field="ChartType" headerText="النوع" width="90" textAlign="Left"></e-grid-column>
-                <e-grid-column field="DataSourceType" headerText="المصدر" width="100"></e-grid-column>
-                <e-grid-column field="IsActive" headerText="نشط" width="80" template="#isActiveTpl"></e-grid-column>
-                <e-grid-column field="GridPositionX" headerText="X" width="60" textAlign="Right"></e-grid-column>
-                <e-grid-column field="GridPositionY" headerText="Y" width="60" textAlign="Right"></e-grid-column>
-                <e-grid-column field="GridWidth" headerText="العرض" width="75" textAlign="Right"></e-grid-column>
-                <e-grid-column field="GridHeight" headerText="الارتفاع" width="75" textAlign="Right"></e-grid-column>
-                <e-grid-column field="RefreshInterval" headerText="تحديث (ث)" width="95" textAlign="Right"></e-grid-column>
-                <e-grid-column headerText="إجراءات" width="150" template="#rowActions" textAlign="Center"></e-grid-column>
-            </e-grid-columns>
-        </ejs-grid>
+        <component type="typeof(CardsGrid)" render-mode="ServerPrerendered"
+                   param-CardsJson="@System.Text.Json.JsonSerializer.Serialize(Model.Cards)" />
     </div>
 
     <div class="wd-skeleton-wrap" id="wdSkeleton" aria-hidden="true">
@@ -65,19 +52,6 @@ else
     <input type="hidden" name="id" id="wdDeleteId" />
 </form>
 
-<script id="isActiveTpl" type="text/x-template">
-${if(IsActive)}
-<span class="wd-badge wd-badge--on">نعم</span>
-${else}
-<span class="wd-badge wd-badge--off">لا</span>
-${/if}
-</script>
-
-<script id="rowActions" type="text/x-template">
-    <a class="wd-link" href="/admin-secure-panel/Cards/Edit?id=${Id}">تعديل</a>
-    <button type="button" class="wd-link wd-link--danger" onclick="wdConfirmDelete(${Id})">حذف</button>
-</script>
-
 @section Scripts {
     <script>
         function wdConfirmDelete(id) {
@@ -92,8 +66,7 @@ ${/if}
             if (sk) sk.style.display = 'none';
             if (grid) grid.style.display = 'block';
         }
-        function wdOnGridCreated() { wdHideSkeleton(); }
-        // Fallback: never let the shimmer stick if Syncfusion scripts are slow/unavailable.
+        // Fallback: never let the shimmer stick if Radzen renders slowly or JS is unavailable.
         window.addEventListener('load', function () { setTimeout(wdHideSkeleton, 700); });
     </script>
 }

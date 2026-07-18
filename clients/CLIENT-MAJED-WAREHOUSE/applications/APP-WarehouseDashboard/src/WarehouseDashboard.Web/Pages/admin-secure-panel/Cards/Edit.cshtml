@@ -21,62 +21,65 @@
         <div class="wd-form__grid">
             <div class="wd-field wd-field--full">
                 <label asp-for="Input.Title">العنوان</label>
-                <ejs-textbox asp-for="Input.Title" placeholder="مثال: مخزون حسب المنطقة"></ejs-textbox>
+                <input asp-for="Input.Title" class="wd-input" placeholder="مثال: مخزون حسب المنطقة" />
                 <span asp-validation-for="Input.Title" class="wd-error"></span>
             </div>
 
             <div class="wd-field">
                 <label asp-for="Input.ChartType">نوع الرسم</label>
-                <ejs-dropdownlist asp-for="Input.ChartType" dataSource="@Model.ChartTypeOptions" placeholder="اختر النوع...">
-                    <e-dropdownlist-fields value="Value" text="Text"></e-dropdownlist-fields>
-                </ejs-dropdownlist>
+                <select asp-for="Input.ChartType" class="wd-select" asp-items="@(new SelectList(Model.ChartTypeOptions, "Value", "Text"))">
+                    <option value="">اختر النوع...</option>
+                </select>
                 <span asp-validation-for="Input.ChartType" class="wd-error"></span>
             </div>
 
             <div class="wd-field">
                 <label asp-for="Input.DataSourceType">مصدر البيانات</label>
-                <ejs-dropdownlist asp-for="Input.DataSourceType" dataSource="@Model.DataSourceTypeOptions" placeholder="اختر المصدر...">
-                    <e-dropdownlist-fields value="Value" text="Text"></e-dropdownlist-fields>
-                </ejs-dropdownlist>
+                <select asp-for="Input.DataSourceType" class="wd-select" asp-items="@(new SelectList(Model.DataSourceTypeOptions, "Value", "Text"))">
+                    <option value="">اختر المصدر...</option>
+                </select>
                 <span asp-validation-for="Input.DataSourceType" class="wd-error"></span>
             </div>
 
             <div class="wd-field wd-field--full">
                 <label asp-for="Input.SqlQuery">استعلام SQL / اسم العرض</label>
-                <ejs-textbox asp-for="Input.SqlQuery" multiline="true" placeholder="SELECT Region, TotalQty FROM dbo.stg_WarehouseStock"></ejs-textbox>
+                <textarea asp-for="Input.SqlQuery" class="wd-textarea" placeholder="SELECT Region, TotalQty FROM dbo.stg_WarehouseStock" rows="4" style="direction:ltr;text-align:left;font-family:'Courier New',monospace;"></textarea>
                 <span asp-validation-for="Input.SqlQuery" class="wd-error"></span>
             </div>
 
             <div class="wd-field">
                 <label asp-for="Input.GridPositionX">الموضع X</label>
-                <ejs-numerictextbox asp-for="Input.GridPositionX" min="0" placeholder="0"></ejs-numerictextbox>
+                <input asp-for="Input.GridPositionX" type="number" class="wd-input" min="0" placeholder="0" />
             </div>
 
             <div class="wd-field">
                 <label asp-for="Input.GridPositionY">الموضع Y</label>
-                <ejs-numerictextbox asp-for="Input.GridPositionY" min="0" placeholder="0"></ejs-numerictextbox>
+                <input asp-for="Input.GridPositionY" type="number" class="wd-input" min="0" placeholder="0" />
             </div>
 
             <div class="wd-field">
                 <label asp-for="Input.GridWidth">العرض (1-12)</label>
-                <ejs-numerictextbox asp-for="Input.GridWidth" min="1" max="12" placeholder="4"></ejs-numerictextbox>
+                <input asp-for="Input.GridWidth" type="number" class="wd-input" min="1" max="12" placeholder="4" />
                 <span asp-validation-for="Input.GridWidth" class="wd-error"></span>
             </div>
 
             <div class="wd-field">
                 <label asp-for="Input.GridHeight">الارتفاع (1-6)</label>
-                <ejs-numerictextbox asp-for="Input.GridHeight" min="1" max="6" placeholder="2"></ejs-numerictextbox>
+                <input asp-for="Input.GridHeight" type="number" class="wd-input" min="1" max="6" placeholder="2" />
                 <span asp-validation-for="Input.GridHeight" class="wd-error"></span>
             </div>
 
             <div class="wd-field">
                 <label asp-for="Input.RefreshInterval">فاصل التحديث (ثوانٍ)</label>
-                <ejs-numerictextbox asp-for="Input.RefreshInterval" min="0" placeholder="0"></ejs-numerictextbox>
+                <input asp-for="Input.RefreshInterval" type="number" class="wd-input" min="0" placeholder="0" />
                 <span asp-validation-for="Input.RefreshInterval" class="wd-error"></span>
             </div>
 
             <div class="wd-field wd-field--check">
-                <ejs-checkbox asp-for="Input.IsActive" label="نشط (معروضة في اللوحة)"></ejs-checkbox>
+                <label class="wd-checkbox-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input asp-for="Input.IsActive" type="checkbox" style="width:18px;height:18px;accent-color:var(--c-primary);" />
+                    <span>نشط (معروضة في اللوحة)</span>
+                </label>
             </div>
         </div>
 

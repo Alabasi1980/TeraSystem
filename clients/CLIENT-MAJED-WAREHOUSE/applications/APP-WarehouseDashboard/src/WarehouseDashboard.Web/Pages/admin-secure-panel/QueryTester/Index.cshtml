@@ -110,7 +110,8 @@
 <div id="toastContainer" class="wd-toast-container"></div>
 
 <script>
-    let gridInstance = null;
+    let currentColumns = [];
+    let currentRows = [];
 
     function escapeHtml(text) {
         const div = document.createElement('div');
@@ -143,7 +144,8 @@
     }
 
     function destroyGrid() {
-        if (gridInstance) { gridInstance.destroy(); gridInstance = null; }
+        currentColumns = [];
+        currentRows = [];
         document.getElementById('gridContainer').innerHTML = '';
     }
 
@@ -172,46 +174,42 @@
             return;
         }
 
-        const gridColumns = columns.map(function (c) {
-            return {
-                field: c.name,
-                headerText: c.name,
-                type: mapType(c.dataType),
-                width: 160,
-                textAlign: mapType(c.dataType) === 'number' ? 'Right' : 'Left'
-            };
-        });
+        currentColumns = columns;
+        currentRows = rows;
 
-        gridInstance = new ej.grids.Grid({
-            dataSource: rows,
-            columns: gridColumns,
-            allowPaging: true,
-            pageSize: 20,
-            allowSorting: true,
-            allowTextWrap: true,
-            gridLines: 'Horizontal'
+        var html = '<table class="wd-table" style="width:100%;border-collapse:collapse;font-size:13px;">';
+        html += '<thead><tr>';
+        columns.forEach(function(c) {
+            var align = mapType(c.dataType) === 'number' ? 'right' : 'left';
+            html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:' + align + ';border-bottom:1px solid var(--c-border);white-space:nowrap;">' + escapeHtml(c.name) + '</th>';
         });
-        gridInstance.appendTo(container);
+        html += '</tr></thead><tbody>';
+        rows.forEach(function(r, idx) {
+            html += '<tr style="border-bottom:1px solid var(--c-border);' + (idx % 2 === 0 ? '' : 'background:#F7FAFD;') + '">';
+            columns.forEach(function(c) {
+                var val = r[c.name];
+                var align = mapType(c.dataType) === 'number' ? 'right' : 'left';
+                html += '<td style="padding:6px 12px;text-align:' + align + ';">' + escapeHtml(val != null ? String(val) : '') + '</td>';
+            });
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
         document.getElementById('copyBtn').disabled = false;
     }
 
     function copyResults() {
-        if (!gridInstance) return;
-        var data = gridInstance.getCurrentViewRecords();
-        if (!data || data.length === 0) return;
-
-        var cols = gridInstance.columns;
-        var csv = cols.map(function(c) { return '"' + (c.headerText || c.field) + '"'; }).join(',') + '\n';
-        data.forEach(function(row) {
+        if (!currentRows || currentRows.length === 0) return;
+        var cols = currentColumns;
+        var csv = cols.map(function(c) { return '"' + (c.name || '') + '"'; }).join(',') + '\n';
+        currentRows.forEach(function(row) {
             csv += cols.map(function(c) {
-                var val = row[c.field];
+                var val = row[c.name];
                 return val != null ? '"' + String(val).replace(/"/g, '""') + '"' : '""';
             }).join(',') + '\n';
         });
-
         navigator.clipboard.writeText(csv).then(function() {
-            showToast('تم نسخ ' + data.length + ' صف إلى الحافظة.', 'success');
-            document.getElementById('copyBtn').disabled = false;
+            showToast('تم نسخ ' + currentRows.length + ' صف إلى الحافظة.', 'success');
         }).catch(function() {
             showToast('تعذر النسخ إلى الحافظة.', 'error');
         });

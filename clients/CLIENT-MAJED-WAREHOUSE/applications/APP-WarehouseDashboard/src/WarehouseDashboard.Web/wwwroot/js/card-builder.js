@@ -14,7 +14,7 @@
  *   - Source panels: Template / SqlTable / CustomSQL / SavedQuery (Step 2)
  *   - Template rendering + {TableName} substitution
  *   - Oracle tables fetch + dropdown
- *   - Live preview POST -> Syncfusion render (chart AND table)
+ *   - Live preview POST -> Chart render (chart AND table)
  *   - Palette injection, filter add/remove, advanced options
  *   - Save / Save & Add / Cancel (native form submit after sync)
  *   - Clone / initialData bootstrap
@@ -572,7 +572,7 @@
     });
     // re-render last preview with the new palette (no re-fetch needed)
     if (this._lastResult && this._lastResult.status === 'success') {
-      this.renderSyncfusion(this._lastResult);
+      this.renderChart(this._lastResult);
     }
   };
 
@@ -648,7 +648,7 @@
       this.populateColumnMappings(result.columns, result.sampleData);
       this.updateSqlDisplay();
       this.setPreviewState('success');
-      this.renderSyncfusion(result);
+      this.renderChart(result);
     } else if (result.status === 'empty') {
       this.populateColumnMappings(result.columns, result.sampleData);
       this.updateSqlDisplay();
@@ -791,7 +791,7 @@
     if (el) el.value = this.state.previewSql || '';
   };
 
-  CardBuilderWizard.prototype.renderSyncfusion = function (result) {
+  CardBuilderWizard.prototype.renderChart = function (result) {
     var self = this;
     var content = $('wb-preview-content');
     if (!content) return;

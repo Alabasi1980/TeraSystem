@@ -72,7 +72,7 @@
 @section Scripts {
     <script>
         (function () {
-            var gridInstance = null;
+            // gridInstance removed — using HTML table
             var refreshTimer = null;
             var REFRESH_INTERVAL = 30000; // 30 seconds
 
@@ -121,7 +121,6 @@
             }
 
             function destroyGrid() {
-                if (gridInstance) { gridInstance.destroy(); gridInstance = null; }
                 document.getElementById('gridContainer').innerHTML = '';
             }
 
@@ -137,38 +136,27 @@
                     return;
                 }
 
-                gridInstance = new ej.grids.Grid({
-                    dataSource: logs,
-                    columns: [
-                        {
-                            field: 'startTimeFormatted', headerText: 'التاريخ', width: 180,
-                            sortDirection: 'Descending'
-                        },
-                        {
-                            field: 'triggerTypeLabel', headerText: 'النوع', width: 100, textAlign: 'Center'
-                        },
-                        {
-                            field: 'statusHtml', headerText: 'الحالة', width: 110, textAlign: 'Center',
-                            disableHtmlEncode: false
-                        },
-                        {
-                            field: 'recordCount', headerText: 'عدد السجلات', width: 120, textAlign: 'Right'
-                        },
-                        {
-                            field: 'duration', headerText: 'المدة (ث)', width: 110, textAlign: 'Right'
-                        },
-                        {
-                            field: 'errorMessageHtml', headerText: 'رسالة الخطأ', width: 240,
-                            disableHtmlEncode: false, clipMode: 'EllipsisWithTooltip'
-                        }
-                    ],
-                    allowPaging: true,
-                    pageSize: 15,
-                    allowSorting: true,
-                    gridLines: 'Horizontal',
-                    direction: 'RTL'
+                var html = '<table class="wd-table" style="width:100%;border-collapse:collapse;font-size:13px;">';
+                html += '<thead><tr>';
+                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">التاريخ</th>';
+                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:center;border-bottom:1px solid var(--c-border);">النوع</th>';
+                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:center;border-bottom:1px solid var(--c-border);">الحالة</th>';
+                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">عدد السجلات</th>';
+                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">المدة (ث)</th>';
+                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">رسالة الخطأ</th>';
+                html += '</tr></thead><tbody>';
+                logs.forEach(function(r, idx) {
+                    html += '<tr style="border-bottom:1px solid var(--c-border);' + (idx % 2 === 0 ? '' : 'background:#F7FAFD;') + '">';
+                    html += '<td style="padding:6px 12px;text-align:right;">' + escapeHtml(r.startTimeFormatted) + '</td>';
+                    html += '<td style="padding:6px 12px;text-align:center;">' + escapeHtml(r.triggerTypeLabel) + '</td>';
+                    html += '<td style="padding:6px 12px;text-align:center;">' + r.statusHtml + '</td>';
+                    html += '<td style="padding:6px 12px;text-align:right;">' + escapeHtml(String(r.recordCount)) + '</td>';
+                    html += '<td style="padding:6px 12px;text-align:right;">' + escapeHtml(String(r.duration)) + '</td>';
+                    html += '<td style="padding:6px 12px;text-align:right;">' + (r.errorMessageHtml || '—') + '</td>';
+                    html += '</tr>';
                 });
-                gridInstance.appendTo(container);
+                html += '</tbody></table>';
+                container.innerHTML = html;
             }
 
             window.loadLogs = async function () {

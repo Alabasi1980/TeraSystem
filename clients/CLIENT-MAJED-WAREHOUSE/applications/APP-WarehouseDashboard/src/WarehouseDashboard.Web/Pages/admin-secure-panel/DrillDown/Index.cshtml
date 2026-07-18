@@ -198,7 +198,7 @@
     }
 
     function destroyLevelsGrid() {
-        if (levelsGrid) { levelsGrid.destroy(); levelsGrid = null; }
+        levelsGrid = null;
         document.getElementById('levelsGrid').innerHTML = '';
     }
 
@@ -212,26 +212,27 @@
             return;
         }
 
-        levelsGrid = new ej.grids.Grid({
-            dataSource: levels,
-            columns: [
-                { field: 'level', headerText: 'المستوى', width: 90, textAlign: 'Right' },
-                { field: 'displayName', headerText: 'الاسم', width: 200 },
-                { field: 'targetChartType', headerText: 'النوع', width: 120 },
-                { field: 'drillDownQuery', headerText: 'الاستعلام', width: 280, clipMode: 'EllipsisWithTooltip' },
-                {
-                    headerText: 'إجراءات', width: 170,
-                    template: function (data) {
-                        return '<button class="wd-btn wd-btn--sm" onclick="editLevel(' + data.id + ')">تعديل</button>' +
-                               ' <button class="wd-btn wd-btn--sm wd-btn--danger" onclick="deleteLevel(' + data.id + ')">حذف</button>';
-                    }
-                }
-            ],
-            allowPaging: true,
-            pageSize: 15,
-            gridLines: 'Horizontal'
+        var html = '<table class="wd-table" style="width:100%;border-collapse:collapse;">';
+        html += '<thead><tr>';
+        html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);width:90px;">المستوى</th>';
+        html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);width:200px;">الاسم</th>';
+        html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);width:120px;">النوع</th>';
+        html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">الاستعلام</th>';
+        html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:center;border-bottom:1px solid var(--c-border);width:170px;">إجراءات</th>';
+        html += '</tr></thead><tbody>';
+        levels.forEach(function(level) {
+            html += '<tr style="border-bottom:1px solid var(--c-border);">';
+            html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(String(level.level ?? '')) + '</td>';
+            html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(level.displayName || '') + '</td>';
+            html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(level.targetChartType || '') + '</td>';
+            html += '<td style="padding:8px 12px;text-align:right;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(level.drillDownQuery || '') + '">' + escapeHtml(level.drillDownQuery || '') + '</td>';
+            html += '<td style="padding:8px 12px;text-align:center;">';
+            html += '<button class="wd-btn wd-btn--sm" onclick="editLevel(' + level.id + ')">تعديل</button> ';
+            html += '<button class="wd-btn wd-btn--sm wd-btn--danger" onclick="deleteLevel(' + level.id + ')">حذف</button>';
+            html += '</td></tr>';
         });
-        levelsGrid.appendTo(container);
+        html += '</tbody></table>';
+        container.innerHTML = html;
     }
 
     function onCardChange() {

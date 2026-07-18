@@ -3,7 +3,7 @@ namespace WarehouseDashboard.Web.Pages;
 /// <summary>
 /// Serialisable payload returned by <c>/api/dashboard/card/{id}</c> describing the
 /// result of executing a single card's query. The public dashboard hydrates one
-/// Syncfusion widget from this per card — and NEVER lets one failing card break
+/// widget from this per card — and NEVER lets one failing card break
 /// the whole page (each card carries its own status).
 /// </summary>
 public class CardDataResult
