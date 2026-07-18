@@ -528,3 +528,42 @@
 - Decision / Result: ✅ Task created + approved by user. Scope confirmed: Table+View+Query معاً. الاسم: Oracle Source Mapping Wizard.
 - Next Action: تفويض TASK-COD-029 إلى engineering-agent.
 
+## [2026-07-18 10:20] - TASK_FIX_APPROVED
+
+- Related Task: TASK-COD-FIX-021
+- Actor: TeraAgent
+- Summary: Majed approved the comprehensive Card Builder fix plan and requested starting with TASK-COD-FIX-021 to fix the direct save blocker. Task file created under the client application project-control path with a PASS Pre-Execution Gate.
+- Decision / Result: TASK-COD-FIX-021 approved for EngineeringAgent delegation. Scope is intentionally limited to adding a valid antiforgery token to `Builder.cshtml` only.
+- Next Action: Delegate TASK-COD-FIX-021 to EngineeringAgent, then run post-execution review and browser/build verification.
+
+## [2026-07-18 10:35] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-COD-FIX-021
+- Actor: EngineeringAgent → TeraAgent
+- Summary: EngineeringAgent added `@Html.AntiForgeryToken()` inside the Card Builder POST form in `Builder.cshtml`. No JavaScript, C#, CSS, package, config, database, migration, or preview API files were modified.
+- Decision / Result: Post-Execution Review PASS. Normal `dotnet build` was blocked by a running `WarehouseDashboard.Web.exe` process lock, but fallback build to temp output succeeded with 0 warnings and 0 errors. TASK-COD-FIX-021 accepted as the code fix for Auditor finding F-001.
+- Next Action: Majed should stop/restart the running Web app, hard refresh the browser, then test Card Builder Step 5 save. If save reaches server but another error appears, proceed to the next finding-driven task.
+
+## [2026-07-18 10:50] - SAVE_FAILURE_DIAGNOSIS
+
+- Related Task: TASK-COD-FIX-021 / Proposed TASK-COD-FIX-022A
+- Actor: Majed → TeraAgent
+- Summary: Majed tested Card Builder Step 5 after antiforgery fix. Network shows POST to Builder returns Status 200 and page resets to Step 1, with no row saved in DashboardCards. Form data confirms antiforgery token is present, action=save, sqlQuery is populated, valueColumn is populated, but gridX and gridY are submitted as empty values. Form data also shows duplicate sourceType submission.
+- Decision / Result: Antiforgery blocker is resolved. Current likely blocker is ModelState invalid before save due to empty gridX/gridY binding to non-nullable int properties, plus duplicate sourceType field needs cleanup. This maps to Auditor findings F-006 and F-007.
+- Next Action: Request approval for focused TASK-COD-FIX-022A to fix ModelState save return: handle gridX/gridY empty values, remove duplicate sourceType posting, and add temporary safe server-side save diagnostics without exposing secrets.
+
+## [2026-07-18 11:00] - TASK_FIX_APPROVED
+
+- Related Task: TASK-COD-FIX-022A
+- Actor: TeraAgent
+- Summary: Majed approved focused follow-up task after Network evidence showed POST reaches Builder with antiforgery token, action=save, populated sqlQuery/valueColumn, but empty gridX/gridY and duplicate sourceType. Task created to fix ModelState save return and add safe diagnostics.
+- Decision / Result: TASK-COD-FIX-022A approved with Pre-Execution Gate PASS. Scope limited to `Builder.cshtml`, `Builder.cshtml.cs`, and `card-builder.js`; no Chart.js migration, SQL injection fix, DB schema, migrations, packages, or redesign.
+- Next Action: Delegate TASK-COD-FIX-022A to EngineeringAgent.
+
+## [2026-07-18 11:20] - TASK_FIX_ACCEPTED
+
+- Related Task: TASK-COD-FIX-022A
+- Actor: EngineeringAgent → TeraAgent
+- Summary: EngineeringAgent fixed the current ModelState save-return risk by making `GridX`/`GridY` nullable, normalizing blank/negative values to automatic placement, removing duplicate visible `sourceType` posting, improving validation summary visibility, adding safe save diagnostics, and cache-busting `card-builder.js`.
+- Decision / Result: Post-Execution Review PASS. `dotnet build` succeeded with 0 warnings and 0 errors. Task accepted as code fix for Auditor findings F-006/F-007/F-015 subset.
+- Next Action: Majed should restart/hard-refresh and test Step 5 save again. If save redirects to Cards Index and row appears in `DashboardCards`, proceed to next planned fix for dashboard render: SqlTable DataSourceType mapping / Chart.js preview migration.

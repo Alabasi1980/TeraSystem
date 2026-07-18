@@ -44,8 +44,9 @@
         <!-- Main Form Area (Left/Top) -->
         <div class="wb-form-pane">
             <form method="post" id="wb-form" class="wb-form" novalidate>
+                @Html.AntiForgeryToken()
 
-                <div asp-validation-summary="ModelOnly" class="wd-error"></div>
+                <div asp-validation-summary="All" class="wd-error" role="alert" aria-live="polite"></div>
 
                 <!-- Step 1: Type Picker -->
                 <fieldset class="wb-step-panel" data-step="1" aria-labelledby="wb-step1-title" role="group">
@@ -533,7 +534,7 @@
 
 @section Scripts {
     <script src="~/js/card-templates.js"></script>
-    <script src="~/js/card-builder.js?v=20260717"></script>
+    <script src="~/js/card-builder.js?v=20260718-022A"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             window.wbBuilder = new CardBuilderWizard({

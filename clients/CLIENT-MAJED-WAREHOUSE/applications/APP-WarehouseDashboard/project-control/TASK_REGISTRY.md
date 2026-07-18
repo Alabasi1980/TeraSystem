@@ -69,6 +69,8 @@
 | TASK-COD-028 | Fix Builder Styles section mismatch (_CardsLayout missing RenderSection) | engineering-agent | ✅ Accepted (build PASS) | FIX | 2026-07-14 |
 | TASK-COD-029 | Oracle Source Mapping Wizard (4-step wizard + Oracle discovery + Query validation + Preview) | engineering-agent | ✅ Accepted (build PASS) | B11 | 2026-07-14 |
 | PLAN-CARD-BUILDER | Card Builder UX Plan (visual, mouse-friendly) | TeraAgent | 🟡 Draft | PREP | 2026-07-14 |
+| TASK-COD-FIX-021 | Fix Card Builder Save Antiforgery Token | engineering-agent | ✅ Accepted (fallback build PASS) | FIX | 2026-07-18 |
+| TASK-COD-FIX-022A | Fix Card Builder ModelState Save Return + Safe Save Diagnostics | engineering-agent | ✅ Accepted (build PASS) | FIX | 2026-07-18 |
 
 ---
 

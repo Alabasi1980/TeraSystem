@@ -92,18 +92,18 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public int GridHeight { get; set; } = 2;
 
         /// <summary>
-        /// Grid X position (0-11, auto = -1)
+        /// Grid X position (0-11, auto = null)
         /// </summary>
         [BindProperty]
         [JsonPropertyName("gridX")]
-        public int GridX { get; set; } = -1;
+        public int? GridX { get; set; }
 
         /// <summary>
-        /// Grid Y position (0+, auto = -1)
+        /// Grid Y position (0+, auto = null)
         /// </summary>
         [BindProperty]
         [JsonPropertyName("gridY")]
-        public int GridY { get; set; } = -1;
+        public int? GridY { get; set; }
 
         /// <summary>
         /// Chart color palette selection
@@ -300,11 +300,19 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
 
         public async Task<IActionResult> OnPostAsync(string action)
         {
+            _logger.LogInformation("Card Builder POST started");
+            _logger.LogInformation("Card Builder POST action: {Action}", string.IsNullOrWhiteSpace(action) ? "<empty>" : action);
+            _logger.LogInformation("Card Builder POST SqlQuery present: {SqlQueryPresent}", !string.IsNullOrWhiteSpace(SqlQuery));
+
             // Load reference data for validation errors
             await LoadOracleTablesAsync();
 
+            _logger.LogInformation("Card Builder POST ModelState valid: {IsValid}", ModelState.IsValid);
+
             if (!ModelState.IsValid)
             {
+                LogModelStateErrors();
+                ModelState.AddModelError(string.Empty, "تعذر حفظ البطاقة. يرجى مراجعة الحقول المطلوبة والقيم المدخلة ثم المحاولة مرة أخرى.");
                 return Page();
             }
 
@@ -344,7 +352,9 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                         RelativeDays = dto.RelativeDays > 0 ? dto.RelativeDays : 30
                     };
                     _db.DashboardCards.Add(entity);
+                    _logger.LogInformation("Card Builder SaveChangesAsync starting for action {Action}", action);
                     await _db.SaveChangesAsync();
+                    _logger.LogInformation("Card Builder SaveChangesAsync completed. Inserted DashboardCard id: {DashboardCardId}", entity.Id);
 
                     TempData["ToastMessage"] = action == "saveAndAddAnother"
                         ? "تم حفظ البطاقة. جاري إنشاء بطاقة جديدة..."
@@ -483,8 +493,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 DisplayName = DisplayName,
                 GridWidth = GridWidth,
                 GridHeight = GridHeight,
-                GridX = GridX >= 0 ? GridX : null,
-                GridY = GridY >= 0 ? GridY : null,
+                GridX = GridX.HasValue && GridX.Value >= 0 ? GridX.Value : null,
+                GridY = GridY.HasValue && GridY.Value >= 0 ? GridY.Value : null,
                 ColorPalette = ColorPalette,
                 RefreshIntervalSeconds = RefreshInterval,
                 // Advanced KPI
@@ -506,6 +516,34 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
+        }
+
+        private void LogModelStateErrors()
+        {
+            foreach (var entry in ModelState.Where(e => e.Value?.Errors.Count > 0))
+            {
+                var fieldName = string.IsNullOrWhiteSpace(entry.Key) ? "<model>" : entry.Key;
+                var sanitizedErrors = entry.Value!.Errors
+                    .Select(error => SanitizeLogMessage(error.ErrorMessage))
+                    .Where(message => !string.IsNullOrWhiteSpace(message))
+                    .ToArray();
+
+                _logger.LogWarning(
+                    "Card Builder ModelState invalid field {FieldName}: {Errors}",
+                    fieldName,
+                    sanitizedErrors.Length == 0 ? "<no message>" : string.Join(" | ", sanitizedErrors));
+            }
+        }
+
+        private static string SanitizeLogMessage(string? message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                return string.Empty;
+            }
+
+            var sanitized = message.Replace("\r", " ").Replace("\n", " ").Trim();
+            return sanitized.Length <= 300 ? sanitized : sanitized[..300];
         }
 
         private DashboardCardDto BuildCardFromRequest(PreviewRequest request)

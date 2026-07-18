@@ -696,3 +696,11 @@
 - Summary: Tera1 confirmed the Name field feature was added successfully. Tera1 also modified `Builder.cshtml.cs` line 412 — changed `LoadOracleTablesAsync()` dropdown text from `t.OracleSource` to `t.Name` to match the new Name field. Tera2 verified the change is in place and consistent with Active.cshtml.cs and card-builder.js updates.
 - Decision / Result: ✅ Change confirmed. `Builder.cshtml.cs` uses `t.Name` in the Card Builder dropdown. No conflicts with Tera2's work.
 - Next Action: Continue with remaining tasks. If modifying `Builder.cshtml.cs`, read from disk first (Fresh File Read Rule).
+
+## [2026-07-18 10:00] - AUDITOR_QUALITY_GATE: Card Builder Full Audit
+
+- Related Task: AUDIT-CARDBUILDER-001
+- Actor: Tera → Auditor → Tera
+- Summary: تم تفعيل المدقق (Auditor) لتدقيق شامل على معالج البطاقات (Card Builder Wizard) بالكامل — جميع الخطوات الخمس، سلسلة الحفظ، المعاينة، وملفات الخادم. الهدف: اكتشاف كل ما يمنع حفظ البطاقة في المرحلة الأخيرة.
+- Decision / Result: **Overall Quality Gate: BLOCKED** — 4 STOP, 6 CAUTION, 5 FLAG. التقرير الكامل: `project-control/audit-reports/QUAUD-CARDBUILDER-001-2026-07-18-001.md`
+- Next Action: وضع خطة إصلاح شاملة لجميع الـ findings وعرضها على المستخدم للاعتماد.
