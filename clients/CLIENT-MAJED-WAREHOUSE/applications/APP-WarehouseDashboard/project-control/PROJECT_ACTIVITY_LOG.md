@@ -16,6 +16,14 @@
 
 ## Activity Log
 
+## [2026-07-19 00:45] - TASK_IMPLEMENTED_REVIEWED
+
+- Related Task: TASK-DASH-FIX-008
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Fixed dashboard card layout overlap by removing explicit `grid-column-start` and `grid-row-start` from card inline style. CSS Grid auto-flow (`row dense`) now handles positioning based on span classes only.
+- Decision / Result: Code review PASS; single inline style removal; `dotnet build --no-restore` PASS with 0 warnings and 0 errors. Auditor Review Decision: NOT_REQUIRED.
+- Next Action: User runtime test: resize cards to S/M/L combinations and verify no overlapping.
+
 ## [2026-07-19 00:30] - TASK_IMPLEMENTED_REVIEWED
 
 - Related Task: TASK-DASH-FIX-007

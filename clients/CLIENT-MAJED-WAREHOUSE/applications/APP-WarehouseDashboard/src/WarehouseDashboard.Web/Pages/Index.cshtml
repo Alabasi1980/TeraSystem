@@ -424,7 +424,7 @@ else
                 var cardHeight = Math.Max(200, h * 90 + (h - 1) * 24);
                 var canDrill = Model.CardsWithDrill.Contains(c.Id);
                 <article class="wd-card wd-span-@w wd-row-@h@(canDrill ? " wd-card--drillable" : "")"
-                         style="grid-column-start: @colStart; grid-row-start: @rowStart; height: @(cardHeight)px; animation-delay: @(i * 70)ms;@(canDrill ? " cursor:pointer;" : "")"
+                         style="height: @(cardHeight)px; animation-delay: @(i * 70)ms;@(canDrill ? " cursor:pointer;" : "")"
                          id="card-@c.Id"
                          data-card-id="@c.Id"
                          data-grid-height="@h"
