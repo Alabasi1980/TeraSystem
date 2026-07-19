@@ -44,6 +44,9 @@ builder.Services.AddScoped<DashboardService>();
 // Card Builder service (TASK-COD-026)
 builder.Services.AddScoped<CardBuilderService>();
 
+// DashboardManageService — used by admin Dashboard pages (Index, Create, Edit)
+builder.Services.AddScoped<DashboardManageService>();
+
 // Dynamic table mapping services (TASK-COD-025)
 builder.Services.AddScoped<OracleSchemaService>();
 builder.Services.AddScoped<SchemaManagementService>();

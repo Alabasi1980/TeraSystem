@@ -78,6 +78,24 @@
 [data-theme="midnight"] .wd-empty__icon { background: var(--c-surface-muted); color: var(--c-text-muted); }
 [data-theme="midnight"] .wd-conn { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.10); }
 [data-theme="midnight"] .wd-sync-status { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.10); }
+/* --- Dark mode resize/refresh controls (TASK-DASH-005) --- */
+[data-theme="midnight"] .wd-resize-btn { background: var(--c-surface-muted); border-color: var(--c-border); color: var(--c-text-muted); }
+[data-theme="midnight"] .wd-resize-btn:hover { background: var(--c-bg); color: var(--c-text); }
+[data-theme="midnight"] .wd-resize-btn.active { background: var(--c-primary); color: #fff; border-color: var(--c-primary); }
+[data-theme="midnight"] .wd-card__refresh { color: var(--c-text-muted); }
+[data-theme="midnight"] .wd-card__refresh:hover { background: var(--c-surface-muted); color: var(--c-primary); }
+/* --- ApexCharts dark mode overrides (TASK-DASH-004) --- */
+[data-theme="midnight"] .apexcharts-canvas { background: transparent !important; }
+[data-theme="midnight"] .apexcharts-text { fill: var(--c-text) !important; }
+[data-theme="midnight"] .apexcharts-gridline { stroke: var(--c-border) !important; }
+[data-theme="midnight"] .apexcharts-tooltip { background: var(--c-surface) !important; color: var(--c-text) !important; border: 1px solid var(--c-border) !important; }
+[data-theme="midnight"] .apexcharts-tooltip-title { background: var(--c-surface-muted) !important; color: var(--c-text) !important; border-bottom: 1px solid var(--c-border) !important; }
+[data-theme="midnight"] .apexcharts-xaxistooltip,
+[data-theme="midnight"] .apexcharts-yaxistooltip { background: var(--c-surface) !important; color: var(--c-text) !important; }
+[data-theme="midnight"] .apexcharts-legend-text { color: var(--c-text-muted) !important; }
+[data-theme="midnight"] .apexcharts-radialbar-area { opacity: 0.95; }
+/* --- Dark mode modal overlay --- */
+[data-theme="midnight"] .wd-modal__overlay { background: rgba(0,0,0,0.7); }
 [data-theme="emerald"] {
     --c-primary:        #1a7a4a;
     --c-primary-strong: #0f5c37;
@@ -335,11 +353,14 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
 }
 .wd-skel {
     height: 16px; border-radius: var(--radius-sm);
-    background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.08) 50%, var(--c-surface-muted) 75%);
+    background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
     background-size: 200% 100%;
-    animation: wdShimmer 1.6s ease-in-out infinite;
+    animation: wdShimmer 1.5s ease-in-out infinite;
 }
 .wd-skel--tall { height: 120px; border-radius: var(--radius-md); }
+.wd-skel--chart { height: 180px; border-radius: var(--radius-md); }
+.wd-skel--kpi { height: 100px; border-radius: var(--radius-md); }
+.wd-skel--table { height: 200px; border-radius: var(--radius-md); }
 @keyframes wdShimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
@@ -460,6 +481,54 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     overflow: auto;
     animation: wdSlideUp 0.3s ease both;
 }
+
+/* ===== Drill-down Modal (TASK-DASH-004) ===== */
+.wd-modal {
+    position: fixed; inset: 0; z-index: 3000;
+    display: flex; align-items: center; justify-content: center;
+    padding: var(--sp-4);
+}
+.wd-modal[hidden] { display: none !important; }
+.wd-modal__overlay {
+    position: absolute; inset: 0;
+    background: rgba(10,37,64,0.6);
+    backdrop-filter: blur(4px);
+    animation: wdFadeIn 0.2s ease both;
+}
+.wd-modal__panel {
+    position: relative;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    width: min(900px, 90vw);
+    max-height: 85vh;
+    display: flex; flex-direction: column;
+    animation: wdSlideUp 0.3s ease both;
+}
+.wd-modal__header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--sp-6);
+    border-bottom: 1px solid var(--c-border);
+}
+.wd-modal__title { font-size: 18px; font-weight: 700; margin: 0; color: var(--c-text); }
+.wd-modal__close {
+    background: none; border: none;
+    font-size: 24px; cursor: pointer;
+    color: var(--c-text-muted);
+    padding: 4px 8px; border-radius: var(--radius-md);
+    transition: background var(--dur-fast) var(--ease);
+}
+.wd-modal__close:hover { background: var(--c-surface-muted); }
+.wd-modal__breadcrumb {
+    padding: var(--sp-3) var(--sp-6);
+    font-size: 13px; color: var(--c-text-muted);
+    display: flex; align-items: center; flex-wrap: wrap;
+}
+.wd-modal__body {
+    flex: 1 1 auto; overflow: auto;
+    padding: var(--sp-6);
+}
 .wd-hud__header {
     display: flex; align-items: center; justify-content: space-between;
     padding: var(--sp-6) var(--sp-6) 0;
@@ -559,6 +628,127 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     border: 2px solid var(--c-border); flex: none;
 }
 
+/* ============================ Drag-and-Drop States (TASK-DASH-005) ============================ */
+.wd-card--ghost {
+    opacity: 0.4;
+    border: 2px dashed var(--c-primary);
+    box-shadow: none;
+}
+.wd-card--drag {
+    box-shadow: var(--shadow-xl);
+    transform: scale(1.02);
+    z-index: 50;
+}
+.wd-dashboard-grid .wd-card.sortable-ghost {
+    opacity: 0.4;
+    border: 2px dashed var(--c-primary);
+    box-shadow: none;
+}
+.wd-dashboard-grid .wd-card.sortable-chosen {
+    box-shadow: var(--shadow-xl);
+    transform: scale(1.02);
+    z-index: 50;
+}
+.wd-dashboard-grid .wd-card.sortable-drag {
+    opacity: 0.95;
+    box-shadow: var(--shadow-xl);
+    transform: scale(1.02);
+}
+
+/* ============================ Card Resize Controls (TASK-DASH-005) ============================ */
+.wd-card__controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-inline-start: auto;
+}
+.wd-card__resize {
+    display: flex;
+    gap: 2px;
+}
+.wd-resize-btn {
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-sm);
+    background: var(--c-surface);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--c-text-muted);
+    font-family: var(--font-ar);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all var(--dur-fast) var(--ease);
+}
+.wd-resize-btn:hover {
+    background: var(--c-surface-muted);
+    color: var(--c-text);
+}
+.wd-resize-btn.active {
+    background: var(--c-primary);
+    color: #fff;
+    border-color: var(--c-primary);
+}
+.wd-resize-btn:focus-visible {
+    outline: 2px solid var(--c-secondary);
+    outline-offset: 1px;
+}
+
+/* ============================ Per-card Refresh (TASK-DASH-005) ============================ */
+.wd-card__refresh {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--radius-full);
+    background: transparent;
+    cursor: pointer;
+    color: var(--c-text-muted);
+    padding: 0;
+    transition: all var(--dur-fast) var(--ease);
+    flex-shrink: 0;
+}
+.wd-card__refresh:hover {
+    background: var(--c-surface-muted);
+    color: var(--c-primary);
+}
+.wd-card__refresh:focus-visible {
+    outline: 2px solid var(--c-secondary);
+    outline-offset: 1px;
+}
+.wd-card__refresh.spinning svg {
+    animation: wdSpin 1s linear infinite;
+}
+@keyframes wdSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ============================ Layout Saved Toast (TASK-DASH-005) ============================ */
+.wd-layout-saved {
+    position: fixed;
+    bottom: 24px;
+    inset-inline-start: 24px;
+    background: var(--c-success);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-ar);
+    animation: wdFadeUp 0.3s ease both;
+    z-index: 1000;
+    box-shadow: var(--shadow-lg);
+}
+
+/* Card cursor: grab for drag handle */
+.wd-card__header { cursor: default; }
+
 /* ============================ Responsive (§5) ============================ */
 /* Tablet: ignore absolute X / Y placement, keep spans (shrunk), auto-pack densely. */
 @media (max-width: 1199px) {
@@ -620,4 +810,35 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     .wd-topbar__actions {
         gap: var(--sp-2);
     }
+
+    /* Modal mobile (TASK-DASH-004) */
+    .wd-modal {
+        padding: var(--sp-2);
+    }
+    .wd-modal__panel {
+        width: 100%;
+        max-height: 90vh;
+    }
+    .wd-modal__header {
+        padding: var(--sp-4);
+    }
+    .wd-modal__body {
+        padding: var(--sp-4);
+    }
+
+    /* Date presets mobile (TASK-DASH-004) */
+    .wd-filterbar__presets {
+        width: 100%;
+    }
+    .wd-filterbar__custom-dates {
+        width: 100%;
+    }
+    .wd-filterbar__date-input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* Resize controls mobile (TASK-DASH-005) */
+    .wd-resize-btn { width: 22px; height: 22px; font-size: 10px; }
+    .wd-card__refresh { width: 26px; height: 26px; }
 }

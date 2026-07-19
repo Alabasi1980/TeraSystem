@@ -29,11 +29,18 @@ public class DashboardService
         _config = config;
     }
 
-    /// <summary>Active cards ordered for layout (GridPositionY, then GridPositionX).</summary>
-    public Task<List<DashboardCard>> GetActiveCardsAsync(CancellationToken ct = default)
+    /// <summary>
+    /// Active cards ordered for layout (GridPositionY, then GridPositionX).
+    /// When <paramref name="dashboardId"/> is provided, only cards belonging to that dashboard are returned.
+    /// </summary>
+    public Task<List<DashboardCard>> GetActiveCardsAsync(int? dashboardId = null, CancellationToken ct = default)
     {
-        return _db.DashboardCards
-            .Where(c => c.IsActive)
+        var query = _db.DashboardCards.Where(c => c.IsActive);
+
+        if (dashboardId.HasValue)
+            query = query.Where(c => c.DashboardId == dashboardId.Value);
+
+        return query
             .OrderBy(c => c.GridPositionY)
             .ThenBy(c => c.GridPositionX)
             .ToListAsync(ct);
@@ -318,9 +325,24 @@ public class DashboardService
         string baseSql;
         if (card.DataSourceType.Equals("View", StringComparison.OrdinalIgnoreCase))
         {
-            var viewName = card.SqlQuery.Trim().TrimEnd(';').Trim();
-            var safe = viewName.StartsWith("[", StringComparison.Ordinal) ? viewName : $"[{viewName}]";
-            baseSql = $"SELECT * FROM {safe}";
+            var trimmed = card.SqlQuery.Trim().TrimEnd(';').Trim();
+
+            // The SqlQuery may be a bare table/view name OR a full query
+            // (e.g. a pre-aggregated KPI query built for a SqlTable source:
+            // "SELECT SUM([TOTAL]) AS [TOTAL] FROM [stg_st_invoice_dtl]").
+            // Detect a full query and use it verbatim; otherwise treat it as a name.
+            var isFullQuery = trimmed.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase)
+                             || trimmed.Contains(" FROM ", StringComparison.OrdinalIgnoreCase);
+
+            if (isFullQuery)
+            {
+                baseSql = trimmed;
+            }
+            else
+            {
+                var safe = trimmed.StartsWith("[", StringComparison.Ordinal) ? trimmed : $"[{trimmed}]";
+                baseSql = $"SELECT * FROM {safe}";
+            }
         }
         else
         {

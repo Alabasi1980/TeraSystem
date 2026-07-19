@@ -15,6 +15,7 @@ public class WarehouseDashboardDbContext : DbContext
     {
     }
 
+    public DbSet<Dashboard> Dashboards => Set<Dashboard>();
     public DbSet<DashboardCard> DashboardCards => Set<DashboardCard>();
     public DbSet<CardDrillDownLevel> CardDrillDownLevels => Set<CardDrillDownLevel>();
     public DbSet<SyncSetting> SyncSettings => Set<SyncSetting>();
@@ -25,6 +26,64 @@ public class WarehouseDashboardDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // -------------------------------------------------------------------
+        // Dashboards (TASK-DASH-001 / DASH-002)
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<Dashboard>(entity =>
+        {
+            entity.ToTable("Dashboards");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.Slug)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.Description)
+                .HasColumnType("nvarchar(500)")
+                .HasDefaultValue("");
+
+            entity.Property(e => e.Icon)
+                .HasMaxLength(10)
+                .HasDefaultValue("\U0001F4CA");
+
+            entity.Property(e => e.SortOrder)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            entity.Property(e => e.IsActive)
+                .IsRequired()
+                .HasDefaultValue(true);
+
+            entity.Property(e => e.IsDefault)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            entity.Property(e => e.UpdatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            // Unique slug (case-insensitive enforced at service level)
+            entity.HasIndex(e => e.Slug)
+                .IsUnique()
+                .HasDatabaseName("IX_Dashboards_Slug");
+
+            entity.HasIndex(e => e.IsActive)
+                .HasDatabaseName("IX_Dashboards_IsActive");
+            entity.HasIndex(e => e.SortOrder)
+                .HasDatabaseName("IX_Dashboards_SortOrder");
+        });
 
         // -------------------------------------------------------------------
         // DashboardCards (spec §1.1)
@@ -162,6 +221,15 @@ public class WarehouseDashboardDbContext : DbContext
                 .HasDatabaseName("IX_DashboardCards_IsActive");
             entity.HasIndex(e => new { e.GridPositionX, e.GridPositionY })
                 .HasDatabaseName("IX_DashboardCards_GridPositionX_GridPositionY");
+
+            // FK → Dashboards (SET NULL on delete: orphan cards keep working)
+            entity.HasOne(e => e.Dashboard)
+                .WithMany()
+                .HasForeignKey(e => e.DashboardId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(e => e.DashboardId)
+                .HasDatabaseName("IX_DashboardCards_DashboardId");
         });
 
         // -------------------------------------------------------------------

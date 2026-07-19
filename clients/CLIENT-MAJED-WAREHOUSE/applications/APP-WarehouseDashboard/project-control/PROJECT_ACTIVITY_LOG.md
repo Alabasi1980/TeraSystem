@@ -16,6 +16,22 @@
 
 ## Activity Log
 
+## [2026-07-18 21:25] - DEPLOYMENT_FIX
+
+- Related Task: TASK-COD-FIX-031B
+- Actor: TeraAgent
+- Summary: User reported card #3 (الوحدات) failing with "Incorrect syntax near ')' / Unclosed quotation mark after 'stg_ST_UNITS]'". Root cause: the running app (PID 18880) was locking WarehouseDashboard.Web.exe and was running the PRE-FIX BuildSql (which wrapped the pre-aggregated query as `SELECT * FROM [SELECT SUM(...) FROM [...]]`). The FIX-031B code was never deployed. Killed the running process, rebuilt (0 errors), confirmed updated DLL timestamp.
+- Decision / Result: ✅ Rebuilt with fixed code. App must be restarted by user to pick up new DLL. Card #3 data note: AggregationType=Count but SqlQuery uses SUM([UNIT_CODE]) — works after fix (BuildSql detects SUM( and returns verbatim) but the aggregation type is logically inconsistent (Count vs SUM); user may want to recreate the card correctly.
+- Next Action: User restarts the app (dotnet run / IIS Express) and re-tests card #3.
+
+## [2026-07-18 14:00] - TASK_ASSIGNED_AND_ACCEPTED
+
+- Related Task: TASK-COD-FIX-031B
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Fixed two bugs in Card Builder: (1) `OnPostAsync(string action)` renamed to `[FromForm] string action` so the save button's posted `action=save` actually binds (previously arrived null → silent skip, no save); (2) `DashboardService.BuildSql` View branch now detects a full query (`SELECT`/` FROM `) and uses it verbatim instead of wrapping with `SELECT * FROM [...]` (which produced invalid SQL for SqlTable KPI cards storing `SELECT SUM(...) AS [...] FROM [...]`).
+- Decision / Result: ✅ PASS. Build 0 errors. Files: `Builder.cshtml.cs` (L340), `DashboardService.cs` (L316-343). No model/schema/migration changes; JS unchanged (Option A).
+- Next Action: Await user live test (create a SqlTable KPI card, confirm it appears in Dashboard + admin list). Review flagged `KpiQueryBuilder` re-wrap risk for withChange mode separately if it misbehaves.
+
 ## [2026-07-16 10:00] - COMMIT_AND_PUSH
 
 - Related Task: N/A

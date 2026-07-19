@@ -18,6 +18,7 @@ public class IndexModel : PageModel
     }
 
     public int CardsCount { get; set; }
+    public int DashboardsCount { get; set; }
     public int MappingsCount { get; set; }
     public int SyncLogsCount { get; set; }
     public int DrillLevelsCount { get; set; }
@@ -25,6 +26,7 @@ public class IndexModel : PageModel
     public async Task OnGetAsync()
     {
         ViewData["Title"] = "لوحة الإدارة";
+        DashboardsCount = await _db.Dashboards.CountAsync();
         CardsCount = await _db.DashboardCards.CountAsync();
         MappingsCount = await _db.TableMappings.CountAsync();
         DrillLevelsCount = await _db.CardDrillDownLevels.CountAsync();

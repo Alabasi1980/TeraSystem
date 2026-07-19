@@ -1,7 +1,7 @@
-@page
+@page "{slug?}"
 @model WarehouseDashboard.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = "لوحة المعلومات";
+    ViewData["Title"] = Model.CurrentDashboard?.Name ?? "لوحة المعلومات";
     Layout = "_DashboardLayout";
 }
 
@@ -207,6 +207,7 @@
 
     /* ===== Feature: Focus Mode ===== */
     .wd-dashboard--focus .wd-topbar,
+    .wd-dashboard--focus .wd-tab-bar,
     .wd-dashboard--focus .wd-page-head,
     .wd-dashboard--focus .wd-filterbar,
     .wd-dashboard--focus .wd-footer-area { display: none; }
@@ -229,11 +230,93 @@
         margin-bottom: var(--sp-1);
         font-weight: 500;
     }
+
+    /* ===== Quick Date Presets (TASK-DASH-004) ===== */
+    .wd-filterbar__presets {
+        display: flex;
+        gap: var(--sp-2);
+        flex-wrap: wrap;
+    }
+    .wd-preset-btn {
+        padding: 6px 12px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--c-border);
+        background: var(--c-surface);
+        font-family: var(--font-ar);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-text-muted);
+        cursor: pointer;
+        transition: all var(--dur-fast) var(--ease);
+        white-space: nowrap;
+    }
+    .wd-preset-btn:hover {
+        background: var(--c-surface-muted);
+        color: var(--c-text);
+    }
+    .wd-preset-btn.active {
+        background: var(--c-primary);
+        color: #fff;
+        border-color: var(--c-primary);
+    }
+    .wd-filterbar__custom-dates {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+    }
+    .wd-filterbar__date-input {
+        font-family: var(--font-ar);
+        font-size: 13px;
+        color: var(--c-text);
+        background: var(--c-bg);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        padding: 6px 10px;
+        cursor: pointer;
+    }
+    .wd-filterbar__date-input:focus {
+        outline: none;
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31, 78, 121, 0.18);
+    }
+    .wd-filterbar__date-sep {
+        color: var(--c-text-muted);
+        font-size: 13px;
+    }
+
+    /* ===== Drill-down Modal Breadcrumbs (TASK-DASH-004) ===== */
+    .wd-modal__crumb {
+        font-size: 13px;
+        color: var(--c-text-muted);
+        background: none;
+        border: none;
+        cursor: default;
+        font-family: var(--font-ar);
+        padding: 2px 4px;
+    }
+    .wd-modal__crumb--link {
+        color: var(--c-primary);
+        cursor: pointer;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+    }
+    .wd-modal__crumb--link:hover {
+        color: var(--c-primary-strong);
+    }
+    .wd-modal__crumb--active {
+        color: var(--c-text);
+        font-weight: 600;
+    }
+    .wd-modal__crumb-sep {
+        margin: 0 var(--sp-1);
+        color: var(--c-text-muted);
+        font-size: 12px;
+    }
 </style>
 
 <div class="wd-page-head">
     <div style="display:flex;align-items:center;gap:8px;">
-        <h2 class="wd-page-title">لوحة المعلومات</h2>
+        <h2 class="wd-page-title">@(Model.CurrentDashboard?.Name ?? "لوحة المعلومات")</h2>
         <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm" id="wd-focus-toggle" title="وضع التركيز" aria-label="وضع التركيز">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M8 3H5a2 2 0 00-2 2v3"/><path d="M21 8V5a2 2 0 00-2-2h-3"/><path d="M16 21h3a2 2 0 002-2v-3"/><path d="M3 16v3a2 2 0 002 2h3"/>
@@ -242,6 +325,23 @@
     </div>
     <span class="wd-card__type">@Model.Cards.Count بطاقة نشطة</span>
 </div>
+
+@if (Model.AllDashboards.Count > 1)
+{
+    <nav class="wd-tab-bar" aria-label="التنقل بين الداشبوردات">
+        @foreach (var dash in Model.AllDashboards)
+        {
+            var isActive = dash.Id == Model.CurrentDashboard?.Id;
+            var href = string.IsNullOrEmpty(dash.Slug) ? "/" : "/" + dash.Slug;
+            <a href="@href"
+               class="wd-tab @(isActive ? "wd-tab--active" : "")"
+               aria-current="@(isActive ? "page" : "false")">
+                <span class="wd-tab__icon">@dash.Icon</span>
+                <span class="wd-tab__label">@dash.Name</span>
+            </a>
+        }
+    </nav>
+}
 
 @if (Model.ConfigError)
 {
@@ -293,12 +393,25 @@ else
             <option value="Table">جدول (Table)</option>
             <option value="Gauge">مقياس (Gauge)</option>
         </select>
+        <div class="wd-filterbar__presets" role="group" aria-label="اختيارات التاريخ السريعة">
+            <button class="wd-preset-btn active" data-preset="today">اليوم</button>
+            <button class="wd-preset-btn" data-preset="yesterday">أمس</button>
+            <button class="wd-preset-btn" data-preset="7days">آخر 7 أيام</button>
+            <button class="wd-preset-btn" data-preset="30days">آخر 30 يوم</button>
+            <button class="wd-preset-btn" data-preset="month">هذا الشهر</button>
+            <button class="wd-preset-btn" data-preset="custom">مخصص</button>
+        </div>
+        <div class="wd-filterbar__custom-dates wd-hidden" id="wd-custom-dates">
+            <input type="date" id="wd-date-from" class="wd-filterbar__date-input" aria-label="من تاريخ" />
+            <span class="wd-filterbar__date-sep">—</span>
+            <input type="date" id="wd-date-to" class="wd-filterbar__date-input" aria-label="إلى تاريخ" />
+        </div>
         <span class="wd-filterbar__count" id="wd-filter-count"></span>
     </div>
 
     <span class="wd-last-updated" id="wd-last-updated">آخر تحديث: الآن</span>
 
-    <div class="wd-dashboard-grid">
+    <div class="wd-dashboard-grid" id="wd-dashboard-grid">
         @for (var i = 0; i < Model.Cards.Count; i++)
         {
             var c = Model.Cards[i];
@@ -313,12 +426,29 @@ else
                          id="card-@c.Id"
                          data-card-id="@c.Id"
                          data-grid-height="@h"
+                         data-grid-x="@colStart"
+                         data-grid-y="@rowStart"
+                         data-grid-w="@w"
+                         data-grid-h="@h"
                          data-title="@c.Title"
                          data-chart-type="@c.ChartType"
                          @(canDrill ? "onclick=\"wdOpenDrill(" + c.Id + ")\" role=\"button\" tabindex=\"0\" onkeydown=\"if(event.key==='Enter')wdOpenDrill(" + c.Id + ")\"" : "")>
                     <div class="wd-card__header">
                         <h3 class="wd-card__title">@c.Title</h3>
-                        <span class="wd-card__type">@c.ChartType</span>
+                        <div class="wd-card__controls">
+                            <div class="wd-card__resize" role="group"تغيير حجم البطاقة">
+                                <button class="wd-resize-btn @(w <= 3 ? "active" : "")" data-size="small" title="صغير" type="button">S</button>
+                                <button class="wd-resize-btn @(w > 3 && w <= 7 ? "active" : "")" data-size="medium" title="متوسط" type="button">M</button>
+                                <button class="wd-resize-btn @(w > 7 ? "active" : "")" data-size="large" title="كبير" type="button">L</button>
+                            </div>
+                            <button class="wd-card__refresh" title="تحديث البطاقة" type="button" aria-label="تحديث البطاقة">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+                                    <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                                </svg>
+                            </button>
+                            <span class="wd-card__type">@c.ChartType</span>
+                        </div>
                     </div>
                     <div class="wd-card__body">
                         <div class="wd-skeleton-wrap" aria-hidden="true">
@@ -338,6 +468,23 @@ else
             <h3>لا توجد بطاقات مطابقة</h3>
             <p>جرّب تعديل كلمة البحث أو نوع الرسم البياني.</p>
         </div>
+
+        @* Drill-down Modal (TASK-DASH-004) — in-page, not page navigation *@
+        <div id="wd-drill-modal" class="wd-modal" hidden aria-modal="true" role="dialog">
+            <div class="wd-modal__overlay" tabindex="-1"></div>
+            <div class="wd-modal__panel">
+                <div class="wd-modal__header">
+                    <h3 class="wd-modal__title" id="wd-drill-modal-title"></h3>
+                    <button class="wd-modal__close" aria-label="إغلاق" type="button">&times;</button>
+                </div>
+                <div class="wd-modal__breadcrumb" id="wd-drill-modal-breadcrumb"></div>
+                <div class="wd-modal__body" id="wd-drill-modal-body">
+                    <div class="wd-skeleton-wrap" aria-hidden="true">
+                        <div class="wd-skel wd-skel--tall"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 
 @section Scripts {
@@ -351,6 +498,7 @@ else
         (function () {
             var PALETTE = window.WD_PALETTE || ['#1F4E79', '#163A5A', '#2E6DA4', '#0A2540', '#8FBCDE', '#5B7A99'];
             var CHARTS = {}; // id -> control instance (for resize refresh)
+            window.CHARTS_INSTANCES = CHARTS; // Expose for resize handler (TASK-DASH-005)
 
             // Shared utilities (toNum, isNum, formatNum, escapeHtml, showToast,
             // wdEmptyHtml, wdErrorHtml) are provided by ~/js/dashboard-utils.js.
@@ -415,33 +563,40 @@ else
             }
 
             function wdRenderSparkline(container, data) {
-                var chartData = data.map(function(r) {
-                    return { label: r.Month || r.month || '', value: toNum(r.MonthlyValue || r.monthlyValue || 0) };
+                var values = data.map(function(r) {
+                    return toNum(r.MonthlyValue || r.monthlyValue || 0);
                 });
+                var isDark = document.documentElement.getAttribute('data-theme') === 'midnight';
+                var sparkColor = isDark ? '#6baadf' : '#1F4E79';
+                var sparkFill = isDark ? 'rgba(107,170,223,0.12)' : 'rgba(31,78,121,0.10)';
 
-                var chart = new Chart(container, {
-                    type: 'line',
-                    data: {
-                        labels: chartData.map(function(r) { return r.label; }),
-                        datasets: [{
-                            data: chartData.map(function(r) { return r.value; }),
-                            borderColor: '#1F4E79',
-                            borderWidth: 2,
-                            pointRadius: 0,
-                            fill: false,
-                            tension: 0.3
-                        }]
+                var chartConfig = {
+                    chart: {
+                        type: 'line',
+                        height: 60,
+                        sparkline: { enabled: true },
+                        background: 'transparent',
+                        rtl: true
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false }, tooltip: { enabled: true, backgroundColor: '#0A2540', titleColor: '#fff', bodyColor: '#fff' } },
-                        scales: {
-                            x: { display: false },
-                            y: { display: false }
+                    series: [{ data: values }],
+                    stroke: { curve: 'smooth', width: 2 },
+                    colors: [sparkColor],
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.4,
+                            opacityTo: 0.05,
+                            stops: [0, 100]
                         }
-                    }
-                });
+                    },
+                    tooltip: { enabled: false },
+                    xaxis: { show: false },
+                    yaxis: { show: false }
+                };
+
+                var chart = new ApexCharts(container, chartConfig);
+                chart.render();
             }
 
             function clearBody(el) {
@@ -497,81 +652,165 @@ else
                 var typeMap = { Bar: 'bar', Line: 'line', Pie: 'pie' };
                 var type = typeMap[card.chartType] || 'bar';
                 var isPie = card.chartType === 'Pie';
+                var isLine = card.chartType === 'Line';
+                var isBar = card.chartType === 'Bar';
+
+                var seriesData = data.map(function(r) { return r.value; });
+                var labels = data.map(function(r) { return r.label; });
+
+                var series;
+                if (isPie) {
+                    series = seriesData;
+                } else {
+                    series = [{ name: card.title, data: seriesData }];
+                }
+
+                var isDark = document.documentElement.getAttribute('data-theme') === 'midnight';
+                var gridColor = isDark ? '#3a4555' : '#D4E2F0';
+                var textColor = isDark ? '#8a95a3' : '#5B7A99';
+                var tooltipBg = isDark ? '#232a34' : '#0A2540';
 
                 var chartConfig = {
-                    type: type,
-                    data: {
-                        labels: data.map(function(r) { return r.label; }),
-                        datasets: [{
-                            label: card.title,
-                            data: data.map(function(r) { return r.value; }),
-                            backgroundColor: isPie ? PALETTE : '#1F4E79',
-                            borderColor: isPie ? undefined : '#1F4E79',
-                            borderWidth: isPie ? 0 : 1,
-                            borderRadius: card.chartType === 'Bar' ? 4 : 0,
-                            fill: card.chartType === 'Line',
-                            tension: card.chartType === 'Line' ? 0.3 : 0,
-                            pointRadius: card.chartType === 'Line' ? 3 : undefined,
-                            pointBackgroundColor: card.chartType === 'Line' ? '#1F4E79' : undefined
-                        }]
+                    chart: {
+                        type: type,
+                        height: '100%',
+                        toolbar: { show: false },
+                        zoom: { enabled: isBar || isLine },
+                        rtl: true,
+                        fontFamily: 'Cairo, Tajawal, Tahoma, sans-serif',
+                        background: 'transparent',
+                        animations: { enabled: true, easing: 'easeinout', speed: 600 }
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: isPie, position: 'bottom', labels: { color: '#5B7A99' } },
-                            tooltip: { backgroundColor: '#0A2540' }
-                        },
-                        scales: isPie ? {} : {
-                            x: { grid: { display: false }, ticks: { color: '#5B7A99' } },
-                            y: { grid: { color: '#D4E2F0' }, ticks: { color: '#5B7A99' } }
+                    colors: isPie ? PALETTE : ['#1F4E79'],
+                    series: series,
+                    labels: isPie ? labels : undefined,
+                    plotOptions: isPie ? {} : {
+                        bar: {
+                            borderRadius: 4,
+                            columnWidth: '60%',
+                            distributed: false
                         }
+                    },
+                    xaxis: isPie ? undefined : {
+                        categories: labels,
+                        labels: { style: { colors: textColor, fontSize: '12px' } },
+                        axisBorder: { show: false },
+                        axisTicks: { show: false }
+                    },
+                    yaxis: isPie ? undefined : {
+                        labels: { style: { colors: textColor, fontSize: '12px' } }
+                    },
+                    grid: isPie ? {} : {
+                        borderColor: gridColor,
+                        strokeDashArray: 0,
+                        xaxis: { lines: { show: false } },
+                        yaxis: { lines: { show: true } }
+                    },
+                    stroke: isPie ? {} : {
+                        show: true,
+                        width: isLine ? 2.5 : 0,
+                        curve: isLine ? 'smooth' : 'straight'
+                    },
+                    fill: isPie ? {} : {
+                        type: isLine ? 'gradient' : 'solid',
+                        gradient: isLine ? {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.35,
+                            opacityTo: 0.05,
+                            stops: [50, 100]
+                        } : undefined
+                    },
+                    dataLabels: isPie ? {
+                        enabled: true,
+                        style: { fontSize: '12px', fontWeight: 600 }
+                    } : { enabled: false },
+                    legend: isPie ? {
+                        position: 'bottom',
+                        fontSize: '12px',
+                        labels: { colors: textColor }
+                    } : { show: false },
+                    tooltip: {
+                        enabled: true,
+                        theme: isDark ? 'dark' : 'light',
+                        style: { fontSize: '13px' },
+                        y: { formatter: function(val) { return formatNum ? formatNum(val) : val; } }
                     }
                 };
 
-                var chart = new Chart(viz, chartConfig);
+                var chart = new ApexCharts(viz, chartConfig);
+                chart.render();
                 CHARTS[card.cardId] = { control: chart, kind: 'chart' };
             }
 
             function wdRenderGauge(viz, card) {
                 var val = toNum(card.kpiValue);
                 var max = val <= 0 ? 100 : (val <= 100 ? 100 : Math.ceil(val * 1.2));
-                var chart = new Chart(viz, {
-                    type: 'doughnut',
-                    data: {
-                        datasets: [{
-                            data: [val, max - val],
-                            backgroundColor: ['#2E6DA4', '#D4E2F0'],
-                            borderWidth: 0
-                        }]
+                var pct = Math.min(Math.round((val / max) * 100), 100);
+                var isDark = document.documentElement.getAttribute('data-theme') === 'midnight';
+
+                var gaugeColor = '#2E6DA4';
+                var trackColor = isDark ? '#2c3541' : '#D4E2F0';
+                var textColor = isDark ? '#e4e8ed' : '#102A43';
+                var subColor = isDark ? '#8a95a3' : '#5B7A99';
+
+                var chartConfig = {
+                    chart: {
+                        type: 'radialBar',
+                        height: '100%',
+                        toolbar: { show: false },
+                        rtl: true,
+                        fontFamily: 'Cairo, Tajawal, Tahoma, sans-serif',
+                        background: 'transparent'
                     },
-                    options: {
-                        circumference: 270,
-                        rotation: 225,
-                        cutout: '75%',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { enabled: false }
+                    series: [pct],
+                    labels: [card.title],
+                    plotOptions: {
+                        radialBar: {
+                            startAngle: -135,
+                            endAngle: 135,
+                            hollow: {
+                                size: '70%',
+                                background: 'transparent'
+                            },
+                            track: {
+                                background: trackColor,
+                                strokeWidth: '100%',
+                                margin: 0
+                            },
+                            dataLabels: {
+                                name: {
+                                    show: true,
+                                    fontSize: '13px',
+                                    fontWeight: 500,
+                                    color: subColor,
+                                    offsetY: -10
+                                },
+                                value: {
+                                    show: true,
+                                    fontSize: '24px',
+                                    fontWeight: 700,
+                                    color: textColor,
+                                    formatter: function() { return formatNum ? formatNum(val) : val; }
+                                }
+                            }
                         }
                     },
-                    plugins: [{
-                        id: 'gaugeText',
-                        afterDraw: function(chart) {
-                            var ctx = chart.ctx;
-                            var centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
-                            var centerY = (chart.chartArea.top + chart.chartArea.bottom) / 2;
-                            ctx.save();
-                            ctx.font = 'bold 22px Cairo';
-                            ctx.fillStyle = '#102A43';
-                            ctx.textAlign = 'center';
-                            ctx.textBaseline = 'middle';
-                            ctx.fillText(formatNum(val), centerX, centerY);
-                            ctx.restore();
+                    colors: [gaugeColor],
+                    stroke: { lineCap: 'round' },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shade: 'dark',
+                            type: 'horizontal',
+                            shadeIntensity: 0.3,
+                            gradientToColors: ['#1F4E79'],
+                            stops: [0, 100]
                         }
-                    }]
-                });
+                    }
+                };
+
+                var chart = new ApexCharts(viz, chartConfig);
+                chart.render();
                 CHARTS[card.cardId] = { control: chart, kind: 'gauge' };
             }
 
@@ -598,7 +837,8 @@ else
                     var body = el.querySelector('.wd-card__body');
                     body.innerHTML = '<div class="wd-skeleton-wrap"><div class="wd-skel wd-skel--tall"></div></div>';
                 }
-                fetch('/api/dashboard/card/' + id, { headers: { 'Accept': 'application/json' } })
+                var preset = window.WD_DATE_PRESET || 'today';
+                fetch('/api/dashboard/card/' + id + '?preset=' + encodeURIComponent(preset), { headers: { 'Accept': 'application/json' } })
                     .then(function (r) { return r.json(); })
                     .then(function (data) { wdRenderCard(data); })
                     .catch(function (err) {
@@ -621,11 +861,93 @@ else
                 (window.WD_CARDS || []).forEach(function (c) { wdLoadCard(c.id, true); });
             };
 
-            // Open a card's drill-down page (TASK-COD-012). Cards without configured
-            // levels are never given this handler, so navigation only happens for drillable cards.
-            window.wdOpenDrill = function (id) {
-                window.location.href = '/Dashboard/Drill/' + id;
+            // Open a card's drill-down in a modal (TASK-DASH-004).
+            // Falls back to page navigation if modal element is missing.
+            window.wdOpenDrill = function (id, breadcrumb) {
+                var modal = document.getElementById('wd-drill-modal');
+                if (!modal) { window.location.href = '/Dashboard/Drill/' + id; return; }
+                modal.hidden = false;
+                document.body.style.overflow = 'hidden';
+
+                var titleEl = document.getElementById('wd-drill-modal-title');
+                var bodyEl = document.getElementById('wd-drill-modal-body');
+                var crumbEl = document.getElementById('wd-drill-modal-breadcrumb');
+
+                // Find card title from the DOM
+                var cardEl = document.getElementById('card-' + id);
+                var cardTitle = cardEl ? (cardEl.getAttribute('data-title') || 'تفاصيل') : 'تفاصيل';
+                if (titleEl) titleEl.textContent = cardTitle;
+
+                // Build breadcrumb trail
+                if (crumbEl) {
+                    var trail = breadcrumb ? breadcrumb.slice() : [];
+                    trail.push({ id: id, title: cardTitle });
+                    window._wdDrillBreadcrumb = trail;
+                    var crumbHtml = trail.map(function(b, i) {
+                        if (i === trail.length - 1) {
+                            return '<span class="wd-modal__crumb wd-modal__crumb--active">' + escapeHtml(b.title) + '</span>';
+                        }
+                        return '<button class="wd-modal__crumb wd-modal__crumb--link" onclick="wdDrillNavigate(' + b.id + ', ' + JSON.stringify(trail.slice(0, i)) + ')">' + escapeHtml(b.title) + '</button>';
+                    }).join('<span class="wd-modal__crumb-sep" aria-hidden="true">/</span>');
+                    crumbEl.innerHTML = crumbHtml;
+                }
+
+                // Show loading skeleton
+                if (bodyEl) {
+                    bodyEl.innerHTML = '<div class="wd-skeleton-wrap"><div class="wd-skel wd-skel--tall" style="height:300px;"></div></div>';
+                }
+
+                fetch('/api/dashboard/drill/' + id, { headers: { 'Accept': 'application/json' } })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (!bodyEl) return;
+                        if (data.status === 'empty') { bodyEl.innerHTML = wdEmptyHtml(); return; }
+                        if (data.status === 'error') { bodyEl.innerHTML = wdErrorHtml(data.errorMessage, id); return; }
+
+                        // Render drill content: table if columns+rows, otherwise chart
+                        if (data.columns && data.columns.length > 0 && data.rows && data.rows.length > 0) {
+                            if (data.chartType === 'Table') {
+                                var gridDiv = document.createElement('div');
+                                gridDiv.style.width = '100%';
+                                gridDiv.style.minHeight = '300px';
+                                bodyEl.innerHTML = '';
+                                bodyEl.appendChild(gridDiv);
+                                wdRenderGrid(gridDiv, data);
+                            } else {
+                                var chartDiv = document.createElement('div');
+                                chartDiv.style.width = '100%';
+                                chartDiv.style.height = '400px';
+                                bodyEl.innerHTML = '';
+                                bodyEl.appendChild(chartDiv);
+                                if (data.chartType === 'Gauge') {
+                                    wdRenderGauge(chartDiv, data);
+                                } else {
+                                    wdRenderChart(chartDiv, data);
+                                }
+                            }
+                        } else {
+                            bodyEl.innerHTML = wdEmptyHtml();
+                        }
+                    })
+                    .catch(function(err) {
+                        if (bodyEl) bodyEl.innerHTML = wdErrorHtml('تعذر تحميل بيانات التعمّق: ' + (err && err.message ? err.message : ''), id);
+                    });
             };
+
+            window.wdDrillNavigate = function(id, breadcrumb) {
+                window.wdOpenDrill(id, breadcrumb);
+            };
+
+            function wdCloseDrillModal() {
+                var modal = document.getElementById('wd-drill-modal');
+                if (modal) {
+                    modal.hidden = true;
+                    document.body.style.overflow = '';
+                    // Destroy any charts rendered inside the modal to prevent memory leaks
+                    var body = document.getElementById('wd-drill-modal-body');
+                    if (body) body.innerHTML = '';
+                }
+            }
 
             function wdCheckConnection() {
                 var badge = document.getElementById('wd-conn');
@@ -665,14 +987,111 @@ else
                             : '<path d="M8 3H5a2 2 0 00-2 2v3"/><path d="M21 8V5a2 2 0 00-2-2h-3"/><path d="M16 21h3a2 2 0 002-2v-3"/><path d="M3 16v3a2 2 0 002 2h3"/>';
                     });
                 })();
+
+                // === Drill-down Modal Close Handlers ===
+                (function() {
+                    var modal = document.getElementById('wd-drill-modal');
+                    if (!modal) return;
+                    var closeBtn = modal.querySelector('.wd-modal__close');
+                    var overlay = modal.querySelector('.wd-modal__overlay');
+
+                    if (closeBtn) closeBtn.addEventListener('click', wdCloseDrillModal);
+                    if (overlay) overlay.addEventListener('click', wdCloseDrillModal);
+
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape' && !modal.hidden) {
+                            wdCloseDrillModal();
+                        }
+                    });
+                })();
+
+                // === Quick Date Presets ===
+                (function() {
+                    var presetBtns = document.querySelectorAll('.wd-preset-btn');
+                    var customDates = document.getElementById('wd-custom-dates');
+                    var dateFrom = document.getElementById('wd-date-from');
+                    var dateTo = document.getElementById('wd-date-to');
+                    if (!presetBtns.length) return;
+
+                    window.WD_DATE_PRESET = 'today';
+
+                    function getPresetDates(preset) {
+                        var now = new Date();
+                        var start, end;
+                        switch (preset) {
+                            case 'today':
+                                start = end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                                break;
+                            case 'yesterday':
+                                start = end = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+                                break;
+                            case '7days':
+                                start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+                                end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                                break;
+                            case '30days':
+                                start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29);
+                                end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                                break;
+                            case 'month':
+                                start = new Date(now.getFullYear(), now.getMonth(), 1);
+                                end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                                break;
+                            case 'custom':
+                                if (dateFrom && dateTo && dateFrom.value && dateTo.value) {
+                                    start = new Date(dateFrom.value);
+                                    end = new Date(dateTo.value);
+                                } else {
+                                    return null;
+                                }
+                                break;
+                            default:
+                                return null;
+                        }
+                        return {
+                            from: start.toISOString().split('T')[0],
+                            to: end.toISOString().split('T')[0]
+                        };
+                    }
+
+                    presetBtns.forEach(function(btn) {
+                        btn.addEventListener('click', function() {
+                            var preset = this.getAttribute('data-preset');
+                            presetBtns.forEach(function(b) { b.classList.remove('active'); });
+                            this.classList.add('active');
+
+                            window.WD_DATE_PRESET = preset;
+                            if (customDates) {
+                                customDates.classList.toggle('wd-hidden', preset !== 'custom');
+                            }
+                            // Reload all cards with the new preset
+                            (window.WD_CARDS || []).forEach(function(c) { wdLoadCard(c.id, true); });
+                        });
+                    });
+
+                    if (dateFrom && dateTo) {
+                        var onCustomChange = function() {
+                            if (window.WD_DATE_PRESET === 'custom' && dateFrom.value && dateTo.value) {
+                                (window.WD_CARDS || []).forEach(function(c) { wdLoadCard(c.id, true); });
+                            }
+                        };
+                        dateFrom.addEventListener('change', onCustomChange);
+                        dateTo.addEventListener('change', onCustomChange);
+                    }
+                })();
             });
 
             var rt;
             window.addEventListener('resize', function () {
                 clearTimeout(rt);
                 rt = setTimeout(function () {
-                    // Chart.js handles responsive resize automatically.
-                    // The CHARTS map is kept for potential future use.
+                    // ApexCharts handles responsive resize automatically.
+                    // Force sync for any chart that might be out of viewport.
+                    Object.keys(CHARTS).forEach(function(id) {
+                        if (CHARTS[id] && CHARTS[id].control && CHARTS[id].control.windowResizeSync) {
+                            CHARTS[id].control.windowResizeSync();
+                        }
+                    });
                 }, 200);
             });
         })();
@@ -751,6 +1170,189 @@ else
             typeSelect.addEventListener('change', applyFilter);
 
             applyFilter(); // sync count label on first render
+        })();
+
+        /* ===== TASK-DASH-005: Drag & Drop, Resize, Per-card Refresh, Layout Persistence ===== */
+        (function () {
+            var grid = document.getElementById('wd-dashboard-grid');
+            if (!grid || typeof Sortable === 'undefined') return;
+
+            // ── Size presets: CSS class → { w, h, heightPx } ──
+            var SIZE_PRESETS = {
+                small:  { w: 3, h: 2, heightPx: 200 },
+                medium: { w: 6, h: 3, heightPx: 360 },
+                large:  { w: 9, h: 4, heightPx: 450 }
+            };
+
+            // ── 1. SortableJS initialization ──
+            var sortable = new Sortable(grid, {
+                animation: 200,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                handle: '.wd-card__header',
+                forceFallback: false,
+                // Touch support for mobile
+                delay: 150,
+                delayOnTouchOnly: true,
+                touchStartThreshold: 5,
+                onEnd: function (evt) {
+                    // After drag reorder, recalculate Y positions (row order) and save
+                    recalcAndSave();
+                }
+            });
+
+            // ── 2. Resize button handling ──
+            grid.addEventListener('click', function (e) {
+                var btn = e.target.closest('.wd-resize-btn');
+                if (!btn) return;
+
+                var card = btn.closest('.wd-card');
+                if (!card) return;
+
+                var size = btn.getAttribute('data-size');
+                var preset = SIZE_PRESETS[size];
+                if (!preset) return;
+
+                // Prevent click from triggering card drill-down
+                e.stopPropagation();
+
+                // Update active state among sibling buttons
+                var siblings = btn.parentElement.querySelectorAll('.wd-resize-btn');
+                siblings.forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+
+                // Remove old size classes
+                for (var s in SIZE_PRESETS) {
+                    card.classList.remove('wd-span-' + SIZE_PRESETS[s].w);
+                    card.classList.remove('wd-row-' + SIZE_PRESETS[s].h);
+                }
+
+                // Apply new size classes
+                card.classList.add('wd-span-' + preset.w);
+                card.classList.add('wd-row-' + preset.h);
+
+                // Update inline styles
+                card.style.height = preset.heightPx + 'px';
+
+                // Update data attributes
+                card.setAttribute('data-grid-w', preset.w);
+                card.setAttribute('data-grid-h', preset.h);
+
+                // Resize any ApexCharts inside this card
+                var cardId = card.getAttribute('data-card-id');
+                if (window.CHARTS_INSTANCES && window.CHARTS_INSTANCES[cardId]) {
+                    try { window.CHARTS_INSTANCES[cardId].windowResizeSync(); } catch (ex) { /* ignore */ }
+                }
+
+                // Save layout
+                recalcAndSave();
+            });
+
+            // ── 3. Per-card refresh button ──
+            grid.addEventListener('click', function (e) {
+                var btn = e.target.closest('.wd-card__refresh');
+                if (!btn) return;
+
+                var card = btn.closest('.wd-card');
+                if (!card) return;
+
+                var cardId = parseInt(card.getAttribute('data-card-id'), 10);
+                if (!cardId) return;
+
+                // Prevent click from triggering card drill-down
+                e.stopPropagation();
+
+                // Spin animation
+                btn.classList.add('spinning');
+
+                // Reload card data with skeleton
+                if (typeof wdLoadCard === 'function') {
+                    wdLoadCard(cardId, true);
+                }
+
+                // Stop spinning after data loads (approx 2s)
+                setTimeout(function () {
+                    btn.classList.remove('spinning');
+                }, 2000);
+            });
+
+            // ── 4. Layout persistence ──
+            var saveTimer = null;
+            function recalcAndSave() {
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(function () {
+                    var cards = grid.querySelectorAll('.wd-card');
+                    var layoutItems = [];
+                    var y = 1;
+
+                    cards.forEach(function (card) {
+                        var cardId = parseInt(card.getAttribute('data-card-id'), 10);
+                        var w = parseInt(card.getAttribute('data-grid-w'), 10) || 4;
+                        var h = parseInt(card.getAttribute('data-grid-h'), 10) || 2;
+
+                        layoutItems.push({
+                            cardId: cardId,
+                            gridPositionX: 1,
+                            gridPositionY: y,
+                            gridWidth: w,
+                            gridHeight: h
+                        });
+
+                        y++;
+                    });
+
+                    // POST layout to server
+                    fetch('?handler=SaveLayout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                        },
+                        body: JSON.stringify({ dashboardId: 0, cards: layoutItems })
+                    })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        if (data && data.success) {
+                            showLayoutSavedToast();
+                        } else {
+                            showToast('error', 'تعذر حفظ التخطيط');
+                        }
+                    })
+                    .catch(function () {
+                        showToast('error', 'تعذر الاتصال بالخادم لحفظ التخطيط');
+                    });
+                }, 400);
+            }
+
+            function showLayoutSavedToast() {
+                var existing = document.querySelector('.wd-layout-saved');
+                if (existing) existing.remove();
+
+                var toast = document.createElement('div');
+                toast.className = 'wd-layout-saved';
+                toast.textContent = '✓ تم حفظ التخطيط';
+                toast.setAttribute('role', 'status');
+                document.body.appendChild(toast);
+                setTimeout(function () {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s ease';
+                    setTimeout(function () { toast.remove(); }, 400);
+                }, 2000);
+            }
+
+            // ── 5. Mark correct resize active state on load ──
+            grid.querySelectorAll('.wd-card').forEach(function (card) {
+                var w = parseInt(card.getAttribute('data-grid-w'), 10) || 4;
+                var btns = card.querySelectorAll('.wd-resize-btn');
+                btns.forEach(function (b) {
+                    b.classList.remove('active');
+                    var size = b.getAttribute('data-size');
+                    if (size === 'small' && w <= 3) b.classList.add('active');
+                    else if (size === 'medium' && w > 3 && w <= 7) b.classList.add('active');
+                    else if (size === 'large' && w > 7) b.classList.add('active');
+                });
+            });
         })();
     </script>
 }

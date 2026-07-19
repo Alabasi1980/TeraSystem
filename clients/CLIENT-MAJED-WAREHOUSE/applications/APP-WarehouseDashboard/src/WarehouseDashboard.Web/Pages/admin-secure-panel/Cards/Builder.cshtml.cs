@@ -72,7 +72,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         /// </summary>
         [BindProperty]
         [JsonPropertyName("displayName")]
-        public string DisplayName { get; set; } = string.Empty;
+        public string? DisplayName { get; set; }
 
         /// <summary>
         /// Optional description shown as tooltip on the card
@@ -337,16 +337,28 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
             await LoadTemplateDataAsync();
         }
 
-        public async Task<IActionResult> OnPostAsync(string action)
+        public async Task<IActionResult> OnPostAsync([FromForm] string saveAction)
         {
+            _logger.LogInformation("CARD SAVE TRACE: saveAction={SaveAction} | CardType={CardType} | SourceType={SourceType} | Title={Title} | SqlQueryLen={SqlQueryLen} | ModelStateValid={IsValid}",
+                string.IsNullOrWhiteSpace(saveAction) ? "<empty>" : saveAction,
+                CardType, SourceType, Title,
+                (SqlQuery ?? "").Length,
+                ModelState.IsValid);
             _logger.LogInformation("Card Builder POST started");
-            _logger.LogInformation("Card Builder POST action: {Action}", string.IsNullOrWhiteSpace(action) ? "<empty>" : action);
+            _logger.LogInformation("Card Builder POST action: {Action}", string.IsNullOrWhiteSpace(saveAction) ? "<empty>" : saveAction);
             _logger.LogInformation("Card Builder POST SqlQuery present: {SqlQueryPresent}", !string.IsNullOrWhiteSpace(SqlQuery));
 
             // Load reference data for validation errors
             await LoadOracleTablesAsync();
 
             ValidateConditionalPostFields();
+
+            if (string.IsNullOrWhiteSpace(DisplayName))
+            {
+                DisplayName = Title;
+            }
+
+            ModelState.Remove(nameof(DisplayName));
 
             _logger.LogInformation("Card Builder POST ModelState valid: {IsValid}", ModelState.IsValid);
 
@@ -361,7 +373,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
             {
                 var card = BuildDashboardCard();
 
-                if (action == "save" || action == "saveAndAddAnother")
+                if (saveAction == "save" || saveAction == "saveAndAddAnother")
                 {
                     var dto = card;
 
@@ -423,23 +435,23 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                         UpdatedAt = DateTime.UtcNow
                     };
                     _db.DashboardCards.Add(entity);
-                    _logger.LogInformation("Card Builder SaveChangesAsync starting for action {Action}", action);
+                    _logger.LogInformation("Card Builder SaveChangesAsync starting for action {Action}", saveAction);
                     await _db.SaveChangesAsync();
                     _logger.LogInformation("Card Builder SaveChangesAsync completed. Inserted DashboardCard id: {DashboardCardId}", entity.Id);
 
-                    TempData["ToastMessage"] = action == "saveAndAddAnother"
+                    TempData["ToastMessage"] = saveAction == "saveAndAddAnother"
                         ? "تم حفظ البطاقة. جاري إنشاء بطاقة جديدة..."
                         : "تم حفظ البطاقة بنجاح.";
                     TempData["ToastType"] = "success";
 
-                    if (action == "saveAndAddAnother")
+                    if (saveAction == "saveAndAddAnother")
                     {
                         return RedirectToPage("/admin-secure-panel/Cards/Builder");
                     }
 
                     return RedirectToPage("/admin-secure-panel/Cards/Index");
                 }
-                else if (action == "preview")
+                else if (saveAction == "preview")
                 {
                     // Return partial preview HTML/JSON
                     return Partial("_CardPreviewPartial", card);
@@ -717,7 +729,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 CustomSql = SourceType == "CustomSQL" ? CustomSql?.Trim() : null,
                 SqlQuery = SqlQuery,
                 Title = Title,
-                DisplayName = DisplayName,
+                DisplayName = DisplayName ?? Title,
                 Description = Description ?? string.Empty,
                 GridWidth = GridWidth,
                 GridHeight = GridHeight,

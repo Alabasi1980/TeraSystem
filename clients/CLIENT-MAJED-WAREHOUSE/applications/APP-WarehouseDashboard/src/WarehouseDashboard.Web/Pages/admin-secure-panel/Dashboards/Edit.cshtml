@@ -1,0 +1,101 @@
+@page
+@model EditModel
+@{
+    ViewData["Title"] = "تعديل داشبورد";
+}
+
+<div class="wd-breadcrumb-row">
+    <a href="/admin-secure-panel/Dashboards">الداشبوردات</a>
+    <span class="wd-sep">/</span>
+    <span>تعديل داشبورد</span>
+</div>
+
+<div class="wd-card wd-editor">
+    <div class="wd-card__header">
+        <h2 class="wd-card__title">تعديل الداشبورد</h2>
+        <span class="wd-text--muted" style="font-size:13px;">عدد البطاقات: <strong>@Model.CardCount</strong></span>
+    </div>
+
+    <form method="post" class="wd-form" novalidate>
+        <div asp-validation-summary="ModelOnly" class="wd-error"></div>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="wd-error" style="margin-bottom:var(--sp-4);padding:12px 16px;background:rgba(214,69,69,0.08);border-radius:var(--radius-md);color:var(--c-error);">
+                @Model.ErrorMessage
+            </div>
+        }
+
+        @if (Model.WasDefault)
+        {
+            <div style="margin-bottom:var(--sp-4);padding:12px 16px;background:rgba(46,109,164,0.08);border-radius:var(--radius-md);color:var(--c-primary);font-size:13px;">
+                هذا الداشبورد هو الافتراضي حالياً. إلغاء التحديد سيترك لا يوجد داشبورد افتراضي.
+            </div>
+        }
+
+        <div class="wd-form__grid">
+            <div class="wd-field wd-field--full">
+                <label asp-for="Input.Name">الاسم</label>
+                <input asp-for="Input.Name" class="wd-input" id="dashboardName" />
+                <span asp-validation-for="Input.Name" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field wd-field--full">
+                <label asp-for="Input.Slug">المعرف (Slug)</label>
+                <input asp-for="Input.Slug" class="wd-input" id="dashboardSlug"
+                       style="direction:ltr;text-align:left;font-family:'Courier New',monospace;" />
+                <span asp-validation-for="Input.Slug" class="wd-error"></span>
+                <span class="wd-text--muted" style="font-size:12px;">الرابط: /dashboard/<strong id="slugPreview">@Model.Input.Slug</strong></span>
+            </div>
+
+            <div class="wd-field wd-field--full">
+                <label asp-for="Input.Description">الوصف (اختياري)</label>
+                <textarea asp-for="Input.Description" class="wd-textarea" rows="3"></textarea>
+                <span asp-validation-for="Input.Description" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.Icon">الأيقونة (إيموجي)</label>
+                <input asp-for="Input.Icon" class="wd-input" maxlength="10"
+                       style="font-size:24px;text-align:center;" />
+                <span asp-validation-for="Input.Icon" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.SortOrder">ترتيب العرض</label>
+                <input asp-for="Input.SortOrder" type="number" class="wd-input" min="0" />
+                <span asp-validation-for="Input.SortOrder" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field wd-field--check">
+                <label class="wd-checkbox-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input asp-for="Input.IsActive" type="checkbox" style="width:18px;height:18px;accent-color:var(--c-primary);" />
+                    <span>نشط (معروض للمستخدمين)</span>
+                </label>
+            </div>
+
+            <div class="wd-field wd-field--check">
+                <label class="wd-checkbox-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input asp-for="Input.IsDefault" type="checkbox" style="width:18px;height:18px;accent-color:var(--c-primary);" />
+                    <span>داشبورد افتراضي</span>
+                </label>
+                <span class="wd-text--muted" style="font-size:12px;">الداشبورد الافتراضي يظهر تلقائياً عند فتح لوحة المعلومات.</span>
+            </div>
+        </div>
+
+        <div class="wd-form__actions">
+            <button type="submit" class="wd-btn wd-btn--primary">حفظ التغييرات</button>
+            <a href="/admin-secure-panel/Dashboards" class="wd-btn wd-btn--ghost">إلغاء</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        var slugInput = document.getElementById('dashboardSlug');
+        var slugPreview = document.getElementById('slugPreview');
+        slugInput.addEventListener('input', function () {
+            if (slugPreview) slugPreview.textContent = slugInput.value || '...';
+        });
+    </script>
+}

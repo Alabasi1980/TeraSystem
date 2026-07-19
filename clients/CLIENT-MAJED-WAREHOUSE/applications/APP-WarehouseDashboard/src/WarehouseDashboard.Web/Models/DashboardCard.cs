@@ -128,6 +128,12 @@ public class DashboardCard
     /// </summary>
     public string OriginalSourceId { get; set; } = "";
 
+    /// <summary>Foreign key to the parent <see cref="Dashboard"/>. Null = unassigned.</summary>
+    public int? DashboardId { get; set; }
+
+    /// <summary>Navigation property to the parent dashboard.</summary>
+    public Dashboard? Dashboard { get; set; }
+
     /// <summary>Drill-down levels belonging to this card.</summary>
     public ICollection<CardDrillDownLevel> DrillDownLevels { get; set; } = new List<CardDrillDownLevel>();
 }

@@ -1295,7 +1295,7 @@
       act = document.createElement('input');
       act.type = 'hidden';
       act.id = 'wb-h-action';
-      act.name = 'action';
+      act.name = 'saveAction';
       this.form.appendChild(act);
     }
     act.value = action;

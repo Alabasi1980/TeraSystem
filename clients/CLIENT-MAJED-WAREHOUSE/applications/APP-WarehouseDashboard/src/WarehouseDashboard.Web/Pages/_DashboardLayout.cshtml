@@ -17,8 +17,11 @@
     @* Shared design system — single source of truth for the Blue Identity palette *@
     <link rel="stylesheet" href="~/css/blue-theme.css" />
 
-    @* Chart.js (MIT license, no build step) *@
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    @* ApexCharts (MIT license, no build step — replaces Chart.js for RTL + drill-down support) *@
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    @* SortableJS — drag-and-drop reordering for dashboard cards *@
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body class="wd-app">
     <header class="wd-topbar">

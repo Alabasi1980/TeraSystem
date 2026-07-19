@@ -1,0 +1,124 @@
+@page
+@model CreateModel
+@{
+    ViewData["Title"] = "إنشاء داشبورد";
+}
+
+<div class="wd-breadcrumb-row">
+    <a href="/admin-secure-panel/Dashboards">الداشبوردات</a>
+    <span class="wd-sep">/</span>
+    <span>إنشاء داشبورد</span>
+</div>
+
+<div class="wd-card wd-editor">
+    <div class="wd-card__header">
+        <h2 class="wd-card__title">إنشاء داشبورد جديد</h2>
+    </div>
+
+    <form method="post" class="wd-form" novalidate>
+        <div asp-validation-summary="ModelOnly" class="wd-error"></div>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="wd-error" style="margin-bottom:var(--sp-4);padding:12px 16px;background:rgba(214,69,69,0.08);border-radius:var(--radius-md);color:var(--c-error);">
+                @Model.ErrorMessage
+            </div>
+        }
+
+        <div class="wd-form__grid">
+            <div class="wd-field wd-field--full">
+                <label asp-for="Input.Name">الاسم</label>
+                <input asp-for="Input.Name" class="wd-input" placeholder="مثال: لوحة المخزون الرئيسية"
+                       id="dashboardName" />
+                <span asp-validation-for="Input.Name" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field wd-field--full">
+                <label asp-for="Input.Slug">المعرف (Slug)</label>
+                <input asp-for="Input.Slug" class="wd-input" placeholder="مثال: main-stock"
+                       id="dashboardSlug" style="direction:ltr;text-align:left;font-family:'Courier New',monospace;" />
+                <span asp-validation-for="Input.Slug" class="wd-error"></span>
+                <span class="wd-text--muted" style="font-size:12px;">يُستخدم في الرابط: /dashboard/<strong id="slugPreview">main-stock</strong></span>
+            </div>
+
+            <div class="wd-field wd-field--full">
+                <label asp-for="Input.Description">الوصف (اختياري)</label>
+                <textarea asp-for="Input.Description" class="wd-textarea" rows="3"
+                          placeholder="وصف مختصر للداشبورد..."></textarea>
+                <span asp-validation-for="Input.Description" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.Icon">الأيقونة (إيموجي)</label>
+                <input asp-for="Input.Icon" class="wd-input" placeholder="📊" maxlength="10"
+                       style="font-size:24px;text-align:center;" />
+                <span asp-validation-for="Input.Icon" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field">
+                <label asp-for="Input.SortOrder">ترتيب العرض</label>
+                <input asp-for="Input.SortOrder" type="number" class="wd-input" min="0" placeholder="0" />
+                <span asp-validation-for="Input.SortOrder" class="wd-error"></span>
+            </div>
+
+            <div class="wd-field wd-field--check">
+                <label class="wd-checkbox-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input asp-for="Input.IsActive" type="checkbox" style="width:18px;height:18px;accent-color:var(--c-primary);" />
+                    <span>نشط (معروض للمستخدمين)</span>
+                </label>
+            </div>
+
+            <div class="wd-field wd-field--check">
+                <label class="wd-checkbox-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input asp-for="Input.IsDefault" type="checkbox" style="width:18px;height:18px;accent-color:var(--c-primary);" />
+                    <span>داشبورد افتراضي</span>
+                </label>
+                <span class="wd-text--muted" style="font-size:12px;">الداشبورد الافتراضي يظهر تلقائياً عند فتح لوحة المعلومات.</span>
+            </div>
+        </div>
+
+        <div class="wd-form__actions">
+            <button type="submit" class="wd-btn wd-btn--primary">إنشاء الداشبورد</button>
+            <a href="/admin-secure-panel/Dashboards" class="wd-btn wd-btn--ghost">إلغاء</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-generate slug from Name (client-side)
+        var nameInput = document.getElementById('dashboardName');
+        var slugInput = document.getElementById('dashboardSlug');
+        var slugPreview = document.getElementById('slugPreview');
+        var userEditedSlug = false;
+
+        slugInput.addEventListener('input', function () {
+            userEditedSlug = true;
+            if (slugPreview) slugPreview.textContent = slugInput.value || '...';
+        });
+
+        nameInput.addEventListener('input', function () {
+            if (userEditedSlug) return;
+            var slug = nameInput.value
+                .toLowerCase()
+                .trim()
+                .replace(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]+/g, '')  // remove Arabic
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/[\s]+/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            slugInput.value = slug;
+            if (slugPreview) slugPreview.textContent = slug || '...';
+        });
+    </script>
+}
+
+@section Toast {
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="wd-toast wd-toast--error" role="status">
+            <span class="wd-toast__icon">✕</span>
+            <span class="wd-toast__msg">@Model.ErrorMessage</span>
+        </div>
+    }
+}
