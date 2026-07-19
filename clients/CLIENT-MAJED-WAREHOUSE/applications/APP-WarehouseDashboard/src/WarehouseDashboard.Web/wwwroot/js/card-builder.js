@@ -1238,14 +1238,11 @@
   CardBuilderWizard.prototype.buildSqlTableQueryForSave = function () {
     var table = this.state.selectedTable;
     if (!table || !table.sqlTargetTable) return '';
-
+    // KPI cards: store table name only — BuildSql handles aggregation + date filter
     if (this.state.cardType === 'KPI') {
-      var valueColumn = $('wb-kpi-value-column') ? $('wb-kpi-value-column').value : '';
-      if (valueColumn) {
-        return 'SELECT SUM(' + this.buildNumericExpression(table, valueColumn) + ') AS [' + valueColumn + '] FROM [' + table.sqlTargetTable + ']';
-      }
+      return '[' + table.sqlTargetTable + ']';
     }
-
+    // Other card types: SELECT * is fine
     return 'SELECT * FROM [' + table.sqlTargetTable + ']';
   };
 

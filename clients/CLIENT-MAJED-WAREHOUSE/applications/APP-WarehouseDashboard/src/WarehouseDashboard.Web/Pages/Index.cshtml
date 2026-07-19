@@ -1,8 +1,19 @@
 @page "{slug?}"
 @model WarehouseDashboard.Web.Pages.IndexModel
-@{
+@{ 
     ViewData["Title"] = Model.CurrentDashboard?.Name ?? "لوحة المعلومات";
     Layout = "_DashboardLayout";
+
+    string NormalizeDescription(string? value)
+        => string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+
+    var normalizedCards = Model.Cards
+        .Select(c => new
+        {
+            Card = c,
+            Description = NormalizeDescription(c.Description)
+        })
+        .ToList();
 }
 
 @Html.AntiForgeryToken()
@@ -127,10 +138,12 @@
     }
 
     .wd-kpi__value {
-        font-size: 32px;
+        font-size: 48px;
         font-weight: 700;
         color: var(--c-text);
-        line-height: 1.2;
+        line-height: 1.05;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum" 1;
     }
 
     .wd-kpi__label {
@@ -143,34 +156,150 @@
     .wd-kpi__change {
         display: inline-flex;
         align-items: center;
-        gap: 4px;
-        padding: 4px 10px;
+        gap: 6px;
+        padding: 6px 12px;
         border-radius: var(--radius-full);
-        font-size: 13px;
+        font-size: 16px;
         font-weight: 600;
         line-height: 1;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum" 1;
+        border: 1px solid currentColor;
+        transform: translateY(0);
+        transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+        animation: wdKpiBadgeIn var(--dur-norm) var(--ease) both;
+    }
+
+    .wd-kpi__change:hover {
+        transform: translateY(-1px);
+    }
+
+    .wd-kpi__change svg {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 auto;
     }
 
     .wd-kpi__change--up {
-        background: rgba(16, 185, 129, 0.12);
-        color: #059669;
+        background: var(--c-surface-muted);
+        background: color-mix(in srgb, var(--c-success) 12%, transparent);
+        color: var(--c-success);
     }
 
     .wd-kpi__change--down {
-        background: rgba(239, 68, 68, 0.12);
-        color: #DC2626;
+        background: var(--c-surface-muted);
+        background: color-mix(in srgb, var(--c-error) 12%, transparent);
+        color: var(--c-error);
     }
 
     .wd-kpi__change--flat {
-        background: rgba(107, 114, 128, 0.12);
-        color: #6B7280;
+        background: var(--c-surface-muted);
+        color: var(--c-text-muted);
+    }
+
+    .wd-kpi__change-missing {
+        font-size: 13px;
+        color: var(--c-text-muted);
+        font-weight: 500;
+    }
+
+    .wd-kpi__compare {
+        font-size: 13px;
+        color: var(--c-text-muted);
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    @@keyframes wdKpiBadgeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @@media (max-width: 520px) {
+        .wd-kpi__value { font-size: 40px; }
+        .wd-kpi__change { font-size: 15px; padding: 5px 10px; }
     }
 
     /* Sparkline container */
     .wd-kpi__sparkline {
         width: 100%;
-        height: 60px;
-        margin-top: var(--sp-1);
+        height: clamp(82px, 28%, 96px);
+        min-height: 82px;
+        margin-top: var(--sp-2);
+        position: relative;
+        direction: ltr;
+        border-radius: var(--radius-md);
+        overflow: visible;
+        animation: wdSparklineIn var(--dur-norm) var(--ease) both;
+    }
+
+    .wd-kpi__sparkline .apexcharts-canvas,
+    .wd-kpi__sparkline svg {
+        overflow: visible;
+    }
+
+    .wd-kpi__sparkline-empty {
+        width: 100%;
+        min-height: 76px;
+        margin-top: var(--sp-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--c-text-muted);
+        font-size: 12px;
+        font-weight: 600;
+        background: var(--c-surface-muted);
+        border: 1px dashed var(--c-border);
+        border-radius: var(--radius-md);
+    }
+
+    .wd-spark-tooltip {
+        direction: rtl;
+        min-width: 138px;
+        padding: 10px 12px;
+        border-radius: var(--radius-md);
+        background: var(--c-surface);
+        color: var(--c-text);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--c-border);
+        font-family: var(--font-ar);
+        animation: wdSparkTooltipIn var(--dur-fast) var(--ease) both;
+    }
+
+    .wd-spark-tooltip__month {
+        color: var(--c-text-muted);
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .wd-spark-tooltip__value {
+        color: var(--c-text);
+        font-size: 15px;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .wd-spark-tooltip__delta {
+        margin-top: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .wd-spark-tooltip__delta--up { color: var(--c-success); }
+    .wd-spark-tooltip__delta--down { color: var(--c-error); }
+    .wd-spark-tooltip__delta--flat { color: var(--c-text-muted); }
+
+    @@keyframes wdSparklineIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @@keyframes wdSparkTooltipIn {
+        from { opacity: 0; transform: translateY(3px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     /* Grand total */
@@ -183,6 +312,41 @@
         border-top: 1px solid var(--c-border);
         width: 100%;
         text-align: center;
+    }
+
+    /* Category Breakdown Table (TASK-CARD-KPI-04) */
+    .wd-kpi-breakdown {
+        margin-top: 8px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 6px;
+    }
+    .wd-kpi-breakdown__title {
+        font-size: 11px;
+        color: var(--c-text-secondary);
+        text-align: center;
+        margin-bottom: 4px;
+    }
+    .wd-kpi-breakdown__table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+    .wd-kpi-breakdown__table td {
+        padding: 3px 4px;
+    }
+    .wd-kpi-breakdown__cat {
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    .wd-kpi-breakdown__val {
+        text-align: left;
+        font-variant-numeric: tabular-nums;
+    }
+    .wd-kpi-breakdown__pct {
+        text-align: left;
+        color: var(--c-text-secondary);
+        font-size: 11px;
+        min-width: 36px;
     }
 
     /* ===== Drillable card affordance (TASK-COD-012) ===== */
@@ -401,6 +565,7 @@ else
             <button class="wd-preset-btn" data-preset="7days">آخر 7 أيام</button>
             <button class="wd-preset-btn" data-preset="30days">آخر 30 يوم</button>
             <button class="wd-preset-btn" data-preset="month">هذا الشهر</button>
+            <button class="wd-preset-btn" data-preset="lastMonth">الشهر الماضي</button>
             <button class="wd-preset-btn" data-preset="custom">مخصص</button>
         </div>
         <div class="wd-filterbar__custom-dates wd-hidden" id="wd-custom-dates">
@@ -414,9 +579,10 @@ else
     <span class="wd-last-updated" id="wd-last-updated">آخر تحديث: الآن</span>
 
     <div class="wd-dashboard-grid" id="wd-dashboard-grid">
-        @for (var i = 0; i < Model.Cards.Count; i++)
+        @for (var i = 0; i < normalizedCards.Count; i++)
         {
-            var c = Model.Cards[i];
+            var c = normalizedCards[i].Card;
+            var description = normalizedCards[i].Description;
             var w = Math.Max(1, Math.Min(c.GridWidth, 12));
             var h = Math.Max(1, Math.Min(c.GridHeight, 6));
             var colStart = Math.Max(1, Math.Min(c.GridPositionX < 1 ? 1 : c.GridPositionX, 13 - w));
@@ -427,6 +593,9 @@ else
                          style="height: @(cardHeight)px; animation-delay: @(i * 70)ms;@(canDrill ? " cursor:pointer;" : "")"
                          id="card-@c.Id"
                          data-card-id="@c.Id"
+                         data-description="@description"
+                         data-color-palette="@c.ColorPalette"
+                         data-refresh-interval="@c.RefreshInterval"
                          data-grid-height="@h"
                          data-grid-x="@colStart"
                          data-grid-y="@rowStart"
@@ -436,7 +605,23 @@ else
                          data-chart-type="@c.ChartType"
                          @(canDrill ? "onclick=\"wdOpenDrill(" + c.Id + ")\" role=\"button\" tabindex=\"0\" onkeydown=\"if(event.key==='Enter')wdOpenDrill(" + c.Id + ")\"" : "")>
                     <div class="wd-card__header">
-                        <h3 class="wd-card__title">@c.Title</h3>
+                        <div class="wd-card__title-wrap">
+                            <h3 class="wd-card__title">@c.Title</h3>
+                            @if (!string.IsNullOrEmpty(description))
+                            {
+                                <span class="wd-card__hint"
+                                      tabindex="0"
+                                      title="@description"
+                                      data-tooltip="@description"
+                                      aria-label="وصف البطاقة: @description">
+                                    <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                        <circle cx="10" cy="10" r="7"></circle>
+                                        <path d="M10 8.2h.01"></path>
+                                        <path d="M10 11v3"></path>
+                                    </svg>
+                                </span>
+                            }
+                        </div>
                         <div class="wd-card__controls">
                             <div class="wd-card__resize" role="group"تغيير حجم البطاقة">
                                 <button class="wd-resize-btn @(w <= 3 ? "active" : "")" data-size="small" title="صغير" type="button">S</button>
@@ -452,6 +637,17 @@ else
                             <span class="wd-card__type">@c.ChartType</span>
                         </div>
                     </div>
+                    @* Date filter mode indicator (TASK-CARD-UX-006) *@
+                    @if (c.DateFilterMode == "fixed")
+                    {
+                        var from = string.IsNullOrEmpty(c.FixedStartDate) ? "?" : c.FixedStartDate;
+                        var to = string.IsNullOrEmpty(c.FixedEndDate) ? "?" : c.FixedEndDate;
+                        <span class="wd-card__date-mode wd-card__date-mode--fixed">@from ← @to</span>
+                    }
+                    else if (c.DateFilterMode == "relative")
+                    {
+                        <span class="wd-card__date-mode wd-card__date-mode--relative">آخر @c.RelativeDays أيام</span>
+                    }
                     <div class="wd-card__body">
                         <div class="wd-skeleton-wrap" aria-hidden="true">
                             <div class="wd-skel wd-skel--tall"></div>
@@ -494,11 +690,57 @@ else
         // Configurable Sync API base URL (C4: read from appsettings.json, not hardcoded).
         window.SYNC_API_BASE = '@Model.SyncApiBaseUrl';
 
-        // Card ids rendered server-side — drives the per-card fetch loop.
-        window.WD_CARDS = [@Html.Raw(string.Join(",", Model.Cards.Select(c => "{\"id\":" + c.Id + "}")))];
+        // Card metadata rendered server-side — drives the per-card fetch loop and exposes per-card settings.
+        window.WD_CARDS = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(normalizedCards.Select(cardInfo => new {
+            id = cardInfo.Card.Id,
+            title = cardInfo.Card.Title,
+            description = cardInfo.Description,
+            chartType = cardInfo.Card.ChartType,
+            colorPalette = cardInfo.Card.ColorPalette,
+            refreshInterval = cardInfo.Card.RefreshInterval,
+            gridPositionX = cardInfo.Card.GridPositionX,
+            gridPositionY = cardInfo.Card.GridPositionY,
+            gridWidth = cardInfo.Card.GridWidth,
+            gridHeight = cardInfo.Card.GridHeight
+        })));
 
         (function () {
             var PALETTE = window.WD_PALETTE || ['#1F4E79', '#163A5A', '#2E6DA4', '#0A2540', '#8FBCDE', '#5B7A99'];
+
+            // Per-card color palette definitions (TASK-CARD-UX-002)
+            // These mirror the ColorPalettes dictionary in Builder.cshtml.cs.
+            var COLOR_PALETTES = {
+                primary:   ['#1F4E79', '#2E6DA4', '#8FBCDE'],
+                secondary: ['#2E6DA4', '#1F4E79', '#8FBCDE'],
+                accent:    ['#0A2540', '#1F4E79', '#2E6DA4'],
+                success:   ['#1E9E6A', '#28A745', '#4CD97B'],
+                warning:   ['#E0A106', '#FFC107', '#FFD54F'],
+                info:      ['#2E6DA4', '#17A2B8', '#4FC3F7'],
+                custom:    ['#1F4E79', '#E0A106', '#1E9E6A', '#D64545', '#2E6DA4', '#8FBCDE']
+            };
+
+            /** Return the colour array for a card's palette.
+             *  Priority: 1) DOM data-color-palette attribute
+             *            2) window.WD_CARDS[i].colorPalette
+             *            3) 'primary' default
+             *  Fallback: PALETTE if paletteId not found in COLOR_PALETTES. */
+            function wdGetPalette(cardId) {
+                if (cardId == null) return COLOR_PALETTES.primary;
+                var paletteId = 'primary';
+                var el = document.getElementById('card-' + cardId);
+                if (el) {
+                    paletteId = el.getAttribute('data-color-palette') || 'primary';
+                } else {
+                    var cards = window.WD_CARDS || [];
+                    for (var i = 0; i < cards.length; i++) {
+                        if (cards[i].id === cardId) {
+                            paletteId = cards[i].colorPalette || 'primary';
+                            break;
+                        }
+                    }
+                }
+                return COLOR_PALETTES[paletteId] || PALETTE;
+            }
             var CHARTS = {}; // id -> control instance (for resize refresh)
             window.CHARTS_INSTANCES = CHARTS; // Expose for resize handler (TASK-DASH-005)
 
@@ -525,11 +767,37 @@ else
                 requestAnimationFrame(step);
             }
 
+            function wdKpiComparisonText(changeSource) {
+                switch (changeSource) {
+                    case 'previousMonth': return 'مقارنة بالشهر السابق';
+                    case 'previousYear': return 'مقارنة بالسنة السابقة';
+                    case 'lastMonth': return 'مقارنة بالشهر الماضي';
+                    case 'customQuery': return 'مقارنة مخصصة';
+                    case 'previousPeriod':
+                    default:
+                        return 'مقارنة بالفترة السابقة';
+                }
+            }
+
+            function wdKpiChangeIconSvg(direction) {
+                var path = direction === 'up'
+                    ? '<path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path>'
+                    : direction === 'down'
+                        ? '<path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path>'
+                        : '<path d="M5 12h14"></path>';
+                return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + path + '</svg>';
+            }
+
+            function wdNormalizeKpiDirection(direction) {
+                return direction === 'up' || direction === 'down' || direction === 'flat' ? direction : 'flat';
+            }
+
             function wdKpiHtml(card) {
                 var val = card.kpiMainValue || card.kpiValue;
                 var target = toNum(val);
                 var display = target === 0 ? '0' : '0';
                 var kpiMode = card.kpiMode || 'simple';
+                var hasChangeContext = kpiMode === 'withChange' || kpiMode === 'composite';
 
                 var html = '<div class="wd-kpi">';
 
@@ -537,16 +805,22 @@ else
                 html += '<div class="wd-kpi__value" data-kpi-target="' + target + '">' + display + '</div>';
 
                 // Change badge (for withChange and composite modes)
-                if ((kpiMode === 'withChange' || kpiMode === 'composite') && card.kpiChangePercent !== null && card.kpiChangePercent !== undefined) {
+                if (hasChangeContext && card.kpiChangePercent !== null && card.kpiChangePercent !== undefined) {
                     var changePercent = card.kpiChangePercent;
-                    var direction = card.kpiChangeDirection || 'flat';
-                    var arrow = direction === 'up' ? '↑' : direction === 'down' ? '↓' : '→';
+                    var direction = wdNormalizeKpiDirection(card.kpiChangeDirection || 'flat');
+                    var sign = direction === 'up' ? '+' : direction === 'down' ? '-' : '';
                     var changeClass = 'wd-kpi__change--' + direction;
-                    html += '<div class="wd-kpi__change ' + changeClass + '">' + arrow + ' ' + Math.abs(changePercent) + '%</div>';
+                    html += '<div class="wd-kpi__change ' + changeClass + '">' + wdKpiChangeIconSvg(direction) + '<span>' + sign + Math.abs(changePercent) + '%</span></div>';
+                } else if (hasChangeContext) {
+                    html += '<div class="wd-kpi__change-missing">لا توجد بيانات مقارنة كافية</div>';
+                }
+
+                if (hasChangeContext) {
+                    html += '<div class="wd-kpi__compare">' + escapeHtml(wdKpiComparisonText(card.changeSource)) + '</div>';
                 }
 
                 // Sparkline container (for composite mode)
-                if (kpiMode === 'composite' && card.kpiSparklineData && card.kpiSparklineData.length > 0) {
+                if (kpiMode === 'composite') {
                     html += '<div class="wd-kpi__sparkline" data-card-id="' + card.cardId + '"></div>';
                 }
 
@@ -557,48 +831,175 @@ else
                     html += '<div class="wd-kpi__total">الإجمالي: ' + grandDisplay + '</div>';
                 }
 
-                // Label
-                html += '<div class="wd-kpi__label">قيمة المؤشر</div>';
+                // Category breakdown container (for composite/withChange modes)
+                if (kpiMode === 'composite' || kpiMode === 'withChange') {
+                    html += '<div class="wd-kpi__breakdown" data-card-id="' + card.cardId + '"></div>';
+                }
+
+                // Label remains only for simple KPI cards; comparison text replaces it for change-aware KPI modes.
+                if (!hasChangeContext) {
+                    html += '<div class="wd-kpi__label">قيمة المؤشر</div>';
+                }
                 html += '</div>';
 
                 return html;
             }
 
-            function wdRenderSparkline(container, data) {
-                var values = data.map(function(r) {
-                    return toNum(r.MonthlyValue || r.monthlyValue || 0);
+            function wdDestroySparkline(cardId) {
+                var key = 'spark-' + cardId;
+                var entry = CHARTS[key];
+                if (entry && entry.control && typeof entry.control.destroy === 'function') {
+                    try { entry.control.destroy(); } catch (_) { /* Safe cleanup only; never block card refresh. */ }
+                }
+                delete CHARTS[key];
+            }
+
+            function wdRenderSparkline(container, data, cardId) {
+                wdDestroySparkline(cardId);
+
+                var rows = Array.isArray(data) ? data : [];
+                var points = rows.map(function(r, index) {
+                    r = r || {};
+                    var rawValue = r.MonthlyValue;
+                    if (rawValue === null || rawValue === undefined) rawValue = r.monthlyValue;
+                    if (rawValue === null || rawValue === undefined) rawValue = r.Value;
+                    if (rawValue === null || rawValue === undefined) rawValue = r.value;
+                    if (rawValue === null || rawValue === undefined) rawValue = 0;
+                    var value = toNum(rawValue);
+                    var month = r.Month || r.month || r.MonthLabel || r.monthLabel || r.Label || r.label || ('الشهر ' + (index + 1));
+                    return { month: String(month), value: value };
+                }).filter(function(point) {
+                    return isFinite(point.value);
                 });
+
+                if (points.length < 2) {
+                    container.classList.add('wd-kpi__sparkline-empty');
+                    container.setAttribute('role', 'status');
+                    container.textContent = 'لا توجد بيانات اتجاه كافية';
+                    return;
+                }
+
+                container.classList.remove('wd-kpi__sparkline-empty');
+                container.innerHTML = '';
+                container.setAttribute('aria-label', 'اتجاه المؤشر حسب الشهر');
+
+                var values = points.map(function(point) { return point.value; });
+                var months = points.map(function(point) { return point.month; });
+                var pal = wdGetPalette(cardId);
+                var sparkColor = pal[0] || (PALETTE && PALETTE[0]) || 'var(--c-primary)';
                 var isDark = document.documentElement.getAttribute('data-theme') === 'midnight';
-                var sparkColor = isDark ? '#6baadf' : '#1F4E79';
-                var sparkFill = isDark ? 'rgba(107,170,223,0.12)' : 'rgba(31,78,121,0.10)';
+                var lastIndex = values.length - 1;
+
+                function formatSparkValue(val) {
+                    return formatNum ? formatNum(toNum(val)) : toNum(val).toLocaleString('ar-SA');
+                }
+
+                function deltaHtml(index) {
+                    if (index < 1) return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--flat">أول شهر في الاتجاه</div>';
+                    var delta = values[index] - values[index - 1];
+                    var direction = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
+                    var sign = delta > 0 ? '+' : delta < 0 ? '−' : '';
+                    var label = direction === 'flat' ? 'بدون تغير' : 'عن الشهر السابق: ' + sign + formatSparkValue(Math.abs(delta));
+                    return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--' + direction + '">' + escapeHtml(label) + '</div>';
+                }
 
                 var chartConfig = {
                     chart: {
-                        type: 'line',
-                        height: 60,
+                        type: 'area',
+                        height: 90,
                         sparkline: { enabled: true },
                         background: 'transparent',
-                        rtl: true
+                        rtl: true,
+                        toolbar: { show: false },
+                        zoom: { enabled: false },
+                        parentHeightOffset: 0,
+                        fontFamily: 'Cairo, Tajawal, Tahoma, sans-serif',
+                        animations: { enabled: true, easing: 'easeinout', speed: 550 }
                     },
                     series: [{ data: values }],
-                    stroke: { curve: 'smooth', width: 2 },
+                    stroke: { curve: 'smooth', width: 2.8, lineCap: 'round' },
                     colors: [sparkColor],
                     fill: {
                         type: 'gradient',
                         gradient: {
-                            shadeIntensity: 1,
-                            opacityFrom: 0.4,
-                            opacityTo: 0.05,
-                            stops: [0, 100]
+                            shade: isDark ? 'dark' : 'light',
+                            type: 'vertical',
+                            shadeIntensity: 0.25,
+                            opacityFrom: isDark ? 0.32 : 0.26,
+                            opacityTo: 0.02,
+                            stops: [0, 85, 100]
                         }
                     },
-                    tooltip: { enabled: false },
-                    xaxis: { show: false },
-                    yaxis: { show: false }
+                    dataLabels: { enabled: false },
+                    markers: {
+                        size: 0,
+                        strokeWidth: 2,
+                        strokeColors: 'var(--c-surface)',
+                        hover: { size: 5, sizeOffset: 2 },
+                        discrete: [{
+                            seriesIndex: 0,
+                            dataPointIndex: lastIndex,
+                            fillColor: sparkColor,
+                            strokeColor: 'var(--c-surface)',
+                            size: 5
+                        }]
+                    },
+                    tooltip: {
+                        enabled: true,
+                        shared: false,
+                        intersect: false,
+                        followCursor: true,
+                        marker: { show: false },
+                        custom: function(opts) {
+                            var i = opts && opts.dataPointIndex != null ? opts.dataPointIndex : 0;
+                            var value = opts.series[opts.seriesIndex][i];
+                            return '<div class="wd-spark-tooltip">'
+                                + '<div class="wd-spark-tooltip__month">' + escapeHtml(months[i] || ('الشهر ' + (i + 1))) + '</div>'
+                                + '<div class="wd-spark-tooltip__value">' + escapeHtml(formatSparkValue(value)) + '</div>'
+                                + deltaHtml(i)
+                                + '</div>';
+                        }
+                    },
+                    xaxis: {
+                        categories: months,
+                        tooltip: { enabled: false },
+                        axisBorder: { show: false },
+                        axisTicks: { show: false },
+                        labels: { show: false }
+                    },
+                    yaxis: { show: false, labels: { show: false } },
+                    grid: { show: false, padding: { top: 10, right: 8, bottom: 6, left: 8 } }
                 };
 
                 var chart = new ApexCharts(container, chartConfig);
                 chart.render();
+                CHARTS['spark-' + cardId] = { control: chart, kind: 'sparkline' };
+            }
+
+            function wdRenderCategoryBreakdown(container, data, cardId) {
+                var rows = Array.isArray(data) ? data : [];
+                if (rows.length === 0) {
+                    container.style.display = 'none';
+                    return;
+                }
+                var pal = wdGetPalette(cardId);
+                var html = '<div class="wd-kpi-breakdown">';
+                html += '<div class="wd-kpi-breakdown__title">─ حسب التصنيف ─</div>';
+                html += '<table class="wd-kpi-breakdown__table">';
+                rows.forEach(function(row, i) {
+                    var category = row.Category || row.category || row.CategoryName || '—';
+                    var value = row.CategoryValue || row.categoryValue || row.Value || 0;
+                    var pct = row.Percentage || row.percentage || 0;
+                    var color = pal[i % pal.length] || 'var(--c-primary)';
+                    html += '<tr>';
+                    html += '<td class="wd-kpi-breakdown__cat" style="color:' + color + '">' + escHtml(category) + '</td>';
+                    html += '<td class="wd-kpi-breakdown__val">' + formatNum(toNum(value)) + '</td>';
+                    html += '<td class="wd-kpi-breakdown__pct">' + pct + '%</td>';
+                    html += '</tr>';
+                });
+                html += '</table></div>';
+                container.innerHTML = html;
+                container.style.display = '';
             }
 
             function clearBody(el) {
@@ -610,6 +1011,7 @@ else
             function wdRenderCard(card) {
                 var el = document.getElementById('card-' + card.cardId);
                 if (!el) return;
+                wdDestroySparkline(card.cardId);
                 var body = clearBody(el);
 
                 if (card.status === 'empty') { body.innerHTML = wdEmptyHtml(); return; }
@@ -622,10 +1024,18 @@ else
                         if (kpiVal) animateCountUp(kpiVal, toNum(card.kpiMainValue || card.kpiValue), 1000);
 
                         // Render sparkline if present
-                        if (card.kpiMode === 'composite' && card.kpiSparklineData && card.kpiSparklineData.length > 0) {
+                        if (card.kpiMode === 'composite') {
                             var sparkContainer = body.querySelector('.wd-kpi__sparkline');
                             if (sparkContainer) {
-                                wdRenderSparkline(sparkContainer, card.kpiSparklineData);
+                                wdRenderSparkline(sparkContainer, card.kpiSparklineData, card.cardId);
+                            }
+                        }
+
+                        // Render category breakdown if present
+                        if (card.kpiCategoryBreakdown && card.kpiCategoryBreakdown.length > 0) {
+                            var breakdownContainer = body.querySelector('.wd-kpi__breakdown');
+                            if (breakdownContainer) {
+                                wdRenderCategoryBreakdown(breakdownContainer, card.kpiCategoryBreakdown, card.cardId);
                             }
                         }
                         return;
@@ -667,6 +1077,7 @@ else
                     series = [{ name: card.title, data: seriesData }];
                 }
 
+                var cardPalette = wdGetPalette(card.cardId);
                 var isDark = document.documentElement.getAttribute('data-theme') === 'midnight';
                 var gridColor = isDark ? '#3a4555' : '#D4E2F0';
                 var textColor = isDark ? '#8a95a3' : '#5B7A99';
@@ -683,7 +1094,7 @@ else
                         background: 'transparent',
                         animations: { enabled: true, easing: 'easeinout', speed: 600 }
                     },
-                    colors: isPie ? PALETTE : ['#1F4E79'],
+                    colors: isPie ? cardPalette : [cardPalette[0] || '#1F4E79'],
                     series: series,
                     labels: isPie ? labels : undefined,
                     plotOptions: isPie ? {} : {
@@ -750,7 +1161,8 @@ else
                 var pct = Math.min(Math.round((val / max) * 100), 100);
                 var isDark = document.documentElement.getAttribute('data-theme') === 'midnight';
 
-                var gaugeColor = '#2E6DA4';
+                var pal = wdGetPalette(card.cardId);
+                var gaugeColor = pal[0] || '#2E6DA4';
                 var trackColor = isDark ? '#2c3541' : '#D4E2F0';
                 var textColor = isDark ? '#e4e8ed' : '#102A43';
                 var subColor = isDark ? '#8a95a3' : '#5B7A99';
@@ -805,7 +1217,7 @@ else
                             shade: 'dark',
                             type: 'horizontal',
                             shadeIntensity: 0.3,
-                            gradientToColors: ['#1F4E79'],
+                            gradientToColors: [pal[0] || '#1F4E79'],
                             stops: [0, 100]
                         }
                     }
@@ -840,7 +1252,15 @@ else
                     body.innerHTML = '<div class="wd-skeleton-wrap"><div class="wd-skel wd-skel--tall"></div></div>';
                 }
                 var preset = window.WD_DATE_PRESET || 'today';
-                fetch('/api/dashboard/card/' + id + '?preset=' + encodeURIComponent(preset), { headers: { 'Accept': 'application/json' } })
+                var url = '/api/dashboard/card/' + id + '?preset=' + encodeURIComponent(preset);
+                if (preset === 'custom') {
+                    var dateFrom = document.getElementById('wd-date-from');
+                    var dateTo = document.getElementById('wd-date-to');
+                    if (dateFrom && dateTo && dateFrom.value && dateTo.value) {
+                        url += '&dateFrom=' + encodeURIComponent(dateFrom.value) + '&dateTo=' + encodeURIComponent(dateTo.value);
+                    }
+                }
+                fetch(url, { headers: { 'Accept': 'application/json' } })
                     .then(function (r) { return r.json(); })
                     .then(function (data) { wdRenderCard(data); })
                     .catch(function (err) {
@@ -975,6 +1395,31 @@ else
 
             document.addEventListener('DOMContentLoaded', function () {
                 (window.WD_CARDS || []).forEach(function (c) { wdLoadCard(c.id, false); });
+
+                // ── Per-card auto-refresh with visual indicator (TASK-CARD-BEH-002) ──
+                window._autoRefreshTimers = {};
+                (window.WD_CARDS || []).forEach(function (c) {
+                    if (c.refreshInterval > 0) {
+                        var fn = (function (id) {
+                            return function () {
+                                var el = document.getElementById('card-' + id);
+                                if (el) el.classList.add('wd-card--refreshing');
+                                wdLoadCard(id, false);
+                                setTimeout(function () {
+                                    var el2 = document.getElementById('card-' + id);
+                                    if (el2) el2.classList.remove('wd-card--refreshing');
+                                }, 1500);
+                            };
+                        })(c.id);
+                        window._autoRefreshTimers[c.id] = setInterval(fn, c.refreshInterval * 1000);
+                    }
+                });
+                window.addEventListener('beforeunload', function () {
+                    Object.keys(window._autoRefreshTimers || {}).forEach(function (k) {
+                        clearInterval(window._autoRefreshTimers[k]);
+                    });
+                });
+
                 wdCheckConnection();
 
                 // Focus Mode toggle
@@ -1038,6 +1483,10 @@ else
                             case 'month':
                                 start = new Date(now.getFullYear(), now.getMonth(), 1);
                                 end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                                break;
+                            case 'lastMonth':
+                                start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                                end = new Date(now.getFullYear(), now.getMonth(), 0);
                                 break;
                             case 'custom':
                                 if (dateFrom && dateTo && dateFrom.value && dateTo.value) {

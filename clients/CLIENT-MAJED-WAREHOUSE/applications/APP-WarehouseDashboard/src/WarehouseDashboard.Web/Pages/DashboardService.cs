@@ -20,6 +20,7 @@ namespace WarehouseDashboard.Web.Pages;
 /// </summary>
 public class DashboardService
 {
+    public record DateRange(DateTime From, DateTime To);
     private readonly WarehouseDashboardDbContext _db;
     private readonly IConfiguration _config;
 
@@ -50,7 +51,7 @@ public class DashboardService
     /// Looks up a card by id and executes its data query. Returns an error result if the card
     /// is not found. This is the single-entry point for the API layer (Card.cshtml.cs).
     /// </summary>
-    public async Task<CardDataResult> GetCardDataByIdAsync(int cardId, CancellationToken ct = default)
+    public async Task<CardDataResult> GetCardDataByIdAsync(int cardId, DateRange? dateRange = null, CancellationToken ct = default)
     {
         var card = await _db.DashboardCards.FindAsync(new object[] { cardId }, ct);
         if (card is null)
@@ -63,7 +64,7 @@ public class DashboardService
             };
         }
 
-        return await GetCardDataAsync(card, ct);
+        return await GetCardDataAsync(card, dateRange, ct);
     }
 
     /// <summary>
@@ -71,7 +72,7 @@ public class DashboardService
     /// <see cref="CardDataResult"/>. Exceptions are caught and surfaced as
     /// <c>Status = "error"</c> with a secret-free message.
     /// </summary>
-    public async Task<CardDataResult> GetCardDataAsync(DashboardCard card, CancellationToken ct = default)
+    public async Task<CardDataResult> GetCardDataAsync(DashboardCard card, DateRange? dateRange = null, CancellationToken ct = default)
     {
         var result = new CardDataResult
         {
@@ -92,142 +93,206 @@ public class DashboardService
                 return result;
             }
 
-            var sql = BuildSql(card);
+            // DateFilterMode: resolve effective date range based on card's mode
+            var effectiveDateRange = dateRange; // From filter bar (dashboard mode)
 
-            await using var conn = new SqlConnection(connString);
-            await conn.OpenAsync(ct);
-
-            await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 60 };
-            await using var reader = await cmd.ExecuteReaderAsync(ct);
-
-            var colCount = reader.FieldCount;
-            var columns = new List<string>(colCount);
-            for (var i = 0; i < colCount; i++)
+            if (string.Equals(card.DateFilterMode, "fixed", StringComparison.OrdinalIgnoreCase)
+                && !string.IsNullOrWhiteSpace(card.FixedStartDate)
+                && !string.IsNullOrWhiteSpace(card.FixedEndDate))
             {
-                columns.Add(reader.GetName(i) is { Length: > 0 } name ? name : $"Column{i + 1}");
-            }
-            result.Columns = columns;
-
-            // Cap payloads so a single heavy query can't break the page.
-            var rowLimit = card.ChartType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? 500 : 200;
-            var rows = new List<Dictionary<string, object?>>(rowLimit);
-            var count = 0;
-            while (count < rowLimit && await reader.ReadAsync(ct))
-            {
-                var row = new Dictionary<string, object?>(colCount, StringComparer.OrdinalIgnoreCase);
-                for (var i = 0; i < colCount; i++)
+                // Fixed dates from card settings — ignore filter bar
+                if (DateTime.TryParse(card.FixedStartDate, out var from)
+                    && DateTime.TryParse(card.FixedEndDate, out var to))
                 {
-                    row[columns[i]] = DataHelper.ConvertCell(reader.GetValue(i));
-                }
-                rows.Add(row);
-                count++;
-            }
-            result.Rows = rows;
-
-            if (rows.Count == 0)
-            {
-                result.Status = "empty";
-                return result;
-            }
-
-            // Use selected ValueColumn when available (KPI4-005); fallback to first cell.
-            if (!string.IsNullOrEmpty(card.ValueColumn))
-            {
-                var valueCol = card.ValueColumn.Trim('[', ']').Trim();
-                if (rows[0].TryGetValue(valueCol, out var val))
-                {
-                    result.KpiValue = val;
-                }
-                else
-                {
-                    result.KpiValue = rows[0].Values.FirstOrDefault();
+                    effectiveDateRange = new DateRange(from, to.AddDays(1).AddTicks(-1));
                 }
             }
-            else
+            else if (string.Equals(card.DateFilterMode, "relative", StringComparison.OrdinalIgnoreCase))
             {
-                result.KpiValue = rows[0].Values.FirstOrDefault();
+                // Relative days from card settings — ignore filter bar
+                var days = card.RelativeDays > 0 ? card.RelativeDays : 30;
+                effectiveDateRange = new DateRange(DateTime.UtcNow.AddDays(-days), DateTime.UtcNow);
             }
+            // else "dashboard": use dateRange from filter bar as-is
 
-            // Advanced KPI: Execute additional queries if needed
-            if (card.ChartType.Equals("KPI", StringComparison.OrdinalIgnoreCase)
-                && !string.IsNullOrEmpty(card.KpiMode)
-                && card.KpiMode != "simple")
+            var sql = BuildSql(card, effectiveDateRange);
+
+            int attempt = 0;
+            while (true)
             {
-                result.KpiMode = card.KpiMode;
-
-                // Extract main KPI value from the base query result
-                if (rows.Count > 0 && !string.IsNullOrEmpty(card.ValueColumn))
+                attempt++;
+                try
                 {
-                    var valueCol = card.ValueColumn.Trim('[', ']').Trim();
-                    if (rows[0].TryGetValue(valueCol, out var mainVal))
+                    await using var conn = new SqlConnection(connString);
+                    await conn.OpenAsync(ct);
+
+                    await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 60 };
+                    await using var reader = await cmd.ExecuteReaderAsync(ct);
+
+                    var colCount = reader.FieldCount;
+                    var columns = new List<string>(colCount);
+                    for (var i = 0; i < colCount; i++)
                     {
-                        result.KpiMainValue = mainVal;
+                        columns.Add(reader.GetName(i) is { Length: > 0 } name ? name : $"Column{i + 1}");
+                    }
+                    result.Columns = columns;
+
+                    // Cap payloads so a single heavy query can't break the page.
+                    var rowLimit = card.ChartType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? 500 : 200;
+                    var rows = new List<Dictionary<string, object?>>(rowLimit);
+                    var count = 0;
+                    while (count < rowLimit && await reader.ReadAsync(ct))
+                    {
+                        var row = new Dictionary<string, object?>(colCount, StringComparer.OrdinalIgnoreCase);
+                        for (var i = 0; i < colCount; i++)
+                        {
+                            row[columns[i]] = DataHelper.ConvertCell(reader.GetValue(i));
+                        }
+                        rows.Add(row);
+                        count++;
+                    }
+                    result.Rows = rows;
+
+                    if (rows.Count == 0)
+                    {
+                        result.Status = "empty";
+                        return result;
+                    }
+
+                    // Use selected ValueColumn when available (KPI4-005); fallback to first cell.
+                    if (!string.IsNullOrEmpty(card.ValueColumn))
+                    {
+                        var valueCol = card.ValueColumn.Trim('[', ']').Trim();
+                        if (rows[0].TryGetValue(valueCol, out var val))
+                        {
+                            result.KpiValue = val;
+                        }
+                        else
+                        {
+                            result.KpiValue = rows[0].Values.FirstOrDefault();
+                        }
                     }
                     else
                     {
-                        // Fallback: use first numeric value
-                        result.KpiMainValue = rows[0].Values.FirstOrDefault();
+                        result.KpiValue = rows[0].Values.FirstOrDefault();
                     }
-                }
 
-                // Build and execute additional KPI queries
-                var kpiQueries = KpiQueryBuilder.Build(card);
-
-                // Execute change query
-                if (kpiQueries.ChangeSql != null)
-                {
-                    try
+                    // Advanced KPI: Execute additional queries if needed
+                    if (card.ChartType.Equals("KPI", StringComparison.OrdinalIgnoreCase)
+                        && !string.IsNullOrEmpty(card.KpiMode)
+                        && card.KpiMode != "simple")
                     {
-                        var prevValue = await ExecuteScalarQueryAsync(kpiQueries.ChangeSql, ct);
-                        if (prevValue != null && prevValue != DBNull.Value)
-                        {
-                            var current = Convert.ToDouble(result.KpiMainValue ?? 0);
-                            var previous = Convert.ToDouble(prevValue);
+                        result.KpiMode = card.KpiMode;
+                        result.ChangeSource = card.ChangeSource;
 
-                            if (previous != 0)
+                        // Extract main KPI value from the base query result
+                        if (rows.Count > 0 && !string.IsNullOrEmpty(card.ValueColumn))
+                        {
+                            var valueCol = card.ValueColumn.Trim('[', ']').Trim();
+                            if (rows[0].TryGetValue(valueCol, out var mainVal))
                             {
-                                var changePercent = ((current - previous) / Math.Abs(previous)) * 100;
-                                result.KpiChangePercent = Math.Round((decimal)changePercent, 1);
-                                result.KpiChangeDirection = changePercent > 0 ? "up" : changePercent < 0 ? "down" : "flat";
+                                result.KpiMainValue = mainVal;
+                            }
+                            else
+                            {
+                                // Fallback: use first numeric value
+                                result.KpiMainValue = rows[0].Values.FirstOrDefault();
+                            }
+                        }
+
+                        // Build and execute additional KPI queries
+                        var kpiQueries = KpiQueryBuilder.Build(card, effectiveDateRange);
+
+                        // Execute change query
+                        if (kpiQueries.ChangeSql != null)
+                        {
+                            try
+                            {
+                                var prevValue = await ExecuteScalarQueryAsync(kpiQueries.ChangeSql, ct);
+                                if (prevValue != null && prevValue != DBNull.Value)
+                                {
+                                    var current = Convert.ToDouble(result.KpiMainValue ?? 0);
+                                    var previous = Convert.ToDouble(prevValue);
+
+                                    if (previous != 0)
+                                    {
+                                        var changePercent = ((current - previous) / Math.Abs(previous)) * 100;
+                                        result.KpiChangePercent = Math.Round((decimal)changePercent, 1);
+                                        result.KpiChangeDirection = changePercent > 0 ? "up" : changePercent < 0 ? "down" : "flat";
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                // Log but don't fail the whole card
+                                result.ErrorMessage = $"Change query failed: {DataHelper.Sanitize(ex.Message)}";
+                            }
+                        }
+
+                        // Execute sparkline query
+                        if (kpiQueries.SparklineSql != null)
+                        {
+                            try
+                            {
+                                result.KpiSparklineData = await ExecuteQueryAsync(kpiQueries.SparklineSql, ct);
+                            }
+                            catch (Exception ex)
+                            {
+                                result.ErrorMessage = $"Sparkline query failed: {DataHelper.Sanitize(ex.Message)}";
+                            }
+                        }
+
+                        // Execute grand total query
+                        if (kpiQueries.GrandTotalSql != null)
+                        {
+                            try
+                            {
+                                var grandTotal = await ExecuteScalarQueryAsync(kpiQueries.GrandTotalSql, ct);
+                                result.KpiGrandTotal = grandTotal;
+                            }
+                            catch (Exception ex)
+                            {
+                                result.ErrorMessage = $"Grand total query failed: {DataHelper.Sanitize(ex.Message)}";
+                            }
+                        }
+
+                        // Execute category breakdown query
+                        if (kpiQueries.BreakdownSql != null)
+                        {
+                            try
+                            {
+                                var breakdownData = await ExecuteQueryAsync(kpiQueries.BreakdownSql, ct);
+                                if (breakdownData != null && breakdownData.Count > 0)
+                                {
+                                    var total = breakdownData.Sum(r =>
+                                        Convert.ToDouble(r.ContainsKey("CategoryValue") ? r["CategoryValue"] : 0));
+                                    foreach (var row in breakdownData)
+                                    {
+                                        var val = Convert.ToDouble(row.ContainsKey("CategoryValue") ? row["CategoryValue"] : 0);
+                                        row["Percentage"] = total > 0 ? Math.Round((val / total) * 100, 1) : 0;
+                                    }
+                                    result.KpiCategoryBreakdown = breakdownData;
+                                }
+                            }
+                            catch
+                            {
+                                // Log but don't fail the card
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        // Log but don't fail the whole card
-                        result.ErrorMessage = $"Change query failed: {DataHelper.Sanitize(ex.Message)}";
-                    }
-                }
 
-                // Execute sparkline query
-                if (kpiQueries.SparklineSql != null)
-                {
-                    try
-                    {
-                        result.KpiSparklineData = await ExecuteQueryAsync(kpiQueries.SparklineSql, ct);
-                    }
-                    catch (Exception ex)
-                    {
-                        result.ErrorMessage = $"Sparkline query failed: {DataHelper.Sanitize(ex.Message)}";
-                    }
+                    result.Status = "success";
+                    break;
                 }
-
-                // Execute grand total query
-                if (kpiQueries.GrandTotalSql != null)
+                catch (SqlException ex) when (attempt == 1 && effectiveDateRange is not null
+                    && ex.Message.IndexOf("Invalid column name", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    try
-                    {
-                        var grandTotal = await ExecuteScalarQueryAsync(kpiQueries.GrandTotalSql, ct);
-                        result.KpiGrandTotal = grandTotal;
-                    }
-                    catch (Exception ex)
-                    {
-                        result.ErrorMessage = $"Grand total query failed: {DataHelper.Sanitize(ex.Message)}";
-                    }
+                    // Date column doesn't exist in the underlying table
+                    // Retry without date filter
+                    if (effectiveDateRange is not null)
+                        sql = BuildSql(card, null);
                 }
             }
-
-            result.Status = "success";
         }
         catch (Exception ex)
         {
@@ -320,7 +385,7 @@ public class DashboardService
     /// </list>
     /// The SQL is admin-controlled configuration (read-only dashboard usage).
     /// </summary>
-    private static string BuildSql(DashboardCard card)
+    private static string BuildSql(DashboardCard card, DateRange? dateRange = null)
     {
         string baseSql;
         if (card.DataSourceType.Equals("View", StringComparison.OrdinalIgnoreCase))
@@ -346,8 +411,22 @@ public class DashboardService
         }
         else
         {
-            baseSql = card.SqlQuery;
+            var trimmed = card.SqlQuery.Trim().TrimEnd(';').Trim();
+            if (!trimmed.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase)
+                && !trimmed.Contains(" FROM ", StringComparison.OrdinalIgnoreCase))
+            {
+                var safe = trimmed.StartsWith("[", StringComparison.Ordinal) ? trimmed : "[" + trimmed + "]";
+                baseSql = $"SELECT * FROM {safe}";
+            }
+            else
+            {
+                baseSql = trimmed;
+            }
         }
+
+        // Date filter: apply BEFORE KPI aggregation so DateColumn is still available
+        if (dateRange is not null && !string.IsNullOrEmpty(card.DateColumn))
+            baseSql = ApplyDateFilter(baseSql, card.DateColumn, dateRange);
 
         // KPI aggregation: wrap base query when AggregationType is not "None"
         // Skip if the query already contains an aggregate function (built by card-builder.js for SqlTable sources)
@@ -365,10 +444,33 @@ public class DashboardService
 
             var col = card.ValueColumn.Trim('[', ']').Trim();
             var aggFunc = card.AggregationType.ToUpperInvariant(); // SUM, COUNT, AVG, MIN, MAX
-            return $"SELECT {aggFunc}([{col}]) AS [{col}] FROM ({baseSql.TrimEnd(';')}) _agg_src";
+            baseSql = $"SELECT {aggFunc}([{col}]) AS [{col}] FROM ({baseSql.TrimEnd(';')}) _agg_src";
         }
 
         return baseSql;
+    }
+
+    /// <summary>
+    /// Wraps a base SQL query with a date range filter on the specified date column.
+    /// Uses yyyy-MM-dd literals (safe for SQL Server, no SqlParameter needed).
+    /// </summary>
+    private static string ApplyDateFilter(string baseSql, string dateColumn, DateRange range)
+    {
+        var dateCol = SanitizeIdentifier(dateColumn);
+        var from = range.From.ToString("yyyy-MM-dd");
+        var to = range.To.ToString("yyyy-MM-dd");
+        return $"SELECT * FROM ({baseSql.TrimEnd(';')}) AS _datefiltered " +
+               $"WHERE {dateCol} >= '{from}' AND {dateCol} <= '{to}'";
+    }
+
+    /// <summary>
+    /// Sanitizes a column name to prevent SQL injection.
+    /// Wraps in square brackets and removes dangerous characters.
+    /// </summary>
+    private static string SanitizeIdentifier(string name)
+    {
+        var cleaned = name.Replace("[", "").Replace("]", "").Replace(";", "").Trim();
+        return $"[{cleaned}]";
     }
 
     /// <summary>

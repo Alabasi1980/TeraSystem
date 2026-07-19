@@ -49,11 +49,17 @@ public class CardDataResult
     /// <summary>Change direction: "up", "down", or "flat".</summary>
     public string KpiChangeDirection { get; set; } = "flat";
 
+    /// <summary>Configured KPI comparison source, used only for non-sensitive display context.</summary>
+    public string? ChangeSource { get; set; }
+
     /// <summary>Sparkline data points (monthly values for trend chart).</summary>
     public List<Dictionary<string, object?>>? KpiSparklineData { get; set; }
 
     /// <summary>Grand total value (all-time, no date filter).</summary>
     public object? KpiGrandTotal { get; set; }
+
+    /// <summary>Top 5 category breakdown with values and percentages.</summary>
+    public List<Dictionary<string, object?>>? KpiCategoryBreakdown { get; set; }
 
     /// <summary>KPI display mode from card config: "simple", "withChange", "composite".</summary>
     public string KpiMode { get; set; } = "simple";

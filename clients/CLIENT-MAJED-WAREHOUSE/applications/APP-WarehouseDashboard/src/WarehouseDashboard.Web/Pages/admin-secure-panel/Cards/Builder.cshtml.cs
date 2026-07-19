@@ -401,8 +401,10 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                         }
 
                         var originalIsActive = existing.IsActive;
+                        var originalDashboardId = existing.DashboardId;
                         MapDtoToEntity(dto, existing);
                         existing.IsActive = originalIsActive;
+                        existing.DashboardId ??= originalDashboardId;
                         existing.UpdatedAt = DateTime.UtcNow;
 
                         _logger.LogInformation("Card Builder SaveChangesAsync starting for edit {EditId}", editId);

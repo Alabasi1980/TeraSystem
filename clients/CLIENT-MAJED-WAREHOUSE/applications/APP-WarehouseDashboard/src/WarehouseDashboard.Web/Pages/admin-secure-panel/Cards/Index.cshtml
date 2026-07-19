@@ -4,6 +4,264 @@
     ViewData["Title"] = "إدارة البطاقات";
 }
 
+<style>
+    /* ===================== Cards Admin Page ===================== */
+
+    /* --- Stats Bar --- */
+    .cards-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--sp-4);
+        margin-bottom: var(--sp-6);
+    }
+    .cards-stat {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        padding: var(--sp-4) var(--sp-5);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow var(--dur-norm) var(--ease), transform var(--dur-norm) var(--ease);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .cards-stat:nth-child(1) { animation-delay: 0ms; }
+    .cards-stat:nth-child(2) { animation-delay: 60ms; }
+    .cards-stat:nth-child(3) { animation-delay: 120ms; }
+    .cards-stat:nth-child(4) { animation-delay: 180ms; }
+    .cards-stat:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .cards-stat__icon {
+        width: 44px; height: 44px;
+        border-radius: var(--radius-md);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; flex-shrink: 0;
+    }
+    .cards-stat--total .cards-stat__icon { background: rgba(31, 78, 121, 0.10); color: var(--c-primary); }
+    .cards-stat--active .cards-stat__icon { background: rgba(30, 158, 106, 0.10); color: var(--c-success); }
+    .cards-stat--kpi .cards-stat__icon { background: rgba(139, 92, 246, 0.10); color: #7C3AED; }
+    .cards-stat--charts .cards-stat__icon { background: rgba(245, 158, 11, 0.10); color: #D97706; }
+    .cards-stat__info { display: flex; flex-direction: column; gap: 2px; }
+    .cards-stat__label { font-size: 13px; color: var(--c-text-muted); font-weight: 500; }
+    .cards-stat__value { font-size: 26px; font-weight: 700; color: var(--c-text); line-height: 1.1; font-variant-numeric: tabular-nums; }
+
+    /* --- Toolbar (Search + Filter) --- */
+    .cards-toolbar {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        margin-bottom: var(--sp-6);
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        padding: var(--sp-3) var(--sp-4);
+        box-shadow: var(--shadow-sm);
+        animation: wdFadeUp var(--dur-norm) var(--ease) 240ms both;
+    }
+    .cards-toolbar__search {
+        flex: 1;
+        position: relative;
+    }
+    .cards-toolbar__search-icon {
+        position: absolute;
+        inset-inline-start: 12px;
+        top: 50%; transform: translateY(-50%);
+        color: var(--c-text-muted);
+        font-size: 14px;
+        pointer-events: none;
+    }
+    .cards-toolbar__search input {
+        width: 100%;
+        padding: 9px 12px 9px 36px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-surface);
+        color: var(--c-text);
+        font-family: var(--font-ar);
+        font-size: 14px;
+        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    }
+    .cards-toolbar__search input:focus {
+        outline: none;
+        border-color: var(--c-secondary);
+        box-shadow: 0 0 0 3px rgba(46, 109, 164, 0.12);
+    }
+    .cards-toolbar__search input::placeholder { color: var(--c-text-muted); }
+    .cards-toolbar__filter {
+        display: flex; align-items: center; gap: var(--sp-2);
+    }
+    .cards-toolbar__filter select {
+        padding: 9px 32px 9px 12px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-surface);
+        color: var(--c-text);
+        font-family: var(--font-ar);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B7A99' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: inset-inline-end 10px center;
+        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    }
+    .cards-toolbar__filter select:focus {
+        outline: none;
+        border-color: var(--c-secondary);
+        box-shadow: 0 0 0 3px rgba(46, 109, 164, 0.12);
+    }
+    .cards-toolbar__count {
+        font-size: 13px; color: var(--c-text-muted); white-space: nowrap; font-weight: 600;
+        padding-inline-start: var(--sp-2);
+    }
+
+    /* --- Admin Card List --- */
+    .cards-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-4);
+    }
+    .admin-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        padding: var(--sp-5) var(--sp-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-3);
+        transition: box-shadow var(--dur-norm) var(--ease), transform var(--dur-norm) var(--ease);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .admin-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    /* --- Card Header --- */
+    .admin-card__header {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--sp-3);
+    }
+    .admin-card__icon {
+        width: 44px; height: 44px;
+        border-radius: var(--radius-md);
+        background: var(--c-surface-muted);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; flex-shrink: 0;
+    }
+    .admin-card__info { flex: 1; min-width: 0; }
+    .admin-card__title {
+        font-size: 16px; font-weight: 700; margin: 0; color: var(--c-text);
+        line-height: 1.3;
+    }
+    .admin-card__desc {
+        font-size: 13px; color: var(--c-text-muted); margin: 4px 0 0; line-height: 1.5;
+    }
+    .admin-card__badges {
+        display: flex; align-items: center; gap: var(--sp-2); flex-shrink: 0; flex-wrap: wrap;
+    }
+
+    /* --- Badges --- */
+    .type-badge {
+        display: inline-flex; align-items: center;
+        padding: 3px 10px; border-radius: var(--radius-full);
+        font-size: 12px; font-weight: 700; white-space: nowrap;
+    }
+    .type-badge--kpi { background: rgba(139, 92, 246, 0.12); color: #7C3AED; }
+    .type-badge--bar { background: rgba(59, 130, 246, 0.12); color: #2563EB; }
+    .type-badge--line { background: rgba(16, 185, 129, 0.12); color: #059669; }
+    .type-badge--pie { background: rgba(245, 158, 11, 0.12); color: #D97706; }
+    .type-badge--table { background: rgba(107, 114, 128, 0.12); color: #4B5563; }
+    .type-badge--gauge { background: rgba(239, 68, 68, 0.12); color: #DC2626; }
+    .status-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 3px 10px; border-radius: var(--radius-full);
+        font-size: 12px; font-weight: 700; white-space: nowrap;
+    }
+    .status-badge--on { background: rgba(30, 158, 106, 0.10); color: var(--c-success); }
+    .status-badge--off { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
+    .status-badge::before {
+        content: '';
+        width: 7px; height: 7px;
+        border-radius: var(--radius-full);
+        background: currentColor;
+    }
+
+    /* --- Card Meta Row --- */
+    .admin-card__meta {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-4);
+        padding-top: var(--sp-3);
+        border-top: 1px solid var(--c-border);
+        flex-wrap: wrap;
+    }
+    .meta-item {
+        font-size: 13px; color: var(--c-text-muted); display: inline-flex; align-items: center; gap: 4px;
+        white-space: nowrap;
+    }
+
+    /* --- Card Actions --- */
+    .admin-card__actions {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        padding-top: var(--sp-2);
+    }
+    .wd-btn--danger { color: var(--c-error); }
+    .wd-btn--danger:hover { background: rgba(214, 69, 69, 0.08); color: var(--c-error); border-color: rgba(214, 69, 69, 0.24); }
+
+    /* --- Empty State (enhanced) --- */
+    .cards-empty {
+        text-align: center;
+        display: flex; flex-direction: column; align-items: center; gap: var(--sp-4);
+        padding: var(--sp-12) var(--sp-6);
+        background: var(--c-surface);
+        border: 1px dashed var(--c-border);
+        border-radius: var(--radius-lg);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .cards-empty__icon {
+        width: 80px; height: 80px;
+        border-radius: var(--radius-full);
+        background: var(--c-surface-muted);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 36px; color: var(--c-text-muted);
+    }
+    .cards-empty h3 { margin: 0; font-size: 20px; color: var(--c-text); }
+    .cards-empty p { margin: 0; color: var(--c-text-muted); font-size: 15px; max-width: 360px; }
+
+    /* --- Search Empty State --- */
+    .cards-empty-search {
+        display: none;
+        text-align: center;
+        padding: var(--sp-12) var(--sp-6);
+        background: var(--c-surface);
+        border: 1px dashed var(--c-border);
+        border-radius: var(--radius-lg);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .cards-empty-search__icon { font-size: 40px; margin-bottom: var(--sp-3); }
+    .cards-empty-search h3 { margin: 0; font-size: 18px; color: var(--c-text); }
+    .cards-empty-search p { margin: 4px 0 0; color: var(--c-text-muted); font-size: 14px; }
+
+    /* --- Responsive --- */
+    @@media (max-width: 767px) {
+        .cards-stats { grid-template-columns: repeat(2, 1fr); }
+        .cards-toolbar { flex-wrap: wrap; }
+        .cards-toolbar__search { min-width: 100%; }
+        .admin-card__header { flex-direction: column; }
+        .admin-card__badges { align-self: flex-start; }
+        .admin-card__meta { gap: var(--sp-3); }
+    }
+    @@media (max-width: 480px) {
+        .cards-stats { grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+        .cards-stat { padding: var(--sp-3) var(--sp-4); }
+        .cards-stat__icon { width: 36px; height: 36px; font-size: 16px; }
+        .cards-stat__value { font-size: 22px; }
+    }
+</style>
+
 <div class="wd-breadcrumb-row">
     <span>البطاقات</span>
 </div>
@@ -13,10 +271,69 @@
     <a href="/admin-secure-panel/Cards/Create" class="wd-btn wd-btn--primary">+ بطاقة جديدة</a>
 </div>
 
+<!-- ===== شريط الإحصائيات ===== -->
+@{
+    var totalCount = Model.Cards.Count;
+    var activeCount = Model.Cards.Count(c => c.IsActive);
+    var kpiCount = Model.Cards.Count(c => c.ChartType == "KPI");
+    var chartCount = totalCount - kpiCount;
+}
+<div class="cards-stats">
+    <div class="cards-stat cards-stat--total">
+        <div class="cards-stat__icon">📊</div>
+        <div class="cards-stat__info">
+            <span class="cards-stat__label">إجمالي البطاقات</span>
+            <span class="cards-stat__value" id="stat-total">@totalCount</span>
+        </div>
+    </div>
+    <div class="cards-stat cards-stat--active">
+        <div class="cards-stat__icon">✅</div>
+        <div class="cards-stat__info">
+            <span class="cards-stat__label">نشطة</span>
+            <span class="cards-stat__value" id="stat-active">@activeCount</span>
+        </div>
+    </div>
+    <div class="cards-stat cards-stat--kpi">
+        <div class="cards-stat__icon">📈</div>
+        <div class="cards-stat__info">
+            <span class="cards-stat__label">مؤشرات KPI</span>
+            <span class="cards-stat__value" id="stat-kpi">@kpiCount</span>
+        </div>
+    </div>
+    <div class="cards-stat cards-stat--charts">
+        <div class="cards-stat__icon">📉</div>
+        <div class="cards-stat__info">
+            <span class="cards-stat__label">رسوم بيانية</span>
+            <span class="cards-stat__value" id="stat-charts">@chartCount</span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== شريط البحث والتصفية ===== -->
+<div class="cards-toolbar">
+    <div class="cards-toolbar__search">
+        <span class="cards-toolbar__search-icon">🔍</span>
+        <input type="search" id="cards-search" placeholder="ابحث بعنوان البطاقة…" autocomplete="off">
+    </div>
+    <div class="cards-toolbar__filter">
+        <select id="cards-type-filter">
+            <option value="All">كل الأنواع</option>
+            <option value="KPI">KPI</option>
+            <option value="Bar">Bar</option>
+            <option value="Line">Line</option>
+            <option value="Pie">Pie</option>
+            <option value="Table">Table</option>
+            <option value="Gauge">Gauge</option>
+        </select>
+    </div>
+    <span class="cards-toolbar__count" id="cards-count-label">@totalCount بطاقة</span>
+</div>
+
+<!-- ===== Empty State (لا توجد بطاقات) ===== -->
 @if (Model.Cards.Count == 0)
 {
-    <div class="wd-card wd-empty">
-        <div class="wd-empty__icon">▦</div>
+    <div class="cards-empty">
+        <div class="cards-empty__icon">▦</div>
         <h3>لا توجد بطاقات بعد</h3>
         <p>ابدأ بإضافة بطاقة جديدة لعرضها في لوحة المعلومات.</p>
         <a href="/admin-secure-panel/Cards/Create" class="wd-btn wd-btn--primary">+ إضافة بطاقة</a>
@@ -24,51 +341,148 @@
 }
 else
 {
-    <div class="wd-grid-wrap" id="wdGridWrap">
-        <component type="typeof(CardsGrid)" render-mode="ServerPrerendered"
-                   param-CardsJson="@System.Text.Json.JsonSerializer.Serialize(Model.Cards)" />
-    </div>
-
-    <div class="wd-skeleton-wrap" id="wdSkeleton" aria-hidden="true">
-        @for (var i = 0; i < 6; i++)
+    <!-- ===== قائمة البطاقات ===== -->
+    <div class="cards-list" id="cards-list">
+        @for (var i = 0; i < Model.Cards.Count; i++)
         {
-            <div class="wd-skel-row">
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
+            var c = Model.Cards[i];
+            <div class="admin-card" data-title="@c.Title" data-type="@c.ChartType" data-active="@c.IsActive" style="animation-delay: @(i * 60)ms">
+                <div class="admin-card__header">
+                    <div class="admin-card__icon">@GetTypeIcon(c.ChartType)</div>
+                    <div class="admin-card__info">
+                        <h3 class="admin-card__title">@c.Title</h3>
+                        @if (!string.IsNullOrWhiteSpace(c.Description))
+                        {
+                            <p class="admin-card__desc">@c.Description</p>
+                        }
+                    </div>
+                    <div class="admin-card__badges">
+                        <span class="type-badge type-badge--@c.ChartType.ToLower()">@c.ChartType</span>
+                        <span class="status-badge status-badge--@(c.IsActive ? "on" : "off")">@(c.IsActive ? "نشطة" : "غير نشطة")</span>
+                    </div>
+                </div>
+                <div class="admin-card__meta">
+                    <span class="meta-item">🎨 @c.ColorPalette</span>
+                    <span class="meta-item">⏱️ @GetRefreshText(c.RefreshInterval)</span>
+                    <span class="meta-item">📐 @c.GridWidth×@c.GridHeight</span>
+                    <span class="meta-item">📅 @GetDateFilterText(c.DateFilterMode)</span>
+                </div>
+                <div class="admin-card__actions">
+                    <a href="/admin-secure-panel/Cards/Builder?edit=@c.Id" class="wd-btn wd-btn--ghost wd-btn--sm">تعديل</a>
+                    <a href="/admin-secure-panel/Cards/Builder?clone=@c.Id" class="wd-btn wd-btn--ghost wd-btn--sm">نسخ</a>
+                    <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm wd-btn--danger" onclick="wdConfirmDelete(@c.Id)">حذف</button>
+                </div>
             </div>
         }
     </div>
+
+    <!-- Empty state when search yields no results -->
+    <div class="cards-empty-search" id="cards-empty-search">
+        <div class="cards-empty-search__icon">🔍</div>
+        <h3>لا توجد نتائج مطابقة</h3>
+        <p>جرّب تغيير كلمة البحث أو تصفية النوع.</p>
+    </div>
 }
 
+<!-- ===== نموذج الحذف ===== -->
 <form id="wdDeleteForm" method="post" asp-page-handler="Delete" class="wd-hidden">
     <input type="hidden" name="id" id="wdDeleteId" />
 </form>
 
+<!-- ===== Helper Functions ===== -->
+@functions {
+    string GetTypeIcon(string chartType) => chartType switch
+    {
+        "KPI" => "📊",
+        "Bar" => "📈",
+        "Line" => "📉",
+        "Pie" => "🥧",
+        "Table" => "📋",
+        "Gauge" => "⏱️",
+        _ => "📊"
+    };
+
+    string GetRefreshText(int seconds) => seconds switch
+    {
+        0 => "بدون تحديث تلقائي",
+        60 => "تحديث كل دقيقة",
+        300 => "تحديث كل 5 دقائق",
+        3600 => "تحديث كل ساعة",
+        86400 => "تحديث كل يوم",
+        _ => $"تحديث كل {seconds} ثانية"
+    };
+
+    string GetDateFilterText(string mode) => mode switch
+    {
+        "dashboard" => "فلتر لوحة المعلومات",
+        "fixed" => "نطاق ثابت",
+        "relative" => "آخر N يوم",
+        _ => "فلتر لوحة المعلومات"
+    };
+}
+
 @section Scripts {
-    <script>
-        function wdConfirmDelete(id) {
-            if (window.confirm('هل أنت متأكد من حذف هذه البطاقة؟ سيتم حذف مستويات التنقيح المرتبطة بها تلقائياً.')) {
-                document.getElementById('wdDeleteId').value = id;
-                document.getElementById('wdDeleteForm').submit();
-            }
-        }
-        function wdHideSkeleton() {
-            var sk = document.getElementById('wdSkeleton');
-            var grid = document.getElementById('wdGridWrap');
-            if (sk) sk.style.display = 'none';
-            if (grid) grid.style.display = 'block';
-        }
-        // Fallback: never let the shimmer stick if Radzen renders slowly or JS is unavailable.
-        window.addEventListener('load', function () { setTimeout(wdHideSkeleton, 700); });
-    </script>
+<script>
+(function() {
+    var searchInput = document.getElementById('cards-search');
+    var typeSelect = document.getElementById('cards-type-filter');
+    var countLabel = document.getElementById('cards-count-label');
+    var cards = document.querySelectorAll('.admin-card');
+    var statsEls = {
+        total: document.getElementById('stat-total'),
+        active: document.getElementById('stat-active'),
+        kpi: document.getElementById('stat-kpi'),
+        charts: document.getElementById('stat-charts')
+    };
+
+    function applyFilter() {
+        var q = (searchInput.value || '').trim().toLowerCase();
+        var type = typeSelect.value;
+        var visible = 0, activeCount = 0, kpiCount = 0, chartCount = 0;
+
+        cards.forEach(function(card) {
+            var title = (card.getAttribute('data-title') || '').toLowerCase();
+            var cardType = card.getAttribute('data-type') || '';
+            var isActive = card.getAttribute('data-active') === 'True';
+            var matchSearch = q === '' || title.indexOf(q) !== -1;
+            var matchType = type === 'All' || cardType === type;
+            var show = matchSearch && matchType;
+
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+            if (isActive) activeCount++;
+            if (cardType === 'KPI') kpiCount++;
+            else chartCount++;
+        });
+
+        // Update stats
+        if (statsEls.total) statsEls.total.textContent = cards.length;
+        if (statsEls.active) statsEls.active.textContent = activeCount;
+        if (statsEls.kpi) statsEls.kpi.textContent = kpiCount;
+        if (statsEls.charts) statsEls.charts.textContent = chartCount;
+
+        // Update count label
+        if (countLabel) countLabel.textContent = visible + ' بطاقة';
+
+        // Show/hide empty state for search
+        var emptySearch = document.getElementById('cards-empty-search');
+        if (emptySearch) emptySearch.style.display = visible === 0 ? '' : 'none';
+    }
+
+    // Debounce for search input (200ms)
+    var debounceTimer;
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(applyFilter, 200);
+        });
+    }
+    if (typeSelect) typeSelect.addEventListener('change', applyFilter);
+
+    // Initial stats update on page load
+    applyFilter();
+})();
+</script>
 }
 
 @section Toast {

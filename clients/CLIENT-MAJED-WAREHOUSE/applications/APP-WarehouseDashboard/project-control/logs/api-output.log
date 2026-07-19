@@ -1,0 +1,73 @@
+Using launch settings from D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Properties\launchSettings.json...
+info: WarehouseDashboard.Api.Services.SyncRunProgressStore[0]
+      SyncRunProgressStore initialized. Cleanup timer started (interval=1m, maxAge=5m).
+info: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      SyncEngineService initialized. Mappings will be loaded from DB at each sync cycle.
+info: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      SyncEngineService started. Scheduling is config-driven via the SyncSettings table (SQL Server).
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:5001
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api
+warn: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      SyncSettings row (Id=1) not found. Using safe defaults: Interval=30min, AutoSync=disabled. Auto-sync will remain off until the row is configured.
+info: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      Auto-sync is DISABLED (IsAutoSyncEnabled=false). Automatic runs are skipped; a manual trigger remains available. Re-checking SyncSettings in 00:05:00.
+info: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      Loaded 5 active mapping(s) from DB.
+info: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      Loaded 5 active mapping(s) from DB.
+info: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      Loaded 5 active mapping(s) from DB.
+info: WarehouseDashboard.Api.Controllers.SyncController[0]
+      Manual selected-sync triggered for 1 mapping ID(s): [10]
+warn: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      Failed to load mappings by IDs from DB. Returning empty list.
+      System.InvalidOperationException: There is already an open DataReader associated with this Connection which must be closed first.
+         at Microsoft.Data.SqlClient.SqlInternalConnectionTds.ValidateConnectionForExecute(SqlCommand command)
+         at Microsoft.Data.SqlClient.SqlConnection.ValidateConnectionForExecute(String method, SqlCommand command)
+         at Microsoft.Data.SqlClient.SqlCommand.ValidateCommand(Boolean isAsync, String method)
+         at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String method)
+         at Microsoft.Data.SqlClient.SqlCommand.BeginExecuteReaderInternal(CommandBehavior behavior, AsyncCallback callback, Object stateObject, Int32 timeout, Boolean inRetry, Boolean asyncWrite)
+         at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteReaderAsync>b__201_0(AsyncCallback callback, Object stateObject)
+         at System.Threading.Tasks.TaskFactory`1.FromAsyncImpl(Func`3 beginMethod, Func`2 endFunction, Action`1 endAction, Object state, TaskCreationOptions creationOptions)
+         at System.Threading.Tasks.TaskFactory`1.FromAsync(Func`3 beginMethod, Func`2 endMethod, Object state)
+         at Microsoft.Data.SqlClient.SqlCommand.InternalExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+      --- End of stack trace from previous location ---
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadNumericTextColumnsAsync(SqlConnection conn, List`1 mappings, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 758
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadNumericTextColumnsAsync(SqlConnection conn, List`1 mappings, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 759
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadMappingsByIdsAsync(List`1 mappingIds, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 716
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadMappingsByIdsAsync(List`1 mappingIds, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 722
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadMappingsByIdsAsync(List`1 mappingIds, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 722
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadMappingsByIdsAsync(List`1 mappingIds, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 722
+info: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      Selected sync started for 1 mapping(s).
+warn: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      Failed to load mappings by IDs from DB. Returning empty list.
+      System.InvalidOperationException: There is already an open DataReader associated with this Connection which must be closed first.
+         at Microsoft.Data.SqlClient.SqlInternalConnectionTds.ValidateConnectionForExecute(SqlCommand command)
+         at Microsoft.Data.SqlClient.SqlConnection.ValidateConnectionForExecute(String method, SqlCommand command)
+         at Microsoft.Data.SqlClient.SqlCommand.ValidateCommand(Boolean isAsync, String method)
+         at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String method)
+         at Microsoft.Data.SqlClient.SqlCommand.BeginExecuteReaderInternal(CommandBehavior behavior, AsyncCallback callback, Object stateObject, Int32 timeout, Boolean inRetry, Boolean asyncWrite)
+         at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteReaderAsync>b__201_0(AsyncCallback callback, Object stateObject)
+         at System.Threading.Tasks.TaskFactory`1.FromAsyncImpl(Func`3 beginMethod, Func`2 endFunction, Action`1 endAction, Object state, TaskCreationOptions creationOptions)
+         at System.Threading.Tasks.TaskFactory`1.FromAsync(Func`3 beginMethod, Func`2 endMethod, Object state)
+         at Microsoft.Data.SqlClient.SqlCommand.InternalExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+      --- End of stack trace from previous location ---
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadNumericTextColumnsAsync(SqlConnection conn, List`1 mappings, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 758
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadNumericTextColumnsAsync(SqlConnection conn, List`1 mappings, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 759
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadMappingsByIdsAsync(List`1 mappingIds, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 716
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadMappingsByIdsAsync(List`1 mappingIds, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 722
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadMappingsByIdsAsync(List`1 mappingIds, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 722
+         at WarehouseDashboard.Api.Services.SyncEngineService.LoadMappingsByIdsAsync(List`1 mappingIds, CancellationToken ct) in D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Api\Services\SyncEngineService.cs:line 722
+warn: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      Selected sync: no active mappings found for the requested IDs. No work performed.
+info: WarehouseDashboard.Api.Services.SyncRunProgressStore[0]
+      SyncRunProgressStore: run 5a3ffaef-d047-4bfb-bc23-522ffc7b3651 completed. Status=success, 0 row(s), 0.0s.
+info: WarehouseDashboard.Api.Services.SyncEngineService[0]
+      Loaded 5 active mapping(s) from DB.

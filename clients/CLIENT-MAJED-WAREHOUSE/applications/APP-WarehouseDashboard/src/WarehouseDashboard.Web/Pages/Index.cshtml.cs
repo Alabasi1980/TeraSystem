@@ -99,8 +99,20 @@ public class IndexModel : PageModel
                 .OrderBy(c => c.GridPositionY)
                 .ThenBy(c => c.GridPositionX)
                 .Select(c => new CardLayoutInfo(
-                    c.Id, c.Title, c.ChartType, c.GridPositionX, c.GridPositionY,
-                    c.GridWidth, c.GridHeight, c.RefreshInterval))
+                    c.Id,
+                    c.Title,
+                    c.Description,
+                    c.ChartType,
+                    c.ColorPalette,
+                    c.GridPositionX,
+                    c.GridPositionY,
+                    c.GridWidth,
+                    c.GridHeight,
+                    c.RefreshInterval,
+                    c.DateFilterMode ?? "dashboard",
+                    c.FixedStartDate ?? "",
+                    c.FixedEndDate ?? "",
+                    c.RelativeDays))
                 .ToListAsync();
 
             CardsWithDrill = new HashSet<int>(
@@ -170,12 +182,18 @@ public class IndexModel : PageModel
 public record CardLayoutInfo(
     int Id,
     string Title,
+    string Description,
     string ChartType,
+    string ColorPalette,
     int GridPositionX,
     int GridPositionY,
     int GridWidth,
     int GridHeight,
-    int RefreshInterval);
+    int RefreshInterval,
+    string DateFilterMode,
+    string FixedStartDate,
+    string FixedEndDate,
+    int RelativeDays);
 
 // === Layout persistence models (TASK-DASH-005) ===
 

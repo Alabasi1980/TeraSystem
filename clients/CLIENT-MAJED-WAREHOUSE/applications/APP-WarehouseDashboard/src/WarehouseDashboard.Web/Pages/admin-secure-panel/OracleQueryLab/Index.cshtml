@@ -5,6 +5,11 @@
 }
 @Html.AntiForgeryToken()
 
+<!-- CodeMirror 5 — SQL Editor -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
+
 <style>
     .wd-page { max-width: 1200px; margin: 0 auto; padding: 0; }
     .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
@@ -33,7 +38,9 @@
     .wd-actions { display: flex; align-items: center; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
     .wd-meta { font-size: 13px; color: var(--c-text-muted); margin-right: auto; }
 
-    .wd-grid { margin-top: 8px; min-height: 80px; }
+    .wd-grid { margin-top: 8px; min-height: 80px; overflow-x: auto; }
+    .wd-grid table { min-width: max-content; }
+    .wd-grid td, .wd-grid th { white-space: nowrap; }
 
     .wd-skeleton { padding: 12px; }
     .wd-skeleton__row {
@@ -110,8 +117,39 @@
 
     [hidden] { display: none !important; }
 
+    /* ─── Oracle Connection Status ─────────────────────────── */
+    .wd-ora-status {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 12px; color: var(--c-text-muted); margin-right: 16px;
+        vertical-align: middle;
+    }
+    .wd-ora-status__dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--c-warning);
+        transition: background var(--dur-fast) var(--ease);
+        flex-shrink: 0;
+    }
+    .wd-ora-status--connected .wd-ora-status__dot { background: var(--c-success); }
+    .wd-ora-status--disconnected .wd-ora-status__dot { background: var(--c-error); }
+
     @@media (max-width: 900px) {
         .wd-layout-two { grid-template-columns: 1fr; }
+    }
+
+    /* CodeMirror theme override */
+    .CodeMirror {
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        min-height: 160px;
+        height: auto;
+        border: none;
+        direction: ltr;
+        text-align: left;
+    }
+    .CodeMirror-gutters {
+        background: var(--c-surface-muted);
+        border-right: 1px solid var(--c-border);
     }
 </style>
 
@@ -119,6 +157,10 @@
     <header class="wd-page__header">
         <div class="wd-breadcrumb">
             <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; مختبِّر استعلامات Oracle
+        </div>
+        <div id="oraStatus" class="wd-ora-status" title="حالة الاتصال بقاعدة Oracle">
+            <span class="wd-ora-status__dot"></span>
+            <span class="wd-ora-status__text" id="oraStatusText">جارٍ الفحص...</span>
         </div>
         <h2 class="wd-page__title">مختبِّر استعلامات Oracle</h2>
         <p class="wd-page__subtitle">اختبار استعلامات Oracle قبل إسنادها للبطاقات</p>
@@ -133,12 +175,15 @@
             </div>
             <div class="wd-card__body">
                 <label class="wd-label" for="sqlInput">استعلام Oracle SQL</label>
-                <textarea id="sqlInput" class="wd-textarea" placeholder="SELECT * FROM ALL_TABLES WHERE ROWNUM &lt;= 10">SELECT 1 AS test_value FROM DUAL</textarea>
+                <div id="editor" style="border:1px solid var(--c-border);border-radius:var(--radius-md);min-height:160px;"></div>
 
                 <div class="wd-actions">
                     <button id="runBtn" class="wd-btn" onclick="runQuery()">تشغيل</button>
+                    <button id="cancelBtn" class="wd-btn wd-btn--ghost" onclick="cancelQuery()" hidden>إلغاء</button>
                     <button class="wd-btn wd-btn--ghost" onclick="clearEditor()">مسح</button>
                     <button class="wd-btn wd-btn--ghost" id="copyBtn" onclick="copyResults()" disabled>نسخ CSV</button>
+                    <button class="wd-btn wd-btn--ghost" id="downloadCsvBtn" onclick="downloadCsv()" disabled>تنزيل CSV</button>
+                    <button class="wd-btn wd-btn--ghost" id="copySqlBtn" onclick="copyAsSql()" disabled>نسخ SQL</button>
                     <span id="meta" class="wd-meta"></span>
                 </div>
 
@@ -149,6 +194,14 @@
                     </select>
                     <button class="wd-btn wd-btn--ghost" onclick="saveCurrentQuery()" title="حفظ الاستعلام الحالي">حفظ</button>
                     <button class="wd-btn wd-btn--ghost" onclick="deleteSavedQuery()" title="حذف الاستعلام المحدد">حذف</button>
+                </div>
+
+                <div class="wd-saved-row">
+                    <label class="wd-label" style="margin-bottom:0;white-space:nowrap;">تاريخ الاستعلامات:</label>
+                    <select id="historySelect" class="wd-saved-select" onchange="loadHistoryQuery(this.value)">
+                        <option value="">— استعلام سابق —</option>
+                    </select>
+                    <button class="wd-btn wd-btn--ghost" onclick="clearHistory()" title="مسح التاريخ">مسح</button>
                 </div>
             </div>
         </section>
@@ -193,10 +246,28 @@
 <div id="toastContainer" class="wd-toast-container"></div>
 
 <script>
+    // ─── CodeMirror Init ─────────────────────────────────────────────
+    var editor;
+    document.addEventListener('DOMContentLoaded', function() {
+        editor = CodeMirror(document.getElementById('editor'), {
+            value: 'SELECT 1 AS test_value FROM DUAL',
+            mode: 'text/x-plsql',
+            lineNumbers: true,
+            rtlMoving: true,
+            direction: 'ltr',
+            theme: 'default',
+            indentWithTabs: false,
+            smartIndent: true,
+            tabSize: 2,
+            lineWrapping: true
+        });
+    });
+
     // ─── State ──────────────────────────────────────────────────────
     let currentColumns = [];
     let currentRows = [];
     let allSchemaTables = [];
+    let abortController = null;
 
     // ─── Helpers ────────────────────────────────────────────────────
     function escapeHtml(text) {
@@ -233,11 +304,13 @@
         currentColumns = [];
         currentRows = [];
         document.getElementById('gridContainer').innerHTML = '';
+        document.getElementById('downloadCsvBtn').disabled = true;
+        document.getElementById('copySqlBtn').disabled = true;
     }
 
     // ─── Core: Run Query ────────────────────────────────────────────
     async function runQuery() {
-        const sql = document.getElementById('sqlInput').value;
+        const sql = editor.getValue();
         if (!sql.trim()) {
             showToast('الرجاء إدخال استعلام Oracle.', 'warning');
             return;
@@ -247,6 +320,9 @@
         showSkeleton(true);
         document.getElementById('meta').textContent = '';
 
+        abortController = new AbortController();
+        document.getElementById('cancelBtn').hidden = false;
+
         try {
             const token = document.querySelector('input[name=__RequestVerificationToken]').value;
             const resp = await fetch('?handler=Run', {
@@ -255,7 +331,8 @@
                     'Content-Type': 'application/json',
                     'RequestVerificationToken': token
                 },
-                body: JSON.stringify({ sql: sql })
+                body: JSON.stringify({ sql: sql }),
+                signal: abortController.signal
             });
             const data = await resp.json();
             document.getElementById('skeleton').hidden = true;
@@ -264,29 +341,83 @@
             if (!data.success) {
                 document.getElementById('emptyState').hidden = false;
                 document.getElementById('emptyState').innerHTML =
-                    '<span class="wd-empty__icon">⚠</span>' + escapeHtml(data.errorMessage || 'فشل تنفيذ الاستعلام.');
+                    '<span class="wd-empty__icon" style="background:var(--c-error-bg);color:var(--c-error);">!</span>'
+                    + '<div style="text-align:right;direction:rtl;max-width:100%;overflow-wrap:break-word;">'
+                    + escapeHtml(data.errorMessage || 'فشل تنفيذ الاستعلام.')
+                    + '</div>';
                 document.getElementById('copyBtn').disabled = true;
+                document.getElementById('downloadCsvBtn').disabled = true;
+                document.getElementById('copySqlBtn').disabled = true;
                 showToast(data.errorMessage || 'فشل تنفيذ الاستعلام.', 'error');
                 return;
             }
 
+            addToHistory(sql);
             renderGrid(data.columns, data.rows);
             document.getElementById('meta').textContent =
-                'النتائج: ' + data.rowCount + ' صف · الزمن: ' + data.elapsedMilliseconds + ' مللي ثانية';
+                'النتائج: ' + data.rowCount + ' صف · الزمن: ' + data.elapsedMilliseconds + ' مللي ثانية' +
+                (data.rowCount >= 10000 ? ' · ⚠ الحد الأقصى 10,000 صف' : ' · أقصى 10,000 صف');
+
+            if (data.rowCount >= 10000) {
+                showToast('تم الوصول للحد الأقصى (10,000 صف). قد تكون النتائج مقطوعة.', 'warning');
+            }
 
             if (data.rowCount === 0) {
                 document.getElementById('gridContainer').innerHTML =
                     '<div class="wd-empty"><span class="wd-empty__icon">✓</span>تم تنفيذ الاستعلام بنجاح لكن لم يُرجع أي صفوف.</div>';
                 document.getElementById('copyBtn').disabled = true;
+                document.getElementById('downloadCsvBtn').disabled = true;
+                document.getElementById('copySqlBtn').disabled = true;
             }
 
             showToast('تم تنفيذ الاستعلام بنجاح.', 'success');
         } catch (err) {
+            if (err.name === 'AbortError') {
+                showToast('تم إلغاء الاستعلام.', 'warning');
+                document.getElementById('emptyState').hidden = false;
+                document.getElementById('skeleton').hidden = true;
+                setRunning(false);
+                document.getElementById('cancelBtn').hidden = true;
+                return;
+            }
             document.getElementById('skeleton').hidden = true;
             document.getElementById('emptyState').hidden = false;
             document.getElementById('copyBtn').disabled = true;
+            document.getElementById('downloadCsvBtn').disabled = true;
+            document.getElementById('copySqlBtn').disabled = true;
             setRunning(false);
             showToast('تعذر الاتصال بالخادم.', 'error');
+        } finally {
+            document.getElementById('cancelBtn').hidden = true;
+        }
+    }
+
+    // ─── Cancel Query ──────────────────────────────────────────────
+    function cancelQuery() {
+        if (abortController) {
+            abortController.abort();
+            abortController = null;
+        }
+    }
+
+    // ─── Oracle Connection Status ──────────────────────────────────
+    async function checkOracleStatus() {
+        const statusEl = document.getElementById('oraStatus');
+        const textEl = document.getElementById('oraStatusText');
+        if (!statusEl) return;
+        try {
+            const resp = await fetch('?handler=Health');
+            const data = await resp.json();
+            if (data.connected) {
+                statusEl.className = 'wd-ora-status wd-ora-status--connected';
+                textEl.textContent = 'Oracle متصل';
+            } else {
+                statusEl.className = 'wd-ora-status wd-ora-status--disconnected';
+                textEl.textContent = 'Oracle غير متصل';
+            }
+        } catch {
+            statusEl.className = 'wd-ora-status wd-ora-status--disconnected';
+            textEl.textContent = 'تعذر الفحص';
         }
     }
 
@@ -313,6 +444,8 @@
         if (!columns || columns.length === 0) {
             container.innerHTML = '<div class="wd-empty"><span class="wd-empty__icon">▦</span>لا توجد أعمدة في النتيجة.</div>';
             document.getElementById('copyBtn').disabled = true;
+            document.getElementById('downloadCsvBtn').disabled = true;
+            document.getElementById('copySqlBtn').disabled = true;
             return;
         }
 
@@ -338,6 +471,8 @@
         html += '</tbody></table>';
         container.innerHTML = html;
         document.getElementById('copyBtn').disabled = false;
+        document.getElementById('downloadCsvBtn').disabled = false;
+        document.getElementById('copySqlBtn').disabled = false;
     }
 
     // ─── Copy CSV ───────────────────────────────────────────────────
@@ -360,10 +495,12 @@
 
     // ─── Clear ──────────────────────────────────────────────────────
     function clearEditor() {
-        document.getElementById('sqlInput').value = '';
+        editor.setValue('');
         destroyGrid();
         document.getElementById('emptyState').hidden = false;
         document.getElementById('copyBtn').disabled = true;
+        document.getElementById('downloadCsvBtn').disabled = true;
+        document.getElementById('copySqlBtn').disabled = true;
         document.getElementById('meta').textContent = '';
     }
 
@@ -440,16 +577,12 @@
     }
 
     function insertAtCursor(text) {
-        var ta = document.getElementById('sqlInput');
-        var start = ta.selectionStart;
-        var end = ta.selectionEnd;
-        var before = ta.value.substring(0, start);
-        var after = ta.value.substring(end);
+        var cursor = editor.getCursor();
+        var before = editor.getRange({ line: 0, ch: 0 }, cursor);
         // Add a space before if needed
         var sep = (before.length > 0 && !before.endsWith(' ') && !before.endsWith('\n')) ? ' ' : '';
-        ta.value = before + sep + text + after;
-        ta.focus();
-        ta.selectionStart = ta.selectionEnd = start + sep.length + text.length;
+        editor.replaceRange(sep + text, cursor);
+        editor.focus();
     }
 
     // ─── Saved Queries (localStorage) ───────────────────────────────
@@ -477,7 +610,7 @@
     }
 
     function saveCurrentQuery() {
-        var sql = document.getElementById('sqlInput').value;
+        var sql = editor.getValue();
         if (!sql.trim()) {
             showToast('لا يوجد استعلام لحفظه.', 'warning');
             return;
@@ -509,7 +642,7 @@
         var queries = loadSavedQueries();
         var q = queries[parseInt(index)];
         if (q && q.sql) {
-            document.getElementById('sqlInput').value = q.sql;
+            editor.setValue(q.sql);
             showToast('تم تحميل الاستعلام المحفوظ.', 'info');
         }
     }
@@ -534,7 +667,115 @@
         }
     }
 
+    // ─── Query History (localStorage) ────────────────────────────────
+    const HISTORY_KEY = 'oracleQueryLab_history';
+    const MAX_HISTORY = 20;
+
+    function getHistory() {
+        try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch { return []; }
+    }
+
+    function addToHistory(sql) {
+        if (!sql || !sql.trim()) return;
+        var history = getHistory();
+        history = history.filter(function(h) { return h.sql !== sql; });
+        history.unshift({ sql: sql, date: new Date().toISOString() });
+        if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+        try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); } catch { }
+        populateHistoryDropdown();
+    }
+
+    function populateHistoryDropdown() {
+        var history = getHistory();
+        var sel = document.getElementById('historySelect');
+        if (!sel) return;
+        sel.innerHTML = '<option value="">— استعلام سابق —</option>';
+        history.forEach(function(h, i) {
+            var opt = document.createElement('option');
+            opt.value = i;
+            var preview = h.sql.length > 60 ? h.sql.substring(0, 60) + '...' : h.sql;
+            opt.textContent = preview;
+            sel.appendChild(opt);
+        });
+    }
+
+    function loadHistoryQuery(index) {
+        if (index === '' || index === null) return;
+        var history = getHistory();
+        var h = history[parseInt(index)];
+        if (h && h.sql) {
+            editor.setValue(h.sql);
+            showToast('تم تحميل الاستعلام من التاريخ.', 'info');
+        }
+    }
+
+    function clearHistory() {
+        try { localStorage.removeItem(HISTORY_KEY); } catch { }
+        populateHistoryDropdown();
+        showToast('تم مسح تاريخ الاستعلامات.', 'success');
+    }
+
+    // ─── CSV Download + Copy as SQL ────────────────────────────────
+    function downloadCsv() {
+        if (!currentRows || currentRows.length === 0) return;
+        var cols = currentColumns;
+        var csv = cols.map(function(c) { return '"' + (c.name || '') + '"'; }).join(',') + '\n';
+        currentRows.forEach(function(row) {
+            csv += cols.map(function(c) {
+                var val = row[c.name];
+                return val != null ? '"' + String(val).replace(/"/g, '""') + '"' : '""';
+            }).join(',') + '\n';
+        });
+        var blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'oracle_query_result.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+        showToast('تم تنزيل ' + currentRows.length + ' صف كملف CSV.', 'success');
+    }
+
+    function copyAsSql() {
+        if (!currentRows || currentRows.length === 0) return;
+        var cols = currentColumns;
+        var colNames = cols.map(function(c) { return '"' + (c.name || '') + '"'; }).join(', ');
+        var lines = [];
+        currentRows.forEach(function(row) {
+            var vals = cols.map(function(c) {
+                var val = row[c.name];
+                if (val === null || val === undefined) return 'NULL';
+                if (typeof val === 'number') return String(val);
+                return "'" + String(val).replace(/'/g, "''") + "'";
+            });
+            lines.push('INSERT INTO oracle_result (' + colNames + ') VALUES (' + vals.join(', ') + ');');
+        });
+        var sql = lines.join('\n');
+        navigator.clipboard.writeText(sql).then(function() {
+            showToast('تم نسخ ' + currentRows.length + ' INSERT statements.', 'success');
+        }).catch(function() {
+            showToast('تعذر النسخ إلى الحافظة.', 'error');
+        });
+    }
+
     // ─── Init ───────────────────────────────────────────────────────
     populateSavedDropdown();
+    populateHistoryDropdown();
     loadSchema();
+
+    // Ctrl+Enter shortcut (works even when focus is in textarea)
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+            var runBtn = document.getElementById('runBtn');
+            if (runBtn && !runBtn.disabled) {
+                e.preventDefault();
+                runBtn.click();
+            }
+        }
+    });
+
+    // Oracle connection health check on load and every 30 seconds
+    checkOracleStatus();
+    setInterval(checkOracleStatus, 30000);
 </script>

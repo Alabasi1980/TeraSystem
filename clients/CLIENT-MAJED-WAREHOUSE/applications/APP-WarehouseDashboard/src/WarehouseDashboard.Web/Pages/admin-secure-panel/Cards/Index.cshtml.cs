@@ -32,8 +32,9 @@ public class IndexModel : PageModel
             .OrderBy(c => c.GridPositionY)
             .ThenBy(c => c.GridPositionX)
             .Select(c => new CardRow(
-                c.Id, c.Title, c.ChartType, c.DataSourceType, c.IsActive,
-                c.GridPositionX, c.GridPositionY, c.GridWidth, c.GridHeight, c.RefreshInterval))
+                c.Id, c.Title, c.Description, c.ChartType, c.DataSourceType,
+                c.IsActive, c.ColorPalette, c.GridWidth, c.GridHeight,
+                c.RefreshInterval, c.DateFilterMode ?? "dashboard", c.KpiMode ?? "simple"))
             .ToListAsync();
 
         if (TempData["ToastMessage"] is string message)
@@ -87,11 +88,13 @@ public class IndexModel : PageModel
 public record CardRow(
     int Id,
     string Title,
+    string? Description,
     string ChartType,
     string DataSourceType,
     bool IsActive,
-    int GridPositionX,
-    int GridPositionY,
+    string ColorPalette,
     int GridWidth,
     int GridHeight,
-    int RefreshInterval);
+    int RefreshInterval,
+    string DateFilterMode,
+    string KpiMode);

@@ -1,7 +1,7 @@
 # TASK_REGISTRY.md — WarehouseDashboard
 
 > **Purpose:** Central registry of all TASK-IDs created during the project lifecycle.
-> **Last Updated:** 2026-07-14 (Phase 6 — ALL batches B1-B10 + FIX complete ✅)
+> **Last Updated:** 2026-07-19 (Card Design Execution started — TASK-CARD-BEH-001)
 
 ---
 
@@ -77,6 +77,42 @@
 | TASK-COD-COL-001 | ColumnMapping Entity + DbContext + Migration | engineering-agent | ✅ Accepted (build PASS) | COL | 2026-07-18 |
 | TASK-COD-COL-002 | Column Mapping Editor UI — Wizard Tab + JS Logic | engineering-agent | ✅ Accepted (build PASS) | COL | 2026-07-18 |
 | TASK-COD-COL-003 | Backend: Save/Load Column Mappings + Schema Generation Updates | engineering-agent | ✅ Accepted (build PASS) | COL | 2026-07-18 |
+
+---
+
+## Card Design Execution Tasks
+
+| TASK-ID | Description | Assigned Agent | Status | Batch | Created |
+|---|---|---|---|---|---|
+| TASK-CARD-BEH-001 | Dashboard Card Metadata Bridge (`Description`, `ColorPalette`, `RefreshInterval`) | engineering-agent-dotnet | ✅ Accepted (build PASS) | CARD-A | 2026-07-19 |
+| TASK-CARD-UX-001 | Card Header Description Hint | ui-designer | ✅ Accepted (build PASS) | CARD-A | 2026-07-19 |
+| TASK-CARD-FIX-001 | Normalize Description Metadata Output | engineering-agent-dotnet | ✅ Accepted (build PASS + audit PASS) | CARD-FIX | 2026-07-19 |
+| TASK-CARD-UX-002 | Apply Per-Card ColorPalette to Chart / Gauge / Sparkline | ui-designer | ✅ Accepted (build PASS + audit PASS) | CARD-A | 2026-07-19 |
+| TASK-CARD-BEH-002 | Per-Card Auto-Refresh with Visual Indicator | ui-designer | ✅ Accepted (Auditor PASS) | CARD-B | 2026-07-19 |
+| TASK-CARD-BEH-003 | DateFilterMode: Wire Dashboard Preset → SQL Queries | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-B | 2026-07-19 |
+| TASK-CARD-FIX-002 | Fix SqlQuery Storage: Store Table Name, Not Pre-Aggregated SQL | engineering-agent-dotnet | ✅ Accepted | CARD-FIX | 2026-07-19 |
+| TASK-CARD-FIX-003 | Cache-busting with asp-append-version | engineering-agent-dotnet | ✅ Accepted | CARD-FIX | 2026-07-19 |
+| TASK-CARD-FIX-004 | Fix Custom Date Filter (dateFrom/dateTo) | engineering-agent-dotnet | ✅ Accepted | CARD-FIX | 2026-07-19 |
+| TASK-CARD-BEH-004 | DateFilterMode: Fixed and Relative Modes | engineering-agent-dotnet | ✅ Accepted | CARD-B | 2026-07-19 |
+| TASK-CARD-UX-006 | Visual DateFilterMode Indicator in Card Header | ui-designer | 🟡 Assigned | CARD-A | 2026-07-19 |
+| TASK-CARD-KPI-01 | Improve KPI Change Presentation (value size + change badge + comparison text) | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-C | 2026-07-19 |
+| TASK-CARD-KPI-01-FIX-01 | Fix Missing KPI Change Percentage | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-C-FIX | 2026-07-19 |
+| TASK-CARD-KPI-02 | Improve Sparkline Rendering (height + gradient + endpoint dot + tooltip) | ui-designer | ✅ Accepted (Auditor PASS after cleanup fix) | CARD-C | 2026-07-19 |
+| TASK-CARD-KPI-03 | Fix Sparkline Date Range + Add "Last Month" Filter | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-C | 2026-07-19 |
+
+---
+
+## Oracle Query Lab Enhancement Tasks
+
+| TASK-ID | Description | Assigned Agent | Status | Batch | Created |
+|---|---|---|---|---|---|
+| TASK-ORALAB-001 | Oracle Error Messages + N+1 Schema Fix | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | ORALAB-P0 | 2026-07-19 |
+| TASK-ORALAB-002 | Connection Status + Ctrl+Enter + Cancel | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | ORALAB-P0 | 2026-07-19 |
+| TASK-ORALAB-003 | Query History + 10K Limit + CSV Download | engineering-agent-dotnet | ✅ Accepted | ORALAB-P0 | 2026-07-19 |
+| TASK-ORALAB-004 | Horizontal Scroll for Wide Results | engineering-agent-dotnet | ✅ Accepted (build PASS) | ORALAB-P1 | 2026-07-19 |
+| TASK-ORALAB-005 | Syntax Highlighting + Line Numbers (CodeMirror) | engineering-agent-dotnet | ✅ Accepted (build PASS) | ORALAB-P2 | 2026-07-19 |
+
+**All 5 OracleQueryLab tasks COMPLETE ✅**
 
 ---
 

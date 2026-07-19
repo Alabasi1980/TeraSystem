@@ -1,15 +1,14 @@
-Using launch settings from D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web\Properties\launchSettings.json...
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       Executed DbCommand (16ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT 1
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (13ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT 1
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
 info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
@@ -18,30 +17,991 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       ORDER BY [MigrationId];
 info: Microsoft.EntityFrameworkCore.Migrations[20405]
       No migrations were applied. The database is already up to date.
-fail: Microsoft.Extensions.Hosting.Internal.Host[11]
-      Hosting failed to start
-      System.IO.IOException: Failed to bind to address http://127.0.0.1:5000: address already in use.
-       ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
-       ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
-         at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
-         at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
-         at System.Net.Sockets.Socket.Bind(EndPoint localEP)
-         at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
-         at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
-         --- End of inner exception stack trace ---
-         at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
-         at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
-         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
-         at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
-      --- End of stack trace from previous location ---
-         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
-         --- End of inner exception stack trace ---
-         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
-         at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
-         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
-         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindAsync(ListenOptions[] listenOptions, AddressBindContext context, Func`2 useHttps, CancellationToken cancellationToken)
-         at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
-         at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
-         at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
-         at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
-         at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUSE\applications\APP-WarehouseDashboard\src\WarehouseDashboard.Web
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (112ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [a].[Id], [a].[PasswordHash], [a].[UpdatedAt]
+      FROM [AdminPassword] AS [a]
+      ORDER BY [a].[Id]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Dashboards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [DashboardCards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [TableMappings] AS [t]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [CardDrillDownLevels] AS [c]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[DataSourceType], [d].[IsActive], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt], (
+          SELECT COUNT(*)
+          FROM [DashboardCards] AS [d0]
+          WHERE [d0].[DashboardId] = [d].[Id]) AS [cardCount]
+      FROM [Dashboards] AS [d]
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[Id] = @__p_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt], (
+          SELECT COUNT(*)
+          FROM [DashboardCards] AS [d0]
+          WHERE [d0].[DashboardId] = [d].[Id]) AS [cardCount]
+      FROM [Dashboards] AS [d]
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt], (
+          SELECT COUNT(*)
+          FROM [DashboardCards] AS [d0]
+          WHERE [d0].[DashboardId] = [d].[Id]) AS [cardCount]
+      FROM [Dashboards] AS [d]
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [d].[Id], [d].[AggregationType], [d].[CategoryColumn], [d].[ChangeSource], [d].[ChartType], [d].[ColorPalette], [d].[CreatedAt], [d].[DashboardId], [d].[DataSourceType], [d].[DateColumn], [d].[DateFilterMode], [d].[Description], [d].[FixedEndDate], [d].[FixedStartDate], [d].[GrandTotalSource], [d].[GridHeight], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[IsActive], [d].[KpiMode], [d].[OriginalSourceId], [d].[OriginalSourceType], [d].[RefreshInterval], [d].[RelativeDays], [d].[ShowChange], [d].[ShowGrandTotal], [d].[ShowSparkline], [d].[SparklineMonths], [d].[SqlQuery], [d].[Title], [d].[UpdatedAt], [d].[ValueColumn]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[Id] = @__p_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [d].[Id], [d].[AggregationType], [d].[CategoryColumn], [d].[ChangeSource], [d].[ChartType], [d].[ColorPalette], [d].[CreatedAt], [d].[DashboardId], [d].[DataSourceType], [d].[DateColumn], [d].[DateFilterMode], [d].[Description], [d].[FixedEndDate], [d].[FixedStartDate], [d].[GrandTotalSource], [d].[GridHeight], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[IsActive], [d].[KpiMode], [d].[OriginalSourceId], [d].[OriginalSourceType], [d].[RefreshInterval], [d].[RelativeDays], [d].[ShowChange], [d].[ShowGrandTotal], [d].[ShowSparkline], [d].[SparklineMonths], [d].[SqlQuery], [d].[Title], [d].[UpdatedAt], [d].[ValueColumn]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[Id] = @__p_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [d].[Id], [d].[AggregationType], [d].[CategoryColumn], [d].[ChangeSource], [d].[ChartType], [d].[ColorPalette], [d].[CreatedAt], [d].[DashboardId], [d].[DataSourceType], [d].[DateColumn], [d].[DateFilterMode], [d].[Description], [d].[FixedEndDate], [d].[FixedStartDate], [d].[GrandTotalSource], [d].[GridHeight], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[IsActive], [d].[KpiMode], [d].[OriginalSourceId], [d].[OriginalSourceType], [d].[RefreshInterval], [d].[RelativeDays], [d].[ShowChange], [d].[ShowGrandTotal], [d].[ShowSparkline], [d].[SparklineMonths], [d].[SqlQuery], [d].[Title], [d].[UpdatedAt], [d].[ValueColumn]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[Id] = @__p_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Dashboards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [DashboardCards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [TableMappings] AS [t]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [CardDrillDownLevels] AS [c]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IncrementalColumn], [t].[IsActive], [t].[LastSyncAt], [t].[Name], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncMode], [t].[SyncRecordCount], [t].[UpdatedAt], [c].[Id], [c].[DefaultValue], [c].[IsExcluded], [c].[IsNullable], [c].[IsNumericText], [c].[OracleColumnName], [c].[SortOrder], [c].[SqlColumnName], [c].[SqlDataType], [c].[SqlMaxLength], [c].[SqlPrecision], [c].[SqlScale], [c].[TableMappingConfigId], [c].[TransformationExpression]
+      FROM [TableMappings] AS [t]
+      LEFT JOIN [ColumnMappings] AS [c] ON [t].[Id] = [c].[TableMappingConfigId]
+      ORDER BY [t].[Name], [t].[Id]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (15ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IncrementalColumn], [t].[IsActive], [t].[LastSyncAt], [t].[Name], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncMode], [t].[SyncRecordCount], [t].[UpdatedAt], [c].[Id], [c].[DefaultValue], [c].[IsExcluded], [c].[IsNullable], [c].[IsNumericText], [c].[OracleColumnName], [c].[SortOrder], [c].[SqlColumnName], [c].[SqlDataType], [c].[SqlMaxLength], [c].[SqlPrecision], [c].[SqlScale], [c].[TableMappingConfigId], [c].[TransformationExpression]
+      FROM [TableMappings] AS [t]
+      LEFT JOIN [ColumnMappings] AS [c] ON [t].[Id] = [c].[TableMappingConfigId]
+      ORDER BY [t].[Name], [t].[Id]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Dashboards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [DashboardCards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [TableMappings] AS [t]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [CardDrillDownLevels] AS [c]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (18ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (14ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [d].[Id], [d].[AggregationType], [d].[CategoryColumn], [d].[ChangeSource], [d].[ChartType], [d].[ColorPalette], [d].[CreatedAt], [d].[DashboardId], [d].[DataSourceType], [d].[DateColumn], [d].[DateFilterMode], [d].[Description], [d].[FixedEndDate], [d].[FixedStartDate], [d].[GrandTotalSource], [d].[GridHeight], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[IsActive], [d].[KpiMode], [d].[OriginalSourceId], [d].[OriginalSourceType], [d].[RefreshInterval], [d].[RelativeDays], [d].[ShowChange], [d].[ShowGrandTotal], [d].[ShowSparkline], [d].[SparklineMonths], [d].[SqlQuery], [d].[Title], [d].[UpdatedAt], [d].[ValueColumn]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[Id] = @__p_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Dashboards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [DashboardCards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [TableMappings] AS [t]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [CardDrillDownLevels] AS [c]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Dashboards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [DashboardCards] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [TableMappings] AS [t]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [CardDrillDownLevels] AS [c]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[DataSourceType], [d].[IsActive], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IncrementalColumn], [t].[IsActive], [t].[LastSyncAt], [t].[Name], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncMode], [t].[SyncRecordCount], [t].[UpdatedAt], [c].[Id], [c].[DefaultValue], [c].[IsExcluded], [c].[IsNullable], [c].[IsNumericText], [c].[OracleColumnName], [c].[SortOrder], [c].[SqlColumnName], [c].[SqlDataType], [c].[SqlMaxLength], [c].[SqlPrecision], [c].[SqlScale], [c].[TableMappingConfigId], [c].[TransformationExpression]
+      FROM [TableMappings] AS [t]
+      LEFT JOIN [ColumnMappings] AS [c] ON [t].[Id] = [c].[TableMappingConfigId]
+      WHERE [t].[IsActive] = CAST(1 AS bit)
+      ORDER BY [t].[OracleSource], [t].[Id]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__editId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [d].[Id], [d].[AggregationType], [d].[CategoryColumn], [d].[ChangeSource], [d].[ChartType], [d].[ColorPalette], [d].[CreatedAt], [d].[DashboardId], [d].[DataSourceType], [d].[DateColumn], [d].[DateFilterMode], [d].[Description], [d].[FixedEndDate], [d].[FixedStartDate], [d].[GrandTotalSource], [d].[GridHeight], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[IsActive], [d].[KpiMode], [d].[OriginalSourceId], [d].[OriginalSourceType], [d].[RefreshInterval], [d].[RelativeDays], [d].[ShowChange], [d].[ShowGrandTotal], [d].[ShowSparkline], [d].[SparklineMonths], [d].[SqlQuery], [d].[Title], [d].[UpdatedAt], [d].[ValueColumn]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[Id] = @__editId_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (13ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[CreatedAt], [t].[ErrorMessage], [t].[IncrementalColumn], [t].[IsActive], [t].[LastSyncAt], [t].[Name], [t].[OracleSource], [t].[SourceType], [t].[SqlTargetTable], [t].[SyncMode], [t].[SyncRecordCount], [t].[UpdatedAt], [c].[Id], [c].[DefaultValue], [c].[IsExcluded], [c].[IsNullable], [c].[IsNumericText], [c].[OracleColumnName], [c].[SortOrder], [c].[SqlColumnName], [c].[SqlDataType], [c].[SqlMaxLength], [c].[SqlPrecision], [c].[SqlScale], [c].[TableMappingConfigId], [c].[TransformationExpression]
+      FROM [TableMappings] AS [t]
+      LEFT JOIN [ColumnMappings] AS [c] ON [t].[Id] = [c].[TableMappingConfigId]
+      WHERE [t].[IsActive] = CAST(1 AS bit)
+      ORDER BY [t].[Name], [t].[Id]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[DataSourceType], [d].[IsActive], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[CreatedAt], [d].[Description], [d].[Icon], [d].[IsActive], [d].[IsDefault], [d].[Name], [d].[Slug], [d].[SortOrder], [d].[UpdatedAt]
+      FROM [Dashboards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit)
+      ORDER BY [d].[SortOrder], [d].[Name]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__dashboardId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Title], [d].[ChartType], [d].[GridPositionX], [d].[GridPositionY], [d].[GridWidth], [d].[GridHeight], [d].[RefreshInterval]
+      FROM [DashboardCards] AS [d]
+      WHERE [d].[IsActive] = CAST(1 AS bit) AND [d].[DashboardId] = @__dashboardId_0
+      ORDER BY [d].[GridPositionY], [d].[GridPositionX]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT DISTINCT [c].[ParentCardId]
+      FROM [CardDrillDownLevels] AS [c]
+      WHERE [c].[ParentCardId] <> 0

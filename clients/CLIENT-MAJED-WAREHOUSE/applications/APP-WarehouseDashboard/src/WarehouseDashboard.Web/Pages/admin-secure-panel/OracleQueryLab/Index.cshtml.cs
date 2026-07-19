@@ -37,6 +37,28 @@ public class OracleQueryLabModel : PageModel
     {
     }
 
+    /// <summary>Health check: tests the Oracle connection with SELECT 1 FROM DUAL (5s timeout).</summary>
+    public async Task<IActionResult> OnGetHealthAsync()
+    {
+        try
+        {
+            var connectionString = ConnectionStringHelper.ResolveOracle(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
+                return Json(new { connected = false });
+
+            await using var connection = new OracleConnection(connectionString);
+            await connection.OpenAsync();
+            await using var cmd = new OracleCommand("SELECT 1 FROM DUAL", connection);
+            cmd.CommandTimeout = 5;
+            await cmd.ExecuteScalarAsync();
+            return Json(new { connected = true });
+        }
+        catch
+        {
+            return Json(new { connected = false });
+        }
+    }
+
     /// <summary>Executes a read-only Oracle query and returns the result grid (dynamic columns).</summary>
     public async Task<IActionResult> OnPostRunAsync([FromBody] OracleQueryRunRequest request)
     {
@@ -106,7 +128,7 @@ public class OracleQueryLabModel : PageModel
             return Json(new
             {
                 success = false,
-                errorMessage = "تعذر تنفيذ الاستعلام. تأكد من صحة الصياغة وأن الجداول والحقول موجودة."
+                errorMessage = $"خطأ Oracle ({ex.Number}): {ex.Message}"
             });
         }
         catch (Exception ex)
@@ -134,48 +156,35 @@ public class OracleQueryLabModel : PageModel
             await using var connection = new OracleConnection(connectionString);
             await connection.OpenAsync();
 
-            var tables = new List<OracleTableInfo>();
-
-            // 1. Get all tables for the current user.
-            await using (var tableCmd = new OracleCommand(
-                "SELECT TABLE_NAME FROM ALL_TABLES WHERE OWNER = USER ORDER BY TABLE_NAME", connection))
+            // Single query: get all columns grouped by table (replaces N+1).
+            await using (var cmd = new OracleCommand(
+                "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, DATA_LENGTH, NULLABLE " +
+                "FROM ALL_TAB_COLUMNS WHERE OWNER = USER ORDER BY TABLE_NAME, COLUMN_ID", connection))
             {
-                await using var tableReader = await tableCmd.ExecuteReaderAsync();
-                var tableNames = new List<string>();
-                while (await tableReader.ReadAsync())
-                {
-                    tableNames.Add(tableReader.GetString(0));
-                }
+                await using var reader = await cmd.ExecuteReaderAsync();
+                var tableDict = new Dictionary<string, OracleTableInfo>(StringComparer.OrdinalIgnoreCase);
 
-                // 2. For each table, get its columns.
-                foreach (var tableName in tableNames)
+                while (await reader.ReadAsync())
                 {
-                    var tableInfo = new OracleTableInfo { Name = tableName };
-
-                    await using (var colCmd = new OracleCommand(
-                        "SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, NULLABLE " +
-                        "FROM ALL_TAB_COLUMNS WHERE OWNER = USER AND TABLE_NAME = :t " +
-                        "ORDER BY COLUMN_ID", connection))
+                    var tableName = reader.GetString(0);
+                    if (!tableDict.TryGetValue(tableName, out var tableInfo))
                     {
-                        colCmd.Parameters.Add(new OracleParameter(":t", tableName));
-                        await using var colReader = await colCmd.ExecuteReaderAsync();
-                        while (await colReader.ReadAsync())
-                        {
-                            tableInfo.Columns.Add(new OracleColumnInfo
-                            {
-                                Name = colReader.GetString(0),
-                                DataType = colReader.GetString(1),
-                                DataLength = colReader.IsDBNull(2) ? null : colReader.GetInt32(2),
-                                Nullable = colReader.IsDBNull(3) ? string.Empty : colReader.GetString(3)
-                            });
-                        }
+                        tableInfo = new OracleTableInfo { Name = tableName };
+                        tableDict[tableName] = tableInfo;
                     }
 
-                    tables.Add(tableInfo);
+                    tableInfo.Columns.Add(new OracleColumnInfo
+                    {
+                        Name = reader.GetString(1),
+                        DataType = reader.GetString(2),
+                        DataLength = reader.IsDBNull(3) ? null : reader.GetInt32(3),
+                        Nullable = reader.IsDBNull(4) ? string.Empty : reader.GetString(4)
+                    });
                 }
-            }
 
-            return Json(new { success = true, tables });
+                var tables = tableDict.Values.OrderBy(t => t.Name).ToList();
+                return Json(new { success = true, tables });
+            }
         }
         catch (OracleException ex)
         {

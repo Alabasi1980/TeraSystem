@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
 namespace WarehouseDashboard.Web.Infrastructure;
@@ -13,6 +15,8 @@ namespace WarehouseDashboard.Web.Infrastructure;
 ///   and Secure over HTTPS (SameAsRequest so local dev over http still works).
 /// - Any request under /admin-secure-panel/* (except Login and Logout) without a
 ///   valid session flag is redirected to the Login page.
+/// - **Bypass**: If appsettings.json has <c>AdminAuth:Bypass = true</c>, all admin
+///   pages are accessible without authentication. Use for local dev/testing only.
 ///
 /// This is sufficient for Phase 1 (single shared password, local network).
 /// Phase 2 can replace it with ASP.NET Core Identity / RBAC.
@@ -43,6 +47,14 @@ public class AdminAuthMiddleware
             // Login and Logout must always be reachable.
             if (!isLogin && !isLogout)
             {
+                // Bypass: if AdminAuth:Bypass = true in config, skip auth check.
+                var config = context.RequestServices.GetRequiredService<IConfiguration>();
+                if (config.GetValue<bool>("AdminAuth:Bypass"))
+                {
+                    await _next(context);
+                    return;
+                }
+
                 if (context.Session.GetString(SessionKey) != "true")
                 {
                     context.Response.Redirect(LoginPath);

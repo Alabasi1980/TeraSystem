@@ -16,6 +16,90 @@
 
 ## Activity Log
 
+## [2026-07-19 15:30] - PLAN_UPDATED
+
+- Related Task: N/A (Drill Down planning)
+- Actor: TeraAgent
+- Summary: Updated `DRILL_DOWN_DEVELOPMENT_PLAN.md` to version 3.0. Added full Parameter & Display Contract based on Majed's questions: same modal across levels, no modal stacking, level content controlled by TargetChartType, explicit ParameterColumn/LabelColumn contract, Root/Parent parameter behavior, Table/Chart/KPI/Gauge behavior, CSV export rules, required schema additions, API contract, safer query-test requirements, and revised task phases A-G.
+- Decision / Result: Drill Down plan is now more implementation-ready for handoff to another implementation agent. No code changes were made.
+- Next Action: Majed reviews/approves the revised plan, then Tera can create small TASK-IDs for execution.
+
+## [2026-07-19 15:00] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-03
+- Actor: TeraAgent + engineering-agent-dotnet + auditor
+- Summary: Fixed sparkline date range issue and added "الشهر الماضي" filter. Root cause: BuildSparklineQuery used dateRange.From directly, so "هذا الشهر" only returned 1 month of data (1 data point = no sparkline). Fix: sparkline now goes back SparklineMonths (default 6) from dateRange.From, always showing historical trend. Added "lastMonth" preset in Card.cshtml.cs backend and "الشهر الماضي" button in Index.cshtml frontend. Build: 0 warnings, 0 errors. Auditor PASS (0 STOP, 0 CAUTION, 0 FLAG).
+- Decision / Result: Task ACCEPTED. Sparkline now shows 6 months of data regardless of dashboard filter. "الشهر الماضي" filter works end-to-end.
+- Next Action: Ask Majed to verify in browser that sparkline shows 6 months with "هذا الشهر" and that "الشهر الماضي" filter works correctly.
+
+## [2026-07-19 14:30] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-02
+- Actor: TeraAgent + ui-designer + auditor
+- Summary: Completed KPI sparkline visual improvement. ui-designer upgraded the KPI composite sparkline to an ApexCharts area sparkline with stronger height, gradient fill, endpoint marker, hover markers, RTL tooltip with month/value/delta, and insufficient-data message. First Auditor review returned PARTIAL because sparkline chart cleanup was not explicit. Follow-up added safe destruction/removal of `CHARTS['spark-' + cardId]` before rerender, before insufficient-data empty state, and before card body refresh. Normal build was blocked only by the running app lock; fallback build passed with 0 warnings and 0 errors.
+- Decision / Result: Auditor re-audit PASS (`QUAUD-TASK-CARD-KPI-02-2026-07-19-002.md`). Task ACCEPTED/CLOSED. Prior `design-source/REFERENCES.md` out-of-target documentation artifact remains waived as non-runtime research documentation.
+- Next Action: Ask Majed for browser visual check of KPI sparkline, then proceed to next approved card-design task only after confirmation.
+
+## [2026-07-19 14:00] - PLAN_UPDATED
+
+- Related Task: N/A (Drill Down planning)
+- Actor: TeraAgent
+- Summary: Updated `project-preparation/DRILL_DOWN_DEVELOPMENT_PLAN.md` to version 2.0 after Majed decisions and independent design/audit review. The revised plan makes the modal the primary Drill Down path, removes direct chart-click drill, adds a required **تفاصيل** action, sets Drill levels from `CardDrillDownLevels` with fallback cap = 2 levels, and prioritizes safe Admin query testing before modal implementation.
+- Decision / Result: Plan revised and ready for Majed review/approval before creating implementation TASK-IDs.
+- Next Action: Await Majed approval or requested edits to the revised Drill Down plan.
+
+## [2026-07-19 13:00] - TASK_ACCEPTED
+
+- Related Task: TASK-SYNC-SET-001 + TASK-SYNC-SET-002
+- Actor: TeraAgent + engineering-agent-dotnet + ui-designer
+- Summary: Redesigned SyncSettings page. Task 001 (Backend): Extended SyncSettingsModel with Sync API integration (SyncInfo, SyncConfigInfo, MappingItem models, FetchAsync helper, parallel API calls, computed properties for view). Fixed Arabic text encoding. Task 002 (Frontend): Complete visual redesign matching Cards page style. New features: 4 stats cards (engine status, auto-sync state, active mappings, last result), interval slider + presets (5د/15د/30د/1س/6س/24س), human-readable interval text, toggle with status indicator, last sync with time-ago countdown, sync history table, error banner for API failure. Build: 0 errors, 0 warnings. All 23 AC met across both tasks.
+- Decision / Result: Both tasks ACCEPTED. Page loads correctly (HTTP 200, 40KB). Design consistent with Cards page.
+- Next Action: Determine next priorities with user.
+
+- Related Task: TASK-CARD-LIST-001
+- Actor: TeraAgent + ui-designer
+- Summary: Redesigned admin Cards management page from plain Radzen DataGrid to professional card-based layout. New features: summary stats bar (total/active/KPI/charts), search with debounce, type filter dropdown, each card displayed as Admin Card with icon, title, description, type badge (color-coded), status badge, meta info (ColorPalette, RefreshInterval in human-readable format, GridSize, DateFilterMode), action buttons (edit/clone/delete). Backend: CardRow extended with Description, ColorPalette, DateFilterMode, KpiMode. Build: 0 errors, 0 warnings.
+- Decision / Result: Post-Execution Review PASS. Page loads correctly (HTTP 200, 39KB). All 12 AC met. Task ACCEPTED.
+- Next Action: Continue with remaining DASHBOARD_CARD_DESIGN_EXECUTION_PLAN items or other improvements.
+
+- Related Task: TASK-HEADER-001
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Created shared `_Header.cshtml` partial in `Pages/Shared/`, replacing duplicated headers in both layouts. Dashboard layout now passes `BrandHref="/"`, `IsAdmin=false`, `ShowConnectionStatus=true`. Admin layout now passes `BrandHref="/admin-secure-panel"`, `IsAdmin=true`, `ShowConnectionStatus=true`. Fixed incorrect brand links (Dashboard was pointing to /admin-secure-panel, Admin was pointing to /). Added Connection Status indicator to Admin layout (previously missing). Conditional Logout/Refresh buttons via `@if (isAdmin)`. Agent failed to apply CardsLayout edit — Tera corrected manually. Build: 0 errors, 0 warnings.
+- Decision / Result: Post-Execution Review PASS. Dashboard header verified via HTTP: brand → `/`, connection status visible, refresh button visible. Admin header could not be live-tested (auth required, bypass removed), but code verified correct. All 9 AC met. Task ACCEPTED.
+- Next Action: Determine next priorities with user. Remaining candidates: AdminAuth:Bypass cleanup, Card Design DateFilterMode, Phase 7 delivery prep.
+
+## [2026-07-19 09:30] - TASK_ACCEPTED
+
+- Related Task: TASK-ORALAB-004 + TASK-ORALAB-005
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Completed OracleQueryLab P1 and P2 improvements. P1: Horizontal scroll via overflow-x: auto on .wd-grid with min-width: max-content on table and white-space: nowrap on cells. P2: Replaced plain textarea with CodeMirror 5 (CDN) — full SQL syntax highlighting, line numbers, RTL-safe. Updated all 6 sqlInput.value references to editor.getValue()/setValue(). insertAtCursor() uses CodeMirror API (replaceRange). Build: 0 errors, 0 warnings.
+- Decision / Result: Both tasks ACCEPTED. Post-Execution Review PASS. Build PASS. No regression on ORALAB-001/002/003 features.
+- Next Action: OracleQueryLab page is now fully enhanced (5/5 tasks). Remaining: AdminAuth:Bypass cleanup before delivery.
+
+## [2026-07-19 09:00] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-BEH-002
+- Actor: TeraAgent + ui-designer + auditor
+- Summary: Completed Per-Card Auto-Refresh with Visual Indicator. Each card with refreshInterval > 0 auto-refreshes at its configured interval. Subtle 3px animated blue progress bar slides across card top. Uses wdLoadCard(id, false) — no skeleton flicker. Memory cleanup via beforeunload. IIFE closure safety. RTL-native positioning.
+- Decision / Result: Post-Execution Review PASS. All 6 AC met. Auditor PASS (12/12). Build 0 errors, 0 warnings. No regression. Task ACCEPTED. All 5 Card Design tasks complete.
+- Next Action: Determine next priorities with Majed (DateFilterMode, OracleQueryLab P1/P2, or delivery prep).
+
+## [2026-07-19 08:30] - TASK_ACCEPTED
+
+- Related Task: TASK-ORALAB-003
+- Actor: TeraAgent + engineering-agent-dotnet + auditor
+- Summary: Completed OracleQueryLab trilogy (History + 10K Limit + CSV Download + Toast warning). All 3 ORALAB tasks ACCEPTED.
+- Decision / Result: Post-Execution Review PASS. Auditor PASS. Build 0 errors. No regression.
+- Next Action: Card Design tasks and further OracleQueryLab improvements.
+
+## [2026-07-19 02:05] - TASK_CREATED_AND_DELEGATED
+
+- Related Task: TASK-CARD-BEH-001
+- Actor: TeraAgent
+- Summary: Majed approved moving from planning into careful execution of the dashboard card design program. Tera intentionally started with the smallest low-risk foundation task from the approved execution plan: exposing `Description`, `ColorPalette`, and `RefreshInterval` metadata from `DashboardCards` to the public dashboard page and client-side script, without redesigning card visuals yet.
+- Decision / Result: Created `project-control/tasks/TASK-CARD-BEH-001.md`, updated `TASK_REGISTRY.md`, marked the task as the first card-design execution unit, and prepared delegation to `engineering-agent-dotnet`. Pre-Execution Gate: PASS. Auditor expectation: NOT_REQUIRED unless handback reveals broader side effects.
+- Next Action: Receive engineering handback, run Post-Execution Review, verify build, then decide whether to accept or return for fix before opening the next task.
+
 ## [2026-07-19 01:45] - EXECUTION_PLAN_CREATED
 
 - Related Task: N/A (planning / design execution preparation)
@@ -727,3 +811,107 @@
 - Summary: EngineeringAgent completed Phase A backend: save/load ColumnMappings, edit mode support, schema generation with overrides, and CompareSchemasAsync respects overridden types. Build succeeded.
 - Decision / Result: ✅ Phase A — Column-Level Type Mapping Editor COMPLETE. Three tasks: data model (COL-001), UI editor (COL-002), backend save/load + schema generation (COL-003). Total: 3 tasks, all accepted.
 - Next Action: User to restart app and test the full column mapping workflow. After verification, discuss remaining items from the plan.
+
+## [2026-07-19 03:55] - TASK_CREATED_AND_DELEGATED
+
+- Related Task: TASK-CARD-BEH-002
+- Actor: TeraAgent
+- Summary: Majed confirmed: RefreshInterval = per-card setting with visual indicator; DateFilterMode = all cards. Agreed to start with RefreshInterval first.
+- Decision / Result: Created `project-control/tasks/TASK-CARD-BEH-002.md`, delegated to `ui-designer`. Pre-Execution Gate: PASS.
+- Next Action: Receive handback → Post-Execution Review → Auditor → Accept → open DateFilterMode task.
+
+## [2026-07-19 04:05] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-BEH-002
+- Actor: ui-designer → TeraAgent → Auditor
+- Summary: Per-card auto-refresh implemented. JS timer + subtle 3px loading bar indicator (CSS animation). All acceptance criteria met. Build clean (0 errors, 0 warnings). Auditor verdict: PASS.
+- Decision / Result: ✅ TASK-CARD-BEH-002 ACCEPTED. 6 Card Design tasks now complete. DateFilterMode (D3) confirmed by Majed: applies to ALL cards, not just KPI.
+- Next Action: Create TASK-CARD-BEH-003 for DateFilterMode wiring.
+
+## [2026-07-19 04:20] - TASK_CREATED_AND_DELEGATED
+
+- Related Task: TASK-CARD-BEH-003
+- Actor: TeraAgent
+- Summary: DateFilterMode wiring split into two tasks. BEH-003 covers "dashboard" mode (preset → SQL). BEH-004 (future) covers "fixed" and "relative" modes. Task delegated to engineering-agent-dotnet.
+- Decision / Result: Created `project-control/tasks/TASK-CARD-BEH-003.md`. 4 files: Card.cshtml.cs (ResolvePresetDates), DashboardService.cs (DateRange + ApplyDateFilter), KpiQueryBuilder.cs (dateRange in Change/Sparkline).
+- Next Action: Receive handback → Post-Execution Review → Auditor → Accept → create BEH-004 (fixed/relative modes).
+
+## [2026-07-19 04:35] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-BEH-003
+- Actor: engineering-agent-dotnet → TeraAgent → Auditor
+- Summary: DateFilterMode "dashboard" mode wired end-to-end. Frontend preset → API → DateRange → BuildSql WHERE clause → KpiQueryBuilder change/sparkline. All 8 ACs met. Build clean. Auditor verdict: PASS.
+- Decision / Result: ✅ TASK-CARD-BEH-003 ACCEPTED. Cards now respect dashboard date filter when DateFilterMode = "dashboard". Fixed/relative modes deferred to TASK-CARD-BEH-004.
+- Next Action: Ask Majed if he wants to test the current implementation before proceeding to fixed/relative modes, or continue directly.
+
+## [2026-07-19 12:00] - DESIGN_SOURCE_SAVED
+
+- Related Task: N/A
+- Actor: TeraAgent
+- Summary: Saved approved prototype HTML (`لوحة إدارة المستودعات.html`) to `design-source/WAREHOUSE_CARD_PROTOTYPE.html` + `WAREHOUSE_CARD_PROTOTYPE_files/`. Extracted design tokens and mapped to `blue-theme.css` variables.
+- Decision / Result: Prototype approved as visual reference by Majed. Color decision: Card Builder ColorPalette first → blue-theme.css fallback. Created `design-source/DESIGN_TOKENS.md` with full token mapping.
+- Next Action: Create TASK-CARD-KPI-01 and TASK-CARD-KPI-02 for Phase C execution.
+
+## [2026-07-19 12:15] - PHASE_C_TASKS_CREATED
+
+- Related Task: TASK-CARD-KPI-01, TASK-CARD-KPI-02
+- Actor: TeraAgent
+- Summary: Created Phase C tasks: KPI-01 (Change Presentation — value size, change badge, comparison text) and KPI-02 (Sparkline — height, gradient, endpoint dot, tooltip). Both reference prototype and DESIGN_TOKENS.md. Pre-Execution Gate: PASS.
+- Decision / Result: Tasks drafted and registered in TASK_REGISTRY. Ready for Majed approval → delegation to ui-designer.
+- Next Action: Majed reviews tasks → approve → delegate to ui-designer for implementation.
+
+## [2026-07-19 12:35] - TASK_READINESS_REVIEW
+
+- Related Task: TASK-CARD-KPI-01, TASK-CARD-KPI-02
+- Actor: TeraAgent
+- Summary: Reviewed KPI-01 and KPI-02 against current code, prototype, `DESIGN_TOKENS.md`, and Majed's color rule. Found readiness gaps: KPI-01 needed `ChangeSource` payload scope, actual `ChangeSource` enum values, Unit N/A clarification, ColorPalette-first rule, and mandatory Vitality & Polish Checklist. KPI-02 needed SparklineMonths wording correction, CSS+JS scope, ColorPalette-first rule, endpoint marker guidance, and Vitality & Polish Checklist.
+- Decision / Result: Updated both task files. KPI-01 is now backend payload + frontend rendering assigned to engineering-agent-dotnet. KPI-02 remains frontend/ApexCharts assigned to ui-designer. Both are now Approved for Delegation in TASK_REGISTRY.
+- Next Action: Await Majed confirmation to delegate KPI-01 first, then KPI-02 after handback/review, unless Majed approves a small batch.
+
+## [2026-07-19 12:50] - TASK_DELEGATED
+
+- Related Task: TASK-CARD-KPI-01
+- Actor: TeraAgent → engineering-agent-dotnet
+- Summary: Majed approved execution of KPI-01. Delegated with strict allowed write targets: `Index.cshtml`, `CardDataResult.cs`, `DashboardService.cs`. Included fresh-file-read rule, no Syncfusion rule, ColorPalette-first rule, and no Card Builder/Unit/schema/package changes.
+- Decision / Result: Task assigned and implemented by engineering-agent-dotnet.
+- Next Action: Tera post-execution review + Auditor quality gate before acceptance.
+
+## [2026-07-19 13:05] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-01
+- Actor: engineering-agent-dotnet → TeraAgent → Auditor
+- Summary: KPI change presentation implemented. Added `ChangeSource` payload, dynamic comparison text, SVG change arrows, 48px tabular KPI value, semantic theme color usage, and preserved count-up/sparkline scope. Tera independently ran `dotnet build WarehouseDashboard.Web.csproj` — PASS, 0 warnings, 0 errors. Auditor report `QUAUD-TASK-CARD-KPI-01-2026-07-19-001.md` returned PASS.
+- Decision / Result: ✅ TASK-CARD-KPI-01 ACCEPTED. Auditor: STOP 0, CAUTION 0, FLAG 1 (non-blocking build evidence traceability note).
+- Next Action: Ask Majed whether to proceed with TASK-CARD-KPI-02 (Sparkline Improvement).
+
+## [2026-07-19 13:20] - FIX_TASK_OPENED
+
+- Related Task: TASK-CARD-KPI-01-FIX-01
+- Actor: Majed → TeraAgent
+- Summary: Visual review of card "السندات" showed comparison text displayed (`مقارنة بالشهر السابق`) but the actual percentage badge did not appear. Tera diagnosed likely missing `KpiChangePercent` due to `ShowChange` dependency and/or `ChangeSource` not affecting range calculation when a date range exists.
+- Decision / Result: Created approved fix task `TASK-CARD-KPI-01-FIX-01` to make `withChange/composite` compute change when ValueColumn/DateColumn exist, make `previousMonth/previousYear` affect calculation, and show `لا توجد بيانات مقارنة كافية` when comparison cannot be calculated.
+- Next Action: Delegate fix to engineering-agent-dotnet, then review + Auditor before moving to KPI-02.
+
+## [2026-07-19 13:40] - FIX_TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-01-FIX-01
+- Actor: engineering-agent-dotnet → TeraAgent → Auditor
+- Summary: Fix implemented for missing KPI comparison percentage. `KpiQueryBuilder` now builds change queries for `withChange/composite` even if `ShowChange` is false, honors `previousPeriod/previousMonth/previousYear` with active date ranges, defers `customQuery`, normalizes bare table SqlQuery values into `SELECT * FROM [table]`, and shows `لا توجد بيانات مقارنة كافية` when comparison cannot be calculated. Tera build verification passed with 0 warnings and 0 errors. Auditor report `QUAUD-TASK-CARD-KPI-01-FIX-01-2026-07-19-001.md` returned PASS.
+- Decision / Result: ✅ TASK-CARD-KPI-01-FIX-01 ACCEPTED. Auditor: STOP 0, CAUTION 0, FLAG 1 (runtime/API/UI sample evidence recommended).
+- Next Action: Majed hard-refreshes dashboard and visually checks "السندات" card again before proceeding to KPI-02.
+
+## [2026-07-19 13:55] - VISUAL_FEEDBACK_RECORDED
+
+- Related Task: TASK-CARD-KPI-02
+- Actor: Majed → TeraAgent
+- Summary: Majed confirmed the KPI comparison situation is improved, but the current sparkline/deviation indicator is visually weak and does not communicate meaningful information. Requested a clearer style and hover interaction that can show monthly values.
+- Decision / Result: Strengthened TASK-CARD-KPI-02 requirements: area/line sparkline, stronger gradient, endpoint dot, hover markers, tooltip showing month + formatted value, and insufficient-data state.
+- Next Action: Delegate TASK-CARD-KPI-02 to ui-designer with updated requirements, then review + Auditor before acceptance.
+
+## [2026-07-19 14:15] - AUDITOR_REVIEW_PARTIAL
+
+- Related Task: TASK-CARD-KPI-02
+- Actor: ui-designer → TeraAgent → Auditor
+- Summary: ui-designer implemented a stronger interactive area sparkline with gradient, endpoint marker, hover markers, RTL tooltip showing month/value/delta, and insufficient-data state. Tera build verification passed. Auditor report `QUAUD-TASK-CARD-KPI-02-2026-07-19-001.md` returned PARTIAL / NEEDS_FIX.
+- Decision / Result: Governance CAUTION for out-of-target `design-source/REFERENCES.md` accepted/waived by Tera as documentation-only research artifact. Technical FLAG requires small fix: explicitly clean/destroy old sparkline chart instance during rerender or insufficient-data state.
+- Next Action: Return KPI-02 to ui-designer for chart registry cleanup, then re-audit.

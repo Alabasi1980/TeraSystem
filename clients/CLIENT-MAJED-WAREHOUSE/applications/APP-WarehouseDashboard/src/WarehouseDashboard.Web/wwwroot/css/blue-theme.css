@@ -88,6 +88,25 @@
 [data-theme="midnight"] .wd-resize-btn.active { background: var(--c-primary); color: #fff; border-color: var(--c-primary); }
 [data-theme="midnight"] .wd-card__refresh { color: var(--c-text-muted); }
 [data-theme="midnight"] .wd-card__refresh:hover { background: var(--c-surface-muted); color: var(--c-primary); }
+[data-theme="midnight"] .wd-card__hint {
+    border-color: rgba(195, 215, 234, 0.16);
+    background: linear-gradient(180deg, rgba(44, 53, 65, 0.96), rgba(35, 42, 52, 0.98));
+    color: var(--c-text-muted);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+}
+[data-theme="midnight"] .wd-card__hint:hover,
+[data-theme="midnight"] .wd-card__hint:focus-visible {
+    color: var(--c-secondary);
+    border-color: rgba(107, 170, 223, 0.28);
+}
+[data-theme="midnight"] .wd-card__hint::after {
+    background: linear-gradient(180deg, rgba(26, 31, 39, 0.98), rgba(35, 42, 52, 0.98));
+    color: var(--c-text);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.34);
+}
+[data-theme="midnight"] .wd-card__hint::before {
+    background: rgba(35, 42, 52, 0.98);
+}
 /* --- ApexCharts dark mode overrides (TASK-DASH-004) --- */
 [data-theme="midnight"] .apexcharts-canvas { background: transparent !important; }
 [data-theme="midnight"] .apexcharts-text { fill: var(--c-text) !important; }
@@ -409,7 +428,96 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     gap: var(--sp-3);
     margin-bottom: var(--sp-3);
 }
+.wd-card__title-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-width: 0;
+    flex: 1 1 auto;
+}
 .wd-card__title { font-size: 18px; font-weight: 600; margin: 0; color: var(--c-text); }
+.wd-card__hint {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(31, 78, 121, 0.14);
+    background: linear-gradient(180deg, rgba(234, 241, 248, 0.9), rgba(255, 255, 255, 0.98));
+    color: var(--c-text-muted);
+    box-shadow: 0 1px 2px rgba(10, 37, 64, 0.04);
+    cursor: help;
+    flex: none;
+    transition: color var(--dur-fast) var(--ease),
+                border-color var(--dur-fast) var(--ease),
+                box-shadow var(--dur-fast) var(--ease),
+                transform var(--dur-fast) var(--ease);
+}
+.wd-card__hint:hover,
+.wd-card__hint:focus-visible {
+    color: var(--c-primary);
+    border-color: rgba(31, 78, 121, 0.24);
+    box-shadow: 0 4px 10px rgba(10, 37, 64, 0.10);
+    transform: translateY(-1px);
+    outline: none;
+}
+.wd-card__hint::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    inset-inline-start: 50%;
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%) translateY(4px);
+    min-width: min(220px, 65vw);
+    max-width: min(280px, 72vw);
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, rgba(10, 37, 64, 0.98), rgba(22, 58, 90, 0.96));
+    color: #fff;
+    box-shadow: 0 14px 28px rgba(10, 37, 64, 0.18);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.6;
+    text-align: start;
+    white-space: normal;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 6;
+    transition: opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease), visibility var(--dur-fast) var(--ease);
+}
+.wd-card__hint::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 50%;
+    bottom: calc(100% + 4px);
+    width: 8px;
+    height: 8px;
+    background: rgba(22, 58, 90, 0.97);
+    transform: translateX(-50%) rotate(45deg);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 5;
+    transition: opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease), visibility var(--dur-fast) var(--ease);
+}
+.wd-card__hint:hover::after,
+.wd-card__hint:hover::before,
+.wd-card__hint:focus-visible::after,
+.wd-card__hint:focus-visible::before {
+    opacity: 1;
+    visibility: visible;
+}
+.wd-card__hint:hover::after,
+.wd-card__hint:focus-visible::after {
+    transform: translateX(-50%) translateY(0);
+}
+.wd-card__hint:hover::before,
+.wd-card__hint:focus-visible::before {
+    transform: translateX(-50%) rotate(45deg);
+}
 .wd-card__type {
     font-size: 12px; font-weight: 600; color: var(--c-text-muted);
     background: var(--c-surface-muted); padding: 2px 10px; border-radius: var(--radius-full);
@@ -810,6 +918,25 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     to { transform: rotate(360deg); }
 }
 
+/* ============================ Auto-Refresh Visual Indicator (TASK-CARD-BEH-002) ============================ */
+.wd-card--refreshing::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    height: 3px;
+    width: 0;
+    background: var(--c-primary);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    animation: wdRefreshSlide 1.5s var(--ease) both;
+    z-index: 1;
+    opacity: 0.85;
+}
+@keyframes wdRefreshSlide {
+    0%   { width: 0;   opacity: 0.85; }
+    100% { width: 100%; opacity: 0.85; }
+}
+
 /* ============================ Layout Saved Toast (TASK-DASH-005) ============================ */
 .wd-layout-saved {
     position: fixed;
@@ -926,4 +1053,44 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     /* Resize controls mobile (TASK-DASH-005) */
     .wd-resize-btn { width: 22px; height: 22px; font-size: 10px; }
     .wd-card__refresh { width: 26px; height: 26px; }
+    .wd-card__header { align-items: flex-start; }
+    .wd-card__title-wrap { max-width: 100%; }
+    .wd-card__hint::after {
+        inset-inline-start: 0;
+        transform: translateX(0) translateY(4px);
+        min-width: 180px;
+        max-width: min(240px, calc(100vw - 48px));
+    }
+    .wd-card__hint::before {
+        inset-inline-start: 10px;
+        transform: rotate(45deg);
+    }
+    .wd-card__hint:hover::after,
+    .wd-card__hint:focus-visible::after {
+        transform: translateX(0) translateY(0);
+    }
+    .wd-card__hint:hover::before,
+    .wd-card__hint:focus-visible::before {
+        transform: rotate(45deg);
+    }
+}
+
+/* ============================ Date Filter Mode Indicator (TASK-CARD-UX-006) ============================ */
+.wd-card__date-mode {
+    display: block;
+    font-size: 11px;
+    color: var(--wd-text-muted, #888);
+    line-height: 1.4;
+    margin-top: 2px;
+    margin-bottom: 4px;
+    font-weight: 400;
+    padding: 0 14px;
+}
+.wd-card__date-mode--fixed {
+    direction: ltr;
+    unicode-bidi: embed;
+    font-family: 'Courier New', monospace;
+}
+.wd-card__date-mode--relative {
+    direction: rtl;
 }

@@ -5,139 +5,696 @@
 }
 
 <style>
-    /* Page-specific styles not provided by _CardsLayout */
-    .wd-page { max-width: 700px; margin: 0 auto; padding: 0; }
-    .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
-    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
-    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
-    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
-    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
+    /* ===================== Sync Settings Page ===================== */
 
-    .wd-field { margin-bottom: 18px; }
-    .wd-field label { display: block; font-size: 13px; font-weight: 600; color: var(--c-text); margin-bottom: 6px; }
-    .wd-field .wd-hint { font-size: 12px; color: var(--c-text-muted); margin-top: 4px; }
-    .wd-field--row { display: flex; align-items: center; gap: 12px; }
+    /* --- Cards Stat Variants for Sync Page --- */
+    .cards-stat--blue .cards-stat__icon { background: rgba(31, 78, 121, 0.10); color: var(--c-primary); }
+    .cards-stat--green .cards-stat__icon { background: rgba(30, 158, 106, 0.10); color: var(--c-success); }
+    .cards-stat--amber .cards-stat__icon { background: rgba(224, 161, 6, 0.10); color: var(--c-warning); }
+    .cards-stat--purple .cards-stat__icon { background: rgba(139, 92, 246, 0.10); color: #7C3AED; }
+    .cards-stat--red .cards-stat__icon { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
 
-    .wd-input {
-        width: 100%; font-family: var(--font-ar);
-        font-size: 14px; color: var(--c-text);
-        border: 1px solid var(--c-border); border-radius: var(--radius-md);
-        padding: 10px 12px; background: var(--c-surface);
-        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    /* --- Admin Card Layout (extends Cards page patterns) --- */
+    .admin-card__title-group {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
     }
-    .wd-input:focus {
-        outline: none; border-color: var(--c-primary);
-        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    .admin-card__body {
+        padding: var(--sp-4) 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-5);
+    }
+    .admin-card__actions {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        padding-top: var(--sp-4);
+        border-top: 1px solid var(--c-border);
+        flex-wrap: wrap;
     }
 
-    .wd-toggle {
-        position: relative; width: 44px; height: 24px; flex: none;
+    /* --- Settings Fields --- */
+    .settings-field {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-2);
     }
-    .wd-toggle input {
-        opacity: 0; width: 0; height: 0; position: absolute;
+    .settings-field > label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-text);
     }
-    .wd-toggle__slider {
-        position: absolute; inset: 0; cursor: pointer;
-        background: var(--c-border); border-radius: var(--radius-full);
-        transition: background var(--dur-fast) var(--ease);
+    .settings-field .wd-hint {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        margin: 0;
     }
-    .wd-toggle__slider::before {
-        content: '';
-        position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px;
-        background: #fff; border-radius: var(--radius-full);
-        transition: transform var(--dur-fast) var(--ease);
+
+    /* --- Interval: slider + number + label --- */
+    .settings-interval {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        flex-wrap: wrap;
     }
-    .wd-toggle input:checked + .wd-toggle__slider {
+    .settings-interval input[type="range"] {
+        flex: 1;
+        min-width: 140px;
+        height: 6px;
+        appearance: none;
+        -webkit-appearance: none;
+        background: var(--c-border);
+        border-radius: var(--radius-full);
+        outline: none;
+        direction: ltr; /* Keep slider visual LTR for consistent behavior */
+        cursor: pointer;
+    }
+    .settings-interval input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: var(--radius-full);
         background: var(--c-primary);
+        border: 2px solid #fff;
+        box-shadow: 0 1px 4px rgba(31, 78, 121, 0.25);
+        cursor: pointer;
+        transition: box-shadow var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
     }
-    .wd-toggle input:checked + .wd-toggle__slider::before {
-        transform: translateX(20px);
+    .settings-interval input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.12);
+        box-shadow: 0 2px 8px rgba(31, 78, 121, 0.3);
     }
-    .wd-toggle input:focus-visible + .wd-toggle__slider {
-        box-shadow: 0 0 0 3px rgba(31,78,121,0.2);
+    .settings-interval input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: var(--radius-full);
+        background: var(--c-primary);
+        border: 2px solid #fff;
+        box-shadow: 0 1px 4px rgba(31, 78, 121, 0.25);
+        cursor: pointer;
+    }
+    .settings-interval input[type="range"]:focus-visible::-webkit-slider-thumb {
+        box-shadow: 0 0 0 4px rgba(31, 78, 121, 0.16);
+    }
+    .settings-interval input[type="range"]:focus-visible::-moz-range-thumb {
+        box-shadow: 0 0 0 4px rgba(31, 78, 121, 0.16);
+    }
+    .settings-interval input[type="number"] {
+        width: 72px;
+        text-align: center;
+        font-family: var(--font-ar);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--c-text);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        padding: 8px 4px;
+        background: var(--c-surface);
+        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+        direction: ltr;
+    }
+    .settings-interval input[type="number"]:focus {
+        outline: none;
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31, 78, 121, 0.12);
+    }
+    /* Hide number input spinners */
+    .settings-interval input[type="number"]::-webkit-outer-spin-button,
+    .settings-interval input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .settings-interval input[type="number"] {
+        -moz-appearance: textfield;
+    }
+    .interval-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--c-primary);
+        white-space: nowrap;
+        min-width: 80px;
     }
 
-    .wd-readonly-field {
-        padding: 10px 12px;
+    /* --- Preset Buttons --- */
+    .settings-presets {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        flex-wrap: wrap;
+    }
+    .preset-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 14px;
+        min-height: 30px;
+        font-family: var(--font-ar);
+        font-size: 12px;
+        font-weight: 700;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-full);
+        background: var(--c-surface);
+        color: var(--c-text-muted);
+        cursor: pointer;
+        transition: all var(--dur-fast) var(--ease);
+        line-height: 1.2;
+    }
+    .preset-btn:hover {
+        border-color: var(--c-primary);
+        color: var(--c-primary);
+        background: var(--c-surface-muted);
+    }
+    .preset-btn.active {
+        border-color: var(--c-primary);
+        background: var(--c-primary);
+        color: #fff;
+        box-shadow: 0 2px 6px rgba(31, 78, 121, 0.2);
+    }
+
+    /* --- Toggle with status --- */
+    .settings-toggle {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+    }
+    .toggle-status {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--c-text);
+    }
+
+    /* --- Last Sync Display --- */
+    .settings-last-sync {
+        padding: var(--sp-3) var(--sp-4);
         background: var(--c-surface-muted);
         border: 1px solid var(--c-border);
         border-radius: var(--radius-md);
+        min-height: 44px;
+    }
+    .sync-details {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        flex-wrap: wrap;
+    }
+    .sync-date {
+        font-size: 13px;
+        color: var(--c-text);
+        font-weight: 600;
+        direction: ltr;
+        unicode-bidi: embed;
+    }
+    .sync-ago {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        font-weight: 500;
+    }
+    .sync-result {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 10px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+    .sync-result--success {
+        background: rgba(30, 158, 106, 0.10);
+        color: var(--c-success);
+    }
+    .sync-result--fail {
+        background: rgba(214, 69, 69, 0.10);
+        color: var(--c-error);
+    }
+    .sync-records {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        font-weight: 600;
+    }
+    .sync-none {
         font-size: 14px;
         color: var(--c-text-muted);
-        min-height: 20px;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
     }
 
-    .wd-form-actions {
-        display: flex; align-items: center; gap: 12px;
-        margin-top: var(--sp-6);
-        padding-top: var(--sp-4);
-        border-top: 1px solid var(--c-border);
-    }
-
-    .wd-toast-container {
-        position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
-        display: flex; flex-direction: column; gap: 8px; z-index: 9999;
-    }
-    .wd-toast {
-        min-width: 240px; max-width: 360px; padding: 12px 16px; border-radius: var(--radius-md);
-        color: #fff; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 8px;
-        animation: wdToastIn var(--dur-norm) var(--ease);
+    /* --- Sync History Table --- */
+    .sync-history-table {
+        width: 100%;
+        border-collapse: collapse;
         font-size: 14px;
+        direction: rtl;
     }
-    .wd-toast--success { background: var(--c-success); }
-    .wd-toast--error { background: var(--c-error); }
+    .sync-history-table thead th {
+        text-align: start;
+        padding: 10px 12px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--c-text-muted);
+        background: var(--c-surface-muted);
+        border-bottom: 2px solid var(--c-border);
+    }
+    .sync-history-table tbody td {
+        padding: 10px 12px;
+        color: var(--c-text);
+        border-bottom: 1px solid var(--c-border);
+    }
+    .sync-history-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .sync-history-table tbody tr:hover td {
+        background: var(--c-surface-muted);
+    }
+    .sync-history-note {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        margin: var(--sp-3) 0 0;
+        font-style: italic;
+    }
+
+    /* --- Alert Banner --- */
+    .alert-banner {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        padding: var(--sp-3) var(--sp-4);
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: var(--sp-6);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .alert-banner--warn {
+        background: rgba(224, 161, 6, 0.10);
+        border: 1px solid rgba(224, 161, 6, 0.20);
+        color: #8B6D00;
+    }
+    .alert-banner--warn span:first-child {
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    /* --- Empty Mini State --- */
+    .empty-mini {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--sp-2);
+        padding: var(--sp-6) var(--sp-4);
+        text-align: center;
+    }
+    .empty-mini__icon {
+        font-size: 36px;
+        color: var(--c-text-muted);
+        opacity: 0.5;
+    }
+    .empty-mini p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--c-text-muted);
+    }
+
+    /* --- wd-toggle RTL-aware overrides --- */
+    .wd-toggle__slider::before {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        inset-inline-start: 3px;
+        bottom: 3px;
+        background: #fff;
+        border-radius: var(--radius-full);
+        transition: inset-inline-start var(--dur-fast) var(--ease);
+    }
+    .wd-toggle input:checked + .wd-toggle__slider::before {
+        inset-inline-start: calc(100% - 21px);
+    }
+
+    /* --- Responsive --- */
+    @@media (max-width: 767px) {
+        .cards-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .settings-interval {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .settings-interval input[type="range"] {
+            min-width: 0;
+            width: 100%;
+        }
+        .settings-interval input[type="number"] {
+            align-self: center;
+        }
+        .interval-label {
+            text-align: center;
+        }
+        .admin-card__actions {
+            flex-direction: column;
+        }
+        .admin-card__actions .wd-btn {
+            width: 100%;
+        }
+        .sync-details {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--sp-2);
+        }
+    }
+    @@media (max-width: 480px) {
+        .cards-stats {
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-3);
+        }
+        .cards-stat {
+            padding: var(--sp-3) var(--sp-4);
+        }
+        .cards-stat__icon {
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
+        }
+        .cards-stat__value {
+            font-size: 22px;
+        }
+        .settings-presets {
+            gap: var(--sp-1);
+        }
+        .preset-btn {
+            padding: 3px 10px;
+            font-size: 11px;
+            min-height: 26px;
+        }
+    }
 </style>
 
-<div class="wd-page">
-    <header class="wd-page__header">
-        <div class="wd-breadcrumb">
-            <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; إعدادات المزامنة
-        </div>
-        <h2 class="wd-page__title">إعدادات المزامنة</h2>
-        <p class="wd-page__subtitle">تكوين فاصل المزامنة وتشغيل/إيقاف المزامنة التلقائية.</p>
-    </header>
+<!-- ===== 1. Breadcrumb ===== -->
+<div class="wd-breadcrumb-row">
+    <a href="/admin-secure-panel">لوحة الإدارة</a>
+    <span class="wd-sep">‹</span>
+    <span>إعدادات المزامنة</span>
+</div>
 
-    <form method="post" class="wd-card">
-        <div class="wd-field">
-            <label for="IntervalMinutes">فاصل المزامنة (الدقائق)</label>
-            <input asp-for="IntervalMinutes" id="IntervalMinutes" class="wd-input" type="number" min="1" max="1440" />
+<!-- ===== 2. Page Head ===== -->
+<div class="wd-page-head">
+    <h2 class="wd-page-title">إعدادات المزامنة</h2>
+</div>
+
+<!-- ===== 3. Error Banner ===== -->
+@if (!string.IsNullOrEmpty(Model.LoadError))
+{
+    <div class="alert-banner alert-banner--warn">
+        <span>⚠️</span>
+        <span>@Model.LoadError</span>
+    </div>
+}
+
+<!-- ===== 4. Stats Cards (4 blocks) ===== -->
+<div class="cards-stats">
+    <!-- Engine status -->
+    <div class="cards-stat cards-stat--blue">
+        <div class="cards-stat__icon">🔄</div>
+        <div class="cards-stat__info">
+            <span class="cards-stat__label">حالة المحرك</span>
+            <span class="cards-stat__value">
+                @if (Model.SyncStatus?.IsRunning == true)
+                {
+                    <text>🔵 يعمل</text>
+                }
+                else
+                {
+                    <text>🔴 متوقف</text>
+                }
+            </span>
+        </div>
+    </div>
+    <!-- Auto-sync state -->
+    <div class="cards-stat cards-stat--@(Model.IsAutoSyncEnabled ? "green" : "amber")">
+        <div class="cards-stat__icon">⏰</div>
+        <div class="cards-stat__info">
+            <span class="cards-stat__label">تلقائي</span>
+            <span class="cards-stat__value">@(Model.IsAutoSyncEnabled ? "🟢 مفعّلة" : "🟡 معطّلة")</span>
+        </div>
+    </div>
+    <!-- Active mappings -->
+    <div class="cards-stat cards-stat--purple">
+        <div class="cards-stat__icon">📋</div>
+        <div class="cards-stat__info">
+            <span class="cards-stat__label">جداول مفعّلة</span>
+            <span class="cards-stat__value">@Model.ActiveMappingsCount من @Model.TotalMappingsCount</span>
+        </div>
+    </div>
+    <!-- Last result -->
+    <div class="cards-stat cards-stat--@(Model.HasSyncError ? "red" : "green")">
+        <div class="cards-stat__icon">✅</div>
+        <div class="cards-stat__info">
+            <span class="cards-stat__label">آخر نتيجة</span>
+            <span class="cards-stat__value">
+                @if (Model.LastSyncTimestamp.HasValue)
+                {
+                    @(Model.HasSyncError ? "❌ فشل" : "✅ نجاح")
+                }
+                else
+                {
+                    <text>➖ لا توجد</text>
+                }
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 5. Settings Form ===== -->
+<form method="post" class="admin-card">
+    <div class="admin-card__header">
+        <div class="admin-card__title-group">
+            <span class="admin-card__icon">⚙️</span>
+            <h3 class="admin-card__title">إعدادات المزامنة التلقائية</h3>
+        </div>
+    </div>
+    <div class="admin-card__body">
+        <!-- Interval -->
+        <div class="settings-field">
+            <label for="IntervalMinutes">فاصل المزامنة</label>
+            <div class="settings-interval" dir="ltr">
+                <input type="range" id="interval-slider" min="1" max="1440" step="1" value="@Model.IntervalMinutes" />
+                <input type="number" asp-for="IntervalMinutes" id="IntervalMinutes" class="wd-input" min="1" max="1440" style="width:80px;text-align:center;" />
+                <span class="interval-label" id="interval-label">@GetIntervalText(Model.IntervalMinutes)</span>
+            </div>
+            <div class="settings-presets">
+                <button type="button" class="preset-btn" data-minutes="5">5د</button>
+                <button type="button" class="preset-btn" data-minutes="15">15د</button>
+                <button type="button" class="preset-btn" data-minutes="30">30د</button>
+                <button type="button" class="preset-btn" data-minutes="60">1س</button>
+                <button type="button" class="preset-btn" data-minutes="360">6س</button>
+                <button type="button" class="preset-btn" data-minutes="1440">24س</button>
+            </div>
             <span class="wd-hint">القيمة بين 1 و 1440 دقيقة (24 ساعة).</span>
         </div>
 
-        <div class="wd-field">
+        <!-- Auto-sync toggle -->
+        <div class="settings-field">
             <label>المزامنة التلقائية</label>
-            <div class="wd-field--row">
+            <div class="settings-toggle">
                 <label class="wd-toggle">
-                    <input asp-for="IsAutoSyncEnabled" type="checkbox" />
+                    <input type="checkbox" asp-for="IsAutoSyncEnabled" id="IsAutoSyncEnabled" />
                     <span class="wd-toggle__slider"></span>
                 </label>
-                <span style="font-size:14px; color:var(--c-text);">@(Model.IsAutoSyncEnabled ? "مفعّلة" : "معطّلة")</span>
+                <span class="toggle-status" id="auto-sync-text">@(Model.IsAutoSyncEnabled ? "🟢 مفعّلة" : "🟡 معطّلة")</span>
             </div>
-            <span class="wd-hint">فعّل للمزامنة الدورية التلقائية.</span>
+            <span class="wd-hint">فعّل للمزامنة الدورية التلقائية كل @Model.IntervalMinutes دقيقة.</span>
         </div>
 
-        <div class="wd-field">
+        <!-- Last sync -->
+        <div class="settings-field">
             <label>آخر مزامنة</label>
-            <div class="wd-readonly-field">
-                @(Model.LastSyncTimestamp.HasValue
-                    ? Model.LastSyncTimestamp.Value.ToString("yyyy/MM/dd hh:mm:ss tt")
-                    : "لم تتم مزامنة بعد")
+            <div class="settings-last-sync">
+                @if (Model.LastSyncTimestamp.HasValue)
+                {
+                    <div class="sync-details">
+                        <span class="sync-date">📅 @Model.LastSyncTimestamp.Value.ToString("yyyy/MM/dd hh:mm:ss tt")</span>
+                        <span class="sync-ago" id="sync-ago" data-sync-time="@Model.LastSyncTimestamp.Value.ToString("o")"></span>
+                        <span class="sync-result sync-result--@(Model.HasSyncError ? "fail" : "success")">
+                            @(Model.HasSyncError ? "❌ فشل" : "✅ نجاح")
+                        </span>
+                        @if (Model.SyncStatus?.LastRecordCount > 0)
+                        {
+                            <span class="sync-records">@Model.SyncStatus.LastRecordCount.ToString("N0") سجل</span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="sync-none">➖ لم تتم مزامنة بعد</div>
+                }
             </div>
         </div>
+    </div>
+    <div class="admin-card__actions">
+        <button type="submit" class="wd-btn wd-btn--primary">💾 حفظ الإعدادات</button>
+        <a href="/admin-secure-panel/Sync" class="wd-btn wd-btn--ghost">▶ تشغيل مزامنة الآن</a>
+    </div>
+</form>
 
-        <div class="wd-form-actions">
-            <button type="submit" class="wd-btn wd-btn--primary">حفظ</button>
-            <a href="/admin-secure-panel" class="wd-btn wd-btn--ghost">إلغاء</a>
+<!-- ===== 6. Sync History ===== -->
+<div class="admin-card">
+    <div class="admin-card__header">
+        <div class="admin-card__title-group">
+            <span class="admin-card__icon">📊</span>
+            <h3 class="admin-card__title">آخر المزامنات</h3>
         </div>
-    </form>
+    </div>
+    <div class="admin-card__body">
+        @if (Model.LastSyncTimestamp.HasValue)
+        {
+            <table class="sync-history-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>الوقت</th>
+                        <th>الحالة</th>
+                        <th>السجلات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>@Model.LastSyncTimestamp.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                        <td><span class="status-badge status-badge--@(Model.HasSyncError ? "off" : "on")">@(Model.HasSyncError ? "فشل" : "نجاح")</span></td>
+                        <td>@(Model.SyncStatus?.LastRecordCount.ToString("N0") ?? "—")</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="sync-history-note">* سيتم عرض آخر 5 مزامنات عند توفر بيانات إضافية من API.</p>
+        }
+        else
+        {
+            <div class="empty-mini">
+                <div class="empty-mini__icon">📭</div>
+                <p>لا توجد مزامنات سابقة</p>
+            </div>
+        }
+    </div>
 </div>
+
+<!-- ===== Delete Form (for future use) ===== -->
+<form id="wdDeleteForm" method="post" asp-page-handler="Delete" class="wd-hidden">
+    <input type="hidden" name="id" id="wdDeleteId" />
+</form>
+
+<!-- ===== Helper Functions ===== -->
+@functions {
+    string GetIntervalText(int minutes)
+    {
+        if (minutes < 60) return $"كل {minutes} دقيقة";
+        var hours = minutes / 60;
+        var remain = minutes % 60;
+        if (remain == 0) return hours == 1 ? "كل ساعة" : $"كل {hours} ساعات";
+        return $"كل {hours} ساعات و {remain} دقيقة";
+    }
+}
+
+@section Scripts {
+<script>
+(function() {
+    'use strict';
+
+    // 1. Interval slider <-> number sync + label update
+    var slider = document.getElementById('interval-slider');
+    var number = document.getElementById('IntervalMinutes');
+    var label = document.getElementById('interval-label');
+
+    function getIntervalText(m) {
+        var val = parseInt(m, 10);
+        if (isNaN(val) || val < 1) val = 1;
+        if (val > 1440) val = 1440;
+        if (val < 60) return '\u0643\u0644 ' + val + ' \u062F\u0642\u064A\u0642\u0629';
+        var h = Math.floor(val / 60);
+        var r = val % 60;
+        if (r === 0) return h === 1 ? '\u0643\u0644 \u0633\u0627\u0639\u0629' : '\u0643\u0644 ' + h + ' \u0633\u0627\u0639\u0627\u062A';
+        return '\u0643\u0644 ' + h + ' \u0633\u0627\u0639\u0627\u062A \u0648 ' + r + ' \u062F\u0642\u064A\u0642\u0629';
+    }
+
+    function syncInterval(val) {
+        if (number) number.value = val;
+        if (slider) slider.value = val;
+        if (label) label.textContent = getIntervalText(val);
+        // Remove active class from all presets, then highlight matching one
+        var btns = document.querySelectorAll('.preset-btn');
+        var intVal = parseInt(val, 10);
+        btns.forEach(function(b) {
+            var bv = parseInt(b.getAttribute('data-minutes'), 10);
+            b.classList.toggle('active', bv === intVal);
+        });
+    }
+
+    if (slider && number) {
+        slider.addEventListener('input', function() { syncInterval(this.value); });
+        number.addEventListener('change', function() { syncInterval(this.value); });
+    }
+
+    // 2. Preset buttons
+    var presetBtns = document.querySelectorAll('.preset-btn');
+    presetBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var val = this.getAttribute('data-minutes');
+            if (val) syncInterval(val);
+        });
+    });
+
+    // 3. Auto-sync toggle text
+    var toggle = document.getElementById('IsAutoSyncEnabled');
+    var toggleText = document.getElementById('auto-sync-text');
+    if (toggle && toggleText) {
+        toggle.addEventListener('change', function() {
+            toggleText.textContent = this.checked ? '\uD83D\uDFE2 \u0645\u0641\u0639\u0651\u0644\u0629' : '\uD83D\uDFE1 \u0645\u0639\u0637\u0651\u0644\u0629';
+        });
+    }
+
+    // 4. Sync "time ago" countdown (every 30 seconds)
+    var syncAgo = document.getElementById('sync-ago');
+    if (syncAgo) {
+        var syncDateAttr = syncAgo.getAttribute('data-sync-time');
+        if (syncDateAttr) {
+            function updateAgo() {
+                var ts = new Date(syncDateAttr);
+                var now = new Date();
+                var diffMs = now.getTime() - ts.getTime();
+                var diffSec = Math.floor(diffMs / 1000);
+                var text = '\u0627\u0644\u0622\u0646';
+                if (diffSec < 0) { text = '\u0627\u0644\u0622\u0646'; }
+                else if (diffSec < 60) { text = '\u0645\u0646\u0630 ' + diffSec + ' \u062B\u0627\u0646\u064A\u0629'; }
+                else if (diffSec < 3600) { text = '\u0645\u0646\u0630 ' + Math.floor(diffSec / 60) + ' \u062F\u0642\u064A\u0642\u0629'; }
+                else if (diffSec < 86400) { text = '\u0645\u0646\u0630 ' + Math.floor(diffSec / 3600) + ' \u0633\u0627\u0639\u0629'; }
+                else { text = '\u0645\u0646\u0630 ' + Math.floor(diffSec / 86400) + ' \u064A\u0648\u0645'; }
+                syncAgo.textContent = text;
+            }
+            updateAgo();
+            setInterval(updateAgo, 30000);
+        }
+    }
+
+    // 5. Initial preset highlight
+    if (presetBtns.length && slider) {
+        var curVal = parseInt(slider.value, 10);
+        presetBtns.forEach(function(b) {
+            var v = parseInt(b.getAttribute('data-minutes'), 10);
+            if (v === curVal) b.classList.add('active');
+        });
+    }
+})();
+</script>
+}
 
 @section Toast {
     @if (!string.IsNullOrEmpty(Model.ToastMessage))
     {
         <div class="wd-toast wd-toast--@Model.ToastType" role="status">
-            <span>@(Model.ToastType == "success" ? "✓" : "✕")</span>
-            <span>@Model.ToastMessage</span>
+            <span class="wd-toast__icon">@(Model.ToastType == "success" ? "✓" : "✕")</span>
+            <span class="wd-toast__msg">@Model.ToastMessage</span>
         </div>
     }
 }

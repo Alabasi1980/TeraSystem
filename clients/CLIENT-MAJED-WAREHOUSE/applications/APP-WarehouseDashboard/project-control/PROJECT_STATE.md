@@ -86,7 +86,37 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 | TASK-COD-027 | Edit Card via Builder | ✅ Accepted (build PASS) | engineering-agent |
 | TASK-COD-028 | Store & Restore Wizard Source State | ✅ Accepted (build PASS) | engineering-agent-dotnet |
 
-**ALL Tasks + 3 Enhancements = COMPLETE ✅**
+### Card Design Execution (5 tasks — all ACCEPTED ✅)
+| TASK-ID | Description | Status | Agent |
+|---|---|---|---|
+| TASK-CARD-BEH-001 | Dashboard Card Metadata Bridge | ✅ Accepted | engineering-agent-dotnet |
+| TASK-CARD-UX-001 | Card Header Description Hint | ✅ Accepted | ui-designer |
+| TASK-CARD-FIX-001 | Normalize Description Metadata | ✅ Accepted | engineering-agent-dotnet |
+| TASK-CARD-UX-002 | Per-Card ColorPalette for Charts | ✅ Accepted | ui-designer |
+| TASK-CARD-BEH-002 | Per-Card Auto-Refresh + Visual Indicator | ✅ Accepted | ui-designer |
+
+### OracleQueryLab Enhancement (5 tasks — all ACCEPTED ✅)
+| TASK-ID | Description | Status | Agent |
+|---|---|---|---|
+| TASK-ORALAB-001 | Oracle Error Messages + N+1 Schema Fix | ✅ Accepted | engineering-agent-dotnet |
+| TASK-ORALAB-002 | Connection Status + Ctrl+Enter + Cancel | ✅ Accepted | engineering-agent-dotnet |
+| TASK-ORALAB-003 | History + 10K Limit + CSV Download | ✅ Accepted | engineering-agent-dotnet |
+| TASK-ORALAB-004 | Horizontal Scroll for Wide Results | ✅ Accepted | engineering-agent-dotnet |
+| TASK-ORALAB-005 | Syntax Highlighting + Line Numbers (CodeMirror) | ✅ Accepted | engineering-agent-dotnet |
+
+### Shared UI Improvements (2 tasks — all ACCEPTED ✅)
+| TASK-ID | Description | Status | Agent |
+|---|---|---|---|
+| TASK-HEADER-001 | Shared Header Partial + Link Fix + Connection Status | ✅ Accepted | engineering-agent-dotnet + TeraAgent |
+| TASK-CARD-LIST-001 | Admin Cards Page Redesign (Card-based layout) | ✅ Accepted | ui-designer |
+
+### Sync Settings Redesign (2 tasks — all ACCEPTED ✅)
+| TASK-ID | Description | Status | Agent |
+|---|---|---|---|
+| TASK-SYNC-SET-001 | Backend: ربط SyncSettings بـ Sync API | ✅ Accepted | engineering-agent-dotnet |
+| TASK-SYNC-SET-002 | Frontend: إعادة تصميم صفحة إعدادات المزامنة | ✅ Accepted | ui-designer |
+
+**ALL Tasks + 14 Enhancements = COMPLETE ✅**
 
 **R1 Resolved:** Oracle 19c reachable at 10.10.1.1, ODP.NET works, SYSDATE query successful (2026-07-13)
 
