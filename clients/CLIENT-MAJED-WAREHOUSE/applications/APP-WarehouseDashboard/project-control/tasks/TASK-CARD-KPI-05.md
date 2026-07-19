@@ -6,7 +6,7 @@
 | **المجموعة** | CARD-DESIGN-EXECUTION / Phase C |
 | **النوع** | Backend (KpiQueryBuilder + DashboardService + CardDataResult) + Frontend (Index.cshtml + Builder.cshtml) |
 | **الأولوية** | High |
-| **الحالة** | Approved for Delegation |
+| **الحالة** | ✅ Accepted — Auditor PASS |
 | **تاريخ الإنشاء** | 2026-07-19 |
 | **المرجع** | D5 Decision — GrandTotalSource (approved by Majed) |
 

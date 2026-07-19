@@ -286,7 +286,7 @@
 | A | CARD-UX-02 | تطبيق `Description` كـ tooltip/subtitle مدروس | استفادة فعلية من الوصف |
 | A | CARD-UX-03 | ربط `ColorPalette` بكل بطاقة فعلياً | شخصية بصرية لكل بطاقة |
 | A | CARD-UX-04 | تصميم نهائي لـ KPI Simple / With Change / Advanced | 3 قوالب KPI واضحة |
-| A | CARD-UX-05 | تصميم نهائي لـ Chart / Table / Alerts cards | تنوع بصري منظم |
+| A | CARD-UX-05 | ✅ تصميم نهائي لـ Chart / Table / Alerts cards | تنوع بصري منظم |
 | B | CARD-BEH-01 | تمرير `RefreshInterval` للعميل وتفعيل auto refresh لكل بطاقة | تحديث تلقائي حقيقي |
 | B | CARD-BEH-02 | تمرير `preset`/`from`/`to` من الداشبورد إلى API بشكل صحيح | ربط فعلي للشريط الزمني |
 | B | CARD-BEH-03 | تطبيق `DateFilterMode` داخل تنفيذ البطاقة | البطاقة تحترم إعدادها الزمني |

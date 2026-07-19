@@ -1,4 +1,3 @@
-﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -11,80 +10,78 @@ namespace WarehouseDashboard.Web.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "DashboardId",
-                table: "DashboardCards",
-                type: "int",
-                nullable: true);
+            // Idempotent migration: check existence before creating, because
+            // DashboardId column may already exist (manually added to the database)
+            // while the Dashboards table + FK need to be created via EF Core.
 
-            migrationBuilder.CreateTable(
-                name: "Dashboards",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(200)", nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(200)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", nullable: false, defaultValue: ""),
-                    Icon = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false, defaultValue: "📊"),
-                    SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Dashboards", x => x.Id);
-                });
+            // ── Dashboards table (only if not already present) ──────────────
+            migrationBuilder.Sql(@"
+IF OBJECT_ID(N'[Dashboards]') IS NULL
+BEGIN
+    CREATE TABLE [Dashboards] (
+        [Id] int NOT NULL IDENTITY(1, 1),
+        [Name] nvarchar(200) NOT NULL,
+        [Slug] nvarchar(200) NOT NULL,
+        [Description] nvarchar(500) NOT NULL DEFAULT N'',
+        [Icon] nvarchar(10) NOT NULL DEFAULT N'📊',
+        [SortOrder] int NOT NULL DEFAULT 0,
+        [IsActive] bit NOT NULL DEFAULT CONVERT(bit, 1),
+        [IsDefault] bit NOT NULL DEFAULT CONVERT(bit, 0),
+        [CreatedAt] datetime2 NOT NULL DEFAULT GETUTCDATE(),
+        [UpdatedAt] datetime2 NOT NULL DEFAULT GETUTCDATE(),
+        CONSTRAINT [PK_Dashboards] PRIMARY KEY ([Id])
+    );
 
-            migrationBuilder.CreateIndex(
-                name: "IX_DashboardCards_DashboardId",
-                table: "DashboardCards",
-                column: "DashboardId");
+    CREATE UNIQUE INDEX [IX_Dashboards_Slug] ON [Dashboards] ([Slug]);
+    CREATE INDEX [IX_Dashboards_IsActive] ON [Dashboards] ([IsActive]);
+    CREATE INDEX [IX_Dashboards_SortOrder] ON [Dashboards] ([SortOrder]);
+END
+");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Dashboards_IsActive",
-                table: "Dashboards",
-                column: "IsActive");
+            // ── DashboardId index on DashboardCards (only if missing) ──────
+            migrationBuilder.Sql(@"
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = N'IX_DashboardCards_DashboardId'
+      AND object_id = OBJECT_ID(N'[DashboardCards]')
+)
+BEGIN
+    CREATE INDEX [IX_DashboardCards_DashboardId] ON [DashboardCards] ([DashboardId]);
+END
+");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Dashboards_Slug",
-                table: "Dashboards",
-                column: "Slug",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Dashboards_SortOrder",
-                table: "Dashboards",
-                column: "SortOrder");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DashboardCards_Dashboards_DashboardId",
-                table: "DashboardCards",
-                column: "DashboardId",
-                principalTable: "Dashboards",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
+            // ── FK constraint (only if missing) ────────────────────────────
+            migrationBuilder.Sql(@"
+IF OBJECT_ID(N'[FK_DashboardCards_Dashboards_DashboardId]') IS NULL
+BEGIN
+    ALTER TABLE [DashboardCards] ADD CONSTRAINT [FK_DashboardCards_Dashboards_DashboardId]
+        FOREIGN KEY ([DashboardId]) REFERENCES [Dashboards] ([Id]) ON DELETE SET NULL;
+END
+");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_DashboardCards_Dashboards_DashboardId",
-                table: "DashboardCards");
+            // Reverse the operations safely — only if the objects exist.
+            migrationBuilder.Sql(@"
+IF OBJECT_ID(N'[FK_DashboardCards_Dashboards_DashboardId]') IS NOT NULL
+    ALTER TABLE [DashboardCards] DROP CONSTRAINT [FK_DashboardCards_Dashboards_DashboardId];
+");
 
-            migrationBuilder.DropTable(
-                name: "Dashboards");
+            migrationBuilder.Sql(@"
+IF EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = N'IX_DashboardCards_DashboardId'
+      AND object_id = OBJECT_ID(N'[DashboardCards]')
+)
+    DROP INDEX [IX_DashboardCards_DashboardId] ON [DashboardCards];
+");
 
-            migrationBuilder.DropIndex(
-                name: "IX_DashboardCards_DashboardId",
-                table: "DashboardCards");
-
-            migrationBuilder.DropColumn(
-                name: "DashboardId",
-                table: "DashboardCards");
+            migrationBuilder.Sql(@"
+IF OBJECT_ID(N'[Dashboards]') IS NOT NULL
+    DROP TABLE [Dashboards];
+");
         }
     }
 }

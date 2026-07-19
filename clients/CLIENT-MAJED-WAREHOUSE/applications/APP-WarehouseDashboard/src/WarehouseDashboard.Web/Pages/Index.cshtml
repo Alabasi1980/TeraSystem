@@ -499,6 +499,172 @@
         color: var(--c-text-muted);
         font-size: 12px;
     }
+
+    /* ===== Table Card (TASK-CARD-UX-05) ===== */
+    .wd-table-wrap {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-radius: var(--radius-md);
+    }
+
+    .wd-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: 13px;
+        font-family: var(--font-ar);
+        direction: rtl;
+    }
+
+    .wd-table thead th {
+        padding: 10px 14px;
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: #fff;
+        text-align: right;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+        transition: background var(--dur-fast) var(--ease);
+    }
+
+    .wd-table tbody tr {
+        border-bottom: 1px solid var(--c-border);
+        cursor: pointer;
+        transition: background var(--dur-fast) var(--ease),
+                    box-shadow var(--dur-fast) var(--ease);
+    }
+
+    .wd-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    /* Zebra striping */
+    .wd-table tbody tr:nth-child(even) {
+        background: var(--c-surface-muted);
+    }
+
+    /* Hover effect */
+    .wd-table tbody tr:hover {
+        background: color-mix(in srgb, var(--c-primary) 8%, var(--c-surface));
+        box-shadow: inset 3px 0 0 var(--c-primary);
+    }
+
+    .wd-table tbody td {
+        padding: 10px 14px;
+        text-align: right;
+        color: var(--c-text);
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum" 1;
+        transition: color var(--dur-fast) var(--ease);
+    }
+
+    .wd-table tbody tr:hover td {
+        color: var(--c-primary-strong);
+    }
+
+    /* Row enter animation */
+    .wd-table tbody tr {
+        animation: wdTableRowIn var(--dur-norm) var(--ease) both;
+    }
+
+    @@keyframes wdTableRowIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Table footer — row count */
+    .wd-table__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 14px;
+        background: var(--c-surface-muted);
+        border-top: 1px solid var(--c-border);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--c-text-muted);
+        flex-shrink: 0;
+    }
+
+    .wd-table__footer-count {
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Table empty state */
+    .wd-table__empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: var(--sp-3);
+        padding: var(--sp-8) var(--sp-6);
+        text-align: center;
+        flex: 1 1 auto;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+
+    .wd-table__empty-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: var(--radius-full);
+        background: var(--c-surface-muted);
+        color: var(--c-text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+    }
+
+    .wd-table__empty h4 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--c-text);
+    }
+
+    .wd-table__empty p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--c-text-muted);
+    }
+
+    /* Chart/Gauge accent top border (TASK-CARD-UX-05) */
+    .wd-card--accent-top {
+        border-top: 3px solid var(--c-primary);
+    }
+
+    /* Scrollable table container */
+    .wd-table-scroll {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overflow-x: auto;
+        min-height: 0;
+    }
+
+    .wd-table-scroll::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .wd-table-scroll::-webkit-scrollbar-track {
+        background: var(--c-surface-muted);
+    }
+
+    .wd-table-scroll::-webkit-scrollbar-thumb {
+        background: var(--c-border);
+        border-radius: var(--radius-full);
+    }
+
+    .wd-table-scroll::-webkit-scrollbar-thumb:hover {
+        background: var(--c-text-muted);
+    }
 </style>
 
 <div class="wd-page-head">
@@ -1067,6 +1233,16 @@ else
                 wdDestroySparkline(card.cardId);
                 var body = clearBody(el);
 
+                // Apply palette accent top border for Chart/Gauge/Table cards
+                el.classList.remove('wd-card--accent-top');
+                if (card.chartType === 'Chart' || card.chartType === 'Bar' || card.chartType === 'Line' || card.chartType === 'Pie' || card.chartType === 'Gauge' || card.chartType === 'Table') {
+                    el.classList.add('wd-card--accent-top');
+                    var pal = typeof wdGetPalette === 'function' ? wdGetPalette(card.cardId) : null;
+                    if (pal && pal[0]) {
+                        el.style.borderTopColor = pal[0];
+                    }
+                }
+
                 if (card.status === 'empty') { body.innerHTML = wdEmptyHtml(); return; }
                 if (card.status === 'error') { body.innerHTML = wdErrorHtml(card.errorMessage, card.cardId); return; }
 
@@ -1292,16 +1468,57 @@ else
             function wdRenderGrid(viz, card) {
                 var cols = card.columns || [];
                 var rows = card.rows || [];
-                var html = '<table class="wd-table" style="width:100%;border-collapse:collapse;">';
+                var cardId = card.cardId;
+
+                // Empty state — no columns or no rows
+                if (cols.length === 0 || rows.length === 0) {
+                    viz.innerHTML = '<div class="wd-table__empty">'
+                        + '<div class="wd-table__empty-icon" aria-hidden="true">'
+                        + '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
+                        + '<rect x="3" y="3" width="18" height="18" rx="2"></rect>'
+                        + '<path d="M3 9h18"></path><path d="M9 21V9"></path>'
+                        + '</svg></div>'
+                        + '<h4>لا توجد بيانات</h4>'
+                        + '<p>لم يتم العثور على سجلات لعرضها في هذا الجدول.</p>'
+                        + '</div>';
+                    return;
+                }
+
+                // Get palette for header accent color
+                var pal = typeof wdGetPalette === 'function' ? wdGetPalette(cardId) : ['#1F4E79', '#2E6DA4', '#8FBCDE'];
+                var accentColor = pal[0] || '#1F4E79';
+
+                var html = '<div class="wd-table-wrap">';
+
+                // Scrollable table container
+                html += '<div class="wd-table-scroll">';
+                html += '<table class="wd-table">';
+
+                // Header — accent background from palette
                 html += '<thead><tr>';
-                cols.forEach(function(c) { html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">' + escapeHtml(c) + '</th>'; });
-                html += '</tr></thead><tbody>';
-                rows.forEach(function(r) {
-                    html += '<tr style="border-bottom:1px solid var(--c-border);cursor:pointer;">';
-                    cols.forEach(function(c) { html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(String(r[c] ?? '')) + '</td>'; });
+                cols.forEach(function(c) {
+                    html += '<th style="background:' + accentColor + ';">' + escapeHtml(c) + '</th>';
+                });
+                html += '</tr></thead>';
+
+                // Body — CSS handles zebra striping, hover, and animation
+                html += '<tbody>';
+                rows.forEach(function(r, idx) {
+                    html += '<tr style="animation-delay:' + (idx * 30) + 'ms;">';
+                    cols.forEach(function(c) {
+                        html += '<td>' + escapeHtml(String(r[c] ?? '')) + '</td>';
+                    });
                     html += '</tr>';
                 });
                 html += '</tbody></table>';
+                html += '</div>'; // .wd-table-scroll
+
+                // Footer — row count
+                html += '<div class="wd-table__footer">'
+                    + '<span class="wd-table__footer-count">' + rows.length + ' صف</span>'
+                    + '</div>';
+
+                html += '</div>'; // .wd-table-wrap
                 viz.innerHTML = html;
             }
 

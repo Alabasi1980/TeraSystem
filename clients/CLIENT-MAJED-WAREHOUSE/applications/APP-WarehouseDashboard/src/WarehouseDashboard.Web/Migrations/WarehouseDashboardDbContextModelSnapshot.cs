@@ -194,7 +194,7 @@ namespace WarehouseDashboard.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
-                        .HasDefaultValue("📊");
+                        .HasDefaultValue("\U0001F4CA");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -422,9 +422,6 @@ namespace WarehouseDashboard.Web.Migrations
                         .HasDefaultValue("");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DashboardId")
-                        .HasDatabaseName("IX_DashboardCards_DashboardId");
 
                     b.HasIndex("IsActive")
                         .HasDatabaseName("IX_DashboardCards_IsActive");

@@ -74,6 +74,25 @@
     .wd-toast--warning { background: var(--c-warning); color: #3a2c00; }
     .wd-toast--info { background: var(--c-secondary); }
 
+    .wd-field--checkbox { display: flex; align-items: center; gap: 8px; }
+    .wd-field--checkbox input[type=checkbox] { width: 18px; height: 18px; cursor: pointer; }
+    .wd-field--checkbox label { margin: 0 !important; cursor: pointer; }
+    .wd-help-icon { cursor: help; color: var(--c-text-muted); font-size: 14px; user-select: none; }
+    .wd-field-hint { display: block; color: var(--c-text-muted); font-size: 12px; margin-top: 4px; }
+
+    .wd-preview { margin-top: 12px; border: 1px solid var(--c-border); border-radius: var(--radius-md); overflow: hidden; }
+    .wd-preview__header { padding: 8px 12px; background: var(--c-surface-muted); font-size: 13px; font-weight: 600; color: var(--c-text); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; gap: 8px; }
+    .wd-preview__body { overflow-x: auto; padding: 0; }
+    .wd-preview__body table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .wd-preview__body th { padding: 6px 10px; background: var(--c-surface-muted); font-weight: 600; text-align: right; border-bottom: 1px solid var(--c-border); white-space: nowrap; }
+    .wd-preview__body td { padding: 6px 10px; border-bottom: 1px solid var(--c-border); text-align: right; white-space: nowrap; }
+    .wd-preview__body tr:last-child td { border-bottom: none; }
+    .wd-preview__empty { padding: 24px; text-align: center; color: var(--c-text-muted); font-size: 14px; }
+    .wd-preview__error { padding: 12px 16px; color: #b91c1c; background: #fef2f2; border-radius: var(--radius-md); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .wd-preview__warnings { margin: 8px 12px; padding: 8px 12px; background: #fef9c3; color: #854d0e; border-radius: var(--radius-md); font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
+    .wd-preview__warnings span { display: flex; align-items: center; gap: 6px; }
+    .wd-preview__rowcount { font-size: 12px; color: var(--c-text-muted); margin-right: auto; }
+
     [hidden] { display: none !important; }
 </style>
 
@@ -150,7 +169,33 @@
         </div>
         <div class="wd-field">
             <label class="wd-label" for="queryInput">استعلام SQL (قد يقبل معاملاً)</label>
-            <textarea id="queryInput" class="wd-textarea" placeholder="SELECT City, COUNT(*) AS Qty FROM ..."></textarea>
+            <textarea id="queryInput" class="wd-textarea" placeholder="SELECT City, COUNT(*) AS Qty FROM ..." oninput="toggleTestParameterInput()"></textarea>
+        </div>
+        <div class="wd-field">
+            <label class="wd-label" for="parameterColumnInput">عمود الباراميتر (اختياري)</label>
+            <input id="parameterColumnInput" class="wd-input" type="text" placeholder="مثال: City" />
+            <small class="wd-field-hint">اسم العمود الذي تمرّر قيمته للمستوى التالي</small>
+        </div>
+        <div class="wd-field">
+            <label class="wd-label" for="labelColumnInput">عمود التسمية (اختياري)</label>
+            <input id="labelColumnInput" class="wd-input" type="text" placeholder="مثال: CityName" />
+            <small class="wd-field-hint">اسم العمود المعروض في Breadcrumb</small>
+        </div>
+        <div class="wd-field wd-field--checkbox">
+            <input id="requiresParentValueInput" type="checkbox" />
+            <label class="wd-label" for="requiresParentValueInput">يتطلب قيمة من المستوى السابق</label>
+            <span class="wd-help-icon" title="المستوى الأول عادة لا يتطلب قيمة">❔</span>
+        </div>
+        <div class="wd-field" id="testParamField" hidden>
+            <label class="wd-label" for="testParameterValueInput">قيمة اختبار للمعامل @@p0 (اختياري)</label>
+            <input id="testParameterValueInput" class="wd-input" type="text" placeholder="مثال: Riyadh" />
+        </div>
+        <div class="wd-field" id="testQueryArea">
+            <button class="wd-btn wd-btn--secondary" onclick="testQuery()" id="testQueryBtn">اختبار الاستعلام</button>
+            <div id="testSpinner" class="wd-skeleton" style="margin-top:8px;display:none;">
+                <div class="wd-skeleton__row"></div>
+            </div>
+            <div id="testPreview" style="margin-top:12px;display:none;"></div>
         </div>
         <div class="wd-actions">
             <button class="wd-btn" onclick="saveLevel()">حفظ</button>
@@ -217,6 +262,8 @@
         html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);width:90px;">المستوى</th>';
         html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);width:200px;">الاسم</th>';
         html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);width:120px;">النوع</th>';
+        html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);width:120px;">الباراميتر</th>';
+        html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:center;border-bottom:1px solid var(--c-border);width:100px;">يتطلب قيمة</th>';
         html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">الاستعلام</th>';
         html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:center;border-bottom:1px solid var(--c-border);width:170px;">إجراءات</th>';
         html += '</tr></thead><tbody>';
@@ -225,7 +272,9 @@
             html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(String(level.level ?? '')) + '</td>';
             html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(level.displayName || '') + '</td>';
             html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(level.targetChartType || '') + '</td>';
-            html += '<td style="padding:8px 12px;text-align:right;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(level.drillDownQuery || '') + '">' + escapeHtml(level.drillDownQuery || '') + '</td>';
+            html += '<td style="padding:8px 12px;text-align:right;">' + escapeHtml(level.parameterColumn || '—') + '</td>';
+            html += '<td style="padding:8px 12px;text-align:center;font-weight:600;color:' + (level.requiresParentValue ? 'var(--c-success)' : 'var(--c-text-muted)') + ';">' + (level.requiresParentValue ? 'نعم' : 'لا') + '</td>';
+            html += '<td style="padding:8px 12px;text-align:right;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(level.drillDownQuery || '') + '">' + escapeHtml(level.drillDownQuery || '') + '</td>';
             html += '<td style="padding:8px 12px;text-align:center;">';
             html += '<button class="wd-btn wd-btn--sm" onclick="editLevel(' + level.id + ')">تعديل</button> ';
             html += '<button class="wd-btn wd-btn--sm wd-btn--danger" onclick="deleteLevel(' + level.id + ')">حذف</button>';
@@ -279,6 +328,13 @@
         document.getElementById('displayNameInput').value = '';
         document.getElementById('chartTypeInput').value = 'Bar';
         document.getElementById('queryInput').value = '';
+        document.getElementById('parameterColumnInput').value = '';
+        document.getElementById('labelColumnInput').value = '';
+        document.getElementById('requiresParentValueInput').checked = false;
+        document.getElementById('testParameterValueInput').value = '';
+        document.getElementById('testPreview').innerHTML = '';
+        document.getElementById('testPreview').style.display = 'none';
+        toggleTestParameterInput();
         document.getElementById('formPanel').hidden = false;
     }
 
@@ -295,6 +351,13 @@
         document.getElementById('displayNameInput').value = level.displayName;
         document.getElementById('chartTypeInput').value = level.targetChartType;
         document.getElementById('queryInput').value = level.drillDownQuery;
+        document.getElementById('parameterColumnInput').value = level.parameterColumn || '';
+        document.getElementById('labelColumnInput').value = level.labelColumn || '';
+        document.getElementById('requiresParentValueInput').checked = !!level.requiresParentValue;
+        document.getElementById('testParameterValueInput').value = '';
+        document.getElementById('testPreview').innerHTML = '';
+        document.getElementById('testPreview').style.display = 'none';
+        toggleTestParameterInput();
         document.getElementById('formPanel').hidden = false;
     }
 
@@ -339,6 +402,9 @@
             fd.append('displayName', displayName);
             fd.append('targetChartType', targetChartType);
             fd.append('drillDownQuery', drillDownQuery);
+            fd.append('parameterColumn', document.getElementById('parameterColumnInput').value);
+            fd.append('labelColumn', document.getElementById('labelColumnInput').value);
+            fd.append('requiresParentValue', document.getElementById('requiresParentValueInput').checked);
             if (editingId) { fd.append('id', editingId); }
 
             const resp = await fetch('?handler=Save', {
@@ -357,6 +423,112 @@
             }
         } catch (err) {
             showToast('تعذر الاتصال بالخادم.', 'error');
+        }
+    }
+
+    function toggleTestParameterInput() {
+        const query = document.getElementById('queryInput').value || '';
+        const testParamField = document.getElementById('testParamField');
+        if (query.indexOf('@@p0') !== -1) {
+            testParamField.hidden = false;
+        } else {
+            testParamField.hidden = true;
+            document.getElementById('testParameterValueInput').value = '';
+        }
+    }
+
+    async function testQuery() {
+        const query = document.getElementById('queryInput').value.trim();
+        if (!query) {
+            showToast('الرجاء إدخال استعلام SQL أولاً.', 'warning');
+            return;
+        }
+
+        const parameterColumn = document.getElementById('parameterColumnInput').value;
+        const labelColumn = document.getElementById('labelColumnInput').value;
+        const testParameterValue = document.getElementById('testParameterValueInput').value;
+
+        const previewDiv = document.getElementById('testPreview');
+        const spinner = document.getElementById('testSpinner');
+        const btn = document.getElementById('testQueryBtn');
+
+        previewDiv.style.display = 'none';
+        previewDiv.innerHTML = '';
+        spinner.style.display = 'block';
+        btn.disabled = true;
+
+        try {
+            const token = document.querySelector('input[name=__RequestVerificationToken]').value;
+            const fd = new FormData();
+            fd.append('drillDownQuery', query);
+            if (parameterColumn) fd.append('parameterColumn', parameterColumn);
+            if (labelColumn) fd.append('labelColumn', labelColumn);
+            if (testParameterValue) fd.append('testParameterValue', testParameterValue);
+
+            const resp = await fetch('?handler=TestQuery', {
+                method: 'POST',
+                headers: { 'RequestVerificationToken': token },
+                body: fd
+            });
+            const data = await resp.json();
+
+            spinner.style.display = 'none';
+            btn.disabled = false;
+
+            if (!data.success) {
+                previewDiv.innerHTML = '<div class="wd-preview__error"><span>❌</span><span>' + escapeHtml(data.errorMessage || 'فشل الاختبار') + '</span></div>';
+                previewDiv.style.display = 'block';
+                return;
+            }
+
+            var html = '<div class="wd-preview">';
+
+            if (data.warnings && data.warnings.length > 0) {
+                html += '<div class="wd-preview__warnings">';
+                data.warnings.forEach(function(w) {
+                    html += '<span>⚠ ' + escapeHtml(w) + '</span>';
+                });
+                html += '</div>';
+            }
+
+            html += '<div class="wd-preview__header">';
+            html += '<span>📊 نتيجة الاختبار</span>';
+            html += '<span class="wd-preview__rowcount">' + escapeHtml(String(data.rowCount ?? 0)) + ' صف' + ((data.rowCount ?? 0) !== 1 ? 'وف' : '') + '</span>';
+            html += '</div>';
+
+            if (!data.columns || data.columns.length === 0 || !data.rows || data.rows.length === 0) {
+                html += '<div class="wd-preview__empty">لا توجد نتائج للاستعلام المحدد</div>';
+            } else {
+                html += '<div class="wd-preview__body"><table><thead><tr>';
+                data.columns.forEach(function(col) {
+                    html += '<th>' + escapeHtml(col) + '</th>';
+                });
+                html += '</tr></thead><tbody>';
+                var displayRows = data.rows.slice(0, 10);
+                displayRows.forEach(function(row) {
+                    html += '<tr>';
+                    data.columns.forEach(function(col) {
+                        var val = row[col];
+                        var display = val !== null && val !== undefined ? String(val) : '—';
+                        html += '<td>' + escapeHtml(display) + '</td>';
+                    });
+                    html += '</tr>';
+                });
+                html += '</tbody></table></div>';
+                if (data.rows.length > 10) {
+                    html += '<div style="padding:8px 12px;font-size:12px;color:var(--c-text-muted);text-align:center;border-top:1px solid var(--c-border);">عرض أول 10 صفوف من أصل ' + escapeHtml(String(data.rows.length)) + '</div>';
+                }
+            }
+
+            html += '</div>';
+            previewDiv.innerHTML = html;
+            previewDiv.style.display = 'block';
+
+        } catch (err) {
+            spinner.style.display = 'none';
+            btn.disabled = false;
+            previewDiv.innerHTML = '<div class="wd-preview__error"><span>❌</span><span>تعذر الاتصال بالخادم</span></div>';
+            previewDiv.style.display = 'block';
         }
     }
 </script>

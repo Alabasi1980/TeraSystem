@@ -60,6 +60,12 @@
 }
 [data-theme="midnight"] .wd-card { border-color: var(--c-border); box-shadow: var(--shadow-md); }
 [data-theme="midnight"] .wd-card:hover { box-shadow: var(--shadow-lg); }
+/* --- Dark mode Table card (TASK-CARD-UX-05) --- */
+[data-theme="midnight"] .wd-table tbody tr:nth-child(even) { background: var(--c-surface-muted); }
+[data-theme="midnight"] .wd-table tbody tr:hover { background: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface)); }
+[data-theme="midnight"] .wd-table__footer { background: var(--c-surface-muted); }
+[data-theme="midnight"] .wd-table__empty-icon { background: var(--c-surface-muted); }
+[data-theme="midnight"] .wd-table-scroll::-webkit-scrollbar-track { background: var(--c-surface-muted); }
 [data-theme="midnight"] .wd-sync-grid .e-altrow { background: #282f3a; }
 [data-theme="midnight"] .wd-sync-grid .e-headercell { background: var(--c-surface-muted); color: var(--c-text); }
 [data-theme="midnight"] .wd-sync-grid .e-rowcell { color: var(--c-text); }

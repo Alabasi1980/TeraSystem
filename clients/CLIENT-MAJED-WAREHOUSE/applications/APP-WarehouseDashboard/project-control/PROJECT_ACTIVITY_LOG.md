@@ -16,14 +16,47 @@
 
 ## Activity Log
 
+## [2026-07-19 17:00] - PLAN_CREATED
+
+- Related Task: N/A (AI Dashboard Assistant planning)
+- Actor: TeraAgent
+- Summary: Created `project-preparation/AI_DASHBOARD_ASSISTANT_IMPLEMENTATION_PLAN.md` as an implementation-ready plan for a general per-card AI assistant using OpenCode Go + DeepSeek V4 Flash. The plan documents confirmed decisions, security boundaries, read-only SQL access, on-demand UI flow, universal prompt model, optional per-card prompt, data summary preparation, depth progression, caching, logs/stats, implementation phases, acceptance criteria, and risks.
+- Decision / Result: Plan created under the client application project-preparation path. No application code was written.
+- Next Action: Majed reviews/approves the plan, then Tera can split it into small TASK-IDs for implementation delegation.
+
+## [2026-07-19 16:45] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-UX-05
+- Actor: TeraAgent + ui-designer
+- Summary: Chart / Table / Gauge card shell polish. Table card now uses CSS classes (zebra striping, hover, empty state, row counter, scrollable). Chart/Gauge cards get accent top border from ColorPalette. Dark mode overrides added to blue-theme.css.
+- Decision / Result: ✅ Accepted (build PASS, all 10 acceptance criteria met)
+- Next Action: Continue with CARD-BUILDER-01 (Builder preview alignment) — the last remaining task.
+
+## [2026-07-19 16:15] - TASK_ACCEPTED
+
+- Related Task: TASK-DRILL-ADMIN-002
+- Actor: TeraAgent + ui-designer
+- Summary: Phase B (Frontend) complete — UI updates to Admin DrillDown page: added ParameterColumn, LabelColumn, RequiresParentValue fields to form + levels table columns. Added "اختبار الاستعلام" button with live preview (first 10 rows, column schema, row count, warnings, error display). Added testParameterValue field (shows only when query has @p0). Updated saveLevel to send contract fields. All 16 acceptance criteria met. Build: 0 errors, 0 warnings.
+- Decision / Result: Task ACCEPTED. Admin DrillDown page now fully supports Parameter Contract + Test Query.
+- Next Action: Commit changes. Then proceed to Phase C (Modal State Machine).
+
+## [2026-07-19 16:00] - TASK_ACCEPTED
+
+- Related Task: TASK-DRILL-ADMIN-001
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Phase B (Backend) complete — Added safe Test Query handler (OnPostTestQueryAsync) with SELECT/WITH validation, @p0 via SqlParameter, 100-row cap, 30s timeout, error sanitization, ParameterColumn/LabelColumn existence validation. Updated LevelDto, OnGetLevelsAsync, and OnPostSaveAsync to include ParameterColumn, LabelColumn, RequiresParentValue. Injected IConfiguration. Added SqlParamValue, ConvertCell, Sanitize helper methods. Build: 0 errors, 0 warnings.
+- Auditor Decision: N/A — not required per rules (no schema/migration changes, backend-only)
+- Decision / Result: Task ACCEPTED. Backend ready for frontend integration.
+- Next Action: Proceed with TASK-DRILL-ADMIN-002 (UI for Test Query + ParameterColumn/LabelColumn fields).
+
 ## [2026-07-19 15:45] - TASK_ACCEPTED
 
 - Related Task: TASK-DRILL-SCHEMA-001
 - Actor: TeraAgent (direct execution after engineering-agent-dotnet interruption)
-- Summary: Phase A complete — Added Parameter Contract foundation (ParameterColumn, LabelColumn, RequiresParentValue) to CardDrillDownLevel model, DbContext, and Drill API. 4 source files modified: Model, DbContext, DrillDataResult.cs (payload + NextRequiresParentValue), Drill.cshtml.cs (nextLevel query, RequiresParentValue guard, ParameterColumn/LabelColumn runtime validation). Migration `AddDrillDownParameterContract` created manually (AddColumn only — 3 columns). Note: encountered EF Core schema drift — Dashboard entity + DashboardId in DbContext but never properly migrated. Removed auto-generated migration that included these out-of-scope changes and replaced with a scoped manual migration. Build: 0 errors, 0 warnings.
-- Auditor Decision: AUDITOR_REVIEW_NOT_REQUIRED — migration is AddColumn only (no data loss/structure change), code changes verified via build, no auth/security impact.
-- Decision / Result: Task ACCEPTED. Drill Down parameter contract now exists in schema and API. Schema drift issue logged for Majed's awareness.
-- Next Action: Await Majed's approval to proceed with Phase B (TASK-DRILL-ADMIN-001 — Backend Test Query) or review the migration first.
+- Summary: Phase A complete — Added Parameter Contract foundation (ParameterColumn, LabelColumn, RequiresParentValue) to CardDrillDownLevel model, DbContext, and Drill API. 4 source files modified: Model, DbContext, DrillDataResult.cs (payload + NextRequiresParentValue), Drill.cshtml.cs (nextLevel query, RequiresParentValue guard, ParameterColumn/LabelColumn runtime validation). Migration `AddDrillDownParameterContract` created manually (AddColumn only — 3 columns). Note: encountered EF Core schema drift — Dashboard entity + DashboardId in DbContext but never properly migrated. Removed auto-generated migration that included these out-of-scope changes and replaced with a scoped manual migration. Then created idempotent AddDashboardEntity migration per Majed's approval. Build: 0 errors, 0 warnings.
+- Auditor Decision: AUDITOR_PASS — المهمة مدققة ومعتمدة (0 STOP, 0 CAUTION, 2 FLAG cosmetic)
+- Decision / Result: Task ACCEPTED. Drill Down parameter contract now exists in schema and API. Dashboard entity migrated successfully.
+- Next Action: Committed, migrations applied. Proceeded to Phase B.
 
 ## [2026-07-19 15:30] - PLAN_UPDATED
 
@@ -32,6 +65,14 @@
 - Summary: Updated `DRILL_DOWN_DEVELOPMENT_PLAN.md` to version 3.0. Added full Parameter & Display Contract based on Majed's questions: same modal across levels, no modal stacking, level content controlled by TargetChartType, explicit ParameterColumn/LabelColumn contract, Root/Parent parameter behavior, Table/Chart/KPI/Gauge behavior, CSV export rules, required schema additions, API contract, safer query-test requirements, and revised task phases A-G.
 - Decision / Result: Drill Down plan is now more implementation-ready for handoff to another implementation agent. No code changes were made.
 - Next Action: Majed reviews/approves the revised plan, then Tera can create small TASK-IDs for execution.
+
+## [2026-07-19 16:00] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-05
+- Actor: TeraAgent + engineering-agent-dotnet + auditor
+- Summary: Implemented GrandTotalSource feature. Backend: BuildYearToDateQuery (filters to year from active date filter or current year), KpiQueries.YearToDateSql property, CardDataResult.KpiYearToDateTotal + GrandTotalSource properties, DashboardService YearToDateSql execution. Frontend: wdRenderGrandTotal checks grandTotalSource (allTime/yearToDate/both) and renders appropriate totals. Builder.cshtml dropdown updated with 3 options (both/allTime/yearToDate) with Arabic labels. Build: 0 warnings, 0 errors. Auditor PASS (0 blocking findings).
+- Decision / Result: Task ACCEPTED. D5 decision closed. GrandTotalSource now shows all-time and/or year-to-date totals based on card configuration.
+- Next Action: Ask Majed to verify in browser that grand total rendering works correctly with all three modes.
 
 ## [2026-07-19 15:30] - TASK_ACCEPTED
 
