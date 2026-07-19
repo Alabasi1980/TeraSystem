@@ -263,6 +263,24 @@ public class WarehouseDashboardDbContext : DbContext
                 .IsRequired()
                 .HasColumnType("nvarchar(50)");
 
+            // Drill Down parameter contract (TASK-DRILL-SCHEMA-001):
+            // - ParameterColumn: column whose value is passed as @p0 to the next level.
+            // - LabelColumn: human-readable column for breadcrumb labels.
+            // - RequiresParentValue: when true, this level needs a parent value (Level > 1).
+            // Note: no CHECK constraints on ParameterColumn/LabelColumn — values are validated
+            // at runtime in the Drill API (case-insensitive lookup against the result schema).
+            entity.Property(e => e.ParameterColumn)
+                .HasMaxLength(100)
+                .IsRequired(false);
+
+            entity.Property(e => e.LabelColumn)
+                .HasMaxLength(100)
+                .IsRequired(false);
+
+            entity.Property(e => e.RequiresParentValue)
+                .IsRequired()
+                .HasDefaultValue(false);
+
             // FK → DashboardCards (CASCADE delete).
             entity.HasOne(e => e.Card)
                 .WithMany(c => c.DrillDownLevels)

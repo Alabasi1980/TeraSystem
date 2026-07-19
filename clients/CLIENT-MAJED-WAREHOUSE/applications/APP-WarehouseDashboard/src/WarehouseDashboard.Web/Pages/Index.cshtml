@@ -349,6 +349,27 @@
         min-width: 36px;
     }
 
+    /* Grand total rows (TASK-CARD-KPI-05) */
+    .wd-kpi-grandtotal {
+        margin-top: 8px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 6px;
+    }
+    .wd-kpi-grandtotal__row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        padding: 2px 0;
+    }
+    .wd-kpi-grandtotal__label {
+        color: var(--c-text-secondary);
+    }
+    .wd-kpi-grandtotal__value {
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
     /* ===== Drillable card affordance (TASK-COD-012) ===== */
     .wd-card--drillable { position: relative; }
     .wd-card--drillable:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
@@ -824,11 +845,9 @@ else
                     html += '<div class="wd-kpi__sparkline" data-card-id="' + card.cardId + '"></div>';
                 }
 
-                // Grand total (for composite mode)
-                if (kpiMode === 'composite' && card.kpiGrandTotal !== null && card.kpiGrandTotal !== undefined) {
-                    var grandTotal = card.kpiGrandTotal;
-                    var grandDisplay = grandTotal !== null ? formatNum(toNum(grandTotal)) : '—';
-                    html += '<div class="wd-kpi__total">الإجمالي: ' + grandDisplay + '</div>';
+                // Grand total container (for composite mode — rendered by wdRenderGrandTotal)
+                if (kpiMode === 'composite') {
+                    html += '<div class="wd-kpi__grandtotal" data-card-id="' + card.cardId + '"></div>';
                 }
 
                 // Category breakdown container (for composite/withChange modes)
@@ -992,12 +1011,46 @@ else
                     var pct = row.Percentage || row.percentage || 0;
                     var color = pal[i % pal.length] || 'var(--c-primary)';
                     html += '<tr>';
-                    html += '<td class="wd-kpi-breakdown__cat" style="color:' + color + '">' + escHtml(category) + '</td>';
+                    html += '<td class="wd-kpi-breakdown__cat" style="color:' + color + '">' + escapeHtml(category) + '</td>';
                     html += '<td class="wd-kpi-breakdown__val">' + formatNum(toNum(value)) + '</td>';
                     html += '<td class="wd-kpi-breakdown__pct">' + pct + '%</td>';
                     html += '</tr>';
                 });
                 html += '</table></div>';
+                container.innerHTML = html;
+                container.style.display = '';
+            }
+
+            function wdRenderGrandTotal(container, card) {
+                var source = card.grandTotalSource || 'both';
+                var html = '';
+
+                if (source === 'allTime' || source === 'both') {
+                    if (card.kpiGrandTotal !== null && card.kpiGrandTotal !== undefined) {
+                        var val = formatNum(toNum(card.kpiGrandTotal));
+                        html += '<div class="wd-kpi-grandtotal__row">';
+                        html += '<span class="wd-kpi-grandtotal__label">الإجمالي الكلي:</span>';
+                        html += '<span class="wd-kpi-grandtotal__value">' + val + '</span>';
+                        html += '</div>';
+                    }
+                }
+
+                if (source === 'yearToDate' || source === 'both') {
+                    if (card.kpiYearToDateTotal !== null && card.kpiYearToDateTotal !== undefined) {
+                        var val = formatNum(toNum(card.kpiYearToDateTotal));
+                        var year = new Date().getFullYear();
+                        html += '<div class="wd-kpi-grandtotal__row">';
+                        html += '<span class="wd-kpi-grandtotal__label">إجمالي ' + year + ':</span>';
+                        html += '<span class="wd-kpi-grandtotal__value">' + val + '</span>';
+                        html += '</div>';
+                    }
+                }
+
+                if (!html) {
+                    container.style.display = 'none';
+                    return;
+                }
+
                 container.innerHTML = html;
                 container.style.display = '';
             }
@@ -1036,6 +1089,14 @@ else
                             var breakdownContainer = body.querySelector('.wd-kpi__breakdown');
                             if (breakdownContainer) {
                                 wdRenderCategoryBreakdown(breakdownContainer, card.kpiCategoryBreakdown, card.cardId);
+                            }
+                        }
+
+                        // Render grand total (all-time / year-to-date / both)
+                        if (card.kpiMode === 'composite') {
+                            var grandTotalContainer = body.querySelector('.wd-kpi__grandtotal');
+                            if (grandTotalContainer) {
+                                wdRenderGrandTotal(grandTotalContainer, card);
                             }
                         }
                         return;

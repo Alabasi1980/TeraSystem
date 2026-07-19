@@ -28,6 +28,28 @@ public class CardDrillDownLevel
     /// </summary>
     public string TargetChartType { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Column name in this level's result set whose value is passed to the next level's
+    /// <c>@p0</c> parameter. When null/empty, the first column is used as fallback.
+    /// Setting this explicitly is strongly recommended for non-trivial drill chains.
+    /// </summary>
+    public string? ParameterColumn { get; set; }
+
+    /// <summary>
+    /// Column name used to render a human-readable label for this level's selected value
+    /// in the breadcrumb (e.g., CategoryName instead of CategoryCode). When null/empty,
+    /// falls back to <see cref="ParameterColumn"/>.
+    /// </summary>
+    public string? LabelColumn { get; set; }
+
+    /// <summary>
+    /// When true, this level requires a parent value from the previous level (passed as
+    /// <c>@p0</c> via SqlParameter). Level 1 typically sets this to false (root). Levels > 1
+    /// typically set this to true. When true but no parentValue is provided, the API should
+    /// return an error instead of running the query.
+    /// </summary>
+    public bool RequiresParentValue { get; set; } = false;
+
     /// <summary>Navigation to the owning dashboard card.</summary>
     public DashboardCard Card { get; set; } = null!;
 }

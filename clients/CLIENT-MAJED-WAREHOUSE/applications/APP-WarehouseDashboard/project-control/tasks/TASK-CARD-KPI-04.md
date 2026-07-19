@@ -6,7 +6,7 @@
 | **المجموعة** | CARD-DESIGN-EXECUTION / Phase C |
 | **النوع** | Backend (KpiQueryBuilder + CardDataResult + DashboardService) + Frontend (Index.cshtml) |
 | **الأولوية** | High |
-| **الحالة** | Approved for Delegation |
+| **الحالة** | ✅ Accepted — Auditor PASS |
 | **تاريخ الإنشاء** | 2026-07-19 |
 | **المرجع** | D2 Decision — CategoryColumn Breakdown (approved by Majed) |
 

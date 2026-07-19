@@ -76,8 +76,12 @@ public class DrillModel : PageModel
                 });
             }
 
-        var hasNext = await _db.CardDrillDownLevels
-            .AnyAsync(l => l.ParentCardId == cardId && l.Level == level + 1, cancellationToken);
+        var nextLevel = await _db.CardDrillDownLevels
+            .Where(l => l.ParentCardId == cardId && l.Level == level + 1)
+            .Select(l => new { l.RequiresParentValue })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var hasNext = nextLevel != null;
 
         var result = new DrillDataResult
         {
@@ -86,9 +90,21 @@ public class DrillModel : PageModel
             Level = level,
             DisplayName = config.DisplayName,
             ChartType = config.TargetChartType,
+            ParameterColumn = config.ParameterColumn,
+            LabelColumn = config.LabelColumn,
             HasNextLevel = hasNext,
+            NextRequiresParentValue = nextLevel?.RequiresParentValue ?? false,
             Status = "error"
         };
+
+        // If THIS level requires a parent value but none was provided → error out
+        // (Level 1 typically has RequiresParentValue = false)
+        if (config.RequiresParentValue && string.IsNullOrWhiteSpace(parentValue))
+        {
+            result.Status = "error";
+            result.ErrorMessage = "هذا المستوى يتطلب قيمة من المستوى السابق. يرجى اختيار عنصر من المستوى السابق.";
+            return Json(result);
+        }
 
         try
         {
@@ -123,6 +139,32 @@ public class DrillModel : PageModel
                 columns.Add(reader.GetName(i) is { Length: > 0 } name ? name : $"Column{i + 1}");
             }
             result.Columns = columns;
+
+            // Validate ParameterColumn references a real column (when specified)
+            if (!string.IsNullOrWhiteSpace(config.ParameterColumn))
+            {
+                var parameterColumnFound = columns.Exists(
+                    c => string.Equals(c, config.ParameterColumn, StringComparison.OrdinalIgnoreCase));
+                if (!parameterColumnFound)
+                {
+                    result.Status = "error";
+                    result.ErrorMessage = $"عمود الباراميتر المحدد '{config.ParameterColumn}' غير موجود في نتيجة الاستعلام. الأعمدة المتاحة: {string.Join(", ", columns)}";
+                    return Json(result);
+                }
+            }
+
+            // Validate LabelColumn references a real column (when specified)
+            if (!string.IsNullOrWhiteSpace(config.LabelColumn))
+            {
+                var labelColumnFound = columns.Exists(
+                    c => string.Equals(c, config.LabelColumn, StringComparison.OrdinalIgnoreCase));
+                if (!labelColumnFound)
+                {
+                    result.Status = "error";
+                    result.ErrorMessage = $"عمود التسمية المحدد '{config.LabelColumn}' غير موجود في نتيجة الاستعلام. الأعمدة المتاحة: {string.Join(", ", columns)}";
+                    return Json(result);
+                }
+            }
 
             // Cap payloads so a single heavy query can't break the page.
             var rowLimit = config.TargetChartType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? 500 : 200;

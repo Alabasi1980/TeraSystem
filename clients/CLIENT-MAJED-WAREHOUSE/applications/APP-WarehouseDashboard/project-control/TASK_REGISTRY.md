@@ -99,6 +99,7 @@
 | TASK-CARD-KPI-01-FIX-01 | Fix Missing KPI Change Percentage | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-C-FIX | 2026-07-19 |
 | TASK-CARD-KPI-02 | Improve Sparkline Rendering (height + gradient + endpoint dot + tooltip) | ui-designer | ✅ Accepted (Auditor PASS after cleanup fix) | CARD-C | 2026-07-19 |
 | TASK-CARD-KPI-03 | Fix Sparkline Date Range + Add "Last Month" Filter | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-C | 2026-07-19 |
+| TASK-CARD-KPI-04 | CategoryColumn Breakdown Table (Top 5) | engineering-agent-dotnet | ✅ Accepted (Auditor PASS after escHtml fix) | CARD-C | 2026-07-19 |
 
 ---
 

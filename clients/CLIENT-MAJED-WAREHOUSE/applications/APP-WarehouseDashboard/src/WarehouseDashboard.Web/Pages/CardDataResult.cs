@@ -58,9 +58,15 @@ public class CardDataResult
     /// <summary>Grand total value (all-time, no date filter).</summary>
     public object? KpiGrandTotal { get; set; }
 
+    /// <summary>Year-to-date total value (filtered to current year).</summary>
+    public object? KpiYearToDateTotal { get; set; }
+
     /// <summary>Top 5 category breakdown with values and percentages.</summary>
     public List<Dictionary<string, object?>>? KpiCategoryBreakdown { get; set; }
 
     /// <summary>KPI display mode from card config: "simple", "withChange", "composite".</summary>
     public string KpiMode { get; set; } = "simple";
+
+    /// <summary>Grand total source: "allTime", "yearToDate", or "both".</summary>
+    public string? GrandTotalSource { get; set; }
 }

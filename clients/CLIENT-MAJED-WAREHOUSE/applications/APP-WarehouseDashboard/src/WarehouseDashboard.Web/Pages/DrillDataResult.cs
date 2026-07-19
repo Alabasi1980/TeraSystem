@@ -27,6 +27,25 @@ public class DrillDataResult
     public bool HasNextLevel { get; set; }
 
     /// <summary>
+    /// Column name in the current level's result set whose value should be passed as
+    /// <c>@p0</c> to the next level. Null/empty = first column fallback.
+    /// </summary>
+    public string? ParameterColumn { get; set; }
+
+    /// <summary>
+    /// Column name used for human-readable labels in the breadcrumb. Null/empty =
+    /// falls back to ParameterColumn.
+    /// </summary>
+    public string? LabelColumn { get; set; }
+
+    /// <summary>
+    /// When true, the next level requires a parent value (selected row's
+    /// ParameterColumn value) to execute. Used by client to enforce row selection
+    /// before navigation.
+    /// </summary>
+    public bool NextRequiresParentValue { get; set; }
+
+    /// <summary>
     /// One of: <c>success</c>, <c>empty</c>, <c>error</c>, <c>none</c> (level not configured).
     /// The client renders the appropriate state for each value.
     /// </summary>

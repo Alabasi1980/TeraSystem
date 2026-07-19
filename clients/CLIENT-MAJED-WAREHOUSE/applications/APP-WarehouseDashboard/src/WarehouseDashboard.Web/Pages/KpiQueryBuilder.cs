@@ -47,7 +47,20 @@ public static class KpiQueryBuilder
 
             if (card.ShowGrandTotal && !string.IsNullOrEmpty(card.ValueColumn))
             {
-                queries.GrandTotalSql = BuildGrandTotalQuery(card);
+                var source = card.GrandTotalSource ?? "both";
+
+                if (source == "allTime" || source == "both")
+                {
+                    queries.GrandTotalSql = BuildGrandTotalQuery(card);
+                }
+
+                if (source == "yearToDate" || source == "both")
+                {
+                    if (!string.IsNullOrEmpty(card.DateColumn))
+                    {
+                        queries.YearToDateSql = BuildYearToDateQuery(card, dateRange);
+                    }
+                }
             }
         }
 
@@ -127,6 +140,34 @@ public static class KpiQueryBuilder
 
         // For grand total, we use the base query without any date filter
         return $"SELECT SUM({valueCol}) AS GrandTotal FROM ({baseQuery}) AS _base";
+    }
+
+    /// <summary>
+    /// Builds a query to get the year-to-date total (sum of values from Jan 1 to today).
+    /// Uses the year from the active date filter or the current year if no filter is set.
+    /// </summary>
+    private static string BuildYearToDateQuery(DashboardCard card, DashboardService.DateRange? dateRange = null)
+    {
+        var baseQuery = NormalizeBaseQuery(card.SqlQuery);
+        var valueCol = NumericExpression(card.ValueColumn);
+        var dateCol = SanitizeIdentifier(card.DateColumn);
+
+        // Determine the year from the active filter or today
+        int year;
+        if (dateRange is not null)
+        {
+            year = dateRange.From.Year;
+        }
+        else
+        {
+            year = DateTime.UtcNow.Year;
+        }
+
+        var yearStart = $"{year}-01-01";
+        var yearEnd = $"{year + 1}-01-01";
+
+        return $"SELECT SUM({valueCol}) AS YearToDateTotal FROM ({baseQuery}) AS _base " +
+               $"WHERE {dateCol} >= '{yearStart}' AND {dateCol} < '{yearEnd}'";
     }
 
     /// <summary>
@@ -245,6 +286,9 @@ public class KpiQueries
 
     /// <summary>SQL for grand total (all-time).</summary>
     public string? GrandTotalSql { get; set; }
+
+    /// <summary>SQL for year-to-date total (current year only).</summary>
+    public string? YearToDateSql { get; set; }
 
     /// <summary>SQL for category breakdown (top 5 categories by value).</summary>
     public string? BreakdownSql { get; set; }

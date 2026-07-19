@@ -184,6 +184,7 @@ public class DashboardService
                     {
                         result.KpiMode = card.KpiMode;
                         result.ChangeSource = card.ChangeSource;
+                        result.GrandTotalSource = card.GrandTotalSource;
 
                         // Extract main KPI value from the base query result
                         if (rows.Count > 0 && !string.IsNullOrEmpty(card.ValueColumn))
@@ -253,6 +254,20 @@ public class DashboardService
                             catch (Exception ex)
                             {
                                 result.ErrorMessage = $"Grand total query failed: {DataHelper.Sanitize(ex.Message)}";
+                            }
+                        }
+
+                        // Execute year-to-date total query
+                        if (kpiQueries.YearToDateSql != null)
+                        {
+                            try
+                            {
+                                var ytdTotal = await ExecuteScalarQueryAsync(kpiQueries.YearToDateSql, ct);
+                                result.KpiYearToDateTotal = ytdTotal;
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = ex; // Log but don't fail the card
                             }
                         }
 
