@@ -256,6 +256,13 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string OriginalSourceId { get; set; } = "";
 
         /// <summary>
+        /// Dashboard ID to assign the card to (nullable FK)
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("dashboardId")]
+        public int? DashboardId { get; set; }
+
+        /// <summary>
         /// Clone mode: pre-filled from existing card ID
         /// </summary>
         [BindProperty(SupportsGet = true)]
@@ -277,6 +284,11 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         /// Available Oracle tables for Step 2 dropdown
         /// </summary>
         public List<SelectListItem> OracleTables { get; set; } = new();
+
+        /// <summary>
+        /// Available dashboards for the dashboard selector dropdown
+        /// </summary>
+        public List<SelectListItem> AvailableDashboards { get; set; } = new();
 
         /// <summary>
         /// Available color palettes
@@ -332,6 +344,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         {
             NormalizeGetAliases();
             await LoadOracleTablesAsync();
+            await LoadDashboardsAsync();
             await LoadCloneDataAsync();
             await LoadEditDataAsync();
             await LoadTemplateDataAsync();
@@ -350,6 +363,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
 
             // Load reference data for validation errors
             await LoadOracleTablesAsync();
+            await LoadDashboardsAsync();
 
             ValidateConditionalPostFields();
 
@@ -431,6 +445,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                         AggregationType = dto.AggregationType ?? "Sum",
                         OriginalSourceType = dto.OriginalSourceType,
                         OriginalSourceId = dto.OriginalSourceId ?? "",
+                        DashboardId = dto.DashboardId,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     };
@@ -519,6 +534,20 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
             }
         }
 
+        private async Task LoadDashboardsAsync()
+        {
+            AvailableDashboards = await _db.Dashboards
+                .Where(d => d.IsActive)
+                .OrderBy(d => d.SortOrder)
+                .ThenBy(d => d.Name)
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = string.IsNullOrEmpty(d.Icon) ? d.Name : $"{d.Icon} {d.Name}"
+                })
+                .ToListAsync();
+        }
+
         private List<SelectListItem> GetFallbackTables()
         {
             return new List<SelectListItem>
@@ -559,6 +588,13 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 ColorPalette = "primary";
                 RefreshInterval = req.RefreshInterval;
                 AggregationType = req.AggregationType ?? "Sum";
+
+                // Load DashboardId from the original card
+                var originalCard = await _db.DashboardCards.AsNoTracking()
+                    .Where(c => c.Id == cloneId)
+                    .Select(c => c.DashboardId)
+                    .FirstOrDefaultAsync();
+                DashboardId = originalCard;
 
                 // Mark as clone (new card, not update)
                 CloneId = string.Empty;
@@ -618,6 +654,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 FixedEndDate = card.FixedEndDate;
                 RelativeDays = card.RelativeDays;
                 AggregationType = card.AggregationType;
+                DashboardId = card.DashboardId;
 
                 // OriginalSourceType mapping: use card.OriginalSourceType to reconstruct Step 2 exactly.
                 OriginalSourceType = card.OriginalSourceType;
@@ -707,6 +744,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
             entity.AggregationType = dto.AggregationType ?? "Sum";
             entity.OriginalSourceType = dto.OriginalSourceType ?? "SqlTable";
             entity.OriginalSourceId = dto.OriginalSourceId ?? "";
+            entity.DashboardId = dto.DashboardId;
         }
 
         private async Task LoadTemplateDataAsync()
@@ -755,6 +793,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 AggregationType = AggregationType ?? "Sum",
                 OriginalSourceType = OriginalSourceType ?? SourceType,  // fallback to current sourceType
                 OriginalSourceId = OriginalSourceId ?? SourceId ?? "",
+                DashboardId = DashboardId,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -942,6 +981,9 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         // === Builder Original Source Type (TASK-COD-028) ===
         public string OriginalSourceType { get; set; } = "SqlTable";
         public string OriginalSourceId { get; set; } = "";
+
+        // === Dashboard assignment ===
+        public int? DashboardId { get; set; }
 
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }

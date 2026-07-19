@@ -16,6 +16,30 @@
 
 ## Activity Log
 
+## [2026-07-19 00:30] - TASK_IMPLEMENTED_REVIEWED
+
+- Related Task: TASK-DASH-FIX-007
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Added dashboard selector to Card Builder wizard. Backend: `[BindProperty] DashboardId`, `AvailableDashboards` list, `LoadDashboardsAsync()`, wired through OnGet/OnPost/Edit/Clone/Save/Map/DTO. Frontend: `<select>` dropdown in Step 5 + hidden field.
+- Decision / Result: Code review PASS; allowed files respected; no secrets; `dotnet build --no-restore` PASS with 0 warnings and 0 errors. Auditor Review Decision: NOT_REQUIRED (small targeted feature addition, no schema/security/API changes).
+- Next Action: User runtime test: create a new card and assign it to a specific dashboard, then verify it appears only on that dashboard's tab.
+
+## [2026-07-19 00:10] - TASK_IMPLEMENTED_REVIEWED
+
+- Related Task: TASK-DASH-FIX-006
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Implemented dashboard fix for SaveLayout 400 and poor multi-dashboard tab styling. Added anti-forgery token rendering to `Pages/Index.cshtml`; added RTL tab/pill styles to `wwwroot/css/blue-theme.css`.
+- Decision / Result: Code review PASS; allowed files respected; no secrets; `dotnet build --no-restore` PASS with 0 warnings and 0 errors. Auditor Review Decision: NOT_REQUIRED due to small localized Razor/CSS change.
+- Next Action: User runtime test: open `/wh01`, move/resize a card, verify no 400 in DevTools and layout persists after refresh.
+
+## [2026-07-19 00:00] - TASK_CREATED
+
+- Related Task: TASK-DASH-FIX-006
+- Actor: TeraAgent
+- Summary: User reported two dashboard issues: SaveLayout POST returns HTTP 400 on slug route `/wh01?handler=SaveLayout`, and multi-dashboard tabs appear as poor/plain repeated links. Tera diagnosed likely missing anti-forgery token rendering and missing/incomplete tab CSS.
+- Decision / Result: Created focused fix task `TASK-DASH-FIX-006` with allowed files limited to `Pages/Index.cshtml` and `wwwroot/css/blue-theme.css`.
+- Next Action: Delegate implementation to a code-capable sub-agent, then verify build and request user runtime test.
+
 ## [2026-07-18 21:25] - DEPLOYMENT_FIX
 
 - Related Task: TASK-COD-FIX-031B

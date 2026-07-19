@@ -70,6 +70,10 @@
 [data-theme="midnight"] .wd-hud__row kbd { background: var(--c-bg); border-color: var(--c-border); color: var(--c-primary); }
 [data-theme="midnight"] .wd-btn--ghost { color: var(--c-primary); border-color: var(--c-border); }
 [data-theme="midnight"] .wd-btn--ghost:hover { background: var(--c-surface-muted); }
+[data-theme="midnight"] .wd-tab-bar { background: linear-gradient(180deg, rgba(44,53,65,0.92), rgba(35,42,52,0.82)); }
+[data-theme="midnight"] .wd-tab:hover { background: var(--c-surface-muted); border-color: var(--c-border); }
+[data-theme="midnight"] .wd-tab__icon { background: rgba(91,155,213,0.16); }
+[data-theme="midnight"] .wd-tab--active .wd-tab__icon { background: rgba(255,255,255,0.18); }
 [data-theme="midnight"] .wd-btn--on-dark { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); }
 [data-theme="midnight"] .wd-btn--on-dark:hover { background: rgba(255,255,255,0.16); }
 [data-theme="midnight"] .wd-theme-switcher__menu { background: var(--c-surface); border-color: var(--c-border); }
@@ -255,6 +259,83 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     margin-bottom: var(--sp-6);
 }
 .wd-page-title { font-size: 22px; font-weight: 700; margin: 0; color: var(--c-text); }
+
+/* ============================ Dashboard tabs ============================ */
+.wd-tab-bar {
+    direction: rtl;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin: calc(var(--sp-6) * -0.5) 0 var(--sp-6);
+    padding: var(--sp-2);
+    background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(234,241,248,0.72));
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.wd-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    min-height: 42px;
+    padding: 9px 16px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    color: var(--c-text-muted);
+    background: transparent;
+    font-family: var(--font-ar);
+    font-weight: 700;
+    line-height: 1.25;
+    text-decoration: none;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    transition: background var(--dur-fast) var(--ease),
+                border-color var(--dur-fast) var(--ease),
+                color var(--dur-fast) var(--ease),
+                box-shadow var(--dur-fast) var(--ease),
+                transform var(--dur-fast) var(--ease);
+}
+.wd-tab:hover {
+    color: var(--c-primary);
+    background: var(--c-surface);
+    border-color: rgba(31, 78, 121, 0.16);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+.wd-tab:active { transform: translateY(0); }
+.wd-tab:focus-visible { outline: 2px solid var(--c-secondary); outline-offset: 2px; }
+.wd-tab--active,
+.wd-tab--active:hover {
+    color: #fff;
+    background: linear-gradient(180deg, var(--c-primary) 0%, var(--c-primary-strong) 100%);
+    border-color: var(--c-primary);
+    box-shadow: 0 8px 18px rgba(31, 78, 121, 0.22);
+    transform: none;
+}
+.wd-tab__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    background: rgba(31, 78, 121, 0.10);
+    font-size: 15px;
+    line-height: 1;
+    flex: none;
+}
+.wd-tab--active .wd-tab__icon {
+    background: rgba(255, 255, 255, 0.18);
+}
+.wd-tab__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 /* ============================ Buttons ============================ */
 .wd-btn {
@@ -794,6 +875,10 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
         grid-row: auto !important;
     }
     .wd-page-head { flex-direction: column; align-items: flex-start; }
+    .wd-tab-bar { flex-wrap: nowrap; margin-bottom: var(--sp-4); padding: 6px; }
+    .wd-tab { padding: 8px 12px; min-height: 38px; font-size: 13px; }
+    .wd-tab__icon { width: 22px; height: 22px; font-size: 14px; }
+    .wd-tab__label { max-width: 180px; }
 
     /* Topbar mobile */
     .wd-topbar {

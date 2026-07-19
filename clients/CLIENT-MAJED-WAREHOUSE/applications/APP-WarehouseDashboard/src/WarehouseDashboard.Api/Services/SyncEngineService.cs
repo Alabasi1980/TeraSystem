@@ -630,6 +630,9 @@ public class SyncEngineService : BackgroundService
                 });
             }
 
+            // Close the reader before reusing the connection for LoadNumericTextColumnsAsync
+            await reader.DisposeAsync();
+
             await LoadNumericTextColumnsAsync(conn, mappings, ct);
 
             _logger.LogInformation("Loaded {Count} active mapping(s) from DB.", mappings.Count);
@@ -709,6 +712,9 @@ public class SyncEngineService : BackgroundService
                         : reader.GetDateTime(reader.GetOrdinal("LastSyncAt"))
                 });
             }
+
+            // Close the reader before reusing the connection for LoadNumericTextColumnsAsync
+            await reader.DisposeAsync();
 
             await LoadNumericTextColumnsAsync(conn, mappings, ct);
 

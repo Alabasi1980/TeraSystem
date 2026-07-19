@@ -350,6 +350,20 @@
                     <p class="wb-step-panel__hint">تحكم في الحجم، الموضع، الألوان، والتحديث التلقائي.</p>
 
                     <div class="wb-visual-section">
+                        <h4 class="wb-visual-section__title">الداشبورد</h4>
+                        <div class="wb-field">
+                            <label class="wd-field__label" for="wb-dashboard-id">اختر الداشبورد</label>
+                            <select id="wb-dashboard-id" class="wd-select" name="dashboardId">
+                                <option value="">بدون داشبورد (غير معيّن)</option>
+                                @foreach (var d in Model.AvailableDashboards)
+                                {
+                                    <option value="@d.Value" selected="@d.Selected">@d.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="wb-visual-section">
                         <h4 class="wb-visual-section__title">الحجم والموضع (Grid)</h4>
                         <div class="wd-form__grid">
                             <div class="wd-field">
@@ -442,6 +456,9 @@
                 <!-- Builder Original Source Type (TASK-COD-028) -->
                 <input type="hidden" name="originalSourceType" id="wb-h-originalSourceType" value="@Model.OriginalSourceType">
                 <input type="hidden" name="originalSourceId" id="wb-h-originalSourceId" value="@Model.OriginalSourceId">
+
+                <!-- Dashboard assignment (TASK-DASH-FIX-007) -->
+                <input type="hidden" name="dashboardId" id="wb-h-dashboardId" value="@Model.DashboardId">
 
             </form>
         </div>
