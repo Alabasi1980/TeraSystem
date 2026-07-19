@@ -16,6 +16,22 @@
 
 ## Activity Log
 
+## [2026-07-19 01:45] - EXECUTION_PLAN_CREATED
+
+- Related Task: N/A (planning / design execution preparation)
+- Actor: TeraAgent
+- Summary: Majed requested a single clear, organized, execution-focused plan for dashboard card design and full use of all card settings, with an explicit rule to avoid Syncfusion and use other suitable libraries where needed. TeraAgent synthesized the earlier utilization analysis and the agreed visual direction from the shared card reference image into one implementation-ready planning document.
+- Decision / Result: Created `project-preparation/DASHBOARD_CARD_DESIGN_EXECUTION_PLAN.md`. The plan defines: (1) explicit no-Syncfusion constraint, (2) approved candidate libraries such as ApexCharts / Tippy.js / SortableJS, (3) target visual language for KPI / Chart / Table / Alert cards, (4) settings-to-behavior mapping for Title / Description / ColorPalette / RefreshInterval / DateFilterMode / KPI fields, (5) phased execution path A→D, (6) proposed task breakdown CARD-UX / CARD-BEH / CARD-KPI / CARD-BUILDER, (7) priorities, acceptance criteria, and required Majed decisions before execution.
+- Next Action: Majed reviews the plan and confirms the remaining design/behavior decisions in section 12, then Tera will convert the approved first phase into small TASK-IDs for implementation.
+
+## [2026-07-19 01:30] - ANALYSIS_DOCUMENT_CREATED
+
+- Related Task: N/A (pre-task analysis)
+- Actor: TeraAgent
+- Summary: Majed requested a careful, professional study of how all Card Builder settings (KPI mode, ValueColumn/DateColumn/CategoryColumn, ChangeSource, DateFilterMode, ColorPalette, RefreshInterval, etc.) should actually drive the dashboard card's rendering and interactivity — not just be saved as configuration. TeraAgent read the full chain: Builder.cshtml.cs, DashboardCard.cs, DashboardService.cs, KpiQueryBuilder.cs, CardDataResult.cs, Card.cshtml.cs (API), Index.cshtml/.cs, CardBuilderService.cs, plus prep docs (13_REPORTS_AND_DASHBOARDS.md, ADVANCED_KPI_DEVELOPMENT_PLAN.md) and TASK-DASH-002..005 history.
+- Decision / Result: Created `project-preparation/CARD_SETTINGS_UTILIZATION_ANALYSIS_AND_PLAN.md`. Confirmed with exact file/line evidence: ColorPalette, Description, CategoryColumn, DateFilterMode/FixedStartDate/FixedEndDate/RelativeDays, and the dashboard date-filter `preset` param are saved but never actually applied to rendering/queries. RefreshInterval is saved but not even sent to the client (no per-card auto-refresh timer exists). KpiMode/ShowChange/ShowSparkline/ShowGrandTotal/AggregationType/ValueColumn ARE correctly wired end-to-end. Proposed a phased task plan (KPI-CARD-01 to 09) and listed 6 decisions (D1-D6) required from Majed before any TASK-ID is created.
+- Next Action: Await Majed's review and decisions (D1-D6) in the document §6, then formalize TASK-IDs starting with Phase A (low-risk visual fixes) before Phase B (date-filter wiring — highest risk since it affects displayed number accuracy).
+
 ## [2026-07-19 00:45] - TASK_IMPLEMENTED_REVIEWED
 
 - Related Task: TASK-DASH-FIX-008

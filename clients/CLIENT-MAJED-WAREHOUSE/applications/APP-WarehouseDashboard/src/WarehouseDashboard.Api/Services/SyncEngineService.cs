@@ -143,10 +143,18 @@ public class SyncEngineService : BackgroundService
                             target, attempt, MaxRetries, mapping.OracleSource, mapping.SyncMode);
 
                         var data = await _oracle.ExtractAsync(oracleSql, mapping.NumericTextColumns, ct);
-                        await _load.LoadTableAsync(target, data, ct);
+
+                        if (mapping.SyncMode.Equals("Incremental", StringComparison.OrdinalIgnoreCase))
+                        {
+                            await _load.LoadTableIncrementalAsync(target, data, ct);
+                        }
+                        else
+                        {
+                            await _load.LoadTableAsync(target, data, ct);
+                        }
 
                         _logger.LogInformation(
-                            "Sync [{Target}] succeeded: {RowCount} row(s) loaded.", target, data.Rows.Count);
+                            "Sync [{Target}] succeeded: {RowCount} row(s) loaded (mode={Mode}).", target, data.Rows.Count, mapping.SyncMode);
                         totalRows += data.Rows.Count;
                         succeeded = true;
 
@@ -310,11 +318,18 @@ public class SyncEngineService : BackgroundService
                     // Signal progress: rows extracted, about to load.
                     _progressStore.UpdateMapping(runId, mapping.Id, "running", data.Rows.Count);
 
-                    await _load.LoadTableAsync(target, data, ct);
+                    if (mapping.SyncMode.Equals("Incremental", StringComparison.OrdinalIgnoreCase))
+                    {
+                        await _load.LoadTableIncrementalAsync(target, data, ct);
+                    }
+                    else
+                    {
+                        await _load.LoadTableAsync(target, data, ct);
+                    }
 
                     _logger.LogInformation(
-                        "Selected sync [{Target}] (Id={Id}) succeeded: {RowCount} row(s) loaded.",
-                        target, mapping.Id, data.Rows.Count);
+                        "Selected sync [{Target}] (Id={Id}) succeeded: {RowCount} row(s) loaded (mode={Mode}).",
+                        target, mapping.Id, data.Rows.Count, mapping.SyncMode);
 
                     totalRows += data.Rows.Count;
                     mappingResult.Rows = data.Rows.Count;

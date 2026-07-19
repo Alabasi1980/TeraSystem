@@ -111,6 +111,44 @@ public class SqlServerLoadService
         }
     }
 
+    /// <summary>
+    /// Incremental load of <paramref name="data"/> into <paramref name="targetTable"/>.
+    /// Unlike <see cref="LoadTableAsync"/> this method does NOT delete existing rows —
+    /// it only appends the newly extracted rows via <see cref="SqlBulkCopy"/>.
+    /// The target table is created automatically if it does not yet exist.
+    /// </summary>
+    public async Task LoadTableIncrementalAsync(string targetTable, DataTable data, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+        if (data.Columns.Count == 0)
+            throw new ArgumentException("Source DataTable has no columns; cannot load.", nameof(data));
+
+        var (schema, name) = SplitTable(targetTable);
+
+        await using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync(ct);
+
+        // Create-if-not-exists (DDL, outside any refresh transaction).
+        await EnsureTableExistsAsync(connection, schema, name, data, ct);
+
+        // Bulk insert only — no DELETE. Existing rows are preserved.
+        using var bulkCopy = new SqlBulkCopy(connection)
+        {
+            DestinationTableName = $"[{schema}].[{name}]",
+            BatchSize = 1000
+        };
+
+        foreach (DataColumn column in data.Columns)
+        {
+            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+        }
+
+        await bulkCopy.WriteToServerAsync(data, ct);
+
+        _logger.LogInformation("Loaded {RowCount} row(s) into [{Schema}].[{Name}] (incremental, no delete).",
+            data.Rows.Count, schema, name);
+    }
+
     private async Task EnsureTableExistsAsync(
         SqlConnection connection, string schema, string name, DataTable data, CancellationToken ct)
     {

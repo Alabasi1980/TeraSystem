@@ -49,6 +49,14 @@ public class TableMappingsModel : PageModel
     [BindProperty]
     public int EditId { get; set; }
 
+    /// <summary>Sync strategy: "Full" (truncate + reload) or "Incremental" (append only).</summary>
+    [BindProperty]
+    public string SyncMode { get; set; } = "Full";
+
+    /// <summary>Oracle column name used for incremental watermarking.</summary>
+    [BindProperty]
+    public string? IncrementalColumn { get; set; }
+
     /// <summary>JSON-serialized array of column mapping overrides from the wizard.</summary>
     [BindProperty]
     public string? ColumnMappingsJson { get; set; }
@@ -163,6 +171,8 @@ public class TableMappingsModel : PageModel
             OracleSource = OracleSource,
             SourceType = SourceType,
             SqlTargetTable = SqlTargetTable,
+            SyncMode = SyncMode,
+            IncrementalColumn = IncrementalColumn,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -231,6 +241,8 @@ public class TableMappingsModel : PageModel
         mapping.OracleSource = OracleSource;
         mapping.SourceType = SourceType;
         mapping.SqlTargetTable = SqlTargetTable;
+        mapping.SyncMode = SyncMode;
+        mapping.IncrementalColumn = IncrementalColumn;
         mapping.UpdatedAt = DateTime.UtcNow;
 
         // Remove existing column mappings only after validation succeeds — they will be replaced by wizard JSON.
