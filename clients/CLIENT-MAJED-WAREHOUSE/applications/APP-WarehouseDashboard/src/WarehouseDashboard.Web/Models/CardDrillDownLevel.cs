@@ -42,6 +42,9 @@ public class CardDrillDownLevel
     /// </summary>
     public string? LabelColumn { get; set; }
 
+    /// <summary>Column aliases for display. Format: "COL1 = اسم1, COL2 = اسم2" (nullable).</summary>
+    public string? ColumnAliases { get; set; }
+
     /// <summary>
     /// When true, this level requires a parent value from the previous level (passed as
     /// <c>@p0</c> via SqlParameter). Level 1 typically sets this to false (root). Levels > 1

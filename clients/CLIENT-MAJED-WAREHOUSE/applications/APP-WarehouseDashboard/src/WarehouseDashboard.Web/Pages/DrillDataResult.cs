@@ -38,6 +38,9 @@ public class DrillDataResult
     /// </summary>
     public string? LabelColumn { get; set; }
 
+    /// <summary>Column aliases for display. Format: "COL1 = اسم1, COL2 = اسم2" (nullable).</summary>
+    public string? ColumnAliases { get; set; }
+
     /// <summary>
     /// When true, the next level requires a parent value (selected row's
     /// ParameterColumn value) to execute. Used by client to enforce row selection

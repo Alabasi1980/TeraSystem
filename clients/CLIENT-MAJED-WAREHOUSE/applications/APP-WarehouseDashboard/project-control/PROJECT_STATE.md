@@ -1,7 +1,7 @@
 # PROJECT_STATE.md
 
 > **Purpose:** Compact project memory to reduce re-reading files.
-> **Last Updated:** 2026-07-18 (TASK-COD-028 Wizard Source State fix accepted)
+> **Last Updated:** 2026-07-20 (TASK-CARD-KPI-MOCKUP-001 accepted)
 
 ---
 
@@ -94,6 +94,14 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 | TASK-CARD-FIX-001 | Normalize Description Metadata | ✅ Accepted | engineering-agent-dotnet |
 | TASK-CARD-UX-002 | Per-Card ColorPalette for Charts | ✅ Accepted | ui-designer |
 | TASK-CARD-BEH-002 | Per-Card Auto-Refresh + Visual Indicator | ✅ Accepted | ui-designer |
+
+### KPI Card Redesign (4 tasks — all ACCEPTED ✅)
+| TASK-ID | Description | Status | Agent |
+|---|---|---|---|
+| TASK-CARD-LAYOUT-EDIT-001 | Edit Layout Mode (admin toggle) | ✅ Accepted | ui-designer |
+| TASK-CARD-KPI-LAYOUT-RESPONSIVE-001 | Responsive KPI Card Layout Blueprint | ✅ Accepted | ui-designer |
+| TASK-CARD-KPI-ADAPTIVE-SHELL-001 | Adaptive KPI Shell (any size, no void/overlap) | ✅ Accepted | ui-designer |
+| TASK-CARD-KPI-MOCKUP-001 | Client mockup KPI layout (pixel-close) | ✅ Accepted | ui-designer |
 
 ### OracleQueryLab Enhancement (5 tasks — all ACCEPTED ✅)
 | TASK-ID | Description | Status | Agent |

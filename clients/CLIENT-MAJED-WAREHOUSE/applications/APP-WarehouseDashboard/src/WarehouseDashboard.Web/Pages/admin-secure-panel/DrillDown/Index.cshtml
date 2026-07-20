@@ -32,8 +32,6 @@
     }
     .wd-field { margin-bottom: 14px; }
 
-    .wd-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-
     .wd-grid { margin-top: 8px; min-height: 80px; }
 
     .wd-skeleton { padding: 12px; }
@@ -45,23 +43,118 @@
     }
 
     .wd-form-panel {
-        position: fixed; inset: 0; z-index: 1000;
-        background: rgba(10,37,64,0.45);
+        position: fixed; inset: 0; z-index: 12000;
+        width: 100vw; height: 100vh; height: 100dvh;
+        background: rgba(10,37,64,0.58);
         display: flex; align-items: center; justify-content: center;
-        padding: 16px; animation: wdFadeUp var(--dur-fast) var(--ease);
+        padding: 18px 24px; box-sizing: border-box;
+        animation: wdFadeUp var(--dur-fast) var(--ease);
     }
     .wd-form-panel__inner {
-        width: min(540px, 94vw); max-height: 92vh; overflow: auto;
+        width: min(1120px, calc(100vw - 48px));
+        max-height: calc(100vh - 36px); max-height: calc(100dvh - 36px);
+        overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
         background: var(--c-surface); border: 1px solid var(--c-border);
         border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
-        padding: 20px 24px; animation: wdSlideUp var(--dur-norm) var(--ease);
+        padding: 0; animation: wdSlideUp var(--dur-norm) var(--ease);
     }
-    .wd-form-panel__inner h3 { font-size: 18px; font-weight: 700; color: var(--c-text); margin: 0 0 16px; }
+
+    /* Header */
+    .wd-form-header {
+        padding: 14px 24px 12px; border-bottom: 1px solid var(--c-border);
+        display: flex; align-items: center; justify-content: space-between;
+        background: var(--c-surface); z-index: 1;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .wd-form-header h3 { font-size: 17px; font-weight: 700; color: var(--c-text); margin: 0; }
+    .wd-form-header__close {
+        width: 32px; height: 32px; border: none; background: transparent;
+        border-radius: var(--radius-md); cursor: pointer; display: flex;
+        align-items: center; justify-content: center; color: var(--c-text-muted);
+        font-size: 18px; transition: background var(--dur-fast) var(--ease);
+    }
+    .wd-form-header__close:hover { background: var(--c-surface-muted); color: var(--c-text); }
+
+    /* Body scrollable area */
+    .wd-form-body {
+        min-height: 0; overflow-y: auto; overflow-x: hidden;
+        padding: 14px 24px;
+    }
+
+    /* Footer */
+    .wd-form-footer {
+        padding: 12px 24px; border-top: 1px solid var(--c-border);
+        display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+        background: var(--c-surface);
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+
+    /* Sections */
+    .wd-form-section {
+        margin-bottom: 12px;
+    }
+    .wd-form-section:last-child { margin-bottom: 0; }
+    .wd-form-section__title {
+        font-size: 12px; font-weight: 700; color: var(--c-text-muted);
+        text-transform: uppercase; letter-spacing: 0.3px;
+        margin-bottom: 8px; padding-bottom: 6px;
+        border-bottom: 1px solid var(--c-border);
+        display: flex; align-items: center; gap: 6px;
+    }
+    .wd-form-section__icon {
+        font-size: 14px; line-height: 1;
+    }
+
+    /* Two-column grid */
+    .wd-form-grid {
+        display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 14px;
+    }
+    .wd-form-grid--full {
+        grid-template-columns: 1fr;
+    }
+    .wd-form-grid .wd-field--span2 {
+        grid-column: 1 / -1;
+    }
+    .wd-form-panel .wd-field { margin-bottom: 0; }
+    .wd-form-panel .wd-label { margin-bottom: 4px; font-size: 12px; }
+    .wd-form-panel .wd-input,
+    .wd-form-panel .wd-select,
+    .wd-form-panel .wd-textarea { padding: 8px 10px; font-size: 13px; }
+    .wd-form-panel .wd-textarea { min-height: 108px; max-height: 140px; }
+    .wd-form-panel .wd-field-hint { margin-top: 3px; font-size: 11px; }
+
+    /* Button improvements */
+    .wd-btn--primary {
+        background: var(--c-primary); color: #fff; border: none;
+        padding: 9px 22px; font-weight: 600; font-size: 14px;
+        border-radius: var(--radius-md); cursor: pointer;
+        transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+    }
+    .wd-btn--primary:hover { background: color-mix(in srgb, var(--c-primary) 85%, #000); }
+    .wd-btn--primary:active { transform: scale(0.97); }
+
+    .wd-btn--cancel {
+        background: transparent; color: var(--c-text-muted); border: 1px solid var(--c-border);
+        padding: 9px 18px; font-weight: 600; font-size: 14px;
+        border-radius: var(--radius-md); cursor: pointer;
+        transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+    }
+    .wd-btn--cancel:hover { background: var(--c-surface-muted); color: var(--c-text); }
+
+    .wd-btn--test {
+        background: var(--c-surface-muted); color: var(--c-text); border: 1px solid var(--c-border);
+        padding: 9px 18px; font-weight: 600; font-size: 14px;
+        border-radius: var(--radius-md); cursor: pointer;
+        transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+        margin-right: auto;
+    }
+    .wd-btn--test:hover { background: color-mix(in srgb, var(--c-surface-muted) 80%, var(--c-primary)); border-color: var(--c-primary); }
+
     @@keyframes wdSlideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
     .wd-toast-container {
         position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
-        display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+        display: flex; flex-direction: column; gap: 8px; z-index: 13000;
     }
     .wd-toast {
         min-width: 240px; max-width: 360px; padding: 12px 16px; border-radius: var(--radius-md);
@@ -80,7 +173,7 @@
     .wd-help-icon { cursor: help; color: var(--c-text-muted); font-size: 14px; user-select: none; }
     .wd-field-hint { display: block; color: var(--c-text-muted); font-size: 12px; margin-top: 4px; }
 
-    .wd-preview { margin-top: 12px; border: 1px solid var(--c-border); border-radius: var(--radius-md); overflow: hidden; }
+    .wd-preview { margin-top: 8px; border: 1px solid var(--c-border); border-radius: var(--radius-md); overflow: hidden; }
     .wd-preview__header { padding: 8px 12px; background: var(--c-surface-muted); font-size: 13px; font-weight: 600; color: var(--c-text); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; gap: 8px; }
     .wd-preview__body { overflow-x: auto; padding: 0; }
     .wd-preview__body table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -92,6 +185,48 @@
     .wd-preview__warnings { margin: 8px 12px; padding: 8px 12px; background: #fef9c3; color: #854d0e; border-radius: var(--radius-md); font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
     .wd-preview__warnings span { display: flex; align-items: center; gap: 6px; }
     .wd-preview__rowcount { font-size: 12px; color: var(--c-text-muted); margin-right: auto; }
+
+    @@media (max-width: 900px) {
+        .wd-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @@media (max-width: 640px) {
+        .wd-form-panel { align-items: flex-start; padding: 12px; }
+        .wd-form-panel__inner { width: calc(100vw - 24px); max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); }
+        .wd-form-grid { grid-template-columns: 1fr; }
+        .wd-form-header, .wd-form-body, .wd-form-footer { padding-inline: 14px; }
+    }
+
+    /* ============ Tabs ============ */
+    .wd-tab-bar {
+        display: flex; gap: 0; border-bottom: 1px solid var(--c-border);
+        margin-bottom: 16px; background: var(--c-surface-muted);
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        overflow-x: auto; flex-shrink: 0;
+    }
+    .wd-tab-btn {
+        padding: 10px 20px; font-size: 13px; font-weight: 600;
+        color: var(--c-text-muted); cursor: pointer;
+        border: none; background: transparent;
+        border-bottom: 2px solid transparent;
+        transition: all var(--dur-fast) var(--ease);
+        font-family: var(--font-ar); white-space: nowrap;
+        user-select: none;
+    }
+    .wd-tab-btn:hover { color: var(--c-text); background: rgba(0,0,0,0.03); }
+    .wd-tab-btn--active {
+        color: var(--c-primary); border-bottom-color: var(--c-primary);
+        background: var(--c-surface);
+    }
+    .wd-tab-content { display: none; }
+    .wd-tab-content--active { display: block; }
+    /* Tab content scrollable — form-body already scrolls */
+    .wd-tab-content .wd-form-grid {
+        margin-top: 0;
+    }
+    /* Compact hint inside tabs */
+    .wd-tab-content .wd-field-hint {
+        margin-top: 3px; font-size: 11px; line-height: 1.4;
+    }
 
     [hidden] { display: none !important; }
 </style>
@@ -147,59 +282,98 @@
 
 <div id="formPanel" class="wd-form-panel" hidden>
     <div class="wd-form-panel__inner">
-        <h3 id="formTitle">إضافة مستوى تنقّل عميق</h3>
-        <div class="wd-field">
-            <label class="wd-label" for="levelInput">المستوى (رقم ≥ 1)</label>
-            <input id="levelInput" class="wd-input" type="number" min="1" value="1" />
+        <div class="wd-form-header">
+            <h3 id="formTitle">إضافة مستوى تنقّل عميق</h3>
+            <button class="wd-form-header__close" onclick="closeForm()" title="إغلاق">✕</button>
         </div>
-        <div class="wd-field">
-            <label class="wd-label" for="displayNameInput">اسم العرض</label>
-            <input id="displayNameInput" class="wd-input" type="text" placeholder="مثال: حسب المدينة" />
-        </div>
-        <div class="wd-field">
-            <label class="wd-label" for="chartTypeInput">نوع الرسم</label>
-            <select id="chartTypeInput" class="wd-select">
-                <option value="Bar">Bar</option>
-                <option value="Line">Line</option>
-                <option value="Pie">Pie</option>
-                <option value="KPI">KPI</option>
-                <option value="Table">Table</option>
-                <option value="Gauge">Gauge</option>
-            </select>
-        </div>
-        <div class="wd-field">
-            <label class="wd-label" for="queryInput">استعلام SQL (قد يقبل معاملاً)</label>
-            <textarea id="queryInput" class="wd-textarea" placeholder="SELECT City, COUNT(*) AS Qty FROM ..." oninput="toggleTestParameterInput()"></textarea>
-        </div>
-        <div class="wd-field">
-            <label class="wd-label" for="parameterColumnInput">عمود الباراميتر (اختياري)</label>
-            <input id="parameterColumnInput" class="wd-input" type="text" placeholder="مثال: City" />
-            <small class="wd-field-hint">اسم العمود الذي تمرّر قيمته للمستوى التالي</small>
-        </div>
-        <div class="wd-field">
-            <label class="wd-label" for="labelColumnInput">عمود التسمية (اختياري)</label>
-            <input id="labelColumnInput" class="wd-input" type="text" placeholder="مثال: CityName" />
-            <small class="wd-field-hint">اسم العمود المعروض في Breadcrumb</small>
-        </div>
-        <div class="wd-field wd-field--checkbox">
-            <input id="requiresParentValueInput" type="checkbox" />
-            <label class="wd-label" for="requiresParentValueInput">يتطلب قيمة من المستوى السابق</label>
-            <span class="wd-help-icon" title="المستوى الأول عادة لا يتطلب قيمة">❔</span>
-        </div>
-        <div class="wd-field" id="testParamField" hidden>
-            <label class="wd-label" for="testParameterValueInput">قيمة اختبار للمعامل @@p0 (اختياري)</label>
-            <input id="testParameterValueInput" class="wd-input" type="text" placeholder="مثال: Riyadh" />
-        </div>
-        <div class="wd-field" id="testQueryArea">
-            <button class="wd-btn wd-btn--secondary" onclick="testQuery()" id="testQueryBtn">اختبار الاستعلام</button>
-            <div id="testSpinner" class="wd-skeleton" style="margin-top:8px;display:none;">
-                <div class="wd-skeleton__row"></div>
+        <div class="wd-form-body">
+            <!-- Tab Bar -->
+            <div class="wd-tab-bar">
+                <button class="wd-tab-btn wd-tab-btn--active" data-tab="tab-basic" onclick="switchTab('tab-basic')" type="button">معلومات أساسية</button>
+                <button class="wd-tab-btn" data-tab="tab-query" onclick="switchTab('tab-query')" type="button">الاستعلام والاختبار</button>
+                <button class="wd-tab-btn" data-tab="tab-advanced" onclick="switchTab('tab-advanced')" type="button">إعدادات متقدمة</button>
             </div>
-            <div id="testPreview" style="margin-top:12px;display:none;"></div>
+
+            <!-- Tab 1: Basic Info -->
+            <div id="tab-basic" class="wd-tab-content wd-tab-content--active">
+                <div class="wd-form-grid">
+                    <div class="wd-field">
+                        <label class="wd-label" for="levelInput">المستوى (رقم ≥ 1)</label>
+                        <input id="levelInput" class="wd-input" type="number" min="1" value="1" />
+                    </div>
+                    <div class="wd-field">
+                        <label class="wd-label" for="displayNameInput">اسم العرض</label>
+                        <input id="displayNameInput" class="wd-input" type="text" placeholder="مثال: حسب المدينة" />
+                    </div>
+                    <div class="wd-field">
+                        <label class="wd-label" for="chartTypeInput">نوع الرسم</label>
+                        <select id="chartTypeInput" class="wd-select">
+                            <option value="Bar">Bar</option>
+                            <option value="Line">Line</option>
+                            <option value="Pie">Pie</option>
+                            <option value="KPI">KPI</option>
+                            <option value="Table">Table</option>
+                            <option value="Gauge">Gauge</option>
+                        </select>
+                    </div>
+                    <div class="wd-field">
+                        <label class="wd-label" for="parameterColumnInput">عمود الباراميتر (اختياري)</label>
+                        <input id="parameterColumnInput" class="wd-input" type="text" placeholder="مثال: City" />
+                        <small class="wd-field-hint">اسم العمود الذي تمرّر قيمته للمستوى التالي</small>
+                    </div>
+                    <div class="wd-field">
+                        <label class="wd-label" for="labelColumnInput">عمود التسمية (اختياري)</label>
+                        <input id="labelColumnInput" class="wd-input" type="text" placeholder="مثال: CityName" />
+                        <small class="wd-field-hint">اسم العمود المعروض في Breadcrumb</small>
+                    </div>
+                    <div class="wd-field wd-field--checkbox" style="align-self:end; padding-bottom:10px;">
+                        <input id="requiresParentValueInput" type="checkbox" />
+                        <label class="wd-label" for="requiresParentValueInput">يتطلب قيمة من المستوى السابق</label>
+                        <span class="wd-help-icon" title="المستوى الأول عادة لا يتطلب قيمة">❔</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Query & Test -->
+            <div id="tab-query" class="wd-tab-content">
+                <div class="wd-form-grid wd-form-grid--full">
+                    <div class="wd-field">
+                        <label class="wd-label" for="queryInput">استعلام SQL</label>
+                        <textarea id="queryInput" class="wd-textarea" rows="4" placeholder="SELECT City, COUNT(*) AS Qty FROM ..." oninput="toggleTestParameterInput()"></textarea>
+                        <small class="wd-field-hint">قد يقبل معاملاً <code>@@p0</code> يُمرّر من المستوى السابق</small>
+                    </div>
+                </div>
+                <div class="wd-form-grid" style="margin-bottom:12px;">
+                    <div class="wd-field" id="testParamField" hidden>
+                        <label class="wd-label" for="testParameterValueInput">قيمة اختبار للمعامل @@p0</label>
+                        <input id="testParameterValueInput" class="wd-input" type="text" placeholder="مثال: Riyadh" />
+                    </div>
+                </div>
+                <div id="testQueryArea">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <button class="wd-btn--test" onclick="testQuery()" id="testQueryBtn">▶ اختبار الاستعلام</button>
+                    </div>
+                    <div id="testSpinner" class="wd-skeleton" style="margin-top:6px;display:none;">
+                        <div class="wd-skeleton__row"></div>
+                    </div>
+                    <div id="testPreview" style="margin-top:8px;display:none;"></div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Advanced Settings -->
+            <div id="tab-advanced" class="wd-tab-content">
+                <div class="wd-form-grid wd-form-grid--full">
+                    <div class="wd-field">
+                        <label class="wd-label" for="columnAliasesInput">أسماء الأعمدة العربية (اختياري)</label>
+                        <textarea id="columnAliasesInput" class="wd-textarea" rows="4" placeholder="TYPE_CODE = رمز النوع, TYPE_NAME = اسم النوع" style="direction:ltr;text-align:start;font-family:'Courier New',monospace;min-height:80px;"></textarea>
+                        <small class="wd-field-hint">اكتب اسم العمود الإنجليزي ثم = ثم الاسم العربي. افصل بين الأعمدة بفاصلة.</small>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="wd-actions">
-            <button class="wd-btn" onclick="saveLevel()">حفظ</button>
-            <button class="wd-btn wd-btn--ghost" onclick="closeForm()">إلغاء</button>
+        <div class="wd-form-footer">
+            <button class="wd-btn--primary" onclick="saveLevel()">💾 حفظ</button>
+            <button class="wd-btn--cancel" onclick="closeForm()">إلغاء</button>
         </div>
     </div>
 </div>
@@ -211,6 +385,18 @@
     let currentLevels = [];
     let editingId = null;
     let selectedCardId = null;
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.wd-tab-content').forEach(function(el) {
+            el.classList.remove('wd-tab-content--active');
+        });
+        document.querySelectorAll('.wd-tab-btn').forEach(function(el) {
+            el.classList.remove('wd-tab-btn--active');
+        });
+        document.getElementById(tabId).classList.add('wd-tab-content--active');
+        var btn = document.querySelector('[data-tab="' + tabId + '"]');
+        if (btn) btn.classList.add('wd-tab-btn--active');
+    }
 
     function escapeHtml(text) {
         const div = document.createElement('div');
@@ -331,10 +517,13 @@
         document.getElementById('parameterColumnInput').value = '';
         document.getElementById('labelColumnInput').value = '';
         document.getElementById('requiresParentValueInput').checked = false;
+        document.getElementById('columnAliasesInput').value = '';
         document.getElementById('testParameterValueInput').value = '';
         document.getElementById('testPreview').innerHTML = '';
         document.getElementById('testPreview').style.display = 'none';
         toggleTestParameterInput();
+        // Reset to first tab
+        switchTab('tab-basic');
         document.getElementById('formPanel').hidden = false;
     }
 
@@ -354,10 +543,13 @@
         document.getElementById('parameterColumnInput').value = level.parameterColumn || '';
         document.getElementById('labelColumnInput').value = level.labelColumn || '';
         document.getElementById('requiresParentValueInput').checked = !!level.requiresParentValue;
+        document.getElementById('columnAliasesInput').value = level.columnAliases || '';
         document.getElementById('testParameterValueInput').value = '';
         document.getElementById('testPreview').innerHTML = '';
         document.getElementById('testPreview').style.display = 'none';
         toggleTestParameterInput();
+        // Reset to first tab
+        switchTab('tab-basic');
         document.getElementById('formPanel').hidden = false;
     }
 
@@ -405,6 +597,7 @@
             fd.append('parameterColumn', document.getElementById('parameterColumnInput').value);
             fd.append('labelColumn', document.getElementById('labelColumnInput').value);
             fd.append('requiresParentValue', document.getElementById('requiresParentValueInput').checked);
+            fd.append('columnAliases', document.getElementById('columnAliasesInput').value);
             if (editingId) { fd.append('id', editingId); }
 
             const resp = await fetch('?handler=Save', {

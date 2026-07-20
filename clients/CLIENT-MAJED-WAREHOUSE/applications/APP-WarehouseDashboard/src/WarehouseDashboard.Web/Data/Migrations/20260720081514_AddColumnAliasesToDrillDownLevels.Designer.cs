@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WarehouseDashboard.Web.Data;
 
 #nullable disable
 
-namespace WarehouseDashboard.Web.Migrations
+namespace WarehouseDashboard.Web.Data.Migrations
 {
     [DbContext(typeof(WarehouseDashboardDbContext))]
-    partial class WarehouseDashboardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260720081514_AddColumnAliasesToDrillDownLevels")]
+    partial class AddColumnAliasesToDrillDownLevels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,6 +54,9 @@ namespace WarehouseDashboard.Web.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ColumnAliases")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
@@ -194,7 +200,7 @@ namespace WarehouseDashboard.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
-                        .HasDefaultValue("\U0001F4CA");
+                        .HasDefaultValue("📊");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -423,6 +429,9 @@ namespace WarehouseDashboard.Web.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DashboardId")
+                        .HasDatabaseName("IX_DashboardCards_DashboardId");
+
                     b.HasIndex("IsActive")
                         .HasDatabaseName("IX_DashboardCards_IsActive");
 
@@ -441,6 +450,112 @@ namespace WarehouseDashboard.Web.Migrations
 
                             t.HasCheckConstraint("CK_DashboardCards_RefreshInterval", "RefreshInterval >= 0");
                         });
+                });
+
+            modelBuilder.Entity("WarehouseDashboard.Web.Models.SyncRun", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<double?>("TotalDurationSeconds")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("TotalRecordCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TriggerType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StartTime")
+                        .IsDescending()
+                        .HasDatabaseName("IX_SyncRuns_StartTime");
+
+                    b.ToTable("SyncRuns", (string)null);
+                });
+
+            modelBuilder.Entity("WarehouseDashboard.Web.Models.SyncRunDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Attempts")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<double?>("DurationSeconds")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RowsExtracted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("RowsLoaded")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("SyncMode")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Full");
+
+                    b.Property<int>("SyncRunId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TableMappingId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TargetTable")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SyncRunId")
+                        .HasDatabaseName("IX_SyncRunDetails_SyncRunId");
+
+                    b.HasIndex("TableMappingId");
+
+                    b.ToTable("SyncRunDetails", (string)null);
                 });
 
             modelBuilder.Entity("WarehouseDashboard.Web.Models.SyncSetting", b =>
@@ -589,9 +704,32 @@ namespace WarehouseDashboard.Web.Migrations
                     b.Navigation("Dashboard");
                 });
 
+            modelBuilder.Entity("WarehouseDashboard.Web.Models.SyncRunDetail", b =>
+                {
+                    b.HasOne("WarehouseDashboard.Web.Models.SyncRun", "SyncRun")
+                        .WithMany("Details")
+                        .HasForeignKey("SyncRunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseDashboard.Web.Models.TableMappingConfig", "TableMapping")
+                        .WithMany()
+                        .HasForeignKey("TableMappingId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("SyncRun");
+
+                    b.Navigation("TableMapping");
+                });
+
             modelBuilder.Entity("WarehouseDashboard.Web.Models.DashboardCard", b =>
                 {
                     b.Navigation("DrillDownLevels");
+                });
+
+            modelBuilder.Entity("WarehouseDashboard.Web.Models.SyncRun", b =>
+                {
+                    b.Navigation("Details");
                 });
 
             modelBuilder.Entity("WarehouseDashboard.Web.Models.TableMappingConfig", b =>

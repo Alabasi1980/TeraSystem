@@ -16,6 +16,30 @@
 
 ## Activity Log
 
+## [2026-07-20 06:40] - TASK_DELEGATED_AND_REVIEWED
+
+- Related Task: TASK-CARD-POLISH-001
+- Actor: TeraAgent + ui-designer
+- Summary: Majed approved a focused UI polish for dashboard cards after visual review of the سندات card. Tera delegated implementation to ui-designer with write access limited to `Pages/Index.cshtml` and `wwwroot/css/blue-theme.css`. The task hid public S/M/L resize controls, fixed malformed resize accessibility markup, reduced card-header clutter, and improved composite KPI sparkline/readability polish without changing backend/data/API behavior.
+- Decision / Result: Handback reviewed. `dotnet build` PASS with 0 warnings and 0 errors. HTML contains corrected `role="group" aria-label="تغيير حجم البطاقة" hidden aria-hidden="true"` for resize controls. Webfetch markdown still lists hidden S/M/L because it extracts hidden DOM text, but source markup confirms they are hidden for browser display.
+- Next Action: Majed visually refreshes browser and confirms final card appearance; if screenshot shows remaining polish issues, create a smaller follow-up UI task.
+
+## [2026-07-20 00:00] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-REDESIGN-01 / TASK-CARD-KPI-REDESIGN-01-FIX-01
+- Actor: TeraAgent + ui-designer + engineering-agent-dotnet + Auditor
+- Summary: Redesigned KPI dashboard card as no-scroll professional layout after Majed rejected the previous crowded/scrolling layout. KPI now has hero value, horizontal comparison/totals peer blocks, bottom-docked sparkline, compact max-3-row breakdown, and header drill button. Auditor initially returned CAUTION for unrelated drill-modal regression risk; FIX-01 replaced unsafe inline drill-modal handlers with DOM event listeners and restored Gauge drill rendering through `wdRenderGauge`.
+- Decision / Result: ✅ Accepted after Auditor PASS (`QUAUD-TASK-CARD-KPI-REDESIGN-01-FIX-01-2026-07-20-001.md`). Build PASS reported by implementing agents.
+- Next Action: Majed visually reviews live dashboard card in browser; if appearance still needs tuning, create a focused visual-polish task only.
+
+## [2026-07-19 17:15] - PLAN_UPDATED
+
+- Related Task: N/A (AI Dashboard Assistant planning)
+- Actor: TeraAgent
+- Summary: Updated `AI_DASHBOARD_ASSISTANT_IMPLEMENTATION_PLAN.md` to include the full final general system prompt text and an AI provider configuration section. The plan now states that provider settings and API key are read from appsettings/environment-backed configuration and that the provider/model must remain swappable per client.
+- Decision / Result: Plan improved. No real API key was written. No application code was modified.
+- Next Action: Majed reviews the updated plan before implementation task splitting.
+
 ## [2026-07-19 17:00] - PLAN_CREATED
 
 - Related Task: N/A (AI Dashboard Assistant planning)
@@ -31,6 +55,45 @@
 - Summary: Chart / Table / Gauge card shell polish. Table card now uses CSS classes (zebra striping, hover, empty state, row counter, scrollable). Chart/Gauge cards get accent top border from ColorPalette. Dark mode overrides added to blue-theme.css.
 - Decision / Result: ✅ Accepted (build PASS, all 10 acceptance criteria met)
 - Next Action: Continue with CARD-BUILDER-01 (Builder preview alignment) — the last remaining task.
+
+## [2026-07-19 17:15] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-BUILDER-01
+- Actor: TeraAgent + ui-designer
+- Summary: Builder preview alignment. Replaced Syncfusion (ej.charts.Chart + ej.grids.Grid) with ApexCharts + HTML table. _CardsLayout.cshtml now loads ApexCharts CDN. renderChart() rewritten for Bar/Line/Pie/Gauge. New renderPreviewTable() function for Table cards.
+- Decision / Result: ✅ Accepted (build PASS, all 6 acceptance criteria met)
+- Next Action: All 15 tasks in DASHBOARD_CARD_DESIGN_EXECUTION_PLAN completed (~100%). Ready for Phase 7 closure or new work.
+
+## [2026-07-19 17:30] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-UX-006
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Visual DateFilterMode indicator in card header. Added 4 fields to CardLayoutInfo record (DateFilterMode, FixedStartDate, FixedEndDate, RelativeDays). Updated LINQ Select. Added Razor template rendering for fixed/relative modes. Fixed CSS token (--wd-text-muted → --c-text-muted).
+- Decision / Result: ✅ Accepted (build PASS, all 5 acceptance criteria met)
+- Next Action: All 18 Card Design Execution tasks now COMPLETE.
+
+## [2026-07-20 11:00] - ENHANCEMENT_COMPLETED
+
+- Related Task: TASK-CARD-KPI-REDESIGN-01 / TASK-CARD-KPI-REDESIGN-01-FIX-01
+- Actor: TeraAgent + ui-designer + engineering-agent-dotnet + Auditor
+- Summary: KPI dashboard card redesigned as no-scroll layout. Hero value, horizontal metrics, bottom-docked sparkline, compact 3-row breakdown, header drill button. Auditor CAUTION fixed via DOM event listeners.
+- Decision / Result: ✅ Accepted (Auditor PASS after FIX-01)
+
+## [2026-07-20 12:00] - ENHANCEMENT_COMPLETED
+
+- Related Task: TASK-SYNC-LOG-01 / TASK-SYNC-LOG-01-FIX / TASK-SYNC-LOG-02
+- Actor: TeraAgent + engineering-agent-dotnet + ui-designer
+- Summary: Persistent sync logging system complete. Created SyncRun + SyncRunDetail entities, DbContext, and manual migration for two new DB tables. Updated SyncEngineService to write per-cycle + per-mapping logs to DB instead of in-memory ring buffer. Updated SyncController to read logs from DB with new /api/sync/logs/{runId} detail endpoint. Redesigned SyncLogs page as rich expandable-card layout with filtering, auto-refresh, search, and error highlighting.
+- Decision / Result: ✅ Accepted (all builds PASS)
+- Next Action: Majed tests sync page in browser. Run a sync cycle first to populate data.
+
+## [2026-07-19 16:45] - TASK_ACCEPTED
+
+- Related Task: TASK-DRILL-MODAL-001
+- Actor: TeraAgent + general-agent
+- Summary: Phase C complete — Refactored drill modal state machine in Index.cshtml. Replaced old `wdOpenDrill` (used API /api/dashboard/drill/{id}) with new `__drillState`-based system using `/api/dashboard/drill/{cardId}/{level}?parentValue=...`. Added: wdLoadLevel, wdRenderLevel (Table/Chart/KPI routing), wdSelectRow (row selection with parameterColumn), wdNavigateToLevel (level navigation), wdRenderBreadcrumb (dynamic with clickable history), wdRenderFooter (next/prev buttons, "آخر مستوى" badge, hints). All 21 AC met. Build: 0 errors, 0 warnings.
+- Decision / Result: Task ACCEPTED. Modal state machine ready for entry point (TASK-DRILL-ENTRY-001).
+- Next Action: Proceed with TASK-DRILL-ENTRY-001 (Add "تفاصيل" button to dashboard cards) + commit.
 
 ## [2026-07-19 16:15] - TASK_ACCEPTED
 
@@ -973,3 +1036,35 @@
 - Summary: ui-designer implemented a stronger interactive area sparkline with gradient, endpoint marker, hover markers, RTL tooltip showing month/value/delta, and insufficient-data state. Tera build verification passed. Auditor report `QUAUD-TASK-CARD-KPI-02-2026-07-19-001.md` returned PARTIAL / NEEDS_FIX.
 - Decision / Result: Governance CAUTION for out-of-target `design-source/REFERENCES.md` accepted/waived by Tera as documentation-only research artifact. Technical FLAG requires small fix: explicitly clean/destroy old sparkline chart instance during rerender or insufficient-data state.
 - Next Action: Return KPI-02 to ui-designer for chart registry cleanup, then re-audit.
+
+## [2026-07-20 18:30] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-LAYOUT-RESPONSIVE-001
+- Actor: TeraAgent → UI Designer
+- Summary: إعادة تصميم تخطيط بطاقة KPI لتكون متجاوبة مع حجم البطاقة S/M/L. المحتوى الرئيسي على اليمين، أعلى التصنيفات على اليسار، Sparkline في الأسفل بارتفاع صغير. العناصر تتفاعل مع تغيير الحجم.
+- Decision / Result: ✅ Accepted. Post-Execution Gate PASS. Fix: أضاف TeraAgent @keyframes التي فُقدت أثناء الاستبدال.
+- Next Action: —
+
+## [2026-07-20 20:10] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-ADAPTIVE-SHELL-001
+- Actor: TeraAgent → ui-designer
+- Summary: Adaptive KPI Shell — إزالة فراغ الوسط في الحجم المتوسط وتكدس الحجم الصغير عبر كتلة متماسكة + container queries + wdSyncKpiDensity عند S/M/L.
+- Decision / Result: ✅ Accepted. Post-Execution Gate PASS. Build succeeded.
+- Next Action: Hard refresh من العميل للتحقق البصري النهائي.
+
+## [2026-07-20 21:30] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-MOCKUP-001
+- Actor: TeraAgent → ui-designer
+- Summary: تنفيذ mockup العميل لبطاقة KPI — صندوق أعلى التصنيفات (٪|قيمة|كود ذهبي)، رقم + شارة تحت، مجاميع، سبارك ذهبي بنقاط، كثافة S/M/L.
+- Decision / Result: ✅ Accepted. Post-Execution PASS. Build succeeded. REFERENCES.md = approved deviation.
+- Next Action: Hard refresh + مراجعة بصرية من Majed.
+
+## [2026-07-20 22:00] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-SPARK-TOOLTIP-001
+- Actor: TeraAgent → ui-designer
+- Summary: إصلاح tooltip السبارك — فصل الأرقام LTR عن العربية، CSS واضح، إزالة إطار Apex الأزرق.
+- Decision / Result: ✅ Accepted. Build succeeded.
+- Next Action: Hard refresh للتحقق من hover.

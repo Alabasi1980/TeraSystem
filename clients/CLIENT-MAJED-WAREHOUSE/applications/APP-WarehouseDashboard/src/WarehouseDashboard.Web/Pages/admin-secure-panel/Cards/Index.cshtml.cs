@@ -23,6 +23,9 @@ public class IndexModel : PageModel
     /// <summary>Lightweight projection sent to the grid (avoids serializing nav props).</summary>
     public List<CardRow> Cards { get; set; } = new();
 
+    /// <summary>Card ID → number of configured Drill Down levels.</summary>
+    public Dictionary<int, int> CardDrillLevelCounts { get; set; } = new();
+
     public string? ToastMessage { get; set; }
     public string? ToastType { get; set; }
 
@@ -36,6 +39,13 @@ public class IndexModel : PageModel
                 c.IsActive, c.ColorPalette, c.GridWidth, c.GridHeight,
                 c.RefreshInterval, c.DateFilterMode ?? "dashboard", c.KpiMode ?? "simple"))
             .ToListAsync();
+
+        // Load Drill Down level counts per card
+        var cardIds = Cards.Select(c => c.Id).ToList();
+        CardDrillLevelCounts = await _db.CardDrillDownLevels
+            .Where(d => cardIds.Contains(d.ParentCardId))
+            .GroupBy(d => d.ParentCardId)
+            .ToDictionaryAsync(g => g.Key, g => g.Count());
 
         if (TempData["ToastMessage"] is string message)
         {

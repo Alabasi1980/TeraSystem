@@ -94,7 +94,7 @@
 | TASK-CARD-FIX-003 | Cache-busting with asp-append-version | engineering-agent-dotnet | ✅ Accepted | CARD-FIX | 2026-07-19 |
 | TASK-CARD-FIX-004 | Fix Custom Date Filter (dateFrom/dateTo) | engineering-agent-dotnet | ✅ Accepted | CARD-FIX | 2026-07-19 |
 | TASK-CARD-BEH-004 | DateFilterMode: Fixed and Relative Modes | engineering-agent-dotnet | ✅ Accepted | CARD-B | 2026-07-19 |
-| TASK-CARD-UX-006 | Visual DateFilterMode Indicator in Card Header | ui-designer | 🟡 Assigned | CARD-A | 2026-07-19 |
+| TASK-CARD-UX-006 | Visual DateFilterMode Indicator in Card Header | engineering-agent-dotnet | ✅ Accepted (build PASS) | CARD-A | 2026-07-19 |
 | TASK-CARD-KPI-01 | Improve KPI Change Presentation (value size + change badge + comparison text) | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-C | 2026-07-19 |
 | TASK-CARD-KPI-01-FIX-01 | Fix Missing KPI Change Percentage | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-C-FIX | 2026-07-19 |
 | TASK-CARD-KPI-02 | Improve Sparkline Rendering (height + gradient + endpoint dot + tooltip) | ui-designer | ✅ Accepted (Auditor PASS after cleanup fix) | CARD-C | 2026-07-19 |
@@ -102,6 +102,9 @@
 | TASK-CARD-KPI-04 | CategoryColumn Breakdown Table (Top 5) | engineering-agent-dotnet | ✅ Accepted (Auditor PASS after escHtml fix) | CARD-C | 2026-07-19 |
 | TASK-CARD-KPI-05 | GrandTotalSource: All-Time + Year-to-Date | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-C | 2026-07-19 |
 | TASK-CARD-UX-05 | Chart / Table / Gauge Card Shell Polish | ui-designer | ✅ Accepted (build PASS) | CARD-A | 2026-07-19 |
+| TASK-CARD-BUILDER-01 | Builder Preview Alignment (ApexCharts + HTML Table) | ui-designer | ✅ Accepted (build PASS) | CARD-D | 2026-07-19 |
+| TASK-CARD-KPI-REDESIGN-01 | No-scroll professional KPI dashboard card layout | ui-designer | ✅ Accepted (Auditor PASS after FIX-01) | CARD-FIX | 2026-07-19 |
+| TASK-CARD-KPI-REDESIGN-01-FIX-01 | Drill modal regression fix after KPI redesign | engineering-agent-dotnet | ✅ Accepted (Auditor PASS) | CARD-FIX | 2026-07-19 |
 
 ---
 
@@ -116,6 +119,16 @@
 | TASK-ORALAB-005 | Syntax Highlighting + Line Numbers (CodeMirror) | engineering-agent-dotnet | ✅ Accepted (build PASS) | ORALAB-P2 | 2026-07-19 |
 
 **All 5 OracleQueryLab tasks COMPLETE ✅**
+
+---
+
+## Sync Log Enhancement (TASK-SYNC-LOG)
+
+| TASK-ID | Description | Assigned Agent | Status | Created |
+|---|---|---|---|---|
+| TASK-SYNC-LOG-01 | Backend: Entities + Migration + DbContext | engineering-agent-dotnet | ✅ Accepted (جزئي) | 2026-07-20 |
+| TASK-SYNC-LOG-01-FIX | API: SyncEngine DB writing + Controller DB reading | engineering-agent-dotnet | ✅ Accepted (build PASS) | 2026-07-20 |
+| TASK-SYNC-LOG-02 | Frontend: Rich advanced SyncLogs page redesign | ui-designer | ✅ Accepted (build PASS) | 2026-07-20 |
 
 ---
 

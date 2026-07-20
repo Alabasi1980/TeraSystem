@@ -180,6 +180,13 @@
     }
     .status-badge--on { background: rgba(30, 158, 106, 0.10); color: var(--c-success); }
     .status-badge--off { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
+    .drill-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 3px 10px; border-radius: var(--radius-full);
+        font-size: 12px; font-weight: 700; white-space: nowrap;
+    }
+    .drill-badge--has { background: rgba(59, 130, 246, 0.12); color: #2563EB; }
+    .drill-badge--none { background: rgba(107, 114, 128, 0.10); color: #6B7280; }
     .status-badge::before {
         content: '';
         width: 7px; height: 7px;
@@ -366,10 +373,19 @@ else
                     <span class="meta-item">⏱️ @GetRefreshText(c.RefreshInterval)</span>
                     <span class="meta-item">📐 @c.GridWidth×@c.GridHeight</span>
                     <span class="meta-item">📅 @GetDateFilterText(c.DateFilterMode)</span>
+                    @if (Model.CardDrillLevelCounts.TryGetValue(c.Id, out var drillCount))
+                    {
+                        <span class="drill-badge drill-badge--has">🔽 @drillCount مستويات Drill</span>
+                    }
+                    else
+                    {
+                        <span class="drill-badge drill-badge--none">🔽 لا توجد مستويات Drill</span>
+                    }
                 </div>
                 <div class="admin-card__actions">
                     <a href="/admin-secure-panel/Cards/Builder?edit=@c.Id" class="wd-btn wd-btn--ghost wd-btn--sm">تعديل</a>
                     <a href="/admin-secure-panel/Cards/Builder?clone=@c.Id" class="wd-btn wd-btn--ghost wd-btn--sm">نسخ</a>
+                    <a href="/admin-secure-panel/DrillDown?cardId=@c.Id" class="wd-btn wd-btn--ghost wd-btn--sm">تكوين Drill</a>
                     <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm wd-btn--danger" onclick="wdConfirmDelete(@c.Id)">حذف</button>
                 </div>
             </div>

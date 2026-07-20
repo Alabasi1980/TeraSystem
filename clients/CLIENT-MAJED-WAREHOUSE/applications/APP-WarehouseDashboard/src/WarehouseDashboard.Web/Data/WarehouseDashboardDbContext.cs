@@ -22,6 +22,8 @@ public class WarehouseDashboardDbContext : DbContext
     public DbSet<AdminPassword> AdminPasswords => Set<AdminPassword>();
     public DbSet<TableMappingConfig> TableMappings => Set<TableMappingConfig>();
     public DbSet<ColumnMapping> ColumnMappings => Set<ColumnMapping>();
+    public DbSet<SyncRun> SyncRuns => Set<SyncRun>();
+    public DbSet<SyncRunDetail> SyncRunDetails => Set<SyncRunDetail>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -277,6 +279,10 @@ public class WarehouseDashboardDbContext : DbContext
                 .HasMaxLength(100)
                 .IsRequired(false);
 
+            entity.Property(e => e.ColumnAliases)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
             entity.Property(e => e.RequiresParentValue)
                 .IsRequired()
                 .HasDefaultValue(false);
@@ -461,6 +467,119 @@ public class WarehouseDashboardDbContext : DbContext
             entity.HasIndex(e => new { e.TableMappingConfigId, e.OracleColumnName })
                 .IsUnique()
                 .HasDatabaseName("IX_ColumnMappings_TableMappingConfigId_OracleColumnName");
+        });
+
+        // -------------------------------------------------------------------
+        // SyncRuns (TASK-SYNC-LOG-01) — persistent sync cycle log
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<SyncRun>(entity =>
+        {
+            entity.ToTable("SyncRuns");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.StartTime)
+                .IsRequired()
+                .HasColumnType("datetime2");
+
+            entity.Property(e => e.EndTime)
+                .HasColumnType("datetime2")
+                .IsRequired(false);
+
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)");
+
+            entity.Property(e => e.TriggerType)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)");
+
+            entity.Property(e => e.TotalRecordCount)
+                .IsRequired(false);
+
+            entity.Property(e => e.TotalDurationSeconds)
+                .HasColumnType("float")
+                .IsRequired(false);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            // Index: list runs newest-first
+            entity.HasIndex(e => e.StartTime)
+                .IsDescending()
+                .HasDatabaseName("IX_SyncRuns_StartTime");
+        });
+
+        // -------------------------------------------------------------------
+        // SyncRunDetails (TASK-SYNC-LOG-01) — per-mapping detail within a run
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<SyncRunDetail>(entity =>
+        {
+            entity.ToTable("SyncRunDetails");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.SyncRunId)
+                .IsRequired();
+
+            entity.Property(e => e.TableMappingId)
+                .IsRequired(false);
+
+            entity.Property(e => e.TargetTable)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.SyncMode)
+                .IsRequired()
+                .HasColumnType("nvarchar(20)")
+                .HasDefaultValue("Full");
+
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)");
+
+            entity.Property(e => e.RowsExtracted)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            entity.Property(e => e.RowsLoaded)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            entity.Property(e => e.Attempts)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            entity.Property(e => e.DurationSeconds)
+                .HasColumnType("float")
+                .IsRequired(false);
+
+            entity.Property(e => e.ErrorMessage)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            // FK → SyncRuns (CASCADE delete)
+            entity.HasOne(e => e.SyncRun)
+                .WithMany(s => s.Details)
+                .HasForeignKey(e => e.SyncRunId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // FK → TableMappings (SET NULL on delete to preserve historical data)
+            entity.HasOne(e => e.TableMapping)
+                .WithMany()
+                .HasForeignKey(e => e.TableMappingId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Index for detail lookups by parent run
+            entity.HasIndex(e => e.SyncRunId)
+                .HasDatabaseName("IX_SyncRunDetails_SyncRunId");
         });
     }
 }

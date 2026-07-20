@@ -47,6 +47,9 @@ public class MappingSyncResult
     /// <summary>Number of rows loaded for this mapping (0 on failure).</summary>
     public int Rows { get; set; }
 
+    /// <summary>Duration of the mapping sync in seconds (null if not measured).</summary>
+    public double? DurationSeconds { get; set; }
+
     /// <summary>Populated only when <see cref="Status"/> is <c>"failed"</c>.</summary>
     public string? Error { get; set; }
 }

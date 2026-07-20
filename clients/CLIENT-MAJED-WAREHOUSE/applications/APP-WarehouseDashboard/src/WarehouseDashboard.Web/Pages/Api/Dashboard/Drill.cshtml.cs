@@ -92,6 +92,7 @@ public class DrillModel : PageModel
             ChartType = config.TargetChartType,
             ParameterColumn = config.ParameterColumn,
             LabelColumn = config.LabelColumn,
+            ColumnAliases = config.ColumnAliases,
             HasNextLevel = hasNext,
             NextRequiresParentValue = nextLevel?.RequiresParentValue ?? false,
             Status = "error"
@@ -163,6 +164,33 @@ public class DrillModel : PageModel
                     result.Status = "error";
                     result.ErrorMessage = $"عمود التسمية المحدد '{config.LabelColumn}' غير موجود في نتيجة الاستعلام. الأعمدة المتاحة: {string.Join(", ", columns)}";
                     return Json(result);
+                }
+            }
+
+            // Apply column aliases if configured (after validation so original names are used for checks)
+            if (!string.IsNullOrWhiteSpace(config.ColumnAliases))
+            {
+                var aliasPairs = config.ColumnAliases.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                foreach (var pair in aliasPairs)
+                {
+                    var eqIndex = pair.IndexOf('=');
+                    if (eqIndex > 0)
+                    {
+                        var colName = pair[..eqIndex].Trim();
+                        var alias = pair[(eqIndex + 1)..].Trim();
+                        if (!string.IsNullOrWhiteSpace(colName) && !string.IsNullOrWhiteSpace(alias))
+                        {
+                            // Find matching column (case-insensitive) and replace it
+                            for (var i = 0; i < result.Columns.Count; i++)
+                            {
+                                if (string.Equals(result.Columns[i], colName, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    result.Columns[i] = alias;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
 

@@ -126,271 +126,542 @@
     .wd-toast--info { border-inline-start-color: var(--c-info); }
     .wd-toast--info .wd-toast__icon { background: var(--c-info); }
 
-    /* ===== Advanced KPI Styles (TASK-KPI-005) ===== */
+    /* ===== KPI Mockup Shell (TASK-CARD-KPI-MOCKUP-001) ===== */
+    /* يمين: رقم + شارة تحت + مجاميع | يسار: أعلى التصنيفات | أسفل: سبارك ذهبي */
+
     .wd-kpi {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
         height: 100%;
-        gap: var(--sp-2);
-        padding: var(--sp-3);
+        min-height: 0;
+        padding: 12px 14px;
+        direction: rtl;
+        overflow: hidden;
+        container-type: size;
+        container-name: kpi;
+        box-sizing: border-box;
+    }
+
+    /* كتلة تملأ الجسم: صف علوي يتمدد + سبارك مثبت أسفل */
+    .wd-kpi__cluster {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        gap: 10px;
+        min-width: 0;
+        min-height: 0;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* DOM: main أولاً (يمين في RTL) ثم categories (يسار) */
+    .wd-kpi__row {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(160px, 0.95fr);
+        gap: 12px 14px;
+        align-items: center;
+        flex: 1 1 auto;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .wd-kpi__main {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        min-width: 0;
+        text-align: start;
+    }
+
+    .wd-kpi__hero {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        animation: wdKpiHeroIn var(--dur-norm) var(--ease) both;
     }
 
     .wd-kpi__value {
-        font-size: 48px;
-        font-weight: 700;
+        font-weight: 800;
         color: var(--c-text);
-        line-height: 1.05;
+        line-height: 0.95;
         font-variant-numeric: tabular-nums;
         font-feature-settings: "tnum" 1;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        letter-spacing: -0.03em;
+        font-size: clamp(36px, 12cqi, 64px);
     }
 
-    .wd-kpi__label {
-        font-size: 13px;
+    /* Size class = secondary hint (grid width); container queries drive density */
+    .wd-kpi--size-small .wd-kpi__value { font-size: clamp(22px, 10cqi, 32px); line-height: 1; }
+    .wd-kpi--size-medium .wd-kpi__value { font-size: clamp(34px, 11cqi, 52px); }
+    .wd-kpi--size-large .wd-kpi__value { font-size: clamp(40px, 12cqi, 64px); }
+
+    .wd-kpi__details {
+        font-size: 12px;
         color: var(--c-text-muted);
-        font-weight: 500;
     }
 
-    /* Change badge */
+    /* شارة التغيير — تحت الرقم، pill هادئ (primary-tinted) مع لمسة up/down */
     .wd-kpi__change {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
+        gap: 4px;
+        padding: 3px 10px;
         border-radius: var(--radius-full);
-        font-size: 16px;
-        font-weight: 600;
-        line-height: 1;
-        font-variant-numeric: tabular-nums;
-        font-feature-settings: "tnum" 1;
-        border: 1px solid currentColor;
-        transform: translateY(0);
-        transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.2;
+        border: 1px solid color-mix(in srgb, var(--c-primary) 22%, var(--c-border));
+        background: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
+        color: var(--c-primary);
+        flex-shrink: 0;
         animation: wdKpiBadgeIn var(--dur-norm) var(--ease) both;
     }
-
-    .wd-kpi__change:hover {
-        transform: translateY(-1px);
-    }
-
-    .wd-kpi__change svg {
-        width: 16px;
-        height: 16px;
-        flex: 0 0 auto;
-    }
-
+    .wd-kpi__change svg { width: 12px; height: 12px; }
     .wd-kpi__change--up {
-        background: var(--c-surface-muted);
-        background: color-mix(in srgb, var(--c-success) 12%, transparent);
-        color: var(--c-success);
+        background: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
+        color: color-mix(in srgb, var(--c-success) 55%, var(--c-primary));
+        border-color: color-mix(in srgb, var(--c-primary) 20%, var(--c-border));
     }
-
     .wd-kpi__change--down {
-        background: var(--c-surface-muted);
-        background: color-mix(in srgb, var(--c-error) 12%, transparent);
-        color: var(--c-error);
+        background: color-mix(in srgb, var(--c-error) 8%, var(--c-surface));
+        color: color-mix(in srgb, var(--c-error) 70%, var(--c-primary));
+        border-color: color-mix(in srgb, var(--c-error) 18%, var(--c-border));
     }
-
     .wd-kpi__change--flat {
-        background: var(--c-surface-muted);
+        background: color-mix(in srgb, var(--c-primary) 8%, var(--c-surface));
         color: var(--c-text-muted);
+        border-color: color-mix(in srgb, var(--c-primary) 16%, var(--c-border));
     }
-
     .wd-kpi__change-missing {
-        font-size: 13px;
+        font-size: 12px;
         color: var(--c-text-muted);
-        font-weight: 500;
+        font-weight: 600;
     }
-
     .wd-kpi__compare {
-        font-size: 13px;
+        font-size: 11px;
         color: var(--c-text-muted);
-        font-weight: 500;
-        margin-top: 2px;
+        margin-top: 0;
     }
 
+    /* صندوق أعلى التصنيفات — لوحة بحدود ناعمة */
+    .wd-kpi__categories {
+        min-width: 0;
+        max-width: none;
+        border: 1px solid var(--c-border);
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: var(--c-surface);
+        align-self: stretch;
+        box-sizing: border-box;
+    }
+    .wd-kpi__categories[hidden],
+    .wd-kpi__categories.is-empty {
+        display: none !important;
+    }
+    /* When categories panel is empty/hidden, main takes full row width */
+    .wd-kpi__row:has(.wd-kpi__categories[hidden]),
+    .wd-kpi__row:has(.wd-kpi__categories.is-empty) {
+        grid-template-columns: 1fr;
+    }
+    .wd-kpi-breakdown {
+        min-width: 0;
+    }
+    .wd-kpi-breakdown__title {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--c-text-muted);
+        margin: 0 0 8px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--c-border);
+        text-align: center;
+        white-space: nowrap;
+    }
+    /* LTR columns so visual order matches mockup: % | value | code */
+    .wd-kpi-breakdown__table {
+        width: 100%;
+        border-collapse: collapse;
+        direction: ltr;
+        table-layout: fixed;
+    }
+    .wd-kpi-breakdown__table td {
+        font-size: 11px;
+        padding: 3px 2px;
+        white-space: nowrap;
+        line-height: 1.4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+    .wd-kpi-breakdown__pct {
+        width: 28%;
+        text-align: start;
+        color: var(--c-text-muted);
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .wd-kpi-breakdown__val {
+        width: 40%;
+        text-align: center;
+        font-weight: 700;
+        color: var(--c-text);
+        font-variant-numeric: tabular-nums;
+        padding-inline: 4px;
+    }
+    .wd-kpi-breakdown__code {
+        width: 32%;
+        text-align: end;
+        font-weight: 700;
+        color: var(--c-warning, #E0A106);
+        font-variant-numeric: tabular-nums;
+    }
+    /* Legacy class kept for safety */
+    .wd-kpi-breakdown__cat { font-weight: 600; color: var(--c-text); }
+
+    /* Default Large: up to 5 category rows */
+    .wd-kpi-breakdown__table tr:nth-child(n+6) { display: none; }
+
+    .wd-kpi__grandtotal {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        min-width: 0;
+    }
+    .wd-kpi-grandtotal__row {
+        font-size: 12px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: baseline;
+        gap: 8px;
+        flex-wrap: wrap;
+        direction: rtl;
+    }
+    /* Mockup: value bold first, then muted label */
+    .wd-kpi-grandtotal__value {
+        font-weight: 800;
+        color: var(--c-text);
+        font-variant-numeric: tabular-nums;
+        order: 0;
+    }
+    .wd-kpi-grandtotal__label {
+        color: var(--c-text-muted);
+        font-weight: 500;
+        order: 1;
+    }
+
+    /* Sparkline full-width under cluster */
+    .wd-kpi__sparkline-section {
+        flex: 0 0 auto;
+        min-width: 0;
+        width: 100%;
+        margin-top: 0;
+    }
+    .wd-kpi__sparkline {
+        width: 100%;
+        height: 56px;
+        min-height: 40px;
+        max-height: 72px;
+        position: relative;
+        direction: ltr;
+        border-radius: var(--radius-sm);
+        /* visible so custom spark tooltip is not clipped */
+        overflow: visible;
+        animation: wdSparklineIn var(--dur-norm) var(--ease) both;
+    }
+    .wd-kpi--size-small .wd-kpi__sparkline { height: 38px; max-height: 40px; min-height: 32px; }
+    .wd-kpi--size-medium .wd-kpi__sparkline { height: 56px; max-height: 56px; }
+    .wd-kpi--size-large .wd-kpi__sparkline { height: 68px; max-height: 72px; }
+    .wd-kpi__sparkline-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: var(--c-text-muted);
+        height: 100%;
+    }
+    .wd-kpi__sparkline .apexcharts-canvas,
+    .wd-kpi__sparkline svg {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Sparkline hover tooltip (TASK-CARD-KPI-SPARK-TOOLTIP-001) */
+    .wd-spark-tooltip {
+        direction: rtl;
+        text-align: start;
+        min-width: 120px;
+        max-width: 220px;
+        padding: 8px 10px;
+        background: var(--c-surface, #fff);
+        color: var(--c-text);
+        border: 1px solid var(--c-border);
+        border-radius: 10px;
+        box-shadow: var(--shadow-md, 0 4px 12px rgba(10,37,64,.12));
+        font-family: var(--font-ar), Cairo, Tahoma, sans-serif;
+        line-height: 1.35;
+        white-space: normal;
+        pointer-events: none;
+        z-index: 50;
+    }
+    .wd-spark-tooltip__month {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--c-text-muted);
+        margin-bottom: 2px;
+    }
+    .wd-spark-tooltip__value {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--c-text);
+        font-variant-numeric: tabular-nums;
+        direction: ltr;
+        unicode-bidi: isolate;
+        text-align: start;
+        margin: 2px 0 4px;
+    }
+    .wd-spark-tooltip__delta {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--c-text-muted);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 4px;
+    }
+    .wd-spark-tooltip__delta-num {
+        direction: ltr;
+        unicode-bidi: isolate;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+    .wd-spark-tooltip__delta--up .wd-spark-tooltip__delta-num { color: var(--c-success); }
+    .wd-spark-tooltip__delta--down .wd-spark-tooltip__delta-num { color: var(--c-error); }
+    .wd-spark-tooltip__delta--flat .wd-spark-tooltip__delta-num { color: var(--c-text-muted); }
+
+    /* Kill Apex default tooltip chrome that creates ugly blue boxes */
+    .apexcharts-tooltip {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+    .apexcharts-tooltip.apexcharts-active {
+        overflow: visible !important;
+    }
+
+    .wd-kpi__label {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        font-weight: 500;
+    }
+
+    /* Size-class secondary density (fallback before/without CQ support) */
+    /* ===== SMALL ONLY (TASK-CARD-KPI-SMALL-001): value → change → totals → spark, no overlap ===== */
+    .wd-kpi--size-small .wd-kpi__categories { display: none !important; }
+    .wd-kpi--size-small .wd-kpi__cluster {
+        justify-content: flex-start;
+        gap: 8px;
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+    .wd-kpi--size-small .wd-kpi__row {
+        display: flex;
+        flex-direction: column;
+        flex: 0 1 auto; /* NOT flex:1 grow — avoids value colliding with spark */
+        align-items: stretch;
+        gap: 4px;
+        min-height: 0;
+        grid-template-columns: 1fr;
+    }
+    .wd-kpi--size-small .wd-kpi__main {
+        flex: 0 1 auto;
+        width: 100%;
+        gap: 4px;
+        min-height: 0;
+        overflow: hidden;
+    }
+    .wd-kpi--size-small .wd-kpi__hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    .wd-kpi--size-small .wd-kpi__change {
+        display: inline-flex;
+        font-size: 11px;
+        padding: 2px 8px;
+    }
+    .wd-kpi--size-small .wd-kpi__change-missing {
+        display: inline-block;
+        font-size: 11px;
+    }
+    /* SHOW grand totals on small — do not hide */
+    .wd-kpi--size-small .wd-kpi__grandtotal,
+    .wd-kpi--size-small .wd-kpi__details {
+        display: flex !important;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .wd-kpi--size-small .wd-kpi-grandtotal__row {
+        font-size: 10px;
+        line-height: 1.25;
+        gap: 6px;
+    }
+    .wd-kpi--size-small .wd-kpi-grandtotal__row:nth-child(n+3) { display: none; }
+    .wd-kpi--size-small .wd-kpi__sparkline-section {
+        margin-top: auto; /* pin spark under main without overlap */
+        flex: 0 0 auto;
+        flex-shrink: 0;
+        width: 100%;
+    }
+    .wd-kpi--size-small .wd-kpi__sparkline {
+        height: 38px;
+        max-height: 40px;
+        min-height: 32px;
+    }
+
+    /* M: 3–4 category rows */
+    .wd-kpi--size-medium .wd-kpi-breakdown__table tr:nth-child(n+4) { display: none; }
+    /* L: 5 rows (default rule above) */
+    .wd-kpi--size-large .wd-kpi-breakdown__table tr:nth-child(-n+5) { display: table-row; }
+    .wd-kpi--size-large .wd-kpi-breakdown__table tr:nth-child(n+6) { display: none; }
+
+    /* ===== Container queries — real density driver ===== */
+    /* compact width/height: categories off; keep value + change + totals + spark */
+    @@container kpi (max-width: 280px) or (max-height: 160px) {
+        .wd-kpi__categories { display: none !important; }
+        .wd-kpi__row { grid-template-columns: 1fr; gap: 4px; }
+        .wd-kpi__value { font-size: clamp(22px, 12cqi, 34px); line-height: 1; }
+        .wd-kpi__change { display: inline-flex; font-size: 10px; padding: 2px 7px; }
+        .wd-kpi__sparkline { height: 38px; max-height: 40px; }
+        .wd-kpi__cluster { gap: 6px; justify-content: flex-start; }
+        .wd-kpi__main { gap: 4px; flex: 0 1 auto; min-height: 0; overflow: hidden; }
+        .wd-kpi__grandtotal,
+        .wd-kpi__details {
+            display: flex !important;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .wd-kpi-grandtotal__row { font-size: 10px; line-height: 1.25; }
+        .wd-kpi-grandtotal__row:nth-child(n+3) { display: none; }
+        .wd-kpi__sparkline-section { margin-top: auto; flex: 0 0 auto; flex-shrink: 0; }
+    }
+
+    /* very short: thinner spark; still keep change; hide totals only at extreme height below */
+    @@container kpi (max-height: 130px) {
+        .wd-kpi__sparkline { height: 32px; max-height: 34px; }
+        .wd-kpi__cluster { gap: 4px; }
+        .wd-kpi__hero { gap: 3px; }
+        .wd-kpi__value { font-size: clamp(20px, 11cqi, 28px); }
+        .wd-kpi-grandtotal__row:nth-child(n+2) { display: none; }
+    }
+
+    /* M width: medium spark + 3 category rows */
+    @@container kpi (min-width: 281px) and (max-width: 420px) {
+        .wd-kpi__sparkline { height: 52px; max-height: 56px; }
+        .wd-kpi-breakdown__table tr:nth-child(n+4) { display: none; }
+        .wd-kpi-breakdown__table tr:nth-child(-n+3) { display: table-row; }
+        .wd-kpi__row { grid-template-columns: minmax(0, 1.1fr) minmax(140px, 0.9fr); }
+    }
+
+    /* narrow: hide categories */
+    @@container kpi (max-width: 360px) {
+        .wd-kpi__categories { display: none !important; }
+        .wd-kpi__row { grid-template-columns: 1fr; }
+    }
+
+    /* comfortable M/L: 3–4 rows + medium-tall spark */
+    @@container kpi (min-width: 421px) and (min-height: 200px) {
+        .wd-kpi__sparkline { height: 56px; max-height: 64px; }
+        .wd-kpi-breakdown__table tr:nth-child(n+5) { display: none; }
+        .wd-kpi-breakdown__table tr:nth-child(-n+4) { display: table-row; }
+    }
+
+    /* Large roomy: 5 rows + taller spark */
+    @@container kpi (min-width: 520px) and (min-height: 240px) {
+        .wd-kpi__sparkline { height: 68px; max-height: 72px; }
+        .wd-kpi-breakdown__table tr:nth-child(-n+5) { display: table-row; }
+        .wd-kpi-breakdown__table tr:nth-child(n+6) { display: none; }
+        .wd-kpi__value { font-size: clamp(40px, 12cqi, 64px); }
+        .wd-kpi__row { grid-template-columns: minmax(0, 1.15fr) minmax(180px, 0.95fr); }
+    }
+
+    /* short but wide: categories off if height tight */
+    @@container kpi (max-height: 180px) {
+        .wd-kpi__categories { display: none !important; }
+        .wd-kpi__row { grid-template-columns: 1fr; }
+    }
+
+    @@container kpi (max-height: 200px) {
+        .wd-kpi-grandtotal__row:nth-child(n+3) { display: none; }
+    }
+
+    /* extreme short only — hide totals when card is too tiny for them */
+    @@container kpi (max-height: 110px) {
+        .wd-kpi__details,
+        .wd-kpi__grandtotal { display: none !important; }
+    }
+
+    /* Small size wins over generic CQ that would re-hide totals on typical short S cards */
+    .wd-kpi--size-small .wd-kpi__grandtotal,
+    .wd-kpi--size-small .wd-kpi__details {
+        display: flex !important;
+        flex-direction: column;
+    }
+    .wd-kpi--size-small .wd-kpi__change {
+        display: inline-flex !important;
+    }
+
+    /* ===== KPI Animations ===== */
+    @@keyframes wdKpiHeroIn {
+        from { opacity: 0; transform: translateY(6px) scale(0.985); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
     @@keyframes wdKpiBadgeIn {
         from { opacity: 0; transform: translateY(4px); }
         to { opacity: 1; transform: translateY(0); }
     }
-
-    @@media (max-width: 520px) {
-        .wd-kpi__value { font-size: 40px; }
-        .wd-kpi__change { font-size: 15px; padding: 5px 10px; }
-    }
-
-    /* Sparkline container */
-    .wd-kpi__sparkline {
-        width: 100%;
-        height: clamp(82px, 28%, 96px);
-        min-height: 82px;
-        margin-top: var(--sp-2);
-        position: relative;
-        direction: ltr;
-        border-radius: var(--radius-md);
-        overflow: visible;
-        animation: wdSparklineIn var(--dur-norm) var(--ease) both;
-    }
-
-    .wd-kpi__sparkline .apexcharts-canvas,
-    .wd-kpi__sparkline svg {
-        overflow: visible;
-    }
-
-    .wd-kpi__sparkline-empty {
-        width: 100%;
-        min-height: 76px;
-        margin-top: var(--sp-2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        color: var(--c-text-muted);
-        font-size: 12px;
-        font-weight: 600;
-        background: var(--c-surface-muted);
-        border: 1px dashed var(--c-border);
-        border-radius: var(--radius-md);
-    }
-
-    .wd-spark-tooltip {
-        direction: rtl;
-        min-width: 138px;
-        padding: 10px 12px;
-        border-radius: var(--radius-md);
-        background: var(--c-surface);
-        color: var(--c-text);
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--c-border);
-        font-family: var(--font-ar);
-        animation: wdSparkTooltipIn var(--dur-fast) var(--ease) both;
-    }
-
-    .wd-spark-tooltip__month {
-        color: var(--c-text-muted);
-        font-size: 12px;
-        font-weight: 600;
-        margin-bottom: 4px;
-    }
-
-    .wd-spark-tooltip__value {
-        color: var(--c-text);
-        font-size: 15px;
-        font-weight: 800;
-        font-variant-numeric: tabular-nums;
-    }
-
-    .wd-spark-tooltip__delta {
-        margin-top: 6px;
-        font-size: 12px;
-        font-weight: 700;
-        font-variant-numeric: tabular-nums;
-    }
-
-    .wd-spark-tooltip__delta--up { color: var(--c-success); }
-    .wd-spark-tooltip__delta--down { color: var(--c-error); }
-    .wd-spark-tooltip__delta--flat { color: var(--c-text-muted); }
-
     @@keyframes wdSparklineIn {
-        from { opacity: 0; transform: translateY(6px); }
+        from { opacity: 0; transform: translateY(4px); }
         to { opacity: 1; transform: translateY(0); }
     }
 
-    @@keyframes wdSparkTooltipIn {
-        from { opacity: 0; transform: translateY(3px) scale(0.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* Grand total */
-    .wd-kpi__total {
-        font-size: 12px;
-        color: var(--c-text-muted);
-        font-weight: 500;
-        margin-top: var(--sp-1);
-        padding-top: var(--sp-1);
-        border-top: 1px solid var(--c-border);
-        width: 100%;
-        text-align: center;
-    }
-
-    /* Category Breakdown Table (TASK-CARD-KPI-04) */
-    .wd-kpi-breakdown {
-        margin-top: 8px;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        padding-top: 6px;
-    }
-    .wd-kpi-breakdown__title {
-        font-size: 11px;
-        color: var(--c-text-secondary);
-        text-align: center;
-        margin-bottom: 4px;
-    }
-    .wd-kpi-breakdown__table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 12px;
-    }
-    .wd-kpi-breakdown__table td {
-        padding: 3px 4px;
-    }
-    .wd-kpi-breakdown__cat {
-        font-weight: 500;
-        white-space: nowrap;
-    }
-    .wd-kpi-breakdown__val {
-        text-align: left;
-        font-variant-numeric: tabular-nums;
-    }
-    .wd-kpi-breakdown__pct {
-        text-align: left;
-        color: var(--c-text-secondary);
-        font-size: 11px;
-        min-width: 36px;
-    }
-
-    /* Grand total rows (TASK-CARD-KPI-05) */
-    .wd-kpi-grandtotal {
-        margin-top: 8px;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        padding-top: 6px;
-    }
-    .wd-kpi-grandtotal__row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 12px;
-        padding: 2px 0;
-    }
-    .wd-kpi-grandtotal__label {
-        color: var(--c-text-secondary);
-    }
-    .wd-kpi-grandtotal__value {
-        font-weight: 600;
-        font-variant-numeric: tabular-nums;
-    }
-
-    /* ===== Drillable card affordance (TASK-COD-012) ===== */
+    /* ===== Drillable card affordance (TASK-DRILL-ENTRY-001) ===== */
     .wd-card--drillable { position: relative; }
     .wd-card--drillable:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
     .wd-card--drillable:focus-visible { outline: 2px solid var(--c-secondary); outline-offset: 2px; }
-    .wd-card__drill-hint {
-        position: absolute;
-        inset-inline-end: 12px;
-        bottom: 10px;
-        width: 26px; height: 26px;
-        display: flex; align-items: center; justify-content: center;
+    .wd-card__drill-btn {
+        position: static;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 28px;
+        padding: 4px 10px;
+        border: 1px solid color-mix(in srgb, var(--c-primary) 22%, var(--c-border));
         border-radius: var(--radius-full);
-        background: var(--c-primary);
-        color: #fff;
-        font-size: 18px; font-weight: 700;
-        box-shadow: var(--shadow-sm);
-        opacity: 0;
-        transform: translateX(-4px);
-        transition: opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+        background: color-mix(in srgb, var(--c-primary) 9%, var(--c-surface));
+        color: var(--c-primary);
+        font-family: var(--font-ar);
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: none;
+        opacity: 1;
+        transform: none;
+        transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+        z-index: auto;
+        line-height: 1.3;
+        white-space: nowrap;
     }
-    .wd-card--drillable:hover .wd-card__drill-hint,
-    .wd-card--drillable:focus-visible .wd-card__drill-hint { opacity: 1; transform: translateX(0); }
+    .wd-card__drill-btn:hover { background: var(--c-primary); color: #fff; border-color: var(--c-primary); transform: translateY(-1px); }
+    .wd-card__drill-btn:focus-visible { outline: 2px solid var(--c-secondary); outline-offset: 2px; }
 
     /* ===== Feature: Focus Mode ===== */
     .wd-dashboard--focus .wd-topbar,
@@ -471,7 +742,7 @@
         font-size: 13px;
     }
 
-    /* ===== Drill-down Modal Breadcrumbs (TASK-DASH-004) ===== */
+    /* ===== Drill-down Modal Breadcrumbs (TASK-DRILL-MODAL-REDESIGN-001) ===== */
     .wd-modal__crumb {
         font-size: 13px;
         color: var(--c-text-muted);
@@ -479,25 +750,85 @@
         border: none;
         cursor: default;
         font-family: var(--font-ar);
-        padding: 2px 4px;
+        padding: 4px 8px;
+        border-radius: var(--radius-sm);
+        transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
     }
     .wd-modal__crumb--link {
         color: var(--c-primary);
         cursor: pointer;
-        text-decoration: underline;
-        text-decoration-style: dotted;
+        font-weight: 600;
+        text-decoration: none;
     }
     .wd-modal__crumb--link:hover {
         color: var(--c-primary-strong);
+        background: rgba(31, 78, 121, 0.08);
     }
     .wd-modal__crumb--active {
         color: var(--c-text);
-        font-weight: 600;
+        font-weight: 700;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        box-shadow: var(--shadow-sm);
     }
     .wd-modal__crumb-sep {
-        margin: 0 var(--sp-1);
+        margin: 0 2px;
         color: var(--c-text-muted);
+        font-size: 11px;
+        opacity: 0.5;
+        display: inline-flex;
+        align-items: center;
+    }
+    .wd-modal__footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--sp-3);
+        padding: var(--sp-4) var(--sp-6);
+        border-top: 1px solid var(--c-border);
+        flex-wrap: wrap;
+        background: var(--c-surface);
+    }
+    .wd-modal__footer .wd-btn {
+        font-family: var(--font-ar);
+    }
+    .wd-modal__footer-hint {
         font-size: 12px;
+        color: var(--c-text-muted);
+        margin-inline-end: auto;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        font-weight: 500;
+    }
+    .wd-modal__footer-hint::before {
+        content: '💡';
+        font-size: 13px;
+    }
+    .wd-modal__footer-badge {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--c-text-muted);
+        background: var(--c-surface-muted);
+        padding: 5px 14px;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--c-border);
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sp-2);
+    }
+    .wd-modal__footer-badge::before {
+        content: '✓';
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        border-radius: var(--radius-full);
+        background: var(--c-success);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 800;
     }
 
     /* ===== Table Card (TASK-CARD-UX-05) ===== */
@@ -760,6 +1091,10 @@ else
             <span class="wd-filterbar__date-sep">—</span>
             <input type="date" id="wd-date-to" class="wd-filterbar__date-input" aria-label="إلى تاريخ" />
         </div>
+        <button type="button" id="wd-layout-edit-toggle" class="wd-btn--ghost wd-btn--sm" style="flex-shrink:0;white-space:nowrap;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            تعديل التخطيط
+        </button>
         <span class="wd-filterbar__count" id="wd-filter-count"></span>
     </div>
 
@@ -777,7 +1112,7 @@ else
                 var cardHeight = Math.Max(200, h * 90 + (h - 1) * 24);
                 var canDrill = Model.CardsWithDrill.Contains(c.Id);
                 <article class="wd-card wd-span-@w wd-row-@h@(canDrill ? " wd-card--drillable" : "")"
-                         style="height: @(cardHeight)px; animation-delay: @(i * 70)ms;@(canDrill ? " cursor:pointer;" : "")"
+                         style="height: @(cardHeight)px; animation-delay: @(i * 70)ms;"
                          id="card-@c.Id"
                          data-card-id="@c.Id"
                          data-description="@description"
@@ -789,8 +1124,7 @@ else
                          data-grid-w="@w"
                          data-grid-h="@h"
                          data-title="@c.Title"
-                         data-chart-type="@c.ChartType"
-                         @(canDrill ? "onclick=\"wdOpenDrill(" + c.Id + ")\" role=\"button\" tabindex=\"0\" onkeydown=\"if(event.key==='Enter')wdOpenDrill(" + c.Id + ")\"" : "")>
+                         data-chart-type="@c.ChartType">
                     <div class="wd-card__header">
                         <div class="wd-card__title-wrap">
                             <h3 class="wd-card__title">@c.Title</h3>
@@ -810,7 +1144,14 @@ else
                             }
                         </div>
                         <div class="wd-card__controls">
-                            <div class="wd-card__resize" role="group"تغيير حجم البطاقة">
+                            @if (canDrill)
+                            {
+                                <button type="button" class="wd-card__drill-btn"
+                                        title="فتح التعمّق"
+                                        aria-label="فتح التعمّق"
+                                        onclick="event.stopPropagation();wdOpenDrill(@c.Id)">تفاصيل</button>
+                            }
+                            <div class="wd-card__resize" role="group" aria-label="تغيير حجم البطاقة" hidden aria-hidden="true">
                                 <button class="wd-resize-btn @(w <= 3 ? "active" : "")" data-size="small" title="صغير" type="button">S</button>
                                 <button class="wd-resize-btn @(w > 3 && w <= 7 ? "active" : "")" data-size="medium" title="متوسط" type="button">M</button>
                                 <button class="wd-resize-btn @(w > 7 ? "active" : "")" data-size="large" title="كبير" type="button">L</button>
@@ -840,10 +1181,6 @@ else
                             <div class="wd-skel wd-skel--tall"></div>
                         </div>
                     </div>
-                    @if (canDrill)
-                    {
-                        <span class="wd-card__drill-hint" title="انقر للتعمّق" aria-hidden="true">›</span>
-                    }
                 </article>
             }
         </div>
@@ -854,20 +1191,24 @@ else
             <p>جرّب تعديل كلمة البحث أو نوع الرسم البياني.</p>
         </div>
 
-        @* Drill-down Modal (TASK-DASH-004) — in-page, not page navigation *@
+        @* Drill-down Modal (TASK-DRILL-MODAL-REDESIGN-001) — in-page, not page navigation *@
         <div id="wd-drill-modal" class="wd-modal" hidden aria-modal="true" role="dialog">
             <div class="wd-modal__overlay" tabindex="-1"></div>
             <div class="wd-modal__panel">
                 <div class="wd-modal__header">
-                    <h3 class="wd-modal__title" id="wd-drill-modal-title"></h3>
-                    <button class="wd-modal__close" aria-label="إغلاق" type="button">&times;</button>
+                    <h3 class="wd-modal__title" id="wd-drill-modal-title">
+                        <span class="wd-modal__title-icon">📊</span>
+                        <span id="wd-drill-modal-title-text"></span>
+                    </h3>
+                    <button class="wd-modal__close" aria-label="إغلاق" type="button">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="wd-modal__breadcrumb" id="wd-drill-modal-breadcrumb"></div>
-                <div class="wd-modal__body" id="wd-drill-modal-body">
-                    <div class="wd-skeleton-wrap" aria-hidden="true">
-                        <div class="wd-skel wd-skel--tall"></div>
-                    </div>
-                </div>
+                <div class="wd-modal__body" id="wd-drill-modal-body"></div>
+                <div class="wd-modal__footer" id="wd-drill-modal-footer"></div>
             </div>
         </div>
     }
@@ -979,54 +1320,122 @@ else
                 return direction === 'up' || direction === 'down' || direction === 'flat' ? direction : 'flat';
             }
 
-            function wdKpiHtml(card) {
-                var val = card.kpiMainValue || card.kpiValue;
-                var target = toNum(val);
-                var display = target === 0 ? '0' : '0';
+            /** Map grid width → KPI size class hint (container queries still drive density). */
+            function wdKpiSizeClassFromWidth(w) {
+                w = parseInt(w, 10) || 4;
+                if (w <= 3) return 'wd-kpi--size-small';
+                if (w <= 7) return 'wd-kpi--size-medium';
+                return 'wd-kpi--size-large';
+            }
+
+            /**
+             * Sync KPI density after S/M/L resize or re-render:
+             * - update wd-kpi--size-* from card grid width
+             * - resize sparkline ApexCharts instance if present
+             * Exposed on window for layout-mode IIFE (resize buttons).
+             */
+            function wdSyncKpiDensity(cardEl) {
+                if (!cardEl) return;
+                var kpiRoot = cardEl.querySelector('.wd-kpi');
+                if (!kpiRoot) return;
+
+                var w = parseInt(cardEl.getAttribute('data-grid-w'), 10)
+                    || parseInt(cardEl.dataset.gridW, 10)
+                    || 4;
+                var sizeClass = wdKpiSizeClassFromWidth(w);
+                kpiRoot.classList.remove('wd-kpi--size-small', 'wd-kpi--size-medium', 'wd-kpi--size-large');
+                kpiRoot.classList.add(sizeClass);
+
+                var cardId = cardEl.getAttribute('data-card-id')
+                    || (cardEl.id && String(cardEl.id).replace(/^card-/, ''));
+                if (cardId != null && cardId !== '') {
+                    var sparkKey = 'spark-' + cardId;
+                    var doResize = function () {
+                        var sparkEntry = CHARTS[sparkKey];
+                        if (!sparkEntry || !sparkEntry.control) return;
+                        try {
+                            if (typeof sparkEntry.control.resize === 'function') {
+                                sparkEntry.control.resize();
+                            } else if (typeof sparkEntry.control.windowResizeSync === 'function') {
+                                sparkEntry.control.windowResizeSync();
+                            }
+                        } catch (_) { /* non-blocking */ }
+                    };
+                    // Wait a frame so size class / layout settle before chart measures
+                    if (typeof requestAnimationFrame === 'function') {
+                        requestAnimationFrame(function () { requestAnimationFrame(doResize); });
+                    } else {
+                        setTimeout(doResize, 32);
+                    }
+                }
+            }
+            window.wdSyncKpiDensity = wdSyncKpiDensity;
+
+            function wdRenderKpiCard(card) {
                 var kpiMode = card.kpiMode || 'simple';
                 var hasChangeContext = kpiMode === 'withChange' || kpiMode === 'composite';
+                var modeClass = 'wd-kpi--' + kpiMode;
+                var sizeClass = 'wd-kpi--size-medium';
+                var cardEl = document.getElementById('card-' + card.cardId);
+                if (cardEl) {
+                    var w = parseInt(cardEl.getAttribute('data-grid-w'), 10)
+                        || parseInt(cardEl.dataset.gridW, 10)
+                        || 4;
+                    sizeClass = wdKpiSizeClassFromWidth(w);
+                }
 
-                var html = '<div class="wd-kpi">';
+                var html = '<div class="wd-kpi ' + modeClass + ' ' + sizeClass + '">';
+                html += '<div class="wd-kpi__cluster">';
 
-                // Main value
+                // Row: main + categories
+                html += '<div class="wd-kpi__row">';
+
+                html += '<div class="wd-kpi__main">';
+                // Prefer kpiMainValue for count-up consistency with wdRenderCard
+                var rawValue = (card.kpiMainValue !== null && card.kpiMainValue !== undefined)
+                    ? card.kpiMainValue
+                    : card.kpiValue;
+                var target = card.kpiTarget || 0;
+                var display = card.kpiFormatted !== null && card.kpiFormatted !== undefined
+                    ? card.kpiFormatted
+                    : (rawValue !== null && rawValue !== undefined
+                        ? (window.formatNum ? window.formatNum(window.toNum(rawValue)) : rawValue)
+                        : '—');
+                html += '<div class="wd-kpi__hero">';
                 html += '<div class="wd-kpi__value" data-kpi-target="' + target + '">' + display + '</div>';
-
-                // Change badge (for withChange and composite modes)
                 if (hasChangeContext && card.kpiChangePercent !== null && card.kpiChangePercent !== undefined) {
                     var changePercent = card.kpiChangePercent;
-                    var direction = wdNormalizeKpiDirection(card.kpiChangeDirection || 'flat');
+                    var direction = window.wdNormalizeKpiDirection ? window.wdNormalizeKpiDirection(card.kpiChangeDirection || 'flat') : 'flat';
                     var sign = direction === 'up' ? '+' : direction === 'down' ? '-' : '';
                     var changeClass = 'wd-kpi__change--' + direction;
-                    html += '<div class="wd-kpi__change ' + changeClass + '">' + wdKpiChangeIconSvg(direction) + '<span>' + sign + Math.abs(changePercent) + '%</span></div>';
-                } else if (hasChangeContext) {
-                    html += '<div class="wd-kpi__change-missing">لا توجد بيانات مقارنة كافية</div>';
+                    html += '<div class="wd-kpi__change ' + changeClass + '">';
+                    if (window.wdKpiChangeIconSvg) html += window.wdKpiChangeIconSvg(direction);
+                    html += '<span>' + sign + Math.abs(changePercent) + '%</span></div>';
                 }
+                html += '</div>'; // hero
 
-                if (hasChangeContext) {
-                    html += '<div class="wd-kpi__compare">' + escapeHtml(wdKpiComparisonText(card.changeSource)) + '</div>';
-                }
-
-                // Sparkline container (for composite mode)
                 if (kpiMode === 'composite') {
-                    html += '<div class="wd-kpi__sparkline" data-card-id="' + card.cardId + '"></div>';
+                    html += '<div class="wd-kpi__grandtotal wd-kpi__details" data-card-id="' + card.cardId + '"></div>';
                 }
+                html += '</div>'; // main
 
-                // Grand total container (for composite mode — rendered by wdRenderGrandTotal)
-                if (kpiMode === 'composite') {
-                    html += '<div class="wd-kpi__grandtotal" data-card-id="' + card.cardId + '"></div>';
-                }
+                html += '<div class="wd-kpi__categories is-empty">';
+                html += '<div class="wd-kpi-breakdown" data-card-id="' + card.cardId + '"></div>';
+                html += '</div>';
 
-                // Category breakdown container (for composite/withChange modes)
-                if (kpiMode === 'composite' || kpiMode === 'withChange') {
-                    html += '<div class="wd-kpi__breakdown" data-card-id="' + card.cardId + '"></div>';
-                }
+                html += '</div>'; // row
 
-                // Label remains only for simple KPI cards; comparison text replaces it for change-aware KPI modes.
+                // Sparkline attached directly under content (inside cluster)
+                html += '<div class="wd-kpi__sparkline-section">';
+                html += '<div class="wd-kpi__sparkline" data-card-id="' + card.cardId + '"></div>';
+                html += '</div>';
+
                 if (!hasChangeContext) {
                     html += '<div class="wd-kpi__label">قيمة المؤشر</div>';
                 }
-                html += '</div>';
 
+                html += '</div>'; // cluster
+                html += '</div>'; // kpi
                 return html;
             }
 
@@ -1071,30 +1480,66 @@ else
                 var values = points.map(function(point) { return point.value; });
                 var months = points.map(function(point) { return point.month; });
                 var pal = wdGetPalette(cardId);
-                var sparkColor = pal[0] || (PALETTE && PALETTE[0]) || 'var(--c-primary)';
+                /* KPI mockup gold; allow palette override only when clearly non-default */
+                var KPI_SPARK_GOLD = '#E8A317';
+                var sparkColor = KPI_SPARK_GOLD;
+                if (pal && pal[0] && typeof pal[0] === 'string') {
+                    var p0 = pal[0].trim().toLowerCase();
+                    /* Keep gold unless card has an explicit custom accent distinct from primary blues */
+                    if (p0 && p0 !== 'var(--c-primary)' && p0.indexOf('1f4e79') === -1 && p0.indexOf('#1f4e79') === -1) {
+                        /* still prefer gold for KPI mockup fidelity — palette only if it's already gold/orange family */
+                        if (/#e[0-9a-f]{2}a1|#e0a106|#f5a|#e8a|#ffa|#ff8|#f59e0b|#d97706|orange|gold|warning/i.test(p0)) {
+                            sparkColor = pal[0];
+                        }
+                    }
+                }
                 var isDark = document.documentElement.getAttribute('data-theme') === 'midnight';
                 var lastIndex = values.length - 1;
+                var markerRing = isDark ? 'rgba(255,255,255,0.92)' : '#ffffff';
 
                 function formatSparkValue(val) {
                     return formatNum ? formatNum(toNum(val)) : toNum(val).toLocaleString('ar-SA');
                 }
 
                 function deltaHtml(index) {
-                    if (index < 1) return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--flat">أول شهر في الاتجاه</div>';
+                    if (index < 1) {
+                        return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--flat">أول شهر في الاتجاه</div>';
+                    }
                     var delta = values[index] - values[index - 1];
                     var direction = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
-                    var sign = delta > 0 ? '+' : delta < 0 ? '−' : '';
-                    var label = direction === 'flat' ? 'بدون تغير' : 'عن الشهر السابق: ' + sign + formatSparkValue(Math.abs(delta));
-                    return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--' + direction + '">' + escapeHtml(label) + '</div>';
+                    if (direction === 'flat') {
+                        return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--flat">بدون تغير عن الشهر السابق</div>';
+                    }
+                    /* Keep number LTR-isolated from Arabic label to avoid bi-di garble (e.g. 6.8+…K) */
+                    var sign = delta > 0 ? '+' : '−';
+                    var num = sign + formatSparkValue(Math.abs(delta));
+                    return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--' + direction + '">'
+                        + '<span class="wd-spark-tooltip__delta-num">' + escapeHtml(num) + '</span>'
+                        + '<span class="wd-spark-tooltip__delta-label">عن الشهر السابق</span>'
+                        + '</div>';
                 }
+
+                /* Small markers on all points; last point larger with ring via discrete */
+                var discreteMarkers = values.map(function(_, idx) {
+                    var isLast = idx === lastIndex;
+                    return {
+                        seriesIndex: 0,
+                        dataPointIndex: idx,
+                        fillColor: sparkColor,
+                        strokeColor: isLast ? markerRing : sparkColor,
+                        size: isLast ? 7 : 3.5,
+                        strokeWidth: isLast ? 2.5 : 0
+                    };
+                });
 
                 var chartConfig = {
                     chart: {
                         type: 'area',
-                        height: 90,
+                        height: '100%',
                         sparkline: { enabled: true },
                         background: 'transparent',
-                        rtl: true,
+                        /* LTR time series — rtl:true garbles mixed Arabic/number tooltips */
+                        rtl: false,
                         toolbar: { show: false },
                         zoom: { enabled: false },
                         parentHeightOffset: 0,
@@ -1102,45 +1547,42 @@ else
                         animations: { enabled: true, easing: 'easeinout', speed: 550 }
                     },
                     series: [{ data: values }],
-                    stroke: { curve: 'smooth', width: 2.8, lineCap: 'round' },
+                    stroke: { curve: 'smooth', width: 2.75, lineCap: 'round' },
                     colors: [sparkColor],
                     fill: {
                         type: 'gradient',
                         gradient: {
                             shade: isDark ? 'dark' : 'light',
                             type: 'vertical',
-                            shadeIntensity: 0.25,
-                            opacityFrom: isDark ? 0.32 : 0.26,
-                            opacityTo: 0.02,
-                            stops: [0, 85, 100]
+                            shadeIntensity: 0.35,
+                            gradientToColors: ['#F5C56B'],
+                            opacityFrom: isDark ? 0.42 : 0.36,
+                            opacityTo: 0.03,
+                            stops: [0, 80, 100]
                         }
                     },
                     dataLabels: { enabled: false },
                     markers: {
-                        size: 0,
-                        strokeWidth: 2,
-                        strokeColors: 'var(--c-surface)',
-                        hover: { size: 5, sizeOffset: 2 },
-                        discrete: [{
-                            seriesIndex: 0,
-                            dataPointIndex: lastIndex,
-                            fillColor: sparkColor,
-                            strokeColor: 'var(--c-surface)',
-                            size: 5
-                        }]
+                        size: 3.5,
+                        colors: [sparkColor],
+                        strokeColors: sparkColor,
+                        strokeWidth: 0,
+                        hover: { size: 6, sizeOffset: 1.5 },
+                        discrete: discreteMarkers
                     },
                     tooltip: {
                         enabled: true,
                         shared: false,
-                        intersect: false,
+                        intersect: true,
                         followCursor: true,
+                        theme: isDark ? 'dark' : 'light',
                         marker: { show: false },
                         custom: function(opts) {
                             var i = opts && opts.dataPointIndex != null ? opts.dataPointIndex : 0;
                             var value = opts.series[opts.seriesIndex][i];
                             return '<div class="wd-spark-tooltip">'
                                 + '<div class="wd-spark-tooltip__month">' + escapeHtml(months[i] || ('الشهر ' + (i + 1))) + '</div>'
-                                + '<div class="wd-spark-tooltip__value">' + escapeHtml(formatSparkValue(value)) + '</div>'
+                                + '<div class="wd-spark-tooltip__value" dir="ltr">' + escapeHtml(formatSparkValue(value)) + '</div>'
                                 + deltaHtml(i)
                                 + '</div>';
                         }
@@ -1153,7 +1595,7 @@ else
                         labels: { show: false }
                     },
                     yaxis: { show: false, labels: { show: false } },
-                    grid: { show: false, padding: { top: 10, right: 8, bottom: 6, left: 8 } }
+                    grid: { show: false, padding: { top: 8, right: 8, bottom: 6, left: 8 } }
                 };
 
                 var chart = new ApexCharts(container, chartConfig);
@@ -1163,28 +1605,47 @@ else
 
             function wdRenderCategoryBreakdown(container, data, cardId) {
                 var rows = Array.isArray(data) ? data : [];
+                var categoriesWrap = container && container.closest
+                    ? container.closest('.wd-kpi__categories')
+                    : null;
                 if (rows.length === 0) {
                     container.style.display = 'none';
+                    if (categoriesWrap) {
+                        categoriesWrap.classList.add('is-empty');
+                        categoriesWrap.setAttribute('hidden', '');
+                    }
                     return;
                 }
-                var pal = wdGetPalette(cardId);
+                /* Max 5 rows; CSS density hides extras for M/S */
+                var visibleRows = rows.slice(0, 5);
                 var html = '<div class="wd-kpi-breakdown">';
-                html += '<div class="wd-kpi-breakdown__title">─ حسب التصنيف ─</div>';
+                html += '<div class="wd-kpi-breakdown__title">أعلى التصنيفات</div>';
                 html += '<table class="wd-kpi-breakdown__table">';
-                rows.forEach(function(row, i) {
-                    var category = row.Category || row.category || row.CategoryName || '—';
-                    var value = row.CategoryValue || row.categoryValue || row.Value || 0;
-                    var pct = row.Percentage || row.percentage || 0;
-                    var color = pal[i % pal.length] || 'var(--c-primary)';
+                visibleRows.forEach(function(row) {
+                    row = row || {};
+                    var value = row.CategoryValue || row.categoryValue || row.Value || row.value || 0;
+                    var pctRaw = row.Percentage != null ? row.Percentage
+                        : (row.percentage != null ? row.percentage
+                            : (row.Pct != null ? row.Pct : 0));
+                    var pctNum = toNum(pctRaw);
+                    var pctLabel = (Math.round(pctNum * 10) / 10) + '%';
+                    var code = row.Code || row.CategoryCode || row.ItemCode || row.Id
+                        || row.code || row.categoryCode || row.itemCode || row.id
+                        || row.Category || row.category || row.CategoryName || '—';
                     html += '<tr>';
-                    html += '<td class="wd-kpi-breakdown__cat" style="color:' + color + '">' + escapeHtml(category) + '</td>';
+                    /* Visual LTR (table direction:ltr): % | value | code(gold) */
+                    html += '<td class="wd-kpi-breakdown__pct">' + escapeHtml(String(pctLabel)) + '</td>';
                     html += '<td class="wd-kpi-breakdown__val">' + formatNum(toNum(value)) + '</td>';
-                    html += '<td class="wd-kpi-breakdown__pct">' + pct + '%</td>';
+                    html += '<td class="wd-kpi-breakdown__code">' + escapeHtml(String(code)) + '</td>';
                     html += '</tr>';
                 });
                 html += '</table></div>';
                 container.innerHTML = html;
                 container.style.display = '';
+                if (categoriesWrap) {
+                    categoriesWrap.classList.remove('is-empty');
+                    categoriesWrap.removeAttribute('hidden');
+                }
             }
 
             function wdRenderGrandTotal(container, card) {
@@ -1195,29 +1656,31 @@ else
                     if (card.kpiGrandTotal !== null && card.kpiGrandTotal !== undefined) {
                         var val = formatNum(toNum(card.kpiGrandTotal));
                         html += '<div class="wd-kpi-grandtotal__row">';
-                        html += '<span class="wd-kpi-grandtotal__label">الإجمالي الكلي:</span>';
+                        /* Mockup order: value then label */
                         html += '<span class="wd-kpi-grandtotal__value">' + val + '</span>';
+                        html += '<span class="wd-kpi-grandtotal__label">الإجمالي الكلي:</span>';
                         html += '</div>';
                     }
                 }
 
                 if (source === 'yearToDate' || source === 'both') {
                     if (card.kpiYearToDateTotal !== null && card.kpiYearToDateTotal !== undefined) {
-                        var val = formatNum(toNum(card.kpiYearToDateTotal));
+                        var valYtd = formatNum(toNum(card.kpiYearToDateTotal));
                         var year = new Date().getFullYear();
                         html += '<div class="wd-kpi-grandtotal__row">';
+                        html += '<span class="wd-kpi-grandtotal__value">' + valYtd + '</span>';
                         html += '<span class="wd-kpi-grandtotal__label">إجمالي ' + year + ':</span>';
-                        html += '<span class="wd-kpi-grandtotal__value">' + val + '</span>';
                         html += '</div>';
                     }
                 }
 
                 if (!html) {
-                    container.style.display = 'none';
+                    container.innerHTML = '<div class="wd-kpi-grandtotal"><div class="wd-kpi-grandtotal__row"><span class="wd-kpi-grandtotal__value">—</span><span class="wd-kpi-grandtotal__label">المجاميع:</span></div></div>';
+                    container.style.display = '';
                     return;
                 }
 
-                container.innerHTML = html;
+                container.innerHTML = '<div class="wd-kpi-grandtotal">' + html + '</div>';
                 container.style.display = '';
             }
 
@@ -1248,33 +1711,35 @@ else
 
                 try {
                     if (card.chartType === 'KPI') {
-                        body.innerHTML = wdKpiHtml(card);
+                        body.innerHTML = wdRenderKpiCard(card);
                         var kpiVal = body.querySelector('.wd-kpi__value');
                         if (kpiVal) animateCountUp(kpiVal, toNum(card.kpiMainValue || card.kpiValue), 1000);
 
-                        // Render sparkline if present
-                        if (card.kpiMode === 'composite') {
-                            var sparkContainer = body.querySelector('.wd-kpi__sparkline');
-                            if (sparkContainer) {
-                                wdRenderSparkline(sparkContainer, card.kpiSparklineData, card.cardId);
-                            }
+                        // Render sparkline (always present in adaptive shell)
+                        var sparkContainer = body.querySelector('.wd-kpi__sparkline');
+                        if (sparkContainer && card.kpiSparklineData) {
+                            wdRenderSparkline(sparkContainer, card.kpiSparklineData, card.cardId);
                         }
 
-                        // Render category breakdown if present
-                        if (card.kpiCategoryBreakdown && card.kpiCategoryBreakdown.length > 0) {
-                            var breakdownContainer = body.querySelector('.wd-kpi__breakdown');
-                            if (breakdownContainer) {
+                        // Category breakdown — hide parent column when empty
+                        var breakdownContainer = body.querySelector('.wd-kpi-breakdown');
+                        if (breakdownContainer) {
+                            if (card.kpiCategoryBreakdown && card.kpiCategoryBreakdown.length > 0) {
                                 wdRenderCategoryBreakdown(breakdownContainer, card.kpiCategoryBreakdown, card.cardId);
+                            } else {
+                                wdRenderCategoryBreakdown(breakdownContainer, [], card.cardId);
                             }
                         }
 
-                        // Render grand total (all-time / year-to-date / both)
+                        // Grand total (all-time / year-to-date / both)
                         if (card.kpiMode === 'composite') {
                             var grandTotalContainer = body.querySelector('.wd-kpi__grandtotal');
                             if (grandTotalContainer) {
                                 wdRenderGrandTotal(grandTotalContainer, card);
                             }
                         }
+
+                        wdSyncKpiDensity(el);
                         return;
                     }
                     if (!card.columns || card.columns.length < 1) { body.innerHTML = wdEmptyHtml(); return; }
@@ -1561,92 +2026,468 @@ else
                 (window.WD_CARDS || []).forEach(function (c) { wdLoadCard(c.id, true); });
             };
 
-            // Open a card's drill-down in a modal (TASK-DASH-004).
-            // Falls back to page navigation if modal element is missing.
-            window.wdOpenDrill = function (id, breadcrumb) {
+            // ── Drill-down State Machine ──
+            window.__drillState = null;
+
+            function wdDestroyDrillCharts() {
+                if (window.__drillChart) {
+                    try { window.__drillChart.destroy(); } catch (e) {}
+                    window.__drillChart = null;
+                }
+            }
+
+            function wdShowDrillSkeleton() {
+                var bodyEl = document.getElementById('wd-drill-modal-body');
+                if (!bodyEl) return;
+                bodyEl.innerHTML = '<div class="wd-drill-skeleton">'
+                    + '<div class="wd-drill-skeleton__text-center">'
+                    + '<div class="wd-drill-skeleton__spinner"></div>'
+                    + '<div class="wd-drill-skeleton__loading-text">جارٍ تحميل البيانات...</div>'
+                    + '</div>'
+                    + '<div class="wd-drill-skeleton__table">'
+                    + '<div class="wd-drill-skeleton__table-row">'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '</div>'
+                    + '<div class="wd-drill-skeleton__table-row">'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '</div>'
+                    + '<div class="wd-drill-skeleton__table-row">'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '</div>'
+                    + '<div class="wd-drill-skeleton__table-row">'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '<div class="wd-drill-skeleton__cell"></div>'
+                    + '</div>'
+                    + '</div></div>';
+            }
+
+            function wdOpenDrill(cardId, cardTitle) {
                 var modal = document.getElementById('wd-drill-modal');
-                if (!modal) { window.location.href = '/Dashboard/Drill/' + id; return; }
+                if (!modal) { window.location.href = '/Dashboard/Drill/' + cardId; return; }
                 modal.hidden = false;
                 document.body.style.overflow = 'hidden';
 
-                var titleEl = document.getElementById('wd-drill-modal-title');
-                var bodyEl = document.getElementById('wd-drill-modal-body');
+                var titleTextEl = document.getElementById('wd-drill-modal-title-text');
+                var cardEl = document.getElementById('card-' + cardId);
+                var title = cardTitle || (cardEl ? (cardEl.getAttribute('data-title') || 'تفاصيل') : 'تفاصيل');
+                if (titleTextEl) titleTextEl.textContent = title;
+
+                window.__drillState = {
+                    cardId: cardId,
+                    cardTitle: title,
+                    currentLevel: 1,
+                    trail: [{ level: 1, displayName: title, labelValue: null, parentValueForCurrentLevel: null }],
+                    parentValueForCurrentLevel: null,
+                    selectedParameterValue: null,
+                    parameterColumn: null,
+                    labelColumn: null,
+                    nextRequiresParentValue: false,
+                    hasNextLevel: false
+                };
+
+                wdDestroyDrillCharts();
+                wdShowDrillSkeleton();
+                var footerEl = document.getElementById('wd-drill-modal-footer');
+                if (footerEl) footerEl.innerHTML = '';
                 var crumbEl = document.getElementById('wd-drill-modal-breadcrumb');
+                if (crumbEl) crumbEl.innerHTML = '';
+                wdLoadLevel();
+            }
+            window.wdOpenDrill = wdOpenDrill;
 
-                // Find card title from the DOM
-                var cardEl = document.getElementById('card-' + id);
-                var cardTitle = cardEl ? (cardEl.getAttribute('data-title') || 'تفاصيل') : 'تفاصيل';
-                if (titleEl) titleEl.textContent = cardTitle;
-
-                // Build breadcrumb trail
-                if (crumbEl) {
-                    var trail = breadcrumb ? breadcrumb.slice() : [];
-                    trail.push({ id: id, title: cardTitle });
-                    window._wdDrillBreadcrumb = trail;
-                    var crumbHtml = trail.map(function(b, i) {
-                        if (i === trail.length - 1) {
-                            return '<span class="wd-modal__crumb wd-modal__crumb--active">' + escapeHtml(b.title) + '</span>';
-                        }
-                        return '<button class="wd-modal__crumb wd-modal__crumb--link" onclick="wdDrillNavigate(' + b.id + ', ' + JSON.stringify(trail.slice(0, i)) + ')">' + escapeHtml(b.title) + '</button>';
-                    }).join('<span class="wd-modal__crumb-sep" aria-hidden="true">/</span>');
-                    crumbEl.innerHTML = crumbHtml;
-                }
-
-                // Show loading skeleton
-                if (bodyEl) {
-                    bodyEl.innerHTML = '<div class="wd-skeleton-wrap"><div class="wd-skel wd-skel--tall" style="height:300px;"></div></div>';
-                }
-
-                fetch('/api/dashboard/drill/' + id, { headers: { 'Accept': 'application/json' } })
-                    .then(function(r) { return r.json(); })
-                    .then(function(data) {
-                        if (!bodyEl) return;
-                        if (data.status === 'empty') { bodyEl.innerHTML = wdEmptyHtml(); return; }
-                        if (data.status === 'error') { bodyEl.innerHTML = wdErrorHtml(data.errorMessage, id); return; }
-
-                        // Render drill content: table if columns+rows, otherwise chart
-                        if (data.columns && data.columns.length > 0 && data.rows && data.rows.length > 0) {
-                            if (data.chartType === 'Table') {
-                                var gridDiv = document.createElement('div');
-                                gridDiv.style.width = '100%';
-                                gridDiv.style.minHeight = '300px';
-                                bodyEl.innerHTML = '';
-                                bodyEl.appendChild(gridDiv);
-                                wdRenderGrid(gridDiv, data);
-                            } else {
-                                var chartDiv = document.createElement('div');
-                                chartDiv.style.width = '100%';
-                                chartDiv.style.height = '400px';
-                                bodyEl.innerHTML = '';
-                                bodyEl.appendChild(chartDiv);
-                                if (data.chartType === 'Gauge') {
-                                    wdRenderGauge(chartDiv, data);
-                                } else {
-                                    wdRenderChart(chartDiv, data);
-                                }
-                            }
-                        } else {
-                            bodyEl.innerHTML = wdEmptyHtml();
-                        }
+            function wdLoadLevel() {
+                var st = window.__drillState;
+                if (!st) return;
+                var bodyEl = document.getElementById('wd-drill-modal-body');
+                if (!bodyEl) return;
+                wdDestroyDrillCharts();
+                wdShowDrillSkeleton();
+                st.currentData = null;
+                var url = '/api/dashboard/drill/' + st.cardId + '/' + st.currentLevel
+                    + '?parentValue=' + encodeURIComponent(st.parentValueForCurrentLevel || '');
+                fetch(url, { headers: { 'Accept': 'application/json' } })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        if (!window.__drillState) return;
+                        st.hasNextLevel = !!data.hasNextLevel;
+                        st.nextRequiresParentValue = !!data.nextRequiresParentValue;
+                        st.parameterColumn = data.parameterColumn || null;
+                        st.labelColumn = data.labelColumn || null;
+                        st.currentData = data;
+                        wdRenderBreadcrumb();
+                        wdRenderLevel(data);
+                        wdRenderFooter();
                     })
-                    .catch(function(err) {
-                        if (bodyEl) bodyEl.innerHTML = wdErrorHtml('تعذر تحميل بيانات التعمّق: ' + (err && err.message ? err.message : ''), id);
+                    .catch(function (err) {
+                        if (!window.__drillState) return;
+                        if (bodyEl) {
+                            bodyEl.innerHTML = wdErrorHtml('تعذر تحميل بيانات التعمّق: ' + (err && err.message ? err.message : ''), st.cardId);
+                            wdAppendDrillRetry(bodyEl);
+                        }
+                        wdRenderFooter();
                     });
-            };
+            }
 
-            window.wdDrillNavigate = function(id, breadcrumb) {
-                window.wdOpenDrill(id, breadcrumb);
-            };
+            function wdAppendDrillRetry(container) {
+                if (!container) return;
+                var retryWrap = document.createElement('div');
+                retryWrap.style.cssText = 'margin-top:20px;text-align:center;';
+                var retryBtn = document.createElement('button');
+                retryBtn.type = 'button';
+                retryBtn.className = 'wd-btn wd-btn--primary';
+                retryBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg> إعادة المحاولة';
+                retryBtn.addEventListener('click', wdLoadLevel);
+                retryWrap.appendChild(retryBtn);
+                container.appendChild(retryWrap);
+            }
+
+            function wdRenderLevel(data) {
+                var bodyEl = document.getElementById('wd-drill-modal-body');
+                if (!bodyEl) return;
+                var st = window.__drillState;
+                if (!st) return;
+
+                if (data.status === 'success') {
+                    var div = document.createElement('div');
+                    div.style.width = '100%';
+                    if (data.chartType === 'Table') {
+                        div.style.minHeight = '300px';
+                        bodyEl.innerHTML = '';
+                        bodyEl.appendChild(div);
+                        wdRenderGrid(div, data);
+                        // Add click selection to rows
+                        var table = div.querySelector('.wd-table');
+                        if (table && st.parameterColumn) {
+                            var rows = table.querySelectorAll('tbody tr');
+                            rows.forEach(function (tr, idx) {
+                                tr.style.cursor = 'pointer';
+                                tr.addEventListener('click', function () {
+                                    // Remove previous selection
+                                    rows.forEach(function(r) { r.classList.remove('wd-drill-row--selected'); });
+                                    // Add selection to clicked row
+                                    tr.classList.add('wd-drill-row--selected');
+                                    var rowData = (data.rows || [])[idx];
+                                    if (!rowData) return;
+                                    var selVal = rowData[st.parameterColumn] != null ? rowData[st.parameterColumn] : rowData[Object.keys(rowData)[0]];
+                                    var selLabel = st.labelColumn && rowData[st.labelColumn] != null ? rowData[st.labelColumn] : selVal;
+                                    wdSelectRow(selVal, selLabel);
+                                });
+                            });
+                        }
+                    } else if (data.chartType === 'Gauge') {
+                        div.style.height = '400px';
+                        bodyEl.innerHTML = '';
+                        bodyEl.appendChild(div);
+                        wdRenderGauge(div, data);
+                    } else if (data.chartType === 'KPI') {
+                        var val = data.kpiValue != null ? data.kpiValue : (data.rows && data.rows[0] ? data.rows[0][data.columns && data.columns[0] || 'value'] : null);
+                        var displayVal = val != null ? (typeof formatNum === 'function' ? formatNum(val) : val) : '—';
+                        bodyEl.innerHTML = '';
+                        var kpiWrap = document.createElement('div');
+                        kpiWrap.className = 'wd-drill-kpi';
+                        var kpiVal = document.createElement('div');
+                        kpiVal.className = 'wd-drill-kpi__value';
+                        kpiVal.textContent = displayVal;
+                        kpiWrap.appendChild(kpiVal);
+                        if (data.title) {
+                            var kpiTitle = document.createElement('div');
+                            kpiTitle.className = 'wd-drill-kpi__label';
+                            kpiTitle.textContent = data.title;
+                            kpiWrap.appendChild(kpiTitle);
+                        }
+                        bodyEl.appendChild(kpiWrap);
+                        if (st.hasNextLevel) {
+                            var nextWrap = document.createElement('div');
+                            nextWrap.className = 'wd-drill-kpi__next-btn';
+                            var nextBtn = document.createElement('button');
+                            nextBtn.type = 'button';
+                            nextBtn.className = 'wd-btn wd-btn--primary';
+                            nextBtn.innerHTML = 'المستوى التالي <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+                            nextBtn.addEventListener('click', wdNextLevel);
+                            nextWrap.appendChild(nextBtn);
+                            kpiWrap.appendChild(nextWrap);
+                        }
+                    } else {
+                        div.style.height = '400px';
+                        bodyEl.innerHTML = '';
+                        bodyEl.appendChild(div);
+                        wdRenderChart(div, data);
+                        // Add selection table below chart if hasNextLevel and parameterColumn exists
+                        if (st.hasNextLevel && st.parameterColumn && data.rows && data.rows.length > 0) {
+                            var selTableDiv = document.createElement('div');
+                            selTableDiv.className = 'wd-drill-selection-table';
+                            var selLabel = document.createElement('div');
+                            selLabel.className = 'wd-drill-selection-table__header';
+                            selLabel.textContent = 'اختر عنصراً للانتقال للمستوى التالي';
+                            selTableDiv.appendChild(selLabel);
+                            var selTable = document.createElement('table');
+                            var cols = data.columns || [];
+                            var tbody = document.createElement('tbody');
+                            (data.rows || []).forEach(function (r, ri) {
+                                var tr = document.createElement('tr');
+                                var displayVal = r[st.labelColumn || st.parameterColumn || cols[0]] != null ? r[st.labelColumn || st.parameterColumn || cols[0]] : r[cols[0]];
+                                var paramVal = r[st.parameterColumn || cols[0]] != null ? r[st.parameterColumn || cols[0]] : r[cols[0]];
+                                var td = document.createElement('td');
+                                td.textContent = displayVal != null ? String(displayVal) : '—';
+                                tr.appendChild(td);
+                                tr.addEventListener('click', function () {
+                                    // Remove previous selection
+                                    tbody.querySelectorAll('tr').forEach(function(r) { r.classList.remove('wd-drill-row--selected'); });
+                                    // Add selection to clicked row
+                                    tr.classList.add('wd-drill-row--selected');
+                                    wdSelectRow(paramVal, displayVal);
+                                });
+                                tbody.appendChild(tr);
+                            });
+                            selTable.appendChild(tbody);
+                            selTableDiv.appendChild(selTable);
+                            bodyEl.appendChild(selTableDiv);
+                        }
+                    }
+                } else if (data.status === 'empty') {
+                    bodyEl.innerHTML = '<div class="wd-drill-empty">'
+                        + '<div class="wd-drill-empty__icon" aria-hidden="true">'
+                        + '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
+                        + '<rect x="3" y="3" width="18" height="18" rx="2"></rect>'
+                        + '<path d="M3 9h18"></path><path d="M9 21V9"></path>'
+                        + '</svg></div>'
+                        + '<h3>لا توجد بيانات لهذا المستوى</h3>'
+                        + '<p>لم يتم العثور على سجلات في هذا المستوى. جرّب العودة للمستوى السابق أو اختر عنصراً مختلفاً.</p>'
+                        + '</div>';
+                } else if (data.status === 'error') {
+                    bodyEl.innerHTML = '<div class="wd-drill-error">'
+                        + '<div class="wd-drill-error__icon" aria-hidden="true">'
+                        + '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
+                        + '<circle cx="12" cy="12" r="10"></circle>'
+                        + '<path d="M12 8v4"></path><path d="M12 16h.01"></path>'
+                        + '</svg></div>'
+                        + '<h3>تعذر تحميل البيانات</h3>'
+                        + '<p>' + escapeHtml(data.errorMessage || 'حدث خطأ غير متوقع أثناء تحميل بيانات التعمّق.') + '</p>'
+                        + '</div>';
+                    wdAppendDrillRetry(bodyEl);
+                } else if (data.status === 'none') {
+                    bodyEl.innerHTML = '<div class="wd-drill-empty">'
+                        + '<div class="wd-drill-empty__icon" aria-hidden="true">'
+                        + '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
+                        + '<circle cx="12" cy="12" r="10"></circle>'
+                        + '<path d="M12 16v-4"></path><path d="M12 8h.01"></path>'
+                        + '</svg></div>'
+                        + '<h3>معلومات</h3>'
+                        + '<p>' + escapeHtml(data.errorMessage || 'لا توجد معلومات إضافية.') + '</p>'
+                        + '</div>';
+                } else {
+                    bodyEl.innerHTML = '<div class="wd-drill-empty">'
+                        + '<div class="wd-drill-empty__icon" aria-hidden="true">'
+                        + '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
+                        + '<rect x="3" y="3" width="18" height="18" rx="2"></rect>'
+                        + '<path d="M3 9h18"></path><path d="M9 21V9"></path>'
+                        + '</svg></div>'
+                        + '<h3>لا توجد بيانات</h3>'
+                        + '<p>لم يتم العثور على بيانات لعرضها.</p>'
+                        + '</div>';
+                }
+            }
+
+            function wdSelectRow(value, label) {
+                var st = window.__drillState;
+                if (!st) return;
+                st.selectedParameterValue = value;
+                if (st.trail.length > 0) {
+                    st.trail[st.trail.length - 1].labelValue = label;
+                }
+                wdRenderBreadcrumb();
+                wdRenderFooter();
+                // Show toast feedback
+                if (typeof showToast === 'function') {
+                    showToast('success', 'تم اختيار: ' + (label || value));
+                }
+            }
+
+            function wdNavigateToLevel(level) {
+                var st = window.__drillState;
+                if (!st) return;
+                if (level < 1 || level > st.currentLevel) return;
+                st.trail = st.trail.slice(0, level);
+                st.currentLevel = level;
+                st.parentValueForCurrentLevel = st.trail[level - 1] ? st.trail[level - 1].parentValueForCurrentLevel : null;
+                st.selectedParameterValue = null;
+                wdDestroyDrillCharts();
+                wdLoadLevel();
+            }
+
+            function wdNextLevel() {
+                var st = window.__drillState;
+                if (!st) return;
+                if (!st.hasNextLevel) return;
+                if (st.nextRequiresParentValue && (st.selectedParameterValue == null || st.selectedParameterValue === '')) return;
+                var parentValueForNextLevel = st.nextRequiresParentValue ? st.selectedParameterValue : null;
+                st.currentLevel++;
+                st.parentValueForCurrentLevel = parentValueForNextLevel;
+                st.selectedParameterValue = null;
+                st.trail.push({ level: st.currentLevel, displayName: '...', labelValue: null, parentValueForCurrentLevel: parentValueForNextLevel });
+                wdDestroyDrillCharts();
+                wdLoadLevel();
+            }
+
+            function wdRenderBreadcrumb() {
+                var crumbEl = document.getElementById('wd-drill-modal-breadcrumb');
+                if (!crumbEl) return;
+                var st = window.__drillState;
+                if (!st || !st.trail) { crumbEl.innerHTML = ''; return; }
+                crumbEl.innerHTML = '';
+                st.trail.forEach(function (t, i) {
+                    if (i > 0) {
+                        var sep = document.createElement('span');
+                        sep.className = 'wd-modal__crumb-sep';
+                        sep.setAttribute('aria-hidden', 'true');
+                        sep.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+                        crumbEl.appendChild(sep);
+                    }
+                    var label = t.labelValue != null ? t.displayName + ' (' + String(t.labelValue) + ')' : t.displayName;
+                    if (i === st.trail.length - 1) {
+                        var active = document.createElement('span');
+                        active.className = 'wd-modal__crumb wd-modal__crumb--active';
+                        active.textContent = label;
+                        crumbEl.appendChild(active);
+                    } else {
+                        var btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'wd-modal__crumb wd-modal__crumb--link';
+                        btn.textContent = label;
+                        btn.addEventListener('click', function () { wdNavigateToLevel(i + 1); });
+                        crumbEl.appendChild(btn);
+                    }
+                });
+            }
+
+            function wdRenderFooter() {
+                var footerEl = document.getElementById('wd-drill-modal-footer');
+                if (!footerEl) return;
+                var st = window.__drillState;
+                if (!st) { footerEl.innerHTML = ''; return; }
+                footerEl.innerHTML = '';
+                if (st.currentLevel > 1) {
+                    var previousBtn = document.createElement('button');
+                    previousBtn.type = 'button';
+                    previousBtn.className = 'wd-btn wd-btn--ghost';
+                    previousBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> المستوى السابق';
+                    previousBtn.addEventListener('click', function () { wdNavigateToLevel(st.currentLevel - 1); });
+                    footerEl.appendChild(previousBtn);
+                }
+                if (st.hasNextLevel) {
+                    var disabled = st.nextRequiresParentValue && (st.selectedParameterValue == null || st.selectedParameterValue === '');
+                    var nextBtn = document.createElement('button');
+                    nextBtn.type = 'button';
+                    nextBtn.className = 'wd-btn wd-btn--primary';
+                    nextBtn.innerHTML = 'المستوى التالي <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+                    nextBtn.disabled = disabled;
+                    nextBtn.addEventListener('click', wdNextLevel);
+                    footerEl.appendChild(nextBtn);
+                    if (st.nextRequiresParentValue) {
+                        var hint = document.createElement('span');
+                        hint.className = 'wd-modal__footer-hint';
+                        hint.textContent = 'اختر عنصراً من الجدول أعلاه للانتقال';
+                        footerEl.appendChild(hint);
+                    }
+                } else {
+                    var badge = document.createElement('span');
+                    badge.className = 'wd-modal__footer-badge';
+                    badge.textContent = 'آخر مستوى';
+                    footerEl.appendChild(badge);
+                }
+                // Export CSV button — visible for Table/Chart levels with data
+                if (st.currentData && st.currentData.rows && st.currentData.rows.length > 0) {
+                    var chartType = st.currentData.chartType || '';
+                    var exportableTypes = ['Table', 'Bar', 'Line', 'Pie'];
+                    if (exportableTypes.indexOf(chartType) !== -1) {
+                        var exportBtn = document.createElement('button');
+                        exportBtn.type = 'button';
+                        exportBtn.className = 'wd-btn wd-btn--ghost';
+                        exportBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> تصدير CSV';
+                        exportBtn.addEventListener('click', function () { wdExportCsv(); });
+                        footerEl.appendChild(exportBtn);
+                    }
+                }
+            }
+
+            function wdExportCsv() {
+                var st = window.__drillState;
+                if (!st || !st.currentData || !st.currentData.rows || st.currentData.rows.length === 0) return;
+
+                var data = st.currentData;
+                var cols = data.columns || [];
+                var rows = data.rows || [];
+
+                // BOM for UTF-8
+                var bom = '\uFEFF';
+
+                // Helper: escape a CSV field (wrap in quotes if needed)
+                function csvField(val) {
+                    var s = val != null ? String(val) : '';
+                    return '"' + s.replace(/"/g, '""') + '"';
+                }
+
+                // Header row
+                var header = cols.map(csvField).join(',');
+
+                // Data rows
+                var dataRows = rows.map(function(r) {
+                    return cols.map(function(c) {
+                        return csvField(r[c]);
+                    }).join(',');
+                });
+
+                // Combine
+                var csv = bom + header + '\n' + dataRows.join('\n');
+
+                // Create blob and download
+                var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                var url = URL.createObjectURL(blob);
+                var link = document.createElement('a');
+                link.href = url;
+
+                // Filename: drill-{cardId}-level-{level}-{yyyyMMdd-HHmm}.csv
+                var now = new Date();
+                var pad = function(n) { return String(n).padStart(2, '0'); };
+                var timestamp = now.getFullYear()
+                    + pad(now.getMonth() + 1)
+                    + pad(now.getDate()) + '-'
+                    + pad(now.getHours())
+                    + pad(now.getMinutes());
+                link.download = 'drill-' + st.cardId + '-level-' + st.currentLevel + '-' + timestamp + '.csv';
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+            window.wdExportCsv = wdExportCsv;
 
             function wdCloseDrillModal() {
+                wdDestroyDrillCharts();
+                window.__drillState = null;
                 var modal = document.getElementById('wd-drill-modal');
                 if (modal) {
                     modal.hidden = true;
                     document.body.style.overflow = '';
-                    // Destroy any charts rendered inside the modal to prevent memory leaks
-                    var body = document.getElementById('wd-drill-modal-body');
-                    if (body) body.innerHTML = '';
                 }
+                var body = document.getElementById('wd-drill-modal-body');
+                if (body) body.innerHTML = '';
+                var footerEl = document.getElementById('wd-drill-modal-footer');
+                if (footerEl) footerEl.innerHTML = '';
+                var crumbEl = document.getElementById('wd-drill-modal-breadcrumb');
+                if (crumbEl) crumbEl.innerHTML = '';
             }
 
             function wdCheckConnection() {
@@ -1710,6 +2551,47 @@ else
                         toggle.querySelector('svg').innerHTML = document.body.classList.contains('wd-dashboard--focus')
                             ? '<path d="M8 3v3a2 2 0 01-2 2H3"/><path d="M21 8h-3a2 2 0 01-2-2V3"/><path d="M16 21v-3a2 2 0 012-2h3"/><path d="M3 16h3a2 2 0 012 2v3"/>'
                             : '<path d="M8 3H5a2 2 0 00-2 2v3"/><path d="M21 8V5a2 2 0 00-2-2h-3"/><path d="M16 21h3a2 2 0 002-2v-3"/><path d="M3 16v3a2 2 0 002 2h3"/>';
+                    });
+                })();
+
+                // === Layout Edit Mode Toggle (TASK-CARD-LAYOUT-EDIT-001) ===
+                (function() {
+                    var toggle = document.getElementById('wd-layout-edit-toggle');
+                    if (!toggle) return;
+
+                    var STORAGE_KEY = 'wd-layout-edit';
+
+                    // Restore persisted state
+                    if (localStorage.getItem(STORAGE_KEY) === 'true') {
+                        document.body.classList.add('wd-layout-edit-active');
+                        toggle.classList.add('active');
+                    }
+
+                    // Apply hidden attribute removal when edit mode is active on load
+                    function syncResizeVisibility(isActive) {
+                        document.querySelectorAll('.wd-card__resize').forEach(function(el) {
+                            if (isActive) {
+                                el.removeAttribute('hidden');
+                                el.removeAttribute('aria-hidden');
+                            } else {
+                                el.setAttribute('hidden', '');
+                                el.setAttribute('aria-hidden', 'true');
+                            }
+                        });
+                    }
+                    // Initial sync (in case state was restored from localStorage)
+                    syncResizeVisibility(document.body.classList.contains('wd-layout-edit-active'));
+
+                    toggle.addEventListener('click', function() {
+                        var isActive = document.body.classList.toggle('wd-layout-edit-active');
+                        toggle.classList.toggle('active', isActive);
+                        localStorage.setItem(STORAGE_KEY, isActive);
+
+                        syncResizeVisibility(isActive);
+
+                        if (typeof showToast === 'function') {
+                            showToast(isActive ? 'success' : 'info', isActive ? 'تم تفعيل وضع تعديل التخطيط' : 'تم إيقاف وضع تعديل التخطيط');
+                        }
                     });
                 })();
 
@@ -1968,10 +2850,20 @@ else
                 card.setAttribute('data-grid-w', preset.w);
                 card.setAttribute('data-grid-h', preset.h);
 
-                // Resize any ApexCharts inside this card
+                // Resize ApexCharts inside this card (main chart + spark via density sync)
                 var cardId = card.getAttribute('data-card-id');
-                if (window.CHARTS_INSTANCES && window.CHARTS_INSTANCES[cardId]) {
-                    try { window.CHARTS_INSTANCES[cardId].windowResizeSync(); } catch (ex) { /* ignore */ }
+                var chartEntry = window.CHARTS_INSTANCES && window.CHARTS_INSTANCES[cardId];
+                if (chartEntry) {
+                    var ctrl = chartEntry.control || chartEntry;
+                    try {
+                        if (ctrl && typeof ctrl.windowResizeSync === 'function') ctrl.windowResizeSync();
+                        else if (ctrl && typeof ctrl.resize === 'function') ctrl.resize();
+                    } catch (ex) { /* ignore */ }
+                }
+
+                // KPI adaptive shell: update size class + sparkline resize
+                if (typeof window.wdSyncKpiDensity === 'function') {
+                    window.wdSyncKpiDensity(card);
                 }
 
                 // Save layout

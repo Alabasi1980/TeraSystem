@@ -124,7 +124,15 @@
 [data-theme="midnight"] .apexcharts-legend-text { color: var(--c-text-muted) !important; }
 [data-theme="midnight"] .apexcharts-radialbar-area { opacity: 0.95; }
 /* --- Dark mode modal overlay --- */
-[data-theme="midnight"] .wd-modal__overlay { background: rgba(0,0,0,0.7); }
+[data-theme="midnight"] .wd-modal__overlay { background: rgba(0,0,0,0.75); }
+[data-theme="midnight"] .wd-modal__body { background: var(--c-bg); }
+[data-theme="midnight"] .wd-modal__breadcrumb { background: var(--c-surface-muted); }
+[data-theme="midnight"] .wd-modal__footer { background: var(--c-surface); }
+[data-theme="midnight"] .wd-modal .wd-table-wrap { background: var(--c-surface); border-color: var(--c-border); }
+[data-theme="midnight"] .wd-modal .wd-table__footer { background: var(--c-surface-muted); }
+[data-theme="midnight"] .wd-drill-selection-table { background: var(--c-surface); border-color: var(--c-border); }
+[data-theme="midnight"] .wd-drill-selection-table__header { background: var(--c-surface-muted); border-color: var(--c-border); }
+[data-theme="midnight"] .wd-modal__crumb--active { background: var(--c-surface); border-color: var(--c-border); }
 [data-theme="emerald"] {
     --c-primary:        #1a7a4a;
     --c-primary-strong: #0f5c37;
@@ -433,6 +441,7 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     display: flex; align-items: center; justify-content: space-between;
     gap: var(--sp-3);
     margin-bottom: var(--sp-3);
+    min-width: 0;
 }
 .wd-card__title-wrap {
     position: relative;
@@ -442,7 +451,17 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     min-width: 0;
     flex: 1 1 auto;
 }
-.wd-card__title { font-size: 18px; font-weight: 600; margin: 0; color: var(--c-text); }
+.wd-card__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--c-text);
+    line-height: 1.35;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 .wd-card__hint {
     position: relative;
     display: inline-flex;
@@ -525,8 +544,10 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     transform: translateX(-50%) rotate(45deg);
 }
 .wd-card__type {
-    font-size: 12px; font-weight: 600; color: var(--c-text-muted);
-    background: var(--c-surface-muted); padding: 2px 10px; border-radius: var(--radius-full);
+    font-size: 11px; font-weight: 700; color: var(--c-text-muted);
+    background: var(--c-surface-muted); padding: 2px 8px; border-radius: var(--radius-full);
+    line-height: 1.35;
+    white-space: nowrap;
 }
 .wd-card__body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
 
@@ -677,52 +698,177 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     animation: wdSlideUp 0.3s ease both;
 }
 
-/* ===== Drill-down Modal (TASK-DASH-004) ===== */
+/* ===== Drill-down Modal (TASK-DRILL-MODAL-REDESIGN-001) ===== */
 .wd-modal {
-    position: fixed; inset: 0; z-index: 3000;
+    position: fixed; inset: 0; z-index: 9999;
     display: flex; align-items: center; justify-content: center;
-    padding: var(--sp-4);
+    padding: var(--sp-6);
+    min-height: 100vh;
+    animation: wdFadeIn 0.25s var(--ease) both;
 }
 .wd-modal[hidden] { display: none !important; }
 .wd-modal__overlay {
     position: absolute; inset: 0;
-    background: rgba(10,37,64,0.6);
-    backdrop-filter: blur(4px);
-    animation: wdFadeIn 0.2s ease both;
+    background: rgba(10, 37, 64, 0.65);
+    backdrop-filter: blur(6px);
+    animation: wdFadeIn 0.25s var(--ease) both;
 }
 .wd-modal__panel {
     position: relative;
+    z-index: 1;
     background: var(--c-surface);
     border: 1px solid var(--c-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
-    width: min(900px, 90vw);
-    max-height: 85vh;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl), 0 0 0 1px rgba(31, 78, 121, 0.06);
+    width: min(960px, 92vw);
+    max-height: 88vh;
+    overflow: hidden;
     display: flex; flex-direction: column;
-    animation: wdSlideUp 0.3s ease both;
+    animation: wdModalSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+@keyframes wdModalSlideUp {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- Modal Header --- */
 .wd-modal__header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: var(--sp-6);
-    border-bottom: 1px solid var(--c-border);
+    padding: var(--sp-5) var(--sp-6);
+    background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-strong) 100%);
+    color: #fff;
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
 }
-.wd-modal__title { font-size: 18px; font-weight: 700; margin: 0; color: var(--c-text); }
+.wd-modal__header::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    inset-inline-end: -10%;
+    width: 180px;
+    height: 180px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.wd-modal__header::after {
+    content: '';
+    position: absolute;
+    bottom: -40%;
+    inset-inline-start: 20%;
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.wd-modal__title {
+    font-size: 17px; font-weight: 700; margin: 0; color: #fff;
+    display: flex; align-items: center; gap: var(--sp-2);
+    position: relative; z-index: 1;
+    letter-spacing: 0.01em;
+}
+.wd-modal__title-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.15);
+    font-size: 16px;
+    flex-shrink: 0;
+}
 .wd-modal__close {
-    background: none; border: none;
-    font-size: 24px; cursor: pointer;
-    color: var(--c-text-muted);
-    padding: 4px 8px; border-radius: var(--radius-md);
-    transition: background var(--dur-fast) var(--ease);
+    position: relative; z-index: 1;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    font-size: 20px; cursor: pointer;
+    color: #fff;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; border-radius: var(--radius-md);
+    transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+    line-height: 1;
 }
-.wd-modal__close:hover { background: var(--c-surface-muted); }
+.wd-modal__close:hover {
+    background: rgba(255, 255, 255, 0.24);
+    transform: scale(1.05);
+}
+
+/* --- Modal Breadcrumb --- */
 .wd-modal__breadcrumb {
     padding: var(--sp-3) var(--sp-6);
     font-size: 13px; color: var(--c-text-muted);
     display: flex; align-items: center; flex-wrap: wrap;
+    background: var(--c-surface-muted);
+    border-bottom: 1px solid var(--c-border);
+    gap: var(--sp-1);
+    flex-shrink: 0;
 }
+
+/* --- Modal Body --- */
 .wd-modal__body {
     flex: 1 1 auto; overflow: auto;
     padding: var(--sp-6);
+    background: var(--c-bg);
+    min-height: 200px;
+}
+
+/* --- Modal Footer --- */
+.wd-modal__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-6);
+    border-top: 1px solid var(--c-border);
+    flex-wrap: wrap;
+    background: var(--c-surface);
+    flex-shrink: 0;
+}
+.wd-modal__footer .wd-btn {
+    font-family: var(--font-ar);
+}
+.wd-modal__footer-hint {
+    font-size: 12px;
+    color: var(--c-text-muted);
+    margin-inline-end: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-weight: 500;
+}
+.wd-modal__footer-hint::before {
+    content: '💡';
+    font-size: 13px;
+}
+.wd-modal__footer-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-text-muted);
+    background: var(--c-surface-muted);
+    padding: 5px 14px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--c-border);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+}
+.wd-modal__footer-badge::before {
+    content: '✓';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full);
+    background: var(--c-success);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
 }
 .wd-hud__header {
     display: flex; align-items: center; justify-content: space-between;
@@ -756,6 +902,326 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     white-space: nowrap;
 }
 .wd-hud__row span { flex: 1; }
+
+/* ===== Drill-down Modal — Selection Feedback (TASK-DRILL-MODAL-REDESIGN-001) ===== */
+.wd-modal__crumb {
+    font-size: 13px;
+    color: var(--c-text-muted);
+    background: none;
+    border: none;
+    cursor: default;
+    font-family: var(--font-ar);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.wd-modal__crumb--link {
+    color: var(--c-primary);
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+}
+.wd-modal__crumb--link:hover {
+    color: var(--c-primary-strong);
+    background: rgba(31, 78, 121, 0.08);
+}
+.wd-modal__crumb--active {
+    color: var(--c-text);
+    font-weight: 700;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    box-shadow: var(--shadow-sm);
+}
+.wd-modal__crumb-sep {
+    margin: 0 2px;
+    color: var(--c-text-muted);
+    font-size: 11px;
+    opacity: 0.5;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* --- Drill Skeleton Loading --- */
+.wd-drill-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    padding: var(--sp-6);
+    animation: wdFadeUp var(--dur-norm) var(--ease) both;
+}
+.wd-drill-skeleton__header {
+    display: flex;
+    gap: var(--sp-3);
+    align-items: center;
+}
+.wd-drill-skeleton__circle {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+    background-size: 200% 100%;
+    animation: wdShimmer 1.5s ease-in-out infinite;
+}
+.wd-drill-skeleton__lines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+.wd-drill-skeleton__line {
+    height: 14px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+    background-size: 200% 100%;
+    animation: wdShimmer 1.5s ease-in-out infinite;
+}
+.wd-drill-skeleton__line--short { width: 40%; }
+.wd-drill-skeleton__line--medium { width: 70%; }
+.wd-drill-skeleton__table {
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+.wd-drill-skeleton__table-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-bottom: 1px solid var(--c-border);
+}
+.wd-drill-skeleton__table-row:last-child { border-bottom: none; }
+.wd-drill-skeleton__table-row:first-child {
+    background: var(--c-surface-muted);
+}
+.wd-drill-skeleton__cell {
+    height: 12px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+    background-size: 200% 100%;
+    animation: wdShimmer 1.5s ease-in-out infinite;
+}
+.wd-drill-skeleton__text-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-8) var(--sp-6);
+}
+.wd-drill-skeleton__spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--c-border);
+    border-top-color: var(--c-primary);
+    border-radius: var(--radius-full);
+    animation: wdSpin 0.8s linear infinite;
+}
+.wd-drill-skeleton__loading-text {
+    font-size: 14px;
+    color: var(--c-text-muted);
+    font-weight: 500;
+}
+
+/* --- Drill Empty State --- */
+.wd-drill-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: var(--sp-12) var(--sp-6);
+    text-align: center;
+    animation: wdFadeUp var(--dur-norm) var(--ease) both;
+}
+.wd-drill-empty__icon {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-full);
+    background: var(--c-surface-muted);
+    color: var(--c-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    border: 2px dashed var(--c-border);
+}
+.wd-drill-empty h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--c-text);
+}
+.wd-drill-empty p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--c-text-muted);
+    max-width: 360px;
+    line-height: 1.6;
+}
+
+/* --- Drill Error State --- */
+.wd-drill-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: var(--sp-12) var(--sp-6);
+    text-align: center;
+    animation: wdFadeUp var(--dur-norm) var(--ease) both;
+}
+.wd-drill-error__icon {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-full);
+    background: rgba(214, 69, 69, 0.10);
+    color: var(--c-error);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+.wd-drill-error h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--c-text);
+}
+.wd-drill-error p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--c-text-muted);
+    max-width: 360px;
+    line-height: 1.6;
+}
+
+/* --- Drill Table in Modal --- */
+.wd-modal .wd-table-wrap {
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-md);
+    background: var(--c-surface);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+.wd-modal .wd-table thead th {
+    background: var(--c-primary);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--c-primary-strong);
+}
+.wd-modal .wd-table tbody tr {
+    cursor: pointer;
+    transition: background var(--dur-fast) var(--ease),
+                box-shadow var(--dur-fast) var(--ease),
+                transform var(--dur-fast) var(--ease);
+}
+.wd-modal .wd-table tbody tr:hover {
+    background: color-mix(in srgb, var(--c-primary) 8%, var(--c-surface));
+    box-shadow: inset 3px 0 0 var(--c-primary);
+}
+.wd-modal .wd-table tbody tr.wd-drill-row--selected {
+    background: color-mix(in srgb, var(--c-primary) 14%, var(--c-surface)) !important;
+    box-shadow: inset 4px 0 0 var(--c-primary), 0 1px 4px rgba(31, 78, 121, 0.12) !important;
+    font-weight: 600;
+}
+.wd-modal .wd-table tbody tr.wd-drill-row--selected td {
+    color: var(--c-primary-strong);
+}
+.wd-modal .wd-table tbody td {
+    padding: 12px 16px;
+}
+.wd-modal .wd-table__footer {
+    background: var(--c-surface-muted);
+    border-top: 1px solid var(--c-border);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* --- Drill Selection Table (under charts) --- */
+.wd-drill-selection-table {
+    margin-top: var(--sp-4);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--c-surface);
+    box-shadow: var(--shadow-sm);
+}
+.wd-drill-selection-table__header {
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--c-surface-muted);
+    border-bottom: 1px solid var(--c-border);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+}
+.wd-drill-selection-table__header::before {
+    content: '👇';
+    font-size: 14px;
+}
+.wd-drill-selection-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: var(--font-ar);
+}
+.wd-drill-selection-table tbody tr {
+    cursor: pointer;
+    transition: background var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    border-bottom: 1px solid var(--c-border);
+}
+.wd-drill-selection-table tbody tr:last-child { border-bottom: none; }
+.wd-drill-selection-table tbody tr:hover {
+    background: color-mix(in srgb, var(--c-primary) 8%, var(--c-surface));
+    box-shadow: inset 3px 0 0 var(--c-primary);
+}
+.wd-drill-selection-table tbody tr.wd-drill-row--selected {
+    background: color-mix(in srgb, var(--c-primary) 14%, var(--c-surface)) !important;
+    box-shadow: inset 4px 0 0 var(--c-primary) !important;
+    font-weight: 600;
+}
+.wd-drill-selection-table tbody td {
+    padding: 10px 16px;
+    color: var(--c-text);
+    border-bottom: 1px solid var(--c-border);
+}
+.wd-drill-selection-table tbody tr:last-child td { border-bottom: none; }
+
+/* --- Drill KPI Display in Modal --- */
+.wd-drill-kpi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-12) var(--sp-6);
+    text-align: center;
+    animation: wdFadeUp var(--dur-norm) var(--ease) both;
+}
+.wd-drill-kpi__value {
+    font-size: clamp(40px, 6vw, 56px);
+    font-weight: 800;
+    color: var(--c-primary);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    animation: wdKpiHeroIn var(--dur-norm) var(--ease) both;
+}
+.wd-drill-kpi__label {
+    font-size: 16px;
+    color: var(--c-text-muted);
+    margin-top: var(--sp-3);
+    font-weight: 500;
+}
+.wd-drill-kpi__next-btn {
+    margin-top: var(--sp-6);
+}
 
 /* ===== Sync Status Badge ===== */
 .wd-sync-status {
@@ -854,13 +1320,18 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
 .wd-card__controls {
     display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: flex-end;
+    gap: var(--sp-2);
     margin-inline-start: auto;
+    min-width: 0;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
 }
 .wd-card__resize {
     display: flex;
     gap: 2px;
 }
+.wd-card__resize[hidden] { display: none !important; }
 .wd-resize-btn {
     width: 24px;
     height: 24px;
@@ -894,8 +1365,8 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
 
 /* ============================ Per-card Refresh (TASK-DASH-005) ============================ */
 .wd-card__refresh {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -962,6 +1433,10 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
 
 /* Card cursor: grab for drag handle */
 .wd-card__header { cursor: default; }
+.wd-span-1 .wd-card__type,
+.wd-span-2 .wd-card__type,
+.wd-span-3 .wd-card__type,
+.wd-row-1 .wd-card__type { display: none; }
 
 /* ============================ Responsive (§5) ============================ */
 /* Tablet: ignore absolute X / Y placement, keep spans (shrunk), auto-pack densely. */
@@ -1029,19 +1504,51 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
         gap: var(--sp-2);
     }
 
-    /* Modal mobile (TASK-DASH-004) */
+    /* Modal mobile (TASK-DRILL-MODAL-REDESIGN-001) */
     .wd-modal {
         padding: var(--sp-2);
     }
     .wd-modal__panel {
         width: 100%;
-        max-height: 90vh;
+        max-height: 92vh;
+        border-radius: var(--radius-lg);
     }
     .wd-modal__header {
-        padding: var(--sp-4);
+        padding: var(--sp-3) var(--sp-4);
+    }
+    .wd-modal__title {
+        font-size: 15px;
+    }
+    .wd-modal__title-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    .wd-modal__close {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+    }
+    .wd-modal__breadcrumb {
+        padding: var(--sp-2) var(--sp-4);
+        font-size: 12px;
     }
     .wd-modal__body {
         padding: var(--sp-4);
+    }
+    .wd-modal__footer {
+        padding: var(--sp-3) var(--sp-4);
+        gap: var(--sp-2);
+    }
+    .wd-drill-skeleton__table-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .wd-drill-empty,
+    .wd-drill-error {
+        padding: var(--sp-8) var(--sp-4);
+    }
+    .wd-drill-kpi {
+        padding: var(--sp-8) var(--sp-4);
     }
 
     /* Date presets mobile (TASK-DASH-004) */
@@ -1056,10 +1563,12 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
         min-width: 0;
     }
 
-    /* Resize controls mobile (TASK-DASH-005) */
+    /* Public header controls: keep refresh visible, hide edit-like resize controls. */
     .wd-resize-btn { width: 22px; height: 22px; font-size: 10px; }
     .wd-card__refresh { width: 26px; height: 26px; }
-    .wd-card__header { align-items: flex-start; }
+    .wd-card__header { align-items: flex-start; gap: var(--sp-2); }
+    .wd-card__controls { gap: 6px; flex-wrap: nowrap; }
+    .wd-card__type { display: none; }
     .wd-card__title-wrap { max-width: 100%; }
     .wd-card__hint::after {
         inset-inline-start: 0;
@@ -1081,11 +1590,40 @@ a.wd-topbar__brand:hover .wd-topbar__logo-img {
     }
 }
 
+/* ============================ Layout Edit Mode (TASK-CARD-LAYOUT-EDIT-001) ============================ */
+/* Hide card resize controls unless layout-edit-active is toggled on body */
+body:not(.wd-layout-edit-active) .wd-card__resize {
+    display: none !important;
+}
+/* Subtle pulsing border hint on cards when edit mode is active */
+body.wd-layout-edit-active .wd-card {
+    border-color: var(--c-secondary);
+    box-shadow: 0 0 0 1px var(--c-secondary), var(--shadow-md);
+    transition: border-color var(--dur-norm) var(--ease), box-shadow var(--dur-norm) var(--ease), transform var(--dur-norm) var(--ease);
+}
+body.wd-layout-edit-active .wd-card:hover {
+    box-shadow: 0 0 0 2px var(--c-secondary), var(--shadow-lg);
+}
+
+/* Layout Edit Toggle Button */
+.wd-layout-edit-toggle {
+    flex-shrink: 0;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.wd-layout-edit-toggle.active {
+    background: var(--c-primary);
+    color: #fff;
+    border-color: var(--c-primary);
+}
+
 /* ============================ Date Filter Mode Indicator (TASK-CARD-UX-006) ============================ */
 .wd-card__date-mode {
     display: block;
     font-size: 11px;
-    color: var(--wd-text-muted, #888);
+    color: var(--c-text-muted, #888);
     line-height: 1.4;
     margin-top: 2px;
     margin-bottom: 4px;

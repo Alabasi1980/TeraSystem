@@ -120,7 +120,47 @@
 
 ---
 
-## 10. Handback Placeholder
+## 10. Handback
+
+| البند | القيمة |
+|---|---|
+| **الحالة** | Submitted |
+| **التاريخ** | 2026-07-19 |
+| **المعرّف** | TASK-CARD-BUILDER-01 |
+| **التنفيذ** | ui-designer |
+
+### التعديلات
+
+1. **_CardsLayout.cshtml:**
+   - استبدال Chart.js CDN بـ ApexCharts CDN (نفس المكتبة المستخدمة في الداشبورد)
+
+2. **card-builder.js — `renderChart()`:**
+   - استبدال `global.ej.charts.Chart` بـ `new ApexCharts(host, cfg)`
+   - استبدال `global.ej.grids.Grid` بـ `renderPreviewTable()`
+   - تغيير `_previewComp` → `_previewChart`
+   - إضافة دعم Gauge مع ApexCharts radialBar
+
+3. **card-builder.js — `renderPreviewTable()` (جديد):**
+   - HTML table مع CSS inline styles متوافقة مع الداشبورد
+   - ColorPalette header accent
+   - Zebra striping
+   - Footer row counter
+
+### Acceptance Criteria — تحقق
+
+| # | المعيار | الحالة |
+|---|---------|--------|
+| 1 | Charts يستخدم ApexCharts بدلاً من Syncfusion | ✅ |
+| 2 | Table يستخدم HTML table بدلاً من Syncfusion Grid | ✅ |
+| 3 | Gauge يستخدم ApexCharts radialBar | ✅ |
+| 4 | الألوان تأتي من ColorPalette | ✅ |
+| 5 | RTL support | ✅ |
+| 6 | dotnet build ينجح | ✅ (0 warnings, 0 errors) |
+
+### الملفات المعدّلة
+
+- `_CardsLayout.cshtml` — ApexCharts CDN
+- `card-builder.js` — renderChart + renderPreviewTable
 
 ---
 

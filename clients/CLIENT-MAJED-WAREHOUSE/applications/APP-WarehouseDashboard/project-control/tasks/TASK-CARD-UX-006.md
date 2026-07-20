@@ -158,3 +158,30 @@ D:\Teranoo Foundation\TeraSystem\TeraSystem-master\clients\CLIENT-MAJED-WAREHOUS
 - تأكد من تحديث كل مكان يستخدم `new CardLayoutInfo(...)` — حالياً في `OnGetAsync` فقط
 - المؤشر يجب أن يظهر داخل الـ `.wd-card__header` بعد الـ title وقبل الـ `.wd-card__body`
 - استخدم `direction: ltr` للتواريخ (fixed) لأنها أرقام إنكليزية، و `direction: rtl` للنصوص العربية
+
+---
+
+## 7. Handback
+
+| البند | القيمة |
+|---|---|
+| **الحالة** | Submitted |
+| **التاريخ** | 2026-07-19 |
+| **المعرّف** | TASK-CARD-UX-006 |
+| **التنفيذ** | engineering-agent-dotnet |
+
+### التعديلات
+
+1. **Index.cshtml.cs:** `CardLayoutInfo` record يحتوي على 4 حقول جديدة (`DateFilterMode`, `FixedStartDate`, `FixedEndDate`, `RelativeDays`) + LINQ Select محدّث
+2. **Index.cshtml:** Razor template يعرض `<span class="wd-card__date-mode">` بعد العنوان مع فروع `fixed` و `relative`
+3. **blue-theme.css:** تصحيح CSS token من `--wd-text-muted` → `--c-text-muted`
+
+### Acceptance Criteria — تحقق
+
+| # | المعيار | الحالة |
+|---|---------|--------|
+| AC-1 | بطاقة fixed تعرض النطاق الثابت | ✅ |
+| AC-2 | بطاقة relative تعرض "آخر N أيام" | ✅ |
+| AC-3 | بطاقة dashboard لا تعرض مؤشر | ✅ |
+| AC-4 | المؤشر خفيف (11px, muted) | ✅ |
+| AC-5 | dotnet build ناجح | ✅ (0 warnings, 0 errors) |

@@ -98,7 +98,7 @@
     };
 
     this.tables = [];
-    this._previewComp = null;
+    this._previewChart = null;
     this._lastResult = null;
     this._lastChartType = null;
     this._previewTimer = null;
@@ -947,48 +947,123 @@
     var content = $('wb-preview-content');
     if (!content) return;
     content.innerHTML = '';
-    if (this._previewComp && typeof this._previewComp.destroy === 'function') {
-      try { this._previewComp.destroy(); } catch (e) { /* ignore */ }
+    // Destroy previous chart
+    if (this._previewChart) {
+      try { this._previewChart.destroy(); } catch (e) { /* ignore */ }
     }
-    this._previewComp = null;
+    this._previewChart = null;
 
     var host = document.createElement('div');
     host.style.width = '100%';
     var isTable = (result.chartType === 'Table');
+    var isGauge = (result.chartType === 'Gauge');
     host.style.height = isTable ? '360px' : '340px';
     content.appendChild(host);
 
     try {
+      var colors = self.getPaletteColors();
+      
       if (isTable) {
-        var gridCfg = {};
-        if (result.chartConfig) {
-          for (var k in result.chartConfig) { if (result.chartConfig.hasOwnProperty(k)) gridCfg[k] = result.chartConfig[k]; }
-        }
-        gridCfg.dataSource = result.sampleData || [];
-        if (!gridCfg.columns) {
-          gridCfg.columns = (result.columns || []).map(function (c) { return { field: c, headerText: c, width: '120' }; });
-        }
-        gridCfg.allowSorting = true;
-        gridCfg.allowPaging = false;
-        gridCfg.height = '100%';
-        this._previewComp = new global.ej.grids.Grid(gridCfg, host);
+        // HTML Table rendering (matching dashboard style)
+        self.renderPreviewTable(host, result, colors);
+      } else if (isGauge) {
+        // ApexCharts radialBar for Gauge
+        var val = result.kpiValue || 50;
+        var max = val <= 0 ? 100 : (val <= 100 ? 100 : Math.ceil(val * 1.2));
+        var pct = Math.min(Math.round((val / max) * 100), 100);
+        
+        self._previewChart = new ApexCharts(host, {
+          chart: { type: 'radialBar', height: '100%', toolbar: { show: false }, rtl: true, fontFamily: 'Cairo, sans-serif', background: 'transparent' },
+          series: [pct],
+          labels: [result.title || 'Gauge'],
+          plotOptions: {
+            radialBar: {
+              startAngle: -135, endAngle: 135,
+              hollow: { size: '70%', background: 'transparent' },
+              track: { background: '#D4E2F0', strokeWidth: '100%', margin: 0 },
+              dataLabels: {
+                name: { show: true, fontSize: '13px', fontWeight: 500, color: '#5B7A99', offsetY: -10 },
+                value: { show: true, fontSize: '24px', fontWeight: 700, color: '#102A43', formatter: function() { return val; } }
+              }
+            }
+          },
+          colors: [(colors && colors[0]) || '#2E6DA4'],
+          stroke: { lineCap: 'round' },
+          fill: { type: 'gradient', gradient: { shade: 'dark', type: 'horizontal', shadeIntensity: 0.3, gradientToColors: [(colors && colors[0]) || '#1F4E79'], stops: [0, 100] } }
+        });
+        self._previewChart.render();
       } else {
-        var cfg = {};
-        if (result.chartConfig) {
-          for (var k2 in result.chartConfig) { if (result.chartConfig.hasOwnProperty(k2)) cfg[k2] = result.chartConfig[k2]; }
-        }
-        cfg.width = '100%';
-        cfg.height = '100%';
-        var colors = self.getPaletteColors();
-        if (colors && colors.length) cfg.palettes = [colors];
-        // Gauge produces a "LinearGauge" series which is not a Chart series type — fall back to Column.
-        if (cfg.series && cfg.series[0] && cfg.series[0].type === 'LinearGauge') cfg.series[0].type = 'Column';
-        this._previewComp = new global.ej.charts.Chart(cfg, host);
+        // ApexCharts for Bar/Line/Pie
+        var typeMap = { Bar: 'bar', Line: 'line', Pie: 'pie' };
+        var type = typeMap[result.chartType] || 'bar';
+        var isPie = result.chartType === 'Pie';
+        var isLine = result.chartType === 'Line';
+        
+        var seriesData = (result.sampleData || []).map(function(r) { return r[result.columns && result.columns[1]] || 0; });
+        var labels = (result.sampleData || []).map(function(r) { return r[result.columns && result.columns[0]] || ''; });
+        
+        var series = isPie ? seriesData : [{ name: result.title || 'Chart', data: seriesData }];
+        
+        self._previewChart = new ApexCharts(host, {
+          chart: { type: type, height: '100%', toolbar: { show: false }, rtl: true, fontFamily: 'Cairo, sans-serif', background: 'transparent', animations: { enabled: true, speed: 600 } },
+          colors: isPie ? (colors || ['#1F4E79']) : [(colors && colors[0]) || '#1F4E79'],
+          series: series,
+          labels: isPie ? labels : undefined,
+          plotOptions: isPie ? {} : { bar: { borderRadius: 4, columnWidth: '60%' } },
+          xaxis: isPie ? undefined : { categories: labels, labels: { style: { colors: '#5B7A99', fontSize: '12px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+          yaxis: isPie ? undefined : { labels: { style: { colors: '#5B7A99', fontSize: '12px' } } },
+          grid: isPie ? {} : { borderColor: '#D4E2F0', strokeDashArray: 0, xaxis: { lines: { show: false } }, yaxis: { lines: { show: true } } },
+          stroke: isPie ? {} : { show: true, width: isLine ? 2.5 : 0, curve: isLine ? 'smooth' : 'straight' },
+          fill: isPie ? {} : { type: isLine ? 'gradient' : 'solid', gradient: isLine ? { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [50, 100] } : undefined },
+          dataLabels: isPie ? { enabled: true, style: { fontSize: '12px', fontWeight: 600 } } : { enabled: false },
+          legend: isPie ? { position: 'bottom', fontSize: '12px' } : { show: false },
+          tooltip: { enabled: true, style: { fontSize: '13px' } }
+        });
+        self._previewChart.render();
       }
     } catch (e) {
-      this.setConnection('offline');
-      this.setPreviewState('error', 'تعذر عرض العنصر: ' + (e && e.message ? e.message : e));
+      self.setConnection('offline');
+      self.setPreviewState('error', 'تعذر عرض العنصر: ' + (e && e.message ? e.message : e));
     }
+  };
+
+  /* ----------------------- TABLE PREVIEW (HTML — matching dashboard) ----------------------- */
+  CardBuilderWizard.prototype.renderPreviewTable = function (host, result, colors) {
+    var cols = result.columns || [];
+    var rows = result.sampleData || [];
+    var accentColor = (colors && colors[0]) || '#1F4E79';
+    
+    var html = '<div style="width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden;border-radius:8px;">';
+    html += '<div style="flex:1;1;auto;overflow-y:auto;">';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:13px;font-family:Cairo,sans-serif;direction:rtl;">';
+    
+    // Header
+    html += '<thead><tr>';
+    cols.forEach(function(c) {
+      html += '<th style="padding:10px 14px;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.03em;color:#fff;text-align:right;white-space:nowrap;position:sticky;top:0;z-index:1;border-bottom:2px solid rgba(255,255,255,0.15);background:' + accentColor + ';">' + escapeHtml(c) + '</th>';
+    });
+    html += '</tr></thead>';
+    
+    // Body
+    html += '<tbody>';
+    rows.forEach(function(r, idx) {
+      var bg = idx % 2 === 0 ? 'transparent' : 'rgba(212,226,240,0.3)';
+      html += '<tr style="border-bottom:1px solid #e2e8f0;background:' + bg + ';">';
+      cols.forEach(function(c) {
+        html += '<td style="padding:10px 14px;text-align:right;color:#102A43;">' + escapeHtml(String(r[c] != null ? r[c] : '')) + '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    html += '</div>';
+    
+    // Footer
+    html += '<div style="display:flex;align-items:center;padding:8px 14px;background:#f0f4f8;border-top:1px solid #e2e8f0;font-size:12px;font-weight:600;color:#5B7A99;">';
+    html += '<span>' + rows.length + ' صف</span>';
+    html += '</div>';
+    html += '</div>';
+    
+    host.innerHTML = html;
   };
 
   /* ----------------------- PREVIEW STATES ----------------------- */

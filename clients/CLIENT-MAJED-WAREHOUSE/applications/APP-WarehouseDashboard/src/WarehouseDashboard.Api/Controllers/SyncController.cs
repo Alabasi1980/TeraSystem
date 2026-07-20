@@ -54,7 +54,7 @@ public class SyncController : ControllerBase
 
         try
         {
-            await _syncEngine.RunSyncOnceAsync(cancellationToken);
+            await _syncEngine.RunSyncOnceAsync(cancellationToken, "Manual");
 
             // The engine owns the authoritative status; reflect it in the log entry.
             _logStore.CompleteRun(record, _syncEngine.LastStatus, _syncEngine.LastRecordCount, null);
@@ -199,26 +199,130 @@ public class SyncController : ControllerBase
     }
 
     /// <summary>
-    /// GET /api/sync/logs — the most recent sync runs (newest first, max 100).
-    ///
-    /// NOTE: backed by an in-memory ring buffer (see <see cref="SyncRunLogStore"/>) until the
-    /// structured SyncLogs / ErrorLogs DB tables are implemented. Lost on restart.
+    /// GET /api/sync/logs — returns persisted sync run history (newest first).
+    /// Reads from the SyncRuns DB table via ADO.NET.
     /// </summary>
     [HttpGet("logs")]
-    public IActionResult Logs()
+    public async Task<IActionResult> Logs(CancellationToken ct)
     {
-        var records = _logStore.GetRecent().Select(r => new
-        {
-            startTime = r.StartTime,
-            endTime = r.EndTime,
-            status = r.Status,
-            recordCount = r.RecordCount,
-            duration = r.DurationSeconds,
-            triggerType = r.TriggerType,
-            errorMessage = r.ErrorMessage
-        });
+        var connStr = ConnectionStringHelper.ResolveSql(_configuration);
+        if (string.IsNullOrWhiteSpace(connStr))
+            return Ok(Array.Empty<object>());
 
-        return Ok(records);
+        try
+        {
+            await using var conn = new SqlConnection(connStr);
+            await conn.OpenAsync(ct);
+
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                SELECT Id, StartTime, EndTime, Status, TriggerType,
+                       TotalRecordCount, TotalDurationSeconds
+                FROM SyncRuns
+                ORDER BY StartTime DESC
+                """;
+
+            var records = new List<object>();
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            while (await reader.ReadAsync(ct))
+            {
+                records.Add(new
+                {
+                    id = reader.GetInt32(0),
+                    startTime = reader.GetDateTime(1),
+                    endTime = reader.IsDBNull(2) ? null : (DateTime?)reader.GetDateTime(2),
+                    status = reader.GetString(3),
+                    triggerType = reader.GetString(4),
+                    recordCount = reader.IsDBNull(5) ? null : (int?)reader.GetInt32(5),
+                    duration = reader.IsDBNull(6) ? null : (double?)reader.GetDouble(6)
+                });
+            }
+
+            return Ok(records);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to read sync logs from database.");
+            return Ok(Array.Empty<object>());
+        }
+    }
+
+    /// <summary>
+    /// GET /api/sync/logs/{runId} — returns a single sync run with its per-mapping details.
+    /// </summary>
+    [HttpGet("logs/{runId:int}")]
+    public async Task<IActionResult> LogDetail(int runId, CancellationToken ct)
+    {
+        var connStr = ConnectionStringHelper.ResolveSql(_configuration);
+        if (string.IsNullOrWhiteSpace(connStr))
+            return NotFound();
+
+        try
+        {
+            await using var conn = new SqlConnection(connStr);
+            await conn.OpenAsync(ct);
+
+            // Fetch the run header.
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                SELECT Id, StartTime, EndTime, Status, TriggerType,
+                       TotalRecordCount, TotalDurationSeconds
+                FROM SyncRuns
+                WHERE Id = @runId
+                """;
+            cmd.Parameters.AddWithValue("@runId", runId);
+
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            if (!await reader.ReadAsync(ct))
+            {
+                return NotFound(new { message = $"Sync run {runId} not found." });
+            }
+
+            var run = new
+            {
+                id = reader.GetInt32(0),
+                startTime = reader.GetDateTime(1),
+                endTime = reader.IsDBNull(2) ? null : (DateTime?)reader.GetDateTime(2),
+                status = reader.GetString(3),
+                triggerType = reader.GetString(4),
+                recordCount = reader.IsDBNull(5) ? null : (int?)reader.GetInt32(5),
+                duration = reader.IsDBNull(6) ? null : (double?)reader.GetDouble(6)
+            };
+
+            // Close the header reader before fetching details.
+            await reader.DisposeAsync();
+
+            // Fetch per-mapping details.
+            await using var detailCmd = conn.CreateCommand();
+            detailCmd.CommandText = """
+                SELECT TargetTable, RowsLoaded, Status, DurationSeconds, ErrorMessage
+                FROM SyncRunDetails
+                WHERE SyncRunId = @runId
+                ORDER BY TargetTable
+                """;
+            detailCmd.Parameters.AddWithValue("@runId", runId);
+
+            var details = new List<object>();
+            await using var detailReader = await detailCmd.ExecuteReaderAsync(ct);
+            while (await detailReader.ReadAsync(ct))
+            {
+                details.Add(new
+                {
+                    targetTable = detailReader.GetString(0),
+                    rowsLoaded = detailReader.IsDBNull(1) ? null : (int?)detailReader.GetInt32(1),
+                    status = detailReader.GetString(2),
+                    durationSeconds = detailReader.IsDBNull(3) ? null : (double?)detailReader.GetDouble(3),
+                    errorMessage = detailReader.IsDBNull(4) ? null : detailReader.GetString(4)
+                });
+            }
+
+            return Ok(new { run, details });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to read sync log detail for run {RunId}.", runId);
+            return NotFound(new { message = $"Error reading sync run {runId} details." });
+        }
     }
 
     /// <summary>

@@ -105,7 +105,7 @@ public class SyncEngineService : BackgroundService
     /// arriving during an automatic run simply returns without doing anything.
     /// Mappings are reloaded from the DB at the start of each cycle.
     /// </summary>
-    public async Task RunSyncOnceAsync(CancellationToken ct)
+    public async Task RunSyncOnceAsync(CancellationToken ct, string triggerType = "Auto")
     {
         // Prevent overlap: if a cycle (auto or manual) is already running, skip this invocation.
         if (!await _semaphore.WaitAsync(TimeSpan.Zero, ct))
@@ -113,6 +113,11 @@ public class SyncEngineService : BackgroundService
             _logger.LogWarning("Sync cycle skipped: a previous cycle is still running.");
             return;
         }
+
+        // Tracking variables — declared here so they are accessible in catch blocks too.
+        var cycleStartTime = DateTime.UtcNow;
+        var mappingResults = new List<MappingSyncResult>();
+        var totalRows = 0;
 
         try
         {
@@ -124,7 +129,6 @@ public class SyncEngineService : BackgroundService
 
             _logger.LogInformation("Sync cycle started. {Count} mapping(s) loaded from DB.", _mappings.Count);
 
-            var totalRows = 0;
             foreach (var mapping in _mappings)
             {
                 if (mapping is null)
@@ -132,6 +136,8 @@ public class SyncEngineService : BackgroundService
 
                 var target = mapping.SqlTargetTable;
                 var succeeded = false;
+                var mappingStartTime = DateTime.UtcNow;
+                var mappingRows = 0;
 
                 for (var attempt = 1; attempt <= MaxRetries; attempt++)
                 {
@@ -156,6 +162,7 @@ public class SyncEngineService : BackgroundService
                         _logger.LogInformation(
                             "Sync [{Target}] succeeded: {RowCount} row(s) loaded (mode={Mode}).", target, data.Rows.Count, mapping.SyncMode);
                         totalRows += data.Rows.Count;
+                        mappingRows = data.Rows.Count;
                         succeeded = true;
 
                         // Update watermark for incremental syncs.
@@ -188,6 +195,19 @@ public class SyncEngineService : BackgroundService
                     }
                 }
 
+                // Record per-mapping result.
+                mappingResults.Add(new MappingSyncResult
+                {
+                    Id = mapping.Id,
+                    TargetTable = target,
+                    Status = succeeded ? "success" : "failed",
+                    Rows = mappingRows,
+                    DurationSeconds = Math.Round((DateTime.UtcNow - mappingStartTime).TotalSeconds, 3),
+                    Error = !succeeded
+                        ? $"Exhausted {MaxRetries} attempt(s). See logs for details."
+                        : null
+                });
+
                 if (!succeeded)
                 {
                     _logger.LogError(
@@ -196,11 +216,28 @@ public class SyncEngineService : BackgroundService
                 }
             }
 
-            _logger.LogInformation(
-                "Sync cycle finished. {TotalRows} row(s) loaded across all mappings.", totalRows);
+            // Compute overall status based on per-mapping results.
+            var successCount = mappingResults.Count(m => m.Status == "success");
+            var failCount = mappingResults.Count(m => m.Status == "failed");
+            string overallStatus;
+            if (failCount == 0)
+                overallStatus = "Success";
+            else if (successCount > 0)
+                overallStatus = "Partial";
+            else
+                overallStatus = "Failed";
 
-            // Success: record completion time + totals.
-            SetStatus(running: false, status: "Success", lastSyncTime: DateTime.UtcNow, recordCount: totalRows);
+            _logger.LogInformation(
+                "Sync cycle finished. Status={Status}, {TotalRows} row(s) loaded across {Success}/{Total} mapping(s).",
+                overallStatus, totalRows, successCount, mappingResults.Count);
+
+            // Record completion time + totals.
+            SetStatus(running: false, status: overallStatus, lastSyncTime: DateTime.UtcNow, recordCount: totalRows);
+
+            // Persist sync run log to DB (wrapped: failure must not invalidate a successful data load).
+            await PersistSyncRunToDbAsync(
+                cycleStartTime, DateTime.UtcNow, overallStatus, triggerType,
+                totalRows, DateTime.UtcNow - cycleStartTime, mappingResults, ct);
 
             // Persist the sync timestamp so the dashboard "last sync" indicator is current.
             // Wrapped in try/catch: a failure here must not invalidate a successful data load.
@@ -227,12 +264,23 @@ public class SyncEngineService : BackgroundService
             // status/timestamp so the API reflects the interruption rather than "Running" forever.
             SetRunning(false);
             _logger.LogInformation("Sync cycle aborted (cancellation requested).");
+
+            // Persist cancelled state to DB (best-effort).
+            await PersistSyncRunToDbAsync(
+                cycleStartTime, DateTime.UtcNow, "Cancelled", triggerType,
+                totalRows, DateTime.UtcNow - cycleStartTime, mappingResults, ct);
+
             throw;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Sync cycle failed.");
             SetStatus(running: false, status: "Failed", lastSyncTime: null, recordCount: 0);
+
+            // Persist failed state to DB (best-effort).
+            await PersistSyncRunToDbAsync(
+                cycleStartTime, DateTime.UtcNow, "Failed", triggerType,
+                totalRows, DateTime.UtcNow - cycleStartTime, mappingResults, ct);
         }
         finally
         {
@@ -284,6 +332,7 @@ public class SyncEngineService : BackgroundService
         var totalRows = 0;
         var result = new SelectedSyncResult();
         var runId = progress?.RunId ?? Guid.Empty;
+        var cycleStartTime = DateTime.UtcNow;
 
         foreach (var mapping in mappings)
         {
@@ -298,6 +347,7 @@ public class SyncEngineService : BackgroundService
                 Status = "failed",
                 Rows = 0
             };
+            var mappingStartTime = DateTime.UtcNow;
 
             // Signal progress: this mapping is now running.
             _progressStore.UpdateMapping(runId, mapping.Id, "running", 0);
@@ -334,6 +384,7 @@ public class SyncEngineService : BackgroundService
                     totalRows += data.Rows.Count;
                     mappingResult.Rows = data.Rows.Count;
                     mappingResult.Status = "success";
+                    mappingResult.DurationSeconds = Math.Round((DateTime.UtcNow - mappingStartTime).TotalSeconds, 3);
                     succeeded = true;
 
                     // Signal progress: mapping completed successfully.
@@ -373,6 +424,7 @@ public class SyncEngineService : BackgroundService
             {
                 mappingResult.Status = "failed";
                 mappingResult.Rows = 0;
+                mappingResult.DurationSeconds = Math.Round((DateTime.UtcNow - mappingStartTime).TotalSeconds, 3);
                 mappingResult.Error = $"Exhausted {MaxRetries} attempt(s). See logs for details.";
                 _logger.LogError(
                     "Selected sync [{Target}] (Id={Id}) exhausted {Max} attempts and was skipped.",
@@ -432,7 +484,90 @@ public class SyncEngineService : BackgroundService
             _logger.LogWarning(ex, "Selected sync completed but failed to update LastSyncTimestamp in SyncSettings.");
         }
 
+        // Persist sync run log to DB (best-effort, must not fail the request).
+        var runStatus = result.Status switch
+        {
+            "success" => "Success",
+            "partial" => "Partial",
+            _ => "Failed"
+        };
+        await PersistSyncRunToDbAsync(
+            cycleStartTime, DateTime.UtcNow, runStatus, "Manual",
+            totalRows, DateTime.UtcNow - cycleStartTime, result.Mappings, ct);
+
         return result;
+    }
+
+    /// <summary>
+    /// Persists a sync run (and its per-mapping details) to the SyncRuns / SyncRunDetails tables.
+    /// Called from <see cref="RunSyncOnceAsync"/> and <see cref="RunSelectedMappingsAsync"/> for
+    /// all terminal statuses (Success, Partial, Failed, Cancelled).
+    /// Entirely self-contained try/catch — a failure here must never interrupt or invalidate the
+    /// sync cycle itself.
+    /// </summary>
+    private async Task PersistSyncRunToDbAsync(
+        DateTime startTime,
+        DateTime endTime,
+        string status,
+        string triggerType,
+        int totalRows,
+        TimeSpan totalDuration,
+        List<MappingSyncResult>? mappingResults,
+        CancellationToken ct)
+    {
+        try
+        {
+            var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+            if (string.IsNullOrWhiteSpace(connectionString))
+                return;
+
+            await using var conn = new SqlConnection(connectionString);
+            await conn.OpenAsync(ct);
+
+            // Insert the SyncRun header row; retrieve the generated primary key.
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                INSERT INTO SyncRuns (StartTime, EndTime, Status, TriggerType, TotalRecordCount, TotalDurationSeconds)
+                OUTPUT INSERTED.Id
+                VALUES (@start, @end, @status, @trigger, @count, @duration)
+                """;
+            cmd.Parameters.AddWithValue("@start", startTime);
+            cmd.Parameters.AddWithValue("@end", endTime);
+            cmd.Parameters.AddWithValue("@status", status);
+            cmd.Parameters.AddWithValue("@trigger", triggerType);
+            cmd.Parameters.AddWithValue("@count", totalRows);
+            cmd.Parameters.AddWithValue("@duration", totalDuration.TotalSeconds);
+
+            var runId = (int)await cmd.ExecuteScalarAsync(ct);
+
+            // Insert per-mapping detail rows.
+            if (mappingResults is not null && mappingResults.Count > 0)
+            {
+                foreach (var mr in mappingResults)
+                {
+                    await using var detailCmd = conn.CreateCommand();
+                    detailCmd.CommandText = """
+                        INSERT INTO SyncRunDetails (SyncRunId, TargetTable, RowsLoaded, Status, DurationSeconds, ErrorMessage)
+                        VALUES (@runId, @targetTable, @rowsLoaded, @status, @duration, @error)
+                        """;
+                    detailCmd.Parameters.AddWithValue("@runId", runId);
+                    detailCmd.Parameters.AddWithValue("@targetTable", mr.TargetTable);
+                    detailCmd.Parameters.AddWithValue("@rowsLoaded", mr.Rows);
+                    detailCmd.Parameters.AddWithValue("@status", mr.Status);
+                    detailCmd.Parameters.AddWithValue("@duration", (object?)mr.DurationSeconds ?? DBNull.Value);
+                    detailCmd.Parameters.AddWithValue("@error", (object?)mr.Error ?? DBNull.Value);
+
+                    await detailCmd.ExecuteNonQueryAsync(ct);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex,
+                "Failed to persist sync run log to database (run status: {Status}, trigger: {Trigger}). " +
+                "The sync cycle itself completed successfully; only the audit record is missing.",
+                status, triggerType);
+        }
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

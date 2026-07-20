@@ -1,49 +1,47 @@
-# REFERENCES — BATCH-3A: Keyboard HUD + Sync Status Badge
+# REFERENCES — TASK-CARD-KPI-MOCKUP-001 (KPI Card Body)
 
 ## Research Sources
 
-### 1. Linear App — Keyboard Shortcuts Modal
-- **Source:** Linear's `?` keyboard shortcut overlay
-- **Inspiration:** Clean overlay with backdrop blur, kbd elements styled as mini-chips, grouped shortcut categories, dismiss on Esc
-- **What I took:** The overlay + blur approach, the kbd styling (monospace-like chip on light bg), the Esc to dismiss
-- **What I avoided:** Multi-column layout (ours is a simple single-column list for readability in RTL)
+### 1. Client Mockup (source of truth)
+- **Source:** Client-provided KPI card mockup (السندات)
+- **Inspiration:** Right hero number + change pill below; left bordered “أعلى التصنيفات” panel; full-width gold sparkline with point markers
+- **What I took:** Layout split, gold code column, value-then-label totals, spark gold + last-point ring
+- **What I avoided:** Rebuilding card header; rainbow per-row category colors
 
-### 2. GitHub — Keyboard Shortcuts Reference
-- **Source:** GitHub's `?` shortcut modal (`Shift+/`)
-- **Inspiration:** Modal with header/title, close button, table-like rows of shortcuts, slide-up animation
-- **What I took:** The header + close button structure, the row pattern (kbd + description), slide-up entrance
-- **What I avoided:** Table markup (used flex rows for better RTL adaptation)
+### 2. Dribbble — Analytics KPI Cards with Sparkline
+- **Keywords:** KPI card sparkline, dashboard metric card categories breakdown
+- **Inspiration:** Large hero metric, compact secondary stats, mini area chart under content
+- **What I took:** Hero-first hierarchy, sparkline as footer anchor, soft bordered side panel
+- **What I avoided:** Dense multi-chart clutter inside a single KPI tile
 
-### 3. Dribbble — Sync Status Indicators Collection
-- **Source:** Dribbble search for "sync status" + "connection indicator dashboard"
-- **Keywords searched:** sync status badge, live indicator, connection dot
-- **Inspiration:** Colored dot + label pattern, pulsing animation for active states, pill-shaped badges
-- **What I took:** The dot + text pattern, the pulse animation for running state, the pill badge shape
-- **What I avoided:** Overly complex multi-color indicators (kept it to 3 states: idle/running/error)
+### 3. Linear / Vercel-style metric density
+- **Source:** Linear app metrics + Vercel dashboard patterns (public marketing/docs visuals)
+- **Inspiration:** Calm change badges, tabular numbers, generous but purposeful whitespace
+- **What I took:** Primary-tinted neutral change pill (not screaming green), tight type scale
+- **What I avoided:** Oversized empty voids; decorative borders without function
 
-### 4. Notion — Sync Status Indicator
-- **Source:** Notion's toolbar sync indicator ("All changes saved" / "Saving..." / "Offline")
-- **Inspiration:** Minimal dot + status text, auto-dismiss when idle, color-coded states
-- **What I took:** The minimal footprint (fits in a topbar), the three-state model, the polling approach
-- **What I avoided:** Toast-based approach (kept it as a persistent badge for at-a-glance visibility)
+### 4. ApexCharts Sparkline Patterns
+- **Source:** ApexCharts sparkline + markers docs / community demos
+- **Inspiration:** Smooth area stroke, gradient fill, discrete last-point emphasis
+- **What I took:** markers on all points + larger last marker with light ring; reduced grid padding
+- **What I avoided:** Heavy axes/toolbars inside KPI body
 
-### 5. Vercel Dashboard — Status Badge Pattern
-- **Source:** Vercel's deployment status badges
-- **Inspiration:** Small pills with colored dots, consistent with dark-on-light header, semantic colors
-- **What I took:** The pill shape with dot, the use of green/red/gray semantics, the typographic scale
-- **What I avoided:** Badge-only without text (ours includes text for accessibility in RTL)
+### 5. Refactoring UI — Hierarchy & Tables
+- **Source:** Refactoring UI (hierarchy, muted labels, accent for secondary identifiers)
+- **Inspiration:** Muted % column, bold values, accent (gold/warning) for codes
+- **What I took:** Unified dark value text; gold code; centered muted panel title with hairline
+- **What I avoided:** Per-row rainbow category coloring
 
 ## Design Decisions
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Keyboard HUD trigger | `?` key | Universal convention (GitHub, Linear, Gmail, etc.) |
-| HUD animation | fadeIn overlay + slideUp panel | Feels natural, draws eye to panel |
-| HUD overlay | backdrop-filter blur | Keeps context visible, modern feel |
-| HUD kbd styling | Mini chip with border + shadow | Clearly distinguishable from description text |
-| Navigation shortcuts | Single-letter keys (C, S, L, Q) | Quick muscle-memory for power users |
-| Sync status polling | 15-second interval | Balance between freshness and network requests |
-| Sync status states | Idle / Running / Error | Covers all meaningful engine states |
-| Sync status placement | Inside `.wd-topbar__actions` | Consistent with connection indicator, always visible |
-| Sync status colors | Matches existing success/error/muted tokens | Reuses established semantic palette |
-| Badge style | Semi-transparent white bg (for dark topbar) | Matches the connection indicator in the same topbar |
+| DOM column order | main then categories | RTL: main on right, categories on left (matches mockup) |
+| Grid | `1.15fr` / `0.95fr` | Fills body; categories panel readable without crushing hero |
+| Change badge | Below number, primary-tinted pill | Mockup shows calm pill under hero, not baseline row |
+| Grand totals | Value then label | Matches mockup RTL reading order |
+| Categories columns | `% \| value \| code` (table LTR) | Exact mockup column order; code in warning gold |
+| Category rows | slice 0–5; CSS hides for M/S | L=5, M=3–4, S=hidden panel |
+| Spark color | `#E8A317` gold default | Mockup fidelity; gold/orange family only for override |
+| Cluster flex | `flex:1` + space-between | Row grows; spark pinned bottom; no hatched voids |
+| Density | size classes + container queries | Keep `wdSyncKpiDensity` resize path |

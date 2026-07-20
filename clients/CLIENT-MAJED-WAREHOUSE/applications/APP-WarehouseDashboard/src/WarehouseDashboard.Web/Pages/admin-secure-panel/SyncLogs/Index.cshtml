@@ -5,7 +5,9 @@
 }
 
 <style>
-    /* Page-specific styles not provided by _CardsLayout */
+    /* ──────────────────────────────────────────────
+       Page-specific styles for SyncLogs advanced page
+       ────────────────────────────────────────────── */
     .wd-page { max-width: 1100px; margin: 0 auto; padding: 0; }
     .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
     .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
@@ -13,31 +15,328 @@
     .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
     .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
 
-    .wd-grid { margin-top: 8px; min-height: 80px; }
-    .wd-grid-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
-    .wd-grid-toolbar .wd-meta { font-size: 13px; color: var(--c-text-muted); }
-
-    .wd-skeleton { padding: 12px; }
-    .wd-skeleton__row {
-        height: 18px; margin-bottom: 12px; border-radius: 6px;
-        background: linear-gradient(90deg, var(--c-surface-muted) 25%, #dbe7f3 37%, var(--c-surface-muted) 63%);
-        background-size: 400% 100%;
-        animation: wdShimmer 1.2s ease-in-out infinite;
+    /* ── Filter Bar ─────────────────────────────── */
+    .wd-filterbar {
+        display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+        margin-bottom: 20px; padding: 16px 20px;
+        background: var(--c-surface); border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        animation-delay: 0.05s;
+    }
+    .wd-filterbar__group {
+        display: flex; flex-direction: column; gap: 4px; min-width: 0;
+    }
+    .wd-filterbar__label {
+        font-size: 11px; font-weight: 700; color: var(--c-text-muted);
+        text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .wd-filterbar__row {
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .wd-input, .wd-select {
+        font-family: var(--font-ar); font-size: 13px; font-weight: 500;
+        padding: 7px 12px; border: 1px solid var(--c-border);
+        border-radius: var(--radius-md); background: var(--c-surface);
+        color: var(--c-text); min-height: 36px;
+        transition: border-color var(--dur-fast) var(--ease),
+                    box-shadow var(--dur-fast) var(--ease);
+    }
+    .wd-input:focus, .wd-select:focus {
+        outline: none; border-color: var(--c-secondary);
+        box-shadow: 0 0 0 3px rgba(46, 109, 164, 0.15);
+    }
+    .wd-input { min-width: 140px; }
+    .wd-select { min-width: 130px; cursor: pointer; }
+    .wd-input--search { min-width: 180px; padding-inline-start: 32px; }
+    .wd-filterbar__search-wrap {
+        position: relative; display: flex; align-items: center;
+    }
+    .wd-filterbar__search-icon {
+        position: absolute; inset-inline-start: 10px;
+        font-size: 14px; color: var(--c-text-muted);
+        pointer-events: none; line-height: 1;
+    }
+    .wd-filterbar__actions {
+        display: flex; align-items: center; gap: 8px;
+        margin-inline-start: auto;
+    }
+    .wd-filterbar__meta {
+        font-size: 12px; color: var(--c-text-muted); white-space: nowrap;
+    }
+    .wd-badge {
+        display: inline-flex; align-items: center; gap: 4px;
+        padding: 2px 10px; border-radius: var(--radius-full);
+        font-size: 12px; font-weight: 600; line-height: 1.5;
+        white-space: nowrap;
+    }
+    .wd-badge--outline {
+        background: transparent; border: 1px solid var(--c-border);
+        color: var(--c-text-muted);
     }
 
+    /* ── Auto-refresh indicator ─────────────────── */
+    .wd-auto-refresh {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 12px; font-weight: 600; color: var(--c-text-muted);
+        cursor: pointer; user-select: none;
+        padding: 4px 8px; border-radius: var(--radius-md);
+        transition: background var(--dur-fast) var(--ease);
+    }
+    .wd-auto-refresh:hover { background: var(--c-surface-muted); }
+    .wd-auto-refresh__dot {
+        width: 7px; height: 7px; border-radius: var(--radius-full);
+        background: var(--c-success); flex: none;
+    }
+    .wd-auto-refresh--paused .wd-auto-refresh__dot { background: var(--c-text-muted); }
+    .wd-auto-refresh__countdown {
+        font-variant-numeric: tabular-nums; direction: ltr;
+        font-size: 11px; color: var(--c-text-muted);
+    }
+
+    /* ── Sync Run Cards ─────────────────────────── */
+    .wd-sync-list {
+        display: flex; flex-direction: column; gap: 12px;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        animation-delay: 0.1s;
+    }
+    .wd-sync-card {
+        background: var(--c-surface); border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition: box-shadow var(--dur-norm) var(--ease),
+                    transform var(--dur-norm) var(--ease);
+    }
+    .wd-sync-card:hover { box-shadow: var(--shadow-md); }
+    .wd-sync-card--success { border-inline-start: 4px solid var(--c-success); }
+    .wd-sync-card--failed  { border-inline-start: 4px solid var(--c-error); }
+    .wd-sync-card--partial { border-inline-start: 4px solid var(--c-warning); }
+    .wd-sync-card--running { border-inline-start: 4px solid var(--c-info); }
+    .wd-sync-card--cancelled { border-inline-start: 4px solid var(--c-text-muted); }
+
+    .wd-sync-card__header {
+        display: flex; align-items: center; gap: 12px;
+        padding: 14px 20px; cursor: pointer;
+        transition: background var(--dur-fast) var(--ease);
+        min-height: 56px;
+    }
+    .wd-sync-card__header:hover { background: var(--c-surface-muted); }
+
+    .wd-sync-card__expand {
+        width: 24px; height: 24px; flex: none;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; color: var(--c-text-muted);
+        transition: transform var(--dur-fast) var(--ease);
+        user-select: none;
+    }
+    .wd-sync-card.is-open .wd-sync-card__expand {
+        transform: rotate(180deg);
+    }
+
+    .wd-sync-card__status-dot {
+        width: 10px; height: 10px; border-radius: var(--radius-full);
+        flex: none;
+    }
+    .wd-sync-card__status-dot--success { background: var(--c-success); }
+    .wd-sync-card__status-dot--failed  { background: var(--c-error); }
+    .wd-sync-card__status-dot--partial { background: var(--c-warning); }
+    .wd-sync-card__status-dot--running {
+        background: var(--c-info);
+        animation: wdPulse 1.2s ease-in-out infinite;
+    }
+    .wd-sync-card__status-dot--cancelled { background: var(--c-text-muted); }
+
+    .wd-sync-card__info {
+        display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;
+        flex-wrap: wrap;
+    }
+    .wd-sync-card__date {
+        font-size: 13px; font-weight: 600; color: var(--c-text);
+        white-space: nowrap; direction: ltr;
+        font-variant-numeric: tabular-nums;
+    }
+    .wd-sync-card__trigger {
+        font-size: 11px; font-weight: 600; padding: 2px 10px;
+        border-radius: var(--radius-full); white-space: nowrap;
+    }
+    .wd-sync-card__trigger--auto {
+        background: rgba(46, 109, 164, 0.10); color: var(--c-info);
+    }
+    .wd-sync-card__trigger--manual {
+        background: rgba(30, 158, 106, 0.10); color: var(--c-success);
+    }
+
+    .wd-sync-card__stats {
+        display: flex; align-items: center; gap: 12px;
+        font-size: 12px; color: var(--c-text-muted); margin-inline-start: auto;
+        flex-shrink: 0;
+    }
+    .wd-sync-card__stat {
+        display: flex; align-items: center; gap: 4px;
+        white-space: nowrap;
+    }
+    .wd-sync-card__stat-icon { font-size: 13px; }
+
+    .wd-sync-card__body {
+        max-height: 0; overflow: hidden;
+        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .wd-sync-card.is-open .wd-sync-card__body {
+        max-height: 2000px;
+    }
+    .wd-sync-card__body-inner {
+        padding: 0 20px 16px;
+        border-top: 1px solid var(--c-border);
+    }
+
+    /* ── Details table inside card ──────────────── */
+    .wd-details-table {
+        width: 100%; border-collapse: collapse; font-size: 13px;
+        margin-top: 12px; border-radius: var(--radius-md); overflow: hidden;
+        border: 1px solid var(--c-border);
+    }
+    .wd-details-table thead th {
+        background: var(--c-surface-muted); color: var(--c-text);
+        font-weight: 700; font-size: 11px; text-transform: uppercase;
+        letter-spacing: 0.03em; padding: 10px 12px;
+        border-bottom: 1px solid var(--c-border); text-align: center;
+    }
+    .wd-details-table thead th:first-child { text-align: right; }
+    .wd-details-table tbody td {
+        padding: 10px 12px; border-bottom: 1px solid var(--c-border);
+        text-align: center; color: var(--c-text);
+        vertical-align: middle;
+    }
+    .wd-details-table tbody td:first-child {
+        text-align: right; font-weight: 600; direction: ltr;
+    }
+    .wd-details-table tbody tr:last-child td { border-bottom: none; }
+    .wd-details-table tbody tr:hover { background: var(--c-surface-muted); }
+    .wd-details-table tbody tr.wd-detail-row--failed {
+        background: rgba(214, 69, 69, 0.04);
+    }
+    .wd-details-table tbody tr.wd-detail-row--failed td:first-child {
+        color: var(--c-error);
+    }
+
+    .wd-detail-error {
+        grid-column: 1 / -1;
+        padding: 8px 12px 4px; font-size: 12px; color: var(--c-error);
+        display: flex; align-items: flex-start; gap: 6px;
+        line-height: 1.5;
+    }
+    .wd-detail-error__icon { font-size: 14px; flex: none; margin-top: 1px; }
+
+    .wd-detail-spinner {
+        display: inline-block; width: 14px; height: 14px;
+        border: 2px solid var(--c-border);
+        border-top-color: var(--c-info); border-radius: var(--radius-full);
+        animation: wdSpin 0.7s linear infinite;
+        vertical-align: middle;
+    }
+
+    /* ── Skeleton ────────────────────────────────── */
+    .wd-sync-skeleton { display: flex; flex-direction: column; gap: 12px; }
+    .wd-sync-skeleton__card {
+        height: 56px; border-radius: var(--radius-lg);
+        background: linear-gradient(90deg, var(--c-surface) 25%, var(--c-surface-muted) 50%, var(--c-surface) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+        border: 1px solid var(--c-border);
+    }
+
+    /* ── Status Badge (reuse) ───────────────────── */
     .wd-status-badge {
         display: inline-flex; align-items: center; justify-content: center;
         padding: 2px 10px; border-radius: var(--radius-full);
-        font-size: 12px; font-weight: 600; line-height: 1.6;
+        font-size: 12px; font-weight: 600; line-height: 1.6; gap: 4px;
     }
     .wd-status-badge--success { background: rgba(30, 158, 106, 0.12); color: var(--c-success); }
-    .wd-status-badge--failed { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
+    .wd-status-badge--failed  { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
+    .wd-status-badge--partial { background: rgba(224, 161, 6, 0.12);  color: var(--c-warning); }
     .wd-status-badge--running { background: rgba(46, 109, 164, 0.12); color: var(--c-info); }
     .wd-status-badge--cancelled { background: rgba(91, 122, 153, 0.12); color: var(--c-text-muted); }
 
-    .wd-error-cell { color: var(--c-error); font-size: 12px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .wd-status-badge__dot {
+        width: 7px; height: 7px; border-radius: var(--radius-full);
+        display: inline-block;
+    }
+    .wd-status-badge--success .wd-status-badge__dot { background: var(--c-success); }
+    .wd-status-badge--failed  .wd-status-badge__dot { background: var(--c-error); }
+    .wd-status-badge--partial .wd-status-badge__dot { background: var(--c-warning); }
+    .wd-status-badge--running .wd-status-badge__dot {
+        background: var(--c-info); animation: wdPulse 1.2s ease-in-out infinite;
+    }
+    .wd-status-badge--cancelled .wd-status-badge__dot { background: var(--c-text-muted); }
 
+    /* ── Detail status inline ───────────────────── */
+    .wd-detail-status { font-weight: 600; font-size: 12px; }
+    .wd-detail-status--success { color: var(--c-success); }
+    .wd-detail-status--failed  { color: var(--c-error); }
+    .wd-detail-status--running { color: var(--c-info); }
+    .wd-detail-status--skipped { color: var(--c-text-muted); }
+
+    /* ── Empty / Error ──────────────────────────── */
+    .wd-empty { text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); padding: var(--sp-8) var(--sp-6); height: 100%; justify-content: center; }
+    .wd-empty__icon { width: 64px; height: 64px; border-radius: var(--radius-full); background: var(--c-surface-muted); color: var(--c-text-muted); display: flex; align-items: center; justify-content: center; font-size: 30px; }
+    .wd-empty h3 { margin: 0; font-size: 18px; color: var(--c-text); }
+    .wd-empty p { margin: 0; color: var(--c-text-muted); }
+    .wd-empty--error .wd-empty__icon { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
+
+    /* ── Toast ──────────────────────────────────── */
+    .wd-toast-host {
+        position: fixed; top: 76px; inset-inline-end: var(--sp-6);
+        z-index: 1000; display: flex; flex-direction: column; gap: var(--sp-2);
+        pointer-events: none;
+    }
+    .wd-toast {
+        pointer-events: auto;
+        display: flex; align-items: center; gap: var(--sp-3);
+        background: var(--c-surface); color: var(--c-text);
+        border: 1px solid var(--c-border); border-inline-start: 4px solid var(--c-success);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        padding: 12px 16px; min-width: 260px; max-width: 360px;
+        animation: wdToastIn var(--dur-norm) var(--ease) both;
+    }
+    .wd-toast--success { border-inline-start-color: var(--c-success); }
+    .wd-toast--error { border-inline-start-color: var(--c-error); }
+    .wd-toast__icon {
+        width: 24px; height: 24px; border-radius: var(--radius-full);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; font-weight: 700; color: #fff; flex: none;
+    }
+    .wd-toast--success .wd-toast__icon { background: var(--c-success); }
+    .wd-toast--error .wd-toast__icon { background: var(--c-error); }
+    .wd-toast__msg { font-size: 14px; }
+
+    /* ── Scrollable table wrapper ───────────────── */
+    .wd-table-scroll {
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+
+    /* ── Running inline indicator ───────────────── */
+    .wd-running-inline {
+        display: inline-flex; align-items: center; gap: 4px;
+        color: var(--c-info); font-weight: 600;
+    }
+
+    /* ── Utility ────────────────────────────────── */
     [hidden] { display: none !important; }
+    .wd-text-left { text-align: left; direction: ltr; }
+
+    /* ── Responsive tweaks ─────────────────────── */
+    @@media (max-width: 767px) {
+        .wd-filterbar { flex-direction: column; align-items: stretch; }
+        .wd-filterbar__actions { margin-inline-start: 0; justify-content: flex-end; }
+        .wd-input, .wd-select { width: 100%; }
+        .wd-input--search { min-width: 0; }
+        .wd-sync-card__header { flex-wrap: wrap; gap: 8px; }
+        .wd-sync-card__stats { margin-inline-start: 0; width: 100%; justify-content: flex-end; }
+        .wd-sync-card__date { font-size: 12px; }
+        .wd-details-table { font-size: 12px; }
+        .wd-details-table thead th, .wd-details-table tbody td { padding: 8px 6px; }
+    }
 </style>
 
 <div class="wd-page">
@@ -46,42 +345,161 @@
             <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; سجلات المزامنة
         </div>
         <h2 class="wd-page__title">سجلات المزامنة</h2>
-        <p class="wd-page__subtitle">عرض آخر دورة مزامنة đãتم تنفيذها (البيانات مخزّنة مؤقتاً في الذاكرة).</p>
+        <p class="wd-page__subtitle">أداة متقدمة لتتبع وتحليل مشاكل المزامنة مع تفاصيل لكل جدول.</p>
     </header>
 
-    <section class="wd-card">
-        <div class="wd-grid-toolbar">
-            <span id="meta" class="wd-meta"></span>
-            <button class="wd-btn wd-btn--ghost wd-btn--sm" onclick="loadLogs()">تحديث</button>
+    <!-- ── Filter Bar ─────────────────────────────── -->
+    <div class="wd-filterbar" id="filterBar">
+        <!-- Date range -->
+        <div class="wd-filterbar__group">
+            <span class="wd-filterbar__label">من تاريخ</span>
+            <input type="date" class="wd-input" id="filterDateFrom" />
+        </div>
+        <div class="wd-filterbar__group">
+            <span class="wd-filterbar__label">إلى تاريخ</span>
+            <input type="date" class="wd-input" id="filterDateTo" />
         </div>
 
-        <div id="skeleton" class="wd-skeleton">
-            @for (int i = 0; i < 5; i++) { <div class="wd-skeleton__row"></div> }
+        <!-- Status -->
+        <div class="wd-filterbar__group">
+            <span class="wd-filterbar__label">الحالة</span>
+            <select class="wd-select" id="filterStatus">
+                <option value="">الكل</option>
+                <option value="Success">نجح</option>
+                <option value="Failed">فشل</option>
+                <option value="Partial">جزئي</option>
+                <option value="Running">قيد التنفيذ</option>
+                <option value="Cancelled">ملغى</option>
+            </select>
         </div>
 
+        <!-- Trigger type -->
+        <div class="wd-filterbar__group">
+            <span class="wd-filterbar__label">النوع</span>
+            <select class="wd-select" id="filterTrigger">
+                <option value="">الكل</option>
+                <option value="Auto">تلقائي</option>
+                <option value="Manual">يدوي</option>
+            </select>
+        </div>
+
+        <!-- Search -->
+        <div class="wd-filterbar__group">
+            <span class="wd-filterbar__label">بحث</span>
+            <div class="wd-filterbar__search-wrap">
+                <span class="wd-filterbar__search-icon">🔍</span>
+                <input type="text" class="wd-input wd-input--search" id="filterSearch"
+                       placeholder="ابحث عن جدول..." />
+            </div>
+        </div>
+
+        <!-- Connection status -->
+        <div class="wd-filterbar__group" style="align-self:flex-end;">
+            <span class="wd-filterbar__label">الاتصال</span>
+            <span class="wd-auto-refresh" id="connStatus" style="cursor:default;pointer-events:none;" title="حالة الاتصال بالخادم">
+                <span class="wd-auto-refresh__dot" id="connDot"></span>
+                <span id="connLabel">جاري الفحص…</span>
+            </span>
+        </div>
+
+        <!-- Actions -->
+        <div class="wd-filterbar__actions">
+            <span class="wd-filterbar__meta" id="metaText">جاري التحميل…</span>
+            <label class="wd-auto-refresh" id="autoRefreshToggle" title="إيقاف/تشغيل التحديث التلقائي">
+                <span class="wd-auto-refresh__dot"></span>
+                <span>تلقائي</span>
+                <span class="wd-auto-refresh__countdown" id="countdownText">30</span>
+            </label>
+            <button class="wd-btn wd-btn--ghost wd-btn--sm" id="refreshBtn" onclick="SyncLogs.load()">تحديث</button>
+        </div>
+    </div>
+
+    <!-- ── Main Card ──────────────────────────────── -->
+    <section class="wd-card" style="padding:0;overflow:hidden;">
+        <!-- Skeleton -->
+        <div id="skeleton" class="wd-sync-skeleton" style="padding:20px;">
+            <div class="wd-sync-skeleton__card"></div>
+            <div class="wd-sync-skeleton__card"></div>
+            <div class="wd-sync-skeleton__card"></div>
+            <div class="wd-sync-skeleton__card"></div>
+        </div>
+
+        <!-- Empty state -->
         <div id="emptyState" class="wd-empty" hidden>
-            <span class="wd-empty__icon">&#128203;</span>
+            <div class="wd-empty__icon">📋</div>
             <h3>لا توجد سجلات مزامنة بعد</h3>
-            <p>ستظهر هنا سجلات الدورات بعد تنفيذ أول مزامنة.</p>
+            <p>لم يتم تنفيذ أي دورة مزامنة حتى الآن. قم بتشغيل أول مزامنة من لوحة التحكم أو انتظر المزامنة التلقائية.</p>
+            <button class="wd-btn wd-btn--primary" onclick="SyncLogs.load()">تحديث</button>
         </div>
 
-        <div id="gridContainer" class="wd-grid" hidden></div>
+        <!-- Error state -->
+        <div id="errorState" class="wd-empty wd-empty--error" hidden>
+            <div class="wd-empty__icon">⚠</div>
+            <h3>تعذر تحميل السجلات</h3>
+            <p id="errorMessage">تعذر الاتصال بالخادم. يرجى التحقق من اتصالك والمحاولة مرة أخرى.</p>
+            <button class="wd-btn wd-btn--primary" onclick="SyncLogs.load()">إعادة المحاولة</button>
+        </div>
+
+        <!-- Sync run cards container -->
+        <div id="syncListContainer" class="wd-sync-list" style="padding:20px;" hidden></div>
     </section>
+
+    <!-- ── Toast host ─────────────────────────────── -->
+    <div class="wd-toast-host" id="toastHost"></div>
 </div>
 
 @section Scripts {
     <script>
         (function () {
-            // gridInstance removed — using HTML table
-            var refreshTimer = null;
-            var REFRESH_INTERVAL = 30000; // 30 seconds
+            'use strict';
 
+            var REFRESH_INTERVAL = 30; // seconds
             var apiBase = 'http://localhost:5001';
-            try {
-                var metaTag = document.querySelector('meta[name="sync-api-base"]');
-                if (metaTag) { apiBase = metaTag.getAttribute('content'); }
-            } catch (e) { /* use default */ }
+            var countdown = REFRESH_INTERVAL;
+            var autoRefreshEnabled = true;
+            var countdownTimer = null;
+            var refreshTimer = null;
+            var allRuns = [];        // full list from API
+            var detailsCache = {};   // { runId: details[] }
 
+            /* ── i18n helpers ──────────────────────── */
+            var L = {
+                status: {
+                    'Success':   { label: 'نجح',   cls: 'success', dot: '🟢' },
+                    'Failed':    { label: 'فشل',   cls: 'failed',  dot: '🔴' },
+                    'Partial':   { label: 'جزئي',   cls: 'partial', dot: '🟡' },
+                    'Running':   { label: 'قيد التنفيذ', cls: 'running', dot: '🔵' },
+                    'Cancelled': { label: 'ملغى',   cls: 'cancelled', dot: '⚪' }
+                },
+                trigger: {
+                    'Auto':   'تلقائي',
+                    'Manual': 'يدوي'
+                },
+                detailStatus: {
+                    'Success': '✅ نجح',
+                    'Failed':  '❌ فشل',
+                    'Running': '🔄 قيد التنفيذ',
+                    'Skipped': '⏭ تم التجاهل'
+                },
+                tableHeaders: ['الجدول', 'وضع المزامنة', 'الحالة', 'الصفوف', 'المدة', 'المحاولات'],
+                rows: 'سجلات',
+                sec: 'ث',
+                attempts: 'محاولة',
+                justNow: 'للتو',
+                noSyncs: 'لا توجد سجلات مزامنة بعد',
+                noSyncsDesc: 'لم يتم تنفيذ أي دورة مزامنة حتى الآن.',
+                loadError: 'تعذر تحميل السجلات',
+                loadErrorDesc: 'تعذر الاتصال بالخادم. يرجى التحقق من اتصالك والمحاولة مرة أخرى.',
+                lastUpdated: 'آخر تحديث',
+                autoRefresh: 'تلقائي',
+                searchPlaceholder: 'ابحث عن جدول...',
+                filterAll: 'الكل',
+                updated: 'تم التحديث',
+                noDetails: 'لا توجد تفاصيل متاحة لهذه الدورة.',
+                errorFetchingDetails: 'حدث خطأ أثناء تحميل التفاصيل.'
+            };
+
+            /* ── Utility functions ─────────────────── */
             function escapeHtml(text) {
                 var div = document.createElement('div');
                 div.textContent = text ?? '';
@@ -92,6 +510,7 @@
                 if (!isoString) return '—';
                 try {
                     var d = new Date(isoString);
+                    if (isNaN(d.getTime())) return isoString;
                     var day = String(d.getDate()).padStart(2, '0');
                     var month = String(d.getMonth() + 1).padStart(2, '0');
                     var year = d.getFullYear();
@@ -104,123 +523,482 @@
                 }
             }
 
-            function statusBadge(status) {
-                var cls = 'wd-status-badge';
-                var label = status || '—';
-                if (status === 'Success') { cls += ' wd-status-badge--success'; label = 'نجح'; }
-                else if (status === 'Failed') { cls += ' wd-status-badge--failed'; label = 'فشل'; }
-                else if (status === 'Running') { cls += ' wd-status-badge--running'; label = 'قيد التنفيذ'; }
-                else if (status === 'Cancelled') { cls += ' wd-status-badge--cancelled'; label = 'ملغى'; }
-                return '<span class="' + cls + '">' + label + '</span>';
-            }
-
-            function triggerLabel(trigger) {
-                if (trigger === 'Manual') return 'يدوي';
-                if (trigger === 'Auto') return 'تلقائي';
-                return trigger || '—';
-            }
-
-            function destroyGrid() {
-                document.getElementById('gridContainer').innerHTML = '';
-            }
-
-            function renderGrid(logs) {
-                destroyGrid();
-                var container = document.getElementById('gridContainer');
-                document.getElementById('emptyState').hidden = true;
-                container.hidden = false;
-
-                if (!logs || logs.length === 0) {
-                    container.hidden = true;
-                    document.getElementById('emptyState').hidden = false;
-                    return;
-                }
-
-                var html = '<table class="wd-table" style="width:100%;border-collapse:collapse;font-size:13px;">';
-                html += '<thead><tr>';
-                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">التاريخ</th>';
-                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:center;border-bottom:1px solid var(--c-border);">النوع</th>';
-                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:center;border-bottom:1px solid var(--c-border);">الحالة</th>';
-                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">عدد السجلات</th>';
-                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">المدة (ث)</th>';
-                html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:right;border-bottom:1px solid var(--c-border);">رسالة الخطأ</th>';
-                html += '</tr></thead><tbody>';
-                logs.forEach(function(r, idx) {
-                    html += '<tr style="border-bottom:1px solid var(--c-border);' + (idx % 2 === 0 ? '' : 'background:#F7FAFD;') + '">';
-                    html += '<td style="padding:6px 12px;text-align:right;">' + escapeHtml(r.startTimeFormatted) + '</td>';
-                    html += '<td style="padding:6px 12px;text-align:center;">' + escapeHtml(r.triggerTypeLabel) + '</td>';
-                    html += '<td style="padding:6px 12px;text-align:center;">' + r.statusHtml + '</td>';
-                    html += '<td style="padding:6px 12px;text-align:right;">' + escapeHtml(String(r.recordCount)) + '</td>';
-                    html += '<td style="padding:6px 12px;text-align:right;">' + escapeHtml(String(r.duration)) + '</td>';
-                    html += '<td style="padding:6px 12px;text-align:right;">' + (r.errorMessageHtml || '—') + '</td>';
-                    html += '</tr>';
-                });
-                html += '</tbody></table>';
-                container.innerHTML = html;
-            }
-
-            window.loadLogs = async function () {
-                var skeleton = document.getElementById('skeleton');
-                var emptyState = document.getElementById('emptyState');
-                var gridContainer = document.getElementById('gridContainer');
-                var meta = document.getElementById('meta');
-
-                skeleton.hidden = false;
-                emptyState.hidden = true;
-                gridContainer.hidden = true;
-
+            function formatDateShort(isoString) {
+                if (!isoString) return '—';
                 try {
-                    var resp = await fetch(apiBase + '/api/sync/logs');
-                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                    var data = await resp.json();
+                    var d = new Date(isoString);
+                    if (isNaN(d.getTime())) return isoString;
+                    var day = String(d.getDate()).padStart(2, '0');
+                    var month = String(d.getMonth() + 1).padStart(2, '0');
+                    var hours = String(d.getHours()).padStart(2, '0');
+                    var mins = String(d.getMinutes()).padStart(2, '0');
+                    return day + '/' + month + ' ' + hours + ':' + mins;
+                } catch (e) {
+                    return isoString;
+                }
+            }
 
-                    skeleton.hidden = true;
+            function formatDuration(seconds) {
+                if (seconds == null || seconds === '' || seconds === '—') return '—';
+                var s = parseFloat(seconds);
+                if (isNaN(s)) return seconds;
+                if (s < 1) return (s * 1000).toFixed(0) + ' مللي ث';
+                if (s >= 60) {
+                    var m = Math.floor(s / 60);
+                    var sec = (s % 60).toFixed(1);
+                    return m + ' د ' + sec + ' ث';
+                }
+                return s.toFixed(1) + ' ث';
+            }
 
-                    var logs = (data || []).map(function (r) {
-                        return {
-                            startTime: r.startTime,
-                            startTimeFormatted: formatDate(r.startTime),
-                            endTime: r.endTime,
-                            status: r.status,
-                            statusHtml: statusBadge(r.status),
-                            recordCount: r.recordCount ?? 0,
-                            duration: r.duration ?? '—',
-                            triggerType: r.triggerType,
-                            triggerTypeLabel: triggerLabel(r.triggerType),
-                            errorMessage: r.errorMessage,
-                            errorMessageHtml: r.errorMessage ? '<span class="wd-error-cell" title="' + escapeHtml(r.errorMessage) + '">' + escapeHtml(r.errorMessage) + '</span>' : '—'
-                        };
-                    });
+            function formatNumber(n) {
+                if (n == null) return '0';
+                return Number(n).toLocaleString('ar-SA');
+            }
 
-                    renderGrid(logs);
-                    meta.textContent = logs.length + ' سجل · آخر تحديث: ' + new Date().toLocaleTimeString('ar-SA');
-                } catch (err) {
-                    skeleton.hidden = true;
-                    emptyState.hidden = false;
-                    gridContainer.hidden = true;
-                    document.getElementById('emptyState').innerHTML =
-                        '<span class="wd-empty__icon">⚠</span>' +
-                        '<h3>تعذر تحميل السجلات</h3>' +
-                        '<p>' + escapeHtml(err.message || 'تعذر الاتصال بالخادم.') + '</p>';
+            function statusBadgeHtml(status) {
+                var s = L.status[status] || { label: status || '—', cls: 'cancelled', dot: '⚪' };
+                return '<span class="wd-status-badge wd-status-badge--' + s.cls + '">' +
+                       '<span class="wd-status-badge__dot"></span>' +
+                       escapeHtml(s.label) + '</span>';
+            }
+
+            function triggerBadgeHtml(trigger) {
+                var label = L.trigger[trigger] || trigger || '—';
+                var cls = trigger === 'Auto' ? 'auto' : 'manual';
+                return '<span class="wd-sync-card__trigger wd-sync-card__trigger--' + cls + '">' +
+                       escapeHtml(label) + '</span>';
+            }
+
+            function detailStatusHtml(status) {
+                var s = L.detailStatus[status] || status || '—';
+                var cls = 'wd-detail-status--' + (status === 'Success' ? 'success' :
+                                                   status === 'Failed' ? 'failed' :
+                                                   status === 'Running' ? 'running' : 'skipped');
+                if (status === 'Running') {
+                    return '<span class="wd-running-inline"><span class="wd-detail-spinner"></span> قيد التنفيذ</span>';
+                }
+                return '<span class="wd-detail-status ' + cls + '">' + escapeHtml(s) + '</span>';
+            }
+
+            function getCardBorderClass(status) {
+                var s = L.status[status];
+                if (!s) return 'wd-sync-card--cancelled';
+                return 'wd-sync-card--' + s.cls;
+            }
+
+            function getDotClass(status) {
+                var s = L.status[status];
+                if (!s) return 'wd-sync-card__status-dot--cancelled';
+                return 'wd-sync-card__status-dot--' + s.cls;
+            }
+
+            /* ── Toast ─────────────────────────────── */
+            function showToast(message, type) {
+                type = type || 'success';
+                var host = document.getElementById('toastHost');
+                var toast = document.createElement('div');
+                toast.className = 'wd-toast wd-toast--' + type;
+                toast.innerHTML = '<span class="wd-toast__icon">' +
+                    (type === 'success' ? '✓' : '✕') + '</span>' +
+                    '<span class="wd-toast__msg">' + escapeHtml(message) + '</span>';
+                host.appendChild(toast);
+                setTimeout(function () {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(20px)';
+                    toast.style.transition = 'all 0.3s ease';
+                    setTimeout(function () { toast.remove(); }, 300);
+                }, 3000);
+            }
+
+            /* ── API calls ─────────────────────────── */
+            async function fetchSyncRuns() {
+                var resp = await fetch(apiBase + '/api/sync/logs');
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                return await resp.json();
+            }
+
+            async function fetchSyncRunDetails(runId) {
+                var resp = await fetch(apiBase + '/api/sync/logs/' + encodeURIComponent(runId));
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                return await resp.json();
+            }
+
+            /* ── Main load ─────────────────────────── */
+            function showSkeleton(show) {
+                document.getElementById('skeleton').hidden = !show;
+                document.getElementById('emptyState').hidden = true;
+                document.getElementById('errorState').hidden = true;
+                document.getElementById('syncListContainer').hidden = true;
+            }
+
+            function setConnectionStatus(ok) {
+                var dot = document.getElementById('connDot');
+                var label = document.getElementById('connLabel');
+                if (ok) {
+                    dot.style.background = 'var(--c-success)';
+                    label.textContent = 'متصل';
+                } else {
+                    dot.style.background = 'var(--c-error)';
+                    label.textContent = 'غير متصل';
+                }
+            }
+
+            function showError(msg) {
+                setConnectionStatus(false);
+                document.getElementById('skeleton').hidden = true;
+                document.getElementById('emptyState').hidden = true;
+                document.getElementById('errorState').hidden = false;
+                document.getElementById('syncListContainer').hidden = true;
+                document.getElementById('errorMessage').textContent = msg || L.loadErrorDesc;
+            }
+
+            function showEmpty() {
+                document.getElementById('skeleton').hidden = true;
+                document.getElementById('emptyState').hidden = false;
+                document.getElementById('errorState').hidden = true;
+                document.getElementById('syncListContainer').hidden = true;
+            }
+
+            window.SyncLogs = {
+                load: async function () {
+                    showSkeleton(true);
+                    document.getElementById('metaText').textContent = 'جاري التحميل…';
+
+                    try {
+                        var data = await fetchSyncRuns();
+                        allRuns = Array.isArray(data) ? data : [];
+                        detailsCache = {};
+
+                        showSkeleton(false);
+
+                        if (allRuns.length === 0) {
+                            showEmpty();
+                            document.getElementById('metaText').textContent = '0 سجل · ' + L.lastUpdated + ': ' + new Date().toLocaleTimeString('ar-SA');
+                            return;
+                        }
+
+                        document.getElementById('emptyState').hidden = true;
+                        document.getElementById('errorState').hidden = true;
+                        setConnectionStatus(true);
+
+                        renderFilteredCards();
+                        document.getElementById('metaText').textContent =
+                            allRuns.length + ' سجل · ' + L.lastUpdated + ': ' + new Date().toLocaleTimeString('ar-SA');
+
+                        // Pre-load first few details
+                        var toPreload = allRuns.slice(0, 3);
+                        toPreload.forEach(function (r) {
+                            if (r.id) {
+                                fetchSyncRunDetails(r.id).then(function (full) {
+                                    if (full && full.details) {
+                                        detailsCache[r.id] = full.details;
+                                        // If the card is open, re-render it
+                                        var card = document.querySelector('.wd-sync-card[data-run-id="' + r.id + '"].is-open');
+                                        if (card) {
+                                            renderCardDetails(card, full.details, r.id);
+                                        }
+                                    }
+                                }).catch(function () { /* silent */ });
+                            }
+                        });
+
+                        resetCountdown();
+                    } catch (err) {
+                        showSkeleton(false);
+                        showError(err.message || L.loadErrorDesc);
+                        document.getElementById('metaText').textContent = L.loadError;
+                    }
                 }
             };
 
-            // Initial load
-            loadLogs();
+            /* ── Filtering ─────────────────────────── */
+            function getFilters() {
+                return {
+                    dateFrom: document.getElementById('filterDateFrom').value,
+                    dateTo: document.getElementById('filterDateTo').value,
+                    status: document.getElementById('filterStatus').value,
+                    trigger: document.getElementById('filterTrigger').value,
+                    search: document.getElementById('filterSearch').value.trim().toLowerCase()
+                };
+            }
 
-            // Auto-refresh every 30 seconds
-            refreshTimer = setInterval(loadLogs, REFRESH_INTERVAL);
+            function applyFilters(runs) {
+                var f = getFilters();
+                return runs.filter(function (r) {
+                    // Status filter
+                    if (f.status && r.status !== f.status) return false;
+                    // Trigger filter
+                    if (f.trigger && r.triggerType !== f.trigger) return false;
+                    // Date from
+                    if (f.dateFrom) {
+                        var fd = new Date(f.dateFrom);
+                        var rd = new Date(r.startTime);
+                        if (rd < fd) return false;
+                    }
+                    // Date to (end of day)
+                    if (f.dateTo) {
+                        var td = new Date(f.dateTo);
+                        td.setHours(23, 59, 59, 999);
+                        var rt = new Date(r.startTime);
+                        if (rt > td) return false;
+                    }
+                    // Search — search in table names from cached details
+                    if (f.search && r.id) {
+                        // First check if we have details cached
+                        var details = detailsCache[r.id];
+                        if (details && details.length) {
+                            var match = details.some(function (d) {
+                                return (d.targetTable && d.targetTable.toLowerCase().indexOf(f.search) !== -1) ||
+                                       (d.tableName && d.tableName.toLowerCase().indexOf(f.search) !== -1);
+                            });
+                            if (!match) return false;
+                        } else {
+                            // No details cached yet — check the runId itself as fallback
+                            if (r.id.toLowerCase().indexOf(f.search) === -1) return false;
+                        }
+                    }
+                    return true;
+                });
+            }
 
-            // Pause auto-refresh when tab is not visible
-            document.addEventListener('visibilitychange', function () {
-                if (document.hidden) {
-                    clearInterval(refreshTimer);
-                    refreshTimer = null;
+            /* ── Render cards ──────────────────────── */
+            function renderFilteredCards() {
+                var container = document.getElementById('syncListContainer');
+                var filtered = applyFilters(allRuns);
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="wd-empty">' +
+                        '<div class="wd-empty__icon">🔍</div>' +
+                        '<h3>لا توجد نتائج مطابقة</h3>' +
+                        '<p>حاول تغيير معايير الفلترة.</p></div>';
+                    container.hidden = false;
+                    return;
+                }
+
+                var html = '';
+                filtered.forEach(function (r) {
+                    var statusInfo = L.status[r.status] || { label: r.status || '—', cls: 'cancelled', dot: '⚪' };
+                    html += '<div class="wd-sync-card ' + getCardBorderClass(r.status) + '" data-run-id="' + escapeHtml(r.id) + '">';
+                    html += '  <div class="wd-sync-card__header" onclick="SyncLogs.toggleCard(this)">';
+                    html += '    <span class="wd-sync-card__expand">▼</span>';
+                    html += '    <span class="wd-sync-card__status-dot ' + getDotClass(r.status) + '"></span>';
+                    html += '    <div class="wd-sync-card__info">';
+                    html += '      <span class="wd-sync-card__date">' + escapeHtml(formatDate(r.startTime)) + '</span>';
+                    html += '      ' + triggerBadgeHtml(r.triggerType);
+                    html += '      ' + statusBadgeHtml(r.status);
+                    html += '    </div>';
+                    html += '    <div class="wd-sync-card__stats">';
+                    html += '      <span class="wd-sync-card__stat">📦 ' + formatNumber(r.recordCount) + ' ' + L.rows + '</span>';
+                    html += '      <span class="wd-sync-card__stat">⏱ ' + formatDuration(r.duration) + '</span>';
+                    html += '    </div>';
+                    html += '  </div>';
+                    html += '  <div class="wd-sync-card__body">';
+                    html += '    <div class="wd-sync-card__body-inner">';
+                    html += '      <div class="wd-detail-loading" style="text-align:center;padding:20px;color:var(--c-text-muted);">';
+                    html += '        <span class="wd-detail-spinner"></span> جاري تحميل التفاصيل…';
+                    html += '      </div>';
+                    html += '    </div>';
+                    html += '  </div>';
+                    html += '</div>';
+                });
+
+                container.innerHTML = html;
+                container.hidden = false;
+
+                // Apply stagger animation
+                var cards = container.querySelectorAll('.wd-sync-card');
+                cards.forEach(function (card, idx) {
+                    card.style.animationDelay = (0.03 * idx) + 's';
+                });
+            }
+
+            function renderCardDetails(card, details, runId) {
+                var bodyInner = card.querySelector('.wd-sync-card__body-inner');
+                if (!bodyInner) return;
+
+                if (!details || details.length === 0) {
+                    bodyInner.innerHTML = '<div style="text-align:center;padding:16px;color:var(--c-text-muted);font-size:13px;">' +
+                        escapeHtml(L.noDetails) + '</div>';
+                    return;
+                }
+
+                var html = '<div class="wd-table-scroll"><table class="wd-details-table">';
+                html += '<thead><tr>';
+                L.tableHeaders.forEach(function (h) {
+                    html += '<th>' + escapeHtml(h) + '</th>';
+                });
+                html += '</tr></thead><tbody>';
+
+                details.forEach(function (d) {
+                    var isFailed = d.status === 'Failed';
+                    var rowCls = isFailed ? 'wd-detail-row--failed' : '';
+                    html += '<tr class="' + rowCls + '">';
+                    html += '<td>' + escapeHtml(d.targetTable || d.tableName || '—') + '</td>';
+                    html += '<td>' + escapeHtml(d.syncMode || '—') + '</td>';
+                    html += '<td>' + detailStatusHtml(d.status) + '</td>';
+                    html += '<td>' + formatNumber(d.rowsLoaded != null ? d.rowsLoaded : d.rowsExtracted) + '</td>';
+                    html += '<td>' + formatDuration(d.durationSeconds) + '</td>';
+                    html += '<td>' + formatNumber(d.attempts) + '</td>';
+                    html += '</tr>';
+
+                    // Error message row — extra row below if failed
+                    if (isFailed && d.errorMessage) {
+                        html += '<tr class="' + rowCls + '">';
+                        html += '<td colspan="6" style="padding:0 12px 10px;">';
+                        html += '  <div class="wd-detail-error">';
+                        html += '    <span class="wd-detail-error__icon">⚠️</span>';
+                        html += '    <span>' + escapeHtml(d.errorMessage) + '</span>';
+                        html += '  </div>';
+                        html += '</td>';
+                        html += '</tr>';
+                    }
+                });
+
+                html += '</tbody></table></div>';
+                bodyInner.innerHTML = html;
+            }
+
+            /* ── Toggle card ───────────────────────── */
+            window.SyncLogs.toggleCard = function (headerEl) {
+                var card = headerEl.closest('.wd-sync-card');
+                if (!card) return;
+                var isOpen = card.classList.toggle('is-open');
+                var runId = card.getAttribute('data-run-id');
+
+                if (isOpen && runId) {
+                    // Check if details already cached
+                    if (detailsCache[runId]) {
+                        renderCardDetails(card, detailsCache[runId], runId);
+                    } else {
+                        // Fetch details
+                        var bodyInner = card.querySelector('.wd-sync-card__body-inner');
+                        if (bodyInner) {
+                            bodyInner.innerHTML = '<div style="text-align:center;padding:20px;color:var(--c-text-muted);">' +
+                                '<span class="wd-detail-spinner"></span> جاري تحميل التفاصيل…</div>';
+                        }
+                        fetchSyncRunDetails(runId).then(function (full) {
+                            var dets = (full && full.details) ? full.details : [];
+                            detailsCache[runId] = dets;
+                            // Re-check if card is still open
+                            if (card.classList.contains('is-open')) {
+                                renderCardDetails(card, dets, runId);
+                            }
+                        }).catch(function (err) {
+                            var bodyInner2 = card.querySelector('.wd-sync-card__body-inner');
+                            if (bodyInner2 && card.classList.contains('is-open')) {
+                                bodyInner2.innerHTML = '<div class="wd-empty wd-empty--error" style="padding:16px;">' +
+                                    '<h3>' + escapeHtml(L.errorFetchingDetails) + '</h3>' +
+                                    '<p>' + escapeHtml(err.message || '') + '</p></div>';
+                            }
+                        });
+                    }
+                }
+            };
+
+            /* ── Auto-refresh countdown ────────────── */
+            function resetCountdown() {
+                countdown = REFRESH_INTERVAL;
+                updateCountdownDisplay();
+            }
+
+            function updateCountdownDisplay() {
+                var el = document.getElementById('countdownText');
+                if (el) el.textContent = countdown;
+            }
+
+            function startCountdown() {
+                if (countdownTimer) clearInterval(countdownTimer);
+                countdownTimer = setInterval(function () {
+                    if (!autoRefreshEnabled) return;
+                    countdown--;
+                    updateCountdownDisplay();
+                    if (countdown <= 0) {
+                        SyncLogs.load();
+                        resetCountdown();
+                    }
+                }, 1000);
+            }
+
+            function startRefreshTimer() {
+                if (refreshTimer) clearInterval(refreshTimer);
+                // The actual refresh is driven by countdown; but we also
+                // keep a visibility-based timer
+                refreshTimer = setInterval(function () {
+                    if (autoRefreshEnabled) {
+                        // Countdown handles the actual load, but we
+                        // sync to ensure it doesn't drift
+                    }
+                }, 1000);
+            }
+
+            /* ── Auto-refresh toggle ───────────────── */
+            function updateAutoRefreshUI() {
+                var toggle = document.getElementById('autoRefreshToggle');
+                if (autoRefreshEnabled) {
+                    toggle.classList.remove('wd-auto-refresh--paused');
                 } else {
-                    loadLogs();
-                    refreshTimer = setInterval(loadLogs, REFRESH_INTERVAL);
+                    toggle.classList.add('wd-auto-refresh--paused');
+                }
+            }
+
+            document.getElementById('autoRefreshToggle').addEventListener('click', function () {
+                autoRefreshEnabled = !autoRefreshEnabled;
+                updateAutoRefreshUI();
+                if (autoRefreshEnabled) {
+                    resetCountdown();
+                } else {
+                    var el = document.getElementById('countdownText');
+                    if (el) el.textContent = '…';
                 }
             });
+
+            /* ── Visibility change ─────────────────── */
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    // Pause
+                    if (countdownTimer) clearInterval(countdownTimer);
+                    countdownTimer = null;
+                } else {
+                    // Resume — immediate refresh + restart countdown
+                    if (autoRefreshEnabled) {
+                        SyncLogs.load();
+                        startCountdown();
+                    }
+                }
+            });
+
+            /* ── Filter change triggers re-render ──── */
+            document.getElementById('filterDateFrom').addEventListener('change', renderFilteredCards);
+            document.getElementById('filterDateTo').addEventListener('change', renderFilteredCards);
+            document.getElementById('filterStatus').addEventListener('change', renderFilteredCards);
+            document.getElementById('filterTrigger').addEventListener('change', renderFilteredCards);
+            document.getElementById('filterSearch').addEventListener('input', renderFilteredCards);
+
+            /* ── Initial load ──────────────────────── */
+            // Set default date range: last 7 days
+            (function () {
+                var now = new Date();
+                var sevenDaysAgo = new Date(now);
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                document.getElementById('filterDateFrom').value = sevenDaysAgo.toISOString().split('T')[0];
+                document.getElementById('filterDateTo').value = now.toISOString().split('T')[0];
+            })();
+
+            SyncLogs.load();
+            startCountdown();
+
+            // Show a toast when user leaves tab for > 1 min then returns
+            var awaySince = null;
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    awaySince = Date.now();
+                } else if (awaySince && (Date.now() - awaySince > 60000)) {
+                    showToast('تم تحديث البيانات بعد عودتك.', 'success');
+                    awaySince = null;
+                }
+            });
+
         })();
     </script>
 }

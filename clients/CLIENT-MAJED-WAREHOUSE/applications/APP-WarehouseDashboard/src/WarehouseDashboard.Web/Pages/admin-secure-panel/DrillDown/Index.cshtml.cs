@@ -58,7 +58,7 @@ public class DrillDownModel : PageModel
                 .Where(l => l.ParentCardId == cardId)
                 .OrderBy(l => l.Level)
                 .Select(l => new LevelDto(l.Id, l.Level, l.DisplayName, l.TargetChartType, l.DrillDownQuery,
-                    l.ParameterColumn, l.LabelColumn, l.RequiresParentValue))
+                    l.ParameterColumn, l.LabelColumn, l.ColumnAliases, l.RequiresParentValue))
                 .ToListAsync();
 
             return Json(new { success = true, levels });
@@ -80,7 +80,8 @@ public class DrillDownModel : PageModel
         int? id,
         string? parameterColumn,
         string? labelColumn,
-        bool requiresParentValue)
+        bool requiresParentValue,
+        string? columnAliases)
     {
         if (parentCardId <= 0)
         {
@@ -136,6 +137,7 @@ public class DrillDownModel : PageModel
         entity.DrillDownQuery = drillDownQuery;
         entity.ParameterColumn = parameterColumn?.Trim();
         entity.LabelColumn = labelColumn?.Trim();
+        entity.ColumnAliases = columnAliases?.Trim();
         entity.RequiresParentValue = requiresParentValue;
 
         try
@@ -385,10 +387,11 @@ public class LevelDto
     public string DrillDownQuery { get; }
     public string? ParameterColumn { get; }
     public string? LabelColumn { get; }
+    public string? ColumnAliases { get; }
     public bool RequiresParentValue { get; }
 
     public LevelDto(int id, int level, string displayName, string targetChartType, string drillDownQuery,
-        string? parameterColumn, string? labelColumn, bool requiresParentValue)
+        string? parameterColumn, string? labelColumn, string? columnAliases, bool requiresParentValue)
     {
         Id = id;
         Level = level;
@@ -397,6 +400,7 @@ public class LevelDto
         DrillDownQuery = drillDownQuery;
         ParameterColumn = parameterColumn;
         LabelColumn = labelColumn;
+        ColumnAliases = columnAliases;
         RequiresParentValue = requiresParentValue;
     }
 }

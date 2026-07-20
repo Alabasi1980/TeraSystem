@@ -295,7 +295,7 @@
 | C | CARD-KPI-02 | تحسين Sparkline واستخدام `SparklineMonths` بالكامل | اتجاه زمني مقنع |
 | C | CARD-KPI-03 | قرار وتنفيذ `GrandTotalSource` | استثمار كامل للإجمالي |
 | C | CARD-KPI-04 | قرار وتنفيذ `CategoryColumn` | تفاعل/تفصيل حقيقي |
-| D | CARD-BUILDER-01 | مواءمة Preview مع البطاقة النهائية | تجربة إدارة متسقة |
+| D | CARD-BUILDER-01 | ✅ مواءمة Preview مع البطاقة النهائية | تجربة إدارة متسقة |
 
 ---
 
