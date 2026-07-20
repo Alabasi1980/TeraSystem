@@ -1,7 +1,7 @@
 # PROJECT_STATE.md
 
 > **Purpose:** Compact project memory to reduce re-reading files.
-> **Last Updated:** 2026-07-21 (TASK-CARD-KPI-S-TOTALS-ALIGN-001 accepted)
+> **Last Updated:** 2026-07-21 (TASK-KPI-MONEY-BIDI-RTL-002 accepted)
 
 ---
 
@@ -95,7 +95,7 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 | TASK-CARD-UX-002 | Per-Card ColorPalette for Charts | ✅ Accepted | ui-designer |
 | TASK-CARD-BEH-002 | Per-Card Auto-Refresh + Visual Indicator | ✅ Accepted | ui-designer |
 
-### KPI Card Redesign (10 tasks — all ACCEPTED ✅)
+### KPI Card Redesign (19 tasks — all ACCEPTED ✅)
 | TASK-ID | Description | Status | Agent |
 |---|---|---|---|
 | TASK-CARD-LAYOUT-EDIT-001 | Edit Layout Mode (admin toggle) | ✅ Accepted | ui-designer |
@@ -108,6 +108,15 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 | TASK-CARD-KPI-S-TOTALS-2ROWS-001 | KPI S shows grand total + year total | ✅ Accepted with governance note | ui-designer |
 | TASK-CARD-KPI-S-REVERT-ANNUAL-001 | Revert failed S redesign; only add annual total below grand total | ✅ Accepted | ui-designer |
 | TASK-CARD-KPI-S-TOTALS-ALIGN-001 | KPI S totals left alignment + label/value contrast | ✅ Accepted | ui-designer |
+| TASK-CARD-KPI-S-TOTALS-VALIGN-001 | Raise KPI S totals to align vertically with main value | ✅ Accepted | ui-designer |
+| TASK-MONEY-FORMAT-STANDARD-001 | Money format: commas + 3 decimals + د.أ for all money values | ✅ Accepted | engineering-agent-dotnet |
+| TASK-HERO-VALUE-FORMAT-001 | Hero value: S → abbreviated + د.أ, M/L → full format | ✅ Accepted | engineering-agent-dotnet |
+| TASK-KPI-HERO-TYPOGRAPHY-001 | Reduce KPI hero font by ~30% and improve S spacing | ✅ Accepted | ui-designer |
+| TASK-KPI-S-VERTICAL-ALIGN-002 | S-only lift: totals align with change badge and hero slightly higher | ✅ Accepted | ui-designer |
+| TASK-KPI-HERO-TYPOGRAPHY-002 | Further reduce KPI hero font size for full money format | ✅ Accepted | ui-designer |
+| TASK-KPI-S-OVERLAP-FIX-003 | S-only fix for sparkline/totals/change overlap | ✅ Accepted | ui-designer |
+| TASK-KPI-MONEY-BIDI-RTL-001 | Fix RTL/BiDi ordering for KPI money values | ✅ Accepted | ui-designer |
+| TASK-KPI-MONEY-BIDI-RTL-002 | Correct currency visual side and grand-total column order | ✅ Accepted | ui-designer |
 
 ### OracleQueryLab Enhancement (5 tasks — all ACCEPTED ✅)
 | TASK-ID | Description | Status | Agent |

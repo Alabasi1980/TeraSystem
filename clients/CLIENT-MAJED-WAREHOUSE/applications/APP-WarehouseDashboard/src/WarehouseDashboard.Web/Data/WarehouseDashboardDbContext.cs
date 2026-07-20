@@ -24,6 +24,10 @@ public class WarehouseDashboardDbContext : DbContext
     public DbSet<ColumnMapping> ColumnMappings => Set<ColumnMapping>();
     public DbSet<SyncRun> SyncRuns => Set<SyncRun>();
     public DbSet<SyncRunDetail> SyncRunDetails => Set<SyncRunDetail>();
+    public DbSet<Report> Reports => Set<Report>();
+    public DbSet<ReportColumn> ReportColumns => Set<ReportColumn>();
+    public DbSet<ReportFilter> ReportFilters => Set<ReportFilter>();
+    public DbSet<ReportLayout> ReportLayouts => Set<ReportLayout>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -580,6 +584,228 @@ public class WarehouseDashboardDbContext : DbContext
             // Index for detail lookups by parent run
             entity.HasIndex(e => e.SyncRunId)
                 .HasDatabaseName("IX_SyncRunDetails_SyncRunId");
+        });
+
+        // -------------------------------------------------------------------
+        // Reports (TASK-REPORT-001) — نظام التقارير التفاعلي
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<Report>(entity =>
+        {
+            entity.ToTable("Reports");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.ViewName)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.Description)
+                .HasColumnType("nvarchar(500)")
+                .IsRequired(false);
+
+            entity.Property(e => e.Icon)
+                .HasColumnType("nvarchar(50)")
+                .IsRequired(false);
+
+            entity.Property(e => e.IsEnabled)
+                .IsRequired()
+                .HasDefaultValue(true);
+
+            entity.Property(e => e.SortOrder)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            entity.Property(e => e.UpdatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            entity.HasIndex(e => e.IsEnabled)
+                .HasDatabaseName("IX_Reports_IsEnabled");
+            entity.HasIndex(e => e.SortOrder)
+                .HasDatabaseName("IX_Reports_SortOrder");
+        });
+
+        // -------------------------------------------------------------------
+        // ReportColumns (TASK-REPORT-001)
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<ReportColumn>(entity =>
+        {
+            entity.ToTable("ReportColumns");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.ColumnName)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.DisplayName)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.DataType)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)");
+
+            entity.Property(e => e.Width)
+                .HasDefaultValue(150);
+
+            entity.Property(e => e.IsVisible)
+                .IsRequired()
+                .HasDefaultValue(true);
+
+            entity.Property(e => e.IsSortable)
+                .IsRequired()
+                .HasDefaultValue(true);
+
+            entity.Property(e => e.IsFilterable)
+                .IsRequired()
+                .HasDefaultValue(true);
+
+            entity.Property(e => e.IsImageColumn)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            entity.Property(e => e.ImageBaseUrl)
+                .HasColumnType("nvarchar(500)")
+                .IsRequired(false);
+
+            entity.Property(e => e.DateFormat)
+                .HasColumnType("nvarchar(50)")
+                .IsRequired(false);
+
+            entity.Property(e => e.NumberFormat)
+                .HasColumnType("nvarchar(50)")
+                .IsRequired(false);
+
+            entity.Property(e => e.SortOrder)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            // FK → Reports
+            entity.HasOne(e => e.Report)
+                .WithMany(r => r.Columns)
+                .HasForeignKey(e => e.ReportId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.ReportId)
+                .HasDatabaseName("IX_ReportColumns_ReportId");
+
+            entity.HasIndex(e => new { e.ReportId, e.SortOrder })
+                .HasDatabaseName("IX_ReportColumns_ReportId_SortOrder");
+        });
+
+        // -------------------------------------------------------------------
+        // ReportFilters (TASK-REPORT-001)
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<ReportFilter>(entity =>
+        {
+            entity.ToTable("ReportFilters");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.ColumnName)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.FilterType)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)")
+                .HasDefaultValue("Text");
+
+            entity.Property(e => e.Label)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.IsRequired)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            entity.Property(e => e.DefaultValue)
+                .HasColumnType("nvarchar(500)")
+                .IsRequired(false);
+
+            entity.Property(e => e.OptionsQuery)
+                .HasColumnType("nvarchar(1000)")
+                .IsRequired(false);
+
+            entity.Property(e => e.Placeholder)
+                .HasColumnType("nvarchar(200)")
+                .IsRequired(false);
+
+            entity.Property(e => e.SortOrder)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            // FK → Reports
+            entity.HasOne(e => e.Report)
+                .WithMany(r => r.Filters)
+                .HasForeignKey(e => e.ReportId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.ReportId)
+                .HasDatabaseName("IX_ReportFilters_ReportId");
+        });
+
+        // -------------------------------------------------------------------
+        // ReportLayouts (TASK-REPORT-001)
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<ReportLayout>(entity =>
+        {
+            entity.ToTable("ReportLayouts");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.LayoutName)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.IsDefault)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            entity.Property(e => e.ColumnOrder)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.VisibleColumns)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.ColumnWidths)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.FilterValues)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.SortState)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            // FK → Reports
+            entity.HasOne(e => e.Report)
+                .WithMany(r => r.Layouts)
+                .HasForeignKey(e => e.ReportId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.ReportId)
+                .HasDatabaseName("IX_ReportLayouts_ReportId");
         });
     }
 }

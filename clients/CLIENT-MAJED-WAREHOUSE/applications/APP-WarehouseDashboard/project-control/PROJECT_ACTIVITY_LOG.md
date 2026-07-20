@@ -1124,3 +1124,139 @@
 - Summary: Majed requested raising the KPI S totals block upward so it aligns vertically with the main value. Scope is alignment only, preserving totals left position and deferring general money-format standardization.
 - Decision / Result: Task approved for ui-designer delegation. Scope limited to `Index.cshtml`.
 - Next Action: Delegate to ui-designer, then review build and CSS scope.
+
+## [2026-07-21 01:10] - TASK_CREATED
+
+- Related Task: TASK-MONEY-FORMAT-STANDARD-001
+- Actor: Majed → TeraAgent
+- Summary: Created money format standardization task. New `formatMoney` function in `dashboard-utils.js` with commas + 3 decimals + ` د.أ`. Applied to Grand Totals, Sparkline tooltips, Breakdown values, and Drill-down KPI. Hero KPI value remains abbreviated (`formatNum`).
+- Decision / Result: Task approved for engineering-agent-dotnet delegation.
+- Next Action: Read current files fresh from disk, then delegate to engineering-agent-dotnet.
+
+## [2026-07-21 01:12] - COMMIT
+
+- Related Task: All prior tasks
+- Actor: TeraAgent
+- Summary: Committed all accumulated changes: VALIGN-001 alignment fix, OracleDecimal overflow fix, task/control docs. 13 files, 872 insertions.
+- Decision / Result: ✅ Commit successful (2eff1b9c). Pending push on user request.
+- Next Action: Execute TASK-MONEY-FORMAT-STANDARD-001.
+
+## [2026-07-21 01:30] - TASK_ACCEPTED
+
+- Related Task: TASK-MONEY-FORMAT-STANDARD-001
+- Actor: TeraAgent → engineering-agent-dotnet
+- Summary: Implemented `formatMoney(num)` function in `dashboard-utils.js` (commas + 3 decimals + ` د.أ`). Updated 5 call sites in Index.cshtml (Grand Totals, Sparkline tooltip, Breakdown values, Drill-down KPI). Hero KPI value remains abbreviated via `formatNum`.
+- Decision / Result: ✅ Accepted. Build PASS via fallback OutDir with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes and checks display of all money values across KPI cards, sparklines, and drill-down.
+
+## [2026-07-21 01:45] - TASK_CREATED
+
+- Related Task: TASK-HERO-VALUE-FORMAT-001
+- Actor: Majed → TeraAgent
+- Summary: Hero value formatting per size: S → abbreviated + د.أ, M/L → full format like grand totals. Deferred to engineering-agent-dotnet.
+- Decision / Result: Task approved.
+- Next Action: Delegate to engineering-agent-dotnet, review build, report completion.
+
+## [2026-07-21 01:55] - TASK_ACCEPTED
+
+- Related Task: TASK-HERO-VALUE-FORMAT-001
+- Actor: TeraAgent → engineering-agent-dotnet
+- Summary: Hero KPI value now formats per card size: S → abbreviated + د.أ (e.g., `14.7M د.أ`), M/L → full format like grand totals (e.g., `14,700,000.000 د.أ`). animateCountUp also respects the size class for final value display.
+- Decision / Result: ✅ Accepted. Build PASS with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes and checks hero value display across S/M/L cards. No remaining tasks unless new requests arise.
+
+## [2026-07-21 02:05] - TASK_CREATED
+
+- Related Task: TASK-KPI-HERO-TYPOGRAPHY-001
+- Actor: Majed → TeraAgent
+- Summary: Majed requested reducing the main KPI value font by approximately 30% and improving the S card further due to cramped/overlapping layout after money-format changes.
+- Decision / Result: Task approved for ui-designer delegation. Scope limited to CSS/layout in `Index.cshtml`; no money-format logic changes.
+- Next Action: Delegate to ui-designer, review build and S/M/L visual constraints.
+
+## [2026-07-21 02:15] - TASK_ACCEPTED
+
+- Related Task: TASK-KPI-HERO-TYPOGRAPHY-001
+- Actor: TeraAgent → ui-designer
+- Summary: Reduced KPI hero value typography by about 30% across S/M/L and refined S spacing to avoid crowding/overlap after money-format changes. S totals negative overlap margin was removed and compact spacing adjusted.
+- Decision / Result: ✅ Accepted. Build PASS with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes and visually checks S/M/L KPI cards. If S still feels cramped, next micro-task should focus only on S composition.
+
+## [2026-07-21 02:25] - TASK_CREATED
+
+- Related Task: TASK-KPI-S-VERTICAL-ALIGN-002
+- Actor: Majed → TeraAgent
+- Summary: Majed requested S-only vertical alignment: raise totals upward to align with the change percentage and lift the main value slightly upward.
+- Decision / Result: Task approved for ui-designer delegation. Scope limited to S-only CSS/layout in `Index.cshtml`.
+- Next Action: Delegate to ui-designer, then review build and S-only scope.
+
+## [2026-07-21 02:35] - TASK_ACCEPTED
+
+- Related Task: TASK-KPI-S-VERTICAL-ALIGN-002
+- Actor: TeraAgent → ui-designer
+- Summary: Applied S-only vertical alignment refinement: hero lifted by `translateY(-2px)`, totals moved upward with `margin-top: -10px`, and bottom clearance increased with `margin-bottom: 12px`.
+- Decision / Result: ✅ Accepted after correction/re-review. Build PASS with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes and visually checks the S card. If more lift is needed, adjust only the two S values (`-2px`, `-10px`) in a micro-task.
+
+## [2026-07-21 02:45] - TASK_CREATED
+
+- Related Task: TASK-KPI-HERO-TYPOGRAPHY-002
+- Actor: Majed → TeraAgent
+- Summary: Majed requested further reduction of the KPI main value font after reviewing the M card screenshot, where the full formatted value remains too large.
+- Decision / Result: Task approved for ui-designer delegation. Scope limited to CSS typography/layout in `Index.cshtml`.
+- Next Action: Delegate to ui-designer, review build and visual scope.
+
+## [2026-07-21 02:55] - TASK_ACCEPTED
+
+- Related Task: TASK-KPI-HERO-TYPOGRAPHY-002
+- Actor: TeraAgent → ui-designer
+- Summary: Further reduced KPI hero font sizes, especially M/L, to better fit the full money format without visually pressing into the breakdown area.
+- Decision / Result: ✅ Accepted. Build PASS with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes and checks M card. If still large, next step should be a focused M-only width/typography micro-adjustment.
+
+## [2026-07-21 03:05] - TASK_CREATED
+
+- Related Task: TASK-KPI-S-OVERLAP-FIX-003
+- Actor: Majed → TeraAgent
+- Summary: Majed reported that the S card overlap problems returned after further font reduction. Screenshot shows sparkline overlapping totals/change area.
+- Decision / Result: Task approved for S-only UI Designer fix. Scope limited to CSS/layout in `Index.cshtml`; M/L and money-format logic must remain unchanged.
+- Next Action: Delegate to ui-designer and verify build plus S-only scope.
+
+## [2026-07-21 03:15] - TASK_ACCEPTED
+
+- Related Task: TASK-KPI-S-OVERLAP-FIX-003
+- Actor: TeraAgent → ui-designer
+- Summary: Fixed S card overlap by reducing S sparkline footprint, adding S-only stacking protection for hero/totals, relaxing totals negative margin, and adding clearance before the sparkline.
+- Decision / Result: ✅ Accepted. Build PASS with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes and checks S card. If still crowded, next step should be S-only composition/height distribution, not global typography.
+
+## [2026-07-21 03:25] - TASK_CREATED
+
+- Related Task: TASK-KPI-MONEY-BIDI-RTL-001
+- Actor: Majed → TeraAgent
+- Summary: Majed reported Arabic/RTL direction issues visible in KPI money values. Tera identified BiDi ordering problem where `د.أ` appears before numbers instead of after them.
+- Decision / Result: Task approved for ui-designer delegation. Scope limited to CSS RTL/BiDi refinement in `Index.cshtml`.
+- Next Action: Delegate to ui-designer, then review build and visual direction scope.
+
+## [2026-07-21 03:35] - TASK_ACCEPTED
+
+- Related Task: TASK-KPI-MONEY-BIDI-RTL-001
+- Actor: TeraAgent → ui-designer
+- Summary: Fixed KPI monetary BiDi/RTL ordering by isolating money values as LTR while preserving Arabic labels as RTL. Targeted hero value, grand total values, and breakdown money values.
+- Decision / Result: ✅ Accepted. Build PASS with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes and visually checks that money values display as number then `د.أ`.
+
+## [2026-07-21 03:45] - TASK_CREATED
+
+- Related Task: TASK-KPI-MONEY-BIDI-RTL-002
+- Actor: Majed → TeraAgent
+- Summary: Majed clarified exact RTL requirement: `د.أ` must appear after the number visually (left of the number for the user), and grand-total columns are reversed; labels should be before amount columns in Arabic reading order.
+- Decision / Result: Task approved for UI Designer correction. Scope limited to KPI money/total display in `Index.cshtml`.
+- Next Action: Delegate to ui-designer, then review build and resulting CSS/markup order.
+
+## [2026-07-21 03:55] - TASK_ACCEPTED
+
+- Related Task: TASK-KPI-MONEY-BIDI-RTL-002
+- Actor: TeraAgent → ui-designer
+- Summary: Corrected KPI money visual order and grand-total column order. Money is wrapped in RTL inline-flex so the number appears on the right and `د.أ` on the left; grand-total rows render label then value with label on the right and amount on the left.
+- Decision / Result: ✅ Accepted after review correction. Build PASS with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes and visually checks that `د.أ` appears to the left of the number and grand-total labels are on the right.

@@ -8,6 +8,7 @@
  *   toNum(v)          — parse any value to a number (0 on failure)
  *   isNum(v)          — check if a value is numeric
  *   formatNum(v)      — human-readable number with K/M/B suffixes
+ *   formatMoney(v)    — full-precision money with commas, 3 decimals, and د.أ
  *   escapeHtml(s)     — HTML-escape a string
  *   showToast(type, msg) — show a transient toast notification
  *   wdEmptyHtml()     — HTML for an empty-data state
@@ -37,6 +38,14 @@
         if (abs >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
         if (abs >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
         return String(n);
+    }
+
+    function formatMoney(v) {
+        var n = toNum(v);
+        if (n === 0) return '0.000 د.أ';
+        var parts = n.toFixed(3).split('.');
+        var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return intPart + '.' + parts[1] + ' د.أ';
     }
 
     function escapeHtml(s) {
@@ -85,6 +94,7 @@
     window.toNum = toNum;
     window.isNum = isNum;
     window.formatNum = formatNum;
+    window.formatMoney = formatMoney;
     window.escapeHtml = escapeHtml;
     window.showToast = showToast;
     window.wdShowToast = showToast;

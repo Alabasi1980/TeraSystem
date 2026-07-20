@@ -39,4 +39,17 @@ public static class ConnectionStringHelper
         var template = configuration.GetConnectionString("Oracle");
         return Resolve(template);
     }
+
+    /// <summary>
+    /// Reads the <c>ConnectionStrings:SqlServer</c> template from configuration and
+    /// resolves the <c>{SQL_PASSWORD}</c> placeholder from the
+    /// <c>SQL_PASSWORD</c> environment variable.
+    /// </summary>
+    public static string ResolveSql(IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        var template = configuration.GetConnectionString("SqlServer");
+        return Resolve(template);
+    }
 }

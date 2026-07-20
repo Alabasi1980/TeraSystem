@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using WarehouseDashboard.Web.Services;
 
 namespace WarehouseDashboard.Web.Pages.Api.OracleBrowser;
@@ -25,8 +26,10 @@ public class ValidateQueryModel : PageModel
         [FromBody] ValidateQueryRequest request,
         CancellationToken ct)
     {
-        // Admin session check
-        if (HttpContext.Session.GetString("AdminAuthenticated") != "true")
+        // Admin session check — skip if AdminAuth:Bypass is enabled
+        var config = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+        if (!config.GetValue<bool>("AdminAuth:Bypass") &&
+            HttpContext.Session.GetString("AdminAuthenticated") != "true")
         {
             return new JsonResult(new { error = "Unauthorized" }) { StatusCode = 401 };
         }

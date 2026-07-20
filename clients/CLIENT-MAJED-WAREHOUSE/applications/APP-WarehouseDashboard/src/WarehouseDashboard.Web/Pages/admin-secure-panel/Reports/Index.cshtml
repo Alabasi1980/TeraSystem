@@ -1,0 +1,1067 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.Reports.IndexModel
+@{
+    ViewData["Title"] = "التقارير";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.min.css">
+
+<style>
+    /* ─── Reports Page Styles ──────────────────────────── */
+
+    .wd-page { max-width: 1400px; margin: 0 auto; padding: var(--sp-4) var(--sp-6); }
+
+    .wd-page__head {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: var(--sp-4); gap: var(--sp-4);
+    }
+    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
+
+    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: var(--sp-3); }
+    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
+
+    /* ─── Layout: Sidebar + Main ──────────────────────── */
+    .wd-layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: var(--sp-4);
+        align-items: start;
+    }
+
+    /* ─── Sidebar ─────────────────────────────────────── */
+    .wd-sidebar {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        position: sticky;
+        top: 80px;
+    }
+    .wd-sidebar__header {
+        padding: 14px var(--sp-4);
+        font-size: 14px; font-weight: 700;
+        color: var(--c-text);
+        background: var(--c-surface-muted);
+        border-bottom: 1px solid var(--c-border);
+    }
+    .wd-sidebar__search {
+        padding: 10px var(--sp-3);
+        border-bottom: 1px solid var(--c-border);
+    }
+    .wd-sidebar__search input {
+        width: 100%; padding: var(--sp-2) 10px;
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        font-size: 13px; font-family: var(--font-ar);
+        transition: border-color 0.2s ease;
+    }
+    .wd-sidebar__search input:focus {
+        outline: none; border-color: var(--c-secondary);
+        box-shadow: 0 0 0 3px rgba(46,109,164,0.1);
+    }
+    .wd-sidebar__list {
+        list-style: none; padding: 0; margin: 0;
+        max-height: calc(100vh - 280px);
+        overflow-y: auto;
+    }
+    .wd-sidebar__item {
+        padding: 10px 14px;
+        cursor: pointer;
+        display: flex; align-items: center; gap: var(--sp-2);
+        font-size: 13px; color: var(--c-text);
+        border-bottom: 1px solid var(--c-border);
+        transition: background 0.15s ease;
+    }
+    .wd-sidebar__item:hover { background: var(--c-surface-muted); }
+    .wd-sidebar__item--active {
+        background: rgba(46,109,164,0.1);
+        color: var(--c-secondary); font-weight: 600;
+        border-inline-start: 3px solid var(--c-secondary);
+    }
+    .wd-sidebar__item--disabled { opacity: 0.5; cursor: default; }
+    .wd-sidebar__icon { font-size: 18px; flex-shrink: 0; }
+    .wd-sidebar__empty {
+        padding: var(--sp-6) var(--sp-4);
+        text-align: center;
+        font-size: 13px; color: var(--c-text-muted);
+    }
+    .wd-sidebar__new-btn {
+        display: block; text-align: center;
+        padding: var(--sp-3); margin: var(--sp-2);
+        background: var(--c-secondary); color: #fff;
+        border-radius: var(--radius-md); text-decoration: none;
+        font-size: 13px; font-weight: 600;
+        transition: background 0.2s ease;
+    }
+    .wd-sidebar__new-btn:hover { background: var(--c-primary); color: #fff; }
+
+    /* ─── Main Area ───────────────────────────────────── */
+    .wd-main {
+        display: flex; flex-direction: column; gap: var(--sp-3);
+        min-width: 0;
+    }
+
+    /* ─── Report Info Bar ─────────────────────────────── */
+    .wd-report-info {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        padding: var(--sp-4) 20px;
+        box-shadow: var(--shadow-sm);
+        display: none;
+    }
+    .wd-report-info--visible { display: block; animation: wdFadeUp 0.3s ease both; }
+    .wd-report-info__title {
+        font-size: 18px; font-weight: 700; color: var(--c-text); margin: 0 0 4px;
+    }
+    .wd-report-info__desc {
+        font-size: 13px; color: var(--c-text-muted); margin: 0;
+    }
+
+    /* ─── Report Filters (Server-Side) ────────────────── */
+    .wd-filter-bar {
+        background: var(--c-surface-muted);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        padding: var(--sp-4) 20px;
+        display: none;
+        box-shadow: var(--shadow-sm);
+    }
+    .wd-filter-bar--visible { display: block; animation: wdFadeUp 0.3s ease both; }
+    .wd-filter-bar__title {
+        font-size: 13px; font-weight: 600; color: var(--c-text-muted);
+        margin-bottom: 10px;
+    }
+    .wd-filter-bar__row {
+        display: flex; flex-wrap: wrap; gap: var(--sp-3);
+        align-items: flex-end;
+    }
+    .wd-filter-group {
+        display: flex; flex-direction: column; gap: var(--sp-1);
+        min-width: 140px; flex: 0 1 auto;
+    }
+    .wd-filter-group label {
+        font-size: 12px; font-weight: 600; color: var(--c-text-muted);
+    }
+    .wd-filter-group input,
+    .wd-filter-group select {
+        padding: var(--sp-2) 10px;
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        font-size: 13px; font-family: var(--font-ar);
+        min-height: 34px; color: var(--c-text); background: var(--c-surface);
+        width: 100%; min-width: 130px;
+        transition: border-color 0.2s ease;
+    }
+    .wd-filter-group input:focus,
+    .wd-filter-group select:focus {
+        outline: none; border-color: var(--c-secondary);
+        box-shadow: 0 0 0 3px rgba(46,109,164,0.1);
+    }
+    .wd-filter-bar__actions {
+        display: flex; gap: var(--sp-2); align-items: center;
+        padding-bottom: 2px;
+    }
+
+    /* ─── Table Area ──────────────────────────────────── */
+    .wd-table-area {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        min-height: 400px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        display: flex; flex-direction: column;
+    }
+    .wd-table-area__toolbar {
+        display: flex; align-items: center; gap: var(--sp-2);
+        padding: 10px var(--sp-4);
+        background: var(--c-surface-muted);
+        border-bottom: 1px solid var(--c-border);
+        flex-wrap: wrap;
+    }
+    .wd-table-area__toolbar .wd-search-box {
+        flex: 0 1 220px; position: relative;
+    }
+    .wd-table-area__toolbar .wd-search-box input {
+        width: 100%; padding: 6px 10px 6px 30px;
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        font-size: 13px; font-family: var(--font-ar);
+        background: var(--c-surface);
+        transition: border-color 0.2s ease;
+    }
+    .wd-table-area__toolbar .wd-search-box input:focus {
+        outline: none; border-color: var(--c-secondary);
+    }
+    .wd-tb-btn {
+        display: inline-flex; align-items: center; gap: var(--sp-1);
+        padding: 6px 10px; border: 1px solid var(--c-border);
+        border-radius: var(--radius-md); background: var(--c-surface);
+        cursor: pointer; font-size: 12px; font-family: var(--font-ar);
+        color: var(--c-text); white-space: nowrap;
+        transition: background 0.2s ease;
+    }
+    .wd-tb-btn:hover { background: var(--c-surface-muted); }
+    .wd-tb-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .wd-tb-btn--primary { background: var(--c-secondary); color: #fff; border-color: var(--c-secondary); }
+    .wd-tb-btn--primary:hover { background: var(--c-primary); }
+    .wd-tb-sep { width: 1px; height: 24px; background: var(--c-border); margin: 0 var(--sp-1); }
+
+    /* ─── AG Grid Container ───────────────────────────── */
+    #reportGrid {
+        flex: 1; min-height: 350px;
+    }
+
+    /* ─── Modals ──────────────────────────────────────── */
+    .wd-modal-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+        z-index: 1000; display: none;
+        align-items: center; justify-content: center;
+        animation: wdFadeIn 0.2s ease;
+    }
+    .wd-modal-overlay--open { display: flex; }
+    .wd-modal {
+        background: var(--c-surface);
+        border-radius: var(--radius-lg); box-shadow: var(--shadow-xl);
+        max-width: 90vw; max-height: 90vh;
+        overflow: auto; position: relative;
+        animation: wdModalIn 0.25s ease;
+    }
+    .wd-modal__close {
+        position: absolute; top: var(--sp-2); inset-inline-end: var(--sp-3);
+        background: none; border: none; font-size: 24px;
+        cursor: pointer; color: var(--c-text-muted);
+        z-index: 10; padding: var(--sp-1);
+    }
+    .wd-modal__close:hover { color: var(--c-text); }
+    .wd-modal__header {
+        padding: var(--sp-4) 20px; font-size: 16px; font-weight: 700;
+        border-bottom: 1px solid var(--c-border);
+    }
+    .wd-modal__body { padding: var(--sp-4) 20px; }
+    .wd-modal__footer {
+        padding: var(--sp-3) 20px; border-top: 1px solid var(--c-border);
+        display: flex; justify-content: flex-end; gap: var(--sp-2);
+    }
+
+    /* ─── Image Modal ─────────────────────────────────── */
+    .wd-image-modal { text-align: center; min-width: 400px; min-height: 300px; }
+    .wd-image-modal img { max-width: 100%; max-height: 70vh; border-radius: var(--radius-md); }
+    .wd-image-modal__nav {
+        display: flex; align-items: center; justify-content: center;
+        gap: var(--sp-4); margin-top: var(--sp-3);
+    }
+
+    /* ─── Layout Save Modal ───────────────────────────── */
+    .wd-layout-modal { min-width: 320px; }
+    .wd-layout-modal input {
+        width: 100%; padding: 10px var(--sp-3);
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        font-size: 14px; font-family: var(--font-ar);
+        margin-top: var(--sp-2);
+    }
+    .wd-layout-modal input:focus {
+        outline: none; border-color: var(--c-secondary);
+        box-shadow: 0 0 0 3px rgba(46,109,164,0.1);
+    }
+
+    /* ─── Modal entrance animation (unique to Reports modals) ── */
+    @@keyframes wdModalIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+
+    @@media (max-width: 900px) {
+        .wd-layout { grid-template-columns: 1fr; }
+        .wd-sidebar { position: static; max-height: 300px; }
+        .wd-sidebar__list { max-height: 200px; }
+        .wd-filter-bar__row { flex-direction: column; }
+        .wd-filter-group { min-width: 100%; }
+        .wd-table-area__toolbar { gap: 6px; }
+    }
+</style>
+
+<!-- ============================================================ -->
+<!-- Image Preview Modal -->
+<!-- ============================================================ -->
+<div id="imageModal" class="wd-modal-overlay" onclick="closeImageModal(event)">
+    <div class="wd-modal wd-image-modal" onclick="event.stopPropagation()">
+        <button class="wd-modal__close" onclick="closeImageModal()">&times;</button>
+        <div class="wd-modal__header">🖼️ معاينة الصورة</div>
+        <div class="wd-modal__body" id="imageModalBody">
+            <img id="imageModalImg" src="" alt="معاينة الصورة" />
+            <div class="wd-image-modal__nav">
+                <button class="wd-tb-btn" onclick="prevImage()">◀ السابق</button>
+                <span id="imageCounter" style="font-size:13px;color:var(--c-text-muted);">1 / 1</span>
+                <button class="wd-tb-btn" onclick="nextImage()">التالي ▶</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- Layout Save Modal -->
+<!-- ============================================================ -->
+<div id="layoutModal" class="wd-modal-overlay" onclick="closeLayoutModal(event)">
+    <div class="wd-modal wd-layout-modal" onclick="event.stopPropagation()">
+        <button class="wd-modal__close" onclick="closeLayoutModal()">&times;</button>
+        <div class="wd-modal__header">💾 حفظ التصميم الحالي</div>
+        <div class="wd-modal__body">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">اسم التصميم</label>
+            <input id="layoutNameInput" type="text" placeholder="مثال: تقرير المبيعات - العرض المفصل" />
+        </div>
+        <div class="wd-modal__footer">
+            <button class="wd-tb-btn" onclick="closeLayoutModal()">إلغاء</button>
+            <button class="wd-tb-btn wd-tb-btn--primary" onclick="confirmSaveLayout()">💾 حفظ</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- Page Content -->
+<!-- ============================================================ -->
+<div class="wd-page">
+    <div class="wd-breadcrumb">
+        <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; التقارير
+    </div>
+
+    <div class="wd-page__head">
+        <h2 class="wd-page__title">📊 التقارير</h2>
+        <a href="/admin-secure-panel/ReportBuilder" class="wd-tb-btn wd-tb-btn--primary" style="padding:8px 16px;">+ تقرير جديد</a>
+    </div>
+
+    <div class="wd-layout">
+        <!-- ─── Sidebar ──────────────────────────────────── -->
+        <aside class="wd-sidebar">
+            <div class="wd-sidebar__header">📋 التقارير</div>
+            <div class="wd-sidebar__search">
+                <input id="sidebarSearch" type="text" placeholder="بحث في التقارير..." oninput="filterSidebar(this.value)" />
+            </div>
+            <ul id="reportList" class="wd-sidebar__list">
+                <li class="wd-sidebar__empty">⏳ جاري تحميل التقارير...</li>
+            </ul>
+            <a href="/admin-secure-panel/ReportBuilder" class="wd-sidebar__new-btn">+ تقرير جديد</a>
+        </aside>
+
+        <!-- ─── Main Area ─────────────────────────────────── -->
+        <div class="wd-main" id="mainArea">
+            <!-- Report Info -->
+            <div id="reportInfo" class="wd-report-info">
+                <h3 id="reportInfoTitle" class="wd-report-info__title">اختر تقريراً</h3>
+                <p id="reportInfoDesc" class="wd-report-info__desc">اختر تقريراً من القائمة الجانبية لعرض البيانات.</p>
+            </div>
+
+            <!-- Report Filters (Server-Side) -->
+            <div id="filterBar" class="wd-filter-bar">
+                <div class="wd-filter-bar__title">🔍 فلاتر التقرير</div>
+                <div id="filterContent" class="wd-filter-bar__row">
+                    <span style="font-size:13px;color:var(--c-text-muted);">اختر تقريراً لتفعيل الفلاتر.</span>
+                </div>
+            </div>
+
+            <!-- Table Area -->
+            <div class="wd-table-area" id="tableArea">
+                <!-- Toolbar -->
+                <div class="wd-table-area__toolbar" id="tableToolbar">
+                    <div class="wd-search-box" style="flex:0 1 240px;">
+                        <input id="gridSearch" type="text" placeholder="🔍 بحث عام..." oninput="onQuickFilter(this.value)" disabled />
+                    </div>
+                    <div class="wd-tb-sep"></div>
+                    <button class="wd-tb-btn" id="btnExcel" onclick="exportExcel()" disabled>
+                        📥 Excel
+                    </button>
+                    <button class="wd-tb-btn" id="btnColumns" onclick="toggleColumnPanel()" disabled>
+                        👁️ أعمدة
+                    </button>
+                    <button class="wd-tb-btn" id="btnSaveLayout" onclick="openLayoutModal()" disabled>
+                        💾 حفظ
+                    </button>
+                    <select id="layoutSelect" class="wd-tb-btn" onchange="loadLayout(this.value)" disabled style="max-width:160px;">
+                        <option value="">📂 استرجاع</option>
+                    </select>
+                    <button class="wd-tb-btn" id="btnRefresh" onclick="loadCurrentReport()" disabled>
+                        🔄 تحديث
+                    </button>
+                    <button class="wd-tb-btn" id="btnFullscreen" onclick="toggleFullscreen()" title="ملء الشاشة">
+                        ⛶
+                    </button>
+                </div>
+
+                <!-- Column Visibility Panel -->
+                <div id="columnPanel" style="display:none;padding:8px 16px;background:var(--c-surface-muted);border-bottom:1px solid var(--c-border);">
+                    <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--c-text-muted);">إظهار/إخفاء الأعمدة:</div>
+                    <div id="columnToggleList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+                </div>
+
+                <!-- Empty State or Grid -->
+                <div id="gridContainer" style="flex:1;">
+                    <div class="wd-empty">
+                        <div class="wd-empty__icon">📊</div>
+                        <h3>اختر تقريراً</h3>
+                        <p>اختر تقريراً من القائمة الجانبية لعرض البيانات والتفاعل معها.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+<script>
+    // ─── State ──────────────────────────────────────────────
+    let reports = [];
+    let currentReportId = 0;
+    let currentReportDef = null;
+    let currentColumns = [];
+    let currentRows = [];
+    let gridApi = null;
+    let gridColumnApi = null;
+    let imageList = [];
+    let imageIndex = 0;
+    let savedLayoutId = 0;
+
+    // ─── Toast Notifications ─────────────────────────────────
+    function showToast(message, type) {
+        type = type || 'success';
+        var host = document.getElementById('wd-toast-host');
+        if (!host) return;
+        var icon = type === 'success' ? '✓' : '✕';
+        var toast = document.createElement('div');
+        toast.className = 'wd-toast wd-toast--' + type;
+        toast.innerHTML = '<span class="wd-toast__icon">' + icon + '</span><span class="wd-toast__msg">' + escapeHtml(message) + '</span>';
+        host.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 4000);
+    }
+
+    // ─── Init ───────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function() {
+        loadReportList();
+    });
+
+    // ─── Load Report List (Sidebar) ─────────────────────────
+    async function loadReportList() {
+        var list = document.getElementById('reportList');
+        try {
+            var resp = await fetch('/api/reports/list');
+            reports = await resp.json();
+            if (reports.length === 0) {
+                list.innerHTML = '<li class="wd-sidebar__empty">📋 لا توجد تقارير بعد.</li>';
+                return;
+            }
+            var html = '';
+            reports.forEach(function(r) {
+                var icon = r.icon || '📊';
+                html += '<li class="wd-sidebar__item' +
+                    (r.isEnabled ? '' : ' wd-sidebar__item--disabled') +
+                    '" onclick="selectReport(' + r.id + ')" data-id="' + r.id + '">' +
+                    '<span class="wd-sidebar__icon">' + icon + '</span>' +
+                    '<span>' + escapeHtml(r.name) + '</span></li>';
+            });
+            list.innerHTML = html;
+        } catch (err) {
+            list.innerHTML = '<li class="wd-sidebar__empty">⚠️ تعذر تحميل التقارير.</li>';
+        }
+    }
+
+    function filterSidebar(query) {
+        var q = (query || '').toLowerCase();
+        var items = document.querySelectorAll('#reportList .wd-sidebar__item');
+        items.forEach(function(item) {
+            var text = item.textContent.toLowerCase();
+            item.style.display = text.indexOf(q) !== -1 ? '' : 'none';
+        });
+    }
+
+    // ─── Select Report ──────────────────────────────────────
+    async function selectReport(id) {
+        // Highlight active
+        document.querySelectorAll('#reportList .wd-sidebar__item').forEach(function(el) {
+            el.classList.remove('wd-sidebar__item--active');
+        });
+        var activeItem = document.querySelector('#reportList .wd-sidebar__item[data-id="' + id + '"]');
+        if (activeItem) activeItem.classList.add('wd-sidebar__item--active');
+
+        currentReportId = id;
+
+        // Show info bar
+        var report = reports.find(function(r) { return r.id === id; });
+        if (report) {
+            document.getElementById('reportInfo').classList.add('wd-report-info--visible');
+            document.getElementById('reportInfoTitle').textContent = report.icon + ' ' + report.name;
+            document.getElementById('reportInfoDesc').textContent = report.description || 'عرض بيانات ' + report.viewName;
+        }
+
+        // Load report definition and display filters
+        try {
+            var resp = await fetch('/api/reports/detail/' + id);
+            currentReportDef = await resp.json();
+            renderFilters(currentReportDef.filters || []);
+            document.getElementById('filterBar').classList.add('wd-filter-bar--visible');
+        } catch (err) {
+            console.error('Failed to load report definition', err);
+        }
+
+        // Load report data
+        loadReportData(id, {});
+    }
+
+    // ─── Load Report Data ───────────────────────────────────
+    async function loadReportData(reportId, filterValues) {
+        var container = document.getElementById('gridContainer');
+        container.innerHTML = '<div class="wd-skeleton-wrap"><div class="wd-skel"></div><div class="wd-skel"></div><div class="wd-skel"></div><div class="wd-skel"></div><div class="wd-skel"></div></div>';
+
+        // Enable/disable toolbar buttons
+        document.getElementById('gridSearch').disabled = true;
+        document.getElementById('btnExcel').disabled = true;
+        document.getElementById('btnColumns').disabled = true;
+        document.getElementById('btnSaveLayout').disabled = true;
+
+        try {
+            var resp = await fetch('/api/reports-data/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reportId: reportId, filterValues: filterValues || {} })
+            });
+            var data = await resp.json();
+
+            if (!data.success) {
+                container.innerHTML = '<div class="wd-empty"><div class="wd-empty__icon">⚠️</div><h3>خطأ</h3><p>' + escapeHtml(data.errorMessage || 'حدث خطأ أثناء تنفيذ التقرير.') + '</p></div>';
+                return;
+            }
+
+            currentColumns = data.columns || [];
+            currentRows = data.rows || [];
+
+            if (data.rows.length === 0) {
+                container.innerHTML = '<div class="wd-empty"><div class="wd-empty__icon">📋</div><h3>لا توجد بيانات</h3><p>التقرير لا يحتوي على بيانات تطابق الفلاتر المحددة.</p></div>';
+                return;
+            }
+
+            renderTable(data.columns, data.rows);
+
+            // Load saved layouts
+            loadLayouts();
+
+            // Enable toolbar
+            document.getElementById('gridSearch').disabled = false;
+            document.getElementById('btnExcel').disabled = false;
+            document.getElementById('btnColumns').disabled = false;
+            document.getElementById('btnSaveLayout').disabled = false;
+
+        } catch (err) {
+            container.innerHTML = '<div class="wd-empty"><div class="wd-empty__icon">⚠️</div><h3>خطأ في الاتصال</h3><p>تعذر الاتصال بالخادم. تأكد من تشغيل الخادم.</p></div>';
+        }
+    }
+
+    function loadCurrentReport() {
+        if (currentReportId > 0) {
+            var filterValues = collectFilterValues();
+            loadReportData(currentReportId, filterValues);
+        }
+    }
+
+    // ─── Filters ────────────────────────────────────────────
+    function renderFilters(filters) {
+        var content = document.getElementById('filterContent');
+        if (!filters || filters.length === 0) {
+            content.innerHTML = '<span style="font-size:13px;color:var(--c-text-muted);">لا توجد فلاتر لهذا التقرير.</span>';
+            return;
+        }
+
+        var html = '';
+        filters.forEach(function(f, idx) {
+            html += '<div class="wd-filter-group">';
+            html += '<label>' + escapeHtml(f.label || f.columnName) + '</label>';
+
+            var inputId = 'filter-' + f.id + '-' + idx;
+            switch (f.filterType) {
+                case 'Text':
+                    html += '<input id="' + inputId + '" type="text" placeholder="' + escapeHtml(f.placeholder || 'بحث...') + '" />';
+                    break;
+                case 'Date':
+                    html += '<input id="' + inputId + '" type="date" />';
+                    break;
+                case 'DateRange':
+                    html += '<div style="display:flex;gap:6px;">';
+                    html += '<input id="' + inputId + '-from" type="date" placeholder="من" style="min-width:0;flex:1;" />';
+                    html += '<input id="' + inputId + '-to" type="date" placeholder="إلى" style="min-width:0;flex:1;" />';
+                    html += '</div>';
+                    break;
+                case 'Dropdown':
+                    html += '<select id="' + inputId + '"><option value="">الكل</option></select>';
+                    // Load dropdown options
+                    loadDropdownOptions(f.columnName, inputId);
+                    break;
+                case 'Number':
+                    html += '<input id="' + inputId + '" type="number" step="0.01" />';
+                    break;
+                case 'NumberRange':
+                    html += '<div style="display:flex;gap:6px;">';
+                    html += '<input id="' + inputId + '-min" type="number" placeholder="الحد الأدنى" style="min-width:0;flex:1;" />';
+                    html += '<input id="' + inputId + '-max" type="number" placeholder="الحد الأقصى" style="min-width:0;flex:1;" />';
+                    html += '</div>';
+                    break;
+                default:
+                    html += '<input id="' + inputId + '" type="text" />';
+            }
+            html += '</div>';
+        });
+
+        html += '<div class="wd-filter-bar__actions">';
+        html += '<button class="wd-tb-btn wd-tb-btn--primary" onclick="applyFilters()">🔍 تطبيق</button>';
+        html += '<button class="wd-tb-btn" onclick="clearFilters()">✕ مسح</button>';
+        html += '</div>';
+
+        content.innerHTML = html;
+    }
+
+    async function loadDropdownOptions(columnName, inputId) {
+        if (currentReportDef && currentReportDef.viewName) {
+            try {
+                var resp = await fetch('/api/reports-data/options?view=' + encodeURIComponent(currentReportDef.viewName) + '&column=' + encodeURIComponent(columnName));
+                var options = await resp.json();
+                var sel = document.getElementById(inputId);
+                if (sel && Array.isArray(options)) {
+                    options.forEach(function(opt) {
+                        var o = document.createElement('option');
+                        o.value = opt;
+                        o.textContent = opt;
+                        sel.appendChild(o);
+                    });
+                }
+            } catch (err) { /* ignore */ }
+        }
+    }
+
+    function collectFilterValues() {
+        if (!currentReportDef || !currentReportDef.filters) return {};
+        var values = {};
+        currentReportDef.filters.forEach(function(f, idx) {
+            var inputId = 'filter-' + f.id + '-' + idx;
+            if (f.filterType === 'DateRange') {
+                var from = document.getElementById(inputId + '-from')?.value || '';
+                var to = document.getElementById(inputId + '-to')?.value || '';
+                if (from || to) values[f.columnName] = from + '|' + to;
+            } else if (f.filterType === 'NumberRange') {
+                var min = document.getElementById(inputId + '-min')?.value || '';
+                var max = document.getElementById(inputId + '-max')?.value || '';
+                if (min || max) values[f.columnName] = min + '|' + max;
+            } else {
+                var val = document.getElementById(inputId)?.value || '';
+                if (val) values[f.columnName] = val;
+            }
+        });
+        return values;
+    }
+
+    function applyFilters() {
+        var filterValues = collectFilterValues();
+        loadReportData(currentReportId, filterValues);
+    }
+
+    function clearFilters() {
+        if (currentReportDef && currentReportDef.filters) {
+            currentReportDef.filters.forEach(function(f, idx) {
+                var inputId = 'filter-' + f.id + '-' + idx;
+                var el = document.getElementById(inputId);
+                if (el) el.value = '';
+                if (f.filterType === 'DateRange') {
+                    var from = document.getElementById(inputId + '-from');
+                    var to = document.getElementById(inputId + '-to');
+                    if (from) from.value = '';
+                    if (to) to.value = '';
+                }
+                if (f.filterType === 'NumberRange') {
+                    var min = document.getElementById(inputId + '-min');
+                    var max = document.getElementById(inputId + '-max');
+                    if (min) min.value = '';
+                    if (max) max.value = '';
+                }
+            });
+        }
+        loadReportData(currentReportId, {});
+    }
+
+    // ─── AG Grid Table ──────────────────────────────────────
+    function renderTable(columns, rows) {
+        var container = document.getElementById('gridContainer');
+        container.innerHTML = '<div id="reportGrid" style="height:100%;min-height:350px;"></div>';
+
+        // Build column definitions from API response
+        var colDefs = columns.map(function(col) {
+            var def = {
+                headerName: col.displayName || col.name,
+                field: col.name,
+                sortable: true,
+                filter: true,
+                resizable: true,
+                width: col.width || 150,
+                minWidth: 60,
+                suppressSizeToFit: false,
+                floatingFilter: true
+            };
+
+            // Image column renderer
+            if (col.isImageColumn) {
+                def.cellRenderer = function(params) {
+                    if (!params.value) return '';
+                    var baseUrl = col.imageBaseUrl || '';
+                    var imgUrl = baseUrl + params.value;
+                    return '<img src="' + escapeHtml(imgUrl) + '" style="width:36px;height:36px;object-fit:cover;border-radius:6px;cursor:pointer;" onclick="event.stopPropagation();openImageModal(\'' + escapeHtml(imgUrl) + '\')" />';
+                };
+                def.filter = false;
+                def.sortable = false;
+                def.width = 60;
+            }
+
+            // Number alignment
+            if (col.dataType && ['int32','int64','decimal','double','single','float'].indexOf(col.dataType.toLowerCase()) !== -1) {
+                def.cellStyle = { textAlign: 'right', direction: 'ltr' };
+            }
+
+            // Date format
+            if (col.dateFormat) {
+                def.cellRenderer = function(params) {
+                    if (!params.value) return '';
+                    try {
+                        var d = new Date(params.value);
+                        return d.toLocaleDateString('ar-SA');
+                    } catch(e) {
+                        return escapeHtml(String(params.value));
+                    }
+                };
+            }
+
+            return def;
+        });
+
+        // Build grid
+        var gridDiv = document.getElementById('reportGrid');
+        gridDiv.innerHTML = ''; // Clear any previous grid
+
+        var gridOptions = {
+            columnDefs: colDefs,
+            rowData: rows,
+            defaultColDef: {
+                sortable: true,
+                filter: true,
+                resizable: true,
+                floatingFilter: true,
+                suppressMenu: false
+            },
+            pagination: true,
+            paginationPageSize: 50,
+            paginationPageSizeSelector: [20, 50, 100, 200],
+            animateRows: true,
+            enableRtl: true,
+            suppressRowClickSelection: true,
+            enableCellTextSelection: true,
+            ensureDomOrder: true,
+            domLayout: 'autoHeight',
+            rowHeight: 44,
+            headerHeight: 38,
+            floatingFiltersHeight: 32,
+            localeText: {
+                // Arabic localization
+                page: 'الصفحة',
+                more: 'المزيد',
+                to: 'إلى',
+                of: 'من',
+                next: 'التالي',
+                previous: 'السابق',
+                loadingOoo: 'جاري التحميل...',
+                noRowsToShow: 'لا توجد بيانات',
+                filterOoo: 'فلترة...',
+                equals: 'يساوي',
+                notEqual: 'لا يساوي',
+                contains: 'يحتوي',
+                notContains: 'لا يحتوي',
+                startsWith: 'يبدأ بـ',
+                endsWith: 'ينتهي بـ',
+                blank: 'فارغ',
+                notBlank: 'غير فارغ',
+                greaterThan: 'أكبر من',
+                lessThan: 'أقل من',
+                greaterThanOrEqual: 'أكبر أو يساوي',
+                lessThanOrEqual: 'أقل أو يساوي',
+                inRange: 'بين',
+                andCondition: 'و',
+                orCondition: 'أو',
+                filterTooltip: 'فلترة'
+            },
+            onGridReady: function(params) {
+                gridApi = params.api;
+                gridColumnApi = params.columnApi;
+
+                // Restore layout if selected
+                if (savedLayoutId) {
+                    var layouts = document.getElementById('layoutSelect').options;
+                    for (var i = 0; i < layouts.length; i++) {
+                        if (layouts[i].value == savedLayoutId) {
+                            applyLayout(parseInt(savedLayoutId));
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+
+        try {
+            new agGrid.Grid(gridDiv, gridOptions);
+        } catch (e) {
+            console.error('AG Grid initialization failed', e);
+            container.innerHTML = '<div class="wd-empty"><div class="wd-empty__icon">⚠️</div><h3>خطأ في تحميل الجدول</h3><p>تعذر تحميل مكتبة الجدول. تأكد من اتصالك بالإنترنت.</p></div>';
+        }
+    }
+
+    // ─── Image Modal ─────────────────────────────────────────
+    function openImageModal(url) {
+        imageList = [url];
+        imageIndex = 0;
+        showImage();
+        document.getElementById('imageModal').classList.add('wd-modal-overlay--open');
+    }
+
+    function showImage() {
+        if (imageList.length === 0) return;
+        document.getElementById('imageModalImg').src = imageList[imageIndex];
+        document.getElementById('imageCounter').textContent = (imageIndex + 1) + ' / ' + imageList.length;
+    }
+
+    function closeImageModal(event) {
+        if (!event || event.target === event.currentTarget) {
+            document.getElementById('imageModal').classList.remove('wd-modal-overlay--open');
+        }
+    }
+
+    function prevImage() {
+        if (imageIndex > 0) { imageIndex--; showImage(); }
+    }
+
+    function nextImage() {
+        if (imageIndex < imageList.length - 1) { imageIndex++; showImage(); }
+    }
+
+    // ─── Toolbar Actions ───────────────────────────────────
+    function onQuickFilter(value) {
+        if (gridApi) {
+            gridApi.setGridOption('quickFilterText', value);
+        }
+    }
+
+    function exportExcel() {
+        if (!gridApi) return;
+        var params = {
+            fileName: (currentReportDef ? currentReportDef.name : 'تقرير') + '.xlsx',
+            sheetName: currentReportDef ? currentReportDef.name : 'Report',
+            columnKeys: gridColumnApi.getAllDisplayedColumns().map(function(c) { return c.getColDef().field; }),
+            processCellCallback: function(params) {
+                // Skip image cells
+                if (params.column.getColDef().cellRenderer === 'imageCellRenderer') return '';
+                return params.value;
+            }
+        };
+        gridApi.exportDataAsExcel(params);
+    }
+
+    function toggleColumnPanel() {
+        var panel = document.getElementById('columnPanel');
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+            renderColumnToggles();
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+
+    function renderColumnToggles() {
+        var list = document.getElementById('columnToggleList');
+        if (!gridColumnApi) return;
+        var allCols = gridColumnApi.getColumns();
+        var html = '';
+        allCols.forEach(function(col) {
+            var colDef = col.getColDef();
+            var isVisible = col.isVisible();
+            html += '<label style="display:inline-flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;padding:4px 8px;background:' + (isVisible ? '#EDF2F7' : 'transparent') + ';border-radius:6px;">';
+            html += '<input type="checkbox" ' + (isVisible ? 'checked' : '') + ' onchange="toggleColumn(\'' + colDef.field + '\', this.checked)" />';
+            html += escapeHtml(colDef.headerName);
+            html += '</label>';
+        });
+        list.innerHTML = html;
+    }
+
+    function toggleColumn(field, visible) {
+        if (gridColumnApi) {
+            gridColumnApi.setColumnVisible(field, visible);
+            renderColumnToggles();
+        }
+    }
+
+    function openLayoutModal() {
+        document.getElementById('layoutNameInput').value = '';
+        document.getElementById('layoutModal').classList.add('wd-modal-overlay--open');
+    }
+
+    function closeLayoutModal(event) {
+        if (!event || event.target === event.currentTarget) {
+            document.getElementById('layoutModal').classList.remove('wd-modal-overlay--open');
+        }
+    }
+
+    async function confirmSaveLayout() {
+        var name = document.getElementById('layoutNameInput').value.trim();
+        if (!name) { showToast('الرجاء إدخال اسم للتصميم.', 'error'); return; }
+
+        if (!gridColumnApi || !currentReportId) return;
+
+        // Collect current layout state
+        var allCols = gridColumnApi.getColumns();
+        var colOrder = allCols.filter(function(c) { return c.isVisible(); }).map(function(c) { return c.getColDef().field; });
+        var visibleCols = allCols.map(function(c) { return c.getColDef().field + ':' + c.isVisible(); });
+        var colWidths = allCols.map(function(c) { return c.getColDef().field + ':' + c.getActualWidth(); });
+        var sortState = gridApi ? gridApi.getSortModel() : [];
+        var filterValues = collectFilterValues();
+
+        try {
+            var resp = await fetch('/api/reports-data/saveLayout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reportId: currentReportId,
+                    layoutName: name,
+                    isDefault: false,
+                    columnOrder: JSON.stringify(colOrder),
+                    visibleColumns: JSON.stringify(visibleCols),
+                    columnWidths: JSON.stringify(colWidths),
+                    filterValues: JSON.stringify(filterValues),
+                    sortState: JSON.stringify(sortState)
+                })
+            });
+            var data = await resp.json();
+            if (data.success || data.id) {
+                showToast('تم حفظ التصميم بنجاح!', 'success');
+                closeLayoutModal();
+                loadLayouts();
+            } else {
+                showToast('خطأ في حفظ التصميم.', 'error');
+            }
+        } catch (err) {
+            showToast('تعذر الاتصال بالخادم.', 'error');
+        }
+    }
+
+    async function loadLayouts() {
+        if (!currentReportId) return;
+        try {
+            var resp = await fetch('/api/reports-data/layouts?reportId=' + currentReportId);
+            var layouts = await resp.json();
+            var sel = document.getElementById('layoutSelect');
+            sel.innerHTML = '<option value="">📂 استرجاع</option>';
+            if (Array.isArray(layouts)) {
+                layouts.forEach(function(l) {
+                    var opt = document.createElement('option');
+                    opt.value = l.id;
+                    opt.textContent = (l.isDefault ? '⭐ ' : '') + l.layoutName;
+                    sel.appendChild(opt);
+                });
+            }
+        } catch (err) { /* ignore */ }
+    }
+
+    function loadLayout(value) {
+        if (!value) return;
+        applyLayout(parseInt(value));
+    }
+
+    async function applyLayout(layoutId) {
+        if (!layoutId || !gridApi) return;
+        try {
+            var resp = await fetch('/api/reports-data/layoutDetail?layoutId=' + layoutId);
+            // If the API doesn't have a detail endpoint, fetch from layouts list
+            // and find the matching one
+            var layouts = [];
+            if (currentReportId) {
+                var listResp = await fetch('/api/reports-data/layouts?reportId=' + currentReportId);
+                layouts = await listResp.json();
+            }
+            var layout = Array.isArray(layouts) ? layouts.find(function(l) { return l.id == layoutId; }) : null;
+            if (!layout) return;
+
+            // Apply column visibility
+            if (layout.visibleColumns) {
+                try {
+                    var visibleCols = JSON.parse(layout.visibleColumns);
+                    visibleCols.forEach(function(vc) {
+                        var parts = vc.split(':');
+                        if (parts.length === 2) {
+                            gridColumnApi.setColumnVisible(parts[0], parts[1] === 'true');
+                        }
+                    });
+                } catch(e) {}
+            }
+
+            // Apply column widths
+            if (layout.columnWidths) {
+                try {
+                    var widths = JSON.parse(layout.columnWidths);
+                    widths.forEach(function(w) {
+                        var parts = w.split(':');
+                        if (parts.length === 2) {
+                            var col = gridColumnApi.getColumn(parts[0]);
+                            if (col) col.setActualWidth(parseInt(parts[1]));
+                        }
+                    });
+                } catch(e) {}
+            }
+
+            // Apply sort state
+            if (layout.sortState) {
+                try {
+                    var sortModel = JSON.parse(layout.sortState);
+                    gridApi.applySort({ sortModel: sortModel });
+                } catch(e) {}
+            }
+
+            // Apply filter values to filter bar
+            if (layout.filterValues) {
+                try {
+                    var filters = JSON.parse(layout.filterValues);
+                    // Set filter input values
+                    Object.keys(filters).forEach(function(key) {
+                        // Find the filter input by column name
+                        if (currentReportDef && currentReportDef.filters) {
+                            currentReportDef.filters.forEach(function(f, idx) {
+                                if (f.columnName === key) {
+                                    var inputId = 'filter-' + f.id + '-' + idx;
+                                    var el = document.getElementById(inputId);
+                                    if (el) el.value = filters[key];
+                                }
+                            });
+                        }
+                    });
+                } catch(e) {}
+            }
+
+            showToast('تم تحميل التصميم.', 'success');
+        } catch(e) {
+            console.error('Failed to apply layout', e);
+        }
+    }
+
+    function toggleFullscreen() {
+        var el = document.getElementById('tableArea');
+        if (!document.fullscreenElement) {
+            if (el.requestFullscreen) el.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────
+    function escapeHtml(text) {
+        if (text == null) return '';
+        var d = document.createElement('div');
+        d.textContent = String(text);
+        return d.innerHTML;
+    }
+</script>

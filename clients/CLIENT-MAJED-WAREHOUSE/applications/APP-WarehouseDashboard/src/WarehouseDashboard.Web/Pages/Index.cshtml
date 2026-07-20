@@ -188,18 +188,38 @@
         line-height: 0.95;
         font-variant-numeric: tabular-nums;
         font-feature-settings: "tnum" 1;
+        direction: ltr;
+        unicode-bidi: isolate;
+        text-align: start;
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         letter-spacing: -0.03em;
-        font-size: clamp(36px, 12cqi, 64px);
+        font-size: clamp(21px, 7cqi, 38px);
+    }
+    .wd-kpi-money {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 0.25em;
+        direction: rtl;
+        unicode-bidi: isolate;
+        white-space: nowrap;
+    }
+    .wd-kpi-money__number {
+        direction: ltr;
+        unicode-bidi: isolate;
+    }
+    .wd-kpi-money__currency {
+        direction: rtl;
+        unicode-bidi: isolate;
     }
 
     /* Size class = secondary hint (grid width); container queries drive density */
-    .wd-kpi--size-small .wd-kpi__value { font-size: clamp(22px, 10cqi, 32px); line-height: 1; }
-    .wd-kpi--size-medium .wd-kpi__value { font-size: clamp(34px, 11cqi, 52px); }
-    .wd-kpi--size-large .wd-kpi__value { font-size: clamp(40px, 12cqi, 64px); }
+    .wd-kpi--size-small .wd-kpi__value { font-size: clamp(13px, 6cqi, 18px); line-height: 1; }
+    .wd-kpi--size-medium .wd-kpi__value { font-size: clamp(20px, 6.2cqi, 30px); }
+    .wd-kpi--size-large .wd-kpi__value { font-size: clamp(24px, 7cqi, 38px); }
 
     .wd-kpi__details {
         font-size: 12px;
@@ -311,6 +331,8 @@
         font-weight: 700;
         color: var(--c-text);
         font-variant-numeric: tabular-nums;
+        direction: ltr;
+        unicode-bidi: isolate;
         padding-inline: 4px;
     }
     .wd-kpi-breakdown__code {
@@ -329,31 +351,44 @@
     .wd-kpi__grandtotal {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 4px;
+        width: 100%;
         min-width: 0;
+    }
+    .wd-kpi-grandtotal {
+        width: 100%;
+        min-width: 0;
+        direction: rtl;
     }
     .wd-kpi-grandtotal__row {
         font-size: 12px;
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
+        display: grid;
+        grid-template-columns: max-content minmax(0, 1fr);
         align-items: baseline;
-        gap: 8px;
-        flex-wrap: wrap;
+        column-gap: 8px;
+        width: 100%;
         direction: rtl;
     }
-    /* Mockup: value bold first, then muted label */
+    /* RTL reading order: label on the right, amount on the left. */
     .wd-kpi-grandtotal__value {
         font-weight: 800;
         color: var(--c-text);
         font-variant-numeric: tabular-nums;
-        order: 0;
+        direction: ltr;
+        unicode-bidi: isolate;
+        text-align: left;
+        justify-self: start;
+        min-width: 0;
     }
     .wd-kpi-grandtotal__label {
         color: var(--c-text-muted);
         font-weight: 500;
-        order: 1;
+        direction: rtl;
+        unicode-bidi: isolate;
+        text-align: right;
+        justify-self: end;
+        white-space: nowrap;
     }
 
     /* Sparkline full-width under cluster */
@@ -375,7 +410,7 @@
         overflow: visible;
         animation: wdSparklineIn var(--dur-norm) var(--ease) both;
     }
-    .wd-kpi--size-small .wd-kpi__sparkline { height: 38px; max-height: 40px; min-height: 32px; }
+    .wd-kpi--size-small .wd-kpi__sparkline { height: 32px; max-height: 34px; min-height: 28px; }
     .wd-kpi--size-medium .wd-kpi__sparkline { height: 56px; max-height: 56px; }
     .wd-kpi--size-large .wd-kpi__sparkline { height: 68px; max-height: 72px; }
     .wd-kpi__sparkline-empty {
@@ -538,7 +573,7 @@
     @@container kpi (max-width: 280px) or (max-height: 160px) {
         .wd-kpi__categories { display: none !important; }
         .wd-kpi__row { grid-template-columns: 1fr; gap: 4px; }
-        .wd-kpi__value { font-size: clamp(22px, 12cqi, 34px); line-height: 1; }
+        .wd-kpi__value { font-size: clamp(13px, 6cqi, 18px); line-height: 1; }
         .wd-kpi__change { display: inline-flex; font-size: 10px; padding: 2px 7px; }
         .wd-kpi__sparkline { height: 38px; max-height: 40px; }
         .wd-kpi__cluster { gap: 6px; justify-content: flex-start; }
@@ -559,7 +594,7 @@
         .wd-kpi__sparkline { height: 32px; max-height: 34px; }
         .wd-kpi__cluster { gap: 4px; }
         .wd-kpi__hero { gap: 3px; }
-        .wd-kpi__value { font-size: clamp(20px, 11cqi, 28px); }
+        .wd-kpi__value { font-size: clamp(12px, 5.5cqi, 17px); }
         .wd-kpi:not(.wd-kpi--size-small) .wd-kpi-grandtotal__row:nth-child(n+2) { display: none; }
     }
 
@@ -589,7 +624,7 @@
         .wd-kpi__sparkline { height: 68px; max-height: 72px; }
         .wd-kpi-breakdown__table tr:nth-child(-n+5) { display: table-row; }
         .wd-kpi-breakdown__table tr:nth-child(n+6) { display: none; }
-        .wd-kpi__value { font-size: clamp(40px, 12cqi, 64px); }
+        .wd-kpi__value { font-size: clamp(24px, 7cqi, 38px); }
         .wd-kpi__row { grid-template-columns: minmax(0, 1.15fr) minmax(180px, 0.95fr); }
     }
 
@@ -625,14 +660,31 @@
         display: none !important;
     }
 
-    /* TASK-CARD-KPI-S-TOTALS-ALIGN-001 / VALIGN-001 — S only: keep totals visually left and raised beside the main value */
+    /* TASK-CARD-KPI-S-TOTALS-ALIGN-001 / VALIGN-002 — S only: raise hero/totals while preserving spark clearance */
+    .wd-kpi--size-small .wd-kpi__hero {
+        transform: translateY(-2px);
+        position: relative;
+        z-index: 2;
+    }
     .wd-kpi--size-small .wd-kpi__grandtotal,
     .wd-kpi--size-small .wd-kpi__details {
         width: 100%;
         align-items: stretch;
         gap: 3px;
-        margin-top: -28px;
-        margin-bottom: 10px;
+        margin-top: -6px;
+        margin-bottom: 16px;
+        position: relative;
+        z-index: 2;
+    }
+    .wd-kpi--size-small .wd-kpi__sparkline-section {
+        margin-top: 6px;
+        position: relative;
+        z-index: 0;
+    }
+    .wd-kpi--size-small .wd-kpi__sparkline {
+        height: 32px;
+        max-height: 34px;
+        min-height: 28px;
     }
     .wd-kpi--size-small .wd-kpi-grandtotal {
         width: min(100%, 172px);
@@ -641,15 +693,13 @@
     }
     .wd-kpi--size-small .wd-kpi-grandtotal__row {
         display: grid !important;
-        grid-template-columns: minmax(72px, 1fr) max-content;
+        grid-template-columns: max-content minmax(72px, 1fr);
         align-items: baseline;
         column-gap: 10px;
         width: 100%;
-        direction: ltr; /* first column is visually left for the value */
-        flex-wrap: nowrap;
+        direction: rtl; /* first column is visually right for the Arabic label */
     }
     .wd-kpi--size-small .wd-kpi-grandtotal__value {
-        order: initial;
         color: var(--c-text);
         font-weight: 900;
         direction: ltr;
@@ -658,7 +708,6 @@
         justify-self: start;
     }
     .wd-kpi--size-small .wd-kpi-grandtotal__label {
-        order: initial;
         color: color-mix(in srgb, var(--c-text) 84%, var(--c-primary));
         font-weight: 800;
         direction: rtl;
@@ -1338,10 +1387,29 @@ else
                     if (progress < 1) {
                         requestAnimationFrame(step);
                     } else {
-                        el.textContent = formatNum ? formatNum(target) : target.toLocaleString();
+                        // Final value: format depends on kpi size class (S vs M/L)
+                        var kpiEl = el.closest('.wd-kpi');
+                        var isSmall = kpiEl && kpiEl.classList.contains('wd-kpi--size-small');
+                        var finalText = isSmall
+                            ? (window.formatNum ? window.formatNum(target) + ' د.أ' : target + ' د.أ')
+                            : (window.formatMoney ? window.formatMoney(target) : (window.formatNum ? window.formatNum(target) : target));
+                        el.innerHTML = wdKpiMoneyHtml(finalText);
                     }
                 }
                 requestAnimationFrame(step);
+            }
+
+            function wdKpiMoneyHtml(value) {
+                var text = value === null || value === undefined ? '' : String(value);
+                var currencyMatch = text.match(/\s*د\.أ\s*$/);
+                if (!currencyMatch) {
+                    return '<span class="wd-kpi-money" dir="ltr"><span class="wd-kpi-money__number">' + escapeHtml(text) + '</span></span>';
+                }
+                var numberText = text.slice(0, text.length - currencyMatch[0].length);
+                return '<span class="wd-kpi-money" dir="rtl">'
+                    + '<span class="wd-kpi-money__number" dir="ltr">' + escapeHtml(numberText) + '</span>'
+                    + '<span class="wd-kpi-money__currency" dir="rtl">د.أ</span>'
+                    + '</span>';
             }
 
             function wdKpiComparisonText(changeSource) {
@@ -1448,10 +1516,12 @@ else
                 var display = card.kpiFormatted !== null && card.kpiFormatted !== undefined
                     ? card.kpiFormatted
                     : (rawValue !== null && rawValue !== undefined
-                        ? (window.formatNum ? window.formatNum(window.toNum(rawValue)) : rawValue)
+                        ? (sizeClass === 'wd-kpi--size-small'
+                            ? (window.formatNum ? window.formatNum(window.toNum(rawValue)) + ' د.أ' : rawValue + ' د.أ')
+                            : (window.formatMoney ? window.formatMoney(window.toNum(rawValue)) : rawValue))
                         : '—');
                 html += '<div class="wd-kpi__hero">';
-                html += '<div class="wd-kpi__value" data-kpi-target="' + target + '">' + display + '</div>';
+                html += '<div class="wd-kpi__value" data-kpi-target="' + target + '">' + wdKpiMoneyHtml(display) + '</div>';
                 if (hasChangeContext && card.kpiChangePercent !== null && card.kpiChangePercent !== undefined) {
                     var changePercent = card.kpiChangePercent;
                     var direction = window.wdNormalizeKpiDirection ? window.wdNormalizeKpiDirection(card.kpiChangeDirection || 'flat') : 'flat';
@@ -1547,7 +1617,7 @@ else
                 var markerRing = isDark ? 'rgba(255,255,255,0.92)' : '#ffffff';
 
                 function formatSparkValue(val) {
-                    return formatNum ? formatNum(toNum(val)) : toNum(val).toLocaleString('ar-SA');
+                    return formatMoney ? formatMoney(toNum(val)) : toNum(val).toLocaleString('ar-SA');
                 }
 
                 function deltaHtml(index) {
@@ -1684,7 +1754,7 @@ else
                     html += '<tr>';
                     /* Visual LTR (table direction:ltr): % | value | code(gold) */
                     html += '<td class="wd-kpi-breakdown__pct">' + escapeHtml(String(pctLabel)) + '</td>';
-                    html += '<td class="wd-kpi-breakdown__val">' + formatNum(toNum(value)) + '</td>';
+                    html += '<td class="wd-kpi-breakdown__val">' + wdKpiMoneyHtml(formatMoney(toNum(value))) + '</td>';
                     html += '<td class="wd-kpi-breakdown__code">' + escapeHtml(String(code)) + '</td>';
                     html += '</tr>';
                 });
@@ -1703,28 +1773,27 @@ else
 
                 if (source === 'allTime' || source === 'both') {
                     if (card.kpiGrandTotal !== null && card.kpiGrandTotal !== undefined) {
-                        var val = formatNum(toNum(card.kpiGrandTotal));
+                        var val = formatMoney(toNum(card.kpiGrandTotal));
                         html += '<div class="wd-kpi-grandtotal__row">';
-                        /* Mockup order: value then label */
-                        html += '<span class="wd-kpi-grandtotal__value">' + val + '</span>';
                         html += '<span class="wd-kpi-grandtotal__label">الإجمالي الكلي:</span>';
+                        html += '<span class="wd-kpi-grandtotal__value">' + wdKpiMoneyHtml(val) + '</span>';
                         html += '</div>';
                     }
                 }
 
                 if (source === 'yearToDate' || source === 'both') {
                     if (card.kpiYearToDateTotal !== null && card.kpiYearToDateTotal !== undefined) {
-                        var valYtd = formatNum(toNum(card.kpiYearToDateTotal));
+                        var valYtd = formatMoney(toNum(card.kpiYearToDateTotal));
                         var year = new Date().getFullYear();
                         html += '<div class="wd-kpi-grandtotal__row">';
-                        html += '<span class="wd-kpi-grandtotal__value">' + valYtd + '</span>';
                         html += '<span class="wd-kpi-grandtotal__label">إجمالي ' + year + ':</span>';
+                        html += '<span class="wd-kpi-grandtotal__value">' + wdKpiMoneyHtml(valYtd) + '</span>';
                         html += '</div>';
                     }
                 }
 
                 if (!html) {
-                    container.innerHTML = '<div class="wd-kpi-grandtotal"><div class="wd-kpi-grandtotal__row"><span class="wd-kpi-grandtotal__value">—</span><span class="wd-kpi-grandtotal__label">المجاميع:</span></div></div>';
+                    container.innerHTML = '<div class="wd-kpi-grandtotal"><div class="wd-kpi-grandtotal__row"><span class="wd-kpi-grandtotal__label">المجاميع:</span><span class="wd-kpi-grandtotal__value">' + wdKpiMoneyHtml('—') + '</span></div></div>';
                     container.style.display = '';
                     return;
                 }
@@ -2241,7 +2310,7 @@ else
                         wdRenderGauge(div, data);
                     } else if (data.chartType === 'KPI') {
                         var val = data.kpiValue != null ? data.kpiValue : (data.rows && data.rows[0] ? data.rows[0][data.columns && data.columns[0] || 'value'] : null);
-                        var displayVal = val != null ? (typeof formatNum === 'function' ? formatNum(val) : val) : '—';
+                        var displayVal = val != null ? (typeof formatMoney === 'function' ? formatMoney(val) : val) : '—';
                         bodyEl.innerHTML = '';
                         var kpiWrap = document.createElement('div');
                         kpiWrap.className = 'wd-drill-kpi';

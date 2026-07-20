@@ -51,6 +51,9 @@ builder.Services.AddScoped<DashboardManageService>();
 builder.Services.AddScoped<OracleSchemaService>();
 builder.Services.AddScoped<SchemaManagementService>();
 
+// ReportService — SQL Server View discovery, schema introspection, and dynamic queries (TASK-REPORT-003)
+builder.Services.AddScoped<ReportService>();
+
 var app = builder.Build();
 
 // ---------------------------------------------------------------------------

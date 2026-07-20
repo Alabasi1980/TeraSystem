@@ -1,0 +1,585 @@
+@page
+@model WarehouseDashboard.Web.Pages.AdminSecurePanel.ReportBuilder.IndexModel
+@{
+    ViewData["Title"] = "منشئ التقارير";
+}
+
+<style>
+    /* ─── Report Builder Styles ──────────────────────────── */
+
+    .wd-page { max-width: 900px; margin: 0 auto; padding: var(--sp-6); }
+    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0 0 4px; }
+    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 0 0 var(--sp-6); }
+
+    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: var(--sp-4); }
+    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
+
+    /* Steps Progress */
+    .wd-steps {
+        --step-active: var(--c-secondary);
+        --step-done: var(--c-success);
+        --step-pending: var(--c-border);
+        display: flex; align-items: center; gap: 0; margin-bottom: var(--sp-8); counter-reset: step;
+    }
+    .wd-step {
+        display: flex; align-items: center; gap: var(--sp-2);
+        flex: 1; position: relative; counter-increment: step;
+    }
+    .wd-step:not(:last-child)::after {
+        content: ''; flex: 1; height: 2px;
+        background: var(--step-pending); margin: 0 var(--sp-2);
+    }
+    .wd-step--active:not(:last-child)::after { background: var(--step-active); }
+    .wd-step--done:not(:last-child)::after { background: var(--step-done); }
+    .wd-step__num {
+        width: 32px; height: 32px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+        background: var(--step-pending); transition: background 0.3s ease;
+    }
+    .wd-step--active .wd-step__num { background: var(--step-active); }
+    .wd-step--done .wd-step__num { background: var(--step-done); }
+    .wd-step__label { font-size: 13px; color: var(--c-text-muted); white-space: nowrap; }
+    .wd-step--active .wd-step__label { color: var(--step-active); font-weight: 600; }
+    .wd-step--done .wd-step__label { color: var(--step-done); }
+
+    /* Form overrides for wizard layout */
+    .wd-field .wd-hint { font-size: 12px; color: var(--c-text-muted); }
+    textarea.wd-input { min-height: 100px; resize: vertical; }
+    .wd-checkbox { display: flex; align-items: center; gap: var(--sp-2); cursor: pointer; }
+    .wd-checkbox input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+
+    /* Actions bar (wizard navigation) */
+    .wd-actions { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-6); padding-top: var(--sp-4); border-top: 1px solid var(--c-border); }
+
+    /* Button variants not in design system */
+    .wd-btn--success { background: var(--c-success); color: #fff; }
+    .wd-btn--success:hover { filter: brightness(0.9); }
+    .wd-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Columns list (Step 2) */
+    .wd-columns-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--sp-2); max-height: 500px; overflow-y: auto; }
+    .wd-column-item {
+        display: grid; grid-template-columns: auto 1fr 80px 80px 80px auto;
+        gap: var(--sp-3); align-items: center;
+        padding: var(--sp-3); border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        background: var(--c-surface); transition: background 0.2s ease;
+    }
+    .wd-column-item:hover { background: var(--c-surface-muted); }
+    .wd-column-item .wd-checkbox { margin: 0; }
+
+    /* Filters list (Step 3) */
+    .wd-filters-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
+    .wd-filter-item {
+        display: grid; grid-template-columns: 1fr 160px 1fr auto;
+        gap: var(--sp-3); align-items: center;
+        padding: var(--sp-3); border: 1px solid var(--c-border); border-radius: var(--radius-md);
+    }
+
+    /* Preview (Step 4) */
+    .wd-preview-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .wd-preview-table th { padding: var(--sp-2) var(--sp-3); background: var(--c-surface-muted); font-weight: 600; text-align: start; border-bottom: 1px solid var(--c-border); white-space: nowrap; }
+    .wd-preview-table td { padding: 6px var(--sp-3); border-bottom: 1px solid var(--c-border); }
+    .wd-preview-table tr:nth-child(even) td { background: var(--c-surface-muted); }
+
+    /* Search */
+    .wd-search {
+        width: 100%; position: relative; margin-bottom: var(--sp-3);
+    }
+    .wd-search input {
+        width: 100%; padding: 10px var(--sp-3) 10px 36px;
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        font-size: 14px; font-family: var(--font-ar);
+        transition: border-color 0.2s ease;
+    }
+    .wd-search input:focus { outline: none; border-color: var(--c-secondary); }
+
+    @@media (max-width: 768px) {
+        .wd-column-item { grid-template-columns: auto 1fr; }
+        .wd-filter-item { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="wd-page">
+    <div class="wd-breadcrumb">
+        <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo;
+        <a href="/admin-secure-panel/Reports">التقارير</a> &laquo;
+        منشئ التقارير
+    </div>
+
+    <h2 class="wd-page__title">منشئ التقارير</h2>
+    <p class="wd-page__subtitle">أنشئ تقريراً جديداً خطوة بخطوة</p>
+
+    <!-- Steps Progress -->
+    <div class="wd-steps">
+        <div class="wd-step wd-step--active" id="step-indicator-1">
+            <span class="wd-step__num">1</span>
+            <span class="wd-step__label">اختيار View</span>
+        </div>
+        <div class="wd-step" id="step-indicator-2">
+            <span class="wd-step__num">2</span>
+            <span class="wd-step__label">الأعمدة</span>
+        </div>
+        <div class="wd-step" id="step-indicator-3">
+            <span class="wd-step__num">3</span>
+            <span class="wd-step__label">الفلاتر</span>
+        </div>
+        <div class="wd-step" id="step-indicator-4">
+            <span class="wd-step__num">4</span>
+            <span class="wd-step__label">معاينة وحفظ</span>
+        </div>
+    </div>
+
+    <!-- Step 1: View Selection -->
+    <div id="step-1" class="wd-card">
+        <div class="wd-card__title">اختر View من SQL Server</div>
+        <div class="wd-form">
+            <div class="wd-field">
+                <label for="reportName">اسم التقرير</label>
+                <input id="reportName" class="wd-input" type="text" placeholder="مثال: تقرير المبيعات" />
+            </div>
+            <div class="wd-field">
+                <label for="reportDescription">وصف التقرير (اختياري)</label>
+                <textarea id="reportDescription" class="wd-input" placeholder="وصف مختصر للتقرير"></textarea>
+            </div>
+            <div class="wd-field">
+                <label>اختر View</label>
+                <div class="wd-search">
+                    <input id="viewSearch" type="text" placeholder="بحث في Views..." oninput="filterViews(this.value)" />
+                </div>
+                <select id="viewSelect" class="wd-select" size="8" style="min-height:200px;">
+                    <option value="">⏳ جاري تحميل Views...</option>
+                </select>
+                <div class="wd-hint">اختر View من SQL Server. سيتم جلب أعمدة الـ View تلقائياً.</div>
+            </div>
+            <div class="wd-field">
+                <label for="reportIcon">أيقونة التقرير (اختياري)</label>
+                <input id="reportIcon" class="wd-input" type="text" placeholder="📊" maxlength="10" />
+            </div>
+            <div class="wd-actions">
+                <button class="wd-btn wd-btn--primary" onclick="goStep(2)">التالي ←</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2: Columns Configuration -->
+    <div id="step-2" class="wd-card wd-hidden">
+        <div class="wd-card__title">تكوين الأعمدة</div>
+        <div class="wd-hint" style="margin-bottom:12px;">اختر الأعمدة التي تظهر في التقرير، وحدد اسم العرض وخصائص كل عمود.</div>
+        <div class="wd-form">
+            <div class="wd-field">
+                <label class="wd-checkbox">
+                    <input type="checkbox" id="toggleAllVisible" checked onchange="toggleAllColumns(this.checked)" />
+                    <span>تحديد/إلغاء الكل</span>
+                </label>
+            </div>
+            <ul id="columnsList" class="wd-columns-list">
+                <li style="color:var(--c-text-muted);padding:12px;">⏳ جاري تحميل الأعمدة...</li>
+            </ul>
+            <div class="wd-actions">
+                <button class="wd-btn wd-btn--ghost" onclick="goStep(1)">السابق ←</button>
+                <button class="wd-btn wd-btn--primary" onclick="goStep(3)">التالي ←</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3: Filters Configuration -->
+    <div id="step-3" class="wd-card wd-hidden">
+        <div class="wd-card__title">تكوين فلاتر التقرير</div>
+        <div class="wd-hint" style="margin-bottom:12px;">أضف فلاتر لتطبيقها على الـ View قبل جلب البيانات (Server-Side).</div>
+        <div class="wd-form">
+            <ul id="filtersList" class="wd-filters-list">
+                <li style="color:var(--c-text-muted);padding:12px;">لم يتم إضافة فلاتر بعد. يمكنك تركها فارغة.</li>
+            </ul>
+            <div class="wd-actions" style="border-top:none;padding-top:0;">
+                <button class="wd-btn wd-btn--ghost" onclick="addFilter()">+ إضافة فلتر</button>
+            </div>
+            <div class="wd-actions">
+                <button class="wd-btn wd-btn--ghost" onclick="goStep(2)">السابق ←</button>
+                <button class="wd-btn wd-btn--primary" onclick="goStep(4)">التالي ←</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 4: Preview + Save -->
+    <div id="step-4" class="wd-card wd-hidden">
+        <div class="wd-card__title">معاينة وحفظ التقرير</div>
+        <div class="wd-form">
+            <div id="previewArea">
+                <div style="text-align:center;padding:40px;color:var(--c-text-muted);">اضغط "تشغيل المعاينة" لعرض البيانات</div>
+            </div>
+            <div class="wd-actions">
+                <button id="previewBtn" class="wd-btn wd-btn--ghost" onclick="runPreview()">▶ تشغيل المعاينة</button>
+                <button id="saveBtn" class="wd-btn wd-btn--success" onclick="saveReport()" disabled>💾 حفظ التقرير</button>
+                <button class="wd-btn wd-btn--ghost" onclick="goStep(3)">السابق ←</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden report edit ID -->
+    <input type="hidden" id="editReportId" value="" />
+</div>
+
+<script>
+    // ─── State ───────────────────────────────────────────────
+    let currentStep = 1;
+    let allColumns = [];
+    let savedViews = [];
+    let savedFilterCounter = 0;
+
+    // ─── Toast Notifications ─────────────────────────────────
+    function showToast(message, type) {
+        type = type || 'success';
+        var host = document.getElementById('wd-toast-host');
+        if (!host) return;
+        var icon = type === 'success' ? '✓' : '✕';
+        var toast = document.createElement('div');
+        toast.className = 'wd-toast wd-toast--' + type;
+        toast.innerHTML = '<span class="wd-toast__icon">' + icon + '</span><span class="wd-toast__msg">' + escapeHtml(message) + '</span>';
+        host.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 4000);
+    }
+
+    // ─── Init ───────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function() {
+        loadViews();
+    });
+
+    // ─── Step Navigation ────────────────────────────────────
+    function goStep(step) {
+        // Validate current step before moving
+        if (step > currentStep) {
+            if (!validateStep(currentStep)) return;
+        }
+
+        // Hide all steps
+        document.getElementById('step-1').classList.add('wd-hidden');
+        document.getElementById('step-2').classList.add('wd-hidden');
+        document.getElementById('step-3').classList.add('wd-hidden');
+        document.getElementById('step-4').classList.add('wd-hidden');
+
+        // Show target step
+        document.getElementById('step-' + step).classList.remove('wd-hidden');
+
+        // Update step indicators
+        for (let i = 1; i <= 4; i++) {
+            const ind = document.getElementById('step-indicator-' + i);
+            ind.classList.remove('wd-step--active', 'wd-step--done');
+            if (i === step) ind.classList.add('wd-step--active');
+            else if (i < step) ind.classList.add('wd-step--done');
+        }
+
+        // Load data for the step
+        if (step === 2) loadColumns();
+        if (step === 4) {
+            document.getElementById('previewBtn').disabled = false;
+            document.getElementById('saveBtn').disabled = true;
+            document.getElementById('previewArea').innerHTML = '<div style="text-align:center;padding:40px;color:var(--c-text-muted);">اضغط "تشغيل المعاينة" لعرض البيانات</div>';
+        }
+
+        currentStep = step;
+    }
+
+    function validateStep(step) {
+        if (step === 1) {
+            const name = document.getElementById('reportName').value.trim();
+            if (!name) { showToast('الرجاء إدخال اسم التقرير.', 'error'); return false; }
+            const view = document.getElementById('viewSelect').value;
+            if (!view) { showToast('الرجاء اختيار View.', 'error'); return false; }
+        }
+        return true;
+    }
+
+    // ─── Step 1: Load Views ──────────────────────────────────
+    async function loadViews() {
+        try {
+            const resp = await fetch('/api/reports-data/views');
+            const views = await resp.json();
+            savedViews = views;
+            const sel = document.getElementById('viewSelect');
+            sel.innerHTML = '';
+            if (views.length === 0) {
+                sel.innerHTML = '<option value="">لا توجد Views متاحة</option>';
+                return;
+            }
+            views.forEach(function(v) {
+                const opt = document.createElement('option');
+                opt.value = v.fullName;
+                opt.textContent = v.fullName + ' (' + v.schema + ')';
+                sel.appendChild(opt);
+            });
+        } catch (err) {
+            document.getElementById('viewSelect').innerHTML = '<option value="">⚠️ تعذر تحميل Views</option>';
+        }
+    }
+
+    function filterViews(query) {
+        const q = (query || '').toLowerCase();
+        const sel = document.getElementById('viewSelect');
+        const views = savedViews;
+        sel.innerHTML = '';
+        views.filter(function(v) {
+            return v.fullName.toLowerCase().indexOf(q) !== -1 ||
+                   v.name.toLowerCase().indexOf(q) !== -1 ||
+                   v.schema.toLowerCase().indexOf(q) !== -1;
+        }).forEach(function(v) {
+            const opt = document.createElement('option');
+            opt.value = v.fullName;
+            opt.textContent = v.fullName;
+            sel.appendChild(opt);
+        });
+    }
+
+    // ─── Step 2: Load Columns ────────────────────────────────
+    async function loadColumns() {
+        const view = document.getElementById('viewSelect').value;
+        if (!view) return;
+
+        document.getElementById('columnsList').innerHTML = '<li style="color:var(--c-text-muted);padding:12px;">⏳ جاري تحميل الأعمدة...</li>';
+
+        try {
+            const resp = await fetch('/api/reports-data/columns?view=' + encodeURIComponent(view));
+            const columns = await resp.json();
+            allColumns = columns;
+
+            if (columns.length === 0) {
+                document.getElementById('columnsList').innerHTML = '<li style="color:var(--c-text-muted);padding:12px;">لا توجد أعمدة في هذا الـ View.</li>';
+                return;
+            }
+
+            var html = '';
+            columns.forEach(function(col, idx) {
+                html += '<li class="wd-column-item" data-index="' + idx + '">';
+                html += '<label class="wd-checkbox"><input type="checkbox" class="col-visible" checked onchange="updateColumnVisibility(' + idx + ')"></label>';
+                html += '<div style="display:flex;flex-direction:column;gap:2px;">';
+                html += '<input class="wd-input" value="' + escapeHtml(col.columnName) + '" placeholder="اسم العرض بالعربي" onchange="allColumns[' + idx + '].displayName = this.value" style="font-size:13px;padding:4px 8px;min-height:30px;" />';
+                html += '<span style="font-size:11px;color:var(--c-text-muted);">' + escapeHtml(col.columnName) + '  (' + escapeHtml(col.dataType) + ')</span>';
+                html += '</div>';
+                html += '<input class="wd-input" type="number" value="150" min="50" max="500" style="font-size:12px;padding:4px 8px;min-height:30px;width:80px;" onchange="allColumns[' + idx + '].width = parseInt(this.value) || 150" />';
+                html += '<label class="wd-checkbox" style="font-size:12px;"><input type="checkbox" checked onchange="allColumns[' + idx + '].isSortable = this.checked"> ترتيب</label>';
+                html += '<label class="wd-checkbox" style="font-size:12px;"><input type="checkbox" checked onchange="allColumns[' + idx + '].isFilterable = this.checked"> فلترة</label>';
+                html += '<label class="wd-checkbox" style="font-size:12px;"><input type="checkbox" onchange="allColumns[' + idx + '].isImageColumn = this.checked"> 🖼️</label>';
+                html += '</li>';
+            });
+            document.getElementById('columnsList').innerHTML = html;
+
+            // Initialize column data
+            columns.forEach(function(col, idx) {
+                col.displayName = col.columnName;
+                col.width = 150;
+                col.isVisible = true;
+                col.isSortable = true;
+                col.isFilterable = true;
+                col.isImageColumn = false;
+                col.sortOrder = idx;
+            });
+
+        } catch (err) {
+            document.getElementById('columnsList').innerHTML = '<li style="color:var(--c-error);padding:12px;">⚠️ تعذر تحميل الأعمدة.</li>';
+        }
+    }
+
+    function toggleAllColumns(checked) {
+        var checkboxes = document.querySelectorAll('.col-visible');
+        checkboxes.forEach(function(cb, idx) {
+            cb.checked = checked;
+            if (allColumns[idx]) allColumns[idx].isVisible = checked;
+        });
+    }
+
+    function updateColumnVisibility(idx) {
+        var cb = document.querySelectorAll('.col-visible')[idx];
+        if (allColumns[idx]) allColumns[idx].isVisible = cb.checked;
+    }
+
+    function escapeHtml(text) {
+        if (text == null) return '';
+        var d = document.createElement('div');
+        d.textContent = String(text);
+        return d.innerHTML;
+    }
+
+    // ─── Step 3: Filters ─────────────────────────────────────
+    function addFilter() {
+        var list = document.getElementById('filtersList');
+        if (list.innerHTML.indexOf('لم يتم إضافة فلاتر بعد') !== -1) {
+            list.innerHTML = '';
+        }
+
+        var filteredColumns = allColumns.filter(function(c) { return c.isFilterable; });
+        if (filteredColumns.length === 0) {
+            showToast('لا توجد أعمدة قابلة للفلترة. فعّل خيار "فلترة" على بعض الأعمدة أولاً.', 'error');
+            return;
+        }
+
+        var id = 'filter-' + (savedFilterCounter++);
+        var html = '<li class="wd-filter-item" id="' + id + '">';
+        html += '<select class="wd-select" style="font-size:13px;padding:6px 8px;" onchange="updateFilterColumn(\'' + id + '\', this.value)">';
+        html += '<option value="">اختر عمود...</option>';
+        filteredColumns.forEach(function(col) {
+            html += '<option value="' + escapeHtml(col.columnName) + '">' + escapeHtml(col.displayName || col.columnName) + '</option>';
+        });
+        html += '</select>';
+        html += '<select class="wd-select" style="font-size:13px;padding:6px 8px;" onchange="updateFilterType(\'' + id + '\', this.value)">';
+        html += '<option value="Text">نص</option>';
+        html += '<option value="Date">تاريخ</option>';
+        html += '<option value="DateRange">نطاق تاريخ</option>';
+        html += '<option value="Dropdown">قائمة منسدلة</option>';
+        html += '<option value="Number">رقم</option>';
+        html += '<option value="NumberRange">نطاق أرقام</option>';
+        html += '</select>';
+        html += '<input class="wd-input" type="text" placeholder="اسم الفلتر بالعربي" style="font-size:13px;padding:6px 8px;min-height:34px;" />';
+        html += '<button class="wd-btn wd-btn--danger" style="padding:4px 10px;min-height:34px;font-size:12px;" onclick="removeFilter(\'' + id + '\')">✕</button>';
+        html += '</li>';
+        list.insertAdjacentHTML('beforeend', html);
+    }
+
+    function updateFilterColumn(id, value) {
+        var filterItem = document.getElementById(id);
+        filterItem.dataset.column = value;
+    }
+
+    function updateFilterType(id, value) {
+        var filterItem = document.getElementById(id);
+        filterItem.dataset.filterType = value;
+    }
+
+    function removeFilter(id) {
+        var el = document.getElementById(id);
+        if (el) el.remove();
+    }
+
+    function getFilters() {
+        var filters = [];
+        var items = document.querySelectorAll('#filtersList .wd-filter-item');
+        items.forEach(function(item) {
+            var col = item.dataset.column || item.querySelector('select')?.value || '';
+            var typeSelect = item.querySelectorAll('select')[1];
+            var type = typeSelect ? typeSelect.value : 'Text';
+            var label = item.querySelector('input[type="text"]')?.value || '';
+            if (col) {
+                filters.push({
+                    columnName: col,
+                    filterType: type,
+                    label: label,
+                    isRequired: false,
+                    defaultvalue: '',
+                    optionsQuery: '',
+                    placeholder: '',
+                    sortOrder: filters.length
+                });
+            }
+        });
+        return filters;
+    }
+
+    // ─── Step 4: Preview + Save ─────────────────────────────
+    async function runPreview() {
+        var view = document.getElementById('viewSelect').value;
+        if (!view) { showToast('الرجاء اختيار View.', 'error'); return; }
+
+        document.getElementById('previewBtn').disabled = true;
+        document.getElementById('previewArea').innerHTML = '<div style="text-align:center;padding:40px;color:var(--c-text-muted);">⏳ جاري تحميل البيانات...</div>';
+
+        try {
+            var resp = await fetch('/api/reports-data/preview', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    viewName: view,
+                    top: 10
+                })
+            });
+            var data = await resp.json();
+
+            if (data.success && data.rows && data.rows.length > 0) {
+                var html = '<table class="wd-preview-table"><thead><tr>';
+                data.columns.forEach(function(col) {
+                    html += '<th>' + escapeHtml(col.name) + '</th>';
+                });
+                html += '</tr></thead><tbody>';
+                data.rows.forEach(function(row) {
+                    html += '<tr>';
+                    data.columns.forEach(function(col) {
+                        var val = row[col.name];
+                        html += '<td>' + escapeHtml(val != null ? String(val) : '') + '</td>';
+                    });
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+
+                document.getElementById('previewArea').innerHTML = html;
+                document.getElementById('saveBtn').disabled = false;
+            } else {
+                document.getElementById('previewArea').innerHTML = '<div style="text-align:center;padding:40px;color:var(--c-warning);">⚠️ ' + (data.errorMessage || 'لا توجد بيانات') + '</div>';
+            }
+        } catch (err) {
+            document.getElementById('previewArea').innerHTML = '<div style="text-align:center;padding:40px;color:var(--c-error);">⚠️ تعذر تنفيذ المعاينة: ' + escapeHtml(String(err)) + '</div>';
+        } finally {
+            document.getElementById('previewBtn').disabled = false;
+        }
+    }
+
+    async function saveReport() {
+        var name = document.getElementById('reportName').value.trim();
+        var view = document.getElementById('viewSelect').value;
+        if (!name || !view) { showToast('الرجاء إدخال اسم التقرير واختيار View.', 'error'); return; }
+
+        var columns = allColumns.map(function(c, idx) {
+            return {
+                columnName: c.columnName,
+                displayName: c.displayName || c.columnName,
+                dataType: c.dataType,
+                width: c.width || 150,
+                isVisible: c.isVisible,
+                isSortable: c.isSortable,
+                isFilterable: c.isFilterable,
+                isImageColumn: c.isImageColumn || false,
+                sortOrder: idx
+            };
+        }).filter(function(c) { return c.isVisible; });
+
+        if (columns.length === 0) {
+            showToast('يجب اختيار عمود واحد على الأقل.', 'error');
+            return;
+        }
+
+        var filters = getFilters();
+
+        var request = {
+            name: name,
+            viewName: view,
+            description: document.getElementById('reportDescription').value.trim(),
+            icon: document.getElementById('reportIcon').value.trim(),
+            sortOrder: 0,
+            columns: columns,
+            filters: filters
+        };
+
+        var editId = document.getElementById('editReportId').value;
+        var url = editId ? '/api/reports/update/' + editId : '/api/reports/create';
+        document.getElementById('saveBtn').disabled = true;
+        document.getElementById('saveBtn').textContent = '⏳ جاري الحفظ...';
+
+        try {
+            var resp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(request)
+            });
+            var data = await resp.json();
+            if (data.success || data.id) {
+                showToast('تم حفظ التقرير بنجاح!', 'success');
+                window.location.href = '/admin-secure-panel/Reports';
+            } else {
+                showToast('خطأ: ' + (data.error || 'تعذر الحفظ'), 'error');
+                document.getElementById('saveBtn').disabled = false;
+                document.getElementById('saveBtn').textContent = '💾 حفظ التقرير';
+            }
+        } catch (err) {
+            showToast('تعذر الاتصال بالخادم.', 'error');
+            document.getElementById('saveBtn').disabled = false;
+            document.getElementById('saveBtn').textContent = '💾 حفظ التقرير';
+        }
+    }
+</script>
