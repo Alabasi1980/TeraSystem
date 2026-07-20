@@ -1,7 +1,7 @@
 # PROJECT_STATE.md
 
 > **Purpose:** Compact project memory to reduce re-reading files.
-> **Last Updated:** 2026-07-20 (TASK-CARD-KPI-MOCKUP-001 accepted)
+> **Last Updated:** 2026-07-21 (TASK-CARD-KPI-S-TOTALS-ALIGN-001 accepted)
 
 ---
 
@@ -95,13 +95,19 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 | TASK-CARD-UX-002 | Per-Card ColorPalette for Charts | ✅ Accepted | ui-designer |
 | TASK-CARD-BEH-002 | Per-Card Auto-Refresh + Visual Indicator | ✅ Accepted | ui-designer |
 
-### KPI Card Redesign (4 tasks — all ACCEPTED ✅)
+### KPI Card Redesign (10 tasks — all ACCEPTED ✅)
 | TASK-ID | Description | Status | Agent |
 |---|---|---|---|
 | TASK-CARD-LAYOUT-EDIT-001 | Edit Layout Mode (admin toggle) | ✅ Accepted | ui-designer |
 | TASK-CARD-KPI-LAYOUT-RESPONSIVE-001 | Responsive KPI Card Layout Blueprint | ✅ Accepted | ui-designer |
 | TASK-CARD-KPI-ADAPTIVE-SHELL-001 | Adaptive KPI Shell (any size, no void/overlap) | ✅ Accepted | ui-designer |
 | TASK-CARD-KPI-MOCKUP-001 | Client mockup KPI layout (pixel-close) | ✅ Accepted | ui-designer |
+| TASK-CARD-KPI-SMALL-001 | Small size only — fix overlap, show change+totals | ✅ Accepted | ui-designer |
+| TASK-CARD-KPI-SMALL-COMPOSE-001 | Small size creative composition: totals left + clearer change | ✅ Accepted | ui-designer |
+| TASK-CARD-KPI-S-SIZE-TUNE-001 | KPI S size tuned larger to show both totals | ✅ Accepted | ui-designer |
+| TASK-CARD-KPI-S-TOTALS-2ROWS-001 | KPI S shows grand total + year total | ✅ Accepted with governance note | ui-designer |
+| TASK-CARD-KPI-S-REVERT-ANNUAL-001 | Revert failed S redesign; only add annual total below grand total | ✅ Accepted | ui-designer |
+| TASK-CARD-KPI-S-TOTALS-ALIGN-001 | KPI S totals left alignment + label/value contrast | ✅ Accepted | ui-designer |
 
 ### OracleQueryLab Enhancement (5 tasks — all ACCEPTED ✅)
 | TASK-ID | Description | Status | Agent |

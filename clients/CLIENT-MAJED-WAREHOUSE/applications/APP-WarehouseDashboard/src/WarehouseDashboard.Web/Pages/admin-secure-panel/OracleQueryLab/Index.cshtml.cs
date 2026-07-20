@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System.Text.Json;
 using WarehouseDashboard.Web.Infrastructure;
 
@@ -107,7 +108,22 @@ public class OracleQueryLabModel : PageModel
                 var row = new Dictionary<string, object?>();
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
-                    row[columns[i].Name] = NormalizeValue(reader.GetValue(i));
+                    try
+                    {
+                        row[columns[i].Name] = NormalizeValue(reader.GetValue(i));
+                    }
+                    catch
+                    {
+                        // If GetValue fails for this specific column, read it as a string via GetOracleDecimal or ordinal fallback
+                        try
+                        {
+                            row[columns[i].Name] = reader.GetOracleValue(i)?.ToString();
+                        }
+                        catch
+                        {
+                            row[columns[i].Name] = "<unreadable>";
+                        }
+                    }
                 }
                 rows.Add(row);
                 rowCount++;
@@ -216,6 +232,22 @@ public class OracleQueryLabModel : PageModel
         if (value is byte[])
         {
             return "<binary>";
+        }
+
+        // OracleDecimal can overflow when cast to .NET decimal.
+        // Convert to string first for safe JSON serialization.
+        if (value is OracleDecimal oracleDecimal)
+        {
+            try
+            {
+                // Try the normal .NET decimal conversion first (works for most values).
+                return (decimal)oracleDecimal.Value;
+            }
+            catch (OverflowException)
+            {
+                // Value too large for .NET decimal — fall back to string representation.
+                return oracleDecimal.ToString();
+            }
         }
 
         return value;

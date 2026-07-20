@@ -1068,3 +1068,59 @@
 - Summary: إصلاح tooltip السبارك — فصل الأرقام LTR عن العربية، CSS واضح، إزالة إطار Apex الأزرق.
 - Decision / Result: ✅ Accepted. Build succeeded.
 - Next Action: Hard refresh للتحقق من hover.
+
+## [2026-07-20 22:30] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-SMALL-001
+- Actor: TeraAgent → ui-designer
+- Summary: إصلاح تخطيط بطاقة KPI للحجم الصغير فقط — منع التداخل بين المعلومات والسبارك، إظهار نسبة التغير والمجاميع بوضوح، إبقاء التصنيفات مخفية. تم ضبط `.wd-kpi--size-small` إلى column layout مع `flex: 0 1 auto` وثبيت sparkline في الأسفل عبر `margin-top: auto`. تم تعديل container queries لإظهار المجاميع في الأحجام الصغيرة بدلاً من إخفائها. لم يتأثر الوسط والكبير.
+- Decision / Result: ✅ Accepted. Post-Execution Review PASS. Auditor: NOT_REQUIRED (CSS-only).
+- Next Action: Majed يقوم بـ Hard refresh ويتحقق من بطاقات KPI في الحجم الصغير (بدون تداخل، إظهار التغير والمجاميع).
+
+## [2026-07-20 23:25] - TASK_ACCEPTED_WITH_NOTE
+
+- Related Task: TASK-CARD-KPI-SMALL-COMPOSE-001 / TASK-CARD-KPI-S-SIZE-TUNE-001 / TASK-CARD-KPI-S-TOTALS-2ROWS-001
+- Actor: TeraAgent → ui-designer
+- Summary: Catch-up log for final KPI S refinement sequence. Small KPI was recomposed with totals on the left and clearer change badge, KPI S was made slightly larger, then the exact row-hiding issue was fixed: `max-height:130px` no longer hides row 2 for `.wd-kpi--size-small`; S now explicitly shows rows 1 and 2 and hides rows 3+.
+- Decision / Result: ✅ Functional fix accepted. Review build PASS via fallback OutDir with 0 warnings and 0 errors. Governance note: ui-designer wrote `design-source/REFERENCES.md` outside Allowed Write Targets; Tera did not delete it without Majed approval.
+- Next Action: Majed hard-refreshes dashboard and confirms S now shows both `الإجمالي الكلي` and `إجمالي 2026`. Majed may decide whether to keep or remove `design-source/REFERENCES.md`.
+
+## [2026-07-20 23:35] - CORRECTION_TASK_CREATED
+
+- Related Task: TASK-CARD-KPI-S-REVERT-ANNUAL-001
+- Actor: Majed → TeraAgent
+- Summary: Majed rejected the recent KPI S design changes and clarified the original requirement: only add annual total below grand total. Created a correction task to revert S visual changes from the experimental composition/size tuning and keep only the second annual total row.
+- Decision / Result: Task approved for ui-designer correction. Scope limited to `Index.cshtml`; no redesign allowed.
+- Next Action: Delegate correction to ui-designer and verify S returns to the previous acceptable design while showing both total rows.
+
+## [2026-07-20 23:45] - CORRECTION_TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-S-REVERT-ANNUAL-001
+- Actor: TeraAgent → ui-designer
+- Summary: Corrected the failed KPI S design direction. Verified no forced KPI S span/height and no left mini-panel/two-column small design remain. S stays in the simple stacked layout; only the first two total rows are preserved so `إجمالي 2026` appears under `الإجمالي الكلي`.
+- Decision / Result: ✅ Accepted. Build PASS via fallback OutDir with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes dashboard and checks the same S card. Expected result: previous simple S design + annual total directly below grand total.
+
+## [2026-07-20 23:55] - TASK_CREATED
+
+- Related Task: TASK-CARD-KPI-S-TOTALS-ALIGN-001
+- Actor: Majed → TeraAgent
+- Summary: Majed confirmed the annual total display is nearly successful, but requested first to fix only the small KPI totals position/alignment: totals should appear visually on the left, labels should be darker/distinct, values should be dark and left-aligned inside the totals rows, without starting the broader money-format standardization yet.
+- Decision / Result: Task approved for ui-designer delegation. Scope limited to `Index.cshtml`; no general amount formatting changes allowed.
+- Next Action: Delegate small-card totals alignment fix, review build, then report completion before starting the separate formatting task.
+
+## [2026-07-21 00:05] - TASK_ACCEPTED
+
+- Related Task: TASK-CARD-KPI-S-TOTALS-ALIGN-001
+- Actor: TeraAgent → ui-designer
+- Summary: Completed first requested task only: KPI S totals alignment. Totals block is now visually left in S, labels are darker/distinct, values are strong dark and left-aligned inside the totals rows, and bottom spacing separates totals from the sparkline. No general money-format standardization was implemented.
+- Decision / Result: ✅ Accepted. Build PASS via fallback OutDir with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
+- Next Action: Majed hard-refreshes and checks S visual alignment. The separate money-format standardization task remains pending and was not started.
+
+## [2026-07-21 00:15] - TASK_CREATED
+
+- Related Task: TASK-CARD-KPI-S-TOTALS-VALIGN-001
+- Actor: Majed → TeraAgent
+- Summary: Majed requested raising the KPI S totals block upward so it aligns vertically with the main value. Scope is alignment only, preserving totals left position and deferring general money-format standardization.
+- Decision / Result: Task approved for ui-designer delegation. Scope limited to `Index.cshtml`.
+- Next Action: Delegate to ui-designer, then review build and CSS scope.

@@ -485,7 +485,7 @@
         width: 100%;
         gap: 4px;
         min-height: 0;
-        overflow: hidden;
+        overflow: visible;
     }
     .wd-kpi--size-small .wd-kpi__hero {
         flex-direction: column;
@@ -560,7 +560,7 @@
         .wd-kpi__cluster { gap: 4px; }
         .wd-kpi__hero { gap: 3px; }
         .wd-kpi__value { font-size: clamp(20px, 11cqi, 28px); }
-        .wd-kpi-grandtotal__row:nth-child(n+2) { display: none; }
+        .wd-kpi:not(.wd-kpi--size-small) .wd-kpi-grandtotal__row:nth-child(n+2) { display: none; }
     }
 
     /* M width: medium spark + 3 category rows */
@@ -617,6 +617,55 @@
     }
     .wd-kpi--size-small .wd-kpi__change {
         display: inline-flex !important;
+    }
+    .wd-kpi--size-small .wd-kpi-grandtotal__row:nth-child(-n+2) {
+        display: flex !important;
+    }
+    .wd-kpi--size-small .wd-kpi-grandtotal__row:nth-child(n+3) {
+        display: none !important;
+    }
+
+    /* TASK-CARD-KPI-S-TOTALS-ALIGN-001 / VALIGN-001 — S only: keep totals visually left and raised beside the main value */
+    .wd-kpi--size-small .wd-kpi__grandtotal,
+    .wd-kpi--size-small .wd-kpi__details {
+        width: 100%;
+        align-items: stretch;
+        gap: 3px;
+        margin-top: -28px;
+        margin-bottom: 10px;
+    }
+    .wd-kpi--size-small .wd-kpi-grandtotal {
+        width: min(100%, 172px);
+        margin-inline-start: auto; /* RTL inline-start auto pushes the totals block to the visual left */
+        direction: rtl;
+    }
+    .wd-kpi--size-small .wd-kpi-grandtotal__row {
+        display: grid !important;
+        grid-template-columns: minmax(72px, 1fr) max-content;
+        align-items: baseline;
+        column-gap: 10px;
+        width: 100%;
+        direction: ltr; /* first column is visually left for the value */
+        flex-wrap: nowrap;
+    }
+    .wd-kpi--size-small .wd-kpi-grandtotal__value {
+        order: initial;
+        color: var(--c-text);
+        font-weight: 900;
+        direction: ltr;
+        unicode-bidi: isolate;
+        text-align: left;
+        justify-self: start;
+    }
+    .wd-kpi--size-small .wd-kpi-grandtotal__label {
+        order: initial;
+        color: color-mix(in srgb, var(--c-text) 84%, var(--c-primary));
+        font-weight: 800;
+        direction: rtl;
+        unicode-bidi: isolate;
+        text-align: right;
+        justify-self: end;
+        white-space: nowrap;
     }
 
     /* ===== KPI Animations ===== */
