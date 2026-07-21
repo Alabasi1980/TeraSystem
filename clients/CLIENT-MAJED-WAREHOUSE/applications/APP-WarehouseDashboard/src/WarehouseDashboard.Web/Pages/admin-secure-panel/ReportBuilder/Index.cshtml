@@ -94,9 +94,15 @@
     }
     .wd-search input:focus { outline: none; border-color: var(--c-secondary); }
 
+    @@keyframes wdFadeUp {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     @@media (max-width: 768px) {
         .wd-column-item { grid-template-columns: auto 1fr; }
         .wd-filter-item { grid-template-columns: 1fr; }
+        .wd-filter-extra { grid-column: 1 / -1; }
     }
 </style>
 
@@ -420,7 +426,7 @@
             html += '<option value="' + escapeHtml(col.columnName) + '">' + escapeHtml(col.displayName || col.columnName) + '</option>';
         });
         html += '</select>';
-        html += '<select class="wd-select" style="font-size:13px;padding:6px 8px;" onchange="updateFilterType(\'' + id + '\', this.value)">';
+        html += '<select class="wd-select" style="font-size:13px;padding:6px 8px;" onchange="updateFilterType(\'' + id + '\', this.value); onFilterTypeChange(\'' + id + '\', this)">';
         html += '<option value="Text">نص</option>';
         html += '<option value="Date">تاريخ</option>';
         html += '<option value="DateRange">نطاق تاريخ</option>';
@@ -430,6 +436,39 @@
         html += '</select>';
         html += '<input class="wd-input" type="text" placeholder="اسم الفلتر بالعربي" style="font-size:13px;padding:6px 8px;min-height:34px;" />';
         html += '<button class="wd-btn wd-btn--danger" style="padding:4px 10px;min-height:34px;font-size:12px;" onclick="removeFilter(\'' + id + '\')">✕</button>';
+        // ── Dropdown extra fields (hidden by default, shown when type = 'Dropdown') ──
+        html += '<div class="wd-filter-extra" id="extra-' + id + '" style="display:none; grid-column:1/-1; margin-top:8px; padding:12px; background:var(--c-surface-muted); border-radius:var(--radius-md);">';
+        html += '  <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3);">';
+        html += '    <div class="wd-field" style="margin:0;">';
+        html += '      <label style="font-size:12px; font-weight:600; color:var(--c-text-muted); display:block; margin-bottom:4px;">OptionsQuery (SQL) — استعلام يجلب الخيارات</label>';
+        html += '      <textarea class="wd-input wd-filter-query" rows="3" placeholder="SELECT ID AS Value, Name AS Text FROM Table" style="font-family:monospace; font-size:12px; min-height:60px;"></textarea>';
+        html += '    </div>';
+        html += '    <div style="display:flex; flex-direction:column; gap:var(--sp-2);">';
+        html += '      <div class="wd-field" style="margin:0;">';
+        html += '        <label style="font-size:12px; font-weight:600; color:var(--c-text-muted); display:block; margin-bottom:4px;">عمود القيمة (ValueColumn)</label>';
+        html += '        <input class="wd-input wd-filter-value-col" type="text" placeholder="مثال: Value" style="font-size:12px;" />';
+        html += '      </div>';
+        html += '      <div class="wd-field" style="margin:0;">';
+        html += '        <label style="font-size:12px; font-weight:600; color:var(--c-text-muted); display:block; margin-bottom:4px;">عمود النص (TextColumn)</label>';
+        html += '        <input class="wd-input wd-filter-text-col" type="text" placeholder="مثال: Text" style="font-size:12px;" />';
+        html += '      </div>';
+        html += '    </div>';
+        html += '  </div>';
+        html += '  <div style="display:flex; align-items:center; gap:var(--sp-4); margin-top:8px; flex-wrap:wrap;">';
+        html += '    <label class="wd-checkbox" style="font-size:12px;">';
+        html += '      <input type="checkbox" class="wd-filter-required" /> فلتر إجباري';
+        html += '    </label>';
+        html += '    <div class="wd-field" style="flex:1; min-width:200px; margin:0;">';
+        html += '      <label style="font-size:12px; font-weight:600; color:var(--c-text-muted); display:block; margin-bottom:4px;">القيمة الافتراضية</label>';
+        html += '      <div style="display:flex; gap:6px;">';
+        html += '        <select class="wd-select wd-filter-default" style="font-size:12px; flex:1;" disabled>';
+        html += '          <option value="">— اختر قيمة —</option>';
+        html += '        </select>';
+        html += '        <button class="wd-tb-btn" style="font-size:11px; white-space:nowrap;" onclick="loadDefaultOptions(this)">🔄 تحميل</button>';
+        html += '      </div>';
+        html += '    </div>';
+        html += '  </div>';
+        html += '</div>';
         html += '</li>';
         list.insertAdjacentHTML('beforeend', html);
     }
@@ -449,22 +488,100 @@
         if (el) el.remove();
     }
 
+    function onFilterTypeChange(filterId, selectEl) {
+        var extra = document.getElementById('extra-' + filterId);
+        if (!extra) return;
+        if (selectEl.value === 'Dropdown') {
+            extra.style.display = 'block';
+            extra.style.animation = 'wdFadeUp 0.3s ease both';
+        } else {
+            extra.style.display = 'none';
+        }
+    }
+
+    async function loadDefaultOptions(buttonEl) {
+        var filterItem = buttonEl.closest('.wd-filter-item');
+        if (!filterItem) return;
+
+        var queryEl = filterItem.querySelector('.wd-filter-query');
+        var valueColEl = filterItem.querySelector('.wd-filter-value-col');
+        var textColEl = filterItem.querySelector('.wd-filter-text-col');
+        var defaultSelect = filterItem.querySelector('.wd-filter-default');
+
+        var query = queryEl ? queryEl.value.trim() : '';
+        var valueCol = valueColEl ? valueColEl.value.trim() : '';
+        var textCol = textColEl ? textColEl.value.trim() : '';
+
+        if (!query) { showToast('الرجاء كتابة OptionsQuery أولاً.', 'error'); return; }
+        if (!valueCol || !textCol) { showToast('الرجاء إدخال ValueColumn و TextColumn.', 'error'); return; }
+
+        buttonEl.disabled = true;
+        buttonEl.textContent = '⏳ جاري التحميل...';
+
+        try {
+            var resp = await fetch('/api/reports-data/executeQuery', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            });
+            var data = await resp.json();
+
+            if (data.success) {
+                defaultSelect.innerHTML = '<option value="">— اختر قيمة افتراضية —</option>';
+                defaultSelect.disabled = false;
+
+                if (data.rows && data.rows.length > 0) {
+                    data.rows.forEach(function(row) {
+                        var val = row[valueCol];
+                        var txt = row[textCol] || val;
+                        if (val != null) {
+                            var opt = document.createElement('option');
+                            opt.value = String(val);
+                            opt.textContent = String(txt);
+                            defaultSelect.appendChild(opt);
+                        }
+                    });
+                    showToast('تم تحميل ' + data.rows.length + ' خياراً.', 'success');
+                } else {
+                    showToast('لا توجد نتائج من الاستعلام.', 'warning');
+                }
+            } else {
+                showToast('خطأ في تنفيذ الاستعلام: ' + (data.errorMessage || 'غير معروف'), 'error');
+            }
+        } catch (err) {
+            showToast('تعذر الاتصال بالخادم.', 'error');
+        } finally {
+            buttonEl.disabled = false;
+            buttonEl.textContent = '🔄 تحميل';
+        }
+    }
+
     function getFilters() {
         var filters = [];
         var items = document.querySelectorAll('#filtersList .wd-filter-item');
-        items.forEach(function(item) {
+        items.forEach(function(item, idx) {
             var col = item.dataset.column || item.querySelector('select')?.value || '';
             var typeSelect = item.querySelectorAll('select')[1];
             var type = typeSelect ? typeSelect.value : 'Text';
             var label = item.querySelector('input[type="text"]')?.value || '';
+
+            // حقول إضافية (Dropdown extras)
+            var queryEl = item.querySelector('.wd-filter-query');
+            var valueColEl = item.querySelector('.wd-filter-value-col');
+            var textColEl = item.querySelector('.wd-filter-text-col');
+            var requiredChk = item.querySelector('.wd-filter-required');
+            var defaultSel = item.querySelector('.wd-filter-default');
+
             if (col) {
                 filters.push({
                     columnName: col,
                     filterType: type,
                     label: label,
-                    isRequired: false,
-                    defaultvalue: '',
-                    optionsQuery: '',
+                    optionsQuery: queryEl ? queryEl.value : '',
+                    valueColumn: valueColEl ? valueColEl.value : '',
+                    textColumn: textColEl ? textColEl.value : '',
+                    isRequired: requiredChk ? requiredChk.checked : false,
+                    defaultValue: defaultSel ? defaultSel.value : '',
                     placeholder: '',
                     sortOrder: filters.length
                 });

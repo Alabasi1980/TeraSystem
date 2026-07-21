@@ -32,6 +32,30 @@
 - Decision / Result: ✅ Accepted after Auditor PASS (`QUAUD-TASK-CARD-KPI-REDESIGN-01-FIX-01-2026-07-20-001.md`). Build PASS reported by implementing agents.
 - Next Action: Majed visually reviews live dashboard card in browser; if appearance still needs tuning, create a focused visual-polish task only.
 
+## [2026-07-21 12:30] - PHASE_C_COMPLETE
+
+- Related Task: TASK-AI-C01, C02, C03, C04, C05, C-FIX01
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Phase C (Data Summary Builder) complete. Created ICardSummaryBuilder interface + CardSummary DTO. Built 4 summary builders: KpiSummaryBuilder (KPI), ChartSummaryBuilder (Bar/Line/Pie/Gauge), TableSummaryBuilder (Table), GenericSummaryBuilder (fallback). CardSummaryBuilderFactory resolves by ChartType. DI wired — all 4 builders + factory registered. All builders: parameterized SQL, date depth scoping, data limits (5 top/bottom, 10 samples, 24 series), Arabic labels and quality notes. Build: 0 errors, 0 warnings.
+- Decision / Result: Phase C ACCEPTED. 6 tasks complete. Ready for Phase D (Frontend Side Panel).
+- Next Action: Create TASK-AI-D01-D06 for Frontend, delegate to ui-designer + engineering-agent-dotnet.
+
+## [2026-07-21 12:15] - BATCH_ACCEPTED
+
+- Related Task: TASK-AI-B01, TASK-AI-B02, TASK-AI-B03 (Batch AI-B-1)
+- Actor: TeraAgent
+- Summary: All 3 parallel foundation tasks reviewed and accepted. B01: DashboardCard model has AssistantEnabled + AssistantPrompt, migration created (minor pre-existing SyncMode drift included). B02: AIAssistantOptions model + appsettings section + Program.cs registration. B03: ReadOnlyQueryHelper with parameterized ADO.NET + SqlServerReadOnly connection string. appsettings.json correctly contains both B02 and B03 additions. Build has pre-existing errors from parallel development — will resolve after B04/B05.
+- Decision / Result: Batch AI-B-1 ACCEPTED. Moving to Batch AI-B-2 (TASK-AI-B04 — Provider Abstraction).
+- Next Action: Create TASK-AI-B04 and TASK-AI-B05, delegate to engineering-agent-dotnet.
+
+## [2026-07-21 12:00] - BATCH_DELEGATED
+
+- Related Task: TASK-AI-B01, TASK-AI-B02, TASK-AI-B03
+- Actor: TeraAgent
+- Summary: AI Dashboard Assistant — Batch AI-B-1 delegated. Three parallel foundation tasks: (B01) Migration adding AssistantEnabled + AssistantPrompt to DashboardCard, (B02) AI Provider configuration model + appsettings section, (B03) Read-only DB connection string + ReadOnlyQueryHelper. All assigned to engineering-agent-dotnet in parallel. Plan reference: `AI_DASHBOARD_ASSISTANT_IMPLEMENTATION_PLAN.md`.
+- Decision / Result: Tasks created, registered, and delegated. Awaiting handbacks.
+- Next Action: Review each handback, run Post-Execution Gate, accept or request fixes.
+
 ## [2026-07-19 17:15] - PLAN_UPDATED
 
 - Related Task: N/A (AI Dashboard Assistant planning)
@@ -1260,3 +1284,88 @@
 - Summary: Corrected KPI money visual order and grand-total column order. Money is wrapped in RTL inline-flex so the number appears on the right and `د.أ` on the left; grand-total rows render label then value with label on the right and amount on the left.
 - Decision / Result: ✅ Accepted after review correction. Build PASS with 0 warnings and 0 errors. Auditor: NOT_REQUIRED.
 - Next Action: Majed hard-refreshes and visually checks that `د.أ` appears to the left of the number and grand-total labels are on the right.
+
+## [2026-07-21] - TASK_ACCEPTED
+
+- Related Task: TASK-UI-POLISH-001
+- Actor: TeraAgent → ui-designer
+- Summary: إعادة تصميم صفحة تسجيل الخروج (Logout.cshtml) من 7 أسطر إلى 493 سطراً بتصميم Centered Premium Card مع خلفية gradient زرقاء داكنة و orbs عائمة، SVG أيقونة مستودع + سهم خروج، رسالة "تم تسجيل الخروج بنجاح"، عداد تنازلي مع spinner، زر عودة فوري. تم تعديل الـ backend ليعيد Page() بدلاً من RedirectToPage() فورياً. Build: 0 errors, 0 warnings.
+- Decision / Result: ✅ Accepted بناءً على 11/11 معايير قبول. Auditor: NOT_REQUIRED.
+- Next Action: تم — انتقلنا مباشرة إلى Admin Nav Index.
+
+## [2026-07-21] - TASK_ACCEPTED
+
+- Related Task: TASK-UI-POLISH-002
+- Actor: TeraAgent → ui-designer
+- Summary: تحسين لوحة الإدارة الرئيسية (admin-secure-panel/Index.cshtml) — استبدال 9 أيقونات emoji (📋📊🔍🔎🔗📋⚙️📄📋) بـ 9 SVG أيقونات احترافية مختلفة (Dashboard Grid، Cards، Search، Database، Drill-down، Sync، Gear، Document، Table). استبدال سهم → بـ SVG chevron في جميع المواضع (9). تحسين حجم أيقونة 48×48 مع SVG 24×24. تحسين الـ gap إلى --sp-8. Build: 0 errors, 0 warnings.
+- Decision / Result: ✅ Accepted بناءً على 9/9 معايير قبول. Auditor: NOT_REQUIRED.
+- Next Action: متابعة Polsh UI — Public Dashboard (التالي في UI_POLISH_ROADMAP.md #5)
+
+## [2026-07-21] - ENHANCEMENT_COMPLETED
+
+- Related Task: TASK-ENH-QT-001 + TASK-ENH-QT-002 + TASK-ENH-QT-003
+- Actor: TeraAgent → engineering-agent-dotnet + ui-designer
+- Summary: 🎯 **تطوير QueryTester 2.0 — المرحلة الأولى كاملة!**
+  - **Backend:** Dual Source (SQL Server + Oracle) + Schema Browser API + MaxRows=1000 (TASK-ENH-QT-001)
+  - **Frontend:** Schema Browser (شجرة جداول + أعمدة)، Source Tabs، SELECT Builder بصري (TASK-ENH-QT-002)
+  - **Frontend:** WHERE Builder بصري، Enhanced Results (Sort + CSV + تنسيق)، Query History + Keyboard Shortcuts (TASK-ENH-QT-003)
+  - Build: 0 errors, 0 warnings عبر المهام الثلاث
+- Decision / Result: جميع ميزات المرحلة الأولى (7 ميزات) مكتملة ومعتمدة.
+- Next Action: UI Polish #5 مكتمل — العودة للخطة
+
+## [2026-07-21] - TASK_ACCEPTED
+
+- Related Task: TASK-UI-POLISH-003
+- Actor: TeraAgent → ui-designer
+- Summary: تحسين Dashboard العام (Index.cshtml): responsive للفلاتر (768px + 480px) + استبدال 3 أيقونات emoji بـ SVG (🔍←search, ⚠←warning, 📊←bar chart) + إضافات إضافية (search icon في الفلتر، lightbulb SVG في CSS footer). Build: 0 errors, 0 warnings.
+- Decision / Result: ✅ Accepted. Auditor: NOT_REQUIRED.
+- Next Action: التالي في الخطة — UI Polish #6: Sync Settings
+
+## [2026-07-21] - GAP_RESOLVED
+
+- Related Task: TASK-COD-FIX-002
+- Actor: TeraAgent
+- Summary: Majed requested verification of GAP_Encoding_AdminSecurePanel. فحصت الملفات الثلاثة (SyncLogs/Index.cshtml, SyncSettings/Index.cshtml, _ViewStart.cshtml) — جميعها UTF-8 صحيح مع 914 + 438 حرف عربي. لا يوجد أي UTF-16LE BOM أو null bytes. الترميز سليم تماماً (تم إصلاحه مسبقاً).
+- Decision / Result: GAP marked Resolved ✅. TASK-COD-FIX-002 updated to ✅ Resolved in registry. ISSUES_AND_GAPS.md updated. PROJECT_STATE.md R6 added as resolved.
+- Next Action: No encoding fix needed. Majed can choose next focus area.
+
+## [2026-07-21 12:30] - FIX: Sync Status API — LastSyncTime in-memory loss on restart
+
+- Related Task: N/A (bug fix)
+- Actor: TeraAgent
+- Summary: User reported that `/api/sync/status` returns `lastSyncTime: null` despite many tables having been synced. Root cause: `SyncEngineService._lastSyncTime` is an in-memory field (not persisted). When the API restarts, the field resets to `null`. The correct `LastSyncTimestamp` is stored in the `SyncSettings` DB table and was correctly returned by `/api/sync/config`.
+- Fix: Added DB initialization in `SyncEngineService.ExecuteAsync()` - on startup, reads `LastSyncTimestamp` from `SyncSettings` table and inits `_lastSyncTime` + `_lastStatus = "Success"`.
+- Verified: `GET /api/sync/status` returns `lastSyncTime: 2026-07-21T09:48:23`, `lastStatus: Success` ✅
+- Next Action: User hard-refreshes Sync Dashboard browser page to see correct timestamp.
+
+## [2026-07-21 14:00] - EXCEL_EXPORT_FEATURE_COMPLETE
+
+- Related Task: TASK-SYNC-EXCEL-001, 002, 003, 004
+- Actor: TeraAgent + engineering-agent-dotnet + ui-designer
+- Summary: �� ����� ���� ����� Excel ������� �������� ������� (4 ����).
+- Decision / Result: ? All 4 tasks accepted. Builds: API + Web = 0 errors / 0 warnings.
+- Next Action: Majed ����� ������ ��� ������ �����.
+
+## [2026-07-21 18:00] - UI_REDESIGN_COMPLETE — Sync Page Professional Redesign
+
+- Related Task: TASK-UI-SYNC-REDESIGN-001
+- Actor: TeraAgent + UI Designer
+- Summary: إعادة تصميم كاملة لصفحة `/admin-secure-panel/Sync` — من 866 سطراً إلى 2,036 سطراً. إضافة: glassmorphism للبطاقات، connection status bar، search حقيقي، column sorting (4 أعمدة)، keyboard shortcuts HUD (7 اختصارات)، staggered card entry، counter animations، shimmer محسّن، animated empty state، toast notifications محسّنة مع gradient و close button، responsive 3-tier (1024/767/480)، RTL كامل عبر Logical Properties. تم توثيق 6 References في `design-source/REFERENCES.md`.
+- Decision / Result: ✅ ACCEPTED — All Vitality items PASS (9/9). Build: 0 errors.
+- Next Action: Majed يختبر الصفحة على localhost:5000
+
+## [2026-07-21 20:00] - UX_FIXES_COMPLETE — Sync Page 6 Issues Fixed
+
+- Related Task: TASK-UI-SYNC-FIXES-001
+- Actor: TeraAgent + UI Designer
+- Summary: إصلاح 6 مشاكل UX في صفحة المزامنة: (1) الكويري يظهر كاسم جدول فقط + Modal للكويري الكامل مع SQL syntax highlighting ونسخ، (2) شريط تقدم ثابت في أسفل الشاشة (position: fixed) يظهر أثناء المزامنة فقط، (3) عمودان جديدان "آخر مزامنة" + "السجلات" لكل تعيين، (4) Toggle switch لتفعيل/تعطيل كل تعيين عبر PUT /api/tablemappings/{id}/toggle، (5) فلتر الحالة (نشط/متوقف) + فلتر النوع (جدول/عرض/استعلام) كـ dropdown، (6) تعطيل التحديث التلقائي افتراضياً + زر تحديث يدوي + toggle اختياري.
+- Decision / Result: ✅ ACCEPTED — Build: 0 errors, RTL compliant, Blue Theme only.
+- Next Action: Majed يختبر الإصلاحات على localhost:5000
+
+## [2026-07-21 23:30] - BUG_FIX — KPI Simple Mode Validation Fix
+
+- Related Task: TASK-BUILDER-FIX-001
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: إصلاح مشكلة طلب GrandTotalSource (وحقول KPI متقدمة أخرى) في وضع KPI Simple mode. السبب: (1) `syncKpiHiddenFields()` في card-builder.js كان ينسخ قيم فارغة من DOM elements المخفية إلى hidden inputs بدلاً من fallback values، (2) `ValidateConditionalPostFields()` في Builder.cshtml.cs لم يكن لديه conditional validation لـ KPI modes.
+- Decision / Result: ✅ ACCEPTED — Build: 0 errors, 0 warnings. تم تطبيق نمط `(el && el.value) \|\| fallback` على 10 حقول في JS، وإضافة ModelState.Remove للحقول غير المنطبقة في simple mode، وconditional validation لـ withChange/composite modes.
+- Next Action: Majed يختبر إنشاء KPI Simple card على localhost:5000/admin-secure-panel/Cards/Builder

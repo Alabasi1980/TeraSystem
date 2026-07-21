@@ -50,7 +50,7 @@ public class TableMappingController : ControllerBase
             cmd.CommandText = """
                 SELECT Id, OracleSource, SourceType, SqlTargetTable, IsActive,
                        CreatedAt, UpdatedAt, LastSyncAt, SyncRecordCount, ErrorMessage,
-                       SyncMode, IncrementalColumn
+                       SyncMode, IncrementalColumn, InitialSyncStartDate
                 FROM TableMappings
                 ORDER BY OracleSource
                 """;
@@ -78,7 +78,10 @@ public class TableMappingController : ControllerBase
                     syncMode = reader.GetString(reader.GetOrdinal("SyncMode")),
                     incrementalColumn = reader.IsDBNull(reader.GetOrdinal("IncrementalColumn"))
                         ? null
-                        : reader.GetString(reader.GetOrdinal("IncrementalColumn"))
+                        : reader.GetString(reader.GetOrdinal("IncrementalColumn")),
+                    initialSyncStartDate = reader.IsDBNull(reader.GetOrdinal("InitialSyncStartDate"))
+                        ? (DateTime?)null
+                        : reader.GetDateTime(reader.GetOrdinal("InitialSyncStartDate"))
                 });
             }
 
@@ -111,7 +114,7 @@ public class TableMappingController : ControllerBase
 
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = """
-                SELECT OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn
+                SELECT OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, InitialSyncStartDate
                 FROM TableMappings
                 WHERE IsActive = 1
                 ORDER BY OracleSource
@@ -129,7 +132,10 @@ public class TableMappingController : ControllerBase
                     SyncMode = reader.GetString(reader.GetOrdinal("SyncMode")),
                     IncrementalColumn = reader.IsDBNull(reader.GetOrdinal("IncrementalColumn"))
                         ? null
-                        : reader.GetString(reader.GetOrdinal("IncrementalColumn"))
+                        : reader.GetString(reader.GetOrdinal("IncrementalColumn")),
+                    InitialSyncStartDate = reader.IsDBNull(reader.GetOrdinal("InitialSyncStartDate"))
+                        ? (DateTime?)null
+                        : reader.GetDateTime(reader.GetOrdinal("InitialSyncStartDate"))
                 });
             }
 
@@ -187,15 +193,16 @@ public class TableMappingController : ControllerBase
 
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = """
-                INSERT INTO TableMappings (OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, IsActive, CreatedAt, UpdatedAt)
+                INSERT INTO TableMappings (OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, InitialSyncStartDate, IsActive, CreatedAt, UpdatedAt)
                 OUTPUT INSERTED.Id
-                VALUES (@OracleSource, @SourceType, @SqlTargetTable, @SyncMode, @IncrementalColumn, 1, GETUTCDATE(), GETUTCDATE())
+                VALUES (@OracleSource, @SourceType, @SqlTargetTable, @SyncMode, @IncrementalColumn, @InitialSyncStartDate, 1, GETUTCDATE(), GETUTCDATE())
                 """;
             cmd.Parameters.AddWithValue("@OracleSource", request.OracleSource);
             cmd.Parameters.AddWithValue("@SourceType", sourceType);
             cmd.Parameters.AddWithValue("@SqlTargetTable", request.SqlTargetTable);
             cmd.Parameters.AddWithValue("@SyncMode", string.IsNullOrWhiteSpace(request.SyncMode) ? "Full" : request.SyncMode);
             cmd.Parameters.AddWithValue("@IncrementalColumn", (object?)request.IncrementalColumn ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@InitialSyncStartDate", (object?)request.InitialSyncStartDate ?? DBNull.Value);
 
             var newId = await cmd.ExecuteScalarAsync(ct);
 
@@ -254,6 +261,7 @@ public class TableMappingController : ControllerBase
                     SqlTargetTable = @SqlTargetTable,
                     SyncMode = @SyncMode,
                     IncrementalColumn = @IncrementalColumn,
+                    InitialSyncStartDate = @InitialSyncStartDate,
                     UpdatedAt = GETUTCDATE()
                 WHERE Id = @Id
                 """;
@@ -263,6 +271,7 @@ public class TableMappingController : ControllerBase
             cmd.Parameters.AddWithValue("@SqlTargetTable", request.SqlTargetTable);
             cmd.Parameters.AddWithValue("@SyncMode", string.IsNullOrWhiteSpace(request.SyncMode) ? "Full" : request.SyncMode);
             cmd.Parameters.AddWithValue("@IncrementalColumn", (object?)request.IncrementalColumn ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@InitialSyncStartDate", (object?)request.InitialSyncStartDate ?? DBNull.Value);
 
             var affected = await cmd.ExecuteNonQueryAsync(ct);
             if (affected == 0)
@@ -393,4 +402,5 @@ public class CreateMappingRequest
     public string SqlTargetTable { get; set; } = string.Empty;
     public string SyncMode { get; set; } = "Full";
     public string? IncrementalColumn { get; set; }
+    public DateTime? InitialSyncStartDate { get; set; }
 }

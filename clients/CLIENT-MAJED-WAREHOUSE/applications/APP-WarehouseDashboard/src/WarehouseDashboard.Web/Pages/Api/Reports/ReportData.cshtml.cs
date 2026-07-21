@@ -106,6 +106,28 @@ public class ReportDataModel : PageModel
         return new JsonResult(options);
     }
 
+    /// <summary>
+    /// GET /api/reports-data/parameterOptions?reportId=5&amp;filterId=3
+    /// Returns parameter options for a filter using its configured OptionsQuery.
+    /// </summary>
+    public async Task<IActionResult> OnGetParameterOptionsAsync(
+        [FromQuery] int reportId,
+        [FromQuery] int filterId,
+        CancellationToken ct)
+    {
+        var config = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+        if (!config.GetValue<bool>("AdminAuth:Bypass") &&
+            HttpContext.Session.GetString("AdminAuthenticated") != "true")
+        {
+            return new JsonResult(new { error = "Unauthorized" }) { StatusCode = 401 };
+        }
+        if (reportId <= 0 || filterId <= 0)
+            return new JsonResult(new { error = "ReportId and FilterId are required." }) { StatusCode = 400 };
+
+        var options = await _reportService.GetParameterOptionsAsync(reportId, filterId, ct);
+        return new JsonResult(options);
+    }
+
     /// <summary>GET /api/reports-data/layouts?reportId=5 — Get all layouts for a report.</summary>
     public async Task<IActionResult> OnGetLayoutsAsync([FromQuery] int reportId, CancellationToken ct)
     {
@@ -260,6 +282,63 @@ public class ReportDataModel : PageModel
         }
     }
 
+    /// <summary>
+    /// POST /api/reports-data/executeQuery
+    /// Body: { query: "SELECT ..." }
+    /// Executes an arbitrary SQL query and returns up to 20 rows for testing/preview.
+    /// Used by the Report Builder to test parameter queries.
+    /// </summary>
+    public async Task<IActionResult> OnPostExecuteQueryAsync([FromBody] ExecuteQueryRequest request, CancellationToken ct)
+    {
+        var config = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+        if (!config.GetValue<bool>("AdminAuth:Bypass") &&
+            HttpContext.Session.GetString("AdminAuthenticated") != "true")
+        {
+            return new JsonResult(new { error = "Unauthorized" }) { StatusCode = 401 };
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Query))
+            return new JsonResult(new { error = "Query is required." }) { StatusCode = 400 };
+
+        try
+        {
+            var connectionString = ConnectionStringHelper.ResolveSql(
+                HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            if (string.IsNullOrWhiteSpace(connectionString))
+                return new JsonResult(new { success = false, errorMessage = "Connection string not configured." });
+
+            await using var conn = new Microsoft.Data.SqlClient.SqlConnection(connectionString);
+            await conn.OpenAsync(ct);
+            await using var cmd = new Microsoft.Data.SqlClient.SqlCommand(request.Query, conn);
+            cmd.CommandTimeout = 15;
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+
+            var columns = new List<string>();
+            for (int i = 0; i < reader.FieldCount; i++)
+                columns.Add(reader.GetName(i));
+
+            var rows = new List<Dictionary<string, object?>>();
+            int count = 0;
+            while (await reader.ReadAsync(ct) && count < 20)
+            {
+                var row = new Dictionary<string, object?>();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    var val = reader.GetValue(i);
+                    row[columns[i]] = val is DBNull ? null : val;
+                }
+                rows.Add(row);
+                count++;
+            }
+
+            return new JsonResult(new { success = true, columns, rows, rowCount = rows.Count });
+        }
+        catch (Exception ex)
+        {
+            return new JsonResult(new { success = false, errorMessage = ex.Message });
+        }
+    }
+
     // ======================================================================
     // Request DTOs
     // ======================================================================
@@ -291,5 +370,10 @@ public class ReportDataModel : PageModel
     {
         public string ViewName { get; set; } = string.Empty;
         public int Top { get; set; } = 10;
+    }
+
+    public class ExecuteQueryRequest
+    {
+        public string Query { get; set; } = string.Empty;
     }
 }

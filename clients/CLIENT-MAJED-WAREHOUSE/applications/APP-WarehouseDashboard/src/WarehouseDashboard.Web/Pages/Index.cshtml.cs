@@ -112,7 +112,8 @@ public class IndexModel : PageModel
                     c.DateFilterMode ?? "dashboard",
                     c.FixedStartDate ?? "",
                     c.FixedEndDate ?? "",
-                    c.RelativeDays))
+                    c.RelativeDays,
+                    c.AssistantEnabled))
                 .ToListAsync();
 
             CardsWithDrill = new HashSet<int>(
@@ -193,7 +194,8 @@ public record CardLayoutInfo(
     string DateFilterMode,
     string FixedStartDate,
     string FixedEndDate,
-    int RelativeDays);
+    int RelativeDays,
+    bool AssistantEnabled);
 
 // === Layout persistence models (TASK-DASH-005) ===
 

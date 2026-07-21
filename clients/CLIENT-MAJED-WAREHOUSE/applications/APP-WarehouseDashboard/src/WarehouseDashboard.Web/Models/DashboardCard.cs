@@ -128,6 +128,12 @@ public class DashboardCard
     /// </summary>
     public string OriginalSourceId { get; set; } = "";
 
+    /// <summary>Enables/disables the AI assistant for this card. Default: true.</summary>
+    public bool AssistantEnabled { get; set; } = true;
+
+    /// <summary>Optional card-specific AI instructions (nvarchar(max)). Null = use system default.</summary>
+    public string? AssistantPrompt { get; set; }
+
     /// <summary>Foreign key to the parent <see cref="Dashboard"/>. Null = unassigned.</summary>
     public int? DashboardId { get; set; }
 

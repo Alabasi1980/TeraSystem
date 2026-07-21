@@ -37,6 +37,9 @@
         @if (isAdmin) {
             <a class="wd-btn wd-btn--on-dark wd-btn--sm" href="/admin-secure-panel/Logout">تسجيل الخروج</a>
         } else {
+            <a class="wd-btn wd-btn--on-dark wd-btn--sm" href="/DataExports" title="تنزيل بيانات Excel" style="display:inline-flex;align-items:center;gap:4px;">
+                📥 تنزيل
+            </a>
             <button type="button" class="wd-btn wd-btn--on-dark wd-btn--sm" id="wd-refresh-btn" onclick="wdRefreshAll()">
                 <span aria-hidden="true">⟳</span> تحديث
             </button>

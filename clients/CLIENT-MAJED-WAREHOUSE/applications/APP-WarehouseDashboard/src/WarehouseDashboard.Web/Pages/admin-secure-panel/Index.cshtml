@@ -8,7 +8,7 @@
     .wd-nav-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: var(--sp-6);
+        gap: var(--sp-8);
         margin-top: var(--sp-6);
     }
 
@@ -32,6 +32,11 @@
     .wd-nav-card:nth-child(3) { animation-delay: 120ms; }
     .wd-nav-card:nth-child(4) { animation-delay: 180ms; }
     .wd-nav-card:nth-child(5) { animation-delay: 240ms; }
+    .wd-nav-card:nth-child(6) { animation-delay: 300ms; }
+    .wd-nav-card:nth-child(7) { animation-delay: 360ms; }
+    .wd-nav-card:nth-child(8) { animation-delay: 420ms; }
+    .wd-nav-card:nth-child(9) { animation-delay: 480ms; }
+    .wd-nav-card:nth-child(10) { animation-delay: 540ms; }
 
     .wd-nav-card:hover {
         box-shadow: var(--shadow-lg);
@@ -40,14 +45,13 @@
     }
 
     .wd-nav-card__icon {
-        width: 52px;
-        height: 52px;
+        width: 48px;
+        height: 48px;
         border-radius: var(--radius-md);
         background: var(--c-surface-muted);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 26px;
         margin-bottom: var(--sp-4);
         transition: background var(--dur-fast) var(--ease);
     }
@@ -126,71 +130,78 @@
 
 <div class="wd-nav-grid">
     <a href="/admin-secure-panel/Dashboards" class="wd-nav-card">
-        <div class="wd-nav-card__icon">📋</div>
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></div>
         <h3 class="wd-nav-card__title">إدارة الداشبوردات</h3>
         <p class="wd-nav-card__desc">إنشاء وتعديل وحذف وترتيب الداشبوردات</p>
         <span class="wd-nav-card__badge">@Model.DashboardsCount</span>
-        <div class="wd-nav-card__arrow">&#8594;</div>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
     </a>
 
     <a href="/admin-secure-panel/Cards" class="wd-nav-card">
-        <div class="wd-nav-card__icon">&#128202;</div>
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><rect x="3" y="3" width="7" height="10" rx="1.5"/><rect x="14" y="3" width="7" height="6" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/></svg></div>
         <h3 class="wd-nav-card__title">إدارة البطاقات</h3>
         <p class="wd-nav-card__desc">إنشاء وتعديل وحذف بطاقات لوحة المعلومات</p>
         <span class="wd-nav-card__badge">@Model.CardsCount</span>
-        <div class="wd-nav-card__arrow">&#8594;</div>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
     </a>
 
     <a href="/admin-secure-panel/QueryTester" class="wd-nav-card">
-        <div class="wd-nav-card__icon">&#128269;</div>
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><circle cx="11" cy="11" r="7"/><path d="M16 16l4 4"/></svg></div>
         <h3 class="wd-nav-card__title">مختبر الاستعلامات</h3>
         <p class="wd-nav-card__desc">اختبار استعلام SQL للقراءة فقط</p>
-        <div class="wd-nav-card__arrow">&#8594;</div>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
     </a>
 
     <a href="/admin-secure-panel/OracleQueryLab" class="wd-nav-card">
-        <div class="wd-nav-card__icon">&#128270;</div>
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.657 3.582 3 8 3s8-1.343 8-3V6"/><path d="M4 12c0 1.657 3.582 3 8 3s8-1.343 8-3"/></svg></div>
         <h3 class="wd-nav-card__title">مختبِّر استعلامات Oracle</h3>
         <p class="wd-nav-card__desc">اختبار استعلامات Oracle قبل إسنادها للبطاقات</p>
-        <div class="wd-nav-card__arrow">&#8594;</div>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
     </a>
 
     <a href="/admin-secure-panel/DrillDown" class="wd-nav-card">
-        <div class="wd-nav-card__icon">&#128279;</div>
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><rect x="3" y="3" width="18" height="7" rx="1"/><rect x="5" y="8" width="14" height="7" rx="1"/><path d="M12 17v4"/><path d="M10 19l2 2 2-2"/></svg></div>
         <h3 class="wd-nav-card__title">تكوين التنقّل العميق</h3>
         <p class="wd-nav-card__desc">إدارة مستويات التنقّل العميق لكل بطاقة</p>
         <span class="wd-nav-card__badge">@Model.DrillLevelsCount</span>
-        <div class="wd-nav-card__arrow">&#8594;</div>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
     </a>
 
     <a href="/admin-secure-panel/Sync" class="wd-nav-card">
-        <div class="wd-nav-card__icon">&#128203;</div>
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M21 21v-5h-5"/></svg></div>
         <h3 class="wd-nav-card__title">شاشة المزامنة</h3>
         <p class="wd-nav-card__desc">مزامنة البيانات، عرض التقدم، وإدارة التعيينات</p>
         <span class="wd-nav-card__badge">@Model.MappingsCount</span>
-        <div class="wd-nav-card__arrow">&#8594;</div>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
     </a>
 
     <a href="/admin-secure-panel/SyncSettings" class="wd-nav-card">
-        <div class="wd-nav-card__icon">&#9881;&#65039;</div>
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1.08 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1.08z"/></svg></div>
         <h3 class="wd-nav-card__title">إعدادات المزامنة</h3>
         <p class="wd-nav-card__desc">تكوين فاصل المزامنة والتشغيل التلقائي</p>
-        <div class="wd-nav-card__arrow">&#8594;</div>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
     </a>
 
     <a href="/admin-secure-panel/SyncLogs" class="wd-nav-card">
-        <div class="wd-nav-card__icon">&#128196;</div>
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></div>
         <h3 class="wd-nav-card__title">سجلات المزامنة</h3>
         <p class="wd-nav-card__desc">عرض سجلات المزامنة الأخيرة</p>
         <span class="wd-nav-card__badge">@Model.SyncLogsCount</span>
-        <div class="wd-nav-card__arrow">&#8594;</div>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
     </a>
 
     <a href="/admin-secure-panel/TableMappings" class="wd-nav-card">
-        <div class="wd-nav-card__icon">&#128203;</div>
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div>
         <h3 class="wd-nav-card__title">تعيينات الجداول</h3>
         <p class="wd-nav-card__desc">إدارة مصادر Oracle والجدول المرتبطة في SQL Server</p>
         <span class="wd-nav-card__badge">@Model.MappingsCount</span>
-        <div class="wd-nav-card__arrow">&#8594;</div>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
+    </a>
+
+    <a href="/admin-secure-panel/ReportBuilder" class="wd-nav-card">
+        <div class="wd-nav-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+        <h3 class="wd-nav-card__title">منشئ التقارير</h3>
+        <p class="wd-nav-card__desc">تنزيل ملفات Excel للبيانات المُزامنة</p>
+        <div class="wd-nav-card__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><polyline points="9 18 15 12 9 6" /></svg></div>
     </a>
 </div>

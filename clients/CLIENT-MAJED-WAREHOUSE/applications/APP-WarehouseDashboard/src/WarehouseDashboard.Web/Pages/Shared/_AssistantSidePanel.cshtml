@@ -1,0 +1,52 @@
+@* =============================================================================
+   _AssistantSidePanel.cshtml — AI Assistant Side Panel partial view
+   TASK-AI-D02: Pure HTML/CSS structure — NO JavaScript in this task.
+   JavaScript behavior (open/close, loading, API calls) comes in TASK-AI-D03.
+   ============================================================================= *@
+
+<div id="ai-assistant-panel" class="assistant-panel" aria-hidden="true" role="complementary" aria-label="لوحة المساعد الذكي">
+    <div class="assistant-panel-header">
+        <h3 class="assistant-panel-header__title">💡 مساعد البطاقة</h3>
+        <span id="assistant-card-title" class="assistant-panel-header__subtitle">اختر بطاقة</span>
+        <button class="assistant-close" aria-label="إغلاق" onclick="closeAssistantPanel()" type="button">&times;</button>
+    </div>
+
+    <div class="assistant-panel-body">
+        @* Mode selection buttons *@
+        <div class="assistant-mode-buttons">
+            <button id="btn-explain" class="assistant-btn assistant-btn-primary"
+                    onclick="analyzeCard('explain')">📌 شرح البطاقة</button>
+            <button id="btn-deep" class="assistant-btn"
+                    onclick="analyzeCard('deep')">🔍 شرح عميق</button>
+        </div>
+
+        @* Context scope indicator *@
+        <div id="assistant-scope" class="assistant-scope"></div>
+
+        @* Answer display area *@
+        <div id="assistant-answer" class="assistant-answer">
+            <p class="assistant-placeholder">اختر بطاقة ثم اضغط على أحد أزرار التحليل.</p>
+        </div>
+
+        @* Deepen / follow-up area — hidden by default *@
+        <div id="assistant-deepen-area" class="assistant-deepen" style="display:none;">
+            <button id="btn-deepen" class="assistant-btn"
+                    onclick="deepenAnalysis()">📊 تعمق أكثر</button>
+        </div>
+
+        @* Full-data-reached message — hidden by default *@
+        <div id="assistant-full-data-msg" class="assistant-full-data-msg" style="display:none;">
+            ✅ تم تحليل كل البيانات المتوفرة لهذه البطاقة حالياً.
+        </div>
+
+        @* Status / loading indicator *@
+        <div id="assistant-status" class="assistant-status"></div>
+    </div>
+
+    <div class="assistant-panel-footer">
+        <button class="assistant-close-btn" onclick="closeAssistantPanel()" type="button">إغلاق</button>
+    </div>
+</div>
+
+@* Backdrop overlay — hidden by default *@
+<div id="assistant-overlay" class="assistant-overlay" onclick="closeAssistantPanel()" style="display:none;" aria-hidden="true"></div>

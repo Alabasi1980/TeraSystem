@@ -12,6 +12,9 @@
 
     @* Shared design system (TASK-COD-013 canonical blue-theme.css; reused by TASK-COD-011) *@
     <link rel="stylesheet" href="~/css/blue-theme.css" asp-append-version="true" />
+
+    @* AI Assistant Side Panel styles (TASK-AI-D02) *@
+    <link rel="stylesheet" href="~/css/assistant-panel.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -23,6 +26,12 @@
 
     @* Radzen Blazor interactive components *@
     <script src="_framework/blazor.web.js"></script>
+
+    @* AI Assistant Side Panel partial view (TASK-AI-D02) *@
+    <partial name="_AssistantSidePanel" />
+
+    @* AI Assistant Panel — open/close logic (TASK-AI-D03) *@
+    <script src="~/js/assistant-panel.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

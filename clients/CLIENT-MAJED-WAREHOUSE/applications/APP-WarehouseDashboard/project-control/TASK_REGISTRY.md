@@ -1,7 +1,7 @@
 # TASK_REGISTRY.md — WarehouseDashboard
 
 > **Purpose:** Central registry of all TASK-IDs created during the project lifecycle.
-> **Last Updated:** 2026-07-19 (Card Design Execution started — TASK-CARD-BEH-001)
+> **Last Updated:** 2026-07-21 (Sync Page Professional Redesign — TASK-UI-SYNC-REDESIGN-001 ✅)
 
 ---
 
@@ -64,7 +64,7 @@
 | TASK-COD-024 | Sync Settings Admin Page | engineering-agent | ✅ Accepted (build PASS) | B8 | 2026-07-13 |
 | TASK-COD-025 | Dynamic Table Mappings (CRUD + Schema Diff + SyncEngine) | engineering-agent | ✅ Accepted (build PASS, 0 errors) | B9 | 2026-07-14 |
 | TASK-COD-026 | Visual Card Builder — Wizard + Live Preview + Templates + Clone | ui-designer + engineering-agent | ✅ Accepted (UI complete) | B10 | 2026-07-14 |
-| TASK-COD-FIX-002 | Razor Encoding Normalization | engineering-agent | 🟡 Assigned | FIX | 2026-07-14 |
+| TASK-COD-FIX-002 | Razor Encoding Normalization | engineering-agent | ✅ Resolved (UTF-8 verified 2026-07-21) | FIX | 2026-07-14 |
 | TASK-COD-027 | Fix Builder page HTTP 500 (IHttpClientFactory not registered) | engineering-agent | ✅ Accepted (build 0 errors) | FIX | 2026-07-14 |
 | TASK-COD-028 | Fix Builder Styles section mismatch (_CardsLayout missing RenderSection) | engineering-agent | ✅ Accepted (build PASS) | FIX | 2026-07-14 |
 | TASK-COD-029 | Oracle Source Mapping Wizard (4-step wizard + Oracle discovery + Query validation + Preview) | engineering-agent | ✅ Accepted (build PASS) | B11 | 2026-07-14 |
@@ -129,6 +129,57 @@
 | TASK-SYNC-LOG-01 | Backend: Entities + Migration + DbContext | engineering-agent-dotnet | ✅ Accepted (جزئي) | 2026-07-20 |
 | TASK-SYNC-LOG-01-FIX | API: SyncEngine DB writing + Controller DB reading | engineering-agent-dotnet | ✅ Accepted (build PASS) | 2026-07-20 |
 | TASK-SYNC-LOG-02 | Frontend: Rich advanced SyncLogs page redesign | ui-designer | ✅ Accepted (build PASS) | 2026-07-20 |
+
+---
+
+## Sync Export Excel (TASK-SYNC-EXCEL)
+
+| TASK-ID | Description | Assigned Agent | Status | Created |
+|---|---|---|---|---|
+| TASK-SYNC-EXCEL-001 | Backend: ClosedXML + ExportExcelService + API Endpoint | engineering-agent-dotnet | ✅ Accepted | 2026-07-21 |
+| TASK-SYNC-EXCEL-002 | Frontend: Download Excel button in Sync Dashboard (Admin) | ui-designer | ✅ Accepted | 2026-07-21 |
+| TASK-SYNC-EXCEL-003 | Backend: GET /api/sync/exportable-mappings endpoint | engineering-agent-dotnet | ✅ Accepted | 2026-07-21 |
+| TASK-SYNC-EXCEL-004 | Frontend: Public DataExports page + Dashboard link | ui-designer | ✅ Accepted | 2026-07-21 |
+
+---
+
+## AI Dashboard Assistant Tasks
+
+| TASK-ID | Description | Assigned Agent | Status | Batch | Created |
+|---|---|---|---|---|---|
+| TASK-AI-B01 | Migration: Add AssistantEnabled + AssistantPrompt to DashboardCard | engineering-agent-dotnet | ✅ Accepted (minor drift: SyncMode nvarchar expanded) | AI-B-1 | 2026-07-21 |
+| TASK-AI-B02 | AI Provider Config: appsettings section + AIAssistantOptions model | engineering-agent-dotnet | ✅ Accepted (build errors pre-existing from B01) | AI-B-1 | 2026-07-21 |
+| TASK-AI-B03 | Read-Only DB Connection + ReadOnlyQueryHelper | engineering-agent-dotnet | ✅ Accepted | AI-B-1 | 2026-07-21 |
+| TASK-AI-B04 | Provider Abstraction: IAIProvider + OpenCodeGoAdapter + DTOs | engineering-agent-dotnet | ✅ Accepted | AI-B-2 | 2026-07-21 |
+| TASK-AI-B05 | CardInsightService Foundation (wiring only, no AI calls yet) | engineering-agent-dotnet | ✅ Accepted | AI-B-3 | 2026-07-21 |
+| TASK-AI-C01 | Summary Builder Interface + CardSummary DTO | engineering-agent-dotnet | ✅ Accepted | AI-C-1 | 2026-07-21 |
+| TASK-AI-C02 | KPI Summary Builder + Factory | engineering-agent-dotnet | ✅ Accepted | AI-C-2 | 2026-07-21 |
+| TASK-AI-C03 | Chart Summary Builder (Bar/Line/Pie/Gauge) | engineering-agent-dotnet | ✅ Accepted | AI-C-2 | 2026-07-21 |
+| TASK-AI-C04 | Table Summary Builder | engineering-agent-dotnet | ✅ Accepted | AI-C-2 | 2026-07-21 |
+| TASK-AI-C05 | Generic/No-Date Summary Builder (fallback *) | engineering-agent-dotnet | ✅ Accepted | AI-C-2 | 2026-07-21 |
+| TASK-AI-C-FIX01 | Fix: Register missing Table + Generic builders in DI | engineering-agent-dotnet | ✅ Accepted | AI-C-FIX | 2026-07-21 |
+| TASK-AI-D01 | POST /api/card-insights/analyze endpoint | engineering-agent-dotnet | ✅ Accepted | D-1 | 2026-07-21 |
+| TASK-AI-D02 | Side Panel partial view + CSS (RTL, responsive) | ui-designer | ✅ Accepted | D-1 | 2026-07-21 |
+| TASK-AI-D03 | Assistant icon in cards + open/close JS | ui-designer | ✅ Accepted | D-2 | 2026-07-21 |
+| TASK-AI-D04 | Mode buttons: AJAX wiring to API | ui-designer | ✅ Accepted | D-3 | 2026-07-21 |
+| TASK-AI-D05 | States polish: deepening, full-data, disabled, loading/error | ui-designer | ✅ Accepted | D-4 | 2026-07-21 |
+| TASK-AI-E01 | Migration: AssistantInsightLogs + AssistantUsageStats tables | engineering-agent-dotnet | ✅ Accepted | E-1 | 2026-07-21 |
+| TASK-AI-E02 | AssistantLogService (standalone logging) | engineering-agent-dotnet | ✅ Accepted | E-2 | 2026-07-21 |
+| TASK-AI-E03 | AssistantCacheService (IMemoryCache, 10min TTL) | engineering-agent-dotnet | ✅ Accepted | E-2 | 2026-07-21 |
+| TASK-AI-E04 | Integrate Log+Cache into CardInsightService + API | engineering-agent-dotnet | ✅ Accepted | E-3 | 2026-07-21 |
+| TASK-AI-F01 | QA Audit: Build, Security, Architecture, Acceptance | qa-agent | ✅ Complete (F1 fixed, F2-F5 noted) | F | 2026-07-21 |
+| TASK-AI-F-FIX01 | Fix: Register ReadOnlyQueryHelper in DI | engineering-agent-dotnet | ✅ Accepted | F-FIX | 2026-07-21 |
+
+**Plan Reference:** `project-preparation/AI_DASHBOARD_ASSISTANT_IMPLEMENTATION_PLAN.md`
+
+---
+
+## Sync Page Professional Redesign
+
+| TASK-ID | Description | Assigned Agent | Status | Created |
+|---|---|---|---|---|
+| TASK-UI-SYNC-REDESIGN-001 | إعادة تصميم كاملة لصفحة /admin-secure-panel/Sync — glassmorphism، search، sorting، keyboard shortcuts، stagger animations، connection bar، shimmer محسّن، responsive | UI Designer | ✅ Accepted (All Vitality 9/9 PASS) | 2026-07-21 |
+| TASK-UI-SYNC-FIXES-001 | إصلاح 6 مشاكل UX: Query truncation + Modal، Sticky progress bar، Per-mapping sync info، Toggle enable/disable، Filter dropdowns، Disable auto-refresh | UI Designer | ✅ Accepted (All Vitality 8/8 PASS) | 2026-07-21 |
 
 ---
 

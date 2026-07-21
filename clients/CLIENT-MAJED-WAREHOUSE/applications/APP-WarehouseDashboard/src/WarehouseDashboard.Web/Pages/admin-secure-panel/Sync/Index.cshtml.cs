@@ -86,10 +86,13 @@ public class SyncDashboardModel : PageModel
     public class MappingItem
     {
         public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
         public string OracleSource { get; set; } = string.Empty;
         public string SourceType { get; set; } = string.Empty;
         public string SqlTargetTable { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
+        public DateTime? LastSyncAt { get; set; }
+        public int SyncRecordCount { get; set; }
     }
 
     public class SyncInfo

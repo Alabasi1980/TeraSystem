@@ -23,81 +23,59 @@ namespace WarehouseDashboard.Api.Controllers;
 public class SyncController : ControllerBase
 {
     private readonly SyncEngineService _syncEngine;
+    private readonly SyncQueueService _queue;
     private readonly SyncRunLogStore _logStore;
     private readonly SyncRunProgressStore _progressStore;
     private readonly IConfiguration _configuration;
     private readonly ILogger<SyncController> _logger;
+    private readonly ExportExcelService _exportExcel;
 
     public SyncController(
         SyncEngineService syncEngine,
+        SyncQueueService queue,
         SyncRunLogStore logStore,
         SyncRunProgressStore progressStore,
         IConfiguration configuration,
-        ILogger<SyncController> logger)
+        ILogger<SyncController> logger,
+        ExportExcelService exportExcel)
     {
         _syncEngine = syncEngine;
+        _queue = queue;
         _logStore = logStore;
         _progressStore = progressStore;
         _configuration = configuration;
         _logger = logger;
+        _exportExcel = exportExcel;
     }
 
     /// <summary>
-    /// POST /api/sync/trigger — manually triggers one full-refresh sync cycle.
-    /// Overlapping runs are skipped by the engine's internal semaphore; in that case the
-    /// cycle returns immediately and the log record reflects the engine's current status.
+    /// POST /api/sync/trigger — enqueues a full-refresh sync cycle. The request is added to
+    /// the centralized sync queue and will be processed when all prior requests complete.
+    /// Returns the queue position immediately without waiting for execution.
     /// </summary>
     [HttpPost("trigger")]
-    public async Task<IActionResult> Trigger(CancellationToken cancellationToken)
+    public IActionResult Trigger()
     {
-        var record = _logStore.BeginRun("Manual");
+        var position = _queue.EnqueueFull("Manual");
 
-        try
+        return Ok(new
         {
-            await _syncEngine.RunSyncOnceAsync(cancellationToken, "Manual");
-
-            // The engine owns the authoritative status; reflect it in the log entry.
-            _logStore.CompleteRun(record, _syncEngine.LastStatus, _syncEngine.LastRecordCount, null);
-
-            return Ok(new
-            {
-                status = "triggered",
-                message = "Sync cycle executed. Check /api/sync/status and /api/sync/logs for results."
-            });
-        }
-        catch (OperationCanceledException)
-        {
-            _logStore.CompleteRun(record, "Cancelled", _syncEngine.LastRecordCount,
-                "Sync was cancelled (request aborted or host shutting down).");
-            return Ok(new
-            {
-                status = "triggered",
-                message = "Sync cycle was cancelled."
-            });
-        }
-        catch (Exception ex)
-        {
-            // The engine normally swallows non-cancellation exceptions; this is defensive.
-            _logStore.CompleteRun(record, "Failed", _syncEngine.LastRecordCount, ex.Message);
-            _logger.LogError(ex, "Manual sync trigger failed unexpectedly.");
-            return Ok(new
-            {
-                status = "triggered",
-                message = $"Sync cycle failed: {ex.Message}"
-            });
-        }
+            status = "queued",
+            position,
+            message = $"Full sync queued. Position: {position} in queue."
+        });
     }
 
     /// <summary>
-    /// POST /api/sync/trigger-selected — triggers a sync cycle for the specified mapping IDs
+    /// POST /api/sync/trigger-selected — enqueues a sync cycle for the specified mapping IDs
     /// only. Accepts a JSON body like <c>{ "mappingIds": [1, 3, 5] }</c>.
     ///
-    /// Unlike <c>POST /api/sync/trigger</c>, this endpoint returns immediately with a
-    /// <c>runId</c> and executes the actual sync in a background task. The caller polls
-    /// <c>GET /api/sync/progress?runId=...</c> to watch live per-mapping progress.
+    /// The request is added to the centralized sync queue and will be processed when all prior
+    /// requests complete. The caller receives a <c>runId</c> to poll
+    /// <c>GET /api/sync/progress?runId=...</c> for live per-mapping progress.
     ///
-    /// This endpoint does NOT acquire the engine's semaphore, so it can be called even while
-    /// the automatic background cycle is running.
+    /// Multiple Selected requests with overlapping IDs are merged into a single batch.
+    /// If a Full sync is already queued, the Selected request is absorbed (Full covers all).
     ///
     /// Returns <c>400 Bad Request</c> if <c>mappingIds</c> is null or empty.
     /// </summary>
@@ -113,8 +91,6 @@ public class SyncController : ControllerBase
             });
         }
 
-        var logRecord = _logStore.BeginRun("Manual (selected)");
-
         _logger.LogInformation(
             "Manual selected-sync triggered for {Count} mapping ID(s): [{Ids}]",
             request.MappingIds.Count, string.Join(", ", request.MappingIds));
@@ -123,38 +99,20 @@ public class SyncController : ControllerBase
         var mappings = await _syncEngine.LoadMappingsByIdsAsync(request.MappingIds, ct);
         var run = _progressStore.CreateRun(request.MappingIds, mappings);
 
-        // Fire-and-forget: run the sync in the background. CancellationToken.None is
-        // intentional so the sync is not aborted when the HTTP request is cancelled.
-        _ = Task.Run(async () =>
+        // Enqueue the request — the queue handles sequencing and log/progress tracking.
+        var position = _queue.EnqueueSelected(
+            request.MappingIds,
+            progress: run,
+            logRecord: null, // Queue service creates its own log record
+            triggerType: "Manual (selected)");
+
+        return Ok(new
         {
-            try
-            {
-                var result = await _syncEngine.RunSelectedMappingsAsync(
-                    request.MappingIds, CancellationToken.None, run);
-
-                _progressStore.CompleteRun(
-                    run.RunId,
-                    result.Status == "success" || result.Status == "partial"
-                        ? result.Status
-                        : "failed");
-
-                // Collect error messages from failed mappings so the log record is useful.
-                var failedErrors = result.Mappings
-                    .Where(m => m.Status == "failed" && !string.IsNullOrEmpty(m.Error))
-                    .Select(m => $"{m.TargetTable}: {m.Error}");
-                var combinedError = failedErrors.Any() ? string.Join("; ", failedErrors) : null;
-
-                _logStore.CompleteRun(logRecord, result.Status == "success" ? "Success" : result.Status == "partial" ? "Partial" : "Failed", result.TotalRows, combinedError);
-            }
-            catch (Exception ex)
-            {
-                _progressStore.CompleteRun(run.RunId, "failed");
-                _logStore.CompleteRun(logRecord, "Failed", 0, ex.Message);
-                _logger.LogError(ex, "Background sync run {RunId} failed.", run.RunId);
-            }
-        }, CancellationToken.None);
-
-        return Ok(new { runId = run.RunId, status = "started" });
+            status = "queued",
+            position,
+            runId = run.RunId,
+            message = $"Selected sync queued. Position: {position} in queue."
+        });
     }
 
     /// <summary>
@@ -184,16 +142,61 @@ public class SyncController : ControllerBase
     }
 
     /// <summary>
+    /// GET /api/sync/queue — returns the current state of the centralized sync queue:
+    /// whether a sync is processing, the current sync details, and pending requests.
+    /// </summary>
+    [HttpGet("queue")]
+    public IActionResult Queue()
+    {
+        var status = _queue.GetQueueStatus();
+        return Ok(status);
+    }
+
+    /// <summary>
     /// GET /api/sync/status — current runtime status of the sync engine.
+    /// Falls back to <c>LastSyncTimestamp</c> from the SyncSettings DB table when the
+    /// in-memory runtime status has not been initialized (survives API restarts).
     /// </summary>
     [HttpGet("status")]
-    public IActionResult Status()
+    public async Task<IActionResult> Status(CancellationToken ct)
     {
+        var lastSyncTime = _syncEngine.LastSyncTime;
+        var lastStatus = _syncEngine.LastStatus;
+
+        // If in-memory status was never set (e.g. after restart), try reading from DB.
+        if (lastSyncTime is null && lastStatus == "Never")
+        {
+            try
+            {
+                var connStr = ConnectionStringHelper.ResolveSql(_configuration);
+                if (!string.IsNullOrWhiteSpace(connStr))
+                {
+                    await using var conn = new SqlConnection(connStr);
+                    await conn.OpenAsync(ct);
+                    await using var cmd = conn.CreateCommand();
+                    cmd.CommandText =
+                        "SELECT LastSyncTimestamp FROM SyncSettings WHERE Id = 1";
+                    var dbVal = await cmd.ExecuteScalarAsync(ct);
+                    if (dbVal is not null && dbVal != DBNull.Value)
+                    {
+                        lastSyncTime = (DateTime)dbVal;
+                        lastStatus = "Success";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex,
+                    "Could not read LastSyncTimestamp from SyncSettings for status fallback. " +
+                    "Returning in-memory defaults.");
+            }
+        }
+
         return Ok(new
         {
             isRunning = _syncEngine.IsRunning,
-            lastSyncTime = _syncEngine.LastSyncTime,
-            lastStatus = _syncEngine.LastStatus,
+            lastSyncTime,
+            lastStatus,
             lastRecordCount = _syncEngine.LastRecordCount
         });
     }
@@ -326,21 +329,220 @@ public class SyncController : ControllerBase
     }
 
     /// <summary>
-    /// GET /api/sync/mappings — returns all active table mappings from the database.
-    /// Used by the Sync Dashboard to display the mappings table with checkboxes.
+    /// GET /api/sync/{id:int}/export-excel — downloads a formatted Excel file
+    /// for the target table of the given mapping.
+    /// </summary>
+    [HttpGet("{id:int}/export-excel")]
+    public async Task<IActionResult> ExportExcel(int id, CancellationToken ct)
+    {
+        // 1. Load mapping to get SqlTargetTable
+        var mappings = await _syncEngine.LoadMappingsByIdsAsync(new List<int> { id }, ct);
+        var mapping = mappings.FirstOrDefault();
+        if (mapping is null)
+            return NotFound(new { message = "Mapping not found." });
+
+        // 2. Check SqlTargetTable is not empty
+        if (string.IsNullOrWhiteSpace(mapping.SqlTargetTable))
+            return BadRequest(new { message = "Mapping has no target table." });
+
+        // 3. Generate Excel
+        var fileName = $"{mapping.SqlTargetTable}_{DateTime.Now:yyyy-MM-dd_HHmm}.xlsx";
+        var bytes = await _exportExcel.GenerateAsync(mapping.SqlTargetTable, mapping.Name ?? mapping.SqlTargetTable, ct);
+
+        if (bytes is null)
+            return NotFound(new { message = $"Table '{mapping.SqlTargetTable}' not found or empty." });
+
+        // 4. Return file
+        return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+    }
+
+    /// <summary>
+    /// GET /api/sync/mappings — returns ALL table mappings from the database (active and inactive).
+    /// Used by the Sync Dashboard to display the mappings table with toggle switches.
+    /// Note: Uses its own query instead of LoadMappingsFromDbAsync because the sync engine
+    /// method only returns active mappings (WHERE IsActive = 1).
     /// </summary>
     [HttpGet("mappings")]
     public async Task<IActionResult> Mappings(CancellationToken ct)
     {
+        var connStr = ConnectionStringHelper.ResolveSql(_configuration);
+        if (string.IsNullOrWhiteSpace(connStr))
+            return Ok(Array.Empty<object>());
+
+        try
+        {
+            await using var conn = new SqlConnection(connStr);
+            await conn.OpenAsync(ct);
+
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                SELECT Id, Name, OracleSource, SourceType, SqlTargetTable,
+                       IsActive, LastSyncAt, SyncRecordCount
+                FROM TableMappings
+                ORDER BY OracleSource
+                """;
+
+            var results = new List<object>();
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            while (await reader.ReadAsync(ct))
+            {
+                results.Add(new
+                {
+                    id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    name = reader.IsDBNull(reader.GetOrdinal("Name"))
+                        ? string.Empty
+                        : reader.GetString(reader.GetOrdinal("Name")),
+                    oracleSource = reader.GetString(reader.GetOrdinal("OracleSource")),
+                    sourceType = reader.GetString(reader.GetOrdinal("SourceType")),
+                    sqlTargetTable = reader.GetString(reader.GetOrdinal("SqlTargetTable")),
+                    isActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    lastSyncTime = reader.IsDBNull(reader.GetOrdinal("LastSyncAt"))
+                        ? (DateTime?)null
+                        : reader.GetDateTime(reader.GetOrdinal("LastSyncAt")),
+                    lastRecordCount = reader.GetInt32(reader.GetOrdinal("SyncRecordCount"))
+                });
+            }
+
+            return Ok(results);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to load mappings for dashboard. Returning empty list.");
+            return Ok(Array.Empty<object>());
+        }
+    }
+
+    /// <summary>
+    /// GET /api/sync/exportable-mappings — returns all active mappings with table-existence
+    /// and row-count information from SQL Server, plus the last sync timestamp.
+    /// Used by the public DataExports page to show which exports are available.
+    ///
+    /// <para>
+    /// For each mapping the endpoint checks whether the target SQL table exists
+    /// (<c>OBJECT_ID</c>) and, if it does, retrieves <c>COUNT(1)</c>. Tables that do not
+    /// exist or are empty are returned with <c>hasData: false</c> and <c>rowCount: null</c>.
+    /// The <c>lastSyncTime</c> per mapping falls back to the global
+    /// <c>SyncSettings.LastSyncTimestamp</c> when the mapping-level value is null.
+    /// </para>
+    ///
+    /// <para>
+    /// If the database is unreachable the endpoint returns the mapping list without row
+    /// counts and logs a warning — it never throws for the caller.
+    /// </para>
+    /// </summary>
+    [HttpGet("exportable-mappings")]
+    public async Task<IActionResult> ExportableMappings(CancellationToken ct)
+    {
         var mappings = await _syncEngine.LoadMappingsFromDbAsync(ct);
+        var connStr = ConnectionStringHelper.ResolveSql(_configuration);
+
+        // General fallback timestamp from SyncSettings table
+        DateTime? generalLastSync = null;
+
+        if (!string.IsNullOrWhiteSpace(connStr))
+        {
+            try
+            {
+                await using var conn = new SqlConnection(connStr);
+                await conn.OpenAsync(ct);
+
+                // 1. Read the global LastSyncTimestamp once.
+                await using var tsCmd = conn.CreateCommand();
+                tsCmd.CommandText = "SELECT LastSyncTimestamp FROM SyncSettings WHERE Id = 1";
+                var tsVal = await tsCmd.ExecuteScalarAsync(ct);
+                if (tsVal is not null && tsVal != DBNull.Value)
+                    generalLastSync = (DateTime)tsVal;
+
+                // 2. Build results — one connection reused for all table checks.
+                var results = new List<object>();
+
+                foreach (var mapping in mappings)
+                {
+                    bool hasData = false;
+                    int? rowCount = null;
+
+                    if (!string.IsNullOrWhiteSpace(mapping.SqlTargetTable))
+                    {
+                        try
+                        {
+                            // Build safe OBJECT_ID check and COUNT query
+                            // (table names come from our own configuration — not user input)
+                            string objCheck;
+                            string countQuery;
+
+                            if (mapping.SqlTargetTable.Contains('.'))
+                            {
+                                // Schema-qualified: dbo.stg_WarehouseStock
+                                var parts = mapping.SqlTargetTable.Split('.');
+                                objCheck = $"IF OBJECT_ID(N'{mapping.SqlTargetTable.Replace("'", "''")}', N'U') IS NOT NULL SELECT 1 ELSE SELECT 0";
+                                countQuery = $"SELECT COUNT(1) FROM [{parts[0].Replace("]", "]]")}].[{parts[1].Replace("]", "]]")}]";
+                            }
+                            else
+                            {
+                                objCheck = $"IF OBJECT_ID(N'[{mapping.SqlTargetTable.Replace("]", "]]")}]', N'U') IS NOT NULL SELECT 1 ELSE SELECT 0";
+                                countQuery = $"SELECT COUNT(1) FROM [{mapping.SqlTargetTable.Replace("]", "]]")}]";
+                            }
+
+                            await using var objCmd = conn.CreateCommand();
+                            objCmd.CommandText = objCheck;
+                            var exists = (int)(await objCmd.ExecuteScalarAsync(ct))!;
+
+                            if (exists == 1)
+                            {
+                                await using var countCmd = conn.CreateCommand();
+                                countCmd.CommandText = countQuery;
+                                var countVal = await countCmd.ExecuteScalarAsync(ct);
+                                rowCount = countVal is not null && countVal != DBNull.Value
+                                    ? Convert.ToInt32(countVal)
+                                    : 0;
+                                hasData = rowCount > 0;
+                            }
+                            // else: table does not exist → hasData: false, rowCount: null
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning(ex,
+                                "exportable-mappings: failed to inspect table '{Table}' for mapping {Id}. " +
+                                "Returning mapping without row data.",
+                                mapping.SqlTargetTable, mapping.Id);
+                        }
+                    }
+
+                    results.Add(new
+                    {
+                        id = mapping.Id,
+                        name = !string.IsNullOrWhiteSpace(mapping.Name)
+                            ? mapping.Name
+                            : mapping.SqlTargetTable,
+                        sqlTargetTable = mapping.SqlTargetTable,
+                        sourceType = mapping.SourceType,
+                        hasData,
+                        rowCount,
+                        lastSyncTime = mapping.LastSyncAt ?? generalLastSync
+                    });
+                }
+
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex,
+                    "exportable-mappings: database error. Returning mappings without row data.");
+            }
+        }
+
+        // Fallback: DB unavailable or error — return mappings without DB-derived info.
         return Ok(mappings.Select(m => new
         {
-            m.Id,
-            name = m.Name,
-            m.OracleSource,
-            m.SourceType,
-            m.SqlTargetTable,
-            isActive = true
+            id = m.Id,
+            name = !string.IsNullOrWhiteSpace(m.Name)
+                ? m.Name
+                : m.SqlTargetTable,
+            sqlTargetTable = m.SqlTargetTable,
+            sourceType = m.SourceType,
+            hasData = false,
+            rowCount = (int?)null,
+            lastSyncTime = m.LastSyncAt
         }));
     }
 

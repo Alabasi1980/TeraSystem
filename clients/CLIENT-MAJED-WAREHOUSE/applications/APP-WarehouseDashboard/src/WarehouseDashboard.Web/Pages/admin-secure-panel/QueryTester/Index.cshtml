@@ -1,12 +1,17 @@
-@page
+﻿@page
 @model WarehouseDashboard.Web.Pages.AdminSecurePanel.QueryTesterModel
 @{
     ViewData["Title"] = "مختبِّر الاستعلامات";
 }
 @Html.AntiForgeryToken()
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
 <style>
-    /* Page-specific styles not provided by _CardsLayout */
+    /* ============================================================
+       Page-specific styles (including TASK-ENH-QT-002 additions)
+       ============================================================ */
+
+    /* ---- Base layout ---- */
     .wd-page { max-width: 1100px; margin: 0 auto; padding: 0; }
     .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
     .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
@@ -30,7 +35,6 @@
 
     .wd-actions { display: flex; align-items: center; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
     .wd-meta { font-size: 13px; color: var(--c-text-muted); }
-
     .wd-grid { margin-top: 8px; min-height: 80px; }
 
     .wd-skeleton { padding: 12px; }
@@ -55,10 +59,373 @@
     .wd-toast--error { background: var(--c-error); }
     .wd-toast--warning { background: var(--c-warning); color: #3a2c00; }
     .wd-toast--info { background: var(--c-secondary); }
-
     [hidden] { display: none !important; }
-</style>
 
+    /* =============================================================
+       SOURCE TABS  (TASK-ENH-QT-002)
+       ============================================================= */
+    .qt-source-tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 2px solid var(--c-border); }
+    .qt-source-tab {
+        padding: 8px 20px; font-family: var(--font-ar); font-size: 14px; font-weight: 600;
+        cursor: pointer; border: none; background: none; color: var(--c-text-muted);
+        border-bottom: 2px solid transparent; margin-bottom: -2px;
+        transition: all var(--dur-fast) var(--ease); user-select: none;
+    }
+    .qt-source-tab:hover { color: var(--c-primary); }
+    .qt-source-tab.active { color: var(--c-primary); border-bottom-color: var(--c-primary); }
+    .qt-source-tab:focus-visible { outline: 2px solid var(--c-secondary); outline-offset: 2px; }
+    /* =============================================================
+       TWO-PANEL LAYOUT  (TASK-ENH-QT-002)
+       ============================================================= */
+    .qt-layout { display: flex; gap: 16px; align-items: flex-start; animation: wdFadeUp var(--dur-norm) var(--ease); }
+    .qt-sidebar { width: 280px; flex-shrink: 0; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); position: sticky; top: 16px; }
+    .qt-main { flex: 1; min-width: 0; }
+
+    .qt-sidebar-toggle {
+        display: none; align-items: center; gap: 6px; padding: 8px 14px;
+        font-family: var(--font-ar); font-size: 13px; font-weight: 600;
+        color: var(--c-primary); background: var(--c-surface);
+        border: 1px solid var(--c-border); border-radius: var(--radius-md);
+        cursor: pointer; margin-bottom: 12px;
+        transition: all var(--dur-fast) var(--ease);
+    }
+    .qt-sidebar-toggle:hover { background: var(--c-surface-muted); }
+
+    /* =============================================================
+       SCHEMA BROWSER — SIDEBAR
+       ============================================================= */
+    .qt-sidebar__header { padding: 12px 14px; border-bottom: 1px solid var(--c-border); background: var(--c-surface-muted); display: flex; align-items: center; justify-content: space-between; }
+    .qt-sidebar__title { font-family: var(--font-ar); font-size: 14px; font-weight: 700; color: var(--c-text); }
+    .qt-sidebar__refresh { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: var(--radius-sm); border: none; background: transparent; color: var(--c-text-muted); cursor: pointer; transition: all var(--dur-fast) var(--ease); }
+    .qt-sidebar__refresh:hover { background: var(--c-surface); color: var(--c-primary); }
+
+    .qt-sidebar__loading, .qt-sidebar__empty, .qt-sidebar__error { padding: 24px 14px; text-align: center; font-family: var(--font-ar); font-size: 13px; color: var(--c-text-muted); }
+    .qt-sidebar__error { color: var(--c-error); }
+
+    .qt-sidebar__tree { padding: 6px; max-height: 480px; overflow-y: auto; }
+
+    .qt-tree-item { padding: 6px 8px; cursor: pointer; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 6px; font-family: var(--font-ar); font-size: 13px; color: var(--c-text); transition: background var(--dur-fast) var(--ease); user-select: none; }
+    .qt-tree-item:hover { background: var(--c-surface-muted); }
+    .qt-tree-toggle { font-size: 10px; color: var(--c-text-muted); width: 14px; flex-shrink: 0; text-align: center; transition: transform var(--dur-fast) var(--ease); }
+    .qt-tree-toggle--open { transform: rotate(90deg); }
+    .qt-tree-icon { flex-shrink: 0; font-size: 13px; }
+    .qt-tree-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .qt-tree-children { padding-inline-start: 20px; }
+    .qt-tree-leaf { padding: 4px 8px; cursor: pointer; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 6px; font-family: var(--font-ar); font-size: 12px; color: var(--c-text); transition: background var(--dur-fast) var(--ease); user-select: none; }
+    .qt-tree-leaf:hover { background: var(--c-surface-muted); }
+    .qt-leaf-icon { flex-shrink: 0; font-size: 11px; color: var(--c-secondary); }
+    .qt-leaf-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .qt-leaf-type { font-size: 11px; color: var(--c-text-muted); margin-inline-start: auto; flex-shrink: 0; }
+    .qt-tree-loading { padding: 12px 8px; text-align: center; font-family: var(--font-ar); font-size: 12px; color: var(--c-text-muted); }
+
+    /* =============================================================
+       SELECT BUILDER
+       ============================================================= */
+    .qt-select-builder { background: var(--c-surface-muted); border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px; }
+    .qt-builder-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .qt-builder-select { flex: 1; min-width: 180px; padding: 6px 10px; border: 1px solid var(--c-border); border-radius: var(--radius-sm); font-family: var(--font-ar); font-size: 13px; color: var(--c-text); background: var(--c-surface); }
+    .qt-builder-select:focus { outline: none; border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(31,78,121,0.12); }
+    .qt-builder-columns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .qt-builder-columns label { display: flex; align-items: center; gap: 4px; font-family: var(--font-ar); font-size: 13px; padding: 4px 8px; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius-sm); cursor: pointer; transition: border-color var(--dur-fast) var(--ease); }
+    .qt-builder-columns label:hover { border-color: var(--c-primary); }
+    .qt-builder-columns input[type="checkbox"] { accent-color: var(--c-primary); cursor: pointer; }
+    .qt-builder-hint { font-family: var(--font-ar); font-size: 13px; color: var(--c-text-muted); padding: 4px 0; }
+    .qt-builder-col-type { font-size: 11px; color: var(--c-text-muted); background: var(--c-surface-muted); padding: 1px 5px; border-radius: 3px; }
+
+    .qt-btn--sm { padding: 5px 12px; min-height: 30px; font-family: var(--font-ar); font-size: 13px; font-weight: 600; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--dur-fast) var(--ease); display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--c-border); background: var(--c-surface); color: var(--c-text); }
+    .qt-btn--sm:hover { background: var(--c-surface-muted); }
+    .qt-btn--primary { background: var(--c-primary); color: #fff; border-color: var(--c-primary); }
+    .qt-btn--primary:hover { background: var(--c-primary-strong); }
+    .qt-btn--ghost { background: transparent; color: var(--c-primary); border-color: var(--c-border); }
+    .qt-btn--ghost:hover { background: var(--c-surface-muted); }
+    .qt-btn--sm svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .qt-btn--xs { padding: 3px 10px; min-height: 24px; font-family: var(--font-ar); font-size: 12px; font-weight: 600; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--dur-fast) var(--ease); display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--c-border); background: var(--c-surface); color: var(--c-text); }
+    .qt-btn--xs:hover { background: var(--c-surface-muted); }
+
+    /* =============================================================
+        RESPONSIVE
+       ============================================================= */
+    @@media (max-width: 768px) {
+        .qt-layout { flex-direction: column; }
+        .qt-sidebar { width: 100%; position: static; }
+        .qt-sidebar--collapsed .qt-sidebar__tree,
+        .qt-sidebar--collapsed .qt-sidebar__loading,
+        .qt-sidebar--collapsed .qt-sidebar__empty,
+        .qt-sidebar--collapsed .qt-sidebar__error { display: none; }
+        .qt-sidebar-toggle { display: inline-flex; }
+        .wd-page { padding: 0 4px; }
+    }
+
+    @@keyframes qtSpin { to { transform: rotate(360deg); } }
+    .qt-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--c-border); border-top-color: var(--c-primary); border-radius: 50%; animation: qtSpin 0.6s linear infinite; }
+
+    /* ============================================================
+       WHERE Builder  (TASK-ENH-QT-003)
+       ============================================================ */
+    .qt-where-builder { margin-bottom: 16px; }
+    .qt-where-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; padding: 8px 10px; background: var(--c-bg); border-radius: var(--radius-sm); }
+    .qt-where-col, .qt-where-op { min-width: 110px; padding: 6px 10px; border: 1px solid var(--c-border); border-radius: var(--radius-sm); font-family: var(--font-ar); font-size: 13px; background: var(--c-surface); }
+    .qt-where-val, .qt-where-val2 { min-width: 140px; padding: 6px 10px; border: 1px solid var(--c-border); border-radius: var(--radius-sm); font-size: 13px; }
+    .qt-where-logic { min-width: 70px; padding: 6px 8px; border: 1px solid var(--c-border); border-radius: var(--radius-sm); font-family: var(--font-ar); font-size: 12px; }
+    .qt-where-actions { display: flex; gap: 8px; margin-top: 8px; }
+
+    /* ============================================================
+       History Panel  (TASK-ENH-QT-003)
+       ============================================================ */
+    .qt-history-panel { position: fixed; bottom: 80px; right: 16px; width: 400px; max-height: 450px; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 9998; display: flex; flex-direction: column; animation: fadeInUp 0.2s var(--ease); }
+    .qt-history__header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--c-border); font-weight: 700; font-size: 14px; }
+    .qt-history__header-actions { display: flex; align-items: center; gap: 8px; }
+    .qt-history__count { font-size: 12px; color: var(--c-text-muted); background: var(--c-surface-muted); padding: 2px 8px; border-radius: var(--radius-full); }
+    .qt-history__list { overflow-y: auto; flex: 1; padding: 8px; }
+    .qt-history__empty { padding: 24px; text-align: center; color: var(--c-text-muted); font-size: 13px; }
+    .qt-history__item { padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: background var(--dur-fast); margin-bottom: 4px; }
+    .qt-history__item:hover { background: var(--c-surface-muted); }
+    .qt-history__item-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .qt-history__time { font-size: 11px; color: var(--c-text-muted); }
+    .qt-history__badge { font-size: 10px; padding: 1px 6px; border-radius: var(--radius-full); background: var(--c-primary); color: #fff; font-weight: 600; }
+    .qt-history__sql { font-size: 12px; color: var(--c-text); display: block; margin-bottom: 2px; direction: ltr; text-align: start; font-family: 'Courier New', monospace; }
+    .qt-history__rows { font-size: 11px; color: var(--c-text-muted); }
+
+    /* ============================================================
+       Truncated Warning  (TASK-ENH-QT-003)
+       ============================================================ */
+    .qt-truncated-warning { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: #FFF8E1; border: 1px solid #FFE082; border-radius: var(--radius-md); margin-bottom: 12px; font-size: 13px; color: #795548; }
+
+    /* ============================================================
+       Keyboard Hints  (TASK-ENH-QT-003)
+       ============================================================ */
+    kbd { display: inline-block; padding: 1px 5px; font-size: 11px; font-family: monospace; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; margin-inline-end: 4px; }
+
+    /* ============================================================
+       WHERE Builder + History — Responsive  (TASK-ENH-QT-003)
+       ============================================================ */
+    /* ============================================================
+       JOIN Builder  (TASK-ENH-QT-004)
+       ============================================================ */
+    .qt-join-builder { margin-bottom: 16px; }
+    .qt-join-clause {
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        padding: 12px 16px;
+        margin-bottom: 12px;
+        background: var(--c-surface);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .qt-join-clause__header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+    .qt-join-clause__select {
+        padding: 6px 10px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        font-family: var(--font-ar);
+        font-size: 13px;
+        background: var(--c-surface);
+        min-width: 130px;
+    }
+    .qt-join-clause__alias {
+        width: 50px;
+        padding: 6px 8px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        font-family: monospace;
+        font-size: 12px;
+        text-align: center;
+    }
+    .qt-join-conditions { margin-bottom: 8px; }
+    .qt-join-condition {
+        display: flex; align-items: center; gap: 6px;
+        margin-bottom: 6px; flex-wrap: wrap;
+        padding: 6px 8px; background: var(--c-bg); border-radius: var(--radius-sm);
+    }
+    .qt-join-condition select {
+        padding: 4px 8px; border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm); font-size: 12px;
+        min-width: 100px; background: var(--c-surface);
+    }
+    .qt-join-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .qt-join-columns { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--c-border); }
+    .qt-join-columns__header { font-size: 13px; font-weight: 700; color: var(--c-text); margin-bottom: 8px; }
+    .qt-join-columns__grid { display: flex; flex-wrap: wrap; gap: 6px; max-height: 200px; overflow-y: auto; }
+    .qt-join-columns__grid label {
+        display: flex; align-items: center; gap: 4px; font-size: 12px;
+        padding: 4px 10px; background: var(--c-surface-muted);
+        border: 1px solid var(--c-border); border-radius: var(--radius-sm);
+        cursor: pointer; transition: border-color var(--dur-fast) var(--ease);
+    }
+    .qt-join-columns__grid label:hover { border-color: var(--c-primary); }
+    .qt-join-columns__grid input[type="checkbox"] { accent-color: var(--c-primary); cursor: pointer; }
+    @@media (max-width: 768px) {
+        .qt-join-clause__header { flex-direction: column; align-items: stretch; }
+        .qt-join-clause__select, .qt-join-clause__alias { width: 100%; }
+        .qt-join-condition { flex-direction: column; align-items: stretch; }
+        .qt-join-condition select { width: 100%; }
+    }
+
+    @@media (max-width: 768px) {
+        .qt-where-row { flex-direction: column; align-items: stretch; }
+        .qt-where-col, .qt-where-op, .qt-where-val, .qt-where-val2 { width: 100%; min-width: 0; }
+        .qt-history-panel { width: calc(100% - 32px); right: 16px; bottom: 80px; max-height: 60vh; }
+    }
+
+    /* CodeMirror override for dashboard theme */
+    .CodeMirror {
+        height: auto;
+        min-height: 140px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        direction: ltr;
+        font-family: 'Courier New', Consolas, monospace;
+        transition: border-color var(--dur-fast) var(--ease);
+    }
+    .CodeMirror-focused {
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+        outline: none;
+    }
+    .CodeMirror-gutters {
+        background: var(--c-surface-muted);
+        border-right: 1px solid var(--c-border);
+        border-radius: var(--radius-md) 0 0 var(--radius-md);
+    }
+    .CodeMirror-linenumber {
+        color: var(--c-text-muted);
+        font-size: 12px;
+        padding: 0 6px 0 10px;
+    }
+    .CodeMirror-placeholder {
+        color: var(--c-text-muted) !important;
+        opacity: 0.6;
+    }
+
+    /* ===== Searchable Dropdown (TASK-ENH-QT-006) ===== */
+    .qt-searchable {
+      position: relative;
+      min-width: 120px;
+      font-size: 13px;
+      flex: 1;
+    }
+    .qt-searchable__input-wrapper {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      background: var(--c-surface);
+      transition: border-color var(--dur-fast) var(--ease);
+    }
+    .qt-searchable__input-wrapper:focus-within {
+      border-color: var(--c-primary);
+      box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+    }
+    .qt-searchable__input {
+      flex: 1;
+      border: none; outline: none;
+      padding: 6px 10px;
+      font-family: var(--font-ar);
+      font-size: 13px;
+      background: transparent;
+      color: var(--c-text);
+      min-width: 0;
+    }
+    .qt-searchable__arrow {
+      padding: 0 8px;
+      color: var(--c-text-muted);
+      font-size: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .qt-searchable__dropdown {
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      z-index: 1000;
+      max-height: 220px;
+      overflow-y: auto;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      margin-top: 2px;
+    }
+    .qt-searchable__option {
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--c-text);
+      transition: background var(--dur-fast);
+    }
+    .qt-searchable__option:hover,
+    .qt-searchable__option.highlighted {
+      background: var(--c-surface-muted);
+    }
+    .qt-searchable__option.selected {
+      background: rgba(31,78,121,0.1);
+      font-weight: 600;
+    }
+    .qt-searchable__no-results {
+      color: var(--c-text-muted);
+      font-style: italic;
+      cursor: default;
+      padding: 8px 10px;
+    }
+    .qt-searchable__option-type {
+      color: var(--c-text-muted);
+      font-size: 11px;
+      margin-left: 8px;
+    }
+
+    /* ===== Sortable Column List (TASK-ENH-QT-007) ===== */
+    .qt-sortable-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 2px;
+    }
+    .qt-sortable-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      transition: background var(--dur-fast), border-color var(--dur-fast);
+      font-size: 13px;
+    }
+    .qt-sortable-item:hover {
+      background: var(--c-surface-muted);
+      border-color: var(--c-secondary);
+    }
+    .qt-sortable-handle {
+      color: var(--c-text-muted);
+      cursor: grab;
+      font-size: 14px;
+      user-select: none;
+      opacity: 0.5;
+    }
+    .qt-sortable-item:hover .qt-sortable-handle { opacity: 1; }
+    .qt-sortable-checkbox { margin: 0; cursor: pointer; }
+    .qt-sortable-label { flex: 1; color: var(--c-text); font-weight: 500; }
+    .qt-sortable-type { color: var(--c-text-muted); font-size: 11px; margin: 0 6px; }
+    .qt-sortable-btn {
+      width: 24px; height: 24px; border: none;
+      background: transparent; color: var(--c-text-muted);
+      cursor: pointer; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      transition: background var(--dur-fast), color var(--dur-fast);
+    }
+    .qt-sortable-btn:hover { background: var(--c-surface-muted); color: var(--c-primary); }
+    .qt-sortable-btn:disabled { opacity: 0.2; cursor: default; }
+    .qt-sortable-btn:disabled:hover { background: transparent; color: var(--c-text-muted); }
+</style>
 <div class="wd-page">
     <header class="wd-page__header">
         <div class="wd-breadcrumb">
@@ -68,50 +435,195 @@
         <p class="wd-page__subtitle">نفِّذ استعلامات SQL للقراءة فقط للتحقق من صياغتها قبل إسنادها إلى بطاقة لوحة المعلومات.</p>
     </header>
 
-    <section class="wd-card">
-        <div class="wd-card__header">
-            <span class="wd-card__title">الاستعلام</span>
-            <span class="wd-badge">للقراءة فقط</span>
-        </div>
-        <div class="wd-card__body">
-            <label class="wd-label" for="sqlInput">استعلام SQL</label>
-            <textarea id="sqlInput" class="wd-textarea" placeholder="SELECT Column FROM Table">SELECT 1 AS [عيّنة]</textarea>
-            <div class="wd-actions">
-                <button id="runBtn" class="wd-btn" onclick="runQuery()">تشغيل</button>
-                <button class="wd-btn wd-btn--ghost" onclick="clearEditor()">مسح</button>
-                <button class="wd-btn wd-btn--ghost" id="copyBtn" onclick="copyResults()" disabled>نسخ</button>
-                <span id="meta" class="wd-meta"></span>
-            </div>
-        </div>
-    </section>
+    <!-- Source Tabs -->
+    <div class="qt-source-tabs" role="tablist">
+        <button class="qt-source-tab active" role="tab" aria-selected="true" data-source="SqlServer" onclick="switchSource('SqlServer')">SQL Server</button>
+        <button class="qt-source-tab" role="tab" aria-selected="false" data-source="Oracle" onclick="switchSource('Oracle')">Oracle</button>
+    </div>
 
-    <section class="wd-card">
-        <div class="wd-card__header">
-            <span class="wd-card__title">النتائج</span>
-        </div>
-        <div class="wd-card__body">
-            <div id="skeleton" class="wd-skeleton" hidden>
-                @for (int i = 0; i < 6; i++) { <div class="wd-skeleton__row"></div> }
+    <!-- Sidebar toggle (visible on mobile only) -->
+    <button class="qt-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        مستعرض الجداول
+    </button>
+
+    <!-- Two-panel layout -->
+    <div class="qt-layout">
+
+        <!-- ===== SCHEMA BROWSER (Sidebar) ===== -->
+        <aside class="qt-sidebar" id="schemaSidebar">
+            <div class="qt-sidebar__header">
+                <span class="qt-sidebar__title">مستعرض الجداول</span>
+                <button class="qt-sidebar__refresh" onclick="loadTables()" title="إعادة تحميل" type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                </button>
             </div>
-            <div id="emptyState" class="wd-empty">
-                <span class="wd-empty__icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"/>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                </span>
-                نفِّذ استعلاماً لعرض النتائج هنا.
+            <div class="qt-sidebar__loading" id="schemaLoading" hidden>
+                <span class="qt-spinner"></span> جارٍ التحميل...
             </div>
-            <div id="gridContainer" class="wd-grid"></div>
+            <div class="qt-sidebar__tree" id="schemaTree">
+                <div class="qt-tree-loading">
+                    <span class="qt-spinner"></span> تحميل الجداول...
+                </div>
+            </div>
+            <div class="qt-sidebar__empty" id="schemaEmpty" hidden>لا توجد جداول.</div>
+            <div class="qt-sidebar__error" id="schemaError" hidden>تعذر تحميل الجداول.</div>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="qt-main">
+
+            <!-- SELECT Builder -->
+            <div class="qt-select-builder">
+                <div class="qt-builder-row">
+                    <div id="builderTableWrapper" style="flex:1;min-width:180px"></div>
+                    <button class="qt-btn--sm" onclick="selectAllBuilderColumns()" type="button">✔ الكل</button>
+                    <button class="qt-btn--sm qt-btn--ghost" onclick="deselectAllBuilderColumns()" type="button">إلغاء الكل</button>
+                </div>
+                <div class="qt-builder-columns" id="builderColumns">
+                    <span class="qt-builder-hint">اختر جدولاً لاختيار الأعمدة.</span>
+                </div>
+                <button class="qt-btn--sm qt-btn--primary" onclick="generateSelect()" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    إنشاء SELECT
+                </button>
+            </div>
+
+            <!-- JOIN Builder (TASK-ENH-QT-004) -->
+            <section class="wd-card qt-join-builder">
+                <div class="wd-card__header">
+                    <span class="wd-card__title">🔗 منشئ JOIN</span>
+                    <span class="wd-badge">اختياري</span>
+                </div>
+                <div class="wd-card__body">
+                    <div id="joinClauses">
+                        <!-- JOIN clauses inserted here by addJoinClause() -->
+                    </div>
+
+                    <div class="qt-join-actions">
+                        <button class="qt-btn qt-btn--sm" onclick="addJoinClause()" type="button">➕ إضافة JOIN</button>
+                        <button class="qt-btn qt-btn--primary qt-btn--sm" onclick="generateJoinQuery()" type="button">✨ إنشاء الاستعلام</button>
+                    </div>
+
+                    <div class="qt-join-columns" id="joinColumns" hidden>
+                        <div class="qt-join-columns__header">أعمدة SELECT:</div>
+                        <div style="margin-bottom:8px;display:flex;gap:8px">
+                            <button class="qt-btn qt-btn--xs qt-btn--ghost" onclick="selectAllJoinCols(true)" type="button">✔ الكل</button>
+                            <button class="qt-btn qt-btn--xs qt-btn--ghost" onclick="selectAllJoinCols(false)" type="button">إلغاء الكل</button>
+                        </div>
+                        <div class="qt-join-columns__grid" id="joinColumnsGrid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WHERE Builder (TASK-ENH-QT-003) -->
+            <section class="wd-card qt-where-builder">
+                <div class="wd-card__header">
+                    <span class="wd-card__title">🔽 شروط التصفية (WHERE)</span>
+                    <span class="wd-badge">اختياري</span>
+                </div>
+                <div class="wd-card__body">
+                    <div id="whereConditions">
+                        <!-- Each condition row will be added by addWhereRow() -->
+                    </div>
+                    <div class="qt-where-actions">
+                        <button class="qt-btn qt-btn--sm" onclick="addWhereRow()" type="button">➕ إضافة شرط</button>
+                        <button class="qt-btn qt-btn--primary qt-btn--sm" onclick="applyWhere()" type="button">🔄 تطبيق WHERE</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SQL Editor Card -->
+            <section class="wd-card">
+                <div class="wd-card__header">
+                    <span class="wd-card__title">الاستعلام</span>
+                    <span class="wd-badge">للقراءة فقط</span>
+                </div>
+                <div class="wd-card__body">
+                    <label class="wd-label">استعلام SQL</label>
+                    <div id="editor"></div>
+                    <div class="wd-actions">
+                        <button id="runBtn" class="wd-btn" onclick="runQuery()">تشغيل <kbd>Ctrl+Enter</kbd></button>
+                        <button class="wd-btn wd-btn--ghost" onclick="clearEditor()">مسح <kbd>Ctrl+Shift+C</kbd></button>
+                        <button class="wd-btn wd-btn--ghost" onclick="toggleHistory()" title="سجل الاستعلامات (Ctrl+Shift+H)" type="button">📋 السجل</button>
+                        <button class="wd-btn wd-btn--ghost" id="copyBtn" onclick="copyResults()" disabled>نسخ</button>
+                        <button class="wd-btn wd-btn--ghost" id="csvBtn" onclick="downloadCSV()" disabled>📥 CSV</button>
+                        <span id="meta" class="wd-meta"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Card -->
+            <section class="wd-card">
+                <div class="wd-card__header">
+                    <span class="wd-card__title">النتائج</span>
+                </div>
+                <div class="wd-card__body">
+                    <div id="truncatedWarning" class="qt-truncated-warning" hidden>
+                        <span>⚡</span>
+                        <span>تم عرض أول 1000 صف فقط. استخدم WHERE لتضييق النتائج.</span>
+                    </div>
+                    <div id="skeleton" class="wd-skeleton" hidden>
+                        @for (int i = 0; i < 6; i++) { <div class="wd-skeleton__row"></div> }
+                    </div>
+                    <div id="emptyState" class="wd-empty">
+                        <span class="wd-empty__icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                        </span>
+                        نفِّذ استعلاماً لعرض النتائج هنا.
+                    </div>
+                    <div id="gridContainer" class="wd-grid"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<!-- History Panel (TASK-ENH-QT-003) -->
+<div id="historyPanel" class="qt-history-panel" hidden>
+    <div class="qt-history__header">
+        <span>📋 سجل الاستعلامات</span>
+        <div class="qt-history__header-actions">
+            <span class="qt-history__count" id="historyCount">0</span>
+            <button class="qt-btn qt-btn--ghost qt-btn--xs" onclick="clearHistory()" type="button">مسح الكل</button>
         </div>
-    </section>
+    </div>
+    <div class="qt-history__list" id="historyList">
+        <div class="qt-history__empty">لا توجد استعلامات سابقة.</div>
+    </div>
 </div>
 
 <div id="toastContainer" class="wd-toast-container"></div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
 <script>
+    // ================================================================
+    // EXISTING FUNCTIONS (preserved from original)
+    // ================================================================
+
     let currentColumns = [];
     let currentRows = [];
+    let sortColumn = null;
+    let sortAsc = true;
+
+    // Initialize CodeMirror editor
+    var editor = CodeMirror(document.getElementById('editor'), {
+        value: 'SELECT 1 AS [عيّنة]',
+        mode: 'text/x-mssql',
+        lineNumbers: true,
+        indentWithTabs: false,
+        smartIndent: true,
+        tabSize: 2,
+        lineWrapping: true,
+        extraKeys: {
+            'Ctrl-Enter': function() { runQuery(); },
+            'Ctrl-Shift-C': function() { clearEditor(); }
+        }
+    });
 
     function escapeHtml(text) {
         const div = document.createElement('div');
@@ -123,7 +635,7 @@
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
         toast.className = 'wd-toast wd-toast--' + (type || 'info');
-        const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠' : 'ℹ';
+        const icon = type === 'success' ? '\u2713' : type === 'error' ? '\u2715' : type === 'warning' ? '\u26A0' : '\u2139';
         toast.innerHTML = '<span>' + icon + '</span><span>' + escapeHtml(message) + '</span>';
         container.appendChild(toast);
         setTimeout(function () {
@@ -135,7 +647,7 @@
 
     function setRunning(running) {
         document.getElementById('runBtn').disabled = running;
-        document.getElementById('runBtn').textContent = running ? 'جارٍ التنفيذ...' : 'تشغيل';
+        document.getElementById('runBtn').textContent = running ? '\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u0646\u0641\u064A\u0630...' : '\u062A\u0634\u063A\u064A\u0644';
     }
 
     function showSkeleton(show) {
@@ -163,14 +675,35 @@
         }
     }
 
+    function formatCell(val, dataType) {
+        if (val == null) return '<span style="color:var(--c-text-muted)">\u2014</span>';
+        var type = mapType(dataType);
+        if (type === 'number') return '<span style="text-align:right;direction:ltr;display:block">' + Number(val).toLocaleString('en-US') + '</span>';
+        if (type === 'datetime') return '<span style="direction:ltr;display:block">' + new Date(val).toLocaleString('ar-SA') + '</span>';
+        return escapeHtml(String(val));
+    }
+
+    function sortBy(colName) {
+        if (sortColumn === colName) { sortAsc = !sortAsc; }
+        else { sortColumn = colName; sortAsc = true; }
+        var sorted = [...currentRows].sort(function(a, b) {
+            var va = a[colName], vb = b[colName];
+            if (va == null) return 1; if (vb == null) return -1;
+            if (typeof va === 'number' && typeof vb === 'number') return sortAsc ? va - vb : vb - va;
+            return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+        });
+        renderGrid(currentColumns, sorted);
+    }
+
     function renderGrid(columns, rows) {
         destroyGrid();
         const container = document.getElementById('gridContainer');
         document.getElementById('emptyState').hidden = true;
 
         if (!columns || columns.length === 0) {
-            container.innerHTML = '<div class="wd-empty"><span class="wd-empty__icon">▦</span>لا توجد أعمدة في النتيجة.</div>';
+            container.innerHTML = '<div class="wd-empty"><span class="wd-empty__icon">\u25A6</span>\u0644\u0627 \u062A\u0648\u062C\u062F \u0623\u0639\u0645\u062F\u0629 \u0641\u064A \u0627\u0644\u0646\u062A\u064A\u062C\u0629.</div>';
             document.getElementById('copyBtn').disabled = true;
+            document.getElementById('csvBtn').disabled = true;
             return;
         }
 
@@ -181,23 +714,23 @@
         html += '<thead><tr>';
         columns.forEach(function(c) {
             var align = mapType(c.dataType) === 'number' ? 'right' : 'left';
-            html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:' + align + ';border-bottom:1px solid var(--c-border);white-space:nowrap;">' + escapeHtml(c.name) + '</th>';
+            var arrow = '';
+            if (sortColumn === c.name) arrow = sortAsc ? ' \u25B2' : ' \u25BC';
+            html += '<th style="padding:8px 12px;background:var(--c-surface-muted);font-weight:600;text-align:' + align + ';border-bottom:1px solid var(--c-border);white-space:nowrap;cursor:pointer;-webkit-user-select:none;user-select:none;" onclick="sortBy(\'' + escapeHtml(c.name) + '\')">' + escapeHtml(c.name) + arrow + '</th>';
         });
         html += '</tr></thead><tbody>';
         rows.forEach(function(r, idx) {
             html += '<tr style="border-bottom:1px solid var(--c-border);' + (idx % 2 === 0 ? '' : 'background:#F7FAFD;') + '">';
             columns.forEach(function(c) {
-                var val = r[c.name];
-                var align = mapType(c.dataType) === 'number' ? 'right' : 'left';
-                html += '<td style="padding:6px 12px;text-align:' + align + ';">' + escapeHtml(val != null ? String(val) : '') + '</td>';
+                html += '<td style="padding:6px 12px;">' + formatCell(r[c.name], c.dataType) + '</td>';
             });
             html += '</tr>';
         });
         html += '</tbody></table>';
         container.innerHTML = html;
         document.getElementById('copyBtn').disabled = false;
+        document.getElementById('csvBtn').disabled = false;
     }
-
     function copyResults() {
         if (!currentRows || currentRows.length === 0) return;
         var cols = currentColumns;
@@ -209,16 +742,16 @@
             }).join(',') + '\n';
         });
         navigator.clipboard.writeText(csv).then(function() {
-            showToast('تم نسخ ' + currentRows.length + ' صف إلى الحافظة.', 'success');
+            showToast('\u062A\u0645 \u0646\u0633\u062E ' + currentRows.length + ' \u0635\u0641 \u0625\u0644\u0649 \u0627\u0644\u062D\u0627\u0641\u0638\u0629.', 'success');
         }).catch(function() {
-            showToast('تعذر النسخ إلى الحافظة.', 'error');
+            showToast('\u062A\u0639\u0630\u0631 \u0627\u0644\u0646\u0633\u062E \u0625\u0644\u0649 \u0627\u0644\u062D\u0627\u0641\u0638\u0629.', 'error');
         });
     }
 
     async function runQuery() {
-        const sql = document.getElementById('sqlInput').value;
+        var sql = editor.getValue();
         if (!sql.trim()) {
-            showToast('الرجاء إدخال استعلام SQL.', 'warning');
+            showToast('\u0627\u0644\u0631\u062C\u0627\u0621 \u0625\u062F\u062E\u0627\u0644 \u0627\u0633\u062A\u0639\u0644\u0627\u0645 SQL.', 'warning');
             return;
         }
 
@@ -234,7 +767,10 @@
                     'Content-Type': 'application/json',
                     'RequestVerificationToken': token
                 },
-                body: JSON.stringify({ sql: sql })
+                body: JSON.stringify({
+                    sql: sql,
+                    source: currentSource
+                })
             });
             const data = await resp.json();
             document.getElementById('skeleton').hidden = true;
@@ -243,37 +779,1247 @@
             if (!data.success) {
                 document.getElementById('emptyState').hidden = false;
                 document.getElementById('emptyState').innerHTML =
-                    '<span class="wd-empty__icon">⚠</span>' + escapeHtml(data.errorMessage || 'فشل تنفيذ الاستعلام.');
+                    '<span class="wd-empty__icon">\u26A0</span>' + escapeHtml(data.errorMessage || '\u0641\u0634\u0644 \u062A\u0646\u0641\u064A\u0630 \u0627\u0644\u0627\u0633\u062A\u0639\u0644\u0627\u0645.');
                 document.getElementById('copyBtn').disabled = true;
-                showToast(data.errorMessage || 'فشل تنفيذ الاستعلام.', 'error');
+                showToast(data.errorMessage || '\u0641\u0634\u0644 \u062A\u0646\u0641\u064A\u0630 \u0627\u0644\u0627\u0633\u062A\u0639\u0644\u0627\u0645.', 'error');
                 return;
             }
 
             renderGrid(data.columns, data.rows);
             document.getElementById('meta').textContent =
-                'النتائج: ' + data.rowCount + ' صف · الزمن: ' + data.elapsedMilliseconds + ' مللي ثانية';
+                '\u0627\u0644\u0646\u062A\u0627\u0626\u062C: ' + data.rowCount + ' \u0635\u0641 \u00B7 \u0627\u0644\u0632\u0645\u0646: ' + data.elapsedMilliseconds + ' \u0645\u0644\u064A \u062B\u0627\u0646\u064A\u0629';
+
+            if (data.truncated) {
+                document.getElementById('truncatedWarning').hidden = false;
+                showToast('\u269A \u062A\u0645 \u0639\u0631\u0636 \u0623\u0648\u0644 1000 \u0635\u0641 \u0641\u0642\u0637. \u0627\u0633\u062A\u062E\u062F\u0645 WHERE \u0644\u062A\u0636\u064A\u064A\u0642 \u0627\u0644\u0646\u062A\u0627\u0626\u062C.', 'warning');
+            } else {
+                document.getElementById('truncatedWarning').hidden = true;
+            }
 
             if (data.rowCount === 0) {
                 document.getElementById('gridContainer').innerHTML =
-                    '<div class="wd-empty"><span class="wd-empty__icon">✓</span>تم تنفيذ الاستعلام بنجاح لكن لم يُرجع أي صفوف.</div>';
+                    '<div class="wd-empty"><span class="wd-empty__icon">\u2713</span>\u062A\u0645 \u062A\u0646\u0641\u064A\u0630 \u0627\u0644\u0627\u0633\u062A\u0639\u0644\u0627\u0645 \u0628\u0646\u062C\u0627\u062D \u0644\u0643\u0646 \u0644\u0645 \u064A\u0631\u062C\u0639 \u0623\u064A \u0635\u0641\u0648\u0641.</div>';
                 document.getElementById('copyBtn').disabled = true;
+                document.getElementById('csvBtn').disabled = true;
             }
 
-            showToast('تم تنفيذ الاستعلام بنجاح.', 'success');
+            saveToHistory(sql, currentSource, data.rowCount);
+            showToast('\u062A\u0645 \u062A\u0646\u0641\u064A\u0630 \u0627\u0644\u0627\u0633\u062A\u0639\u0644\u0627\u0645 \u0628\u0646\u062C\u0627\u062D.', 'success');
         } catch (err) {
             document.getElementById('skeleton').hidden = true;
             document.getElementById('emptyState').hidden = false;
             document.getElementById('copyBtn').disabled = true;
             setRunning(false);
-            showToast('تعذر الاتصال بالخادم.', 'error');
+            showToast('\u062A\u0639\u0630\u0631 \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0628\u0627\u0644\u062E\u0627\u062F\u0645.', 'error');
         }
     }
 
     function clearEditor() {
-        document.getElementById('sqlInput').value = '';
+        editor.setValue('');
         destroyGrid();
         document.getElementById('emptyState').hidden = false;
         document.getElementById('copyBtn').disabled = true;
+        document.getElementById('csvBtn').disabled = true;
         document.getElementById('meta').textContent = '';
+        document.getElementById('truncatedWarning').hidden = true;
+    }
+
+    // ================================================================
+    // NEW FUNCTIONS — Schema Browser & SELECT Builder (TASK-ENH-QT-002)
+    // ================================================================
+
+    let currentSource = 'SqlServer';
+    // ---- Source Tab switching ----
+    function switchSource(source) {
+        if (source === currentSource) return;
+
+        document.querySelectorAll('.qt-source-tab').forEach(function(tab) {
+            var isActive = tab.dataset.source === source;
+            tab.classList.toggle('active', isActive);
+            tab.setAttribute('aria-selected', isActive);
+        });
+
+        currentSource = source;
+        loadTables();
+
+        var builderWrap = document.getElementById('builderTableWrapper');
+        if (builderWrap) {
+            var tblOpts = getTableOptions();
+            createSearchableDropdown(builderWrap, tblOpts, function() { loadBuilderColumns(); });
+        }
+        document.getElementById('builderColumns').innerHTML = '<span class="qt-builder-hint">\u0627\u062E\u062A\u0631 \u062C\u062F\u0648\u0644\u0627\u064B \u0644\u0627\u062E\u062A\u064A\u0627\u0631 \u0627\u0644\u0623\u0639\u0645\u062F\u0629.</span>';
+
+        // Reset JOIN Builder state
+        document.getElementById('joinClauses').innerHTML = '';
+        document.getElementById('joinColumns').hidden = true;
+    }
+
+    // ---- Sidebar toggle (mobile) ----
+    function toggleSidebar() {
+        var sidebar = document.getElementById('schemaSidebar');
+        sidebar.classList.toggle('qt-sidebar--collapsed');
+    }
+
+    // ---- Load tables into schema tree ----
+    function loadTables() {
+        var tree = document.getElementById('schemaTree');
+        var loading = document.getElementById('schemaLoading');
+        var emptyEl = document.getElementById('schemaEmpty');
+        var errorEl = document.getElementById('schemaError');
+
+        loading.hidden = false;
+        tree.innerHTML = '';
+        emptyEl.hidden = true;
+        errorEl.hidden = true;
+
+        fetch('?handler=Tables&source=' + encodeURIComponent(currentSource))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                loading.hidden = true;
+
+                if (!data.success) {
+                    errorEl.hidden = false;
+                    errorEl.textContent = data.errorMessage || '\u062A\u0639\u0630\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u062C\u062F\u0627\u0648\u0644.';
+                    return;
+                }
+
+                var tables = data.tables || [];
+                if (tables.length === 0) {
+                    emptyEl.hidden = false;
+                    return;
+                }
+
+                var html = '';
+                tables.forEach(function(t) {
+                    var label = t.schema ? t.schema + '.' + t.tableName : t.tableName;
+                    html += '<div class="qt-tree-item" data-table="' + encodeURIComponent(t.tableName) + '" data-schema="' + (t.schema || '') + '">';
+                    html += '  <span class="qt-tree-toggle">\u25B6</span>';
+                    html += '  <span class="qt-tree-icon">\uD83D\uDCCB</span>';
+                    html += '  <span class="qt-tree-label" title="' + escapeHtml(label) + '">' + escapeHtml(label) + '</span>';
+                    html += '</div>';
+                });
+                tree.innerHTML = html;
+
+                tree.querySelectorAll('.qt-tree-item').forEach(function(item) {
+                    item.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        toggleTableTree(this);
+                    });
+                });
+
+                populateBuilderDropdown(tables);
+                window.currentTables = tables;
+                populateJoinTableDropdowns();
+            })
+            .catch(function(err) {
+                loading.hidden = true;
+                errorEl.hidden = false;
+            });
+    }
+
+    // ---- Toggle table expand in schema tree ----
+    function toggleTableTree(el) {
+        var tableName = decodeURIComponent(el.dataset.table);
+        var child = el.nextElementSibling;
+
+        if (child && child.classList.contains('qt-tree-children')) {
+            child.remove();
+            el.querySelector('.qt-tree-toggle').textContent = '\u25B6';
+            el.querySelector('.qt-tree-toggle').classList.remove('qt-tree-toggle--open');
+            return;
+        }
+
+        el.querySelector('.qt-tree-toggle').textContent = '\u25BC';
+        el.querySelector('.qt-tree-toggle').classList.add('qt-tree-toggle--open');
+
+        var childrenDiv = document.createElement('div');
+        childrenDiv.className = 'qt-tree-children';
+        childrenDiv.innerHTML = '<div class="qt-tree-loading">\u062C\u0627\u0631\u064D \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0623\u0639\u0645\u062F\u0629...</div>';
+        el.after(childrenDiv);
+
+        fetch('?handler=Columns&source=' + encodeURIComponent(currentSource) + '&table=' + encodeURIComponent(tableName))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (!data.success) {
+                    childrenDiv.innerHTML = '<div class="qt-tree-loading" style="color:var(--c-error);">\u062A\u0639\u0630\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0623\u0639\u0645\u062F\u0629.</div>';
+                    return;
+                }
+                var cols = data.columns || [];
+                if (cols.length === 0) {
+                    childrenDiv.innerHTML = '<div class="qt-tree-loading">\u0644\u0627 \u062A\u0648\u062C\u062F \u0623\u0639\u0645\u062F\u0629.</div>';
+                    return;
+                }
+                var colHtml = '';
+                cols.forEach(function(c) {
+                    var safeName = c.name.replace(/'/g, "\\'");
+                    colHtml += '<div class="qt-tree-leaf" onclick="addColumnToBuilder(\'' + safeName + '\')">';
+                    colHtml += '  <span class="qt-leaf-icon">\uD83D\uDD39</span>';
+                    colHtml += '  <span class="qt-leaf-name">' + escapeHtml(c.name) + '</span>';
+                    colHtml += '  <span class="qt-leaf-type">' + escapeHtml(c.dataType || '') + '</span>';
+                    colHtml += '</div>';
+                });
+                childrenDiv.innerHTML = colHtml;
+            })
+            .catch(function(err) {
+                childrenDiv.innerHTML = '<div class="qt-tree-loading" style="color:var(--c-error);">\u062A\u0639\u0630\u0631 \u0627\u0644\u0627\u062A\u0635\u0627\u0644.</div>';
+            });
+    }
+
+    // ---- Populate builder table dropdown ----
+    function populateBuilderDropdown(tables) {
+        var wrap = document.getElementById('builderTableWrapper');
+        if (!wrap) return;
+        var options = (tables || window.currentTables || []).map(function(t) {
+            var label = t.schema ? t.schema + '.' + t.tableName : t.tableName;
+            return { value: t.tableName, label: label, type: t.schema };
+        });
+        createSearchableDropdown(wrap, options, function() { loadBuilderColumns(); });
+    }
+    // ---- Load columns into SELECT builder sortable list ----
+    function loadBuilderColumns() {
+        var tableName = document.getElementById('builderTableWrapper').getValue();
+        var container = document.getElementById('builderColumns');
+
+        if (!tableName) {
+            container.innerHTML = '<span class="qt-builder-hint">\u0627\u062E\u062A\u0631 \u062C\u062F\u0648\u0644\u0627\u064B \u0644\u0627\u062E\u062A\u064A\u0627\u0631 \u0627\u0644\u0623\u0639\u0645\u062F\u0629.</span>';
+            return;
+        }
+
+        function renderCols() {
+            if (!joinColumnCache[tableName]) {
+                container.innerHTML = '<span class="qt-builder-hint"><span class="qt-spinner"></span> \u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644...</span>';
+                fetchAndCacheColumns(tableName, function() { renderCols(); });
+                return;
+            }
+
+            var cols = joinColumnCache[tableName].map(function(col) {
+                return { value: col.name, label: col.name, type: col.dataType, checked: true };
+            });
+
+            container.innerHTML = '';
+            if (cols.length === 0) {
+                container.innerHTML = '<span class="qt-builder-hint">\u0644\u0627 \u062A\u0648\u062C\u062F \u0623\u0639\u0645\u062F\u0629 \u0641\u064A \u0647\u0630\u0627 \u0627\u0644\u062C\u062F\u0648\u0644.</span>';
+                return;
+            }
+            createSortableList(container, cols);
+        }
+
+        renderCols();
+    }
+
+    // ---- Add column from tree leaf to builder ----
+    function addColumnToBuilder(columnName) {
+        var builderWrap = document.getElementById('builderTableWrapper');
+        var builderTable = builderWrap ? builderWrap.getValue() : '';
+        if (!builderTable) {
+            showToast('\u0627\u062E\u062A\u0631 \u062C\u062F\u0648\u0644\u0627\u064B \u0623\u0648\u0644\u0627\u064B \u0641\u064A \u0645\u0646\u062A\u062C SELECT \u0627\u0644\u0623\u0639\u0645\u062F\u0629.', 'warning');
+            return;
+        }
+
+        var container = document.getElementById('builderColumns');
+        var list = container.querySelector('.qt-sortable-list');
+        if (list && list.setChecked) {
+            list.setChecked(columnName, true);
+            showToast('\u062A\u0645 \u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0639\u0645\u0648\u062F "' + columnName + '".', 'info');
+        } else {
+            showToast('\u064A\u0631\u062C\u0649 \u062A\u062D\u0645\u064A\u0644 \u0623\u0639\u0645\u062F\u0629 \u0627\u0644\u062C\u062F\u0648\u0644 \u0623\u0648\u0644\u0627\u064B.', 'warning');
+        }
+    }
+
+    // ---- Select all builder columns ----
+    function selectAllBuilderColumns() {
+        var list = document.querySelector('#builderColumns .qt-sortable-list');
+        if (list && list.selectAll) list.selectAll(true);
+    }
+
+    // ---- Deselect all builder columns ----
+    function deselectAllBuilderColumns() {
+        var list = document.querySelector('#builderColumns .qt-sortable-list');
+        if (list && list.selectAll) list.selectAll(false);
+    }
+
+    // ---- Generate SELECT statement ----
+    function generateSelect() {
+        var tableName = document.getElementById('builderTableWrapper').getValue();
+        if (!tableName) {
+            showToast('\u0627\u062E\u062A\u0631 \u062C\u062F\u0648\u0644\u0627\u064B \u0623\u0648\u0644\u0627\u064B.', 'warning');
+            return;
+        }
+
+        var list = document.querySelector('#builderColumns .qt-sortable-list');
+        var selectedCols = list ? list.getSelected() : [];
+
+        if (selectedCols.length === 0) {
+            showToast('\u0627\u0644\u0631\u062C\u0627\u0621 \u0627\u062E\u062A\u064A\u0627\u0631 \u0639\u0645\u0648\u062F \u0648\u0627\u062D\u062F \u0639\u0644\u0649 \u0627\u0644\u0623\u0642\u0644.', 'warning');
+            return;
+        }
+
+        var sql = 'SELECT\n  ' + selectedCols.join(',\n  ') + '\nFROM ' + tableName;
+
+        editor.setValue(sql);
+        showToast('\u062A\u0645 \u0625\u0646\u0634\u0627\u0621 \u0627\u0633\u062A\u0639\u0644\u0627\u0645 SELECT.', 'success');
+    }
+
+    // ================================================================
+    // WHERE Builder Functions  (TASK-ENH-QT-003)
+    // ================================================================
+
+    // ---- Add a new WHERE condition row ----
+    function addWhereRow() {
+        var container = document.getElementById('whereConditions');
+        var row = document.createElement('div');
+        row.className = 'qt-where-row';
+
+        var builderWrap = document.getElementById('builderTableWrapper');
+        var tableName = builderWrap ? builderWrap.getValue() : '';
+        var cols = [];
+
+        // Collect column names from builderColumns sortable list if available
+        var builderList = document.querySelector('#builderColumns .qt-sortable-list');
+        if (builderList && builderList.getItems) {
+            builderList.getItems().forEach(function(item) {
+                cols.push(item.value);
+            });
+        }
+
+        var colSelect = '<select class="qt-where-col">';
+        if (cols.length === 0) {
+            colSelect += '<option value="">-- لا توجد أعمدة --</option>';
+        } else {
+            colSelect += '<option value="">-- العمود --</option>';
+            cols.forEach(function(col) {
+                colSelect += '<option value="' + escapeHtml(col) + '">' + escapeHtml(col) + '</option>';
+            });
+        }
+        colSelect += '</select>';
+
+        var opSelect = '<select class="qt-where-op" onchange="onWhereOpChange(this)">';
+        var ops = ['=', '>', '<', '>=', '<=', '<>', 'LIKE', 'NOT LIKE', 'IS NULL', 'IS NOT NULL', 'IN', 'BETWEEN'];
+        ops.forEach(function(op) {
+            opSelect += '<option value="' + op + '">' + op + '</option>';
+        });
+        opSelect += '</select>';
+
+        row.innerHTML = colSelect
+            + opSelect
+            + '<input class="qt-where-val" placeholder="\u0627\u0644\u0642\u064A\u0645\u0629" />'
+            + '<input class="qt-where-val2" placeholder="\u0627\u0644\u0642\u064A\u0645\u0629 \u0627\u0644\u062B\u0627\u0646\u064A\u0629" hidden />'
+            + '<select class="qt-where-logic"><option>AND</option><option>OR</option></select>'
+            + '<button class="qt-btn qt-btn--ghost qt-btn--sm" onclick="removeWhereRow(this)" type="button">\u2715</button>';
+
+        container.appendChild(row);
+    }
+
+    // ---- Handle operator change (show/hide value inputs) ----
+    function onWhereOpChange(select) {
+        var row = select.closest('.qt-where-row');
+        var valInput = row.querySelector('.qt-where-val');
+        var val2Input = row.querySelector('.qt-where-val2');
+        var op = select.value;
+
+        if (op === 'IS NULL' || op === 'IS NOT NULL') {
+            valInput.hidden = true;
+            val2Input.hidden = true;
+        } else if (op === 'BETWEEN') {
+            valInput.hidden = false;
+            val2Input.hidden = false;
+            valInput.placeholder = '\u0627\u0644\u0642\u064A\u0645\u0629 \u0627\u0644\u0623\u0648\u0644\u0649';
+            val2Input.placeholder = '\u0627\u0644\u0642\u064A\u0645\u0629 \u0627\u0644\u062B\u0627\u0646\u064A\u0629';
+        } else if (op === 'IN') {
+            valInput.hidden = false;
+            val2Input.hidden = true;
+            valInput.placeholder = '(val1, val2, ...)';
+        } else {
+            valInput.hidden = false;
+            val2Input.hidden = true;
+            valInput.placeholder = '\u0627\u0644\u0642\u064A\u0645\u0629';
+        }
+    }
+
+    // ---- Remove a WHERE condition row ----
+    function removeWhereRow(btn) {
+        var row = btn.closest('.qt-where-row');
+        row.remove();
+    }
+
+    // ---- Apply WHERE conditions to the SQL query ----
+    function applyWhere() {
+        var rows = document.querySelectorAll('#whereConditions .qt-where-row');
+        if (rows.length === 0) {
+            showToast('\u0623\u0636\u0641 \u0634\u0631\u0637\u0627\u064B \u0648\u0627\u062D\u062F\u0627\u064B \u0639\u0644\u0649 \u0627\u0644\u0623\u0642\u0644.', 'warning');
+            return;
+        }
+
+        var conditions = [];
+        var valid = true;
+
+        rows.forEach(function(row, index) {
+            var col = row.querySelector('.qt-where-col').value;
+            var op = row.querySelector('.qt-where-op').value;
+            var val = row.querySelector('.qt-where-val').value.trim();
+            var val2 = row.querySelector('.qt-where-val2') ? row.querySelector('.qt-where-val2').value.trim() : '';
+            var logicEl = row.querySelector('.qt-where-logic');
+            var logic = '';
+
+            if (index > 0 && logicEl) {
+                logic = ' ' + logicEl.value + ' ';
+            }
+
+            if (!col) {
+                showToast('\u0627\u062E\u062A\u0631 \u0639\u0645\u0648\u062F\u0627\u064B \u0644\u0644\u0634\u0631\u0637 \u0631\u0642\u0645 ' + (index + 1) + '.', 'warning');
+                valid = false;
+                return;
+            }
+
+            if (op === 'IS NULL' || op === 'IS NOT NULL') {
+                conditions.push(logic + col + ' ' + op);
+            } else if (op === 'BETWEEN') {
+                if (!val || !val2) {
+                    showToast('\u0623\u062F\u062E\u0644 \u0642\u064A\u0645\u062A\u064A\u0646 \u0644\u0644\u0634\u0631\u0637 BETWEEN \u0631\u0642\u0645 ' + (index + 1) + '.', 'warning');
+                    valid = false;
+                    return;
+                }
+                conditions.push(logic + col + ' BETWEEN ' + val + ' AND ' + val2);
+            } else if (op === 'IN') {
+                if (!val) {
+                    showToast('\u0623\u062F\u062E\u0644 \u0642\u064A\u0645\u0627\u064B \u0644\u0644\u0634\u0631\u0637 IN \u0631\u0642\u0645 ' + (index + 1) + '.', 'warning');
+                    valid = false;
+                    return;
+                }
+                conditions.push(logic + col + ' IN (' + val + ')');
+            } else if (op === 'LIKE' || op === 'NOT LIKE') {
+                if (!val) {
+                    showToast('\u0623\u062F\u062E\u0644 \u0642\u064A\u0645\u0629 \u0644\u0644\u0634\u0631\u0637 ' + op + ' \u0631\u0642\u0645 ' + (index + 1) + '.', 'warning');
+                    valid = false;
+                    return;
+                }
+                conditions.push(logic + col + ' ' + op + ' ' + val);
+            } else {
+                if (!val) {
+                    showToast('\u0623\u062F\u062E\u0644 \u0642\u064A\u0645\u0629 \u0644\u0644\u0634\u0631\u0637 \u0631\u0642\u0645 ' + (index + 1) + '.', 'warning');
+                    valid = false;
+                    return;
+                }
+                conditions.push(logic + col + ' ' + op + ' ' + val);
+            }
+        });
+
+        if (!valid) return;
+
+        var whereClause = 'WHERE ' + conditions.join('').trim();
+        var currentSql = editor.getValue().trim();
+
+        // Remove existing WHERE clause if present
+        var whereIndex = currentSql.toUpperCase().lastIndexOf('WHERE');
+        if (whereIndex >= 0) {
+            currentSql = currentSql.substring(0, whereIndex).trim();
+        }
+
+        editor.setValue(currentSql + '\n' + whereClause);
+        showToast('\u062A\u0645 \u062A\u0637\u0628\u064A\u0642 WHERE \u0639\u0644\u0649 \u0627\u0644\u0627\u0633\u062A\u0639\u0644\u0627\u0645.', 'success');
+    }
+
+    // ================================================================
+    // CSV Download  (TASK-ENH-QT-003)
+    // ================================================================
+
+    function downloadCSV() {
+        if (!currentRows || currentRows.length === 0) return;
+        var cols = currentColumns;
+        var csv = '\uFEFF'; // BOM for Arabic Excel
+        csv += cols.map(function(c) { return '"' + (c.name || '') + '"'; }).join(',') + '\n';
+        currentRows.forEach(function(row) {
+            csv += cols.map(function(c) {
+                var val = row[c.name];
+                return val != null ? '"' + String(val).replace(/"/g, '""') + '"' : '""';
+            }).join(',') + '\n';
+        });
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'query_results_' + new Date().toISOString().slice(0, 10) + '.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+        showToast('\u062A\u0645 \u062A\u0646\u0632\u064A\u0644 ' + currentRows.length + ' \u0635\u0641.', 'success');
+    }
+
+    // ================================================================
+    // Query History  (TASK-ENH-QT-003)
+    // ================================================================
+
+    function saveToHistory(sql, source, rowCount) {
+        var history = JSON.parse(localStorage.getItem('qtHistory') || '[]');
+        history.unshift({ sql: sql, source: source, rowCount: rowCount, timestamp: new Date().toISOString() });
+        if (history.length > 50) history = history.slice(0, 50);
+        localStorage.setItem('qtHistory', JSON.stringify(history));
+    }
+
+    function toggleHistory() {
+        var panel = document.getElementById('historyPanel');
+        panel.hidden = !panel.hidden;
+        if (!panel.hidden) loadHistory();
+    }
+
+    function loadHistory() {
+        var list = document.getElementById('historyList');
+        var count = document.getElementById('historyCount');
+        var history = JSON.parse(localStorage.getItem('qtHistory') || '[]');
+        count.textContent = history.length;
+        if (history.length === 0) {
+            list.innerHTML = '<div class="qt-history__empty">\u0644\u0627 \u062A\u0648\u062C\u062F \u0627\u0633\u062A\u0639\u0644\u0627\u0645\u0627\u062A \u0633\u0627\u0628\u0642\u0629.</div>';
+            return;
+        }
+        list.innerHTML = history.map(function(h, i) {
+            return '<div class="qt-history__item" onclick="restoreHistory(' + i + ')">'
+                + '<div class="qt-history__item-top">'
+                + '<span class="qt-history__time">' + new Date(h.timestamp).toLocaleString('ar-SA') + '</span>'
+                + '<span class="qt-history__badge">' + escapeHtml(h.source) + '</span>'
+                + '</div>'
+                + '<code class="qt-history__sql">' + escapeHtml(h.sql.substring(0, 100)) + (h.sql.length > 100 ? '...' : '') + '</code>'
+                + '<span class="qt-history__rows">' + (h.rowCount != null ? h.rowCount + ' \u0635\u0641' : '') + '</span>'
+                + '</div>';
+        }).join('');
+    }
+
+    function restoreHistory(index) {
+        var history = JSON.parse(localStorage.getItem('qtHistory') || '[]');
+        if (history[index]) {
+            editor.setValue(history[index].sql);
+            if (history[index].source) switchSource(history[index].source);
+            toggleHistory();
+            showToast('\u062A\u0645 \u0627\u0633\u062A\u0639\u0627\u062F\u0629 \u0627\u0644\u0627\u0633\u062A\u0639\u0644\u0627\u0645.', 'info');
+        }
+    }
+
+    function clearHistory() {
+        localStorage.removeItem('qtHistory');
+        loadHistory();
+        showToast('\u062A\u0645 \u0645\u0633\u062D \u0633\u062C\u0644 \u0627\u0644\u0627\u0633\u062A\u0639\u0644\u0627\u0645\u0627\u062A.', 'info');
+    }
+
+    // ================================================================
+    // Keyboard Shortcuts  (TASK-ENH-QT-003)
+    // ================================================================
+
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            runQuery();
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'c' || e.key === 'C')) {
+            e.preventDefault();
+            clearEditor();
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'h' || e.key === 'H')) {
+            e.preventDefault();
+            toggleHistory();
+        }
+    });
+
+    // ---- Auto-load tables on page load ----
+    document.addEventListener('DOMContentLoaded', function() {
+        loadTables();
+    });
+
+    // ================================================================
+    // Searchable Dropdown + Helpers  (TASK-ENH-QT-006)
+    // ================================================================
+
+    // ---- Create a searchable dropdown (combobox) ----
+    function createSearchableDropdown(container, options, onSelect) {
+      container.innerHTML = '';
+      container.className = 'qt-searchable';
+      container.dataset.value = '';
+
+      var wrapper = document.createElement('div');
+      wrapper.className = 'qt-searchable__input-wrapper';
+
+      var input = document.createElement('input');
+      input.className = 'qt-searchable__input';
+      input.type = 'text';
+      input.placeholder = '\u0627\u0628\u062D\u062B...';
+      input.autocomplete = 'off';
+
+      var arrow = document.createElement('span');
+      arrow.className = 'qt-searchable__arrow';
+      arrow.textContent = '\u25BC';
+
+      wrapper.appendChild(input);
+      wrapper.appendChild(arrow);
+
+      var dropdown = document.createElement('div');
+      dropdown.className = 'qt-searchable__dropdown';
+      dropdown.hidden = true;
+
+      container.appendChild(wrapper);
+      container.appendChild(dropdown);
+
+      var selectedValue = '';
+      var highlightedIndex = -1;
+      var filteredOptions = [];
+
+      function renderDropdown() {
+        var query = input.value.toLowerCase().trim();
+        filteredOptions = options.filter(function(opt) {
+          return opt.label.toLowerCase().includes(query);
+        });
+
+        if (filteredOptions.length === 0) {
+          dropdown.innerHTML = '<div class="qt-searchable__option qt-searchable__no-results">\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C</div>';
+          return;
+        }
+
+        dropdown.innerHTML = filteredOptions.map(function(opt, idx) {
+          var cls = 'qt-searchable__option';
+          if (idx === highlightedIndex) cls += ' highlighted';
+          if (opt.value === selectedValue) cls += ' selected';
+          var typeHtml = opt.type ? ' <span class="qt-searchable__option-type">' + escapeHtml(opt.type) + '</span>' : '';
+          return '<div class="' + cls + '" data-index="' + idx + '">' + escapeHtml(opt.label) + typeHtml + '</div>';
+        }).join('');
+      }
+
+      function openDropdown() {
+        highlightedIndex = -1;
+        renderDropdown();
+        dropdown.hidden = false;
+      }
+
+      function closeDropdown() {
+        dropdown.hidden = true;
+      }
+
+      function selectItem(value, label) {
+        selectedValue = value;
+        input.value = label;
+        container.dataset.value = value;
+        closeDropdown();
+        if (onSelect) onSelect(value, label);
+      }
+
+      input.addEventListener('focus', openDropdown);
+
+      input.addEventListener('input', function() {
+        selectedValue = '';
+        container.dataset.value = '';
+        highlightedIndex = -1;
+        openDropdown();
+      });
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          highlightedIndex = Math.min(highlightedIndex + 1, filteredOptions.length - 1);
+          renderDropdown();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          highlightedIndex = Math.max(highlightedIndex - 1, -1);
+          renderDropdown();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+            var opt = filteredOptions[highlightedIndex];
+            selectItem(opt.value, opt.label);
+          }
+        } else if (e.key === 'Escape') {
+          closeDropdown();
+        }
+      });
+
+      dropdown.addEventListener('click', function(e) {
+        var optEl = e.target.closest('.qt-searchable__option');
+        if (!optEl || optEl.classList.contains('qt-searchable__no-results')) return;
+        var idx = parseInt(optEl.dataset.index);
+        if (idx >= 0 && idx < filteredOptions.length) {
+          var opt = filteredOptions[idx];
+          selectItem(opt.value, opt.label);
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!container.contains(e.target)) {
+          closeDropdown();
+        }
+      });
+
+      arrow.addEventListener('click', function() {
+        if (dropdown.hidden) openDropdown(); else closeDropdown();
+      });
+
+      container.setValue = function(value) {
+        var match = null;
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === value) { match = options[i]; break; }
+        }
+        if (match) {
+          selectedValue = match.value;
+          input.value = match.label;
+          container.dataset.value = match.value;
+        } else {
+          selectedValue = '';
+          input.value = '';
+          container.dataset.value = '';
+        }
+      };
+
+      container.getValue = function() {
+        return container.dataset.value || '';
+      };
+    }
+
+    // ---- Get table options for searchable dropdowns ----
+    function getTableOptions() {
+      var tables = window.currentTables || [];
+      return tables.map(function(t) {
+        var label = t.schema ? t.schema + '.' + t.tableName : t.tableName;
+        return { value: t.tableName, label: label, type: t.schema };
+      });
+    }
+
+    // ---- Get column options for searchable dropdowns ----
+    function getColumnOptions(tableName, alias) {
+      if (!tableName || !joinColumnCache[tableName]) return [];
+      return joinColumnCache[tableName].map(function(col) {
+        return { value: alias + '.' + col.name, label: alias + '.' + col.name, type: col.dataType };
+      });
+    }
+
+    // ---- Get alias for a table in a clause ----
+    function getAliasForTable(clauseIndex, tableIndex) {
+      var clause = document.querySelector('.qt-join-clause[data-index="' + clauseIndex + '"]');
+      if (!clause) return tableIndex === 0 ? 'a' : 'b';
+      var aliasInputs = clause.querySelectorAll('.qt-join-clause__alias');
+      if (aliasInputs.length > tableIndex) return aliasInputs[tableIndex].value;
+      return tableIndex === 0 ? 'a' : 'b';
+    }
+
+    // ================================================================
+    // JOIN Builder Functions  (TASK-ENH-QT-004)
+    // ================================================================
+
+    var joinClauseCount = 0;
+    var joinColumnCache = {};
+
+    function getNextAlias() {
+        var count = document.querySelectorAll('.qt-join-clause').length;
+        return String.fromCharCode(97 + count); // a, b, c, d...
+    }
+
+    function getAliasesForClause(index) {
+        var clauses = document.querySelectorAll('.qt-join-clause');
+        var aliases = {};
+        clauses.forEach(function(c, i) {
+            if (i <= index) {
+                var alias1 = c.querySelector('.qt-join-clause__alias');
+                if (alias1) aliases['t1_' + i] = alias1.value;
+                var alias2 = c.querySelectorAll('.qt-join-clause__alias')[1];
+                if (alias2) aliases['t2_' + i] = alias2.value;
+            }
+        });
+        return aliases;
+    }
+
+    // ---- Populate all JOIN table dropdowns ----
+    function populateJoinTableDropdowns() {
+        var tableOpts = getTableOptions();
+        document.querySelectorAll('.qt-join-table1-wrapper').forEach(function(wrap) {
+            var currentVal = wrap.getValue();
+            createSearchableDropdown(wrap, tableOpts, function() { onJoinTableChange(this); });
+            if (currentVal) wrap.setValue(currentVal);
+        });
+        document.querySelectorAll('.qt-join-table2-wrapper').forEach(function(wrap) {
+            var currentVal = wrap.getValue();
+            createSearchableDropdown(wrap, tableOpts, function() { onJoinTableChange(this); });
+            if (currentVal) wrap.setValue(currentVal);
+        });
+    }
+
+    // ---- Add a new JOIN clause ----
+    function addJoinClause() {
+        var container = document.getElementById('joinClauses');
+
+        var alias = getNextAlias();
+        var index = joinClauseCount++;
+
+        var html = '<div class="qt-join-clause" data-index="' + index + '">';
+        html += '<div class="qt-join-clause__header">';
+        html += '<div class="qt-join-table1-wrapper" style="flex:1;min-width:120px"></div>';
+        html += '<input class="qt-join-clause__alias" placeholder="' + alias + '" maxlength="3" value="' + alias + '" oninput="updateJoinColumns()">';
+        html += '<select class="qt-join-clause__select qt-join-type" onchange="onJoinTypeChange(this)" style="font-weight:700;color:var(--c-primary);min-width:130px">';
+        html += '<option value="INNER JOIN">INNER JOIN</option>';
+        html += '<option value="LEFT JOIN">LEFT JOIN</option>';
+        html += '<option value="RIGHT JOIN">RIGHT JOIN</option>';
+        html += '<option value="FULL OUTER JOIN">FULL JOIN</option>';
+        html += '<option value="CROSS JOIN">CROSS JOIN</option>';
+        html += '</select>';
+        html += '<div class="qt-join-table2-wrapper" style="flex:1;min-width:120px"></div>';
+        html += '<input class="qt-join-clause__alias" placeholder="b" maxlength="3" value="' + (getNextAlias() === 'a' ? 'b' : getNextAlias()) + '" oninput="updateJoinColumns()">';
+        html += '<button class="qt-btn qt-btn--ghost qt-btn--xs" onclick="removeJoinClause(this)" title="حذف JOIN">\uD83D\uDDD1</button>';
+        html += '</div>';
+        html += '<div class="qt-join-conditions" id="joinConditions_' + index + '">';
+        // Add one default condition
+        html += '</div>';
+        html += '<button class="qt-btn qt-btn--ghost qt-btn--xs" onclick="addJoinCondition(this)" style="font-size:12px" type="button">➕ إضافة شرط ON</button>';
+        html += '</div>';
+
+        container.insertAdjacentHTML('beforeend', html);
+        
+        // Initialize searchable dropdowns for this clause
+        var newClause = container.lastElementChild;
+        var table1Wrap = newClause.querySelector('.qt-join-table1-wrapper');
+        var table2Wrap = newClause.querySelector('.qt-join-table2-wrapper');
+        var _this = this;
+        if (table1Wrap) createSearchableDropdown(table1Wrap, getTableOptions(), function() {
+            onJoinTableChange(this);
+        });
+        if (table2Wrap) createSearchableDropdown(table2Wrap, getTableOptions(), function() {
+            onJoinTableChange(this);
+        });
+        
+        showToast('تم إضافة JOIN بعلاقة ' + alias + '.', 'info');
+        updateJoinColumns();
+    }
+
+    // ---- When a table is selected in a JOIN clause ----
+    function onJoinTableChange(el) {
+        // el is either the wrapper div or the select element (backward compat)
+        var clause = el.closest('.qt-join-clause');
+        if (!clause) return;
+
+        var table1Wrap = clause.querySelector('.qt-join-table1-wrapper');
+        var table2Wrap = clause.querySelector('.qt-join-table2-wrapper');
+
+        var table1 = table1Wrap ? table1Wrap.getValue() : (clause.querySelector('.qt-join-table1') ? clause.querySelector('.qt-join-table1').value : '');
+        var table2 = table2Wrap ? table2Wrap.getValue() : (clause.querySelector('.qt-join-table2') ? clause.querySelector('.qt-join-table2').value : '');
+
+        // Clear ON conditions when a table changes (old column references invalid)
+        var conditionsDiv = clause.querySelector('.qt-join-conditions');
+        conditionsDiv.innerHTML = '';
+
+        var index = clause.dataset.index;
+        updateJoinColumns();
+    }
+
+    // ---- When JOIN type changes ----
+    function onJoinTypeChange(selectEl) {
+        var clause = selectEl.closest('.qt-join-clause');
+        var conditionsDiv = clause.querySelector('.qt-join-conditions');
+        var addConditionBtn = clause.querySelector('[onclick*="addJoinCondition"]');
+
+        if (selectEl.value === 'CROSS JOIN') {
+            conditionsDiv.style.display = 'none';
+            if (addConditionBtn) addConditionBtn.style.display = 'none';
+        } else {
+            conditionsDiv.style.display = '';
+            if (addConditionBtn) addConditionBtn.style.display = '';
+        }
+    }
+
+    // ---- Add an ON condition to a JOIN clause ----
+    function addJoinCondition(btn) {
+        var clause = btn.closest('.qt-join-clause');
+        var conditionsDiv = clause.querySelector('.qt-join-conditions');
+        var index = clause.dataset.index;
+        var table1Wrap = clause.querySelector('.qt-join-table1-wrapper');
+        var table2Wrap = clause.querySelector('.qt-join-table2-wrapper');
+        var table1 = table1Wrap ? table1Wrap.getValue() : (clause.querySelector('.qt-join-table1') ? clause.querySelector('.qt-join-table1').value : '');
+        var table2 = table2Wrap ? table2Wrap.getValue() : (clause.querySelector('.qt-join-table2') ? clause.querySelector('.qt-join-table2').value : '');
+
+        var row = document.createElement('div');
+        row.className = 'qt-join-condition';
+
+        var col1Wrapper = document.createElement('div');
+        col1Wrapper.className = 'qt-join-condition__col-wrapper';
+        var col2Wrapper = document.createElement('div');
+        col2Wrapper.className = 'qt-join-condition__col2-wrapper';
+
+        var opSelect = document.createElement('select');
+        opSelect.className = 'qt-join-condition__op';
+        var ops = ['=', '<>', '>', '<', '>=', '<='];
+        ops.forEach(function(op) {
+            var opt = document.createElement('option');
+            opt.value = op;
+            opt.textContent = op;
+            opSelect.appendChild(opt);
+        });
+
+        var removeBtn = document.createElement('button');
+        removeBtn.className = 'qt-btn qt-btn--ghost qt-btn--xs';
+        removeBtn.innerHTML = '\u2715';
+        removeBtn.onclick = function() { removeJoinCondition(this); };
+        removeBtn.type = 'button';
+
+        // Append to row FIRST so querySelector works in populateConditionCols
+        row.appendChild(col1Wrapper);
+        row.appendChild(opSelect);
+        row.appendChild(col2Wrapper);
+        row.appendChild(removeBtn);
+
+        // Populate columns — now the wrappers are in the DOM tree
+        populateConditionCols(row, table1, table2, index);
+
+        conditionsDiv.appendChild(row);
+    }
+
+    // ---- Populate column dropdowns in a condition row ----
+    function populateConditionCols(row, table1, table2, clauseIndex) {
+        var col1Wrapper = row.querySelector('.qt-join-condition__col-wrapper');
+        var col2Wrapper = row.querySelector('.qt-join-condition__col2-wrapper');
+
+        if (col1Wrapper && table1) {
+            var alias = getAliasForTable(clauseIndex, 0);
+            var cols = getColumnOptions(table1, alias);
+            if (cols.length === 0 && table1) {
+                fetchAndCacheColumns(table1, function() {
+                    var alias2 = getAliasForTable(clauseIndex, 0);
+                    var cols2 = getColumnOptions(table1, alias2);
+                    createSearchableDropdown(col1Wrapper, cols2, function() { updateJoinColumns(); });
+                });
+            } else {
+                createSearchableDropdown(col1Wrapper, cols, function() { updateJoinColumns(); });
+            }
+        }
+        if (col2Wrapper && table2) {
+            var alias2 = getAliasForTable(clauseIndex, 1);
+            var cols2 = getColumnOptions(table2, alias2);
+            if (cols2.length === 0 && table2) {
+                fetchAndCacheColumns(table2, function() {
+                    var alias3 = getAliasForTable(clauseIndex, 1);
+                    var cols3 = getColumnOptions(table2, alias3);
+                    createSearchableDropdown(col2Wrapper, cols3, function() { updateJoinColumns(); });
+                });
+            } else {
+                createSearchableDropdown(col2Wrapper, cols2, function() { updateJoinColumns(); });
+            }
+        }
+    }
+
+    // ---- Fetch and cache columns for a table ----
+    function fetchAndCacheColumns(tableName, callback) {
+        if (joinColumnCache[tableName]) {
+            if (callback) callback();
+            return;
+        }
+        fetch('?handler=Columns&source=' + encodeURIComponent(currentSource) + '&table=' + encodeURIComponent(tableName))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    joinColumnCache[tableName] = data.columns || [];
+                } else {
+                    joinColumnCache[tableName] = [];
+                }
+                if (callback) callback();
+            })
+            .catch(function() {
+                joinColumnCache[tableName] = [];
+                if (callback) callback();
+            });
+    }
+
+    // ---- Remove a condition row ----
+    function removeJoinCondition(btn) {
+        var row = btn.closest('.qt-join-condition');
+        row.remove();
+        updateJoinColumns();
+    }
+
+    // ---- Remove a JOIN clause ----
+    function removeJoinClause(btn) {
+        var clause = btn.closest('.qt-join-clause');
+        clause.remove();
+
+        // Renumber remaining clauses
+        document.querySelectorAll('.qt-join-clause').forEach(function(c, idx) {
+            c.dataset.index = idx;
+            var inputs = c.querySelectorAll('.qt-join-clause__alias');
+            var alias = String.fromCharCode(97 + idx);
+            if (inputs[0]) { inputs[0].value = alias; inputs[0].placeholder = alias; }
+            if (inputs[1]) {
+                var alias2 = String.fromCharCode(97 + idx + 1);
+                inputs[1].value = alias2; inputs[1].placeholder = alias2;
+            }
+        });
+
+        updateJoinColumns();
+        showToast('تم حذف JOIN.', 'info');
+    }
+
+    // ---- Update column sortable list for JOIN ----
+    function updateJoinColumns() {
+        var columnsDiv = document.getElementById('joinColumns');
+        var grid = document.getElementById('joinColumnsGrid');
+
+        var allCols = [];
+        var clauses = document.querySelectorAll('.qt-join-clause');
+
+        clauses.forEach(function(c) {
+            var t1Wrap = c.querySelector('.qt-join-table1-wrapper');
+            var t2Wrap = c.querySelector('.qt-join-table2-wrapper');
+            var table1 = t1Wrap ? t1Wrap.getValue() : (c.querySelector('.qt-join-table1') ? c.querySelector('.qt-join-table1').value : '');
+            var table2 = t2Wrap ? t2Wrap.getValue() : (c.querySelector('.qt-join-table2') ? c.querySelector('.qt-join-table2').value : '');
+            var aliasInputs = c.querySelectorAll('.qt-join-clause__alias');
+            var alias1 = aliasInputs.length > 0 ? aliasInputs[0].value || 'a' : 'a';
+            var alias2 = aliasInputs.length > 1 ? aliasInputs[1].value || 'b' : 'b';
+
+            // If no tables selected at all, keep hidden
+            if (!table1 && !table2) {
+                columnsDiv.hidden = true;
+                return;
+            }
+
+            if (table1 && joinColumnCache[table1]) {
+                joinColumnCache[table1].forEach(function(col) {
+                    var key = alias1 + '.' + col.name;
+                    var exists = allCols.some(function(ac) { return ac.value === key; });
+                    if (!exists) {
+                        allCols.push({ value: key, label: key, type: col.dataType, checked: true });
+                    }
+                });
+            }
+            if (table2 && joinColumnCache[table2]) {
+                joinColumnCache[table2].forEach(function(col) {
+                    var key = alias2 + '.' + col.name;
+                    var exists = allCols.some(function(ac) { return ac.value === key; });
+                    if (!exists) {
+                        allCols.push({ value: key, label: key, type: col.dataType, checked: true });
+                    }
+                });
+            }
+        });
+
+        // Also add columns from the current SELECT builder table if it's selected
+        var builderTableWrap = document.getElementById('builderTableWrapper');
+        var builderTable = builderTableWrap ? builderTableWrap.getValue() : '';
+        if (builderTable && joinColumnCache[builderTable]) {
+            joinColumnCache[builderTable].forEach(function(col) {
+                var key = builderTable + '.' + col.name;
+                var exists = allCols.some(function(ac) { return ac.value === key; });
+                if (!exists) {
+                    allCols.push({ value: key, label: key, type: col.dataType, checked: true });
+                }
+            });
+        }
+
+        if (allCols.length === 0) {
+            columnsDiv.hidden = true;
+            return;
+        }
+
+        columnsDiv.hidden = false;
+        grid.innerHTML = '';
+        createSortableList(grid, allCols);
+    }
+
+    // ---- Select/deselect all JOIN columns ----
+    function selectAllJoinCols(select) {
+        var list = document.querySelector('#joinColumnsGrid .qt-sortable-list');
+        if (list && list.selectAll) list.selectAll(select);
+    }
+
+    // ---- Generate JOIN query ----
+    function generateJoinQuery() {
+        var clauses = document.querySelectorAll('.qt-join-clause');
+        if (clauses.length === 0) {
+            showToast('أضف JOIN واحداً على الأقل أولاً.', 'warning');
+            return;
+        }
+
+        // Collect selected columns from sortable list
+        var colList = document.querySelector('#joinColumnsGrid .qt-sortable-list');
+        var selectedCols = colList ? colList.getSelected() : [];
+
+        // Validate first clause has both tables
+        var firstClause = clauses[0];
+        var t1Wrap = firstClause.querySelector('.qt-join-table1-wrapper');
+        var t2Wrap = firstClause.querySelector('.qt-join-table2-wrapper');
+        var table1 = t1Wrap ? t1Wrap.getValue() : (firstClause.querySelector('.qt-join-table1') ? firstClause.querySelector('.qt-join-table1').value : '');
+        var table2 = t2Wrap ? t2Wrap.getValue() : (firstClause.querySelector('.qt-join-table2') ? firstClause.querySelector('.qt-join-table2').value : '');
+        var aliasInputs1 = firstClause.querySelectorAll('.qt-join-clause__alias');
+        var alias1 = aliasInputs1.length > 0 ? aliasInputs1[0].value || 'a' : 'a';
+
+        if (!table1) {
+            showToast('اختر الجدول الأول في أول JOIN.', 'warning');
+            return;
+        }
+
+        // Build the SQL
+        var sql = '';
+
+        // SELECT part
+        if (selectedCols.length > 0) {
+            sql += 'SELECT ' + selectedCols.join(', ');
+        } else {
+            // If no columns selected, use the first table with a.*
+            sql += 'SELECT ' + alias1 + '.*';
+        }
+
+        // FROM part (from first clause's table1)
+        sql += '\nFROM ' + table1 + ' ' + alias1;
+
+        // JOIN parts
+        for (var i = 0; i < clauses.length; i++) {
+            var c = clauses[i];
+            var ct1Wrap = c.querySelector('.qt-join-table1-wrapper');
+            var ct2Wrap = c.querySelector('.qt-join-table2-wrapper');
+            var t1 = ct1Wrap ? ct1Wrap.getValue() : (c.querySelector('.qt-join-table1') ? c.querySelector('.qt-join-table1').value : '');
+            var t2 = ct2Wrap ? ct2Wrap.getValue() : (c.querySelector('.qt-join-table2') ? c.querySelector('.qt-join-table2').value : '');
+            var joinType = c.querySelector('.qt-join-type').value;
+            var aliasEls = c.querySelectorAll('.qt-join-clause__alias');
+            var a1 = aliasEls.length > 0 ? aliasEls[0].value || 'a' : 'a';
+            var a2 = aliasEls.length > 1 ? aliasEls[1].value || 'b' : 'b';
+
+            if (!t2) {
+                showToast('اختر الجدول الثاني في JOIN رقم ' + (i + 1) + '.', 'warning');
+                return;
+            }
+
+            sql += '\n' + joinType + ' ' + t2 + ' ' + a2;
+
+            if (joinType !== 'CROSS JOIN') {
+                // Collect ON conditions
+                var conditionsRows = c.querySelectorAll('.qt-join-condition');
+                var onParts = [];
+                conditionsRows.forEach(function(row) {
+                    var col1Wrapper = row.querySelector('.qt-join-condition__col-wrapper');
+                    var op = row.querySelector('.qt-join-condition__op');
+                    var col2Wrapper = row.querySelector('.qt-join-condition__col2-wrapper');
+                    var col1 = col1Wrapper ? col1Wrapper.getValue() : (row.querySelector('.qt-join-condition__col') ? row.querySelector('.qt-join-condition__col').value : '');
+                    var col2 = col2Wrapper ? col2Wrapper.getValue() : (row.querySelector('.qt-join-condition__col2') ? row.querySelector('.qt-join-condition__col2').value : '');
+                    if (col1 && op && col2) {
+                        onParts.push(col1 + ' ' + op.value + ' ' + col2);
+                    }
+                });
+
+                if (onParts.length > 0) {
+                    sql += ' ON ' + onParts.join(' AND ');
+                } else {
+                    // Use default ON based on first condition attempt
+                    // Generate a reasonable default: a1.ID = a2.Table1ID
+                    sql += ' ON ' + a1 + '.ID = ' + a2 + '.' + t1 + 'ID';
+                }
+            }
+        }
+
+        // Check existing editor content
+        var existingSql = editor.getValue().trim();
+
+        if (existingSql && existingSql !== 'SELECT 1 AS [عيّنة]') {
+            // Append to existing SQL (before any WHERE clause)
+            var whereIdx = existingSql.toUpperCase().lastIndexOf('WHERE');
+            var orderIdx = existingSql.toUpperCase().lastIndexOf('ORDER BY');
+
+            var insertPos = existingSql.length;
+            var suffix = '';
+
+            if (orderIdx >= 0) {
+                suffix = existingSql.substring(orderIdx);
+                insertPos = orderIdx;
+            } else if (whereIdx >= 0) {
+                suffix = existingSql.substring(whereIdx);
+                insertPos = whereIdx;
+            }
+
+            var baseSql = existingSql.substring(0, insertPos).trim();
+            editor.setValue(baseSql + '\n' + sql + (suffix ? '\n' + suffix : ''));
+        } else {
+            editor.setValue(sql);
+        }
+
+        showToast('تم إنشاء استعلام JOIN بنجاح.', 'success');
+
+        // Save to history if available
+        if (typeof saveToHistory === 'function') {
+            saveToHistory(editor.getValue(), currentSource, 0);
+        }
+    }
+
+    // ---- Create a sortable column list with ↑↓ buttons ----
+    function createSortableList(container, columns, onChange) {
+      container.innerHTML = '';
+      container.className = 'qt-sortable-list';
+
+      var items = columns.map(function(col) {
+        return {
+          value: col.value,
+          label: col.label,
+          type: col.type || '',
+          checked: col.checked !== false
+        };
+      });
+
+      function render() {
+        var html = items.map(function(item, idx) {
+          var checkedAttr = item.checked ? 'checked' : '';
+          var upDisabled = idx === 0 ? 'disabled' : '';
+          var downDisabled = idx === items.length - 1 ? 'disabled' : '';
+          return '<div class="qt-sortable-item" data-index="' + idx + '">' +
+            '<span class="qt-sortable-handle">⠿</span>' +
+            '<input type="checkbox" class="qt-sortable-checkbox" ' + checkedAttr + ' data-idx="' + idx + '">' +
+            '<span class="qt-sortable-label">' + escapeHtml(item.label) + '</span>' +
+            (item.type ? '<span class="qt-sortable-type">(' + escapeHtml(item.type) + ')</span>' : '') +
+            '<button class="qt-sortable-btn qt-sortable-up" ' + upDisabled + ' data-idx="' + idx + '" title="رفع">↑</button>' +
+            '<button class="qt-sortable-btn qt-sortable-down" ' + downDisabled + ' data-idx="' + idx + '" title="خفض">↓</button>' +
+            '</div>';
+        }).join('');
+        container.innerHTML = html;
+
+        // Sync checkbox states
+        container.querySelectorAll('.qt-sortable-checkbox').forEach(function(cb) {
+          cb.checked = items[parseInt(cb.dataset.idx)].checked;
+        });
+      }
+
+      // Event delegation for ↑↓ buttons and checkboxes
+      container.addEventListener('click', function(e) {
+        var btn = e.target.closest('.qt-sortable-btn');
+        if (btn) {
+          var idx = parseInt(btn.dataset.idx);
+          if (btn.classList.contains('qt-sortable-up') && idx > 0) {
+            var temp = items[idx];
+            items[idx] = items[idx - 1];
+            items[idx - 1] = temp;
+            render();
+            notifyChange();
+          } else if (btn.classList.contains('qt-sortable-down') && idx < items.length - 1) {
+            var temp = items[idx];
+            items[idx] = items[idx + 1];
+            items[idx + 1] = temp;
+            render();
+            notifyChange();
+          }
+          return;
+        }
+
+        var cb = e.target.closest('.qt-sortable-checkbox');
+        if (cb) {
+          items[parseInt(cb.dataset.idx)].checked = cb.checked;
+          notifyChange();
+        }
+      });
+
+      container.selectAll = function(select) {
+        items.forEach(function(item) { item.checked = select; });
+        render();
+        notifyChange();
+      };
+
+      container.getSelected = function() {
+        return items.filter(function(item) { return item.checked; }).map(function(item) { return item.value; });
+      };
+
+      container.getItems = function() { return items; };
+
+      container.setChecked = function(value, checked) {
+        items.forEach(function(item) {
+          if (item.value === value) item.checked = checked;
+        });
+        render();
+        notifyChange();
+      };
+
+      function notifyChange() {
+        if (onChange) onChange(container.getSelected());
+      }
+
+      render();
     }
 </script>

@@ -810,6 +810,45 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 ModelState.AddModelError(nameof(CustomSql), "استعلام SQL المخصص مطلوب عند اختيار مصدر SQL مخصص.");
             }
 
+            // === KPI Conditional Validation (TASK-BUILDER-FIX-001) ===
+            // Only validate KPI fields based on the selected KPI mode
+            if (string.Equals(CardType, "KPI", StringComparison.OrdinalIgnoreCase))
+            {
+                // Simple mode: no advanced fields required — remove them from ModelState
+                if (string.Equals(KpiMode, "simple", StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.Remove(nameof(GrandTotalSource));
+                    ModelState.Remove(nameof(ChangeSource));
+                    ModelState.Remove(nameof(DateFilterMode));
+                    ModelState.Remove(nameof(SparklineMonths));
+                    ModelState.Remove(nameof(ShowChange));
+                    ModelState.Remove(nameof(ShowSparkline));
+                    ModelState.Remove(nameof(ShowGrandTotal));
+                    ModelState.Remove(nameof(ValueColumn));
+                    ModelState.Remove(nameof(DateColumn));
+                }
+                // withChange: require ChangeSource and DateFilterMode
+                else if (string.Equals(KpiMode, "withChange", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (string.IsNullOrWhiteSpace(ChangeSource))
+                        ModelState.AddModelError(nameof(ChangeSource), "مصدر حساب التغير مطلوب في وضع 'مع تغير'.");
+                    if (string.IsNullOrWhiteSpace(DateFilterMode))
+                        ModelState.AddModelError(nameof(DateFilterMode), "طريقة الفلترة الزمنية مطلوبة في وضع 'مع تغير'.");
+                }
+                // composite: all advanced fields required
+                else if (string.Equals(KpiMode, "composite", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (string.IsNullOrWhiteSpace(ValueColumn))
+                        ModelState.AddModelError(nameof(ValueColumn), "عمود القيمة مطلوب في وضع 'متقدم'.");
+                    if (string.IsNullOrWhiteSpace(ChangeSource))
+                        ModelState.AddModelError(nameof(ChangeSource), "مصدر حساب التغير مطلوب في وضع 'متقدم'.");
+                    if (string.IsNullOrWhiteSpace(GrandTotalSource))
+                        ModelState.AddModelError(nameof(GrandTotalSource), "مصدر الإجمالي مطلوب في وضع 'متقدم'.");
+                    if (string.IsNullOrWhiteSpace(DateFilterMode))
+                        ModelState.AddModelError(nameof(DateFilterMode), "طريقة الفلترة الزمنية مطلوبة في وضع 'متقدم'.");
+                }
+            }
+
             if (!string.Equals(DateFilterMode, "fixed", StringComparison.OrdinalIgnoreCase))
             {
                 return;

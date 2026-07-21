@@ -271,6 +271,14 @@
         to   { opacity: 1; transform: scale(1); }
     }
 
+    .wd-row-counter {
+        font-size: 13px;
+        color: var(--c-text-muted);
+        margin-inline-end: auto;
+        padding: 4px 0;
+        direction: ltr;
+    }
+
     @@media (max-width: 900px) {
         .wd-layout { grid-template-columns: 1fr; }
         .wd-sidebar { position: static; max-height: 300px; }
@@ -367,6 +375,9 @@
                         <input id="gridSearch" type="text" placeholder="🔍 بحث عام..." oninput="onQuickFilter(this.value)" disabled />
                     </div>
                     <div class="wd-tb-sep"></div>
+                    <span id="rowCounter" class="wd-row-counter" style="font-size:13px;color:var(--c-text-muted);margin-inline-end:auto;display:none;">
+                      جاري التحميل...
+                    </span>
                     <button class="wd-tb-btn" id="btnExcel" onclick="exportExcel()" disabled>
                         📥 Excel
                     </button>
@@ -419,6 +430,7 @@
     let imageList = [];
     let imageIndex = 0;
     let savedLayoutId = 0;
+    let currentAbortController = null;
 
     // ─── Toast Notifications ─────────────────────────────────
     function showToast(message, type) {
@@ -496,32 +508,96 @@
             var resp = await fetch('/api/reports/detail/' + id);
             currentReportDef = await resp.json();
             renderFilters(currentReportDef.filters || []);
+            // تحميل خيارات الباراميترات من DB
+            await loadParameterOptions(currentReportDef.filters || []);
+            // تعطيل toolbar حتى ضغط بحث
+            disableToolbar(true);
             document.getElementById('filterBar').classList.add('wd-filter-bar--visible');
         } catch (err) {
             console.error('Failed to load report definition', err);
         }
 
-        // Load report data
-        loadReportData(id, {});
+        // لا تحمل البيانات مباشرة — الباراميترات تظهر أولاً
+        // loadReportData(id, {}); ← معطل الآن
+    }
+
+    // ─── Load Parameter Options ─────────────────────────────
+    async function loadParameterOptions(filters) {
+        if (!filters || !currentReportId) return;
+
+        for (var i = 0; i < filters.length; i++) {
+            var f = filters[i];
+            // فقط للفلاتر من نوع Dropdown ولها OptionsQuery
+            if (f.filterType !== 'Dropdown' || !f.optionsQuery) continue;
+
+            var select = document.getElementById('filter-' + f.id + '-' + i);
+            if (!select) continue;
+
+            try {
+                var resp = await fetch('/api/reports-data/parameterOptions?reportId=' + currentReportId + '&filterId=' + f.id);
+                var options = await resp.json();
+
+                if (Array.isArray(options) && options.length > 0) {
+                    // احتفظ بخيار "الكل"
+                    select.innerHTML = '<option value="">الكل</option>';
+                    options.forEach(function(opt) {
+                        var o = document.createElement('option');
+                        o.value = opt.value;
+                        o.textContent = opt.text;
+                        select.appendChild(o);
+                    });
+
+                    // اختر القيمة الافتراضية إن وجدت
+                    if (f.defaultValue) {
+                        select.value = f.defaultValue;
+                    }
+                }
+            } catch (err) {
+                console.warn('Failed to load parameter options for filter', f.id);
+            }
+        }
+    }
+
+    // ─── Toolbar helpers ────────────────────────────────────
+    function disableToolbar(disabled) {
+        ['gridSearch','btnExcel','btnColumns','btnSaveLayout','btnRefresh'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.disabled = disabled;
+        });
+    }
+    function enableToolbar(enabled) {
+        disableToolbar(!enabled);
     }
 
     // ─── Load Report Data ───────────────────────────────────
     async function loadReportData(reportId, filterValues) {
+        // استخدم الدالة الجديدة مع إلغاء آلي
+        if (currentAbortController) {
+            currentAbortController.abort();
+        }
+        currentAbortController = new AbortController();
+        await loadReportDataWithCancel(reportId, filterValues, currentAbortController.signal);
+        currentAbortController = null;
+    }
+
+    // ─── Load Report Data With Cancel Support ───────────────
+    async function loadReportDataWithCancel(reportId, filterValues, signal) {
         var container = document.getElementById('gridContainer');
         container.innerHTML = '<div class="wd-skeleton-wrap"><div class="wd-skel"></div><div class="wd-skel"></div><div class="wd-skel"></div><div class="wd-skel"></div><div class="wd-skel"></div></div>';
 
-        // Enable/disable toolbar buttons
-        document.getElementById('gridSearch').disabled = true;
-        document.getElementById('btnExcel').disabled = true;
-        document.getElementById('btnColumns').disabled = true;
-        document.getElementById('btnSaveLayout').disabled = true;
+        // تعطيل toolbar
+        disableToolbar(true);
 
         try {
             var resp = await fetch('/api/reports-data/execute', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reportId: reportId, filterValues: filterValues || {} })
+                body: JSON.stringify({ reportId: reportId, filterValues: filterValues || {} }),
+                signal: signal
             });
+
+            if (!resp) return; // تم الإلغاء
+
             var data = await resp.json();
 
             if (!data.success) {
@@ -534,6 +610,8 @@
 
             if (data.rows.length === 0) {
                 container.innerHTML = '<div class="wd-empty"><div class="wd-empty__icon">📋</div><h3>لا توجد بيانات</h3><p>التقرير لا يحتوي على بيانات تطابق الفلاتر المحددة.</p></div>';
+                // تحديث عداد الصفوف
+                updateRowCounter(0, 0);
                 return;
             }
 
@@ -542,13 +620,19 @@
             // Load saved layouts
             loadLayouts();
 
-            // Enable toolbar
-            document.getElementById('gridSearch').disabled = false;
-            document.getElementById('btnExcel').disabled = false;
-            document.getElementById('btnColumns').disabled = false;
-            document.getElementById('btnSaveLayout').disabled = false;
+            // تفعيل toolbar
+            enableToolbar(true);
+
+            // تحديث عداد الصفوف
+            if (data.rows) {
+                updateRowCounter(data.rows.length, data.rowCount || data.rows.length);
+            }
 
         } catch (err) {
+            if (err.name === 'AbortError') {
+                // تم الإلغاء — لا تفعل شيئاً
+                return;
+            }
             container.innerHTML = '<div class="wd-empty"><div class="wd-empty__icon">⚠️</div><h3>خطأ في الاتصال</h3><p>تعذر الاتصال بالخادم. تأكد من تشغيل الخادم.</p></div>';
         }
     }
@@ -608,7 +692,8 @@
         });
 
         html += '<div class="wd-filter-bar__actions">';
-        html += '<button class="wd-tb-btn wd-tb-btn--primary" onclick="applyFilters()">🔍 تطبيق</button>';
+        html += '<button class="wd-btn wd-btn--primary" onclick="executeSearch()" id="btnSearch" style="padding:8px 20px;font-weight:600;">🔍 بحث</button>';
+        html += '<button class="wd-btn wd-btn--danger" onclick="cancelSearch()" id="btnCancel" style="padding:8px 20px;" disabled>❌ إلغاء</button>';
         html += '<button class="wd-tb-btn" onclick="clearFilters()">✕ مسح</button>';
         html += '</div>';
 
@@ -659,6 +744,43 @@
         loadReportData(currentReportId, filterValues);
     }
 
+    // ─── Search / Cancel ────────────────────────────────────
+    async function executeSearch() {
+        if (!currentReportId) return;
+
+        var filterValues = collectFilterValues();
+
+        // إدارة أزرار بحث/إلغاء
+        document.getElementById('btnSearch').disabled = true;
+        document.getElementById('btnCancel').disabled = false;
+
+        // إلغاء أي طلب سابق
+        if (currentAbortController) {
+            currentAbortController.abort();
+        }
+        currentAbortController = new AbortController();
+
+        try {
+            await loadReportDataWithCancel(currentReportId, filterValues, currentAbortController.signal);
+        } finally {
+            document.getElementById('btnSearch').disabled = false;
+            document.getElementById('btnCancel').disabled = true;
+            currentAbortController = null;
+        }
+    }
+
+    function cancelSearch() {
+        if (currentAbortController) {
+            currentAbortController.abort();
+            currentAbortController = null;
+        }
+        document.getElementById('btnSearch').disabled = false;
+        document.getElementById('btnCancel').disabled = true;
+
+        var container = document.getElementById('gridContainer');
+        container.innerHTML = '<div class="wd-empty"><div class="wd-empty__icon">⏹</div><h3>تم إلغاء التحميل</h3><p>تم إلغاء تحميل البيانات. اضغط "بحث" لإعادة المحاولة.</p></div>';
+    }
+
     function clearFilters() {
         if (currentReportDef && currentReportDef.filters) {
             currentReportDef.filters.forEach(function(f, idx) {
@@ -679,7 +801,23 @@
                 }
             });
         }
-        loadReportData(currentReportId, {});
+        // أعد تحميل خيارات الباراميترات
+        if (currentReportDef && currentReportDef.filters) {
+            loadParameterOptions(currentReportDef.filters);
+        }
+    }
+
+    // ─── Row Counter ─────────────────────────────────────────
+    function updateRowCounter(displayedCount, totalCount) {
+        var counter = document.getElementById('rowCounter');
+        if (!counter) return;
+        if (!totalCount || totalCount <= 0) totalCount = displayedCount;
+        if (displayedCount < totalCount) {
+            counter.textContent = 'عرض ' + displayedCount.toLocaleString('ar-SA') + ' من ' + totalCount.toLocaleString('ar-SA') + ' صف (الحد الأقصى)';
+        } else {
+            counter.textContent = displayedCount.toLocaleString('ar-SA') + ' صف';
+        }
+        counter.style.display = '';
     }
 
     // ─── AG Grid Table ──────────────────────────────────────

@@ -3,27 +3,34 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System.Text.Json;
 using WarehouseDashboard.Web.Infrastructure;
 
 namespace WarehouseDashboard.Web.Pages.AdminSecurePanel;
 
 /// <summary>
-/// Admin Query Tester (TASK-COD-010, Objective A).
+/// Admin Query Tester (TASK-COD-010, Objective A, enhanced TASK-ENH-QT-001).
 ///
-/// Lets an authenticated admin validate the SQL query they intend to assign to a
-/// dashboard card. The query is executed READ-ONLY against SQL Server via
-/// <see cref="Microsoft.Data.SqlClient"/> and the connection string is resolved
-/// from configuration with the {SQL_PASSWORD} placeholder substituted from the
-/// SQL_PASSWORD environment variable (never stored in source or config).
+/// Lets an authenticated admin validate SQL queries they intend to assign to a
+/// dashboard card. Supports dual data sources:
+///   - SQL Server via <see cref="Microsoft.Data.SqlClient"/>
+///   - Oracle via <see cref="Oracle.ManagedDataAccess.Client"/>
 ///
-/// The <see cref="SqlReadonlyGuard"/> runs server-side before execution so that
-/// no INSERT/UPDATE/DELETE/MERGE/DDL can ever run through this endpoint.
+/// Includes a Schema Browser API to list tables and columns for both sources.
+/// Queries are executed READ-ONLY via source-specific guards:
+///   <see cref="SqlReadonlyGuard"/> for SQL Server
+///   <see cref="OracleReadonlyGuard"/> for Oracle
+/// Results are limited to <see cref="MaxRows"/> = 1000 rows with a truncated flag.
 /// </summary>
 public class QueryTesterModel : PageModel
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<QueryTesterModel> _logger;
+
+    /// <summary>Maximum rows returned by the query executor.</summary>
+    private const int MaxRows = 1000;
 
     public QueryTesterModel(IConfiguration configuration, ILogger<QueryTesterModel> logger)
     {
@@ -43,78 +50,359 @@ public class QueryTesterModel : PageModel
             return Json(new { success = false, errorMessage = "الرجاء إدخال استعلام SQL." });
         }
 
-        if (!SqlReadonlyGuard.IsReadOnly(request.Sql, out var guardReason))
+        var source = string.IsNullOrWhiteSpace(request.Source) ? "SqlServer" : request.Source;
+
+        if (source == "SqlServer")
         {
-            return Json(new { success = false, errorMessage = guardReason });
-        }
-
-        var connectionString = ConnectionStringHelper.Resolve(_configuration.GetConnectionString("SqlServer"));
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة البيانات غير متوفرة حالياً." });
-        }
-
-        try
-        {
-            await using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-
-            await using var command = new SqlCommand(request.Sql, connection);
-            command.CommandTimeout = 30;
-
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            await using var reader = await command.ExecuteReaderAsync();
-            stopwatch.Stop();
-
-            var columns = new List<ColumnInfo>();
-            for (int i = 0; i < reader.FieldCount; i++)
+            if (!SqlReadonlyGuard.IsReadOnly(request.Sql, out var guardReason))
             {
-                columns.Add(new ColumnInfo
-                {
-                    Name = reader.GetName(i),
-                    DataType = reader.GetFieldType(i).Name
-                });
+                return Json(new { success = false, errorMessage = guardReason });
             }
 
-            var rows = new List<Dictionary<string, object?>>();
-            while (await reader.ReadAsync())
+            var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
             {
-                var row = new Dictionary<string, object?>();
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة البيانات غير متوفرة حالياً." });
+            }
+
+            try
+            {
+                await using var connection = new SqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                await using var command = new SqlCommand(request.Sql, connection);
+                command.CommandTimeout = 30;
+
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                await using var reader = await command.ExecuteReaderAsync();
+                stopwatch.Stop();
+
+                var columns = new List<ColumnInfo>();
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
-                    row[columns[i].Name] = NormalizeValue(reader.GetValue(i));
+                    columns.Add(new ColumnInfo
+                    {
+                        Name = reader.GetName(i),
+                        DataType = reader.GetFieldType(i).Name
+                    });
                 }
-                rows.Add(row);
+
+                var rows = new List<Dictionary<string, object?>>();
+                int rowCount = 0;
+                while (await reader.ReadAsync() && rowCount < MaxRows)
+                {
+                    var row = new Dictionary<string, object?>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        row[columns[i].Name] = NormalizeValue(reader.GetValue(i));
+                    }
+                    rows.Add(row);
+                    rowCount++;
+                }
+
+                await reader.CloseAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    columns,
+                    rows,
+                    rowCount = rows.Count,
+                    elapsedMilliseconds = stopwatch.ElapsedMilliseconds,
+                    truncated = rowCount >= MaxRows
+                });
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Query Tester execution failed (SQL error).");
+                return Json(new
+                {
+                    success = false,
+                    errorMessage = "تعذر تنفيذ الاستعلام. تأكد من صحة الصياغة وأن الجداول والحقول موجودة."
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Query Tester execution failed.");
+                return Json(new
+                {
+                    success = false,
+                    errorMessage = "حدث خطأ أثناء تنفيذ الاستعلام. يرجى المحاولة لاحقاً."
+                });
+            }
+        }
+        else if (source == "Oracle")
+        {
+            if (!OracleReadonlyGuard.IsReadOnly(request.Sql, out var guardReason))
+            {
+                return Json(new { success = false, errorMessage = guardReason });
             }
 
-            await reader.CloseAsync();
+            var connectionString = ConnectionStringHelper.ResolveOracle(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة بيانات Oracle غير متوفرة حالياً." });
+            }
 
-            return Json(new
+            try
             {
-                success = true,
-                columns,
-                rows,
-                rowCount = rows.Count,
-                elapsedMilliseconds = stopwatch.ElapsedMilliseconds
-            });
+                await using var connection = new OracleConnection(connectionString);
+                await connection.OpenAsync();
+
+                await using var command = new OracleCommand(request.Sql, connection);
+                command.CommandTimeout = 30;
+
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                await using var reader = await command.ExecuteReaderAsync();
+                stopwatch.Stop();
+
+                var columns = new List<ColumnInfo>();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    columns.Add(new ColumnInfo
+                    {
+                        Name = reader.GetName(i),
+                        DataType = reader.GetFieldType(i).Name
+                    });
+                }
+
+                var rows = new List<Dictionary<string, object?>>();
+                int rowCount = 0;
+                while (await reader.ReadAsync() && rowCount < MaxRows)
+                {
+                    var row = new Dictionary<string, object?>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        try
+                        {
+                            row[columns[i].Name] = NormalizeValue(reader.GetValue(i));
+                        }
+                        catch
+                        {
+                            // If GetValue fails for this specific column, try GetOracleValue fallback
+                            try
+                            {
+                                row[columns[i].Name] = reader.GetOracleValue(i)?.ToString();
+                            }
+                            catch
+                            {
+                                row[columns[i].Name] = "<unreadable>";
+                            }
+                        }
+                    }
+                    rows.Add(row);
+                    rowCount++;
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    columns,
+                    rows,
+                    rowCount = rows.Count,
+                    elapsedMilliseconds = stopwatch.ElapsedMilliseconds,
+                    truncated = rowCount >= MaxRows
+                });
+            }
+            catch (OracleException ex)
+            {
+                _logger.LogError(ex, "Oracle Query Tester execution failed (Oracle error).");
+                return Json(new
+                {
+                    success = false,
+                    errorMessage = $"خطأ Oracle ({ex.Number}): {ex.Message}"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Oracle Query Tester execution failed.");
+                return Json(new
+                {
+                    success = false,
+                    errorMessage = "حدث خطأ أثناء تنفيذ الاستعلام. يرجى المحاولة لاحقاً."
+                });
+            }
         }
-        catch (SqlException ex)
+        else
         {
-            _logger.LogError(ex, "Query Tester execution failed (SQL error).");
-            return Json(new
-            {
-                success = false,
-                errorMessage = "تعذر تنفيذ الاستعلام. تأكد من صحة الصياغة وأن الجداول والحقول موجودة."
-            });
+            return Json(new { success = false, errorMessage = $"مصدر البيانات غير معروف: '{source}'. يرجى اختيار SqlServer أو Oracle." });
         }
-        catch (Exception ex)
+    }
+
+    /// <summary>Schema browser: lists tables for the given source.</summary>
+    public async Task<IActionResult> OnGetTablesAsync([FromQuery] string source)
+    {
+        var resolved = string.IsNullOrWhiteSpace(source) ? "SqlServer" : source;
+
+        if (resolved == "SqlServer")
         {
-            _logger.LogError(ex, "Query Tester execution failed.");
-            return Json(new
+            var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
             {
-                success = false,
-                errorMessage = "حدث خطأ أثناء تنفيذ الاستعلام. يرجى المحاولة لاحقاً."
-            });
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة البيانات غير متوفرة حالياً." });
+            }
+
+            try
+            {
+                await using var connection = new SqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                const string sql = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' ORDER BY TABLE_SCHEMA, TABLE_NAME";
+                await using var command = new SqlCommand(sql, connection);
+                command.CommandTimeout = 15;
+
+                await using var reader = await command.ExecuteReaderAsync();
+                var tables = new List<object>();
+                while (await reader.ReadAsync())
+                {
+                    tables.Add(new { schema = reader.GetString(0), tableName = reader.GetString(1) });
+                }
+
+                return Json(new { success = true, tables });
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Schema table list failed (SQL Server).");
+                return Json(new { success = false, errorMessage = "تعذر تحميل قائمة الجداول." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Schema table list failed.");
+                return Json(new { success = false, errorMessage = "حدث خطأ أثناء تحميل قائمة الجداول." });
+            }
+        }
+        else if (resolved == "Oracle")
+        {
+            var connectionString = ConnectionStringHelper.ResolveOracle(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة بيانات Oracle غير متوفرة حالياً." });
+            }
+
+            try
+            {
+                await using var connection = new OracleConnection(connectionString);
+                await connection.OpenAsync();
+
+                const string sql = "SELECT OWNER, TABLE_NAME FROM ALL_TABLES ORDER BY OWNER, TABLE_NAME";
+                await using var command = new OracleCommand(sql, connection);
+                command.CommandTimeout = 15;
+
+                await using var reader = await command.ExecuteReaderAsync();
+                var tables = new List<object>();
+                while (await reader.ReadAsync())
+                {
+                    tables.Add(new { schema = reader.GetString(0), tableName = reader.GetString(1) });
+                }
+
+                return Json(new { success = true, tables });
+            }
+            catch (OracleException ex)
+            {
+                _logger.LogError(ex, "Schema table list failed (Oracle).");
+                return Json(new { success = false, errorMessage = "تعذر تحميل قائمة الجداول." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Schema table list failed.");
+                return Json(new { success = false, errorMessage = "حدث خطأ أثناء تحميل قائمة الجداول." });
+            }
+        }
+        else
+        {
+            return Json(new { success = false, errorMessage = $"مصدر البيانات غير معروف: '{resolved}'." });
+        }
+    }
+
+    /// <summary>Schema browser: lists columns for the given table and source.</summary>
+    public async Task<IActionResult> OnGetColumnsAsync([FromQuery] string source, [FromQuery] string table)
+    {
+        if (string.IsNullOrWhiteSpace(table))
+        {
+            return Json(new { success = false, errorMessage = "الرجاء تحديد اسم الجدول." });
+        }
+
+        var resolved = string.IsNullOrWhiteSpace(source) ? "SqlServer" : source;
+
+        if (resolved == "SqlServer")
+        {
+            var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة البيانات غير متوفرة حالياً." });
+            }
+
+            try
+            {
+                await using var connection = new SqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                const string sql = "SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table ORDER BY ORDINAL_POSITION";
+                await using var command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@table", table);
+                command.CommandTimeout = 15;
+
+                await using var reader = await command.ExecuteReaderAsync();
+                var columns = new List<object>();
+                while (await reader.ReadAsync())
+                {
+                    columns.Add(new { name = reader.GetString(0), dataType = reader.GetString(1), nullable = reader.GetString(2) });
+                }
+
+                return Json(new { success = true, columns });
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Schema column list failed (SQL Server).");
+                return Json(new { success = false, errorMessage = "تعذر تحميل قائمة الأعمدة." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Schema column list failed.");
+                return Json(new { success = false, errorMessage = "حدث خطأ أثناء تحميل قائمة الأعمدة." });
+            }
+        }
+        else if (resolved == "Oracle")
+        {
+            var connectionString = ConnectionStringHelper.ResolveOracle(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة بيانات Oracle غير متوفرة حالياً." });
+            }
+
+            try
+            {
+                await using var connection = new OracleConnection(connectionString);
+                await connection.OpenAsync();
+
+                const string sql = "SELECT COLUMN_NAME, DATA_TYPE, NULLABLE FROM ALL_TAB_COLUMNS WHERE TABLE_NAME = UPPER(:table) ORDER BY COLUMN_ID";
+                await using var command = new OracleCommand(sql, connection);
+                command.Parameters.Add(new OracleParameter("table", table));
+                command.CommandTimeout = 15;
+
+                await using var reader = await command.ExecuteReaderAsync();
+                var columns = new List<object>();
+                while (await reader.ReadAsync())
+                {
+                    columns.Add(new { name = reader.GetString(0), dataType = reader.GetString(1), nullable = reader.IsDBNull(2) ? string.Empty : reader.GetString(2) });
+                }
+
+                return Json(new { success = true, columns });
+            }
+            catch (OracleException ex)
+            {
+                _logger.LogError(ex, "Schema column list failed (Oracle).");
+                return Json(new { success = false, errorMessage = "تعذر تحميل قائمة الأعمدة." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Schema column list failed.");
+                return Json(new { success = false, errorMessage = "حدث خطأ أثناء تحميل قائمة الأعمدة." });
+            }
+        }
+        else
+        {
+            return Json(new { success = false, errorMessage = $"مصدر البيانات غير معروف: '{resolved}'." });
         }
     }
 
@@ -128,6 +416,28 @@ public class QueryTesterModel : PageModel
         if (value is byte[])
         {
             return "<binary>";
+        }
+
+        // OracleDecimal can overflow when cast to .NET decimal.
+        // Convert to string first for safe JSON serialization.
+        if (value is OracleDecimal oracleDecimal)
+        {
+            try
+            {
+                // Try the normal .NET decimal conversion first (works for most values).
+                return (decimal)oracleDecimal.Value;
+            }
+            catch (OverflowException)
+            {
+                // Value too large for .NET decimal — fall back to string representation.
+                return oracleDecimal.ToString();
+            }
+        }
+
+        // OracleClob — convert to string for safe JSON serialization.
+        if (value is OracleClob clob)
+        {
+            return clob.Value;
         }
 
         return value;
@@ -149,6 +459,7 @@ public class QueryTesterModel : PageModel
 public class QueryRunRequest
 {
     public string? Sql { get; set; }
+    public string Source { get; set; } = "SqlServer";
 }
 
 /// <summary>Column metadata returned to the client for dynamic grid generation.</summary>

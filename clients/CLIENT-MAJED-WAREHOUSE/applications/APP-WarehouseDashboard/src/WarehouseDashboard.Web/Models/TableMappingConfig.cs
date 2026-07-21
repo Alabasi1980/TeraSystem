@@ -22,7 +22,7 @@ public class TableMappingConfig
     /// Oracle source identifier: a table name, a view name, or a full SQL query.
     /// </summary>
     [Required]
-    [MaxLength(200)]
+    [MaxLength(4000)]
     public string OracleSource { get; set; } = string.Empty;
 
     /// <summary>
@@ -61,7 +61,7 @@ public class TableMappingConfig
     /// <summary>
     /// Sync strategy: "Full" (truncate + reload) or "Incremental" (append new rows only).
     /// </summary>
-    [MaxLength(10)]
+    [MaxLength(20)]
     public string SyncMode { get; set; } = "Full";
 
     /// <summary>
@@ -70,6 +70,13 @@ public class TableMappingConfig
     /// </summary>
     [MaxLength(128)]
     public string? IncrementalColumn { get; set; }
+
+    /// <summary>
+    /// Optional start date for the first incremental sync. When set, the initial
+    /// sync will only fetch rows where the incremental column >= this date.
+    /// After the first sync, LastSyncAt takes over as the watermark.
+    /// </summary>
+    public DateTime? InitialSyncStartDate { get; set; }
 
     /// <summary>
     /// Per-column type overrides for this mapping.

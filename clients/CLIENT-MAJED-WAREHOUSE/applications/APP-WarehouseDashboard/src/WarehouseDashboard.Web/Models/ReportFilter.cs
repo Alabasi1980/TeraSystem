@@ -27,6 +27,12 @@ public class ReportFilter
     public string? OptionsQuery { get; set; }
 
     [MaxLength(200)]
+    public string? ValueColumn { get; set; }
+
+    [MaxLength(200)]
+    public string? TextColumn { get; set; }
+
+    [MaxLength(200)]
     public string? Placeholder { get; set; }
 
     public int SortOrder { get; set; }

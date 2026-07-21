@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Excel export (MIT license) -->
+    <PackageReference Include="ClosedXML" Version="0.104.*" />
+  </ItemGroup>
+
 </Project>

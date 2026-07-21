@@ -5,14 +5,15 @@
 ## [2026-07-14 18:15] - GAP_Encoding_AdminSecurePanel
 
 - **Related Task:** TASK-COD-FIX-002
-- **Severity:** Medium
+- **Severity:** Medium (resolved)
 - **Summary:** ثلاث صفحات Razor داخل `admin-secure-panel` محفوظة بترميز UTF-16LE/BOM وتظهر في المتصفح كمحتوى عربي مشوّه (mojibake).
 - **Affected Files:**
   - `Pages/admin-secure-panel/_ViewStart.cshtml`
   - `Pages/admin-secure-panel/SyncLogs/Index.cshtml`
   - `Pages/admin-secure-panel/SyncSettings/Index.cshtml`
 - **Recommended Action:** Normalization to UTF-8 and re-verify rendering in browser.
-- **Status:** Open
+- **Verification (2026-07-21):** تم فحص جميع الملفات — كلها UTF-8 صحيح، 0% null bytes، لا BOM. Arabic characters: 914 (SyncLogs) + 438 (SyncSettings). Git working tree clean. الترميز سليم ولا يحتاج أي إصلاح.
+- **Status:** ✅ Resolved — الترميز سليم UTF-8، لا يوجد UTF-16LE في أي ملف. تم تحديث السجلات لتأكيد الحل.
 
 ## [2026-07-14 19:35] - GAP_UI_Builder_JS_Missing
 

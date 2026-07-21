@@ -5,68 +5,441 @@
 }
 
 <style>
-    /* ─── Page layout ─── */
-    .wd-page { max-width: 1100px; margin: 0 auto; padding: 0; }
-    .wd-page__header { margin-bottom: 24px; animation: wdFadeUp var(--dur-norm) var(--ease); }
-    .wd-breadcrumb { font-size: 12px; color: var(--c-text-muted); margin-bottom: 6px; }
-    .wd-breadcrumb a { color: var(--c-secondary); text-decoration: none; }
-    .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
-    .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
+    /* ═══════════════════════════════════════════════════════════════
+       SYNC PAGE — Full Redesign (TASK-UI-SYNC-REDESIGN-001)
+       All tokens from blue-theme.css + 28_UI_UX_GUIDELINES.md
+       ═══════════════════════════════════════════════════════════════ */
 
-    /* ─── Summary cards row ─── */
+    /* ─── Page layout ─── */
+    .wd-page {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0;
+    }
+    .wd-page__header {
+        margin-bottom: var(--sp-6);
+        animation: wdFadeUp var(--dur-norm) var(--ease);
+    }
+    .wd-breadcrumb {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-1);
+    }
+    .wd-breadcrumb a {
+        color: var(--c-secondary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color var(--dur-fast) var(--ease);
+    }
+    .wd-breadcrumb a:hover { color: var(--c-primary-strong); }
+    .wd-breadcrumb__sep { opacity: 0.5; margin: 0 4px; }
+    .wd-breadcrumb__current { color: var(--c-text); font-weight: 600; }
+    .wd-page__title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--c-text);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+    }
+    .wd-page__title-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(135deg, var(--c-primary), var(--c-primary-strong));
+        color: #fff;
+        font-size: 18px;
+        flex: none;
+    }
+    .wd-page__subtitle {
+        font-size: 14px;
+        color: var(--c-text-muted);
+        margin: 6px 0 0;
+        padding-inline-start: 44px;
+    }
+
+    /* ─── Connection status bar ─── */
+    .wd-conn-bar {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        padding: 8px 14px;
+        margin-bottom: var(--sp-5);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        font-weight: 600;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        transition: background var(--dur-norm) var(--ease), border-color var(--dur-norm) var(--ease);
+    }
+    .wd-conn-bar--online {
+        background: rgba(30, 158, 106, 0.08);
+        border: 1px solid rgba(30, 158, 106, 0.18);
+        color: var(--c-success);
+    }
+    .wd-conn-bar--offline {
+        background: rgba(214, 69, 69, 0.08);
+        border: 1px solid rgba(214, 69, 69, 0.18);
+        color: var(--c-error);
+    }
+    .wd-conn-bar--checking {
+        background: rgba(224, 161, 6, 0.08);
+        border: 1px solid rgba(224, 161, 6, 0.18);
+        color: var(--c-warning);
+    }
+    .wd-conn-bar__dot {
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        flex: none;
+        transition: background var(--dur-norm) var(--ease);
+    }
+    .wd-conn-bar--online .wd-conn-bar__dot { background: var(--c-success); }
+    .wd-conn-bar--offline .wd-conn-bar__dot { background: var(--c-error); }
+    .wd-conn-bar--checking .wd-conn-bar__dot {
+        background: var(--c-warning);
+        animation: wdPulse 1s ease-in-out infinite;
+    }
+    .wd-conn-bar__icon { font-size: 14px; flex: none; }
+    .wd-conn-bar__text { flex: 1; }
+    .wd-conn-bar__retry {
+        background: none;
+        border: 1px solid currentColor;
+        border-radius: var(--radius-sm);
+        padding: 3px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        color: inherit;
+        font-family: var(--font-ar);
+        transition: opacity var(--dur-fast) var(--ease);
+    }
+    .wd-conn-bar__retry:hover { opacity: 0.7; }
+
+    /* ─── Summary cards ─── */
     .wd-summary-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: var(--sp-4);
-        margin-bottom: var(--sp-6);
-        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        margin-bottom: var(--sp-5);
     }
     .wd-summary-card {
-        background: var(--c-surface);
-        border: 1px solid var(--c-border);
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(212, 226, 240, 0.6);
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 1px 3px rgba(10, 37, 64, 0.04), 0 4px 16px rgba(10, 37, 64, 0.03);
         padding: var(--sp-5) var(--sp-4);
         display: flex;
         align-items: center;
         gap: var(--sp-4);
-        transition: box-shadow var(--dur-norm) var(--ease);
+        transition: box-shadow var(--dur-norm) var(--ease), transform var(--dur-norm) var(--ease), border-color var(--dur-norm) var(--ease);
+        opacity: 0;
+        transform: translateY(12px);
+        animation: wdCardStagger var(--dur-norm) var(--ease) forwards;
     }
-    .wd-summary-card:hover { box-shadow: var(--shadow-md); }
+    .wd-summary-card:nth-child(1) { animation-delay: 0.05s; }
+    .wd-summary-card:nth-child(2) { animation-delay: 0.12s; }
+    .wd-summary-card:nth-child(3) { animation-delay: 0.19s; }
+    .wd-summary-card:nth-child(4) { animation-delay: 0.26s; }
+    .wd-summary-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-3px);
+        border-color: rgba(31, 78, 121, 0.15);
+    }
     .wd-summary-card__icon {
-        width: 48px; height: 48px; flex: none;
+        width: 48px;
+        height: 48px;
+        flex: none;
         border-radius: var(--radius-md);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        transition: transform var(--dur-norm) var(--ease);
     }
-    .wd-summary-card__icon--status { background: rgba(30, 158, 106, 0.12); color: var(--c-success); }
-    .wd-summary-card__icon--records { background: rgba(46, 109, 164, 0.12); color: var(--c-info); }
-    .wd-summary-card__icon--time { background: rgba(224, 161, 6, 0.12); color: var(--c-warning); }
-    .wd-summary-card__icon--config { background: rgba(91, 122, 153, 0.12); color: var(--c-text-muted); }
-    .wd-summary-card__body { min-width: 0; }
+    .wd-summary-card:hover .wd-summary-card__icon { transform: scale(1.08); }
+    .wd-summary-card__icon--status {
+        background: linear-gradient(135deg, rgba(30, 158, 106, 0.15), rgba(30, 158, 106, 0.05));
+        color: var(--c-success);
+    }
+    .wd-summary-card__icon--records {
+        background: linear-gradient(135deg, rgba(46, 109, 164, 0.15), rgba(46, 109, 164, 0.05));
+        color: var(--c-secondary);
+    }
+    .wd-summary-card__icon--time {
+        background: linear-gradient(135deg, rgba(224, 161, 6, 0.15), rgba(224, 161, 6, 0.05));
+        color: var(--c-warning);
+    }
+    .wd-summary-card__icon--config {
+        background: linear-gradient(135deg, rgba(91, 122, 153, 0.15), rgba(91, 122, 153, 0.05));
+        color: var(--c-text-muted);
+    }
+    .wd-summary-card__body { min-width: 0; flex: 1; }
     .wd-summary-card__value {
-        font-size: 20px; font-weight: 700; color: var(--c-text);
-        line-height: 1.3; margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--c-text);
+        line-height: 1.3;
+        margin: 0;
+        font-variant-numeric: tabular-nums;
     }
     .wd-summary-card__label {
-        font-size: 12px; color: var(--c-text-muted);
+        font-size: 12px;
+        color: var(--c-text-muted);
         margin: 2px 0 0;
     }
-    .wd-summary-card__status-dot {
-        display: inline-block; width: 10px; height: 10px;
-        border-radius: var(--radius-full); margin-inline-end: 6px;
+    .wd-summary-card__status-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
-    .wd-summary-card__status-dot--active { background: var(--c-success); }
+    .wd-summary-card__status-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        transition: background var(--dur-norm) var(--ease);
+    }
+    .wd-summary-card__status-dot--active { background: var(--c-success); box-shadow: 0 0 6px rgba(30, 158, 106, 0.4); }
     .wd-summary-card__status-dot--inactive { background: var(--c-error); }
+    .wd-summary-card__status-dot--running {
+        background: var(--c-warning);
+        animation: wdPulse 1s ease-in-out infinite;
+    }
 
     /* ─── Action bar ─── */
     .wd-action-bar {
-        display: flex; align-items: center; gap: var(--sp-3);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
         margin-bottom: var(--sp-4);
         flex-wrap: wrap;
         animation: wdFadeUp var(--dur-norm) var(--ease) both;
     }
-    .wd-action-bar .wd-meta { font-size: 13px; color: var(--c-text-muted); margin-inline-start: auto; }
+    .wd-search-wrap {
+        position: relative;
+        flex: 1 1 240px;
+        min-width: 180px;
+    }
+    .wd-search-input {
+        width: 100%;
+        padding: 8px 14px 8px 38px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-surface);
+        font-family: var(--font-ar);
+        font-size: 14px;
+        color: var(--c-text);
+        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+        outline: none;
+    }
+    .wd-search-input::placeholder { color: var(--c-text-muted); }
+    .wd-search-input:focus {
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(31, 78, 121, 0.1);
+    }
+    .wd-search-icon {
+        position: absolute;
+        inset-inline-start: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--c-text-muted);
+        pointer-events: none;
+        font-size: 16px;
+        line-height: 1;
+    }
+    .wd-search-clear {
+        position: absolute;
+        inset-inline-end: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--c-text-muted);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 4px;
+        line-height: 1;
+        display: none;
+        border-radius: var(--radius-full);
+        transition: background var(--dur-fast) var(--ease);
+    }
+    .wd-search-clear:hover { background: var(--c-surface-muted); }
+    .wd-search-clear.is-visible { display: block; }
+    .wd-action-bar .wd-meta {
+        font-size: 13px;
+        color: var(--c-text-muted);
+        margin-inline-start: auto;
+        white-space: nowrap;
+    }
+    .wd-action-bar .wd-check-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+    .wd-action-bar .wd-check-label input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--c-primary);
+        cursor: pointer;
+    }
+
+    /* ─── Buttons (inherit from blue-theme.css, add variants) ─── */
+    .wd-btn--success {
+        background: var(--c-success);
+        color: #fff;
+    }
+    .wd-btn--success:hover { background: #1a8a5d; }
+    .wd-btn--outline-success {
+        background: transparent;
+        color: var(--c-success);
+        border-color: var(--c-success);
+    }
+    .wd-btn--outline-success:hover { background: rgba(30, 158, 106, 0.08); }
+    .wd-btn--icon {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+    }
+    .wd-btn--icon svg { width: 18px; height: 18px; }
+
+    /* ─── Skeleton loading ─── */
+    .wd-skeleton-wrap {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-skeleton-cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--sp-4);
+        margin-bottom: var(--sp-4);
+    }
+    .wd-skeleton-card {
+        padding: var(--sp-5);
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-4);
+    }
+    .wd-skeleton-card__icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+        flex: none;
+    }
+    .wd-skeleton-card__lines { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .wd-skeleton-card__line {
+        height: 14px;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+    }
+    .wd-skeleton-card__line--short { width: 45%; }
+    .wd-skeleton-card__line--long { width: 75%; }
+    .wd-skel-table {
+        padding: var(--sp-4);
+    }
+    .wd-skel-table__row {
+        display: grid;
+        grid-template-columns: 48px 56px 1.5fr 1fr 1.5fr 1fr 110px 90px 110px 90px 80px 60px;
+        gap: var(--sp-3);
+        padding: var(--sp-3) var(--sp-2);
+        border-bottom: 1px solid var(--c-border);
+        align-items: center;
+    }
+    .wd-skel-table__row:last-child { border-bottom: none; }
+    .wd-skel-table__row:first-child { padding-bottom: var(--sp-3); }
+    .wd-skel--box {
+        height: 16px;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+    }
+    .wd-skel--circle {
+        width: 20px;
+        height: 20px;
+        border-radius: var(--radius-full);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+    }
+    .wd-skel--badge {
+        height: 22px;
+        width: 50px;
+        border-radius: var(--radius-full);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+    }
+    .wd-skel--action {
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+    }
+
+    /* ─── Empty state ─── */
+    .wd-empty {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--sp-3);
+        padding: var(--sp-12) var(--sp-6);
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-empty__svg-wrap {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin-bottom: var(--sp-2);
+    }
+    .wd-empty__svg-wrap svg { width: 100%; height: 100%; }
+    .wd-empty__dot {
+        animation: wdFloatDot 2.5s ease-in-out infinite;
+    }
+    .wd-empty__dot:nth-child(2) { animation-delay: 0.4s; }
+    .wd-empty__dot:nth-child(3) { animation-delay: 0.8s; }
+    .wd-empty h3 { margin: 0; font-size: 18px; color: var(--c-text); }
+    .wd-empty p { margin: 0; color: var(--c-text-muted); max-width: 400px; }
+    .wd-empty a {
+        color: var(--c-secondary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .wd-empty a:hover { text-decoration: underline; }
 
     /* ─── Table ─── */
     .wd-table-wrap {
@@ -74,95 +447,539 @@
         border: 1px solid var(--c-border);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);
-        overflow-x: auto;
+        overflow: hidden;
+        width: 100%;
         animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-table-scroll {
+        overflow-x: auto;
+        width: 100%;
     }
     .wd-table {
         width: 100%;
+        min-width: 1100px;
         border-collapse: collapse;
         font-size: 14px;
         font-family: var(--font-ar);
+        table-layout: auto;
+    }
+    .wd-table thead {
+        position: sticky;
+        top: 0;
+        z-index: 2;
     }
     .wd-table th {
-        background: var(--c-surface-muted);
-        color: var(--c-text-muted);
-        font-weight: 600;
+        background: linear-gradient(180deg, var(--c-surface-muted), #E4ECF5);
+        color: var(--c-text);
+        font-weight: 700;
         font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
-        padding: 12px 16px;
+        padding: 14px 16px;
         text-align: start;
-        border-bottom: 1px solid var(--c-border);
+        border-bottom: 2px solid var(--c-border);
         white-space: nowrap;
+        user-select: none;
+        transition: background var(--dur-fast) var(--ease);
     }
+    .wd-table th.wd-th-sortable {
+        cursor: pointer;
+    }
+    .wd-table th.wd-th-sortable:hover { background: #DCE6F2; }
+    .wd-table th .wd-sort-icon {
+        display: inline-block;
+        margin-inline-start: 4px;
+        opacity: 0.3;
+        font-size: 11px;
+        transition: opacity var(--dur-fast) var(--ease);
+    }
+    .wd-table th.wd-th-sortable:hover .wd-sort-icon { opacity: 0.6; }
+    .wd-table th.wd-th-sort-asc .wd-sort-icon,
+    .wd-table th.wd-th-sort-desc .wd-sort-icon { opacity: 1; color: var(--c-primary); }
     .wd-table td {
         padding: 12px 16px;
         color: var(--c-text);
         border-bottom: 1px solid var(--c-border);
         vertical-align: middle;
+        transition: background var(--dur-fast) var(--ease);
     }
-    .wd-table tr:last-child td { border-bottom: none; }
-    .wd-table tr:hover td { background: rgba(31,78,121,0.03); }
+    .wd-table tbody tr:nth-child(even) td { background: #F7FAFD; }
+    .wd-table tbody tr:last-child td { border-bottom: none; }
+    .wd-table tbody tr:hover td { background: rgba(31, 78, 121, 0.04); }
     .wd-table .wd-col-check { width: 48px; text-align: center; }
-    .wd-table .wd-col-check input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--c-primary); }
+    .wd-table .wd-col-check input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: var(--c-primary);
+    }
+    .wd-table .wd-col-source { min-width: 120px; }
+    .wd-table .wd-col-target { min-width: 120px; }
+    .wd-table .wd-col-type { width: 90px; }
+    .wd-table .wd-col-status { width: 110px; }
+    .wd-table .wd-col-actions { width: 80px; }
+    .wd-table .wd-col-dl { width: 60px; }
+    .wd-table td code {
+        font-size: 13px;
+        background: var(--c-surface-muted);
+        padding: 2px 8px;
+        border-radius: var(--radius-sm);
+        font-family: "Cascadia Code", "Consolas", monospace;
+        direction: ltr;
+        display: inline-block;
+    }
+    .wd-table .wd-actions {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+    .wd-table .wd-row--hidden { display: none; }
+    .wd-table td .wd-btn--ghost {
+        padding: 4px 8px;
+        min-height: 30px;
+        font-size: 13px;
+    }
 
+    /* ─── Badges ─── */
     .wd-badge {
-        display: inline-flex; align-items: center; justify-content: center;
-        padding: 3px 10px; border-radius: var(--radius-full);
-        font-size: 12px; font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3px 10px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+        gap: 5px;
     }
-    .wd-badge--active { background: rgba(46,139,87,0.12); color: #2e8b57; }
-    .wd-badge--inactive { background: rgba(200,60,60,0.12); color: #c83c3c; }
-    .wd-badge--query { background: rgba(46,109,164,0.12); color: var(--c-info); }
-    .wd-badge--table { background: rgba(30,158,106,0.12); color: var(--c-success); }
-    .wd-badge--view { background: rgba(224,161,6,0.12); color: var(--c-warning); }
-    .wd-badge--success { background: rgba(30,158,106,0.12); color: var(--c-success); }
-    .wd-badge--failed { background: rgba(214,69,69,0.10); color: var(--c-error); }
-    .wd-badge--running { background: rgba(46,109,164,0.12); color: var(--c-info); }
-
-    .wd-text-muted { color: var(--c-text-muted); font-size: 13px; }
-    .wd-actions { display: flex; gap: 6px; align-items: center; }
-
-    /* ─── Empty state ─── */
-    .wd-empty {
-        text-align: center; display: flex; flex-direction: column; align-items: center;
-        gap: var(--sp-3); padding: var(--sp-12) var(--sp-6);
+    .wd-badge--active { background: rgba(30, 158, 106, 0.12); color: #1a7a4a; }
+    .wd-badge--inactive { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
+    .wd-badge--running { background: rgba(46, 109, 164, 0.12); color: var(--c-secondary); }
+    .wd-badge--completed { background: rgba(30, 158, 106, 0.12); color: var(--c-success); }
+    .wd-badge--failed { background: rgba(214, 69, 69, 0.10); color: var(--c-error); }
+    .wd-badge--query { background: rgba(46, 109, 164, 0.12); color: var(--c-secondary); }
+    .wd-badge--table { background: rgba(30, 158, 106, 0.12); color: var(--c-success); }
+    .wd-badge--view { background: rgba(224, 161, 6, 0.12); color: var(--c-warning); }
+    .wd-badge__dot {
+        width: 7px;
+        height: 7px;
+        border-radius: var(--radius-full);
+        flex: none;
     }
-    .wd-empty__icon {
-        width: 64px; height: 64px; border-radius: var(--radius-full);
-        background: var(--c-surface-muted); color: var(--c-text-muted);
-        display: flex; align-items: center; justify-content: center; font-size: 30px;
-    }
-    .wd-empty h3 { margin: 0; font-size: 18px; color: var(--c-text); }
-    .wd-empty p { margin: 0; color: var(--c-text-muted); }
+    .wd-badge--active .wd-badge__dot { background: var(--c-success); }
+    .wd-badge--inactive .wd-badge__dot { background: var(--c-error); }
+    .wd-badge--running .wd-badge__dot { background: var(--c-secondary); animation: wdPulse 1s ease-in-out infinite; }
+    .wd-badge--completed .wd-badge__dot { background: var(--c-success); }
+    .wd-badge--failed .wd-badge__dot { background: var(--c-error); }
 
-    /* ─── Skeleton ─── */
-    .wd-skeleton-wrap {
+    /* ─── Table footer (count + info) ─── */
+    .wd-table-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: var(--c-surface-muted);
+        border-top: 1px solid var(--c-border);
+        font-size: 12px;
+        color: var(--c-text-muted);
+    }
+    .wd-table-footer__count { font-weight: 600; }
+    .wd-table-footer__hint {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-1);
+    }
+    .wd-table-footer__kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1px 6px;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--c-text-muted);
+        font-family: var(--font-ar);
+    }
+
+    /* ─── SQL Query Modal ─── */
+    .wd-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--sp-4);
+        background: rgba(10, 37, 64, 0.5);
+        backdrop-filter: blur(4px);
+        animation: wdFadeIn 0.2s ease both;
+    }
+    .wd-modal-overlay[hidden] { display: none !important; }
+    .wd-modal {
+        position: relative;
         background: var(--c-surface);
         border: 1px solid var(--c-border);
         border-radius: var(--radius-lg);
-        padding: var(--sp-4);
-        box-shadow: var(--shadow-sm);
+        box-shadow: var(--shadow-xl);
+        width: min(640px, 100%);
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        animation: wdSlideUp 0.3s ease both;
     }
-    .wd-skel-row {
-        display: grid;
-        grid-template-columns: 48px 2fr 1fr 1.5fr 1.2fr 1fr;
-        gap: var(--sp-3);
-        padding: var(--sp-3) var(--sp-2);
+    .wd-modal__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--sp-5) var(--sp-5) var(--sp-3);
         border-bottom: 1px solid var(--c-border);
     }
-    .wd-skel {
-        height: 16px; border-radius: var(--radius-sm);
-        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.08) 50%, var(--c-surface-muted) 75%);
-        background-size: 200% 100%;
-        animation: wdShimmer 1.6s ease-in-out infinite;
+    .wd-modal__title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--c-text);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
     }
-    @@keyframes wdShimmer {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
+    .wd-modal__close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 22px;
+        color: var(--c-text-muted);
+        padding: 4px 8px;
+        border-radius: var(--radius-md);
+        transition: background var(--dur-fast) var(--ease);
+        line-height: 1;
+    }
+    .wd-modal__close:hover { background: var(--c-surface-muted); }
+    .wd-modal__body {
+        padding: var(--sp-5);
+        overflow-y: auto;
+        flex: 1;
+    }
+    .wd-modal__sql {
+        background: #0D1B2A;
+        color: #E0E7EF;
+        padding: var(--sp-5);
+        border-radius: var(--radius-md);
+        font-family: "Cascadia Code", "Consolas", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        direction: ltr;
+        text-align: left;
+        white-space: pre-wrap;
+        word-break: break-all;
+        overflow-x: auto;
+        max-height: 400px;
+    }
+    .wd-modal__sql .sql-keyword {
+        color: #56B6C2;
+        font-weight: 700;
+    }
+    .wd-modal__sql .sql-table {
+        color: #98C379;
+        font-weight: 700;
+    }
+    .wd-modal__sql .sql-string {
+        color: #E5C07B;
+    }
+    .wd-modal__sql .sql-number {
+        color: #D19A66;
+    }
+    .wd-modal__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--sp-3) var(--sp-5) var(--sp-5);
+    }
+    .wd-modal__copy {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-surface);
+        color: var(--c-text);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: var(--font-ar);
+        transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+    .wd-modal__copy:hover {
+        background: var(--c-surface-muted);
+        border-color: var(--c-primary);
+    }
+    .wd-modal__copy.copied {
+        background: rgba(30, 158, 106, 0.1);
+        border-color: var(--c-success);
+        color: var(--c-success);
     }
 
-    /* ─── Progress section ─── */
+    /* ─── Sticky Progress Bar ─── */
+    .wd-progress-sticky {
+        position: fixed;
+        inset-inline: 0;
+        inset-block-end: 0;
+        z-index: 2500;
+        background: var(--c-surface);
+        border-top: 1px solid var(--c-border);
+        box-shadow: 0 -4px 20px rgba(10, 37, 64, 0.12);
+        padding: var(--sp-3) var(--sp-5);
+        animation: wdSlideUp 0.35s var(--ease) both;
+        transition: transform 0.4s var(--ease), opacity 0.4s var(--ease);
+    }
+    .wd-progress-sticky[hidden] { display: none !important; }
+    .wd-progress-sticky__top {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-4);
+        margin-bottom: var(--sp-2);
+    }
+    .wd-progress-sticky__label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--c-primary);
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .wd-progress-sticky__spinner {
+        display: inline-block;
+        animation: wdPulse 1s ease-in-out infinite;
+    }
+    .wd-progress-sticky__bar {
+        flex: 1;
+        height: 8px;
+        background: var(--c-surface-muted);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+    }
+    .wd-progress-sticky__fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--c-primary), var(--c-secondary));
+        border-radius: var(--radius-full);
+        transition: width 0.5s var(--ease);
+        width: 0%;
+        position: relative;
+    }
+    .wd-progress-sticky__fill::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        animation: wdProgressShine 2s ease-in-out infinite;
+    }
+    .wd-progress-sticky__info {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-text);
+        white-space: nowrap;
+        min-width: 100px;
+        text-align: center;
+    }
+    .wd-progress-sticky__items {
+        display: flex;
+        gap: var(--sp-3);
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+    .wd-progress-sticky__item {
+        font-size: 12px;
+        white-space: nowrap;
+        padding: 2px 8px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .wd-progress-sticky__item--running {
+        background: rgba(46, 109, 164, 0.1);
+        color: var(--c-secondary);
+    }
+    .wd-progress-sticky__item--completed {
+        background: rgba(30, 158, 106, 0.1);
+        color: var(--c-success);
+    }
+    .wd-progress-sticky__item--failed {
+        background: rgba(214, 69, 69, 0.1);
+        color: var(--c-error);
+    }
+
+    /* ─── Filter Dropdowns ─── */
+    .wd-filter-wrap {
+        position: relative;
+        display: inline-block;
+    }
+    .wd-filter-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-surface);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-text);
+        cursor: pointer;
+        font-family: var(--font-ar);
+        white-space: nowrap;
+        transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+        user-select: none;
+    }
+    .wd-filter-btn:hover {
+        border-color: var(--c-primary);
+    }
+    .wd-filter-btn.is-active {
+        border-color: var(--c-primary);
+        background: rgba(31, 78, 121, 0.06);
+        color: var(--c-primary);
+    }
+    .wd-filter-btn__arrow {
+        font-size: 10px;
+        transition: transform var(--dur-fast) var(--ease);
+    }
+    .wd-filter-wrap.is-open .wd-filter-btn__arrow { transform: rotate(180deg); }
+    .wd-filter-dropdown {
+        position: absolute;
+        inset-inline-start: 0;
+        top: calc(100% + 4px);
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        min-width: 160px;
+        z-index: 500;
+        padding: 4px;
+        display: none;
+    }
+    .wd-filter-wrap.is-open .wd-filter-dropdown { display: block; animation: wdSlideUp 0.15s ease both; }
+    .wd-filter-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        color: var(--c-text);
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        font-family: var(--font-ar);
+        text-align: start;
+        transition: background var(--dur-fast) var(--ease);
+    }
+    .wd-filter-option:hover { background: var(--c-surface-muted); }
+    .wd-filter-option.is-selected {
+        background: rgba(31, 78, 121, 0.08);
+        color: var(--c-primary);
+        font-weight: 600;
+    }
+    .wd-filter-option__check {
+        width: 16px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--c-primary);
+        flex: none;
+    }
+
+    /* ─── Toggle Switch ─── */
+    .wd-toggle {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+    .wd-toggle__input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .wd-toggle__track {
+        width: 36px;
+        height: 20px;
+        border-radius: var(--radius-full);
+        background: var(--c-border);
+        position: relative;
+        transition: background var(--dur-fast) var(--ease);
+        flex: none;
+    }
+    .wd-toggle__thumb {
+        position: absolute;
+        top: 2px;
+        inset-inline-start: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: var(--radius-full);
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        transition: inset-inline-start var(--dur-fast) var(--ease);
+    }
+    .wd-toggle__input:checked + .wd-toggle__track {
+        background: var(--c-success);
+    }
+    .wd-toggle__input:checked + .wd-toggle__track .wd-toggle__thumb {
+        inset-inline-start: 18px;
+    }
+    .wd-toggle__input:disabled + .wd-toggle__track {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* ─── Auto-refresh toggle (small) ─── */
+    .wd-auto-refresh {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-surface);
+        font-size: 12px;
+        color: var(--c-text-muted);
+        white-space: nowrap;
+        cursor: pointer;
+        transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+    }
+    .wd-auto-refresh:hover { border-color: var(--c-primary); }
+    .wd-auto-refresh.is-active {
+        border-color: var(--c-success);
+        color: var(--c-success);
+        background: rgba(30, 158, 106, 0.06);
+    }
+
+    /* ─── Table column widths update ─── */
+    .wd-table .wd-col-toggle { width: 56px; text-align: center; }
+    .wd-table .wd-col-lastSync { width: 110px; }
+    .wd-table .wd-col-records { width: 90px; text-align: center; }
+    .wd-table .wd-col-storedRecords { width: 110px; text-align: center; }
+    .wd-table .wd-col-eye { width: 40px; text-align: center; }
+    .wd-table td .wd-eye-btn {
+        background: none;
+        border: 1px solid var(--c-border);
+        color: var(--c-text-muted);
+        cursor: pointer;
+        font-size: 15px;
+        padding: 4px 6px;
+        border-radius: var(--radius-sm);
+        transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+        line-height: 1;
+    }
+    .wd-table td .wd-eye-btn:hover {
+        color: var(--c-primary);
+        border-color: var(--c-primary);
+        background: rgba(31, 78, 121, 0.06);
+    }
+
+    /* ─── Progress section (original, kept for compatibility) ─── */
     .wd-progress-section {
         margin-top: var(--sp-4);
         animation: wdFadeUp var(--dur-norm) var(--ease);
@@ -173,21 +990,43 @@
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);
         padding: var(--sp-5);
+        border-inline-start: 4px solid var(--c-primary);
+    }
+    .wd-progress-card__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--sp-4);
     }
     .wd-progress-card__title {
-        font-size: 16px; font-weight: 700; color: var(--c-text);
-        margin: 0 0 var(--sp-4);
-        display: flex; align-items: center; gap: var(--sp-2);
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--c-text);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
     }
+    .wd-progress-card__title svg { color: var(--c-primary); flex: none; }
+    .wd-progress-card__status {
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+    }
+    .wd-progress-card__status--running { color: var(--c-secondary); }
+    .wd-progress-card__status--completed { color: var(--c-success); }
+    .wd-progress-card__status--failed { color: var(--c-error); }
     .wd-progress-overall {
-        margin-bottom: var(--sp-4);
+        margin-bottom: var(--sp-5);
     }
     .wd-progress-overall__bar {
         height: 10px;
         background: var(--c-surface-muted);
         border-radius: var(--radius-full);
         overflow: hidden;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
     }
     .wd-progress-overall__fill {
         height: 100%;
@@ -195,18 +1034,36 @@
         border-radius: var(--radius-full);
         transition: width 0.5s var(--ease);
         width: 0%;
+        position: relative;
     }
-    .wd-progress-overall__label {
-        display: flex; justify-content: space-between;
-        font-size: 13px; color: var(--c-text-muted);
+    .wd-progress-overall__fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        animation: wdProgressShine 2s ease-in-out infinite;
     }
+    .wd-progress-overall__info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: var(--c-text-muted);
+    }
+    .wd-progress-overall__pct { font-weight: 700; color: var(--c-text); }
+    .wd-progress-items { display: flex; flex-direction: column; gap: var(--sp-3); }
     .wd-progress-item {
-        display: flex; flex-direction: column; gap: 2px;
-        margin-bottom: var(--sp-3);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
     }
     .wd-progress-item__header {
-        display: flex; justify-content: space-between;
-        font-size: 13px; color: var(--c-text);
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: var(--c-text);
     }
     .wd-progress-item__name { font-weight: 600; }
     .wd-progress-item__status { font-size: 12px; }
@@ -221,72 +1078,459 @@
         border-radius: var(--radius-full);
         transition: width 0.5s var(--ease);
         width: 0%;
+        position: relative;
     }
-    .wd-progress-item__fill--running { background: var(--c-info); }
+    .wd-progress-item__fill--running { background: linear-gradient(90deg, var(--c-secondary), var(--c-primary)); }
     .wd-progress-item__fill--completed { background: var(--c-success); }
     .wd-progress-item__fill--failed { background: var(--c-error); }
 
-    /* ─── Toast ─── */
+    /* ─── Toast container ─── */
     .wd-toast-container {
-        position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
-        display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+        position: fixed;
+        inset-inline-end: 16px;
+        inset-block-end: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 9999;
+        pointer-events: none;
     }
     .wd-toast {
-        min-width: 240px; max-width: 360px; padding: 12px 16px;
+        pointer-events: auto;
+        min-width: 280px;
+        max-width: 380px;
+        padding: 12px 16px;
         border-radius: var(--radius-md);
-        color: #fff; box-shadow: var(--shadow-md);
-        display: flex; align-items: center; gap: 8px;
-        animation: wdToastIn var(--dur-norm) var(--ease);
+        color: #fff;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: wdToastSlideIn 0.35s var(--ease) both;
         font-size: 14px;
+        border-inline-start: 4px solid rgba(255,255,255,0.3);
+        backdrop-filter: blur(8px);
     }
-    .wd-toast--success { background: var(--c-success); }
-    .wd-toast--error { background: var(--c-error); }
-    .wd-toast--info { background: var(--c-info); }
+    .wd-toast--success {
+        background: linear-gradient(135deg, var(--c-success), #1a8a5d);
+        border-inline-start-color: rgba(255,255,255,0.4);
+    }
+    .wd-toast--error {
+        background: linear-gradient(135deg, var(--c-error), #b83a3a);
+        border-inline-start-color: rgba(255,255,255,0.4);
+    }
+    .wd-toast--info {
+        background: linear-gradient(135deg, var(--c-primary), var(--c-primary-strong));
+        border-inline-start-color: rgba(255,255,255,0.4);
+    }
+    .wd-toast__icon {
+        width: 28px;
+        height: 28px;
+        border-radius: var(--radius-full);
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: 700;
+        flex: none;
+    }
+    .wd-toast__msg { flex: 1; }
+    .wd-toast__close {
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.7);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 2px;
+        line-height: 1;
+        flex: none;
+        border-radius: var(--radius-sm);
+        transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+    }
+    .wd-toast__close:hover { color: #fff; background: rgba(255,255,255,0.15); }
 
-    .wd-page [hidden],
+    /* ─── Keyboard shortcuts HUD ─── */
+    .wd-hud {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--sp-4);
+    }
+    .wd-hud[hidden] { display: none !important; }
+    .wd-hud__overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(10, 37, 64, 0.5);
+        backdrop-filter: blur(4px);
+        animation: wdFadeIn 0.2s ease both;
+    }
+    .wd-hud__panel {
+        position: relative;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
+        width: min(480px, 100%);
+        max-height: 90vh;
+        overflow: auto;
+        animation: wdSlideUp 0.3s ease both;
+    }
+    .wd-hud__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--sp-5) var(--sp-5) 0;
+    }
+    .wd-hud__title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0;
+        color: var(--c-text);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+    }
+    .wd-hud__close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        color: var(--c-text-muted);
+        padding: 4px 8px;
+        border-radius: var(--radius-md);
+        transition: background var(--dur-fast) var(--ease);
+        line-height: 1;
+    }
+    .wd-hud__close:hover { background: var(--c-surface-muted); }
+    .wd-hud__body {
+        padding: var(--sp-5);
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-2);
+    }
+    .wd-hud__row {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-4);
+        padding: var(--sp-2) var(--sp-3);
+        background: var(--c-surface-muted);
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        color: var(--c-text);
+    }
+    .wd-hud__row kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        padding: 4px 10px;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        font-family: var(--font-ar);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--c-primary);
+        box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06);
+        white-space: nowrap;
+    }
+    .wd-hud__row span { flex: 1; }
+
+    /* ─── Error banner ─── */
+    .wd-error-banner {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        padding: var(--sp-4) var(--sp-5);
+        margin-bottom: var(--sp-4);
+        background: rgba(214, 69, 69, 0.06);
+        border: 1px solid rgba(214, 69, 69, 0.15);
+        border-inline-start: 4px solid var(--c-error);
+        border-radius: var(--radius-md);
+        color: var(--c-error);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-error-banner__icon {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-full);
+        background: rgba(214, 69, 69, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex: none;
+    }
+    .wd-error-banner__text { flex: 1; font-size: 14px; }
+    .wd-error-banner__retry {
+        background: rgba(214, 69, 69, 0.1);
+        border: 1px solid rgba(214, 69, 69, 0.2);
+        color: var(--c-error);
+        border-radius: var(--radius-sm);
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: var(--font-ar);
+        transition: background var(--dur-fast) var(--ease);
+    }
+    .wd-error-banner__retry:hover { background: rgba(214, 69, 69, 0.18); }
+
+    /* ─── Help button (floating) ─── */
+    .wd-help-btn {
+        position: fixed;
+        inset-block-end: 24px;
+        inset-inline-start: 24px;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-full);
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        box-shadow: var(--shadow-lg);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--c-text-muted);
+        font-size: 18px;
+        font-weight: 700;
+        z-index: 100;
+        transition: box-shadow var(--dur-norm) var(--ease), transform var(--dur-norm) var(--ease), color var(--dur-norm) var(--ease);
+        font-family: var(--font-ar);
+    }
+    .wd-help-btn:hover {
+        box-shadow: var(--shadow-xl);
+        transform: translateY(-2px);
+        color: var(--c-primary);
+    }
+    .wd-help-btn__tooltip {
+        position: absolute;
+        inset-inline-end: calc(100% + 10px);
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--c-accent);
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--dur-fast) var(--ease);
+    }
+    .wd-help-btn:hover .wd-help-btn__tooltip { opacity: 1; }
+
+    /* ─── Keyframes ─── */
+    @@keyframes wdCardStagger {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @@keyframes wdToastSlideIn {
+        from { opacity: 0; transform: translateX(20px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+    @@keyframes wdProgressShine {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @@keyframes wdFloatDot {
+        0%, 100% { transform: translateY(0); opacity: 0.3; }
+        50% { transform: translateY(-6px); opacity: 0.8; }
+    }
+    @@keyframes wdFadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+    @@keyframes wdSlideUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @@keyframes wdShimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    @@keyframes wdFadeUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @@keyframes wdPulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    /* ─── Utilities ─── */
     .wd-hidden { display: none !important; }
-
+    .wd-page [hidden] { display: none !important; }
     .wd-btn:disabled {
-        opacity: 0.5; cursor: not-allowed;
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
     }
 
     /* ─── Responsive ─── */
-    @@media (max-width: 768px) {
+    @@media (max-width: 1024px) {
         .wd-summary-grid { grid-template-columns: repeat(2, 1fr); }
-        .wd-table th, .wd-table td { padding: 8px 10px; font-size: 13px; }
+        .wd-skeleton-cards { grid-template-columns: repeat(2, 1fr); }
+        .wd-table th, .wd-table td { padding: 10px 12px; }
+        .wd-page__subtitle { padding-inline-start: 0; }
+        .wd-skel-table__row { grid-template-columns: 48px 56px 1.5fr 1fr 1.5fr 1fr 110px 90px 110px 90px 80px 60px; }
     }
-    @@media (max-width: 480px) {
+    @@media (max-width: 767px) {
         .wd-summary-grid { grid-template-columns: 1fr; }
+        .wd-skeleton-cards { grid-template-columns: 1fr; }
+        .wd-action-bar { flex-direction: column; align-items: stretch; }
+        .wd-action-bar .wd-meta { margin-inline-start: 0; text-align: center; }
+        .wd-table-controls { flex-direction: column; align-items: stretch; gap: 8px; }
+        .wd-table-controls__left { flex-wrap: wrap; }
+        .wd-table-controls__right { flex-wrap: wrap; justify-content: center; }
+        .wd-search-wrap { flex: 1 1 auto; }
+        .wd-page__title { font-size: 18px; }
+        .wd-page__subtitle { font-size: 13px; }
+        .wd-table th, .wd-table td { padding: 8px 10px; font-size: 13px; }
+        .wd-table .wd-col-check { width: 36px; }
+        .wd-table .wd-col-dl { width: 40px; }
+        .wd-table .wd-col-toggle { width: 48px; }
+        .wd-table .wd-col-lastSync, .wd-table .wd-col-records, .wd-table .wd-col-storedRecords, .wd-table .wd-col-eye { display: none; }
+        .wd-progress-card { padding: var(--sp-4); }
+        .wd-help-btn { width: 38px; height: 38px; font-size: 15px; inset-block-end: 16px; inset-inline-start: 16px; }
+        .wd-help-btn__tooltip { display: none; }
+        .wd-skel-table__row { grid-template-columns: 36px 48px 1fr 1fr; }
+        .wd-skel-table__row > :nth-child(n+5) { display: none; }
+        .wd-progress-sticky { padding: var(--sp-2) var(--sp-3); }
+        .wd-progress-sticky__label { font-size: 12px; }
+        .wd-progress-sticky__info { font-size: 12px; min-width: auto; }
+        .wd-filter-btn { padding: 6px 10px; font-size: 12px; }
+    }
+
+    /* ─── Sync Spinner ─── */
+    .wd-sync-spinner {
+        display: none;
+        width: 18px;
+        height: 18px;
+        border: 2.5px solid rgba(31, 78, 121, 0.2);
+        border-top-color: var(--c-primary);
+        border-radius: 50%;
+        animation: wdSpin 0.7s linear infinite;
+        margin-inline-end: 6px;
+        vertical-align: middle;
+        flex: none;
+    }
+    @@keyframes wdSpin {
+        to { transform: rotate(360deg); }
+    }
+    .wd-sync-spinner.is-active {
+        display: inline-block;
+    }
+
+    /* ─── Table Controls (Filters + Bulk Actions) ─── */
+    .wd-table-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 0;
+        margin-block-end: 12px;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-table-controls__left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .wd-table-controls__right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 </style>
 
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+
 <div class="wd-page">
+
+    <!-- Connection Status Bar -->
+    <div id="connBar" class="wd-conn-bar wd-conn-bar--checking">
+        <span class="wd-conn-bar__dot"></span>
+        <span class="wd-conn-bar__icon">⟳</span>
+        <span class="wd-conn-bar__text" id="connText">جاري التحقق من الاتصال...</span>
+        <button class="wd-conn-bar__retry" id="connRetry" onclick="window.checkConnection()" hidden>إعادة المحاولة</button>
+    </div>
+
+    <!-- Page Header -->
     <header class="wd-page__header">
         <div class="wd-breadcrumb">
-            <a href="/admin-secure-panel">لوحة الإدارة</a> &laquo; شاشة المزامنة
+            <a href="/admin-secure-panel">لوحة الإدارة</a>
+            <span class="wd-breadcrumb__sep">«</span>
+            <span class="wd-breadcrumb__current">شاشة المزامنة</span>
         </div>
-        <h2 class="wd-page__title">المزامنة</h2>
+        <h2 class="wd-page__title">
+            <span class="wd-page__title-icon">⟳</span>
+            المزامنة
+        </h2>
         <p class="wd-page__subtitle">إدارة ومتابعة مزامنة البيانات بين Oracle و SQL Server.</p>
     </header>
 
+    <!-- Load Error Banner (server-side) -->
     @if (!string.IsNullOrEmpty(Model.LoadError))
     {
-        <div class="wd-card" style="margin-bottom: var(--sp-4); border-inline-start: 4px solid var(--c-error);">
-            <p style="color: var(--c-error); margin: 0;">⚠ @Model.LoadError</p>
+        <div class="wd-error-banner">
+            <div class="wd-error-banner__icon">⚠</div>
+            <div class="wd-error-banner__text">@Model.LoadError</div>
+            <button class="wd-error-banner__retry" onclick="loadDashboard()">إعادة المحاولة</button>
         </div>
     }
 
-    @* ─── Summary Cards ─── *@
-    <div class="wd-summary-grid" id="summaryGrid">
+    <!-- ─── Skeleton Loading ─── -->
+    <div id="skeletonArea">
+        <div class="wd-skeleton-cards" id="skelCards">
+            @for (int i = 0; i < 4; i++)
+            {
+                <div class="wd-skeleton-card">
+                    <div class="wd-skeleton-card__icon"></div>
+                    <div class="wd-skeleton-card__lines">
+                        <div class="wd-skeleton-card__line wd-skeleton-card__line--short"></div>
+                        <div class="wd-skeleton-card__line wd-skeleton-card__line--long"></div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="wd-skeleton-wrap" id="skelTable">
+            <div class="wd-skel-table">
+                @for (int i = 0; i < 5; i++)
+                {
+                    <div class="wd-skel-table__row">
+                        <div class="wd-skel--circle"></div>
+                        <div class="wd-skel--circle"></div>
+                        <div class="wd-skel--box"></div>
+                        <div class="wd-skel--badge"></div>
+                        <div class="wd-skel--box"></div>
+                        <div class="wd-skel--badge"></div>
+                        <div class="wd-skel--badge"></div>
+                        <div class="wd-skel--action"></div>
+                        <div class="wd-skel--action"></div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Summary Cards ─── -->
+    <div class="wd-summary-grid" id="summaryGrid" hidden>
         @* Card 1: Status *@
         <div class="wd-summary-card">
             <div class="wd-summary-card__icon wd-summary-card__icon--status">
-                <span id="statusIcon">🔄</span>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
             </div>
             <div class="wd-summary-card__body">
-                <div class="wd-summary-card__value">
+                <div class="wd-summary-card__status-row">
                     <span id="statusDot" class="wd-summary-card__status-dot wd-summary-card__status-dot--inactive"></span>
-                    <span id="statusText">جاري التحميل...</span>
+                    <div class="wd-summary-card__value"><span id="statusText">جاري التحميل...</span></div>
                 </div>
                 <p class="wd-summary-card__label">حالة المحرك</p>
             </div>
@@ -296,9 +1540,10 @@
         <div class="wd-summary-card">
             <div class="wd-summary-card__icon wd-summary-card__icon--records">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="18" y1="20" x2="18" y2="10"/>
-                    <line x1="12" y1="20" x2="12" y2="4"/>
-                    <line x1="6" y1="20" x2="6" y2="14"/>
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
                 </svg>
             </div>
             <div class="wd-summary-card__body">
@@ -310,7 +1555,10 @@
         @* Card 3: Last Sync *@
         <div class="wd-summary-card">
             <div class="wd-summary-card__icon wd-summary-card__icon--time">
-                <span>🕐</span>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
             </div>
             <div class="wd-summary-card__body">
                 <div class="wd-summary-card__value" id="lastSyncTime">—</div>
@@ -333,116 +1581,283 @@
         </div>
     </div>
 
-    @* ─── Action Bar ─── *@
-    <div class="wd-action-bar">
-        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px;">
-            <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)" style="width: 18px; height: 18px; accent-color: var(--c-primary);" />
-            <span>تحديد الكل</span>
-        </label>
+    <!-- ─── Action Bar ─── -->
+    <div class="wd-action-bar" id="actionBar" hidden>
+        <div class="wd-search-wrap">
+            <span class="wd-search-icon">🔍</span>
+            <input type="text"
+                   id="searchInput"
+                   class="wd-search-input"
+                   placeholder="بحث في التعيينات..."
+                   oninput="searchTable()" />
+            <button class="wd-search-clear" id="searchClear" onclick="clearSearch()" aria-label="مسح البحث">✕</button>
+        </div>
 
-        <button class="wd-btn wd-btn--primary wd-btn--sm" id="btnSyncSelected" onclick="syncSelected()" disabled>
-            ▶ مزامنة المحدد
+        <button class="wd-btn wd-btn--icon" id="btnRefresh" onclick="manualRefresh()" title="تحديث يدوي">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         </button>
 
-        <button class="wd-btn wd-btn--ghost wd-btn--sm" id="btnSyncAll" onclick="syncAll()">
-            ⟳ مزامنة الكل
+        <button class="wd-auto-refresh" id="autoRefreshToggle" onclick="toggleAutoRefresh()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="autoRefreshLabel">تحديث تلقائي</span>
         </button>
 
         <span class="wd-meta" id="tableMeta"></span>
     </div>
 
-    @* ─── Mappings Table ─── *@
-    <div id="skeletonWrap" class="wd-skeleton-wrap">
-        @for (int i = 0; i < 4; i++)
-        {
-            <div class="wd-skel-row">
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-                <div class="wd-skel"></div>
-            </div>
-        }
-    </div>
-
+    <!-- ─── Empty State ─── -->
     <div id="emptyState" class="wd-empty" hidden>
-        <div class="wd-empty__icon" style="width:84px;height:84px;border-radius:var(--radius-xl);background:rgba(31,78,121,0.06);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84" fill="none" aria-hidden="true">
-                <!-- Background subtle circle -->
-                <circle cx="42" cy="42" r="30" fill="rgba(31,78,121,0.06)" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.1"/>
-                <!-- Top curved arrow (rightward) -->
-                <path d="M28 38 C30 28, 38 24, 46 26 L42 32" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.7"/>
-                <path d="M46 26 L40 28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.7"/>
-                <!-- Bottom curved arrow (leftward) -->
-                <path d="M56 46 C54 56, 46 60, 38 58 L42 52" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.7"/>
-                <path d="M38 58 L44 56" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.7"/>
-                <!-- Dots indicating data flow -->
-                <circle cx="35" cy="44" r="2.5" fill="currentColor" fill-opacity="0.25"/>
-                <circle cx="40" cy="50" r="2.5" fill="currentColor" fill-opacity="0.25"/>
-                <circle cx="49" cy="38" r="2.5" fill="currentColor" fill-opacity="0.25"/>
-                <circle cx="45" cy="32" r="2" fill="currentColor" fill-opacity="0.15"/>
+        <div class="wd-empty__svg-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+                <!-- Background circle -->
+                <circle cx="50" cy="50" r="36" fill="rgba(31,78,121,0.04)" stroke="currentColor" stroke-width="1" stroke-opacity="0.1"/>
+                <!-- Top-right arrow -->
+                <path d="M36 38 C38 28, 46 23, 56 26 L52 33" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.5"/>
+                <path d="M56 26 L48 27.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.5"/>
+                <!-- Bottom-left arrow -->
+                <path d="M64 62 C62 72, 54 77, 44 74 L48 67" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.5"/>
+                <path d="M44 74 L52 72.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-opacity="0.5"/>
+                <!-- Dots -->
+                <circle cx="42" cy="46" r="3" fill="currentColor" fill-opacity="0.2" class="wd-empty__dot"/>
+                <circle cx="58" cy="54" r="3" fill="currentColor" fill-opacity="0.2" class="wd-empty__dot"/>
+                <circle cx="46" cy="60" r="2" fill="currentColor" fill-opacity="0.12" class="wd-empty__dot"/>
             </svg>
         </div>
         <h3>لا توجد تعيينات مزامنة نشطة</h3>
-        <p>قم بإضافة تعيينات جديدة من صفحة <a href="/admin-secure-panel/TableMappings" style="color: var(--c-secondary);">تعيينات الجداول</a>.</p>
+        <p>لم يتم العثور على أي تعيينات مزامنة. قم بإضافة تعيينات جديدة من صفحة <a href="/admin-secure-panel/TableMappings">تعيينات الجداول</a> للبدء.</p>
     </div>
 
+    <!-- ─── Error State (client-side) ─── -->
+    <div id="errorState" class="wd-empty wd-empty--error" hidden>
+        <div class="wd-empty__icon" style="background:rgba(214,69,69,0.10);color:var(--c-error);">⚠</div>
+        <h3 style="color:var(--c-error);">تعذر تحميل البيانات</h3>
+        <p id="errorMessage">حدث خطأ أثناء الاتصال بالخادم.</p>
+        <button class="wd-btn wd-btn--primary" onclick="loadDashboard()">إعادة المحاولة</button>
+    </div>
+
+    <!-- ─── Table Controls (Filters + Bulk Actions) — directly before table ─── -->
+    <div class="wd-table-controls" id="tableControls" hidden>
+        <div class="wd-table-controls__left">
+            <!-- Status Filter -->
+            <div class="wd-filter-wrap" id="statusFilterWrap">
+                <button class="wd-filter-btn" id="statusFilterBtn" onclick="toggleFilter('statusFilterWrap')">
+                    <span id="statusFilterLabel">الحالة: الكل</span>
+                    <span class="wd-filter-btn__arrow">▼</span>
+                </button>
+                <div class="wd-filter-dropdown" id="statusFilterDropdown">
+                    <button class="wd-filter-option is-selected" onclick="setFilter('status', 'all', 'الكل')">
+                        <span class="wd-filter-option__check">✓</span> الكل
+                    </button>
+                    <button class="wd-filter-option" onclick="setFilter('status', 'active', 'نشط')">
+                        <span class="wd-filter-option__check"></span> نشط
+                    </button>
+                    <button class="wd-filter-option" onclick="setFilter('status', 'inactive', 'متوقف')">
+                        <span class="wd-filter-option__check"></span> متوقف
+                    </button>
+                </div>
+            </div>
+
+            <!-- Type Filter -->
+            <div class="wd-filter-wrap" id="typeFilterWrap">
+                <button class="wd-filter-btn" id="typeFilterBtn" onclick="toggleFilter('typeFilterWrap')">
+                    <span id="typeFilterLabel">النوع: الكل</span>
+                    <span class="wd-filter-btn__arrow">▼</span>
+                </button>
+                <div class="wd-filter-dropdown" id="typeFilterDropdown">
+                    <button class="wd-filter-option is-selected" onclick="setFilter('type', 'all', 'الكل')">
+                        <span class="wd-filter-option__check">✓</span> الكل
+                    </button>
+                    <button class="wd-filter-option" onclick="setFilter('type', 'table', 'جدول')">
+                        <span class="wd-filter-option__check"></span> جدول
+                    </button>
+                    <button class="wd-filter-option" onclick="setFilter('type', 'view', 'عرض')">
+                        <span class="wd-filter-option__check"></span> عرض
+                    </button>
+                    <button class="wd-filter-option" onclick="setFilter('type', 'query', 'استعلام')">
+                        <span class="wd-filter-option__check"></span> استعلام
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="wd-table-controls__right">
+            <label class="wd-check-label">
+                <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)" />
+                <span>تحديد الكل</span>
+            </label>
+            <span class="wd-sync-spinner" id="syncSpinner"></span>
+            <button class="wd-btn wd-btn--success wd-btn--sm" id="btnSyncSelected" onclick="syncSelected()" disabled>
+                ▶ مزامنة المحدد
+            </button>
+            <button class="wd-btn wd-btn--primary wd-btn--sm" id="btnSyncAll" onclick="syncAll()">
+                ⟳ مزامنة الكل
+            </button>
+        </div>
+    </div>
+
+    <!-- ─── Mappings Table ─── -->
     <div id="tableWrap" class="wd-table-wrap" hidden>
-        <table class="wd-table">
-            <thead>
-                <tr>
-                    <th class="wd-col-check">□</th>
-                    <th>المصدر (Oracle)</th>
-                    <th>النوع</th>
-                    <th>الهدف (SQL Server)</th>
-                    <th>الحالة</th>
-                    <th>الإجراءات</th>
-                </tr>
-            </thead>
-            <tbody id="mappingsBody">
-            </tbody>
-        </table>
+        <div class="wd-table-scroll">
+            <table class="wd-table" id="mappingsTable">
+                <thead>
+                    <tr>
+                        <th class="wd-col-check">□</th>
+                        <th class="wd-col-toggle" title="تفعيل/تعطيل">⚡</th>
+                        <th class="wd-col-source wd-th-sortable" onclick="sortTable(1)" data-col="1">
+                            المصدر (Oracle)
+                            <span class="wd-sort-icon">⇅</span>
+                        </th>
+                        <th class="wd-col-type wd-th-sortable" onclick="sortTable(2)" data-col="2">
+                            النوع
+                            <span class="wd-sort-icon">⇅</span>
+                        </th>
+                        <th class="wd-col-target wd-th-sortable" onclick="sortTable(3)" data-col="3">
+                            الهدف (SQL Server)
+                            <span class="wd-sort-icon">⇅</span>
+                        </th>
+                        <th class="wd-col-status wd-th-sortable" onclick="sortTable(4)" data-col="4">
+                            الحالة
+                            <span class="wd-sort-icon">⇅</span>
+                        </th>
+                        <th class="wd-col-lastSync">آخر مزامنة</th>
+                        <th class="wd-col-records">السجلات</th>
+                        <th class="wd-col-storedRecords wd-th-sortable" data-col="5">
+                            <span class="wd-th__label">السجلات المخزنة</span>
+                            <span class="wd-sort-icon">⇅</span>
+                        </th>
+                        <th class="wd-col-actions">الإجراءات</th>
+                        <th class="wd-col-dl">تنزيل</th>
+                    </tr>
+                </thead>
+                <tbody id="mappingsBody"></tbody>
+            </table>
+        </div>
+        <div class="wd-table-footer">
+            <span class="wd-table-footer__count" id="tableFooterCount">0 تعيين</span>
+            <span class="wd-table-footer__hint">
+                <span class="wd-table-footer__kbd">?</span>
+                <span>اختصارات لوحة المفاتيح</span>
+            </span>
+        </div>
     </div>
 
-    @* ─── Progress Section ─── *@
+    <!-- ─── Progress Section (Original - kept hidden) ─── -->
     <div id="progressSection" class="wd-progress-section wd-hidden">
         <div class="wd-progress-card">
-            <h3 class="wd-progress-card__title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="18" y1="20" x2="18" y2="10"/>
-                    <line x1="12" y1="20" x2="12" y2="4"/>
-                    <line x1="6" y1="20" x2="6" y2="14"/>
-                </svg>
-                تقدم المزامنة
-                <span id="progressStatusText" style="font-size: 13px; font-weight: 400; color: var(--c-text-muted);"></span>
-            </h3>
+            <div class="wd-progress-card__header">
+                <h3 class="wd-progress-card__title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                    تقدم المزامنة
+                </h3>
+                <div class="wd-progress-card__status" id="progressStatusBadge">
+                    <span id="progressStatusIcon">⏳</span>
+                    <span id="progressStatusText">قيد التشغيل...</span>
+                </div>
+            </div>
 
             <div class="wd-progress-overall">
                 <div class="wd-progress-overall__bar">
                     <div class="wd-progress-overall__fill" id="overallProgressFill"></div>
                 </div>
-                <div class="wd-progress-overall__label">
-                    <span id="overallProgressText">0%</span>
+                <div class="wd-progress-overall__info">
+                    <span class="wd-progress-overall__pct" id="overallProgressText">0%</span>
                     <span id="overallRowsText">0 صف</span>
                 </div>
             </div>
 
-            <div id="mappingProgressList"></div>
+            <div class="wd-progress-items" id="mappingProgressList"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══════════════ STICKY PROGRESS BAR (Fixed at bottom) ═══════════════ -->
+<div id="stickyProgress" class="wd-progress-sticky" hidden>
+    <div class="wd-progress-sticky__top">
+        <span class="wd-progress-sticky__label">
+            <span class="wd-progress-sticky__spinner">🔄</span>
+            جاري المزامنة...
+        </span>
+        <div class="wd-progress-sticky__bar">
+            <div class="wd-progress-sticky__fill" id="stickyProgressFill"></div>
+        </div>
+        <span class="wd-progress-sticky__info" id="stickyProgressInfo">0%</span>
+    </div>
+    <div class="wd-progress-sticky__items" id="stickyProgressItems"></div>
+</div>
+
+<!-- ═══════════════ SQL QUERY MODAL ═══════════════ -->
+<div id="sqlModal" class="wd-modal-overlay" hidden onclick="closeSqlModal(event)">
+    <div class="wd-modal" onclick="event.stopPropagation()">
+        <div class="wd-modal__header">
+            <h3 class="wd-modal__title" id="sqlModalTitle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                الاستعلام
+            </h3>
+            <button class="wd-modal__close" onclick="closeSqlModal()">✕</button>
+        </div>
+        <div class="wd-modal__body">
+            <div class="wd-modal__sql" id="sqlModalContent"></div>
+        </div>
+        <div class="wd-modal__footer">
+            <button class="wd-modal__copy" id="sqlCopyBtn" onclick="copySqlQuery()">
+                <span id="sqlCopyIcon">📋</span>
+                <span id="sqlCopyLabel">نسخ الكويري</span>
+            </button>
         </div>
     </div>
 </div>
 
+<!-- ─── Toast Container ─── -->
 <div id="toastContainer" class="wd-toast-container"></div>
+
+<!-- ─── Keyboard Shortcuts HUD ─── -->
+<div id="shortcutsHud" class="wd-hud" hidden>
+    <div class="wd-hud__overlay" onclick="hideKeyboardShortcuts()"></div>
+    <div class="wd-hud__panel">
+        <div class="wd-hud__header">
+            <h3 class="wd-hud__title">⌨ اختصارات لوحة المفاتيح</h3>
+            <button class="wd-hud__close" onclick="hideKeyboardShortcuts()">✕</button>
+        </div>
+        <div class="wd-hud__body">
+            <div class="wd-hud__row"><kbd>A</kbd> <span>تحديد / إلغاء تحديد الكل</span></div>
+            <div class="wd-hud__row"><kbd>S</kbd> <span>مزامنة المحدد</span></div>
+            <div class="wd-hud__row"><kbd>D</kbd> <span>مزامنة الكل</span></div>
+            <div class="wd-hud__row"><kbd>R</kbd> <span>تحديث الصفحة</span></div>
+            <div class="wd-hud__row"><kbd>/</kbd> <span>التركيز على البحث</span></div>
+            <div class="wd-hud__row"><kbd>?</kbd> <span>إظهار / إخفاء الاختصارات</span></div>
+            <div class="wd-hud__row"><kbd>Esc</kbd> <span>إغلاق هذه النافذة</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── Floating Help Button ─── -->
+<button class="wd-help-btn" onclick="toggleKeyboardShortcuts()" title="اختصارات لوحة المفاتيح" aria-label="اختصارات لوحة المفاتيح">
+    ?
+    <span class="wd-help-btn__tooltip">اختصارات (?)</span>
+</button>
 
 @section Scripts {
     <script>
         (function () {
+            'use strict';
+
             var apiBase = '@Model.ApiBaseUrl';
             var pollingTimer = null;
             var isSyncing = false;
+            var sortState = { col: -1, asc: true };
+            var searchTerm = '';
+            var mappedData = [];
+            var statusFilter = 'all';
+            var typeFilter = 'all';
+            var autoRefreshEnabled = false;
+            var autoRefreshTimer = null;
+            var currentSqlQuery = '';
 
-            // ─── Utility ─────────────────────────────────────────────
+            // ═══════════════════════════════════════════════════════════════
+            //  UTILITY FUNCTIONS
+            // ═══════════════════════════════════════════════════════════════
 
             function escapeHtml(text) {
                 var div = document.createElement('div');
@@ -450,21 +1865,25 @@
                 return div.innerHTML;
             }
 
-            function showToast(message, type) {
-                type = type || 'info';
-                var container = document.getElementById('toastContainer');
-                var toast = document.createElement('div');
-                toast.className = 'wd-toast wd-toast--' + type;
-                var icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
-                toast.innerHTML = '<span>' + icon + '</span><span>' + escapeHtml(message) + '</span>';
-                container.appendChild(toast);
-                setTimeout(function () { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 4000);
+            // ═══════════════════════════════════════════════════════════════
+            //  SYNC SPINNER
+            // ═══════════════════════════════════════════════════════════════
+
+            function showSyncSpinner() {
+                var spinner = document.getElementById('syncSpinner');
+                if (spinner) spinner.classList.add('is-active');
+            }
+
+            function hideSyncSpinner() {
+                var spinner = document.getElementById('syncSpinner');
+                if (spinner) spinner.classList.remove('is-active');
             }
 
             function formatDateTime(isoString) {
                 if (!isoString) return '—';
                 try {
                     var d = new Date(isoString);
+                    if (isNaN(d.getTime())) return isoString;
                     var day = String(d.getDate()).padStart(2, '0');
                     var month = String(d.getMonth() + 1).padStart(2, '0');
                     var year = d.getFullYear();
@@ -474,6 +1893,263 @@
                 } catch (e) { return isoString; }
             }
 
+            function formatTimeShort(isoString) {
+                if (!isoString) return '—';
+                try {
+                    var d = new Date(isoString);
+                    if (isNaN(d.getTime())) return '—';
+                    var hours = String(d.getHours()).padStart(2, '0');
+                    var mins = String(d.getMinutes()).padStart(2, '0');
+                    return hours + ':' + mins;
+                } catch (e) { return '—'; }
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            //  SQL TABLE NAME EXTRACTION (Fix #1)
+            // ═══════════════════════════════════════════════════════════════
+
+            function extractTableName(source) {
+                if (!source) return '—';
+                var s = source.trim();
+
+                // If it's not a SELECT query, it's likely already a table/view name
+                if (!/^\s*SELECT\b/i.test(s)) {
+                    return s;
+                }
+
+                // Extract from FROM clause: FROM [schema.]table or FROM table
+                var fromMatch = s.match(/\bFROM\s+[\["']?(\w[\]"']?)/i);
+                if (fromMatch) {
+                    return fromMatch[1];
+                }
+
+                // Fallback: just return shortened version
+                return s.length > 40 ? s.substring(0, 37) + '...' : s;
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            //  SQL SYNTAX HIGHLIGHTING (Fix #1)
+            // ═══════════════════════════════════════════════════════════════
+
+            function highlightSql(sql) {
+                if (!sql) return '';
+                var escaped = escapeHtml(sql);
+
+                // Keywords
+                var keywords = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'JOIN', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'ON', 'GROUP', 'BY', 'ORDER', 'ASC', 'DESC', 'HAVING', 'UNION', 'ALL', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE', 'CREATE', 'TABLE', 'VIEW', 'AS', 'DISTINCT', 'COUNT', 'SUM', 'AVG', 'MAX', 'MIN', 'BETWEEN', 'IN', 'LIKE', 'NOT', 'NULL', 'IS', 'EXISTS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'TOP', 'LIMIT', 'OFFSET', 'FETCH', 'NEXT', 'ROWS', 'ONLY', 'WITH', 'RECURSIVE', 'CTE', 'OVER', 'PARTITION', 'ROW_NUMBER', 'RANK', 'DENSE_RANK', 'LAG', 'LEAD'];
+
+                // Highlight keywords (whole word, case-insensitive)
+                var kwRegex = new RegExp('\\b(' + keywords.join('|') + ')\\b', 'gi');
+                escaped = escaped.replace(kwRegex, '<span class="sql-keyword">$1</span>');
+
+                // Highlight strings
+                escaped = escaped.replace(/'([^']*)'/g, '<span class="sql-string">\'$1\'</span>');
+
+                // Highlight numbers
+                escaped = escaped.replace(/\b(\d+\.?\d*)\b/g, '<span class="sql-number">$1</span>');
+
+                return escaped;
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            //  SQL MODAL (Fix #1)
+            // ═══════════════════════════════════════════════════════════════
+
+            window.showSqlModal = function (mappingId, fullSource, tableName) {
+                currentSqlQuery = fullSource || '';
+                var modal = document.getElementById('sqlModal');
+                var title = document.getElementById('sqlModalTitle');
+                var content = document.getElementById('sqlModalContent');
+                var copyBtn = document.getElementById('sqlCopyBtn');
+                var copyIcon = document.getElementById('sqlCopyIcon');
+                var copyLabel = document.getElementById('sqlCopyLabel');
+
+                title.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> الاستعلام — ' + escapeHtml(tableName || '');
+
+                // Check if it's a SELECT query or just a table name
+                if (/^\s*SELECT\b/i.test(fullSource)) {
+                    content.innerHTML = highlightSql(fullSource);
+                } else {
+                    content.innerHTML = '<span class="sql-table">' + escapeHtml(fullSource) + '</span>';
+                }
+
+                copyBtn.classList.remove('copied');
+                copyIcon.textContent = '📋';
+                copyLabel.textContent = 'نسخ الكويري';
+
+                modal.hidden = false;
+                document.body.style.overflow = 'hidden';
+            };
+
+            // Data-driven modal opener — looks up full SQL from mappedData array
+            window.showSqlModalById = function (mappingId) {
+                for (var i = 0; i < mappedData.length; i++) {
+                    if (mappedData[i].id === mappingId) {
+                        var m = mappedData[i];
+                        var tableName = extractTableName(m.oracleSource || m.name || '');
+                        showSqlModal(mappingId, m.oracleSource || m.name || '', tableName);
+                        return;
+                    }
+                }
+            };
+
+            window.closeSqlModal = function (event) {
+                if (event && event.target !== event.currentTarget) return;
+                document.getElementById('sqlModal').hidden = true;
+                document.body.style.overflow = '';
+            };
+
+            window.copySqlQuery = function () {
+                if (!currentSqlQuery) return;
+                navigator.clipboard.writeText(currentSqlQuery).then(function () {
+                    var copyBtn = document.getElementById('sqlCopyBtn');
+                    var copyIcon = document.getElementById('sqlCopyIcon');
+                    var copyLabel = document.getElementById('sqlCopyLabel');
+                    copyBtn.classList.add('copied');
+                    copyIcon.textContent = '✓';
+                    copyLabel.textContent = 'تم النسخ!';
+                    setTimeout(function () {
+                        copyBtn.classList.remove('copied');
+                        copyIcon.textContent = '📋';
+                        copyLabel.textContent = 'نسخ الكويري';
+                    }, 2000);
+                }).catch(function () {
+                    showToast('فشل نسخ الكويري', 'error');
+                });
+            };
+
+            // ═══════════════════════════════════════════════════════════════
+            //  TOGGLE MAPPING (Fix #4)
+            // ═══════════════════════════════════════════════════════════════
+
+            window.toggleMapping = async function (mappingId) {
+                try {
+                    var resp = await fetch(apiBase + '/api/tablemappings/' + mappingId + '/toggle', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    var result = await resp.json();
+                    var newActive = result.isActive;
+
+                    // Update local data
+                    for (var i = 0; i < mappedData.length; i++) {
+                        if (mappedData[i].id === mappingId) {
+                            mappedData[i].isActive = newActive;
+                            break;
+                        }
+                    }
+
+                    showToast(newActive ? 'تم تفعيل التعيين' : 'تم تعطيل التعيين', 'success');
+                    applyFilters();
+                } catch (err) {
+                    showToast('فشل تغيير حالة التعيين: ' + (err.message || ''), 'error');
+                    applyFilters();
+                }
+            };
+
+            // ═══════════════════════════════════════════════════════════════
+            //  FILTER DROPDOWNS (Fix #5)
+            // ═══════════════════════════════════════════════════════════════
+
+            window.toggleFilter = function (wrapId) {
+                var wrap = document.getElementById(wrapId);
+                var isOpen = wrap.classList.contains('is-open');
+                // Close all other dropdowns
+                closeAllFilters();
+                if (!isOpen) {
+                    wrap.classList.add('is-open');
+                }
+            };
+
+            function closeAllFilters() {
+                var wraps = document.querySelectorAll('.wd-filter-wrap');
+                for (var i = 0; i < wraps.length; i++) {
+                    wraps[i].classList.remove('is-open');
+                }
+            }
+
+            window.setFilter = function (filterType, value, label) {
+                if (filterType === 'status') {
+                    statusFilter = value;
+                    document.getElementById('statusFilterLabel').textContent = 'الحالة: ' + label;
+                } else if (filterType === 'type') {
+                    typeFilter = value;
+                    document.getElementById('typeFilterLabel').textContent = 'النوع: ' + label;
+                }
+
+                // Update selected state
+                var wrapId = filterType === 'status' ? 'statusFilterWrap' : 'typeFilterWrap';
+                var options = document.querySelectorAll('#' + wrapId + ' .wd-filter-option');
+                for (var i = 0; i < options.length; i++) {
+                    var isSelected = options[i].textContent.trim().indexOf(label) !== -1;
+                    options[i].classList.toggle('is-selected', isSelected);
+                    var check = options[i].querySelector('.wd-filter-option__check');
+                    if (check) check.textContent = isSelected ? '✓' : '';
+                }
+
+                // Update button active state
+                var btnId = filterType === 'status' ? 'statusFilterBtn' : 'typeFilterBtn';
+                var btn = document.getElementById(btnId);
+                btn.classList.toggle('is-active', value !== 'all');
+
+                closeAllFilters();
+                applyFilters();
+            };
+
+            // Close dropdowns on outside click
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.wd-filter-wrap')) {
+                    closeAllFilters();
+                }
+            });
+
+            // ═══════════════════════════════════════════════════════════════
+            //  MANUAL REFRESH & AUTO-REFRESH TOGGLE (Fix #6)
+            // ═══════════════════════════════════════════════════════════════
+
+            window.manualRefresh = function () {
+                if (isSyncing) return;
+                checkConnection();
+                loadDashboard();
+                showToast('تم تحديث البيانات', 'info');
+            };
+
+            window.toggleAutoRefresh = function () {
+                autoRefreshEnabled = !autoRefreshEnabled;
+                var btn = document.getElementById('autoRefreshToggle');
+                var label = document.getElementById('autoRefreshLabel');
+                btn.classList.toggle('is-active', autoRefreshEnabled);
+                label.textContent = autoRefreshEnabled ? 'تحديث تلقائي ✓' : 'تحديث تلقائي';
+
+                if (autoRefreshEnabled) {
+                    startAutoRefresh();
+                } else {
+                    stopAutoRefresh();
+                }
+            };
+
+            function startAutoRefresh() {
+                stopAutoRefresh();
+                autoRefreshTimer = setInterval(function () {
+                    if (!isSyncing) {
+                        loadDashboard();
+                        checkConnection();
+                    }
+                }, 30000);
+            }
+
+            function stopAutoRefresh() {
+                if (autoRefreshTimer) {
+                    clearInterval(autoRefreshTimer);
+                    autoRefreshTimer = null;
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            //  SOURCE TYPE BADGE
+            // ═══════════════════════════════════════════════════════════════
+
             function getSourceTypeBadge(type) {
                 var t = (type || '').toLowerCase();
                 if (t === 'query') return '<span class="wd-badge wd-badge--query">استعلام</span>';
@@ -482,25 +2158,119 @@
                 return '<span class="wd-badge wd-badge--inactive">' + escapeHtml(type) + '</span>';
             }
 
-            function getStatusBadge(status) {
+            function getStatusBadge(status, isRunning) {
                 var s = (status || '').toLowerCase();
-                if (s === 'active' || s === 'success' || s === 'completed') return '<span class="wd-badge wd-badge--active">نشط</span>';
-                if (s === 'inactive' || s === 'failed') return '<span class="wd-badge wd-badge--inactive">متوقف</span>';
-                if (s === 'running') return '<span class="wd-badge wd-badge--running">قيد التشغيل</span>';
-                return '<span class="wd-badge wd-badge--inactive">' + escapeHtml(status) + '</span>';
+                if (isRunning || s === 'running') return '<span class="wd-badge wd-badge--running"><span class="wd-badge__dot"></span>قيد التشغيل</span>';
+                if (s === 'active' || s === 'success' || s === 'completed') return '<span class="wd-badge wd-badge--active"><span class="wd-badge__dot"></span>نشط</span>';
+                if (s === 'inactive' || s === 'failed') return '<span class="wd-badge wd-badge--inactive"><span class="wd-badge__dot"></span>متوقف</span>';
+                return '<span class="wd-badge wd-badge--inactive"><span class="wd-badge__dot"></span>' + escapeHtml(status) + '</span>';
             }
 
-            // ─── Load Dashboard ─────────────────────────────────────
+            // ═══════════════════════════════════════════════════════════════
+            //  COUNTER ANIMATION
+            // ═══════════════════════════════════════════════════════════════
+
+            function animateCounter(element, target, duration) {
+                duration = duration || 800;
+                var start = 0;
+                var startTime = null;
+                var locale = 'ar-SA';
+
+                function step(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    var progress = Math.min((timestamp - startTime) / duration, 1);
+                    var current = Math.floor(progress * target);
+                    element.textContent = current.toLocaleString(locale);
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        element.textContent = target.toLocaleString(locale);
+                    }
+                }
+                requestAnimationFrame(step);
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            //  CONNECTION STATUS
+            // ═══════════════════════════════════════════════════════════════
+
+            window.checkConnection = function () {
+                var bar = document.getElementById('connBar');
+                var text = document.getElementById('connText');
+                var retry = document.getElementById('connRetry');
+                bar.className = 'wd-conn-bar wd-conn-bar--checking';
+                text.textContent = 'جاري التحقق من الاتصال...';
+                retry.hidden = true;
+
+                fetch(apiBase + '/api/sync/status', { signal: AbortSignal.timeout(5000) })
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.json();
+                    })
+                    .then(function () {
+                        bar.className = 'wd-conn-bar wd-conn-bar--online';
+                        text.textContent = 'متصل — الخدمة تعمل';
+                        retry.hidden = true;
+                    })
+                    .catch(function () {
+                        bar.className = 'wd-conn-bar wd-conn-bar--offline';
+                        text.textContent = 'غير متصل — تعذر الاتصال بخدمة المزامنة';
+                        retry.hidden = false;
+                    });
+            };
+
+            // ═══════════════════════════════════════════════════════════════
+            //  TOAST NOTIFICATIONS
+            // ═══════════════════════════════════════════════════════════════
+
+            function showToast(message, type) {
+                type = type || 'info';
+                var container = document.getElementById('toastContainer');
+
+                var toast = document.createElement('div');
+                toast.className = 'wd-toast wd-toast--' + type;
+
+                var icons = { success: '✓', error: '✕', info: 'ℹ' };
+                var iconEl = '<span class="wd-toast__icon">' + (icons[type] || 'ℹ') + '</span>';
+                var msgEl = '<span class="wd-toast__msg">' + escapeHtml(message) + '</span>';
+                var closeEl = '<button class="wd-toast__close" onclick="this.parentElement.remove()">✕</button>';
+
+                toast.innerHTML = iconEl + msgEl + closeEl;
+                container.appendChild(toast);
+
+                setTimeout(function () {
+                    if (toast.parentNode) {
+                        toast.style.opacity = '0';
+                        toast.style.transform = 'translateX(20px)';
+                        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        setTimeout(function () {
+                            if (toast.parentNode) toast.remove();
+                        }, 300);
+                    }
+                }, 4500);
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            //  LOAD DASHBOARD
+            // ═══════════════════════════════════════════════════════════════
 
             window.loadDashboard = async function () {
-                var skeleton = document.getElementById('skeletonWrap');
+                var skeleton = document.getElementById('skeletonArea');
+                var summaryGrid = document.getElementById('summaryGrid');
+                var actionBar = document.getElementById('actionBar');
+                var tableControls = document.getElementById('tableControls');
                 var emptyState = document.getElementById('emptyState');
+                var errorState = document.getElementById('errorState');
                 var tableWrap = document.getElementById('tableWrap');
                 var meta = document.getElementById('tableMeta');
-                var tableBody = document.getElementById('mappingsBody');
+                var footerCount = document.getElementById('tableFooterCount');
 
                 skeleton.hidden = false;
+                summaryGrid.hidden = true;
+                actionBar.hidden = true;
+                tableControls.hidden = true;
                 emptyState.hidden = true;
+                errorState.hidden = true;
                 tableWrap.hidden = true;
 
                 try {
@@ -515,67 +2285,140 @@
                     var config = await configResp.json();
 
                     skeleton.hidden = true;
+                    summaryGrid.hidden = false;
+                    actionBar.hidden = false;
+                    tableControls.hidden = false;
 
-                    // Update summary cards
+                    // Update summary cards with counter animation
                     updateSummaryCards(status, config);
 
+                    // Store data for search/sort
+                    mappedData = mappings || [];
+
                     // Update mappings table
-                    if (!mappings || mappings.length === 0) {
+                    if (!mappedData || mappedData.length === 0) {
                         emptyState.hidden = false;
                         tableWrap.hidden = true;
                         meta.textContent = '0 تعيين';
+                        footerCount.textContent = '0 تعيين';
                         return;
                     }
 
-                    tableWrap.hidden = false;
-                    meta.textContent = mappings.length + ' تعيينات';
+                    renderTable(mappedData);
 
-                    var html = '';
-                    for (var i = 0; i < mappings.length; i++) {
-                        var m = mappings[i];
-                        html += '<tr>' +
-                            '<td class="wd-col-check"><input type="checkbox" class="mapping-checkbox" data-id="' + m.id + '" onchange="updateSyncButton()" /></td>' +
-                            '<td><strong>' + escapeHtml(m.name || m.oracleSource || '') + '</strong></td>' +
-                            '<td>' + getSourceTypeBadge(m.sourceType) + '</td>' +
-                            '<td><code style="font-size: 13px; background: var(--c-surface-muted); padding: 2px 6px; border-radius: 4px;">' + escapeHtml(m.sqlTargetTable || m.sqlTargetTable || '') + '</code></td>' +
-                            '<td id="mappingStatus-' + m.id + '">' + getStatusBadge(m.isActive ? 'active' : 'inactive') + '</td>' +
-                            '<td class="wd-actions">' +
-                                '<button class="wd-btn wd-btn--ghost wd-btn--sm" onclick="syncSingle(' + m.id + ')" title="مزامنة هذا التعيين">▶</button>' +
-                            '</td>' +
-                        '</tr>';
-                    }
-                    tableBody.innerHTML = html;
+                    tableWrap.hidden = false;
+                    var count = mappedData.length;
+                    meta.textContent = count + ' تعيين' + (count > 1 ? 'ات' : '');
+                    footerCount.textContent = count + ' تعيين' + (count > 1 ? 'ات' : '');
+
                 } catch (err) {
                     skeleton.hidden = true;
-                    emptyState.hidden = false;
-                    emptyState.innerHTML =
-                        '<div class="wd-empty__icon">⚠</div>' +
-                        '<h3>تعذر تحميل بيانات التعيينات</h3>' +
-                        '<p>' + escapeHtml(err.message || 'تعذر الاتصال بالخادم.') + '</p>';
+                    errorState.hidden = false;
+                    document.getElementById('errorMessage').textContent = err.message || 'تعذر الاتصال بالخادم. تحقق من اتصال الخدمة.';
                 }
             };
 
-            // ─── Update Summary Cards ──────────────────────────────
+            // ═══════════════════════════════════════════════════════════════
+            //  RENDER TABLE (Updated for all 6 fixes)
+            // ═══════════════════════════════════════════════════════════════
+
+            function renderTable(data) {
+                var tableBody = document.getElementById('mappingsBody');
+                var meta = document.getElementById('tableMeta');
+                var footerCount = document.getElementById('tableFooterCount');
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = '';
+                    meta.textContent = '0 تعيين';
+                    footerCount.textContent = '0 تعيين';
+                    return;
+                }
+
+                var html = '';
+                for (var i = 0; i < data.length; i++) {
+                    var m = data[i];
+                    var isActive = m.isActive !== false;
+                    var tableName = extractTableName(m.oracleSource || m.name || '');
+                    var lastSync = m.lastSyncTime ? formatDateTime(m.lastSyncTime) : '—';
+                    var recordCount = (m.lastRecordCount != null) ? Number(m.lastRecordCount).toLocaleString('ar-SA') : '—';
+                    var storedRecordCount = (m.lastRecordCount != null && m.lastRecordCount > 0)
+                        ? Number(m.lastRecordCount).toLocaleString('ar-SA')
+                        : '—';
+
+                    html += '<tr data-id="' + m.id + '" data-active="' + isActive + '">' +
+                        // Checkbox
+                        '<td class="wd-col-check"><input type="checkbox" class="mapping-checkbox" data-id="' + m.id + '" onchange="updateSyncButton()" ' + (!isActive ? 'disabled title="التعيين متوقف"' : '') + ' /></td>' +
+                        // Toggle switch (Fix #4)
+                        '<td class="wd-col-toggle">' +
+                            '<label class="wd-toggle" title="' + (isActive ? 'تعطيل التعيين' : 'تفعيل التعيين') + '">' +
+                                '<input type="checkbox" class="wd-toggle__input" ' + (isActive ? 'checked' : '') + ' onchange="toggleMapping(' + m.id + ')" />' +
+                                '<span class="wd-toggle__track"><span class="wd-toggle__thumb"></span></span>' +
+                            '</label>' +
+                        '</td>' +
+                        // Source (shortened table name + eye button for full query)
+                        '<td class="wd-col-source">' +
+                            '<div style="display:flex;align-items:center;gap:6px;">' +
+                                '<strong style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(m.oracleSource || '') + '">' + escapeHtml(tableName) + '</strong>' +
+                                '<button class="wd-eye-btn" data-mid="' + m.id + '" onclick="showSqlModalById(' + m.id + ')" title="عرض الاستعلام الكامل">👁️</button>' +
+                            '</div>' +
+                        '</td>' +
+                        // Type
+                        '<td class="wd-col-type">' + getSourceTypeBadge(m.sourceType) + '</td>' +
+                        // Target
+                        '<td class="wd-col-target"><code>' + escapeHtml(m.sqlTargetTable || '') + '</code></td>' +
+                        // Status
+                        '<td id="mappingStatus-' + m.id + '">' + getStatusBadge(isActive ? 'active' : 'inactive') + '</td>' +
+                        // Last sync (Fix #3)
+                        '<td class="wd-col-lastSync" style="font-size:13px;color:var(--c-text-muted);">' + lastSync + '</td>' +
+                        // Record count (Fix #3)
+                        '<td class="wd-col-records" style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;">' + recordCount + '</td>' +
+                        // Stored record count
+                        '<td class="wd-col-storedRecords" style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;">' + storedRecordCount + '</td>' +
+                        // Actions (sync single)
+                        '<td class="wd-actions">' +
+                            '<button class="wd-btn wd-btn--ghost wd-btn--sm" onclick="syncSingle(' + m.id + ')" title="مزامنة هذا التعيين" ' + (!isActive ? 'disabled' : '') + '>▶</button>' +
+                        '</td>' +
+                        // Download
+                        '<td>' +
+                            '<button class="wd-btn wd-btn--ghost wd-btn--sm" onclick="downloadExcel(' + m.id + ')" title="تنزيل Excel">📥</button>' +
+                        '</td>' +
+                    '</tr>';
+                }
+                tableBody.innerHTML = html;
+
+                var count = data.length;
+                meta.textContent = count + ' تعيين' + (count > 1 ? 'ات' : '');
+                footerCount.textContent = count + ' تعيين' + (count > 1 ? 'ات' : '');
+
+                // Re-apply sorted class if active
+                if (sortState.col >= 0) {
+                    applySortIndicator(sortState.col, sortState.asc);
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            //  UPDATE SUMMARY CARDS
+            // ═══════════════════════════════════════════════════════════════
 
             function updateSummaryCards(status, config) {
                 // Card 1: Engine status
                 var isRunning = status && status.isRunning;
                 var dot = document.getElementById('statusDot');
                 var text = document.getElementById('statusText');
-                var icon = document.getElementById('statusIcon');
                 if (isRunning) {
-                    dot.className = 'wd-summary-card__status-dot wd-summary-card__status-dot--active';
+                    dot.className = 'wd-summary-card__status-dot wd-summary-card__status-dot--running';
                     text.textContent = 'قيد التشغيل';
-                    icon.textContent = '🔄';
                 } else {
-                    dot.className = 'wd-summary-card__status-dot wd-summary-card__status-dot--inactive';
-                    text.textContent = 'متوقف';
-                    icon.textContent = '⏸';
+                    dot.className = 'wd-summary-card__status-dot wd-summary-card__status-dot--' +
+                        (status && status.lastStatus === 'failed' ? 'inactive' : (status && status.lastStatus === 'success' ? 'active' : 'inactive'));
+                    if (status && status.lastStatus === 'success') text.textContent = 'متوقف (آخرها نجاح)';
+                    else if (status && status.lastStatus === 'failed') text.textContent = 'متوقف (آخرها فشل)';
+                    else text.textContent = 'متوقف';
                 }
 
-                // Card 2: Last record count
-                document.getElementById('totalRecords').textContent = (status && status.lastRecordCount != null)
-                    ? Number(status.lastRecordCount).toLocaleString('ar-SA') : '0';
+                // Card 2: Last record count — with counter animation
+                var recordCount = (status && status.lastRecordCount != null) ? Number(status.lastRecordCount) : 0;
+                animateCounter(document.getElementById('totalRecords'), recordCount);
 
                 // Card 3: Last sync time
                 document.getElementById('lastSyncTime').textContent = (status && status.lastSyncTime)
@@ -591,12 +2434,140 @@
                 }
             }
 
-            // ─── Select All / None ──────────────────────────────────
+            // ═══════════════════════════════════════════════════════════════
+            //  SEARCH + FILTERS (Fix #5)
+            // ═══════════════════════════════════════════════════════════════
+
+            window.searchTable = function () {
+                var input = document.getElementById('searchInput');
+                var clearBtn = document.getElementById('searchClear');
+                searchTerm = input.value.trim().toLowerCase();
+                clearBtn.classList.toggle('is-visible', searchTerm.length > 0);
+
+                applyFilters();
+            };
+
+            window.clearSearch = function () {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('searchClear').classList.remove('is-visible');
+                searchTerm = '';
+                applyFilters();
+                document.getElementById('searchInput').focus();
+            };
+
+            function applyFilters() {
+                var filtered = mappedData;
+
+                // Text search
+                if (searchTerm) {
+                    filtered = filtered.filter(function (m) {
+                        var name = (m.name || m.oracleSource || '').toLowerCase();
+                        var target = (m.sqlTargetTable || '').toLowerCase();
+                        var type = (m.sourceType || '').toLowerCase();
+                        return name.indexOf(searchTerm) !== -1 ||
+                               target.indexOf(searchTerm) !== -1 ||
+                               type.indexOf(searchTerm) !== -1;
+                    });
+                }
+
+                // Status filter (Fix #5)
+                if (statusFilter !== 'all') {
+                    filtered = filtered.filter(function (m) {
+                        var isActive = m.isActive !== false;
+                        if (statusFilter === 'active') return isActive;
+                        if (statusFilter === 'inactive') return !isActive;
+                        return true;
+                    });
+                }
+
+                // Type filter (Fix #5)
+                if (typeFilter !== 'all') {
+                    filtered = filtered.filter(function (m) {
+                        var t = (m.sourceType || '').toLowerCase();
+                        return t === typeFilter;
+                    });
+                }
+
+                // Apply sort to filtered data
+                if (sortState.col >= 0) {
+                    filtered = sortData(filtered, sortState.col, sortState.asc);
+                }
+
+                renderTable(filtered);
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            //  SORTING
+            // ═══════════════════════════════════════════════════════════════
+
+            window.sortTable = function (colIndex) {
+                if (sortState.col === colIndex) {
+                    sortState.asc = !sortState.asc;
+                } else {
+                    sortState.col = colIndex;
+                    sortState.asc = true;
+                }
+
+                applySortIndicator(colIndex, sortState.asc);
+                applyFilters();
+            };
+
+            function applySortIndicator(colIndex, asc) {
+                var headers = document.querySelectorAll('#mappingsTable th');
+                for (var i = 0; i < headers.length; i++) {
+                    headers[i].classList.remove('wd-th-sort-asc', 'wd-th-sort-desc');
+                }
+                var target = document.querySelector('#mappingsTable th[data-col="' + colIndex + '"]');
+                if (target) {
+                    target.classList.add(asc ? 'wd-th-sort-asc' : 'wd-th-sort-desc');
+                }
+            }
+
+            function sortData(data, colIndex, asc) {
+                var sorted = data.slice().sort(function (a, b) {
+                    var valA, valB;
+                    switch (colIndex) {
+                        case 1: // Source name
+                            valA = (a.name || a.oracleSource || '').toLowerCase();
+                            valB = (b.name || b.oracleSource || '').toLowerCase();
+                            break;
+                        case 2: // Type
+                            valA = (a.sourceType || '').toLowerCase();
+                            valB = (b.sourceType || '').toLowerCase();
+                            break;
+                        case 3: // Target
+                            valA = (a.sqlTargetTable || '').toLowerCase();
+                            valB = (b.sqlTargetTable || '').toLowerCase();
+                            break;
+                        case 4: // Status
+                            valA = a.isActive !== false ? 'active' : 'inactive';
+                            valB = b.isActive !== false ? 'active' : 'inactive';
+                            break;
+                        case 5: // Stored Record Count
+                            valA = a.lastRecordCount || 0;
+                            valB = b.lastRecordCount || 0;
+                            break;
+                        default:
+                            return 0;
+                    }
+                    if (valA < valB) return asc ? -1 : 1;
+                    if (valA > valB) return asc ? 1 : -1;
+                    return 0;
+                });
+                return sorted;
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            //  SELECT ALL / NONE (Updated to skip inactive)
+            // ═══════════════════════════════════════════════════════════════
 
             window.toggleSelectAll = function (checked) {
                 var cbs = document.querySelectorAll('.mapping-checkbox');
                 for (var i = 0; i < cbs.length; i++) {
-                    cbs[i].checked = checked;
+                    // Skip disabled (inactive) checkboxes
+                    if (!cbs[i].disabled) {
+                        cbs[i].checked = checked;
+                    }
                 }
                 updateSyncButton();
             };
@@ -616,11 +2587,14 @@
                 return ids;
             }
 
-            // ─── Sync Single Mapping ────────────────────────────────
+            // ═══════════════════════════════════════════════════════════════
+            //  SYNC ACTIONS
+            // ═══════════════════════════════════════════════════════════════
 
             window.syncSingle = async function (mappingId) {
                 if (isSyncing) return;
                 isSyncing = true;
+                showSyncSpinner();
                 try {
                     var resp = await fetch(apiBase + '/api/sync/trigger-selected', {
                         method: 'POST',
@@ -629,21 +2603,21 @@
                     });
                     if (!resp.ok) throw new Error('HTTP ' + resp.status);
                     var data = await resp.json();
-                    showProgress();
+                    showStickyProgress();
                     pollProgress(data.runId);
                 } catch (err) {
                     isSyncing = false;
+                    hideSyncSpinner();
                     showToast('فشل بدء المزامنة: ' + (err.message || ''), 'error');
                 }
             };
-
-            // ─── Sync Selected ──────────────────────────────────────
 
             window.syncSelected = async function () {
                 var ids = getSelectedIds();
                 if (ids.length === 0) return;
                 if (isSyncing) return;
                 isSyncing = true;
+                showSyncSpinner();
 
                 document.getElementById('btnSyncSelected').disabled = true;
                 document.getElementById('btnSyncAll').disabled = true;
@@ -656,21 +2630,21 @@
                     });
                     if (!resp.ok) throw new Error('HTTP ' + resp.status);
                     var data = await resp.json();
-                    showProgress();
+                    showStickyProgress();
                     pollProgress(data.runId);
                 } catch (err) {
                     isSyncing = false;
+                    hideSyncSpinner();
                     document.getElementById('btnSyncSelected').disabled = false;
                     document.getElementById('btnSyncAll').disabled = false;
                     showToast('فشل بدء المزامنة: ' + (err.message || ''), 'error');
                 }
             };
 
-            // ─── Sync All ───────────────────────────────────────────
-
             window.syncAll = async function () {
                 if (isSyncing) return;
                 isSyncing = true;
+                showSyncSpinner();
 
                 document.getElementById('btnSyncSelected').disabled = true;
                 document.getElementById('btnSyncAll').disabled = true;
@@ -681,37 +2655,58 @@
                     });
                     if (!resp.ok) throw new Error('HTTP ' + resp.status);
 
-                    // Full sync doesn't return a runId, so we just show a generic progress
                     showToast('تم بدء مزامنة جميع التعيينات بنجاح.', 'success');
                     isSyncing = false;
+                    hideSyncSpinner();
                     document.getElementById('btnSyncSelected').disabled = false;
                     document.getElementById('btnSyncAll').disabled = false;
 
-                    // Reload dashboard after a short delay
                     setTimeout(function () {
                         loadDashboard();
                     }, 3000);
                 } catch (err) {
                     isSyncing = false;
+                    hideSyncSpinner();
                     document.getElementById('btnSyncSelected').disabled = false;
                     document.getElementById('btnSyncAll').disabled = false;
                     showToast('فشل بدء المزامنة: ' + (err.message || ''), 'error');
                 }
             };
 
-            // ─── Progress ──────────────────────────────────────────
+            // ═══════════════════════════════════════════════════════════════
+            //  STICKY PROGRESS BAR (Fix #2)
+            // ═══════════════════════════════════════════════════════════════
+
+            function showStickyProgress() {
+                var bar = document.getElementById('stickyProgress');
+                bar.hidden = false;
+                document.getElementById('stickyProgressFill').style.width = '0%';
+                document.getElementById('stickyProgressInfo').textContent = '0%';
+                document.getElementById('stickyProgressItems').innerHTML = '';
+            }
+
+            function hideStickyProgress() {
+                var bar = document.getElementById('stickyProgress');
+                bar.hidden = true;
+            }
 
             function showProgress() {
+                // Show both sticky bar and original section
+                showStickyProgress();
                 var section = document.getElementById('progressSection');
                 section.classList.remove('wd-hidden');
                 document.getElementById('overallProgressFill').style.width = '0%';
                 document.getElementById('overallProgressText').textContent = '0%';
                 document.getElementById('overallRowsText').textContent = '0 صف';
                 document.getElementById('mappingProgressList').innerHTML = '';
-                document.getElementById('progressStatusText').textContent = '— جاري التشغيل';
+                var badge = document.getElementById('progressStatusBadge');
+                badge.className = 'wd-progress-card__status wd-progress-card__status--running';
+                document.getElementById('progressStatusIcon').textContent = '⏳';
+                document.getElementById('progressStatusText').textContent = 'قيد التشغيل...';
             }
 
             function hideProgress() {
+                hideStickyProgress();
                 document.getElementById('progressSection').classList.add('wd-hidden');
             }
 
@@ -723,24 +2718,41 @@
                     })
                     .then(function (progress) {
                         updateProgressUI(progress);
+                        updateStickyProgressUI(progress);
+
                         if (progress.overallPercent < 100) {
                             pollingTimer = setTimeout(function () {
                                 pollProgress(runId);
                             }, 2000);
                         } else {
-                            // Complete
                             var statusText = document.getElementById('progressStatusText');
+                            var statusIcon = document.getElementById('progressStatusIcon');
+                            var badge = document.getElementById('progressStatusBadge');
                             var overall = (progress.overallStatus || '').toLowerCase();
                             if (overall === 'completed' || overall === 'success') {
-                                statusText.textContent = '✓ اكتمل';
+                                statusIcon.textContent = '✓';
+                                statusText.textContent = 'اكتمل';
+                                badge.className = 'wd-progress-card__status wd-progress-card__status--completed';
+                                showToast('اكتملت المزامنة بنجاح.', 'success');
                             } else if (overall === 'failed') {
-                                statusText.textContent = '✕ فشل';
+                                statusIcon.textContent = '✕';
+                                statusText.textContent = 'فشل';
+                                badge.className = 'wd-progress-card__status wd-progress-card__status--failed';
+                                showToast('فشلت المزامنة.', 'error');
                             } else {
-                                statusText.textContent = '— اكتمل';
+                                statusIcon.textContent = '✓';
+                                statusText.textContent = 'اكتمل';
+                                badge.className = 'wd-progress-card__status wd-progress-card__status--completed';
+                                showToast('اكتملت المزامنة.', 'success');
                             }
-                            showToast('اكتملت المزامنة بنجاح.', 'success');
+                            // Update sticky bar with final state
+                            var stickyLabel = document.querySelector('.wd-progress-sticky__label');
+                            if (stickyLabel) {
+                                stickyLabel.innerHTML = '<span style="color:var(--c-success);">✓</span> اكتملت المزامنة';
+                            }
                             setTimeout(function () {
                                 hideProgress();
+                                hideSyncSpinner();
                                 isSyncing = false;
                                 document.getElementById('btnSyncSelected').disabled = false;
                                 document.getElementById('btnSyncAll').disabled = false;
@@ -752,6 +2764,7 @@
                         showToast('خطأ في استعلام التقدم: ' + (err.message || ''), 'error');
                         setTimeout(function () {
                             hideProgress();
+                            hideSyncSpinner();
                             isSyncing = false;
                             document.getElementById('btnSyncSelected').disabled = false;
                             document.getElementById('btnSyncAll').disabled = false;
@@ -759,14 +2772,35 @@
                     });
             };
 
+            function updateStickyProgressUI(progress) {
+                var pct = Math.min(progress.overallPercent || 0, 100);
+                document.getElementById('stickyProgressFill').style.width = pct + '%';
+                document.getElementById('stickyProgressInfo').textContent = pct + '%  ' + (progress.totalRowsSoFar || 0).toLocaleString('ar-SA') + ' صف';
+
+                var itemsEl = document.getElementById('stickyProgressItems');
+                var mappings = progress.mappings || [];
+                var html = '';
+                for (var i = 0; i < mappings.length; i++) {
+                    var mp = mappings[i];
+                    var mpStatus = (mp.status || 'pending').toLowerCase();
+                    var itemClass = 'wd-progress-sticky__item--running';
+                    var itemIcon = '⏳';
+                    if (mpStatus === 'completed') { itemClass = 'wd-progress-sticky__item--completed'; itemIcon = '✓'; }
+                    else if (mpStatus === 'failed') { itemClass = 'wd-progress-sticky__item--failed'; itemIcon = '✕'; }
+
+                    html += '<span class="wd-progress-sticky__item ' + itemClass + '">' +
+                        itemIcon + ' ' + escapeHtml(mp.targetTable || ' #' + mp.mappingId) +
+                    '</span>';
+                }
+                itemsEl.innerHTML = html;
+            }
+
             function updateProgressUI(progress) {
-                // Overall bar
                 var pct = Math.min(progress.overallPercent || 0, 100);
                 document.getElementById('overallProgressFill').style.width = pct + '%';
                 document.getElementById('overallProgressText').textContent = pct + '%';
                 document.getElementById('overallRowsText').textContent = (progress.totalRowsSoFar || 0).toLocaleString('ar-SA') + ' صف';
 
-                // Mapping bars
                 var list = document.getElementById('mappingProgressList');
                 var mappings = progress.mappings || [];
                 var html = '';
@@ -798,24 +2832,128 @@
                     var statusCell = document.getElementById('mappingStatus-' + mp2.mappingId);
                     if (statusCell) {
                         var s = (mp2.status || '').toLowerCase();
-                        if (s === 'running') statusCell.innerHTML = getStatusBadge('running');
+                        if (s === 'running') statusCell.innerHTML = getStatusBadge('running', true);
                         else if (s === 'completed') statusCell.innerHTML = getStatusBadge('completed');
                         else if (s === 'failed') statusCell.innerHTML = getStatusBadge('failed');
                     }
                 }
             }
 
-            // ─── Initialization ─────────────────────────────────────
+            // ═══════════════════════════════════════════════════════════════
+            //  DOWNLOAD EXCEL
+            // ═══════════════════════════════════════════════════════════════
+
+            window.downloadExcel = async function (mappingId) {
+                try {
+                    var resp = await fetch(apiBase + '/api/sync/' + mappingId + '/export-excel');
+                    if (!resp.ok) {
+                        var err = await resp.json().catch(function() { return { message: 'HTTP ' + resp.status }; });
+                        showToast(err.message || 'فشل التحميل', 'error');
+                        return;
+                    }
+
+                    var disposition = resp.headers.get('Content-Disposition');
+                    var filename = 'export.xlsx';
+                    if (disposition) {
+                        var match = disposition.match(/filename\*=UTF-8''(.+?)($|;)/);
+                        if (match) filename = decodeURIComponent(match[1]);
+                        else {
+                            match = disposition.match(/filename="?(.+?)"?($|;)/);
+                            if (match) filename = match[1];
+                        }
+                    }
+
+                    var blob = await resp.blob();
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    showToast('تم تحميل الملف: ' + filename, 'success');
+                } catch (err) {
+                    showToast('فشل التحميل: ' + (err.message || ''), 'error');
+                }
+            };
+
+            // ═══════════════════════════════════════════════════════════════
+            //  KEYBOARD SHORTCUTS
+            // ═══════════════════════════════════════════════════════════════
+
+            window.toggleKeyboardShortcuts = function () {
+                var hud = document.getElementById('shortcutsHud');
+                hud.hidden = !hud.hidden;
+            };
+
+            window.hideKeyboardShortcuts = function () {
+                document.getElementById('shortcutsHud').hidden = true;
+            };
+
+            // ═══════════════════════════════════════════════════════════════
+            //  INITIALIZATION
+            // ═══════════════════════════════════════════════════════════════
 
             document.addEventListener('DOMContentLoaded', function () {
+                // Check connection
+                checkConnection();
+
+                // Load dashboard data
                 loadDashboard();
 
-                // Auto-refresh every 30 seconds (unless syncing)
-                setInterval(function () {
-                    if (!isSyncing) {
-                        loadDashboard();
+                // Keyboard shortcuts
+                document.addEventListener('keydown', function (e) {
+                    // Don't trigger if typing in input
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                        if (e.key === 'Escape') { hideKeyboardShortcuts(); closeSqlModal(); }
+                        return;
                     }
-                }, 30000);
+
+                    switch (e.key.toLowerCase()) {
+                        case '?':
+                            e.preventDefault();
+                            toggleKeyboardShortcuts();
+                            break;
+                        case 'escape':
+                            hideKeyboardShortcuts();
+                            closeSqlModal();
+                            break;
+                        case 'a':
+                            if (!e.ctrlKey && !e.metaKey) {
+                                var selectAll = document.getElementById('selectAll');
+                                selectAll.checked = !selectAll.checked;
+                                toggleSelectAll(selectAll.checked);
+                                e.preventDefault();
+                            }
+                            break;
+                        case 's':
+                            syncSelected();
+                            e.preventDefault();
+                            break;
+                        case 'd':
+                            syncAll();
+                            e.preventDefault();
+                            break;
+                        case 'r':
+                            if (!isSyncing) loadDashboard();
+                            e.preventDefault();
+                            break;
+                        case '/':
+                            document.getElementById('searchInput').focus();
+                            e.preventDefault();
+                            break;
+                    }
+                });
+
+                // NO auto-refresh by default (Fix #6)
+                // Auto-refresh is controlled by the toggle button
+
+                // Connection check on interval (every 60s)
+                setInterval(function () {
+                    checkConnection();
+                }, 60000);
             });
 
         })();

@@ -11,22 +11,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ---------------------------------------------------------------------------
 // Service registration.
-// OracleExtractionService: SINGLETON (stateless, fresh OracleConnection per call).
-// SqlServerLoadService : SINGLETON (stateless, fresh SqlConnection per call; resolves the
-//                        SQL connection string from IConfiguration + SQL_PASSWORD env var).
-// SyncEngineService    : registered as a SINGLETON and ALSO run as the hosted background
-//                        service. The hosted-service registration resolves that same
-//                        singleton instance (factory) so the controller-injected engine and
-//                        the running engine are one and the same — sharing runtime status.
-// SyncRunLogStore      : SINGLETON in-memory ring buffer for recent sync runs (temporary;
-//                        see SyncController — replaced by DB logging in a later task).
+// OracleExtractionService : SINGLETON (stateless, fresh OracleConnection per call).
+// SqlServerLoadService    : SINGLETON (stateless, fresh SqlConnection per call; resolves the
+//                           SQL connection string from IConfiguration + SQL_PASSWORD env var).
+// SyncEngineService       : SINGLETON — the execution engine (extract + load). No longer a
+//                            BackgroundService; concurrency is managed by SyncQueueService.
+// SyncQueueService        : SINGLETON + HOSTED — centralized sync queue that ensures only one
+//                            sync runs at a time, merges requests, and drives the auto-sync timer.
+// SyncRunLogStore         : SINGLETON in-memory ring buffer for recent sync runs (temporary;
+//                           see SyncController — replaced by DB logging in a later task).
 // ---------------------------------------------------------------------------
 builder.Services.AddSingleton<OracleExtractionService>();
 builder.Services.AddSingleton<SqlServerLoadService>();
 builder.Services.AddSingleton<SyncEngineService>();
-builder.Services.AddHostedService(sp => sp.GetRequiredService<SyncEngineService>());
+builder.Services.AddSingleton<SyncQueueService>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<SyncQueueService>());
 builder.Services.AddSingleton<SyncRunLogStore>();
 builder.Services.AddSingleton<SyncRunProgressStore>();
+builder.Services.AddScoped<ExportExcelService>();
 
 builder.Services.AddControllers();
 

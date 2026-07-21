@@ -13,64 +13,96 @@
     .wd-page__title { font-size: 22px; font-weight: 700; color: var(--c-text); margin: 0; }
     .wd-page__subtitle { font-size: 14px; color: var(--c-text-muted); margin: 6px 0 0; }
 
-    /* Table */
-    .wd-table-wrap {
+    /* ─── Mapping Card Grid ─── */
+    .tw-mapping-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .tw-mapping-card {
         background: var(--c-surface);
         border: 1px solid var(--c-border);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);
-        overflow-x: auto;
-        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        overflow: hidden;
+        transition: box-shadow var(--dur-norm) var(--ease), transform var(--dur-norm) var(--ease);
+        animation: twCardIn var(--dur-norm) var(--ease) both;
     }
-    .wd-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-        font-family: var(--font-ar);
+    .tw-mapping-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
     }
-    .wd-table th {
+    .tw-mapping-card:nth-child(1) { animation-delay: 0ms; }
+    .tw-mapping-card:nth-child(2) { animation-delay: 40ms; }
+    .tw-mapping-card:nth-child(3) { animation-delay: 80ms; }
+    .tw-mapping-card:nth-child(4) { animation-delay: 120ms; }
+    .tw-mapping-card:nth-child(5) { animation-delay: 160ms; }
+    .tw-mapping-card:nth-child(6) { animation-delay: 200ms; }
+    .tw-mapping-card:nth-child(7) { animation-delay: 240ms; }
+    .tw-mapping-card:nth-child(8) { animation-delay: 280ms; }
+    @@keyframes twCardIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Card Accent Bar (top) ─── */
+    .tw-mapping-card::before {
+        content: '';
+        display: block;
+        height: 3px;
+        background: linear-gradient(90deg, var(--c-primary), var(--c-secondary));
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .tw-mapping-card--error::before {
+        background: linear-gradient(90deg, var(--c-error), #e86060);
+    }
+
+    /* ─── Card Header ─── */
+    .tw-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 20px 0;
+        min-width: 0;
+    }
+    .tw-card-name-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+    .tw-card-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-md);
         background: var(--c-surface-muted);
-        color: var(--c-text-muted);
-        font-weight: 600;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
-        padding: 12px 16px;
-        text-align: start;
-        border-bottom: 1px solid var(--c-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--c-primary);
     }
-    .wd-table td {
-        padding: 12px 16px;
+    .tw-card-name {
+        font-size: 16px;
+        font-weight: 700;
         color: var(--c-text);
-        border-bottom: 1px solid var(--c-border);
-        vertical-align: middle;
-    }
-    .wd-table tr:last-child td { border-bottom: none; }
-    .wd-table tr:hover td { background: rgba(31,78,121,0.03); }
-
-    .wd-badge {
-        display: inline-block;
-        padding: 3px 10px;
-        border-radius: var(--radius-full);
-        font-size: 12px;
-        font-weight: 600;
-    }
-    .wd-badge--active { background: rgba(46,139,87,0.12); color: #2e8b57; }
-    .wd-badge--inactive { background: rgba(200,60,60,0.12); color: #c83c3c; }
-    .wd-badge--error { background: rgba(200,60,60,0.12); color: #c83c3c; }
-
-    .wd-truncate {
-        max-width: 240px;
+        margin: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        min-width: 0;
+    }
+    .tw-card-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
     }
 
-    .wd-text-muted { color: var(--c-text-muted); font-size: 13px; }
-
-    .wd-actions { display: flex; gap: 6px; align-items: center; }
-
-    /* Toggle */
+    /* ─── Toggle ─── */
     .wd-toggle { position: relative; width: 40px; height: 22px; flex: none; display: inline-block; }
     .wd-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
     .wd-toggle__slider {
@@ -84,10 +116,173 @@
         border-radius: var(--radius-full);
         transition: transform var(--dur-fast) var(--ease);
     }
-    .wd-toggle input:checked + .wd-toggle__slider { background: var(--c-primary); }
+    .wd-toggle input:checked + .wd-toggle__slider { background: var(--c-success); }
     .wd-toggle input:checked + .wd-toggle__slider::before { transform: translateX(18px); }
 
-    /* Empty state */
+    .tw-status-label {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: var(--radius-full);
+    }
+    .tw-status-label--active {
+        background: rgba(30,158,106,0.10);
+        color: var(--c-success);
+    }
+    .tw-status-label--inactive {
+        background: rgba(214,69,69,0.10);
+        color: var(--c-error);
+    }
+
+    /* ─── Source Query Box ─── */
+    .tw-card-source {
+        margin: 12px 20px 0;
+    }
+    .tw-source-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--c-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 6px;
+    }
+    .tw-source-box {
+        position: relative;
+        background: var(--c-surface-muted);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+    .tw-source-query {
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 12px;
+        line-height: 1.7;
+        color: var(--c-text);
+        padding: 10px 14px;
+        max-height: 82px;
+        overflow: auto;
+        direction: ltr;
+        text-align: left;
+        white-space: pre-wrap;
+        word-break: break-all;
+        margin: 0;
+    }
+    .tw-source-box-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 4px 10px;
+        background: var(--c-surface);
+        border-top: 1px solid var(--c-border);
+    }
+    .tw-source-expand {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: var(--font-ar);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--c-primary);
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        transition: all var(--dur-fast) var(--ease);
+    }
+    .tw-source-expand:hover {
+        background: rgba(31,78,121,0.08);
+    }
+
+    /* ─── Card Meta Grid ─── */
+    .tw-card-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+        padding: 16px 20px;
+    }
+    .tw-meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+    }
+    .tw-meta-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--c-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+    .tw-meta-value {
+        font-size: 13px;
+        color: var(--c-text);
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .tw-meta-value--mono {
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 12px;
+    }
+    .tw-meta-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+        width: fit-content;
+    }
+    .tw-meta-badge--type {
+        background: rgba(31,78,121,0.10);
+        color: var(--c-primary);
+    }
+    .tw-meta-badge--full {
+        background: rgba(46,109,164,0.10);
+        color: var(--c-secondary);
+    }
+    .tw-meta-badge--incremental {
+        background: rgba(30,158,106,0.10);
+        color: var(--c-success);
+    }
+    .tw-meta-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--c-error);
+        background: rgba(214,69,69,0.06);
+        padding: 6px 10px;
+        border-radius: var(--radius-sm);
+        border-inline-start: 3px solid var(--c-error);
+    }
+
+    /* ─── Card Actions ─── */
+    .tw-card-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 12px 20px;
+        border-top: 1px solid var(--c-border);
+        background: var(--c-surface-muted);
+        flex-wrap: wrap;
+    }
+
+    /* ─── Badges ─── */
+    .wd-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .wd-text-muted { color: var(--c-text-muted); font-size: 13px; }
+
+    .wd-actions { display: flex; gap: 6px; align-items: center; }
+
+    /* ─── Empty state ─── */
     .wd-empty {
         text-align: center; padding: 48px 16px;
         color: var(--c-text-muted);
@@ -95,7 +290,52 @@
     .wd-empty__icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
     .wd-empty__text { font-size: 15px; }
 
-    /* Toast */
+    /* ─── Full Query Modal ─── */
+    .tw-query-modal-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+        display: none; align-items: center; justify-content: center;
+        z-index: 1001; backdrop-filter: blur(4px);
+    }
+    .tw-query-modal-overlay.is-open { display: flex; animation: wdFadeUp var(--dur-fast) var(--ease); }
+    .tw-query-modal {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        width: 92%; max-width: 720px; max-height: 80vh;
+        display: flex; flex-direction: column;
+        animation: wdFadeUp var(--dur-norm) var(--ease);
+    }
+    .tw-query-modal__header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--c-border);
+    }
+    .tw-query-modal__title {
+        font-size: 15px; font-weight: 700; color: var(--c-text); margin: 0;
+    }
+    .tw-query-modal__close {
+        background: none; border: none; cursor: pointer;
+        font-size: 20px; color: var(--c-text-muted); padding: 4px 8px;
+        border-radius: var(--radius-md);
+        transition: all var(--dur-fast) var(--ease);
+    }
+    .tw-query-modal__close:hover { background: var(--c-surface-muted); color: var(--c-text); }
+    .tw-query-modal__body {
+        flex: 1; overflow-y: auto; padding: 0;
+    }
+    .tw-query-modal__code {
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 13px; line-height: 1.8;
+        color: var(--c-text); padding: 16px 20px;
+        direction: ltr; text-align: left;
+        white-space: pre-wrap; word-break: break-word;
+        margin: 0;
+        background: var(--c-surface-muted);
+        border-radius: 0;
+    }
+
+    /* ─── Toast ─── */
     .wd-toast-container {
         position: fixed; inset-inline-end: 16px; inset-block-end: 16px;
         display: flex; flex-direction: column; gap: 8px; z-index: 9999;
@@ -518,6 +758,20 @@
     /* Utility */
     .wm-mt-2 { margin-top: 8px; }
     .wm-hidden { display: none !important; }
+
+    /* ─── Responsive ─── */
+    @@media (max-width: 640px) {
+        .tw-card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+        .tw-card-status { align-self: flex-end; }
+        .tw-card-meta { grid-template-columns: 1fr 1fr; }
+        .tw-card-actions { justify-content: flex-start; }
+        .wm-type-cards { grid-template-columns: 1fr; }
+        .wm-target-row { grid-template-columns: 1fr; }
+        .wm-steps { flex-wrap: wrap; gap: 4px; }
+    }
+    @@media (min-width: 641px) and (max-width: 960px) {
+        .tw-card-meta { grid-template-columns: repeat(3, 1fr); }
+    }
 </style>
 
 <div class="wd-page">
@@ -541,18 +795,14 @@
         <div class="wd-empty">
             <div class="wd-empty__icon" style="width:84px;height:84px;border-radius:var(--radius-xl);background:rgba(31,78,121,0.06);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84" fill="none">
-                    <!-- Background subtle server shape -->
                     <rect x="14" y="24" width="56" height="36" rx="6" fill="rgba(31,78,121,0.08)" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.15"/>
                     <rect x="22" y="38" width="40" height="3" rx="1.5" fill="currentColor" fill-opacity="0.12"/>
                     <rect x="22" y="46" width="40" height="3" rx="1.5" fill="currentColor" fill-opacity="0.12"/>
                     <rect x="22" y="30" width="40" height="3" rx="1.5" fill="currentColor" fill-opacity="0.12"/>
-                    <!-- Database cylinder -->
                     <path d="M38 8 C38 8 42 5 46 8 L46 18 C46 18 42 21 38 18 Z" fill="rgba(31,78,121,0.12)" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.3"/>
                     <ellipse cx="42" cy="13" rx="4" ry="2" fill="currentColor" fill-opacity="0.25"/>
-                    <!-- Database stack lines -->
                     <line x1="38" y1="16" x2="38" y2="20" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.25"/>
                     <line x1="46" y1="14" x2="46" y2="18" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.25"/>
-                    <!-- Plus sign -->
                     <circle cx="54" cy="10" r="8" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.25"/>
                     <line x1="54" y1="6" x2="54" y2="14" stroke="currentColor" stroke-width="1.8" stroke-opacity="0.5"/>
                     <line x1="50" y1="10" x2="58" y2="10" stroke="currentColor" stroke-width="1.8" stroke-opacity="0.5"/>
@@ -565,111 +815,145 @@
     }
     else
     {
-        <div class="wd-table-wrap">
-            <table class="wd-table">
-                <thead>
-                    <tr>
-                        <th>الاسم</th>
-                        <th>مصدر Oracle</th>
-                        <th>النوع</th>
-                        <th>جدول SQL Server</th>
-                        <th>الحالة</th>
-                        <th>آخر مزامنة</th>
-                        <th>السجلات</th>
-                        <th>خطأ</th>
-                        <th>إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var m in Model.Mappings)
-                    {
-                        <tr>
-                            <td>
-                                <span style="font-weight:600; color:var(--c-text);">@m.Name</span>
-                            </td>
-                            <td>
-                                <span class="wd-truncate" title="@m.OracleSource" style="font-family:monospace; font-size:13px;">
-                                    @m.OracleSource
-                                </span>
-                            </td>
-                            <td>
-                                <span class="wd-badge" style="background:rgba(31,78,121,0.1); color:var(--c-primary);">
-                                    @m.SourceType
-                                </span>
-                            </td>
-                            <td>
-                                <span class="wd-truncate" title="@m.SqlTargetTable" style="font-family:monospace; font-size:13px;">
-                                    @m.SqlTargetTable
-                                </span>
-                            </td>
-                            <td>
-                                <form method="post" asp-page-handler="Toggle" style="display:inline;">
-                                    <input type="hidden" name="id" value="@m.Id" />
-                                    <label class="wd-toggle">
-                                        <input type="submit" style="display:none;" />
-                                        <input type="checkbox" @(m.IsActive ? "checked" : "")
-                                               onchange="this.closest('form').submit()" />
-                                        <span class="wd-toggle__slider"></span>
-                                    </label>
-                                </form>
-                            </td>
-                            <td class="wd-text-muted">
+        <div class="tw-mapping-grid">
+            @{ var cardIndex = 0; }
+            @foreach (var m in Model.Mappings)
+            {
+                cardIndex++;
+                var isError = !string.IsNullOrEmpty(m.ErrorMessage);
+                var cardClass = isError ? "tw-mapping-card tw-mapping-card--error" : "tw-mapping-card";
+                var syncModeLabel = m.SyncMode == "Incremental" ? "تزايدي" : "كاملة";
+                var syncModeBadgeClass = m.SyncMode == "Incremental" ? "tw-meta-badge tw-meta-badge--incremental" : "tw-meta-badge tw-meta-badge--full";
+                var syncInfo = m.SyncMode == "Incremental" && !string.IsNullOrEmpty(m.IncrementalColumn)
+                    ? $"<span style=\"display:block;\">العمود: <code style='font-size:11px;'>{m.IncrementalColumn}</code></span>" +
+                      (m.InitialSyncStartDate.HasValue ? $"<span style=\"display:block;\">منذ: {m.InitialSyncStartDate.Value:yyyy-MM-dd}</span>" : "")
+                    : "";
+
+                <div class="@cardClass" style="animation-delay: @((cardIndex - 1) * 40)ms;">
+                    <!-- Accent bar is via ::before -->
+
+                    <!-- Header: Name + Status -->
+                    <div class="tw-card-header">
+                        <div class="tw-card-name-group">
+                            <div class="tw-card-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                            </div>
+                            <h3 class="tw-card-name" title="@m.Name">@m.Name</h3>
+                        </div>
+                        <div class="tw-card-status">
+                            <span class="tw-status-label @(m.IsActive ? "tw-status-label--active" : "tw-status-label--inactive")">
+                                @(m.IsActive ? "مفعّل" : "معطّل")
+                            </span>
+                            <form method="post" asp-page-handler="Toggle" style="display:inline;">
+                                <input type="hidden" name="id" value="@m.Id" />
+                                <label class="wd-toggle">
+                                    <input type="submit" style="display:none;" />
+                                    <input type="checkbox" @(m.IsActive ? "checked" : "")
+                                           onchange="this.closest('form').submit()" />
+                                    <span class="wd-toggle__slider"></span>
+                                </label>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Oracle Source -->
+                    <div class="tw-card-source">
+                        <div class="tw-source-label">مصدر Oracle</div>
+                        <div class="tw-source-box">
+                            <pre class="tw-source-query" id="query-@m.Id">@m.OracleSource</pre>
+                            <div class="tw-source-box-footer">
+                                <button type="button" class="tw-source-expand"
+                                        onclick="twShowFullQuery(@m.Id, @JsonSerializer.Serialize(m.Name), @JsonSerializer.Serialize(m.OracleSource))">
+                                    عرض الكامل
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Meta Grid -->
+                    <div class="tw-card-meta">
+                        <div class="tw-meta-item">
+                            <span class="tw-meta-label">النوع</span>
+                            <span class="tw-meta-badge tw-meta-badge--type">@m.SourceType</span>
+                        </div>
+                        <div class="tw-meta-item">
+                            <span class="tw-meta-label">جدول SQL Server</span>
+                            <span class="tw-meta-value tw-meta-value--mono" title="@m.SqlTargetTable">@m.SqlTargetTable</span>
+                        </div>
+                        <div class="tw-meta-item">
+                            <span class="tw-meta-label">وضع المزامنة</span>
+                            <div>
+                                <span class="@syncModeBadgeClass">@syncModeLabel</span>
+                                @if (!string.IsNullOrEmpty(syncInfo))
+                                {
+                                    <span style="display:block; font-size:11px; color:var(--c-text-muted); margin-top:3px; line-height:1.5;">@Html.Raw(syncInfo)</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="tw-meta-item">
+                            <span class="tw-meta-label">آخر مزامنة</span>
+                            <span class="tw-meta-value">
                                 @if (m.LastSyncAt.HasValue)
                                 {
-                                    @m.LastSyncAt.Value.ToString("yyyy/MM/dd HH:mm")
+                                    @m.LastSyncAt.Value.ToString("yyyy/MM/dd")
+                                    <span style="display:block; font-size:11px; color:var(--c-text-muted); font-weight:400;">@m.LastSyncAt.Value.ToString("HH:mm")</span>
                                 }
                                 else
                                 {
-                                    <span>--</span>
+                                    <span style="color:var(--c-text-muted);">--</span>
                                 }
-                            </td>
-                            <td class="wd-text-muted">
-                                @m.SyncRecordCount.ToString("N0")
-                            </td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(m.ErrorMessage))
-                                {
-                                    <span class="wd-badge wd-badge--error" title="@m.ErrorMessage" style="cursor:pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-inline-end:2px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> خطأ
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="wd-text-muted">--</span>
-                                }
-                            </td>
-                            <td>
-                                <div class="wd-actions">
-                                    <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm"
-                                            onclick='openWizardForEdit(@m.Id, @JsonSerializer.Serialize(m.Name), @JsonSerializer.Serialize(m.OracleSource), @JsonSerializer.Serialize(m.SourceType), @JsonSerializer.Serialize(m.SqlTargetTable), @JsonSerializer.Serialize(m.SyncMode), @JsonSerializer.Serialize(m.IncrementalColumn ?? ""), @JsonSerializer.Serialize((m.ColumnMappings ?? Array.Empty<WarehouseDashboard.Web.Models.ColumnMapping>()).OrderBy(cm => cm.SortOrder).Select(cm => new { oracleColumnName = cm.OracleColumnName, sqlColumnName = cm.SqlColumnName, sqlDataType = cm.SqlDataType, sqlMaxLength = cm.SqlMaxLength, sqlPrecision = cm.SqlPrecision, sqlScale = cm.SqlScale, isNullable = cm.IsNullable, isExcluded = cm.IsExcluded, isNumericText = cm.IsNumericText, defaultValue = cm.DefaultValue, sortOrder = cm.SortOrder })))'>
-                                        تعديل
-                                    </button>
-                                    <form method="post" asp-page-handler="PreviewSchema" style="display:inline;">
-                                        <input type="hidden" name="id" value="@m.Id" />
-                                        <button type="submit" class="wd-btn wd-btn--ghost wd-btn--sm">
-                                            مخطط
-                                        </button>
-                                    </form>
-                                    <form method="post" asp-page-handler="ApplySchema" style="display:inline;"
-                                          onsubmit="return confirm('هل تريد تطبيق المخطط على SQL Server؟');">
-                                        <input type="hidden" name="id" value="@m.Id" />
-                                        <button type="submit" class="wd-btn wd-btn--success wd-btn--sm">
-                                            تطبيق
-                                        </button>
-                                    </form>
-                                    <form method="post" asp-page-handler="Delete" style="display:inline;"
-                                          onsubmit="return confirm('هل تريد حذف هذا التعيين نهائياً؟');">
-                                        <input type="hidden" name="id" value="@m.Id" />
-                                        <button type="submit" class="wd-btn wd-btn--danger wd-btn--sm">
-                                            حذف
-                                        </button>
-                                    </form>
+                            </span>
+                        </div>
+                        <div class="tw-meta-item">
+                            <span class="tw-meta-label">السجلات</span>
+                            <span class="tw-meta-value">@m.SyncRecordCount.ToString("N0")</span>
+                        </div>
+
+                        @if (isError)
+                        {
+                            <div class="tw-meta-item" style="grid-column: 1 / -1;">
+                                <div class="tw-meta-error" title="@m.ErrorMessage">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">@m.ErrorMessage</span>
                                 </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="tw-card-actions">
+                        <button type="button" class="wd-btn wd-btn--ghost wd-btn--sm"
+                                onclick='openWizardForEdit(@m.Id, @JsonSerializer.Serialize(m.Name), @JsonSerializer.Serialize(m.OracleSource), @JsonSerializer.Serialize(m.SourceType), @JsonSerializer.Serialize(m.SqlTargetTable), @JsonSerializer.Serialize(m.SyncMode), @JsonSerializer.Serialize(m.IncrementalColumn ?? ""), @JsonSerializer.Serialize(m.InitialSyncStartDate?.ToString("yyyy-MM-dd") ?? ""), @JsonSerializer.Serialize((m.ColumnMappings ?? Array.Empty<WarehouseDashboard.Web.Models.ColumnMapping>()).OrderBy(cm => cm.SortOrder).Select(cm => new { oracleColumnName = cm.OracleColumnName, sqlColumnName = cm.SqlColumnName, sqlDataType = cm.SqlDataType, sqlMaxLength = cm.SqlMaxLength, sqlPrecision = cm.SqlPrecision, sqlScale = cm.SqlScale, isNullable = cm.IsNullable, isExcluded = cm.IsExcluded, isNumericText = cm.IsNumericText, defaultValue = cm.DefaultValue, sortOrder = cm.SortOrder })))'>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            تعديل
+                        </button>
+                        <form method="post" asp-page-handler="PreviewSchema" style="display:inline;">
+                            <input type="hidden" name="id" value="@m.Id" />
+                            <button type="submit" class="wd-btn wd-btn--ghost wd-btn--sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                                مخطط
+                            </button>
+                        </form>
+                        <form method="post" asp-page-handler="ApplySchema" style="display:inline;"
+                              onsubmit="return confirm('هل تريد تطبيق المخطط على SQL Server؟');">
+                            <input type="hidden" name="id" value="@m.Id" />
+                            <button type="submit" class="wd-btn wd-btn--success wd-btn--sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                تطبيق
+                            </button>
+                        </form>
+                        <form method="post" asp-page-handler="Delete" style="display:inline;"
+                              onsubmit="return confirm('هل تريد حذف هذا التعيين نهائياً؟');">
+                            <input type="hidden" name="id" value="@m.Id" />
+                            <button type="submit" class="wd-btn wd-btn--danger wd-btn--sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                حذف
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
         </div>
     }
 
@@ -735,6 +1019,19 @@
             }
         </div>
     }
+</div>
+
+<!-- ═══════════════ Full Query Modal ═══════════════ -->
+<div class="tw-query-modal-overlay" id="tw-query-modal">
+    <div class="tw-query-modal">
+        <div class="tw-query-modal__header">
+            <h4 class="tw-query-modal__title" id="tw-query-modal-title">الاستعلام الكامل</h4>
+            <button type="button" class="tw-query-modal__close" onclick="twCloseFullQuery()" title="إغلاق">&times;</button>
+        </div>
+        <div class="tw-query-modal__body">
+            <pre class="tw-query-modal__code" id="tw-query-modal-code"></pre>
+        </div>
+    </div>
 </div>
 
 <!-- ═══════════════ Wizard Modal ═══════════════ -->
@@ -820,7 +1117,7 @@
                     <div class="wm-field">
                         <label>استعلام SQL</label>
                         <textarea class="wm-query-editor" id="wm-query-editor"
-                                  placeholder="SELECT COLUMN1, COLUMN2 FROM TABLE_NAME WHERE ...&#10;&#10;ملاحظة: فقط استعلامات SELECT مسموحة." dir="ltr"></textarea>
+                                  placeholder="SELECT COLUMN1, COLUMN2 FROM TABLE_NAME WHERE ...&#10;&#10;ملاحظة: فقط استعلام SELECT مسموح." dir="ltr"></textarea>
                     </div>
                     <div class="wm-query-actions">
                         <button type="button" class="wd-btn wd-btn--primary wd-btn--sm" id="wm-btn-validate-query">
@@ -957,6 +1254,11 @@
                         </select>
                         <span class="wm-hint">العمود المستخدم لتحديد البيانات الجديدة. يتم جلب الأعمدة المتوفرة من المصدر تلقائياً.</span>
                     </div>
+                    <div class="wm-field" id="wm-start-date-group" style="display:none; margin-top:12px;">
+                        <label for="wm-start-date">تاريخ بداية المزامنة</label>
+                        <input type="date" id="wm-start-date" class="wm-input" />
+                        <span class="wm-hint">يُستخدم فقط في أول مزامنة. بعدها يتحدث تلقائياً بناءً على آخر مزامنة ناجحة.</span>
+                    </div>
                 </div>
 
                 <div style="margin-top:20px; padding:12px; background:var(--c-surface-muted); border-radius:var(--radius-md); border:1px solid var(--c-border);">
@@ -993,6 +1295,7 @@
         <input type="hidden" asp-for="SqlTargetTable" id="wm-h-sqlTargetTable" value="" />
         <input type="hidden" name="SyncMode" id="wm-h-syncMode" value="Full" />
         <input type="hidden" name="IncrementalColumn" id="wm-h-incrementalColumn" value="" />
+        <input type="hidden" name="InitialSyncStartDate" id="wm-h-initialSyncStartDate" value="" />
         <textarea id="wm-h-columnMappingsJson" name="ColumnMappingsJson" style="display:none;"></textarea>
     </form>
 </div>
@@ -1010,6 +1313,33 @@
 <script src="~/js/table-mapping-wizard.js" asp-append-version="true"></script>
 <script>
     (function () {
+        /* ─── Full Query Modal ─── */
+        window.twShowFullQuery = function (id, name, query) {
+            var modal = document.getElementById('tw-query-modal');
+            var title = document.getElementById('tw-query-modal-title');
+            var code = document.getElementById('tw-query-modal-code');
+            if (modal && title && code) {
+                title.textContent = name + ' \u2014 الاستعلام الكامل';
+                code.textContent = query;
+                modal.classList.add('is-open');
+            }
+        };
+        window.twCloseFullQuery = function () {
+            var modal = document.getElementById('tw-query-modal');
+            if (modal) modal.classList.remove('is-open');
+        };
+        // Close on overlay click
+        document.getElementById('tw-query-modal').addEventListener('click', function (e) {
+            if (e.target === this) twCloseFullQuery();
+        });
+        // Close on Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                twCloseFullQuery();
+            }
+        });
+
+        /* ─── Wizard ─── */
         var wizard = new TableMappingWizard({
             listObjectsApiUrl: '/api/oracle-browser/list-objects',
             previewApiUrl: '/api/oracle-browser/preview',
@@ -1103,6 +1433,11 @@
                     incrOpts.classList.add('wm-hidden');
                 }
             }
+            // Show/hide start date group
+            var startDateGroup = document.getElementById('wm-start-date-group');
+            if (startDateGroup) {
+                startDateGroup.style.display = (s.syncMode === 'Incremental') ? '' : 'none';
+            }
             // Update summary
             var sumMode = document.getElementById('wm-sum-sync-mode');
             var sumIncrRow = document.getElementById('wm-sum-incr-row');
@@ -1124,7 +1459,7 @@
             wizard.open();
         };
 
-        window.openWizardForEdit = function (id, name, oracleSource, sourceType, sqlTarget, syncMode, incrementalColumn, columnMappings) {
+        window.openWizardForEdit = function (id, name, oracleSource, sourceType, sqlTarget, syncMode, incrementalColumn, initialSyncStartDate, columnMappings) {
             wizard.resetState();
             var nameInput = document.getElementById('wm-mapping-name');
             if (nameInput) nameInput.value = name || '';
@@ -1140,6 +1475,7 @@
                 sqlTargetTable: sqlTarget,
                 syncMode: syncMode || 'Full',
                 incrementalColumn: incrementalColumn || '',
+                initialSyncStartDate: initialSyncStartDate || '',
                 columnMappings: Array.isArray(columnMappings) ? columnMappings : []
             });
         };

@@ -68,11 +68,11 @@
 
 1. ✅ Header Topbar (تم)
 2. ✅ Login Page (تم)
-3. ⬜ Logout Page ← **التالي**
-4. ⬜ Admin Nav Index
-5. ⬜ Public Dashboard
-6. ⬜ Sync Settings
-7. ⬜ Sync Logs
-8. ⬜ Cards List
-9. ⬜ Cards Edit
+3. ✅ Logout Page (TASK-UI-POLISH-001 — 2026-07-21)
+4. ✅ Admin Nav Index (TASK-UI-POLISH-002 — 2026-07-21)
+5. ✅ Public Dashboard (TASK-UI-POLISH-003 — 2026-07-21)
+6. ✅ Sync Settings (2026-07-21)
+7. ✅ Sync Logs (2026-07-21)
+8. ✅ Cards List (2026-07-21)
+9. ✅ Cards Edit (نظيف — لا يحتوي emoji)
 10-15. ⬜ فحص الصفحات المتقدمة

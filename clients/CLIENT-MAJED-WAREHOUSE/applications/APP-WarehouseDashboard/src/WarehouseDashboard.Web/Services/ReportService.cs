@@ -279,6 +279,8 @@ public class ReportService
                 IsRequired = f.IsRequired,
                 DefaultValue = f.DefaultValue,
                 OptionsQuery = f.OptionsQuery,
+                ValueColumn = f.ValueColumn,
+                TextColumn = f.TextColumn,
                 Placeholder = f.Placeholder,
                 SortOrder = f.SortOrder
             }).ToList()
@@ -338,10 +340,12 @@ public class ReportService
             Label = f.Label,
             IsRequired = f.IsRequired,
             DefaultValue = f.DefaultValue,
-            OptionsQuery = f.OptionsQuery,
-            Placeholder = f.Placeholder,
-            SortOrder = f.SortOrder
-        }).ToList();
+                OptionsQuery = f.OptionsQuery,
+                ValueColumn = f.ValueColumn,
+                TextColumn = f.TextColumn,
+                Placeholder = f.Placeholder,
+                SortOrder = f.SortOrder
+            }).ToList();
 
         await _db.SaveChangesAsync(ct);
         return true;
@@ -687,6 +691,48 @@ public class ReportService
     }
 
     /// <summary>
+    /// Gets parameter options for a report filter using its configured OptionsQuery.
+    /// </summary>
+    public async Task<List<ParameterOption>> GetParameterOptionsAsync(
+        int reportId,
+        int filterId,
+        CancellationToken ct = default)
+    {
+        var results = new List<ParameterOption>();
+        try
+        {
+            var filter = await _db.ReportFilters
+                .FirstOrDefaultAsync(f => f.Id == filterId && f.ReportId == reportId, ct);
+            if (filter is null || string.IsNullOrWhiteSpace(filter.OptionsQuery))
+                return results;
+            if (string.IsNullOrWhiteSpace(filter.ValueColumn) || string.IsNullOrWhiteSpace(filter.TextColumn))
+                return results;
+
+            var connectionString = GetConnectionString();
+            if (connectionString is null) return results;
+
+            await using var conn = new SqlConnection(connectionString);
+            await conn.OpenAsync(ct);
+            await using var cmd = new SqlCommand(filter.OptionsQuery, conn);
+            cmd.CommandTimeout = 30;
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+
+            while (await reader.ReadAsync(ct))
+            {
+                var value = reader[filter.ValueColumn]?.ToString();
+                var text = reader[filter.TextColumn]?.ToString();
+                if (value is not null)
+                    results.Add(new ParameterOption { Value = value, Text = text ?? value });
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get parameter options for filter {FilterId} in report {ReportId}.", filterId, reportId);
+        }
+        return results;
+    }
+
+    /// <summary>
     /// Saves a new layout for a report.
     /// </summary>
     public async Task<int> SaveLayoutAsync(int reportId, ReportLayoutSaveRequest request, CancellationToken ct = default)
@@ -834,6 +880,8 @@ public class ReportFilterDto
     public bool IsRequired { get; set; }
     public string? DefaultValue { get; set; }
     public string? OptionsQuery { get; set; }
+    public string? ValueColumn { get; set; }
+    public string? TextColumn { get; set; }
     public string? Placeholder { get; set; }
     public int SortOrder { get; set; }
 }
@@ -898,4 +946,11 @@ public class ReportLayoutSaveRequest
     public string? ColumnWidths { get; set; }   // JSON
     public string? FilterValues { get; set; }   // JSON
     public string? SortState { get; set; }      // JSON
+}
+
+/// <summary>Option for a report filter parameter (Value/Text pair).</summary>
+public class ParameterOption
+{
+    public string Value { get; set; } = string.Empty;
+    public string Text { get; set; } = string.Empty;
 }

@@ -1,7 +1,493 @@
 @page
 @model WarehouseDashboard.Web.Pages.AdminSecurePanel.LogoutModel
 @{
-    ViewData["Title"] = "تسجيل الخروج";
-    Layout = "_Layout";
+    ViewData["Title"] = "تسجيل الخروج - لوحة الإدارة";
+    Layout = null;
 }
-<p>جارٍ تسجيل الخروج...</p>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Warehouse Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+           LOGOUT PAGE — Centered Premium Card Design
+           ============================================================
+           Design Concept: Full-page dark blue gradient background with
+           animated floating orbs (matching Login's brand panel aesthetic).
+           Centered white card with a custom departure SVG icon,
+           success message, countdown timer, spinner, and redirect button.
+           Visually consistent with Login.cshtml in every token.
+           ============================================================ */
+
+        :root {
+            /* Blue Identity Palette (identical to Login.cshtml) */
+            --c-primary:        #1F4E79;
+            --c-primary-strong: #163A5A;
+            --c-primary-light:  #2563A0;
+            --c-secondary:      #2E6DA4;
+            --c-accent:         #0A2540;
+            --c-accent-soft:    #8FBCDE;
+            --c-bg:             #F3F7FB;
+            --c-surface:        #FFFFFF;
+            --c-surface-muted:  #EAF1F8;
+            --c-border:         #D4E2F0;
+            --c-text:           #102A43;
+            --c-text-muted:     #5B7A99;
+            --c-text-on-dark:   #C5D8E8;
+            --c-success:        #1E9E6A;
+            --c-warning:        #E0A106;
+            --c-error:          #D64545;
+            --c-error-bg:       #FEF2F2;
+            --c-error-border:   rgba(214, 69, 69, 0.2);
+
+            /* Radius (identical to Login.cshtml) */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --radius-full: 999px;
+
+            /* Shadows (identical to Login.cshtml) */
+            --shadow-sm: 0 1px 3px rgba(10, 37, 64, 0.06);
+            --shadow-md: 0 4px 16px rgba(10, 37, 64, 0.08);
+            --shadow-lg: 0 12px 40px rgba(10, 37, 64, 0.14);
+            --shadow-xl: 0 20px 60px rgba(10, 37, 64, 0.2);
+
+            /* Motion (identical to Login.cshtml) */
+            --dur-fast: 150ms;
+            --dur-norm: 280ms;
+            --dur-slow: 500ms;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-out: cubic-bezier(0, 0, 0.2, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+            /* Typography (identical to Login.cshtml) */
+            --font-ar: "Cairo", "Tajawal", Tahoma, sans-serif;
+        }
+
+        /* ===== Reset (identical to Login.cshtml) ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            font-family: var(--font-ar);
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--c-text);
+            background: linear-gradient(160deg, #0A2540 0%, #163A5A 35%, #1F4E79 65%, #2E6DA4 100%);
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 24px;
+            animation: brandGradientShift 12s ease-in-out infinite alternate;
+        }
+
+        @@keyframes brandGradientShift {
+            0%   { background-position: 0% 0%; }
+            50%  { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* ===== Animated Floating Orbs (matching Login brand panel) ===== */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::before {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, #8FBCDE, transparent 70%);
+            top: -100px; right: -100px;
+            animation: orbFloat1 8s ease-in-out infinite;
+        }
+        body::after {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #2E6DA4, transparent 70%);
+            bottom: -80px; left: -60px;
+            animation: orbFloat2 10s ease-in-out infinite;
+        }
+
+        @@keyframes orbFloat1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-40px, 30px) scale(1.1); }
+        }
+        @@keyframes orbFloat2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -20px) scale(1.15); }
+        }
+
+        /* ===== Subtle Grid Overlay (matching Login brand panel) ===== */
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(143,188,222,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(143,188,222,0.04) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== Centered Card ===== */
+        .logout-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 480px;
+            background: var(--c-surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: 56px 48px 48px;
+            text-align: center;
+            animation: fadeInUp 0.8s var(--ease-out) both;
+            animation-delay: 0.1s;
+        }
+
+        /* ===== Icon Container ===== */
+        .logout-icon {
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 28px;
+            border-radius: var(--radius-xl);
+            background: var(--c-surface-muted);
+            border: 1px solid var(--c-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        .logout-icon svg {
+            width: 44px;
+            height: 44px;
+            color: var(--c-primary);
+        }
+
+        @@keyframes iconPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(31, 78, 121, 0.15); }
+            50% { box-shadow: 0 0 0 12px rgba(31, 78, 121, 0); }
+        }
+
+        /* ===== Typography ===== */
+        .logout-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--c-text);
+            margin-bottom: 12px;
+            line-height: 1.3;
+            animation: fadeInUp 0.6s var(--ease-out) 0.2s both;
+        }
+
+        .logout-subtitle {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--c-text-muted);
+            margin-bottom: 36px;
+            line-height: 1.6;
+            animation: fadeInUp 0.6s var(--ease-out) 0.35s both;
+        }
+
+        /* ===== Spinner + Countdown Section ===== */
+        .logout-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 36px;
+            animation: fadeInUp 0.6s var(--ease-out) 0.5s both;
+        }
+
+        .logout-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--c-border);
+            border-top-color: var(--c-primary);
+            border-radius: 50%;
+            flex-shrink: 0;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @@keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .countdown-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            color: var(--c-text-muted);
+            font-weight: 500;
+        }
+
+        .countdown-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: var(--c-surface-muted);
+            border: 1px solid var(--c-border);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--c-primary);
+            transition: all 0.3s var(--ease);
+        }
+
+        .countdown-number.animate {
+            animation: countPop 0.3s var(--ease-spring);
+        }
+
+        @@keyframes countPop {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        /* ===== Manual Redirect Button ===== */
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            height: 52px;
+            padding: 0 32px;
+            border: none;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-strong) 100%);
+            color: #FFFFFF;
+            font-family: var(--font-ar);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+            box-shadow: 0 4px 16px rgba(31, 78, 121, 0.3);
+            animation: fadeInUp 0.6s var(--ease-out) 0.65s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(31, 78, 121, 0.4);
+        }
+
+        .logout-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(31, 78, 121, 0.3);
+        }
+
+        /* Button shimmer on hover (matching Login submit-btn) */
+        .logout-btn::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s var(--ease);
+        }
+        .logout-btn:hover::after {
+            left: 100%;
+        }
+
+        .logout-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        /* ===== Footer ===== */
+        .logout-footer {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--c-border);
+            font-size: 12px;
+            color: var(--c-text-muted);
+            opacity: 0.7;
+            animation: fadeInUp 0.6s var(--ease-out) 0.8s both;
+        }
+
+        /* ===== Animations ===== */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== Responsive ===== */
+
+        /* Tablet (768px) */
+        @@media (max-width: 768px) {
+            body { padding: 20px; }
+
+            .logout-card {
+                padding: 44px 32px 36px;
+            }
+
+            .logout-icon {
+                width: 72px;
+                height: 72px;
+                margin-bottom: 24px;
+            }
+            .logout-icon svg { width: 36px; height: 36px; }
+
+            .logout-title { font-size: 22px; }
+            .logout-subtitle { font-size: 14px; margin-bottom: 28px; }
+
+            .logout-progress { margin-bottom: 28px; }
+            .logout-spinner { width: 40px; height: 40px; border-width: 3px; }
+            .countdown-number { min-width: 36px; height: 36px; font-size: 18px; }
+
+            .logout-btn { height: 48px; padding: 0 28px; font-size: 15px; }
+            .logout-footer { margin-top: 32px; padding-top: 20px; }
+        }
+
+        /* Mobile (375px) */
+        @@media (max-width: 420px) {
+            body { padding: 16px; }
+
+            .logout-card {
+                padding: 36px 24px 28px;
+                border-radius: var(--radius-lg);
+            }
+
+            .logout-icon {
+                width: 64px;
+                height: 64px;
+                margin-bottom: 20px;
+            }
+            .logout-icon svg { width: 32px; height: 32px; }
+
+            .logout-title { font-size: 20px; margin-bottom: 8px; }
+            .logout-subtitle { font-size: 13px; margin-bottom: 24px; }
+
+            .logout-progress {
+                flex-direction: column;
+                gap: 14px;
+                margin-bottom: 24px;
+            }
+            .logout-spinner { width: 36px; height: 36px; }
+            .countdown-number { min-width: 32px; height: 32px; font-size: 16px; }
+
+            .logout-btn {
+                width: 100%;
+                justify-content: center;
+                height: 48px;
+                font-size: 15px;
+            }
+
+            .logout-footer {
+                margin-top: 24px;
+                padding-top: 16px;
+                font-size: 11px;
+            }
+        }
+
+        /* Extra small safety */
+        @@media (max-width: 375px) {
+            .logout-card { padding: 28px 18px 24px; }
+            .logout-title { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay" aria-hidden="true"></div>
+
+    <main class="logout-card" role="status" aria-live="polite">
+        <!-- ===== SVG Icon: Warehouse Building + Departure Arrow ===== -->
+        <div class="logout-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Warehouse building (identical shape to Login.cshtml brand icon) -->
+                <path d="M3 21V8l9-5 9 5v13" />
+                <path d="M9 21V12h6v9" />
+                <path d="M3 21h18" />
+                <!-- Departure arrow: leaving the building -->
+                <path d="M16 7l-5 5 5 5" />
+                <path d="M21 12h-10" />
+            </svg>
+        </div>
+
+        <!-- ===== Main Message ===== -->
+        <h1 class="logout-title">تم تسجيل الخروج بنجاح</h1>
+        <p class="logout-subtitle">نتمنى لك يوماً موفقاً. سيتم تحويلك إلى صفحة الدخول تلقائياً.</p>
+
+        <!-- ===== Spinner + Countdown ===== -->
+        <div class="logout-progress">
+            <div class="logout-spinner" aria-hidden="true"></div>
+            <div class="countdown-display">
+                <span>إعادة توجيه تلقائية بعد</span>
+                <span class="countdown-number" id="countdownNumber">@Model.RedirectDelaySeconds</span>
+                <span>ثوانٍ</span>
+            </div>
+        </div>
+
+        <!-- ===== Manual Redirect Button ===== -->
+        <a href="@Model.RedirectUrl" class="logout-btn" id="redirectBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+            العودة إلى تسجيل الدخول
+        </a>
+
+        <!-- ===== Footer ===== -->
+        <p class="logout-footer">
+            &copy; @DateTime.Now.Year Warehouse Dashboard &mdash; جميع الحقوق محفوظة
+        </p>
+    </main>
+
+    <script>
+        (function () {
+            'use strict';
+
+            var seconds   = @Model.RedirectDelaySeconds;
+            var redirectUrl = '@Model.RedirectUrl';
+            var countdownEl = document.getElementById('countdownNumber');
+            var remaining = seconds;
+
+            function tick() {
+                if (remaining <= 0) {
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                // Update the countdown number
+                if (countdownEl) {
+                    countdownEl.textContent = remaining;
+                    // Trigger a subtle pop animation on each tick
+                    countdownEl.classList.remove('animate');
+                    // Force reflow to restart the animation
+                    void countdownEl.offsetWidth;
+                    countdownEl.classList.add('animate');
+                }
+
+                remaining--;
+                setTimeout(tick, 1000);
+            }
+
+            // Start the countdown after the entrance animations settle
+            setTimeout(tick, 600);
+        })();
+    </script>
+</body>
+</html>

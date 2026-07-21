@@ -17,6 +17,9 @@
     @* Shared design system — single source of truth for the Blue Identity palette *@
     <link rel="stylesheet" href="~/css/blue-theme.css" />
 
+    @* AI Assistant Side Panel styles (TASK-AI-D02) *@
+    <link rel="stylesheet" href="~/css/assistant-panel.css" />
+
     @* ApexCharts (MIT license, no build step — replaces Chart.js for RTL + drill-down support) *@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
@@ -38,8 +41,14 @@
 
     <div id="wd-toast-host" class="wd-toast-host" aria-live="polite" aria-atomic="true"></div>
 
+    @* AI Assistant Side Panel (TASK-AI-D02/D03) *@
+    <partial name="_AssistantSidePanel" />
+
     @* Shared dashboard utilities (toNum, formatNum, escapeHtml, showToast, wdEmptyHtml, wdErrorHtml) *@
     <script src="~/js/dashboard-utils.js"></script>
+
+    @* AI Assistant Panel — open/close logic (TASK-AI-D03) *@
+    <script src="~/js/assistant-panel.js"></script>
 
     <script>
         // Shared palette (§2.2) — the 11 Blue Identity colors, recycled with a soft repeat.

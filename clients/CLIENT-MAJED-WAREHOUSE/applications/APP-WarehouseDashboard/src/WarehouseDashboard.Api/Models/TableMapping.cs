@@ -56,8 +56,27 @@ public class TableMapping
     public DateTime? LastSyncAt { get; set; }
 
     /// <summary>
+    /// Optional start date for the first incremental sync. When set, the initial
+    /// sync will only fetch rows where the incremental column >= this date.
+    /// After the first sync, LastSyncAt takes over as the watermark.
+    /// </summary>
+    public DateTime? InitialSyncStartDate { get; set; }
+
+    /// <summary>
     /// Source/target column names that must be extracted as text even when Oracle reports NUMBER.
     /// This preserves values that overflow ODP.NET/.NET decimal while SQL Server stores NVARCHAR.
     /// </summary>
     public HashSet<string> NumericTextColumns { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Whether this mapping is enabled for sync. When false, the sync engine skips it.
+    /// Toggled via <c>PATCH /api/tablemappings/{id}/toggle</c>.
+    /// </summary>
+    public bool IsActive { get; set; } = true;
+
+    /// <summary>
+    /// Number of records loaded during the last successful sync for this mapping.
+    /// Updated by <see cref="Services.SyncEngineService.UpdateMappingLastSyncAtAsync"/>.
+    /// </summary>
+    public int SyncRecordCount { get; set; }
 }

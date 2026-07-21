@@ -133,6 +133,10 @@
       this.renderColumnMappingEditor();
     }
 
+    // Step 5: prefill start date
+    var startDateInput = $('wm-start-date');
+    if (startDateInput) startDateInput.value = data.initialSyncStartDate || '';
+
     // Step 2: prefill source
     if (this.state.sourceType === 'Query') {
       this.state.queryText = this.state.oracleSource;
@@ -1232,8 +1236,14 @@
       if (mode === 'Incremental') {
         show(incrOpts);
         this.loadDateColumns();
+        // Show start date group for incremental mode
+        var startDateGroup = $('wm-start-date-group');
+        if (startDateGroup) startDateGroup.style.display = '';
       } else {
         hide(incrOpts);
+        // Hide start date group for full mode
+        var startDateGroup = $('wm-start-date-group');
+        if (startDateGroup) startDateGroup.style.display = 'none';
       }
     }
 
@@ -1386,6 +1396,21 @@
     if (syncModeInput) syncModeInput.value = this.state.syncMode || 'Full';
     if (incrColInput) incrColInput.value = this.state.incrementalColumn || '';
 
+    // Sync InitialSyncStartDate — must NOT submit empty string for DateTime? (causes 500)
+    var startDateInput = $('wm-start-date');
+    var startDateHidden = $('wm-h-initialSyncStartDate');
+    if (startDateHidden) {
+      var dateVal = (startDateInput && startDateInput.value) || '';
+      if (dateVal) {
+        startDateHidden.name = 'InitialSyncStartDate';
+        startDateHidden.value = dateVal;
+      } else {
+        // Remove name so it's not included in POST — avoids DateTime? binding error
+        startDateHidden.removeAttribute('name');
+        startDateHidden.value = '';
+      }
+    }
+
     // Sync column mappings to hidden field
     this.syncColumnMappingsHiddenField();
     var columnMappingsField = $('wm-h-columnMappingsJson');
@@ -1477,6 +1502,10 @@
     if (incrOpts) hide(incrOpts);
     var incrCol = $('wm-incremental-column');
     if (incrCol) incrCol.value = '';
+    var startDateGroup = $('wm-start-date-group');
+    if (startDateGroup) startDateGroup.style.display = 'none';
+    var startDate = $('wm-start-date');
+    if (startDate) startDate.value = '';
     var sumMode = $('wm-sum-sync-mode');
     if (sumMode) sumMode.textContent = 'مزامنة كاملة';
     var sumIncrRow = $('wm-sum-incr-row');

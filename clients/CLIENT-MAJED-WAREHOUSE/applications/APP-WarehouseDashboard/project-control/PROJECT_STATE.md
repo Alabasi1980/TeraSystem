@@ -1,7 +1,7 @@
 # PROJECT_STATE.md
 
 > **Purpose:** Compact project memory to reduce re-reading files.
-> **Last Updated:** 2026-07-21 (TASK-KPI-MONEY-BIDI-RTL-002 accepted)
+> **Last Updated:** 2026-07-21 (TASK-UI-SYNC-REDESIGN-001 accepted — Sync Page Professional Redesign ✅)
 
 ---
 
@@ -132,6 +132,20 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 |---|---|---|---|
 | TASK-HEADER-001 | Shared Header Partial + Link Fix + Connection Status | ✅ Accepted | engineering-agent-dotnet + TeraAgent |
 | TASK-CARD-LIST-001 | Admin Cards Page Redesign (Card-based layout) | ✅ Accepted | ui-designer |
+| TASK-UI-POLISH-001 | Logout Page Redesign (UI Polish #3) | ✅ Accepted | ui-designer |
+| TASK-UI-POLISH-002 | Admin Nav Index SVG Icons (UI Polish #4) | ✅ Accepted | ui-designer |
+| TASK-ENH-QT-001 | QT Backend: Dual Source + Schema API | ✅ Accepted | engineering-agent-dotnet |
+| TASK-ENH-QT-002 | QT Frontend: Schema Browser + SELECT Builder | ✅ Accepted | ui-designer |
+| TASK-ENH-QT-003 | QT Frontend: WHERE Builder + Results + History | ✅ Accepted | ui-designer |
+| TASK-ENH-QT-004 | QT JOIN Builder: إنشاء استعلامات متعددة الجداول بصرياً | ✅ Accepted | ui-designer |
+| TASK-ENH-QT-005 | QT CodeMirror: Syntax Highlighting لمحرر SQL | ✅ Accepted | ui-designer |
+| TASK-ENH-QT-006 | QT قوائم Searchable لاختيار الجداول والأعمدة | ✅ Accepted | ui-designer |
+| TASK-ENH-QT-007 | QT أعمدة Sortable مع ترتيب ← ينعكس في SQL | ✅ Accepted | ui-designer |
+| TASK-UI-POLISH-003 | Public Dashboard Responsive + SVG Empty States (UI Polish #5) | ✅ Accepted | ui-designer |
+| UI Polish #6 | Sync Settings: emoji→SVG (4 icons) | ✅ Accepted | ui-designer |
+| UI Polish #7 | Sync Logs: emoji→SVG (3 icons) | ✅ Accepted | ui-designer |
+| UI Polish #8 | Cards List: emoji→SVG (4 icons) | ✅ Accepted | ui-designer |
+| UI Polish #9 | Cards Edit: نظيف مسبقاً | ✅ بدون مهمة | — |
 
 ### Sync Settings Redesign (2 tasks — all ACCEPTED ✅)
 | TASK-ID | Description | Status | Agent |
@@ -139,7 +153,17 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 | TASK-SYNC-SET-001 | Backend: ربط SyncSettings بـ Sync API | ✅ Accepted | engineering-agent-dotnet |
 | TASK-SYNC-SET-002 | Frontend: إعادة تصميم صفحة إعدادات المزامنة | ✅ Accepted | ui-designer |
 
-**ALL Tasks + 14 Enhancements = COMPLETE ✅**
+### Sync Page Professional Redesign ✅
+| TASK-ID | Description | Status | Agent |
+|---|---|---|---|
+| TASK-UI-SYNC-REDESIGN-001 | إعادة تصميم كاملة لصفحة /admin-secure-panel/Sync (2,036 سطر، 9/9 Vitality) | ✅ Accepted | UI Designer |
+
+### Sync Page UX Fixes ✅
+| TASK-ID | Description | Status | Agent |
+|---|---|---|---|
+| TASK-UI-SYNC-FIXES-001 | إصلاح 6 مشاكل UX: Query truncation + Modal، Sticky progress bar، Per-mapping sync info، Toggle enable/disable، Filter dropdowns، Disable auto-refresh | ✅ Accepted | UI Designer |
+
+**ALL Tasks + 14 Enhancements + 1 Professional Redesign + 1 UX Fixes = COMPLETE ✅**
 
 **R1 Resolved:** Oracle 19c reachable at 10.10.1.1, ODP.NET works, SYSDATE query successful (2026-07-13)
 
@@ -165,6 +189,7 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 3. **R3 (Resolved):** Technology Profile `dotnet-razorpages-adonet` approved
 4. **R4 (Low):** Client Approval Package not yet created
 5. **R5:** File persistence issue — some control files (PROJECT_STATE, TASK_REGISTRY) were lost and recreated. **Action:** Verify all control files after each write.
+6. **R6 (Resolved ✅ 2026-07-21):** GAP_Encoding_AdminSecurePanel — 3 Razor pages allegedly UTF-16LE. Verified: all UTF-8 correct. No encoding fix needed.
 
 ---
 

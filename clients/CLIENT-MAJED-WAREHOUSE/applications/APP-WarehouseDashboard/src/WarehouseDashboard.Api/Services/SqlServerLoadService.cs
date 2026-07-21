@@ -113,9 +113,10 @@ public class SqlServerLoadService
 
     /// <summary>
     /// Incremental load of <paramref name="data"/> into <paramref name="targetTable"/>.
-    /// Unlike <see cref="LoadTableAsync"/> this method does NOT delete existing rows —
-    /// it only appends the newly extracted rows via <see cref="SqlBulkCopy"/>.
-    /// The target table is created automatically if it does not yet exist.
+    /// Within a single transaction: deduplicates overlapping rows (DELETE) then inserts the
+    /// new rows via <see cref="SqlBulkCopy"/>. On any failure the transaction is rolled back
+    /// (target left unchanged) and the exception is rethrown for the caller.
+    /// The target table is created automatically if it does not yet exist (DDL, outside the transaction).
     /// </summary>
     public async Task LoadTableIncrementalAsync(string targetTable, DataTable data, CancellationToken ct = default)
     {
@@ -131,22 +132,71 @@ public class SqlServerLoadService
         // Create-if-not-exists (DDL, outside any refresh transaction).
         await EnsureTableExistsAsync(connection, schema, name, data, ct);
 
-        // Bulk insert only — no DELETE. Existing rows are preserved.
-        using var bulkCopy = new SqlBulkCopy(connection)
+        using var transaction = connection.BeginTransaction();
+        try
         {
-            DestinationTableName = $"[{schema}].[{name}]",
-            BatchSize = 1000
-        };
+            // 1) Deduplicate: delete rows that overlap with the new data's date range.
+            foreach (DataColumn col in data.Columns)
+            {
+                if (col.DataType == typeof(DateTime) || col.DataType == typeof(string))
+                {
+                    object? minVal = null, maxVal = null;
+                    try
+                    {
+                        if (data.Rows.Count > 0)
+                        {
+                            if (col.DataType == typeof(DateTime))
+                            {
+                                minVal = data.Compute($"MIN([{col.ColumnName}])", "");
+                                maxVal = data.Compute($"MAX([{col.ColumnName}])", "");
+                            }
+                        }
+                    }
+                    catch { /* not a sortable column, skip */ }
 
-        foreach (DataColumn column in data.Columns)
-        {
-            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                    if (minVal != null && maxVal != null && minVal != DBNull.Value && maxVal != DBNull.Value)
+                    {
+                        var deleteSql = $"DELETE FROM [{schema}].[{name}] WHERE [{col.ColumnName}] >= @MinVal AND [{col.ColumnName}] <= @MaxVal";
+                        using var deleteCmd = new SqlCommand(deleteSql, connection, transaction);
+                        deleteCmd.Parameters.AddWithValue("@MinVal", minVal);
+                        deleteCmd.Parameters.AddWithValue("@MaxVal", maxVal);
+                        await deleteCmd.ExecuteNonQueryAsync(ct);
+                        break; // Only dedup on the first date column found
+                    }
+                }
+            }
+
+            // 2) Bulk insert within the same transaction.
+            using var bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.Default, transaction)
+            {
+                DestinationTableName = $"[{schema}].[{name}]",
+                BatchSize = 1000
+            };
+
+            foreach (DataColumn column in data.Columns)
+            {
+                bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+            }
+
+            await bulkCopy.WriteToServerAsync(data, ct);
+
+            transaction.Commit();
+            _logger.LogInformation("Loaded {RowCount} row(s) into [{Schema}].[{Name}] (incremental).",
+                data.Rows.Count, schema, name);
         }
+        catch
+        {
+            try
+            {
+                transaction.Rollback();
+            }
+            catch (Exception rbEx)
+            {
+                _logger.LogError(rbEx, "Rollback failed for [{Schema}].[{Name}].", schema, name);
+            }
 
-        await bulkCopy.WriteToServerAsync(data, ct);
-
-        _logger.LogInformation("Loaded {RowCount} row(s) into [{Schema}].[{Name}] (incremental, no delete).",
-            data.Rows.Count, schema, name);
+            throw;
+        }
     }
 
     private async Task EnsureTableExistsAsync(

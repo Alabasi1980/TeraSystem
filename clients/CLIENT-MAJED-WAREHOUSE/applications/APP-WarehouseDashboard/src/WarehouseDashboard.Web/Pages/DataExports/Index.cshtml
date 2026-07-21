@@ -1,0 +1,652 @@
+@page
+@model WarehouseDashboard.Web.Pages.DataExports.IndexModel
+@{
+    ViewData["Title"] = "تنزيل البيانات";
+    Layout = "_DashboardLayout";
+}
+
+@Html.AntiForgeryToken()
+
+<style>
+    /* ===== Data Exports Page — TASK-SYNC-EXCEL-004 ===== */
+    /* All tokens from blue-theme.css, no Bootstrap */
+
+    .wd-breadcrumb-row {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        font-size: 13px;
+        color: var(--c-text-muted);
+        margin-bottom: var(--sp-4);
+        font-weight: 500;
+    }
+    .wd-breadcrumb-row a {
+        color: var(--c-primary);
+        text-decoration: none;
+        transition: color var(--dur-fast) var(--ease);
+    }
+    .wd-breadcrumb-row a:hover {
+        color: var(--c-primary-strong);
+        text-decoration: underline;
+    }
+    .wd-breadcrumb-row .wd-sep {
+        color: var(--c-text-muted);
+        font-size: 14px;
+        opacity: 0.5;
+    }
+
+    /* ===== Exports Grid — 2 columns desktop, 1 column mobile ===== */
+    .wd-exports-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--sp-4);
+        margin-top: var(--sp-4);
+    }
+    @@media (max-width: 768px) {
+        .wd-exports-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ===== Export Card ===== */
+    .wd-export-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        padding: var(--sp-6);
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow var(--dur-norm) var(--ease), transform var(--dur-norm) var(--ease);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        position: relative;
+        overflow: hidden;
+    }
+    .wd-export-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+    }
+    /* Accent border-top like some dashboard cards */
+    .wd-export-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        inset-inline-start: 0;
+        inset-inline-end: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--c-primary), var(--c-secondary));
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    /* ===== Export Card Header ===== */
+    .wd-export-card__header {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--sp-3);
+        margin-bottom: var(--sp-3);
+    }
+    .wd-export-card__icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        background: var(--c-surface-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+        color: var(--c-primary);
+    }
+    .wd-export-card__info {
+        flex: 1;
+        min-width: 0;
+    }
+    .wd-export-card__table-name {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--c-text);
+        margin: 0 0 4px;
+        direction: ltr;
+        text-align: left;
+        unicode-bidi: isolate;
+        word-break: break-all;
+    }
+    .wd-export-card__description {
+        font-size: 13px;
+        color: var(--c-text-muted);
+        margin: 0;
+        line-height: 1.4;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        flex-wrap: wrap;
+    }
+
+    /* ===== Source Type Badge ===== */
+    .wd-badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: var(--radius-full);
+        line-height: 1.35;
+        white-space: nowrap;
+    }
+    .wd-badge--query {
+        background: rgba(46, 109, 164, 0.12);
+        color: var(--c-secondary);
+    }
+    .wd-badge--table {
+        background: rgba(30, 158, 106, 0.12);
+        color: var(--c-success);
+    }
+    .wd-badge--view {
+        background: rgba(224, 161, 6, 0.12);
+        color: var(--c-warning);
+    }
+    .wd-badge--default {
+        background: var(--c-surface-muted);
+        color: var(--c-text-muted);
+    }
+
+    /* ===== Export Card Meta ===== */
+    .wd-export-card__meta {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-2);
+        margin-bottom: var(--sp-4);
+        padding: var(--sp-3);
+        background: var(--c-bg);
+        border-radius: var(--radius-md);
+    }
+    .wd-export-card__meta-row {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        font-size: 13px;
+        color: var(--c-text);
+        font-weight: 500;
+    }
+    .wd-export-card__meta-row .wd-label {
+        color: var(--c-text-muted);
+        font-weight: 400;
+        min-width: 55px;
+    }
+    .wd-export-card__meta-row .wd-value {
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* ===== Download Button ===== */
+    .wd-export-card__action {
+        margin-top: auto;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .wd-btn--download {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sp-2);
+        background: var(--c-primary);
+        color: #fff;
+        border: 1px solid var(--c-primary);
+        border-radius: var(--radius-md);
+        padding: 10px 18px;
+        font-family: var(--font-ar);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+        min-height: 40px;
+        line-height: 1.2;
+    }
+    .wd-btn--download:hover {
+        background: var(--c-primary-strong);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(31, 78, 121, 0.25);
+    }
+    .wd-btn--download:active {
+        transform: translateY(0);
+    }
+    .wd-btn--download:focus-visible {
+        outline: 2px solid var(--c-secondary);
+        outline-offset: 2px;
+    }
+    .wd-btn--download:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    .wd-btn--download__icon {
+        font-size: 16px;
+        line-height: 1;
+    }
+
+    /* ===== Skeleton Loading ===== */
+    .wd-exports-skeleton {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--sp-4);
+        margin-top: var(--sp-4);
+    }
+    @@media (max-width: 768px) {
+        .wd-exports-skeleton {
+            grid-template-columns: 1fr;
+        }
+    }
+    .wd-export-skel-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        padding: var(--sp-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-4);
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+    }
+    .wd-export-skel-card__row {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+    }
+    .wd-export-skel-card__icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+        flex-shrink: 0;
+    }
+    .wd-export-skel-card__lines {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-2);
+    }
+    .wd-export-skel-card__line {
+        height: 14px;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+    }
+    .wd-export-skel-card__line--short {
+        width: 40%;
+    }
+    .wd-export-skel-card__line--medium {
+        width: 70%;
+    }
+    .wd-export-skel-card__line--long {
+        width: 90%;
+    }
+    .wd-export-skel-card__meta {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-2);
+        padding: var(--sp-3);
+        background: var(--c-bg);
+        border-radius: var(--radius-md);
+    }
+    .wd-export-skel-card__meta-line {
+        height: 12px;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+    }
+    .wd-export-skel-card__meta-line--short {
+        width: 50%;
+    }
+    .wd-export-skel-card__meta-line--medium {
+        width: 75%;
+    }
+    .wd-export-skel-card__btn {
+        height: 40px;
+        width: 140px;
+        border-radius: var(--radius-md);
+        margin-inline-start: auto;
+        background: linear-gradient(90deg, var(--c-surface-muted) 25%, rgba(143,188,222,0.18) 50%, var(--c-surface-muted) 75%);
+        background-size: 200% 100%;
+        animation: wdShimmer 1.5s ease-in-out infinite;
+    }
+
+    /* ===== Empty State ===== */
+    .wd-exports-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--sp-4);
+        padding: var(--sp-12) var(--sp-6);
+        text-align: center;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        grid-column: 1 / -1;
+    }
+    .wd-exports-empty__icon {
+        width: 72px;
+        height: 72px;
+        border-radius: var(--radius-full);
+        background: var(--c-surface-muted);
+        color: var(--c-text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        border: 2px dashed var(--c-border);
+    }
+    .wd-exports-empty h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--c-text);
+    }
+    .wd-exports-empty p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--c-text-muted);
+        max-width: 380px;
+        line-height: 1.6;
+    }
+
+    /* ===== Error State ===== */
+    .wd-exports-error {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--sp-4);
+        padding: var(--sp-12) var(--sp-6);
+        text-align: center;
+        animation: wdFadeUp var(--dur-norm) var(--ease) both;
+        grid-column: 1 / -1;
+    }
+    .wd-exports-error__icon {
+        width: 72px;
+        height: 72px;
+        border-radius: var(--radius-full);
+        background: rgba(214, 69, 69, 0.10);
+        color: var(--c-error);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+    }
+    .wd-exports-error h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--c-text);
+    }
+    .wd-exports-error p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--c-text-muted);
+        max-width: 380px;
+        line-height: 1.6;
+    }
+    .wd-exports-error .wd-btn {
+        margin-top: var(--sp-2);
+    }
+
+    /* ===== Loading spinner for download button ===== */
+    .wd-spinner--sm {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: wdSpin 0.6s linear infinite;
+    }
+    @@keyframes wdSpin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    /* wd-hidden utility (same as blue-theme.css) */
+    .wd-hidden {
+        display: none !important;
+    }
+</style>
+
+<!-- Breadcrumb -->
+<div class="wd-breadcrumb-row">
+    <a href="/">الرئيسية</a>
+    <span class="wd-sep">›</span>
+    <span>تنزيل البيانات</span>
+</div>
+
+<!-- Page Head -->
+<div class="wd-page-head">
+    <div>
+        <h1 class="wd-page-title">📥 تنزيل البيانات</h1>
+        <p style="color: var(--c-text-muted); margin: 4px 0 0; font-size: 14px;">
+            اختر الجدول الذي تريد تنزيل بياناته بصيغة Excel منسقة وجاهزة للاستخدام.
+        </p>
+    </div>
+</div>
+
+<!-- ===== Skeleton Loading ===== -->
+<div id="wd-exports-skeleton" class="wd-exports-skeleton">
+    @for (var skelIdx = 0; skelIdx < 4; skelIdx++)
+    {
+        var skelDelay = skelIdx * 70;
+        <div class="wd-export-skel-card" style="animation-delay: @(skelDelay)ms;">
+            <div class="wd-export-skel-card__row">
+                <div class="wd-export-skel-card__icon"></div>
+                <div class="wd-export-skel-card__lines">
+                    <div class="wd-export-skel-card__line wd-export-skel-card__line--long"></div>
+                    <div class="wd-export-skel-card__line wd-export-skel-card__line--medium"></div>
+                </div>
+            </div>
+            <div class="wd-export-skel-card__meta">
+                <div class="wd-export-skel-card__meta-line wd-export-skel-card__meta-line--medium"></div>
+                <div class="wd-export-skel-card__meta-line wd-export-skel-card__meta-line--short"></div>
+            </div>
+            <div class="wd-export-skel-card__btn"></div>
+        </div>
+    }
+</div>
+
+<!-- ===== Exports Grid (hidden initially, filled by JS) ===== -->
+<div id="wd-exports-grid" class="wd-exports-grid wd-hidden"></div>
+
+<!-- ===== Empty State (hidden initially, shown by JS) ===== -->
+<div id="wd-exports-empty" class="wd-exports-empty wd-hidden">
+    <div class="wd-exports-empty__icon" aria-hidden="true">📭</div>
+    <h3>لا توجد جداول للتصدير بعد</h3>
+    <p>لم تتم مزامنة أي جداول حتى الآن. بمجرد أن تتم المزامنة الأولى، ستظهر الجداول هنا للتحميل.</p>
+</div>
+
+<!-- ===== Error State (hidden initially, shown by JS) ===== -->
+<div id="wd-exports-error" class="wd-exports-error wd-hidden">
+    <div class="wd-exports-error__icon" aria-hidden="true">⚠️</div>
+    <h3>تعذر الاتصال بخادم البيانات</h3>
+    <p>تعذر الوصول إلى خدمة المزامنة. الرجاء التحقق من اتصال الخادم والمحاولة لاحقاً.</p>
+    <button type="button" class="wd-btn wd-btn--primary" onclick="location.reload()">
+        ⟳ إعادة المحاولة
+    </button>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            'use strict';
+
+            var API_BASE = '@Model.SyncApiBaseUrl' || 'http://localhost:5001';
+            var skeletonEl = document.getElementById('wd-exports-skeleton');
+            var gridEl = document.getElementById('wd-exports-grid');
+            var emptyEl = document.getElementById('wd-exports-empty');
+            var errorEl = document.getElementById('wd-exports-error');
+
+            /**
+             * Fetch exportable mappings from API and render cards client-side.
+             */
+            async function loadExports() {
+                try {
+                    var resp = await fetch(API_BASE + '/api/sync/exportable-mappings');
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+                    var mappings = await resp.json();
+
+                    // Hide skeleton
+                    if (skeletonEl) skeletonEl.classList.add('wd-hidden');
+
+                    // Filter to only mappings with data
+                    var withData = mappings.filter(function (m) { return m.hasData; });
+
+                    if (withData.length === 0) {
+                        if (emptyEl) emptyEl.classList.remove('wd-hidden');
+                        return;
+                    }
+
+                    // Render cards
+                    if (gridEl) {
+                        gridEl.innerHTML = '';
+                        gridEl.classList.remove('wd-hidden');
+
+                        for (var i = 0; i < withData.length; i++) {
+                            var m = withData[i];
+                            var card = buildCard(m, i);
+                            gridEl.appendChild(card);
+                        }
+                    }
+                } catch (err) {
+                    // Hide skeleton, show error
+                    if (skeletonEl) skeletonEl.classList.add('wd-hidden');
+                    if (errorEl) errorEl.classList.remove('wd-hidden');
+                    console.error('Failed to load exportable mappings:', err);
+                }
+            }
+
+            /**
+             * Build a single export card DOM element.
+             */
+            function buildCard(m, index) {
+                var delay = index * 70;
+                var badgeClass = 'wd-badge--default';
+                var badgeText = m.sourceType || 'غير معروف';
+                var st = (m.sourceType || '').toLowerCase();
+                if (st === 'query') badgeClass = 'wd-badge--query';
+                else if (st === 'table') badgeClass = 'wd-badge--table';
+                else if (st === 'view') badgeClass = 'wd-badge--view';
+
+                var lastSync = m.lastSyncTime ? formatDate(m.lastSyncTime) : '—';
+                var rowCount = m.rowCount != null ? Number(m.rowCount).toLocaleString('ar-SA') : '0';
+                var tableName = m.sqlTargetTable || m.name || 'غير معروف';
+                var mappingName = m.name || '';
+
+                var div = document.createElement('div');
+                div.className = 'wd-export-card';
+                div.style.animationDelay = delay + 'ms';
+                div.innerHTML =
+                    '<div class="wd-export-card__header">' +
+                        '<div class="wd-export-card__icon" aria-hidden="true">🗂️</div>' +
+                        '<div class="wd-export-card__info">' +
+                            '<h3 class="wd-export-card__table-name"><code>' + escapeHtml(tableName) + '</code></h3>' +
+                            '<p class="wd-export-card__description">' +
+                                '<span>' + escapeHtml(mappingName) + '</span>' +
+                                '<span class="wd-badge ' + badgeClass + '">' + badgeText + '</span>' +
+                            '</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="wd-export-card__meta">' +
+                        '<div class="wd-export-card__meta-row">' +
+                            '<span class="wd-label">📅</span>' +
+                            '<span>آخر مزامنة:</span>' +
+                            '<span class="wd-value">' + escapeHtml(lastSync) + '</span>' +
+                        '</div>' +
+                        '<div class="wd-export-card__meta-row">' +
+                            '<span class="wd-label">📊</span>' +
+                            '<span>عدد السجلات:</span>' +
+                            '<span class="wd-value">' + escapeHtml(rowCount) + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="wd-export-card__action">' +
+                        '<button type="button" class="wd-btn--download" onclick="downloadFromExport(' + m.id + ', \'' + escapeHtml(tableName) + '\', this)" title="تنزيل ملف Excel">' +
+                            '<span class="wd-btn--download__icon" aria-hidden="true">📥</span> تنزيل Excel' +
+                        '</button>' +
+                    '</div>';
+                return div;
+            }
+
+            /**
+             * Format ISO date string to dd/MM/yyyy HH:mm.
+             */
+            function formatDate(iso) {
+                if (!iso) return '—';
+                try {
+                    var d = new Date(iso);
+                    var day = String(d.getDate()).padStart(2, '0');
+                    var month = String(d.getMonth() + 1).padStart(2, '0');
+                    var year = d.getFullYear();
+                    var hours = String(d.getHours()).padStart(2, '0');
+                    var mins = String(d.getMinutes()).padStart(2, '0');
+                    return day + '/' + month + '/' + year + ' ' + hours + ':' + mins;
+                } catch (e) { return iso; }
+            }
+
+            /**
+             * Escape HTML to prevent XSS.
+             */
+            function escapeHtml(text) {
+                var div = document.createElement('div');
+                div.textContent = text ?? '';
+                return div.innerHTML;
+            }
+
+            /**
+             * Download an Excel file for a given mapping.
+             */
+            window.downloadFromExport = async function (mappingId, tableName, btn) {
+                if (btn) {
+                    btn.disabled = true;
+                    var originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<span class="wd-spinner--sm"></span> جاري التحميل…';
+
+                    try {
+                        var resp = await fetch(API_BASE + '/api/sync/' + mappingId + '/export-excel');
+                        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+                        var disposition = resp.headers.get('Content-Disposition');
+                        var filename = (tableName || 'export') + '.xlsx';
+                        if (disposition) {
+                            var match = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                            if (match && match[1]) {
+                                filename = match[1].replace(/['"]/g, '');
+                            }
+                        }
+
+                        var blob = await resp.blob();
+                        var url = URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+
+                        showToast('success', '✅ تم تحميل ' + (tableName || '') + ' بنجاح');
+                    } catch (err) {
+                        showToast('error', '❌ فشل التحميل: ' + (err.message || 'خطأ غير متوقع'));
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+                    }
+                }
+            };
+
+            // Start loading on DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', loadExports);
+            } else {
+                loadExports();
+            }
+        })();
+    </script>
+}

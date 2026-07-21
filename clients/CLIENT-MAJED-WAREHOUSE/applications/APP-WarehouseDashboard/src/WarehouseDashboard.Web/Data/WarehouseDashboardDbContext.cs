@@ -28,6 +28,8 @@ public class WarehouseDashboardDbContext : DbContext
     public DbSet<ReportColumn> ReportColumns => Set<ReportColumn>();
     public DbSet<ReportFilter> ReportFilters => Set<ReportFilter>();
     public DbSet<ReportLayout> ReportLayouts => Set<ReportLayout>();
+    public DbSet<AssistantInsightLog> AssistantInsightLogs => Set<AssistantInsightLog>();
+    public DbSet<AssistantUsageStat> AssistantUsageStats => Set<AssistantUsageStat>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -222,6 +224,15 @@ public class WarehouseDashboardDbContext : DbContext
             entity.Property(e => e.RelativeDays)
                 .HasDefaultValue(30);
 
+            // AI Assistant settings
+            entity.Property(e => e.AssistantEnabled)
+                .IsRequired()
+                .HasDefaultValue(true);
+
+            entity.Property(e => e.AssistantPrompt)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
             // Indexes
             entity.HasIndex(e => e.IsActive)
                 .HasDatabaseName("IX_DashboardCards_IsActive");
@@ -353,11 +364,11 @@ public class WarehouseDashboardDbContext : DbContext
 
             entity.Property(e => e.OracleSource)
                 .IsRequired()
-                .HasMaxLength(200);
+                .HasMaxLength(4000);
 
             entity.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(200);
+                .HasMaxLength(4000);
 
             entity.Property(e => e.SourceType)
                 .IsRequired()
@@ -394,11 +405,15 @@ public class WarehouseDashboardDbContext : DbContext
                 .IsRequired(false);
 
             entity.Property(e => e.SyncMode)
-                .HasMaxLength(10)
+                .HasMaxLength(20)
                 .HasDefaultValue("Full");
 
             entity.Property(e => e.IncrementalColumn)
                 .HasMaxLength(128);
+
+            entity.Property(e => e.InitialSyncStartDate)
+                .HasColumnType("datetime2")
+                .IsRequired(false);
 
             entity.HasIndex(e => e.OracleSource)
                 .IsUnique()
@@ -738,6 +753,14 @@ public class WarehouseDashboardDbContext : DbContext
                 .HasColumnType("nvarchar(1000)")
                 .IsRequired(false);
 
+            entity.Property(e => e.ValueColumn)
+                .HasColumnType("nvarchar(200)")
+                .IsRequired(false);
+
+            entity.Property(e => e.TextColumn)
+                .HasColumnType("nvarchar(200)")
+                .IsRequired(false);
+
             entity.Property(e => e.Placeholder)
                 .HasColumnType("nvarchar(200)")
                 .IsRequired(false);
@@ -806,6 +829,86 @@ public class WarehouseDashboardDbContext : DbContext
 
             entity.HasIndex(e => e.ReportId)
                 .HasDatabaseName("IX_ReportLayouts_ReportId");
+        });
+
+        // -------------------------------------------------------------------
+        // AssistantInsightLogs (TASK-AI-E01)
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<AssistantInsightLog>(entity =>
+        {
+            entity.ToTable("AssistantInsightLogs");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.CardId).IsRequired();
+
+            entity.Property(e => e.Mode)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            entity.Property(e => e.DepthLevel).IsRequired();
+
+            entity.Property(e => e.RequestedAt)
+                .IsRequired()
+                .HasColumnType("datetime2");
+
+            entity.Property(e => e.PromptVersion)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            entity.Property(e => e.CardPromptUsed).IsRequired();
+
+            entity.Property(e => e.DataScopeLabel)
+                .HasMaxLength(50);
+
+            entity.Property(e => e.IsFullDataReached).IsRequired();
+
+            entity.Property(e => e.WasCached).IsRequired();
+
+            entity.Property(e => e.ResponseTimeMs).IsRequired();
+
+            entity.Property(e => e.ErrorCode)
+                .HasMaxLength(50);
+
+            entity.HasOne(e => e.Card)
+                .WithMany()
+                .HasForeignKey(e => e.CardId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.CardId);
+            entity.HasIndex(e => e.RequestedAt);
+        });
+
+        // -------------------------------------------------------------------
+        // AssistantUsageStats (TASK-AI-E01)
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<AssistantUsageStat>(entity =>
+        {
+            entity.ToTable("AssistantUsageStats");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.CardId).IsRequired();
+
+            entity.Property(e => e.TotalRequests).IsRequired().HasDefaultValue(0);
+            entity.Property(e => e.ExplainRequests).IsRequired().HasDefaultValue(0);
+            entity.Property(e => e.DeepRequests).IsRequired().HasDefaultValue(0);
+            entity.Property(e => e.DeepenClicks).IsRequired().HasDefaultValue(0);
+            entity.Property(e => e.MostUsedDepth).IsRequired().HasDefaultValue(1);
+
+            entity.Property(e => e.LastUsedAt)
+                .HasColumnType("datetime2");
+
+            entity.Property(e => e.AverageResponseTimeMs).IsRequired().HasDefaultValue(0);
+            entity.Property(e => e.CacheHitCount).IsRequired().HasDefaultValue(0);
+            entity.Property(e => e.CacheMissCount).IsRequired().HasDefaultValue(0);
+
+            entity.HasOne(e => e.Card)
+                .WithMany()
+                .HasForeignKey(e => e.CardId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.CardId).IsUnique();
         });
     }
 }

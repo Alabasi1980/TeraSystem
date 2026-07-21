@@ -54,6 +54,28 @@ builder.Services.AddScoped<SchemaManagementService>();
 // ReportService — SQL Server View discovery, schema introspection, and dynamic queries (TASK-REPORT-003)
 builder.Services.AddScoped<ReportService>();
 
+builder.Services.Configure<AIAssistantOptions>(builder.Configuration.GetSection(AIAssistantOptions.SectionName));
+builder.Services.AddHttpClient<IAIProvider, OpenCodeGoAdapter>();
+
+builder.Services.AddScoped<CardInsightService>();
+
+// ReadOnlyQueryHelper — parameterized read-only ADO.NET access (TASK-AI-B03)
+builder.Services.AddScoped<ReadOnlyQueryHelper>();
+
+// AI Assistant request logging (TASK-AI-E02)
+builder.Services.AddScoped<AssistantLogService>();
+
+// In-memory cache for AI assistant responses (TASK-AI-E03)
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<AssistantCacheService>();
+
+// Phase C — AI Data Summary Builders (TASK-AI-C02)
+builder.Services.AddScoped<ICardSummaryBuilder, KpiSummaryBuilder>();
+builder.Services.AddScoped<ICardSummaryBuilder, ChartSummaryBuilder>();
+builder.Services.AddScoped<ICardSummaryBuilder, TableSummaryBuilder>();
+builder.Services.AddScoped<ICardSummaryBuilder, GenericSummaryBuilder>();
+builder.Services.AddScoped<CardSummaryBuilderFactory>();
+
 var app = builder.Build();
 
 // ---------------------------------------------------------------------------

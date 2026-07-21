@@ -57,6 +57,10 @@ public class TableMappingsModel : PageModel
     [BindProperty]
     public string? IncrementalColumn { get; set; }
 
+    /// <summary>Optional start date for the first incremental sync.</summary>
+    [BindProperty]
+    public DateTime? InitialSyncStartDate { get; set; }
+
     /// <summary>JSON-serialized array of column mapping overrides from the wizard.</summary>
     [BindProperty]
     public string? ColumnMappingsJson { get; set; }
@@ -173,6 +177,7 @@ public class TableMappingsModel : PageModel
             SqlTargetTable = SqlTargetTable,
             SyncMode = SyncMode,
             IncrementalColumn = IncrementalColumn,
+            InitialSyncStartDate = InitialSyncStartDate,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -237,26 +242,41 @@ public class TableMappingsModel : PageModel
             return Page();
         }
 
+        _logger.LogWarning(
+            "[WM-TRACE Edit] Id={Id} Name='{Name}'(len={NameLen}) OracleSource='{Src}'(len={SrcLen}) SourceType='{Type}' SqlTarget='{Target}' SyncMode='{Sync}' IncrCol='{IncrCol}' StartDate='{StartDate}'(raw='{StartDateRaw}')",
+            EditId, Name, Name?.Length ?? 0, OracleSource, OracleSource?.Length ?? 0, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, InitialSyncStartDate, InitialSyncStartDate?.ToString("yyyy-MM-dd") ?? "NULL");
+
         mapping.Name = Name;
         mapping.OracleSource = OracleSource;
         mapping.SourceType = SourceType;
         mapping.SqlTargetTable = SqlTargetTable;
         mapping.SyncMode = SyncMode;
         mapping.IncrementalColumn = IncrementalColumn;
+        mapping.InitialSyncStartDate = InitialSyncStartDate;
         mapping.UpdatedAt = DateTime.UtcNow;
+
+        _logger.LogWarning(
+            "[WM-TRACE Edit] Entity after assign: Name(len={NameLen}) OracleSource(len={SrcLen}) SyncMode='{Sync}' IncrCol='{IncrCol}' StartDate={StartDate}",
+            mapping.Name?.Length ?? 0, mapping.OracleSource?.Length ?? 0, mapping.SyncMode, mapping.IncrementalColumn, mapping.InitialSyncStartDate);
 
         // Remove existing column mappings only after validation succeeds — they will be replaced by wizard JSON.
         var existingMappings = await _db.ColumnMappings
             .Where(cm => cm.TableMappingConfigId == EditId)
             .ToListAsync();
+        _logger.LogWarning("[WM-TRACE Edit] Removing {Count} existing column mappings", existingMappings.Count);
         _db.ColumnMappings.RemoveRange(existingMappings);
         // Commit deletions first so the unique index does not conflict with new inserts.
+        _logger.LogWarning("[WM-TRACE Edit] About to SaveChangesAsync #1");
         await _db.SaveChangesAsync();
+        _logger.LogWarning("[WM-TRACE Edit] SaveChangesAsync #1 OK");
 
         // Save column mappings from wizard JSON (replaces old ones)
+        _logger.LogWarning("[WM-TRACE Edit] ColumnMappingsJson length={Len}", ColumnMappingsJson?.Length ?? 0);
         await SaveColumnMappingsAsync(EditId, ColumnMappingsJson);
 
+        _logger.LogWarning("[WM-TRACE Edit] About to SaveChangesAsync #2");
         await _db.SaveChangesAsync();
+        _logger.LogWarning("[WM-TRACE Edit] SaveChangesAsync #2 OK");
 
         _logger.LogInformation(
             "Table mapping {Id} updated: '{Source}' -> '{Target}'.", EditId, OracleSource, SqlTargetTable);

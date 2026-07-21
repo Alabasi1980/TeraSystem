@@ -1336,19 +1336,51 @@
     var isChange = kpiMode === 'withChange' || kpiMode === 'composite';
     var isComposite = kpiMode === 'composite';
 
-    if ($('wb-h-valueColumn')) $('wb-h-valueColumn').value = $('wb-kpi-value-column') ? $('wb-kpi-value-column').value : '';
-    if ($('wb-h-dateColumn')) $('wb-h-dateColumn').value = $('wb-kpi-date-column') ? $('wb-kpi-date-column').value : '';
-    if ($('wb-h-categoryColumn')) $('wb-h-categoryColumn').value = $('wb-kpi-category-column') ? $('wb-kpi-category-column').value : '';
+    // Use safe pattern (element && element.value) || fallback to avoid
+    // empty string from hidden-but-present DOM elements overwriting defaults.
+    if ($('wb-h-valueColumn')) {
+      var vcEl = $('wb-kpi-value-column');
+      $('wb-h-valueColumn').value = (vcEl && vcEl.value) || '';
+    }
+    if ($('wb-h-dateColumn')) {
+      var dcEl = $('wb-kpi-date-column');
+      $('wb-h-dateColumn').value = (dcEl && dcEl.value) || '';
+    }
+    if ($('wb-h-categoryColumn')) {
+      var ccEl = $('wb-kpi-category-column');
+      $('wb-h-categoryColumn').value = (ccEl && ccEl.value) || '';
+    }
     if ($('wb-h-showChange')) $('wb-h-showChange').value = isChange ? 'true' : 'false';
-    if ($('wb-h-changeSource')) $('wb-h-changeSource').value = $('wb-kpi-change-source') ? $('wb-kpi-change-source').value : 'previousPeriod';
+    if ($('wb-h-changeSource')) {
+      var csEl = $('wb-kpi-change-source');
+      $('wb-h-changeSource').value = (csEl && csEl.value) || 'previousPeriod';
+    }
     if ($('wb-h-showSparkline')) $('wb-h-showSparkline').value = isComposite ? 'true' : 'false';
-    if ($('wb-h-sparklineMonths')) $('wb-h-sparklineMonths').value = $('wb-kpi-sparkline-months') ? $('wb-kpi-sparkline-months').value : '6';
+    if ($('wb-h-sparklineMonths')) {
+      var smEl = $('wb-kpi-sparkline-months');
+      $('wb-h-sparklineMonths').value = (smEl && smEl.value) || '6';
+    }
     if ($('wb-h-showGrandTotal')) $('wb-h-showGrandTotal').value = isComposite ? 'true' : 'false';
-    if ($('wb-h-grandTotalSource')) $('wb-h-grandTotalSource').value = $('wb-kpi-grand-total-source') ? $('wb-kpi-grand-total-source').value : 'sameTable';
-    if ($('wb-h-dateFilterMode')) $('wb-h-dateFilterMode').value = $('wb-kpi-date-filter-mode') ? $('wb-kpi-date-filter-mode').value : 'dashboard';
-    if ($('wb-h-fixedStartDate')) $('wb-h-fixedStartDate').value = $('wb-kpi-fixed-start') ? $('wb-kpi-fixed-start').value : '';
-    if ($('wb-h-fixedEndDate')) $('wb-h-fixedEndDate').value = $('wb-kpi-fixed-end') ? $('wb-kpi-fixed-end').value : '';
-    if ($('wb-h-relativeDays')) $('wb-h-relativeDays').value = $('wb-kpi-relative-days') ? $('wb-kpi-relative-days').value : '30';
+    if ($('wb-h-grandTotalSource')) {
+      var gtsEl = $('wb-kpi-grand-total-source');
+      $('wb-h-grandTotalSource').value = (gtsEl && gtsEl.value) || 'sameTable';
+    }
+    if ($('wb-h-dateFilterMode')) {
+      var dfmEl = $('wb-kpi-date-filter-mode');
+      $('wb-h-dateFilterMode').value = (dfmEl && dfmEl.value) || 'dashboard';
+    }
+    if ($('wb-h-fixedStartDate')) {
+      var fsdEl = $('wb-kpi-fixed-start');
+      $('wb-h-fixedStartDate').value = (fsdEl && fsdEl.value) || '';
+    }
+    if ($('wb-h-fixedEndDate')) {
+      var fedEl = $('wb-kpi-fixed-end');
+      $('wb-h-fixedEndDate').value = (fedEl && fedEl.value) || '';
+    }
+    if ($('wb-h-relativeDays')) {
+      var rdEl = $('wb-kpi-relative-days');
+      $('wb-h-relativeDays').value = (rdEl && rdEl.value) || '30';
+    }
   };
 
   CardBuilderWizard.prototype.submitForm = function (action) {
