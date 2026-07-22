@@ -1277,7 +1277,7 @@ else
                             @if (c.AssistantEnabled)
                             {
                                 <button class="card-assistant-btn" 
-                                        onclick="openAssistantPanel(@c.Id, @Html.Raw(Json.Serialize(c.Title)))"
+                                        onclick='openAssistantPanel(@c.Id, @Html.Raw(Json.Serialize(c.Title)))'
                                         title="تحليل البطاقة" aria-label="فتح مساعد تحليل البطاقة">
                                     💡
                                 </button>
@@ -1440,10 +1440,12 @@ else
             // Shared utilities (toNum, isNum, formatNum, escapeHtml, showToast,
             // wdEmptyHtml, wdErrorHtml) are provided by ~/js/dashboard-utils.js.
 
-            function animateCountUp(el, target, duration) {
+            function animateCountUp(el, target, duration, formatType, unit) {
                 if (!el) return;
                 var start = 0;
                 var startTime = null;
+                var fmtType = formatType || 'Currency';
+                var fmtUnit = unit || '';
                 function step(timestamp) {
                     if (!startTime) startTime = timestamp;
                     var progress = Math.min((timestamp - startTime) / duration, 1);
@@ -1454,12 +1456,14 @@ else
                     if (progress < 1) {
                         requestAnimationFrame(step);
                     } else {
-                        // Final value: format depends on kpi size class (S vs M/L)
+                        // Final value: format depends on kpi size class (S vs M/L) and value format type
                         var kpiEl = el.closest('.wd-kpi');
                         var isSmall = kpiEl && kpiEl.classList.contains('wd-kpi--size-small');
-                        var finalText = isSmall
-                            ? (window.formatNum ? window.formatNum(target) + ' د.أ' : target + ' د.أ')
-                            : (window.formatMoney ? window.formatMoney(target) : (window.formatNum ? window.formatNum(target) : target));
+                        var finalText = window.formatKpiValue
+                            ? window.formatKpiValue(target, fmtType, fmtUnit, isSmall)
+                            : (isSmall
+                                ? (window.formatNum ? window.formatNum(target) : target)
+                                : (window.formatMoney ? window.formatMoney(target) : target));
                         el.innerHTML = wdKpiMoneyHtml(finalText);
                     }
                 }
@@ -1584,8 +1588,8 @@ else
                     ? card.kpiFormatted
                     : (rawValue !== null && rawValue !== undefined
                         ? (sizeClass === 'wd-kpi--size-small'
-                            ? (window.formatNum ? window.formatNum(window.toNum(rawValue)) + ' د.أ' : rawValue + ' د.أ')
-                            : (window.formatMoney ? window.formatMoney(window.toNum(rawValue)) : rawValue))
+                            ? (window.formatKpiValue ? window.formatKpiValue(rawValue, card.valueFormatType || 'Currency', card.valueUnit || '', true) : rawValue)
+                            : (window.formatKpiValue ? window.formatKpiValue(rawValue, card.valueFormatType || 'Currency', card.valueUnit || '', false) : rawValue))
                         : '—');
                 html += '<div class="wd-kpi__hero">';
                 html += '<div class="wd-kpi__value" data-kpi-target="' + target + '">' + wdKpiMoneyHtml(display) + '</div>';
@@ -1634,8 +1638,11 @@ else
                 delete CHARTS[key];
             }
 
-            function wdRenderSparkline(container, data, cardId) {
+            function wdRenderSparkline(container, data, cardId, formatType, unit) {
                 wdDestroySparkline(cardId);
+
+                var fmtType = formatType || 'Currency';
+                var fmtUnit = unit || '';
 
                 var rows = Array.isArray(data) ? data : [];
                 var points = rows.map(function(r, index) {
@@ -1684,7 +1691,9 @@ else
                 var markerRing = isDark ? 'rgba(255,255,255,0.92)' : '#ffffff';
 
                 function formatSparkValue(val) {
-                    return formatMoney ? formatMoney(toNum(val)) : toNum(val).toLocaleString('ar-SA');
+                    return window.formatKpiValue
+                        ? window.formatKpiValue(toNum(val), fmtType, fmtUnit, false)
+                        : (formatMoney ? formatMoney(toNum(val)) : toNum(val).toLocaleString('ar-SA'));
                 }
 
                 function deltaHtml(index) {
@@ -1789,7 +1798,9 @@ else
                 CHARTS['spark-' + cardId] = { control: chart, kind: 'sparkline' };
             }
 
-            function wdRenderCategoryBreakdown(container, data, cardId) {
+            function wdRenderCategoryBreakdown(container, data, cardId, formatType, unit) {
+                var fmtType = formatType || 'Currency';
+                var fmtUnit = unit || '';
                 var rows = Array.isArray(data) ? data : [];
                 var categoriesWrap = container && container.closest
                     ? container.closest('.wd-kpi__categories')
@@ -1821,7 +1832,7 @@ else
                     html += '<tr>';
                     /* Visual LTR (table direction:ltr): % | value | code(gold) */
                     html += '<td class="wd-kpi-breakdown__pct">' + escapeHtml(String(pctLabel)) + '</td>';
-                    html += '<td class="wd-kpi-breakdown__val">' + wdKpiMoneyHtml(formatMoney(toNum(value))) + '</td>';
+                    html += '<td class="wd-kpi-breakdown__val">' + wdKpiMoneyHtml(window.formatKpiValue ? window.formatKpiValue(toNum(value), fmtType, fmtUnit, false) : formatMoney(toNum(value))) + '</td>';
                     html += '<td class="wd-kpi-breakdown__code">' + escapeHtml(String(code)) + '</td>';
                     html += '</tr>';
                 });
@@ -1836,11 +1847,13 @@ else
 
             function wdRenderGrandTotal(container, card) {
                 var source = card.grandTotalSource || 'both';
+                var fmtType = card.valueFormatType || 'Currency';
+                var fmtUnit = card.valueUnit || '';
                 var html = '';
 
                 if (source === 'allTime' || source === 'both') {
                     if (card.kpiGrandTotal !== null && card.kpiGrandTotal !== undefined) {
-                        var val = formatMoney(toNum(card.kpiGrandTotal));
+                        var val = window.formatKpiValue ? window.formatKpiValue(toNum(card.kpiGrandTotal), fmtType, fmtUnit, false) : formatMoney(toNum(card.kpiGrandTotal));
                         html += '<div class="wd-kpi-grandtotal__row">';
                         html += '<span class="wd-kpi-grandtotal__label">الإجمالي الكلي:</span>';
                         html += '<span class="wd-kpi-grandtotal__value">' + wdKpiMoneyHtml(val) + '</span>';
@@ -1850,7 +1863,7 @@ else
 
                 if (source === 'yearToDate' || source === 'both') {
                     if (card.kpiYearToDateTotal !== null && card.kpiYearToDateTotal !== undefined) {
-                        var valYtd = formatMoney(toNum(card.kpiYearToDateTotal));
+                        var valYtd = window.formatKpiValue ? window.formatKpiValue(toNum(card.kpiYearToDateTotal), fmtType, fmtUnit, false) : formatMoney(toNum(card.kpiYearToDateTotal));
                         var year = new Date().getFullYear();
                         html += '<div class="wd-kpi-grandtotal__row">';
                         html += '<span class="wd-kpi-grandtotal__label">إجمالي ' + year + ':</span>';
@@ -1898,21 +1911,21 @@ else
                     if (card.chartType === 'KPI') {
                         body.innerHTML = wdRenderKpiCard(card);
                         var kpiVal = body.querySelector('.wd-kpi__value');
-                        if (kpiVal) animateCountUp(kpiVal, toNum(card.kpiMainValue || card.kpiValue), 1000);
+                        if (kpiVal) animateCountUp(kpiVal, toNum(card.kpiMainValue || card.kpiValue), 1000, card.valueFormatType || 'Currency', card.valueUnit || '');
 
                         // Render sparkline (always present in adaptive shell)
                         var sparkContainer = body.querySelector('.wd-kpi__sparkline');
                         if (sparkContainer && card.kpiSparklineData) {
-                            wdRenderSparkline(sparkContainer, card.kpiSparklineData, card.cardId);
+                            wdRenderSparkline(sparkContainer, card.kpiSparklineData, card.cardId, card.valueFormatType || 'Currency', card.valueUnit || '');
                         }
 
                         // Category breakdown — hide parent column when empty
                         var breakdownContainer = body.querySelector('.wd-kpi-breakdown');
                         if (breakdownContainer) {
                             if (card.kpiCategoryBreakdown && card.kpiCategoryBreakdown.length > 0) {
-                                wdRenderCategoryBreakdown(breakdownContainer, card.kpiCategoryBreakdown, card.cardId);
+                                wdRenderCategoryBreakdown(breakdownContainer, card.kpiCategoryBreakdown, card.cardId, card.valueFormatType || 'Currency', card.valueUnit || '');
                             } else {
-                                wdRenderCategoryBreakdown(breakdownContainer, [], card.cardId);
+                                wdRenderCategoryBreakdown(breakdownContainer, [], card.cardId, card.valueFormatType || 'Currency', card.valueUnit || '');
                             }
                         }
 

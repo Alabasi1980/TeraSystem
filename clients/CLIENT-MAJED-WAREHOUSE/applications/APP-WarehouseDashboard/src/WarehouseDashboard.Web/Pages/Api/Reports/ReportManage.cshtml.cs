@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using WarehouseDashboard.Web.Models.Dto;
 using WarehouseDashboard.Web.Services;
 
 namespace WarehouseDashboard.Web.Pages.Api.Reports;
@@ -17,11 +18,11 @@ namespace WarehouseDashboard.Web.Pages.Api.Reports;
 [IgnoreAntiforgeryToken]
 public class ReportManageModel : PageModel
 {
-    private readonly ReportService _reportService;
+    private readonly ReportCrudService _crudService;
 
-    public ReportManageModel(ReportService reportService)
+    public ReportManageModel(ReportCrudService crudService)
     {
-        _reportService = reportService;
+        _crudService = crudService;
     }
 
     /// <summary>GET /api/reports/list — Returns all reports.</summary>
@@ -35,7 +36,7 @@ public class ReportManageModel : PageModel
             return new JsonResult(new { error = "Unauthorized" }) { StatusCode = 401 };
         }
 
-        var reports = await _reportService.GetAllReportsAsync(ct);
+        var reports = await _crudService.GetAllReportsAsync(ct);
         return new JsonResult(reports);
     }
 
@@ -50,7 +51,7 @@ public class ReportManageModel : PageModel
             return new JsonResult(new { error = "Unauthorized" }) { StatusCode = 401 };
         }
 
-        var report = await _reportService.GetReportAsync(id, ct);
+        var report = await _crudService.GetReportAsync(id, ct);
         if (report is null)
             return new JsonResult(new { error = "Report not found" }) { StatusCode = 404 };
         return new JsonResult(report);
@@ -70,7 +71,7 @@ public class ReportManageModel : PageModel
         if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.ViewName))
             return new JsonResult(new { error = "Name and ViewName are required." }) { StatusCode = 400 };
 
-        var id = await _reportService.CreateReportAsync(request, ct);
+        var id = await _crudService.CreateReportAsync(request, ct);
         return new JsonResult(new { id, success = true });
     }
 
@@ -88,7 +89,7 @@ public class ReportManageModel : PageModel
         if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.ViewName))
             return new JsonResult(new { error = "Name and ViewName are required." }) { StatusCode = 400 };
 
-        var success = await _reportService.UpdateReportAsync(id, request, ct);
+        var success = await _crudService.UpdateReportAsync(id, request, ct);
         if (!success)
             return new JsonResult(new { error = "Report not found." }) { StatusCode = 404 };
 
@@ -106,7 +107,7 @@ public class ReportManageModel : PageModel
             return new JsonResult(new { error = "Unauthorized" }) { StatusCode = 401 };
         }
 
-        var success = await _reportService.DeleteReportAsync(id, ct);
+        var success = await _crudService.DeleteReportAsync(id, ct);
         if (!success)
             return new JsonResult(new { error = "Report not found." }) { StatusCode = 404 };
 
@@ -124,7 +125,7 @@ public class ReportManageModel : PageModel
             return new JsonResult(new { error = "Unauthorized" }) { StatusCode = 401 };
         }
 
-        var success = await _reportService.ToggleReportAsync(id, ct);
+        var success = await _crudService.ToggleReportAsync(id, ct);
         if (!success)
             return new JsonResult(new { error = "Report not found." }) { StatusCode = 404 };
 

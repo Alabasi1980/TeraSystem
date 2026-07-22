@@ -445,6 +445,49 @@
     background: #E0F2FE;
     border-color: #7DD3FC;
 }
+/* ============================ Advanced Drill Levels ============================ */
+.assistant-drill-levels {
+    margin-top: 12px;
+    padding: 10px;
+    background: #F0F9FF;
+    border: 1px solid #BAE6FD;
+    border-radius: 8px;
+    animation: assistAnswerIn var(--dur-norm, 240ms) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) both;
+}
+.assistant-drill-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0369A1;
+    margin-bottom: 8px;
+}
+.assistant-drill-btn {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    background: #fff;
+    border: 1px solid #BAE6FD;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: right;
+    direction: rtl;
+    color: #0F172A;
+    transition: background 0.2s, border-color 0.2s;
+    font-family: var(--font-ar, "Cairo", "Tajawal", Tahoma, sans-serif);
+}
+.assistant-drill-btn:hover {
+    background: #E0F2FE;
+    border-color: #7DD3FC;
+}
+.assistant-drill-btn:last-child {
+    margin-bottom: 0;
+}
+.assistant-drill-btn:focus-visible {
+    outline: 2px solid #0369A1;
+    outline-offset: 2px;
+}
+
 /* ============================ Panel Footer ============================ */
 .assistant-panel-footer {
     border-top: 1px solid var(--c-border, #D4E2F0);
@@ -589,6 +632,26 @@
     border-color: var(--c-primary-strong, #4a89c4);
 }
 
+[data-theme="midnight"] .assistant-drill-levels {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+[data-theme="midnight"] .assistant-drill-title {
+    color: #7dd3fc;
+}
+
+[data-theme="midnight"] .assistant-drill-btn {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+[data-theme="midnight"] .assistant-drill-btn:hover {
+    background: #1e293b;
+    border-color: #38bdf8;
+}
+
 /* ============================ Card Assistant Icon Button ============================ */
 .card-assistant-btn {
     background: none;
@@ -608,6 +671,70 @@
     background: rgba(37, 99, 235, 0.08);
 }
 
+/* ============================ Depth Options — Direct Depth Buttons ============================ */
+.assistant-depth-options {
+    margin-top: 12px;
+    padding: 10px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    animation: assistAnswerIn var(--dur-norm, 240ms) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) both;
+}
+.assistant-depth-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748B;
+    margin-bottom: 8px;
+}
+.assistant-depth-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.assistant-depth-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+    border: 1px solid #CBD5E1;
+    border-radius: 5px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #0F172A;
+    font-family: var(--font-ar, "Cairo", "Tajawal", Tahoma, sans-serif);
+}
+.assistant-depth-btn:hover {
+    border-color: #2563EB;
+    background: #EFF6FF;
+}
+.assistant-depth-btn.active {
+    background: #2563EB;
+    color: #fff;
+    border-color: #2563EB;
+    font-weight: 600;
+}
+
+[data-theme="midnight"] .assistant-depth-options {
+    background: #1e293b;
+    border-color: #334155;
+}
+[data-theme="midnight"] .assistant-depth-label {
+    color: #94a3b8;
+}
+[data-theme="midnight"] .assistant-depth-btn {
+    background: #0f172a;
+    border-color: #475569;
+    color: #e2e8f0;
+}
+[data-theme="midnight"] .assistant-depth-btn:hover {
+    border-color: #60a5fa;
+    background: #1e3a5f;
+}
+[data-theme="midnight"] .assistant-depth-btn.active {
+    background: #2563EB;
+    color: #fff;
+    border-color: #2563EB;
+}
+
 /* ============================ Accessibility — Reduced Motion ============================ */
 @media (prefers-reduced-motion: reduce) {
     .assistant-panel {
@@ -623,6 +750,10 @@
     }
 
     .assistant-deepen {
+        animation: none;
+    }
+
+    .assistant-depth-options {
         animation: none;
     }
 

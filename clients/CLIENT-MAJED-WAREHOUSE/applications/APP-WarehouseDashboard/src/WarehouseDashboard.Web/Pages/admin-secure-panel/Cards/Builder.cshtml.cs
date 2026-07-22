@@ -237,6 +237,22 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         [JsonPropertyName("aggregationType")]
         public string AggregationType { get; set; } = "Sum";
 
+        // === Value Format Settings (TASK-BUILDER-BEH-002) ===
+
+        /// <summary>
+        /// How the main KPI value is formatted: Currency, Number, Percentage, Custom
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("valueFormatType")]
+        public string ValueFormatType { get; set; } = "Currency";
+
+        /// <summary>
+        /// Custom unit text shown after the value when ValueFormatType is "Custom"
+        /// </summary>
+        [BindProperty]
+        [JsonPropertyName("valueUnit")]
+        public string ValueUnit { get; set; } = "";
+
         // === Builder Original Source Type (TASK-COD-028) ===
 
         /// <summary>
@@ -445,6 +461,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                         FixedEndDate = dto.FixedEndDate ?? "",
                         RelativeDays = dto.RelativeDays > 0 ? dto.RelativeDays : 30,
                         AggregationType = dto.AggregationType ?? "Sum",
+                        ValueFormatType = dto.ValueFormatType ?? "Currency",
+                        ValueUnit = dto.ValueUnit ?? "",
                         OriginalSourceType = dto.OriginalSourceType,
                         OriginalSourceId = dto.OriginalSourceId ?? "",
                         DashboardId = dto.DashboardId,
@@ -656,6 +674,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 FixedEndDate = card.FixedEndDate;
                 RelativeDays = card.RelativeDays;
                 AggregationType = card.AggregationType;
+                ValueFormatType = card.ValueFormatType;
+                ValueUnit = card.ValueUnit;
                 DashboardId = card.DashboardId;
 
                 // OriginalSourceType mapping: use card.OriginalSourceType to reconstruct Step 2 exactly.
@@ -744,6 +764,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
             entity.FixedEndDate = dto.FixedEndDate ?? "";
             entity.RelativeDays = dto.RelativeDays > 0 ? dto.RelativeDays : 30;
             entity.AggregationType = dto.AggregationType ?? "Sum";
+            entity.ValueFormatType = dto.ValueFormatType ?? "Currency";
+            entity.ValueUnit = dto.ValueUnit ?? "";
             entity.OriginalSourceType = dto.OriginalSourceType ?? "SqlTable";
             entity.OriginalSourceId = dto.OriginalSourceId ?? "";
             entity.DashboardId = dto.DashboardId;
@@ -793,6 +815,8 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                 FixedEndDate = FixedEndDate ?? string.Empty,
                 RelativeDays = RelativeDays,
                 AggregationType = AggregationType ?? "Sum",
+                ValueFormatType = ValueFormatType ?? "Currency",
+                ValueUnit = ValueUnit ?? "",
                 OriginalSourceType = OriginalSourceType ?? SourceType,  // fallback to current sourceType
                 OriginalSourceId = OriginalSourceId ?? SourceId ?? "",
                 DashboardId = DashboardId,
@@ -1019,6 +1043,10 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public int RelativeDays { get; set; } = 30;
         public string AggregationType { get; set; } = "Sum";
 
+        // === Value Format Settings (TASK-BUILDER-BEH-002) ===
+        public string ValueFormatType { get; set; } = "Currency";
+        public string ValueUnit { get; set; } = "";
+
         // === Builder Original Source Type (TASK-COD-028) ===
         public string OriginalSourceType { get; set; } = "SqlTable";
         public string OriginalSourceId { get; set; } = "";
@@ -1064,6 +1092,10 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public string FixedEndDate { get; set; } = string.Empty;
         public int RelativeDays { get; set; } = 30;
         public string AggregationType { get; set; } = "Sum";
+
+        // === Value Format Settings (TASK-BUILDER-BEH-002) ===
+        public string ValueFormatType { get; set; } = "Currency";
+        public string ValueUnit { get; set; } = "";
 
         // === Builder Original Source Type (TASK-COD-028) ===
         public string OriginalSourceType { get; set; } = "SqlTable";

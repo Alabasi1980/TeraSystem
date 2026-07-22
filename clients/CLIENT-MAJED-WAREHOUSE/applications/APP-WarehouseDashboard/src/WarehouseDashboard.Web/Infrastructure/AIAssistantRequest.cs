@@ -26,4 +26,14 @@ public class CardInsightResponse
     public bool HasDeeperData { get; set; }
     public int DepthLevel { get; set; }
     public string DepthLabel { get; set; } = string.Empty;
+    public bool HasDateColumn { get; set; }
+    public List<DrillLevelInfo>? AvailableDrillLevels { get; set; }
+}
+
+/// <summary>معلومات مستوى تعمق لعرضه في القائمة الجانبية.</summary>
+public class DrillLevelInfo
+{
+    public int Level { get; set; }
+    public string DisplayName { get; set; } = string.Empty;
+    public string TargetChartType { get; set; } = string.Empty;
 }

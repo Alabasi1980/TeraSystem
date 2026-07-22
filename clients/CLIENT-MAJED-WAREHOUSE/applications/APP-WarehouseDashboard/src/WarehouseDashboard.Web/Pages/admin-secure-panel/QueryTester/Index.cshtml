@@ -398,6 +398,14 @@
       border-radius: var(--radius-sm);
       transition: background var(--dur-fast), border-color var(--dur-fast);
       font-size: 13px;
+      cursor: grab;
+    }
+    .qt-sortable-item:active {
+      cursor: grabbing;
+    }
+    .qt-sortable-item.qt-sortable-dragover {
+      border-color: var(--c-primary);
+      background: rgba(31,78,121,0.06);
     }
     .qt-sortable-item:hover {
       background: var(--c-surface-muted);
@@ -405,7 +413,7 @@
     }
     .qt-sortable-handle {
       color: var(--c-text-muted);
-      cursor: grab;
+      cursor: grab !important;
       font-size: 14px;
       user-select: none;
       opacity: 0.5;
@@ -425,6 +433,30 @@
     .qt-sortable-btn:hover { background: var(--c-surface-muted); color: var(--c-primary); }
     .qt-sortable-btn:disabled { opacity: 0.2; cursor: default; }
     .qt-sortable-btn:disabled:hover { background: transparent; color: var(--c-text-muted); }
+
+    /* ============================================================
+       Create View Modal  (TASK-ENH-QT-008)
+       ============================================================ */
+    .wd-modal-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.4); z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        animation: wdFadeIn 0.15s var(--ease);
+    }
+    .wd-modal {
+        background: var(--c-surface); border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl); padding: var(--sp-6);
+        min-width: 400px; max-width: 500px;
+        animation: wdFadeUp 0.2s var(--ease);
+    }
+    .wd-modal h3 { margin: 0 0 var(--sp-4); font-size: 18px; color: var(--c-text); }
+    .wd-modal .wd-field { margin-bottom: var(--sp-4); }
+    .wd-modal .wd-input { direction: ltr; text-align: start; font-family: 'Courier New', monospace; }
+    .wd-modal .wd-form__actions { margin-top: var(--sp-4); padding-top: var(--sp-3); }
+
+    @@keyframes wdFadeIn {
+        from { opacity: 0; } to { opacity: 1; }
+    }
 </style>
 <div class="wd-page">
     <header class="wd-page__header">
@@ -453,8 +485,12 @@
         <!-- ===== SCHEMA BROWSER (Sidebar) ===== -->
         <aside class="qt-sidebar" id="schemaSidebar">
             <div class="qt-sidebar__header">
-                <span class="qt-sidebar__title">مستعرض الجداول</span>
-                <button class="qt-sidebar__refresh" onclick="loadTables()" title="إعادة تحميل" type="button">
+                <span class="qt-sidebar__title" style="font-size:13px">
+                    <button class="qt-sidebar-toggle-btn" id="viewToggle" onclick="toggleSchemaBrowser()" type="button" style="background:none;border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:2px 8px;cursor:pointer;font-family:var(--font-ar);font-size:12px;display:flex;align-items:center;gap:4px">
+                        <span id="viewToggleLabel">👁 فيوز</span>
+                    </button>
+                </span>
+                <button class="qt-sidebar__refresh" id="schemaRefreshBtn" onclick="loadViews()" title="إعادة تحميل" type="button">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
                 </button>
             </div>
@@ -547,6 +583,8 @@
                         <button class="wd-btn wd-btn--ghost" onclick="clearEditor()">مسح <kbd>Ctrl+Shift+C</kbd></button>
                         <button class="wd-btn wd-btn--ghost" onclick="toggleHistory()" title="سجل الاستعلامات (Ctrl+Shift+H)" type="button">📋 السجل</button>
                         <button class="wd-btn wd-btn--ghost" id="copyBtn" onclick="copyResults()" disabled>نسخ</button>
+                        <button class="wd-btn wd-btn--ghost" id="copySqlBtn" onclick="copySql()" title="نسخ الاستعلام">📋 نسخ الكويري</button>
+                        <button class="wd-btn wd-btn--ghost" id="createViewBtn" onclick="openCreateViewModal()" title="إنشاء VIEW في قاعدة البيانات">💾 إنشاء VIEW</button>
                         <button class="wd-btn wd-btn--ghost" id="csvBtn" onclick="downloadCSV()" disabled>📥 CSV</button>
                         <span id="meta" class="wd-meta"></span>
                     </div>
@@ -580,6 +618,25 @@
             </section>
 
         </main>
+    </div>
+</div>
+
+<!-- Create View Modal (TASK-ENH-QT-008) -->
+<div id="createViewModalOverlay" class="wd-modal-overlay" hidden onclick="if(event.target===this)closeCreateViewModal()">
+    <div class="wd-modal">
+        <h3>💾 إنشاء VIEW في قاعدة البيانات</h3>
+        <p style="color:var(--c-text-muted);font-size:13px;margin-bottom:var(--sp-4)">
+            سيتم إنشاء VIEW باستخدام الاستعلام الحالي في المحرر.
+        </p>
+        <div class="wd-field">
+            <label>اسم الـ View:</label>
+            <input type="text" id="viewNameInput" class="wd-input" placeholder="مثال: VW_ITEM_CARD_SUMMARY" dir="ltr" style="text-align:start" />
+            <span class="wd-error" id="viewNameError" hidden>الرجاء إدخال اسم صالح.</span>
+        </div>
+        <div class="wd-form__actions">
+            <button class="wd-btn wd-btn--primary" onclick="createView()">إنشاء</button>
+            <button class="wd-btn wd-btn--ghost" onclick="closeCreateViewModal()">إلغاء</button>
+        </div>
     </div>
 </div>
 
@@ -829,6 +886,9 @@
     // ================================================================
 
     let currentSource = 'SqlServer';
+    // Schema browser toggle (TASK-ENH-QT-008)
+    var currentSchemaMode = 'views'; // 'views' or 'tables'
+    var currentViews = [];
     // ---- Source Tab switching ----
     function switchSource(source) {
         if (source === currentSource) return;
@@ -910,6 +970,7 @@
                 populateBuilderDropdown(tables);
                 window.currentTables = tables;
                 populateJoinTableDropdowns();
+                loadViews();  // Load views into sidebar by default (TASK-ENH-QT-008)
             })
             .catch(function(err) {
                 loading.hidden = true;
@@ -965,6 +1026,170 @@
             });
     }
 
+    // ---- Helpers for schema browser toggle (TASK-ENH-QT-008) ----
+    function getCurrentSource() {
+        var activeTab = document.querySelector('.qt-source-tab.active');
+        return activeTab ? activeTab.dataset.source : 'SqlServer';
+    }
+    function getAntiForgeryToken() {
+        var tokenEl = document.querySelector('input[name="__RequestVerificationToken"]');
+        return tokenEl ? tokenEl.value : '';
+    }
+
+    // ---- Load views into sidebar (TASK-ENH-QT-008) ----
+    function loadViews() {
+        var source = getCurrentSource();
+        var loading = document.getElementById('schemaLoading');
+        var tree = document.getElementById('schemaTree');
+        var empty = document.getElementById('schemaEmpty');
+        var error = document.getElementById('schemaError');
+
+        loading.hidden = false;
+        tree.innerHTML = '';
+        empty.hidden = true;
+        error.hidden = true;
+
+        fetch('?handler=Views&source=' + encodeURIComponent(source))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                loading.hidden = true;
+                if (data.success && data.views && data.views.length > 0) {
+                    currentViews = data.views;
+                    renderViewTree(data.views);
+                } else if (data.success) {
+                    empty.hidden = false;
+                    empty.textContent = '\u0644\u0627 \u062A\u0648\u062C\u062F \u0641\u064A\u0648\u0632.';
+                } else {
+                    error.hidden = false;
+                    error.textContent = data.errorMessage || '\u062A\u0639\u0630\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0641\u064A\u0648\u0632.';
+                }
+            })
+            .catch(function() {
+                loading.hidden = true;
+                error.hidden = false;
+            });
+    }
+
+    // ---- Render views in sidebar tree (TASK-ENH-QT-008) ----
+    function renderViewTree(views) {
+        var tree = document.getElementById('schemaTree');
+        var html = '';
+        var currentSchema = '';
+        views.forEach(function(v) {
+            var schema = v.schema || '';
+            if (schema !== currentSchema) {
+                if (currentSchema) html += '</div></div>';
+                currentSchema = schema;
+                html += '<div class="qt-tree-item">'
+                     + '<span class="qt-tree-toggle">\u25B6</span>'
+                     + '<span class="qt-tree-icon" style="color:var(--c-secondary)">\uD83D\uDCD0</span>'
+                     + '<span class="qt-tree-label">' + escapeHtml(schema) + '</span></div>'
+                     + '<div class="qt-tree-children">';
+            }
+            html += '<div class="qt-tree-leaf" data-view="' + escapeHtml(v.viewName) + '" data-schema="' + escapeHtml(schema) + '">'
+                 + '<span class="qt-leaf-icon">\uD83D\uDCD0</span>'
+                 + '<span class="qt-leaf-name">' + escapeHtml(v.viewName) + '</span>'
+                 + '<span class="qt-leaf-type">VIEW</span>'
+                 + '</div>';
+        });
+        if (currentSchema) html += '</div></div>';
+        tree.innerHTML = html || '<div class="qt-sidebar__empty">\u0644\u0627 \u062A\u0648\u062C\u062F \u0641\u064A\u0648\u0632.</div>';
+
+        // Click handler for views
+        tree.querySelectorAll('.qt-tree-leaf[data-view]').forEach(function(leaf) {
+            leaf.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var viewName = this.dataset.view;
+                var schema = this.dataset.schema;
+                showToast('\u062A\u0645 \u0627\u062E\u062A\u064A\u0627\u0631 ' + (schema ? schema + '.' : '') + viewName + '. \u062A\u062D\u0644\u064A\u0644 \u0627\u0644\u0641\u064A\u0648 \u0642\u064A\u062F \u0627\u0644\u062A\u0637\u0648\u064A\u0631.', 'info');
+            });
+        });
+
+        // Toggle expand for schema groups
+        tree.querySelectorAll('.qt-tree-item').forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var toggle = this.querySelector('.qt-tree-toggle');
+                var children = this.nextElementSibling;
+                if (children && children.classList.contains('qt-tree-children')) {
+                    var isOpen = toggle.textContent === '\u25BC';
+                    toggle.textContent = isOpen ? '\u25B6' : '\u25BC';
+                    if (toggle.classList) toggle.classList.toggle('qt-tree-toggle--open');
+                    children.hidden = isOpen;
+                }
+            });
+        });
+    }
+
+    // ---- Toggle between Views and Tables (TASK-ENH-QT-008) ----
+    function toggleSchemaBrowser() {
+        var label = document.getElementById('viewToggleLabel');
+        if (currentSchemaMode === 'views') {
+            currentSchemaMode = 'tables';
+            label.innerHTML = '\uD83D\uDDC4 \u062C\u062F\u0627\u0648\u0644';
+            document.getElementById('schemaRefreshBtn').onclick = function() { loadTables(); };
+            loadTables();
+        } else {
+            currentSchemaMode = 'views';
+            label.innerHTML = '\uD83D\uDC41 \u0641\u064A\u0648\u0632';
+            document.getElementById('schemaRefreshBtn').onclick = function() { loadViews(); };
+            loadViews();
+        }
+    }
+
+    // ---- Create View Modal (TASK-ENH-QT-008) ----
+    function openCreateViewModal() {
+        var sql = editor.getValue().trim();
+        if (!sql || sql === 'SELECT 1 AS [\u0639\u064A\u0651\u0646\u0629]') {
+            showToast('\u0627\u0643\u062A\u0628 \u0627\u0633\u062A\u0639\u0644\u0627\u0645\u0627\u064B \u0623\u0648\u0644\u0627\u064B.', 'warning');
+            return;
+        }
+        document.getElementById('viewNameInput').value = '';
+        document.getElementById('viewNameError').hidden = true;
+        document.getElementById('createViewModalOverlay').hidden = false;
+    }
+    function closeCreateViewModal() {
+        document.getElementById('createViewModalOverlay').hidden = true;
+    }
+    function createView() {
+        var viewName = document.getElementById('viewNameInput').value.trim();
+        if (!viewName) {
+            document.getElementById('viewNameError').hidden = false;
+            return;
+        }
+        document.getElementById('viewNameError').hidden = true;
+
+        var sql = editor.getValue().trim();
+        var source = getCurrentSource();
+
+        document.getElementById('createViewBtn').disabled = true;
+        document.getElementById('createViewBtn').textContent = '\u062C\u0627\u0631\u064D \u0627\u0644\u0625\u0646\u0634\u0627\u0621...';
+
+        fetch('?handler=CreateView', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': getAntiForgeryToken() },
+            body: JSON.stringify({ viewName: viewName, sql: sql, source: source })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.success) {
+                showToast(data.message || '\u062A\u0645 \u0625\u0646\u0634\u0627\u0621 VIEW \u0628\u0646\u062C\u0627\u062D.', 'success');
+                closeCreateViewModal();
+                // Refresh views in sidebar
+                if (typeof loadViews === 'function') loadViews();
+            } else {
+                showToast(data.errorMessage || '\u0641\u0634\u0644 \u0625\u0646\u0634\u0627\u0621 VIEW.', 'error');
+            }
+        })
+        .catch(function() {
+            showToast('\u062D\u062F\u062B \u062E\u0637\u0623 \u0623\u062B\u0646\u0627\u0621 \u0625\u0646\u0634\u0627\u0621 VIEW.', 'error');
+        })
+        .finally(function() {
+            document.getElementById('createViewBtn').disabled = false;
+            document.getElementById('createViewBtn').textContent = '\uD83D\uDCBE \u0625\u0646\u0634\u0627\u0621 VIEW';
+        });
+    }
+
     // ---- Populate builder table dropdown ----
     function populateBuilderDropdown(tables) {
         var wrap = document.getElementById('builderTableWrapper');
@@ -1017,7 +1242,7 @@
         }
 
         var container = document.getElementById('builderColumns');
-        var list = container.querySelector('.qt-sortable-list');
+        var list = container;
         if (list && list.setChecked) {
             list.setChecked(columnName, true);
             showToast('\u062A\u0645 \u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0639\u0645\u0648\u062F "' + columnName + '".', 'info');
@@ -1028,13 +1253,13 @@
 
     // ---- Select all builder columns ----
     function selectAllBuilderColumns() {
-        var list = document.querySelector('#builderColumns .qt-sortable-list');
+        var list = document.getElementById('builderColumns');
         if (list && list.selectAll) list.selectAll(true);
     }
 
     // ---- Deselect all builder columns ----
     function deselectAllBuilderColumns() {
-        var list = document.querySelector('#builderColumns .qt-sortable-list');
+        var list = document.getElementById('builderColumns');
         if (list && list.selectAll) list.selectAll(false);
     }
 
@@ -1046,7 +1271,7 @@
             return;
         }
 
-        var list = document.querySelector('#builderColumns .qt-sortable-list');
+        var list = document.getElementById('builderColumns');
         var selectedCols = list ? list.getSelected() : [];
 
         if (selectedCols.length === 0) {
@@ -1075,7 +1300,7 @@
         var cols = [];
 
         // Collect column names from builderColumns sortable list if available
-        var builderList = document.querySelector('#builderColumns .qt-sortable-list');
+        var builderList = document.getElementById('builderColumns');
         if (builderList && builderList.getItems) {
             builderList.getItems().forEach(function(item) {
                 cols.push(item.value);
@@ -1243,6 +1468,29 @@
         showToast('\u062A\u0645 \u062A\u0646\u0632\u064A\u0644 ' + currentRows.length + ' \u0635\u0641.', 'success');
     }
 
+    // ---- Copy SQL to clipboard (TASK-ENH-QT-008) ----
+    function copySql() {
+        var sql = editor.getValue().trim();
+        if (!sql || sql === 'SELECT 1 AS [\u0639\u064A\u0651\u0646\u0629]') {
+            showToast('\u0644\u0627 \u064A\u0648\u062C\u062F \u0627\u0633\u062A\u0639\u0644\u0627\u0645 \u0644\u0646\u0633\u062E\u0647.', 'warning');
+            return;
+        }
+        navigator.clipboard.writeText(sql).then(function() {
+            showToast('\u062A\u0645 \u0646\u0633\u062E \u0627\u0644\u0627\u0633\u062A\u0639\u0644\u0627\u0645.', 'success');
+        }).catch(function() {
+            // Fallback for older browsers
+            var textarea = document.createElement('textarea');
+            textarea.value = sql;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('\u062A\u0645 \u0646\u0633\u062E \u0627\u0644\u0627\u0633\u062A\u0639\u0644\u0627\u0645.', 'success');
+        });
+    }
+
     // ================================================================
     // Query History  (TASK-ENH-QT-003)
     // ================================================================
@@ -1328,7 +1576,7 @@
     // ---- Create a searchable dropdown (combobox) ----
     function createSearchableDropdown(container, options, onSelect) {
       container.innerHTML = '';
-      container.className = 'qt-searchable';
+      container.classList.add('qt-searchable');
       container.dataset.value = '';
 
       var wrapper = document.createElement('div');
@@ -1523,12 +1771,12 @@
         var tableOpts = getTableOptions();
         document.querySelectorAll('.qt-join-table1-wrapper').forEach(function(wrap) {
             var currentVal = wrap.getValue();
-            createSearchableDropdown(wrap, tableOpts, function() { onJoinTableChange(this); });
+            createSearchableDropdown(wrap, tableOpts, function() { onJoinTableChange(wrap); });
             if (currentVal) wrap.setValue(currentVal);
         });
         document.querySelectorAll('.qt-join-table2-wrapper').forEach(function(wrap) {
             var currentVal = wrap.getValue();
-            createSearchableDropdown(wrap, tableOpts, function() { onJoinTableChange(this); });
+            createSearchableDropdown(wrap, tableOpts, function() { onJoinTableChange(wrap); });
             if (currentVal) wrap.setValue(currentVal);
         });
     }
@@ -1567,12 +1815,11 @@
         var newClause = container.lastElementChild;
         var table1Wrap = newClause.querySelector('.qt-join-table1-wrapper');
         var table2Wrap = newClause.querySelector('.qt-join-table2-wrapper');
-        var _this = this;
         if (table1Wrap) createSearchableDropdown(table1Wrap, getTableOptions(), function() {
-            onJoinTableChange(this);
+            onJoinTableChange(table1Wrap);
         });
         if (table2Wrap) createSearchableDropdown(table2Wrap, getTableOptions(), function() {
-            onJoinTableChange(this);
+            onJoinTableChange(table2Wrap);
         });
         
         showToast('تم إضافة JOIN بعلاقة ' + alias + '.', 'info');
@@ -1597,6 +1844,12 @@
 
         var index = clause.dataset.index;
         updateJoinColumns();
+
+        // Auto-add first condition row if both tables are selected
+        if (table1 && table2) {
+            var addBtn = clause.querySelector('[onclick*="addJoinCondition"]');
+            if (addBtn) addJoinCondition(addBtn);
+        }
     }
 
     // ---- When JOIN type changes ----
@@ -1621,8 +1874,13 @@
         var index = clause.dataset.index;
         var table1Wrap = clause.querySelector('.qt-join-table1-wrapper');
         var table2Wrap = clause.querySelector('.qt-join-table2-wrapper');
-        var table1 = table1Wrap ? table1Wrap.getValue() : (clause.querySelector('.qt-join-table1') ? clause.querySelector('.qt-join-table1').value : '');
-        var table2 = table2Wrap ? table2Wrap.getValue() : (clause.querySelector('.qt-join-table2') ? clause.querySelector('.qt-join-table2').value : '');
+        var table1 = table1Wrap ? table1Wrap.getValue() : '';
+        var table2 = table2Wrap ? table2Wrap.getValue() : '';
+
+        if (!table1 && !table2) {
+            showToast('اختر جدولين أولاً.', 'warning');
+            return;
+        }
 
         var row = document.createElement('div');
         row.className = 'qt-join-condition';
@@ -1648,16 +1906,32 @@
         removeBtn.onclick = function() { removeJoinCondition(this); };
         removeBtn.type = 'button';
 
-        // Append to row FIRST so querySelector works in populateConditionCols
         row.appendChild(col1Wrapper);
         row.appendChild(opSelect);
         row.appendChild(col2Wrapper);
         row.appendChild(removeBtn);
-
-        // Populate columns — now the wrappers are in the DOM tree
-        populateConditionCols(row, table1, table2, index);
-
         conditionsDiv.appendChild(row);
+
+        // Fetch columns for BOTH tables first, then populate dropdowns
+        var pending = 0;
+        var tablesToFetch = [];
+        if (table1 && (!joinColumnCache[table1] || joinColumnCache[table1].length === 0)) tablesToFetch.push(table1);
+        if (table2 && (!joinColumnCache[table2] || joinColumnCache[table2].length === 0)) tablesToFetch.push(table2);
+
+        if (tablesToFetch.length === 0) {
+            // All cached — populate directly
+            populateConditionColsDirect(row, table1, table2, index);
+        } else {
+            // Need to fetch first
+            tablesToFetch.forEach(function(t) {
+                fetchAndCacheColumns(t, function() {
+                    pending++;
+                    if (pending >= tablesToFetch.length) {
+                        populateConditionColsDirect(row, table1, table2, index);
+                    }
+                });
+            });
+        }
     }
 
     // ---- Populate column dropdowns in a condition row ----
@@ -1693,9 +1967,26 @@
         }
     }
 
+    // ---- Populate column dropdowns (assumes cache is already populated) ----
+    function populateConditionColsDirect(row, table1, table2, clauseIndex) {
+        var col1Wrapper = row.querySelector('.qt-join-condition__col-wrapper');
+        var col2Wrapper = row.querySelector('.qt-join-condition__col2-wrapper');
+
+        if (col1Wrapper && table1) {
+            var alias = getAliasForTable(clauseIndex, 0);
+            var cols = getColumnOptions(table1, alias);
+            createSearchableDropdown(col1Wrapper, cols, function() { updateJoinColumns(); });
+        }
+        if (col2Wrapper && table2) {
+            var alias2 = getAliasForTable(clauseIndex, 1);
+            var cols2 = getColumnOptions(table2, alias2);
+            createSearchableDropdown(col2Wrapper, cols2, function() { updateJoinColumns(); });
+        }
+    }
+
     // ---- Fetch and cache columns for a table ----
     function fetchAndCacheColumns(tableName, callback) {
-        if (joinColumnCache[tableName]) {
+        if (joinColumnCache[tableName] && joinColumnCache[tableName].length > 0) {
             if (callback) callback();
             return;
         }
@@ -1811,7 +2102,7 @@
 
     // ---- Select/deselect all JOIN columns ----
     function selectAllJoinCols(select) {
-        var list = document.querySelector('#joinColumnsGrid .qt-sortable-list');
+        var list = document.getElementById('joinColumnsGrid');
         if (list && list.selectAll) list.selectAll(select);
     }
 
@@ -1824,7 +2115,7 @@
         }
 
         // Collect selected columns from sortable list
-        var colList = document.querySelector('#joinColumnsGrid .qt-sortable-list');
+        var colList = document.getElementById('joinColumnsGrid');
         var selectedCols = colList ? colList.getSelected() : [];
 
         // Validate first clause has both tables
@@ -1899,30 +2190,7 @@
             }
         }
 
-        // Check existing editor content
-        var existingSql = editor.getValue().trim();
-
-        if (existingSql && existingSql !== 'SELECT 1 AS [عيّنة]') {
-            // Append to existing SQL (before any WHERE clause)
-            var whereIdx = existingSql.toUpperCase().lastIndexOf('WHERE');
-            var orderIdx = existingSql.toUpperCase().lastIndexOf('ORDER BY');
-
-            var insertPos = existingSql.length;
-            var suffix = '';
-
-            if (orderIdx >= 0) {
-                suffix = existingSql.substring(orderIdx);
-                insertPos = orderIdx;
-            } else if (whereIdx >= 0) {
-                suffix = existingSql.substring(whereIdx);
-                insertPos = whereIdx;
-            }
-
-            var baseSql = existingSql.substring(0, insertPos).trim();
-            editor.setValue(baseSql + '\n' + sql + (suffix ? '\n' + suffix : ''));
-        } else {
-            editor.setValue(sql);
-        }
+        editor.setValue(sql);
 
         showToast('تم إنشاء استعلام JOIN بنجاح.', 'success');
 
@@ -1935,7 +2203,7 @@
     // ---- Create a sortable column list with ↑↓ buttons ----
     function createSortableList(container, columns, onChange) {
       container.innerHTML = '';
-      container.className = 'qt-sortable-list';
+      container.classList.add('qt-sortable-list');
 
       var items = columns.map(function(col) {
         return {
@@ -1951,7 +2219,7 @@
           var checkedAttr = item.checked ? 'checked' : '';
           var upDisabled = idx === 0 ? 'disabled' : '';
           var downDisabled = idx === items.length - 1 ? 'disabled' : '';
-          return '<div class="qt-sortable-item" data-index="' + idx + '">' +
+          return '<div class="qt-sortable-item" draggable="true" data-index="' + idx + '">' +
             '<span class="qt-sortable-handle">⠿</span>' +
             '<input type="checkbox" class="qt-sortable-checkbox" ' + checkedAttr + ' data-idx="' + idx + '">' +
             '<span class="qt-sortable-label">' + escapeHtml(item.label) + '</span>' +
@@ -1995,6 +2263,64 @@
           notifyChange();
         }
       });
+
+      // --- HTML5 Drag and Drop ---
+      var dragSourceIndex = null;
+
+      container.addEventListener('dragstart', function(e) {
+        var item = e.target.closest('.qt-sortable-item');
+        if (!item) return;
+        dragSourceIndex = parseInt(item.dataset.index);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(dragSourceIndex));
+        item.classList.add('qt-sortable-dragging');
+      });
+
+      container.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        var target = e.target.closest('.qt-sortable-item');
+        if (!target) return;
+        var targetIdx = parseInt(target.dataset.index);
+        if (targetIdx !== dragSourceIndex) {
+          target.classList.add('qt-sortable-dragover');
+        }
+      });
+
+      container.addEventListener('dragleave', function(e) {
+        var target = e.target.closest('.qt-sortable-item');
+        if (target) {
+          target.classList.remove('qt-sortable-dragover');
+        }
+      });
+
+      container.addEventListener('drop', function(e) {
+        e.preventDefault();
+        var target = e.target.closest('.qt-sortable-item');
+        if (!target) return;
+        var targetIdx = parseInt(target.dataset.index);
+        target.classList.remove('qt-sortable-dragover');
+
+        if (dragSourceIndex === null || dragSourceIndex === targetIdx) return;
+
+        // Reorder items array
+        var draggedItem = items.splice(dragSourceIndex, 1)[0];
+        items.splice(targetIdx, 0, draggedItem);
+
+        render();
+        notifyChange();
+        dragSourceIndex = null;
+      });
+
+      container.addEventListener('dragend', function(e) {
+        var item = e.target.closest('.qt-sortable-item');
+        if (item) item.classList.remove('qt-sortable-dragging');
+        container.querySelectorAll('.qt-sortable-dragover').forEach(function(el) {
+          el.classList.remove('qt-sortable-dragover');
+        });
+        dragSourceIndex = null;
+      });
+      // --- End Drag and Drop ---
 
       container.selectAll = function(select) {
         items.forEach(function(item) { item.checked = select; });

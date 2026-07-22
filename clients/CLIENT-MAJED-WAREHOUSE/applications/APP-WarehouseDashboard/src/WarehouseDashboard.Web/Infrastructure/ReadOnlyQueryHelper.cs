@@ -24,10 +24,10 @@ public class ReadOnlyQueryHelper
     /// <param name="sql">The SQL SELECT query to execute.</param>
     /// <param name="parameters">Optional named parameters for the query. Always parameterized.</param>
     /// <returns>A list of rows, each represented as a dictionary of column-name to value.</returns>
-    public async Task<List<Dictionary<string, object>>> QueryAsync(
+    public async Task<List<Dictionary<string, object?>>> QueryAsync(
         string sql, Dictionary<string, object>? parameters = null)
     {
-        var results = new List<Dictionary<string, object>>();
+        var results = new List<Dictionary<string, object?>>();
 
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(sql, connection);
@@ -46,7 +46,7 @@ public class ReadOnlyQueryHelper
 
         while (await reader.ReadAsync())
         {
-            var row = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            var row = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
             for (int i = 0; i < reader.FieldCount; i++)
             {
                 object value = reader.GetValue(i);

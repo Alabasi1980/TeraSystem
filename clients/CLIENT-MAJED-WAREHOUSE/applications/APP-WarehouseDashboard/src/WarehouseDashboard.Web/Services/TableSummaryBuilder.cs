@@ -184,7 +184,7 @@ public class TableSummaryBuilder : ICardSummaryBuilder
     //  Step 2 — Sample rows
     // ─────────────────────────────────────────────────────────────────
 
-    private async Task<List<Dictionary<string, object>>> QuerySampleRowsAsync(
+    private async Task<List<Dictionary<string, object?>>> QuerySampleRowsAsync(
         string sqlQuery,
         string? dateCol,
         string? dateWhere,
@@ -260,7 +260,7 @@ public class TableSummaryBuilder : ICardSummaryBuilder
 
     private static void DetectNullColumns(
         CardSummary summary,
-        List<Dictionary<string, object>> sampleRows,
+        List<Dictionary<string, object?>> sampleRows,
         List<string> columnNames)
     {
         foreach (var col in columnNames)
@@ -396,7 +396,7 @@ public class TableSummaryBuilder : ICardSummaryBuilder
     /// numeric CLR type.
     /// </summary>
     private static HashSet<string> DetectNumericColumns(
-        List<Dictionary<string, object>> sampleRows)
+        List<Dictionary<string, object?>> sampleRows)
     {
         var numericSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -433,7 +433,7 @@ public class TableSummaryBuilder : ICardSummaryBuilder
     /// Safely extracts a double value from a dictionary row.
     /// Returns 0 if the key is missing, the value is null, or conversion fails.
     /// </summary>
-    private static double TryGetDouble(Dictionary<string, object> row, string key)
+    private static double TryGetDouble(Dictionary<string, object?> row, string key)
     {
         if (row.TryGetValue(key, out var val) && val is not null)
         {

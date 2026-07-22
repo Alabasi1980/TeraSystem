@@ -28,15 +28,27 @@
             <p class="assistant-placeholder">اختر بطاقة ثم اضغط على أحد أزرار التحليل.</p>
         </div>
 
-        @* Deepen / follow-up area — hidden by default *@
-        <div id="assistant-deepen-area" class="assistant-deepen" style="display:none;">
-            <button id="btn-deepen" class="assistant-btn"
-                    onclick="deepenAnalysis()">📊 تعمق أكثر</button>
+        @* Depth options — hidden by default, shown when hasDateColumn is true *@
+        <div id="assistant-depth-options" class="assistant-depth-options" style="display:none;">
+            <div class="assistant-depth-label">📊 اختيار نطاق التحليل:</div>
+            <div class="assistant-depth-buttons">
+                <button class="assistant-depth-btn" data-depth="1" onclick="analyzeCardAtDepth('deep', 1)">3 أشهر</button>
+                <button class="assistant-depth-btn" data-depth="2" onclick="analyzeCardAtDepth('deep', 2)">6 أشهر</button>
+                <button class="assistant-depth-btn" data-depth="3" onclick="analyzeCardAtDepth('deep', 3)">سنة</button>
+                <button class="assistant-depth-btn" data-depth="4" onclick="analyzeCardAtDepth('deep', 4)">3 سنوات</button>
+                <button class="assistant-depth-btn" data-depth="5" onclick="analyzeCardAtDepth('deep', 5)">5 سنوات</button>
+                <button class="assistant-depth-btn" data-depth="6" onclick="analyzeCardAtDepth('deep', 6)">كل البيانات</button>
+            </div>
         </div>
 
         @* Full-data-reached message — hidden by default *@
         <div id="assistant-full-data-msg" class="assistant-full-data-msg" style="display:none;">
             ✅ تم تحليل كل البيانات المتوفرة لهذه البطاقة حالياً.
+        </div>
+
+        @* Advanced drill levels from DB — hidden by default *@
+        <div id="assistant-drill-levels" class="assistant-drill-levels" style="display:none;">
+            <div class="assistant-drill-title">🔍 تعمق متقدم</div>
         </div>
 
         @* Status / loading indicator *@

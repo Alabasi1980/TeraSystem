@@ -51,8 +51,11 @@ builder.Services.AddScoped<DashboardManageService>();
 builder.Services.AddScoped<OracleSchemaService>();
 builder.Services.AddScoped<SchemaManagementService>();
 
-// ReportService — SQL Server View discovery, schema introspection, and dynamic queries (TASK-REPORT-003)
-builder.Services.AddScoped<ReportService>();
+// Report services — SQL Server View discovery, CRUD, execution, and layout management (TASK-FIX-REFACTOR-001)
+builder.Services.AddScoped<ReportViewService>();
+builder.Services.AddScoped<ReportCrudService>();
+builder.Services.AddScoped<ReportExecutionService>();
+builder.Services.AddScoped<ReportLayoutService>();
 
 builder.Services.Configure<AIAssistantOptions>(builder.Configuration.GetSection(AIAssistantOptions.SectionName));
 builder.Services.AddHttpClient<IAIProvider, OpenCodeGoAdapter>();
@@ -96,6 +99,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();

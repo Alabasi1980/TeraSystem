@@ -94,7 +94,9 @@
       dateFilterMode: 'dashboard',
       fixedStartDate: '',
       fixedEndDate: '',
-      relativeDays: 30
+      relativeDays: 30,
+      valueFormatType: 'Currency',
+      valueUnit: ''
     };
 
     this.tables = [];
@@ -177,6 +179,8 @@
     s.fixedStartDate = id.fixedStartDate != null ? id.fixedStartDate : ($('wb-h-fixedStartDate').value || '');
     s.fixedEndDate = id.fixedEndDate != null ? id.fixedEndDate : ($('wb-h-fixedEndDate').value || '');
     s.relativeDays = parseInt(id.relativeDays != null ? id.relativeDays : $('wb-h-relativeDays').value, 10) || 30;
+    s.valueFormatType = id.valueFormatType || ($('wb-h-valueFormatType') ? $('wb-h-valueFormatType').value : 'Currency');
+    s.valueUnit = id.valueUnit || ($('wb-h-valueUnit') ? $('wb-h-valueUnit').value : '');
     s.previewSql = id.sqlQuery != null ? id.sqlQuery : ($('wb-h-sqlQuery').value || '');
 
     // Edit-mode safety: older/server-rendered cards may carry the SQL in sqlQuery
@@ -1306,6 +1310,10 @@
     }
     if ($('wb-h-sqlQuery')) $('wb-h-sqlQuery').value = sqlQuery;
 
+    // Value format type (TASK-BUILDER-BEH-002)
+    if ($('wb-h-valueFormatType')) $('wb-h-valueFormatType').value = s.valueFormatType;
+    if ($('wb-h-valueUnit')) $('wb-h-valueUnit').value = s.valueUnit;
+
     // Sync KPI hidden fields (TASK-KPI-006)
     this.syncKpiHiddenFields();
   };
@@ -1380,6 +1388,16 @@
     if ($('wb-h-relativeDays')) {
       var rdEl = $('wb-kpi-relative-days');
       $('wb-h-relativeDays').value = (rdEl && rdEl.value) || '30';
+    }
+
+    // Value format type (TASK-BUILDER-BEH-002)
+    if ($('wb-h-valueFormatType')) {
+      var vftEl = $('wb-value-format-type');
+      $('wb-h-valueFormatType').value = (vftEl && vftEl.value) || 'Currency';
+    }
+    if ($('wb-h-valueUnit')) {
+      var vuEl = $('wb-value-unit');
+      $('wb-h-valueUnit').value = (vuEl && vuEl.value) || '';
     }
   };
 

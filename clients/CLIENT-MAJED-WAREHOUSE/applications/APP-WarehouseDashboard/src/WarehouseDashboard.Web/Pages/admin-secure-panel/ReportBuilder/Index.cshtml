@@ -628,7 +628,7 @@
                 document.getElementById('previewArea').innerHTML = html;
                 document.getElementById('saveBtn').disabled = false;
             } else {
-                document.getElementById('previewArea').innerHTML = '<div style="text-align:center;padding:40px;color:var(--c-warning);">⚠️ ' + (data.errorMessage || 'لا توجد بيانات') + '</div>';
+                document.getElementById('previewArea').innerHTML = '<div style="text-align:center;padding:40px;color:var(--c-warning);">⚠️ ' + escapeHtml(data.errorMessage || 'لا توجد بيانات') + '</div>';
             }
         } catch (err) {
             document.getElementById('previewArea').innerHTML = '<div style="text-align:center;padding:40px;color:var(--c-error);">⚠️ تعذر تنفيذ المعاينة: ' + escapeHtml(String(err)) + '</div>';

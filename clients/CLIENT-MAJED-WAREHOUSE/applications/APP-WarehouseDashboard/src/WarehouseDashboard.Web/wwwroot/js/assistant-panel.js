@@ -4,8 +4,6 @@ let assistantCurrentCardId = null;
 // Track depth for deep analysis
 let assistantCurrentDepth = 1;
 let assistantCurrentMode = null;
-let assistantIsFullDataReached = false;
-let assistantHasDeeperData = false;
 
 function openAssistantPanel(cardId, cardTitle) {
     assistantCurrentCardId = cardId;
@@ -40,6 +38,14 @@ function openAssistantPanel(cardId, cardTitle) {
     var fullDataMsg = document.getElementById('assistant-full-data-msg');
     if (fullDataMsg) fullDataMsg.style.display = 'none';
     
+    // Reset drill levels area
+    var drillLevelsArea = document.getElementById('assistant-drill-levels');
+    if (drillLevelsArea) drillLevelsArea.style.display = 'none';
+    
+    // Hide depth options on panel open
+    var depthOptions = document.getElementById('assistant-depth-options');
+    if (depthOptions) depthOptions.style.display = 'none';
+    
     // Defensive: disable buttons if card not assistant-enabled
     var cardEl = document.querySelector('[data-card-id="' + cardId + '"]');
     var isEnabled = cardEl ? cardEl.getAttribute('data-assistant-enabled') !== 'false' : true;
@@ -67,6 +73,11 @@ function closeAssistantPanel() {
     assistantCurrentCardId = null;
 }
 
+function analyzeCardAtDepth(mode, depth) {
+    assistantCurrentDepth = depth;
+    analyzeCard(mode);
+}
+
 // =============================================================================
 // TASK-AI-D04 — AJAX wiring: POST /api/card-insights/analyze
 // =============================================================================
@@ -80,14 +91,12 @@ async function analyzeCard(mode) {
     // Show loading state
     var answer = document.getElementById('assistant-answer');
     var status = document.getElementById('assistant-status');
-    var deepen = document.getElementById('assistant-deepen-area');
     var scope = document.getElementById('assistant-scope');
 
     answer.classList.add('assistant-answer--loading');
     answer.innerHTML = '';
     status.textContent = 'جاري التحليل...';
     status.className = 'assistant-status assistant-status--loading';
-    deepen.style.display = 'none';
 
     // Hide full-data message during loading
     var fullDataMsg = document.getElementById('assistant-full-data-msg');
@@ -117,16 +126,56 @@ async function analyzeCard(mode) {
 
             // Track depth state
             assistantCurrentDepth = data.depthLevel || 1;
-            assistantIsFullDataReached = data.isFullDataReached;
-            assistantHasDeeperData = data.hasDeeperData;
-
-            // Full-data-reached: show message instead of deepen button
-            if (assistantIsFullDataReached) {
-                deepen.style.display = 'none';
+            if (mode === 'deep' && data.isFullDataReached) {
                 if (fullDataMsg) fullDataMsg.style.display = 'block';
-            } else if (mode === 'deep' && assistantHasDeeperData) {
-                // Show deepen button if more data available
-                deepen.style.display = 'block';
+            }
+
+            // Show/hide depth options based on card's date column
+            var depthOptions = document.getElementById('assistant-depth-options');
+            if (depthOptions) {
+                if (mode === 'deep' && data.hasDateColumn) {
+                    depthOptions.style.display = 'block';
+                    // Mark active depth button
+                    depthOptions.querySelectorAll('.assistant-depth-btn').forEach(function(btn) {
+                        btn.classList.remove('active');
+                        if (parseInt(btn.getAttribute('data-depth')) === assistantCurrentDepth) {
+                            btn.classList.add('active');
+                        }
+                    });
+                } else {
+                    depthOptions.style.display = 'none';
+                }
+            }
+
+            // Show advanced drill levels from DB
+            var drillLevelsArea = document.getElementById('assistant-drill-levels');
+            if (drillLevelsArea) {
+                drillLevelsArea.innerHTML = '';
+                if (data.availableDrillLevels && data.availableDrillLevels.length > 0) {
+                    var title = document.createElement('div');
+                    title.className = 'assistant-drill-title';
+                    title.textContent = '🔍 تعمق متقدم';
+                    drillLevelsArea.appendChild(title);
+                    
+                    data.availableDrillLevels.forEach(function(level) {
+                        var btn = document.createElement('button');
+                        btn.className = 'assistant-drill-btn';
+                        btn.textContent = '🔎 ' + level.displayName;
+                        btn.onclick = function() {
+                            var cardId = assistantCurrentCardId;
+                            closeAssistantPanel();
+                            setTimeout(function() {
+                                if (typeof wdOpenDrill === 'function' && cardId) {
+                                    wdOpenDrill(cardId);
+                                }
+                            }, 300);
+                        };
+                        drillLevelsArea.appendChild(btn);
+                    });
+                    drillLevelsArea.style.display = 'block';
+                } else {
+                    drillLevelsArea.style.display = 'none';
+                }
             }
 
             // Cached/speedy response indicator (< 500ms)
@@ -159,12 +208,4 @@ function formatAssistantResponse(text) {
     return html;
 }
 
-function deepenAnalysis() {
-    if (!assistantCurrentCardId) return;
-    if (assistantIsFullDataReached) return;
-
-    assistantCurrentDepth += 1;
-
-    // Re-call analyzeCard with incremented depth
-    analyzeCard('deep');
-}
+// deepenAnalysis() removed — replaced by analyzeCardAtDepth() with direct depth buttons

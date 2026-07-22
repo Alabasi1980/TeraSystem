@@ -180,7 +180,7 @@ public class GenericSummaryBuilder : ICardSummaryBuilder
         _ => dateTo.AddMonths(-3)
     };
 
-    private static List<string> DetectNumericColumns(List<Dictionary<string, object>> rows)
+    private static List<string> DetectNumericColumns(List<Dictionary<string, object?>> rows)
     {
         var candidates = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -323,7 +323,7 @@ ORDER BY TotalValue DESC";
         return trimmed;
     }
 
-    private static double GetDouble(Dictionary<string, object> row, string key)
+    private static double GetDouble(Dictionary<string, object?> row, string key)
     {
         if (row.TryGetValue(key, out var val) && val is not null)
         {

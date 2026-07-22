@@ -116,6 +116,20 @@ public class DashboardCard
     /// </summary>
     public string AggregationType { get; set; } = "Sum";
 
+    // === Value Format Settings (TASK-BUILDER-BEH-002) ===
+
+    /// <summary>
+    /// How the main KPI value is formatted: "Currency", "Number", "Percentage", "Custom".
+    /// Default: "Currency" (backward compatible).
+    /// </summary>
+    public string ValueFormatType { get; set; } = "Currency";
+
+    /// <summary>
+    /// Custom unit text shown after the value when ValueFormatType is "Custom".
+    /// Example: "وحدة", "كجم", "قطعة", "م²". Default: "".
+    /// </summary>
+    public string ValueUnit { get; set; } = "";
+
     /// <summary>
     /// Original SourceType from Step 2 of the Card Builder: "Template", "SavedQuery", "SqlTable", "CustomSQL".
     /// Default: "SqlTable". This is the value of the source dropdown at card creation.

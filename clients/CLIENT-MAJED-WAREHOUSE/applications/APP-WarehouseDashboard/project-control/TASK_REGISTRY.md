@@ -122,6 +122,14 @@
 
 ---
 
+## QueryTester Fix Tasks
+
+| TASK-ID | Description | Assigned Agent | Status | Created |
+|---|---|---|---|---|
+| TASK-QT-FIX-001 | إصلاح SELECT Builder و JOIN Builder في QueryTester | engineering-agent-dotnet | ✅ Accepted (0 errors, 0 warnings) | 2026-07-21 |
+
+---
+
 ## Sync Log Enhancement (TASK-SYNC-LOG)
 
 | TASK-ID | Description | Assigned Agent | Status | Created |

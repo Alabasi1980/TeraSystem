@@ -296,6 +296,10 @@ public class DashboardService
                         }
                     }
 
+                    // Value format settings (TASK-BUILDER-BEH-002)
+                    result.ValueFormatType = string.IsNullOrEmpty(card.ValueFormatType) ? "Currency" : card.ValueFormatType;
+                    result.ValueUnit = card.ValueUnit ?? "";
+
                     result.Status = "success";
                     break;
                 }

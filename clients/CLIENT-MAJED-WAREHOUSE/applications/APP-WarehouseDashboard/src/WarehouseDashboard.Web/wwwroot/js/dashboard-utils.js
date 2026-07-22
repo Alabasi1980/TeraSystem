@@ -48,6 +48,43 @@
         return intPart + '.' + parts[1] + ' د.أ';
     }
 
+    /**
+     * Format a KPI value according to the card's configured value format type.
+     * @param {number|string} value - The numeric value
+     * @param {string} formatType - "Currency" | "Number" | "Percentage" | "Custom"
+     * @param {string} unit - Custom unit suffix (only for "Custom")
+     * @param {boolean} isSmall - true for abbreviated (S), false for full (M/L)
+     * @returns {string} Formatted string
+     */
+    function formatKpiValue(value, formatType, unit, isSmall) {
+        var n = toNum(value);
+        if (n === 0) {
+            if (formatType === 'Currency') return '0.000 د.أ';
+            if (formatType === 'Number') return '0';
+            if (formatType === 'Percentage') return '0%';
+            if (formatType === 'Custom') return '0 ' + (unit || '');
+        }
+
+        // Build numeric portion
+        var numericPart;
+        if (isSmall) {
+            numericPart = formatNum ? formatNum(n) : n.toString();
+        } else {
+            var parts = n.toFixed(3).split('.');
+            var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            numericPart = intPart + '.' + parts[1];
+        }
+
+        switch (formatType) {
+            case 'Number': return numericPart;
+            case 'Percentage': return numericPart + '%';
+            case 'Custom': return numericPart + ' ' + (unit || '');
+            case 'Currency':
+            default:
+                return numericPart + ' د.أ';
+        }
+    }
+
     function escapeHtml(s) {
         if (!s) return '';
         return String(s).replace(/[&<>"']/g, function (ch) {
@@ -95,6 +132,7 @@
     window.isNum = isNum;
     window.formatNum = formatNum;
     window.formatMoney = formatMoney;
+    window.formatKpiValue = formatKpiValue;
     window.escapeHtml = escapeHtml;
     window.showToast = showToast;
     window.wdShowToast = showToast;

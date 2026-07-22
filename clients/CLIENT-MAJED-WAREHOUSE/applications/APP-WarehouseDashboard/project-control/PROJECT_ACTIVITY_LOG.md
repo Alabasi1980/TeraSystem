@@ -32,6 +32,22 @@
 - Decision / Result: ✅ Accepted after Auditor PASS (`QUAUD-TASK-CARD-KPI-REDESIGN-01-FIX-01-2026-07-20-001.md`). Build PASS reported by implementing agents.
 - Next Action: Majed visually reviews live dashboard card in browser; if appearance still needs tuning, create a focused visual-polish task only.
 
+## [2026-07-21 15:00] - ENHANCEMENT_COMPLETE
+
+- Related Task: Depth level buttons + HasDateColumn
+- Actor: TeraAgent + engineering-agent-dotnet + ui-designer
+- Summary: Replaced single "تعمق أكثر" button with 6 direct depth level buttons (3 أشهر / 6 أشهر / سنة / 3 سنوات / 5 سنوات / كل البيانات). Cards without DateColumn now hide depth options entirely. Added HasDateColumn to API response for frontend awareness. Backend raw data queries respect depth level with date filtering per CardInsightService.BuildRawDataMessage.
+- Decision / Result: Depth selection UX improved. Cards without historical data show only شرح البطاقة.
+- Next Action: Majed restarts app and tests on both date-based and non-date cards.
+
+## [2026-07-21 14:00] - ENHANCEMENT_COMPLETE
+
+- Related Task: Wire CardSummary + Improve Cache
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: Critical P0 gap closed. CardSummary data from Phase C builders now flows into AI user message via `BuildRichUserMessage`. Cache key improved: includes PromptVersion and card.UpdatedAt. Old behavior preserved as fallback when summary is null.
+- Decision / Result: AI assistant now receives actual card data (values, trends, categories, samples) instead of just metadata. Cache key more granular.
+- Next Action: Majed tests by refreshing dashboard and clicking analysis on a card with real numeric data.
+
 ## [2026-07-21 12:30] - PHASE_C_COMPLETE
 
 - Related Task: TASK-AI-C01, C02, C03, C04, C05, C-FIX01
@@ -1369,3 +1385,32 @@
 - Summary: إصلاح مشكلة طلب GrandTotalSource (وحقول KPI متقدمة أخرى) في وضع KPI Simple mode. السبب: (1) `syncKpiHiddenFields()` في card-builder.js كان ينسخ قيم فارغة من DOM elements المخفية إلى hidden inputs بدلاً من fallback values، (2) `ValidateConditionalPostFields()` في Builder.cshtml.cs لم يكن لديه conditional validation لـ KPI modes.
 - Decision / Result: ✅ ACCEPTED — Build: 0 errors, 0 warnings. تم تطبيق نمط `(el && el.value) \|\| fallback` على 10 حقول في JS، وإضافة ModelState.Remove للحقول غير المنطبقة في simple mode، وconditional validation لـ withChange/composite modes.
 - Next Action: Majed يختبر إنشاء KPI Simple card على localhost:5000/admin-secure-panel/Cards/Builder
+
+## [2026-07-22 00:30] - ENHANCEMENT — ValueFormatType: Backend + Builder Wizard
+
+- Related Task: TASK-BUILDER-BEH-002
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: إضافة `ValueFormatType` (Currency/Number/Percentage/Custom) و `ValueUnit` للتحكم بتنسيق عرض القيمة في بطاقات KPI. التغييرات: Model (DashboardCard + CardDataResult + CardEditorInput), Builder.cshtml.cs (save/load + DTO), Builder.cshtml (Step 4 UI — Select + Custom unit field + toggle), card-builder.js (state sync + hidden inputs), DashboardService.cs (تمرير format إلى CardDataResult)
+- Decision / Result: ✅ ACCEPTED — Build: 0 errors, 7 warnings (MSB3026 فقط). **SQL migration pending** (ALTER TABLE لـ DashboardCards)
+- Next Action: TASK-BUILDER-UI-003 جاهز للتفويض — تحديث dashboard-utils.js + Index.cshtml
+
+## [2026-07-22 01:00] - ENHANCEMENT — ValueFormatType: Dashboard Display
+
+- Related Task: TASK-BUILDER-UI-003
+- Actor: TeraAgent + engineering-agent-dotnet
+- Summary: إضافة دالة `formatKpiValue()` في dashboard-utils.js تدعم 4 تنسيقات (Currency → د.أ, Number → بدون لاحقة, Percentage → %, Custom → نص مخصص) مع Size S (مختصر K/M/B) و Size M/L (كامل). تحديث 6 مواقع في Index.cshtml: Hero Value, animateCountUp, Sparkline tooltip, Category Breakdown, Grand Total — جميعها تستخدم `card.valueFormatType || 'Currency'` و `card.valueUnit || ''`
+- Decision / Result: ✅ ACCEPTED — Build: 0 errors, 0 warnings. كل الـ 8 AC محققة.
+- Next Action: Majed ينفذ SQL migration + يختبر كل أنواع ValueFormatType على localhost:5000
+
+## [2026-07-21 14:00] - TASK_ACCEPTED — إصلاح QueryTester (SELECT Builder + JOIN Builder)
+
+- Related Task: TASK-QT-FIX-001
+- Actor: TeraAgent → engineering-agent-dotnet
+- Summary: إصلاح مشكلتين في صفحة QueryTester:
+  - **المشكلة 1:** SELECT Builder لا يقرأ الأعمدة. السبب: `querySelector('#builderColumns .qt-sortable-list')` يبحث عن عنصر وليد بينما الحاوية نفسها هي `qt-sortable-list`. تم إصلاح 4 دوال: `generateSelect()`، `selectAllBuilderColumns()`، `deselectAllBuilderColumns()`، `addColumnToBuilder()`.
+  - **المشكلة 2:** JOIN Builder لا تظهر قوائم الأعمدة. السبب: `onJoinTableChange(this)` حيث `this` = window في callback عادي. تم إصلاح تمرير `table1Wrap`/`table2Wrap` بدلاً من `this`.
+- Decision / Result: ✅ ACCEPTED — Build: 0 errors, 0 warnings. ملف واحد معدّل: `Pages/admin-secure-panel/QueryTester/Index.cshtml`. Auditor: NOT_REQUIRED.
+- Next Action: Majed يقوم بـ Hard refresh لصفحة QueryTester ويتحقق من عمل:
+  1. SELECT Builder — اختيار جدول + أعمدة → إنشاء SELECT
+  2. زرا "✔ الكل" و "إلغاء الكل"
+  3. JOIN Builder — اختيار جدولين → ظهور قوائم الأعمدة

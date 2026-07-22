@@ -312,6 +312,30 @@
                         </div>
                     </div>
 
+                    <!-- Value Format Settings (TASK-BUILDER-BEH-002) -->
+                    <div class="wb-visual-section">
+                        <h4 class="wb-visual-section__title">تنسيق القيمة</h4>
+                        <p class="wb-step-panel__hint">اختر كيفية عرض القيمة الرئيسية للبطاقة.</p>
+                        <div class="wd-form__grid">
+                            <div class="wd-field wb-value-format-field">
+                                <label class="wd-field__label" for="wb-value-format-type">نوع التنسيق</label>
+                                <select id="wb-value-format-type" class="wd-select" name="valueFormatType">
+                                    <option value="Currency">عملة (د.أ)</option>
+                                    <option value="Number">رقم</option>
+                                    <option value="Percentage">نسبة مئوية</option>
+                                    <option value="Custom">نص مخصص</option>
+                                </select>
+                                <span class="wd-field__hint">يؤثر على القيمة الرئيسية، الإجماليات، وقيم التفصيل</span>
+                            </div>
+                            <div class="wd-field wb-value-unit-field" id="wb-value-unit-field" style="display:none;">
+                                <label class="wd-field__label" for="wb-value-unit">الوحدة (نص مخصص)</label>
+                                <input type="text" id="wb-value-unit" class="wd-input" name="valueUnit" 
+                                       placeholder="مثال: وحدة، كجم، قطعة، م²..." maxlength="50">
+                                <span class="wd-field__hint">سيظهر بعد القيمة: مثلاً "1,250 وحدة"</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Date Filter Settings (shown only for withChange and composite) -->
                     <div class="wb-visual-section wb-kpi-section wb-kpi-date-section" id="wb-kpi-date-section" style="display:none;">
                         <h4 class="wb-visual-section__title">إعدادات الفلتر الزمني</h4>
@@ -454,6 +478,10 @@
                 <input type="hidden" name="fixedEndDate" id="wb-h-fixedEndDate" value="@Model.FixedEndDate">
                 <input type="hidden" name="relativeDays" id="wb-h-relativeDays" value="@Model.RelativeDays">
                 <input type="hidden" name="aggregationType" id="wb-h-aggregationType" value="@Model.AggregationType">
+
+                <!-- Value Format Type (TASK-BUILDER-BEH-002) -->
+                <input type="hidden" name="valueFormatType" id="wb-h-valueFormatType" value="@Model.ValueFormatType">
+                <input type="hidden" name="valueUnit" id="wb-h-valueUnit" value="@Model.ValueUnit">
 
                 <!-- Builder Original Source Type (TASK-COD-028) -->
                 <input type="hidden" name="originalSourceType" id="wb-h-originalSourceType" value="@Model.OriginalSourceType">
@@ -609,7 +637,9 @@
                     fixedEndDate: @Html.Raw(Json.Serialize(Model.FixedEndDate)),
                     relativeDays: @Html.Raw(Json.Serialize(Model.RelativeDays)),
                     originalSourceType: @Html.Raw(Json.Serialize(Model.OriginalSourceType)),
-                    originalSourceId: @Html.Raw(Json.Serialize(Model.OriginalSourceId))
+                    originalSourceId: @Html.Raw(Json.Serialize(Model.OriginalSourceId)),
+                    valueFormatType: @Html.Raw(Json.Serialize(Model.ValueFormatType)),
+                    valueUnit: @Html.Raw(Json.Serialize(Model.ValueUnit))
                 }
             });
 
@@ -637,6 +667,17 @@
                 aggSelect.addEventListener('change', function() {
                     aggHidden.value = this.value;
                 });
+            }
+
+            // Value format type toggle (TASK-BUILDER-BEH-002)
+            var vftSelect = document.getElementById('wb-value-format-type');
+            var vuField = document.getElementById('wb-value-unit-field');
+            if (vftSelect && vuField) {
+                function toggleValueUnit() {
+                    vuField.style.display = vftSelect.value === 'Custom' ? '' : 'none';
+                }
+                vftSelect.addEventListener('change', toggleValueUnit);
+                toggleValueUnit();
             }
 
             // Initial state

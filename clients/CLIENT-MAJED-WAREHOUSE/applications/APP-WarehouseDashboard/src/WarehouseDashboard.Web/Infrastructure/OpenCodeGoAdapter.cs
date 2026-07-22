@@ -9,16 +9,17 @@ namespace WarehouseDashboard.Web.Infrastructure;
 public class OpenCodeGoAdapter : IAIProvider
 {
     private readonly AIAssistantOptions _options;
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClient _httpClient;
     private readonly ILogger<OpenCodeGoAdapter> _logger;
 
     public OpenCodeGoAdapter(
         IOptions<AIAssistantOptions> options,
-        IHttpClientFactory httpClientFactory,
+        HttpClient httpClient,
         ILogger<OpenCodeGoAdapter> logger)
     {
         _options = options.Value;
-        _httpClientFactory = httpClientFactory;
+        _httpClient = httpClient;
+        _httpClient.Timeout = TimeSpan.FromSeconds(_options.TimeoutSeconds);
         _logger = logger;
     }
 
@@ -43,14 +44,12 @@ public class OpenCodeGoAdapter : IAIProvider
                     new { role = "system", content = systemPrompt },
                     new { role = "user", content = request.UserMessage }
                 },
-                max_tokens = request.MaxOutputTokens > 0 ? request.MaxOutputTokens : _options.MaxOutputTokens
+                max_tokens = request.MaxOutputTokens > 0 ? request.MaxOutputTokens : _options.MaxOutputTokens,
+                thinking = new { type = "disabled" }
             };
 
             var jsonPayload = JsonSerializer.Serialize(payload);
             var httpContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.Timeout = TimeSpan.FromSeconds(_options.TimeoutSeconds);
 
             using var httpRequest = new HttpRequestMessage(HttpMethod.Post, _options.BaseUrl)
             {
@@ -58,7 +57,7 @@ public class OpenCodeGoAdapter : IAIProvider
             };
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.ApiKey);
 
-            using var httpResponse = await httpClient.SendAsync(httpRequest, ct);
+            using var httpResponse = await _httpClient.SendAsync(httpRequest, ct);
             stopwatch.Stop();
 
             var responseBody = await httpResponse.Content.ReadAsStringAsync();
@@ -81,11 +80,51 @@ public class OpenCodeGoAdapter : IAIProvider
             using var doc = JsonDocument.Parse(responseBody);
             var root = doc.RootElement;
 
-            var content = root
-                .GetProperty("choices")[0]
-                .GetProperty("message")
-                .GetProperty("content")
-                .GetString() ?? string.Empty;
+            // Get the message object from the first choice
+            JsonElement message;
+            string? content = null;
+            try
+            {
+                message = root.GetProperty("choices")[0].GetProperty("message");
+                // Try content first, then refusal
+                if (message.TryGetProperty("content", out var contentProp) && contentProp.ValueKind == JsonValueKind.String)
+                    content = contentProp.GetString();
+
+                // If content is null/empty, check for refusal
+                if (string.IsNullOrEmpty(content) && message.TryGetProperty("refusal", out var refusalProp))
+                {
+                    _logger.LogWarning("AI provider refused: {Refusal}", refusalProp.GetString());
+                    return new AIAssistantResponse
+                    {
+                        Success = false,
+                        ErrorMessage = "تعذر تحليل البيانات: رفضت الخدمة الطلب.",
+                        ResponseTimeMs = stopwatch.ElapsedMilliseconds
+                    };
+                }
+            }
+            catch (Exception parseEx)
+            {
+                _logger.LogError(parseEx, "Failed to parse AI response body: {Body}", responseBody);
+                return new AIAssistantResponse
+                {
+                    Success = false,
+                    ErrorMessage = $"استجابة غير متوقعة: {responseBody[..Math.Min(responseBody.Length, 300)]}",
+                    ResponseTimeMs = stopwatch.ElapsedMilliseconds
+                };
+            }
+
+            // If content is empty, return error (diagnostic info removed now)
+            if (string.IsNullOrEmpty(content))
+            {
+                _logger.LogWarning("AI response has empty content. Finish reason: {Reason}",
+                    root.GetProperty("choices")[0].TryGetProperty("finish_reason", out var fr) ? fr.GetString() : "unknown");
+                return new AIAssistantResponse
+                {
+                    Success = false,
+                    ErrorMessage = "لم يتمكن المساعد من تحليل البطاقة حالياً.",
+                    ResponseTimeMs = stopwatch.ElapsedMilliseconds
+                };
+            }
 
             var tokensUsed = 0;
             if (root.TryGetProperty("usage", out var usage) &&
@@ -96,8 +135,9 @@ public class OpenCodeGoAdapter : IAIProvider
 
             return new AIAssistantResponse
             {
-                Content = content,
-                Success = true,
+                Content = content ?? string.Empty,
+                Success = string.IsNullOrEmpty(content) ? false : true,
+                ErrorMessage = string.IsNullOrEmpty(content) ? "الرد فارغ من الخدمة." : null,
                 TokensUsed = tokensUsed,
                 ResponseTimeMs = stopwatch.ElapsedMilliseconds
             };

@@ -24,6 +24,9 @@ obj/
 # OpenCode (client-specific only)
 clients/*/.opencode/
 
+# .NET app settings (contain connection strings and secrets)
+**/appsettings*.json
+
 # OS
 Thumbs.db
 .DS_Store

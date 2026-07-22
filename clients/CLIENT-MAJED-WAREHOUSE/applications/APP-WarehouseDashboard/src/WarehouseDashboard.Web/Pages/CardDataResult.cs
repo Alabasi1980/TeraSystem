@@ -69,4 +69,12 @@ public class CardDataResult
 
     /// <summary>Grand total source: "allTime", "yearToDate", or "both".</summary>
     public string? GrandTotalSource { get; set; }
+
+    // === Value Format Settings (TASK-BUILDER-BEH-002) ===
+
+    /// <summary>How the value should be formatted: "Currency", "Number", "Percentage", "Custom".</summary>
+    public string ValueFormatType { get; set; } = "Currency";
+
+    /// <summary>Custom unit text (e.g., "وحدة", "كجم", "قطعة") when ValueFormatType is "Custom".</summary>
+    public string ValueUnit { get; set; } = "";
 }

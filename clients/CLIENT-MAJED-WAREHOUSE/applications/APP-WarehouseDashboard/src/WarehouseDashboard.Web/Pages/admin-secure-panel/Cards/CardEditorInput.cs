@@ -78,6 +78,10 @@ public class CardEditorInput : IValidatableObject
     // Advanced KPI: Aggregation Type
     public string AggregationType { get; set; } = "Sum";
 
+    // Value Format Settings (TASK-BUILDER-BEH-002)
+    public string ValueFormatType { get; set; } = "Currency";
+    public string ValueUnit { get; set; } = "";
+
     public static readonly string[] AllowedAggregationTypes = { "Sum", "Count", "Avg", "Min", "Max", "None" };
 
     // === Builder Original Source Type ===

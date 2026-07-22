@@ -1,7 +1,10 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using WarehouseDashboard.Web.Data;
 using WarehouseDashboard.Web.Infrastructure;
+using WarehouseDashboard.Web.Models;
 using WarehouseDashboard.Web.Services;
 
 namespace WarehouseDashboard.Web.Pages.Api;
@@ -31,10 +34,24 @@ public class CardInsightAnalyzeModel : PageModel
         _logger = logger;
     }
 
-    public async Task<IActionResult> OnPostAsync(
-        [FromBody] AnalyzeRequest request,
-        CancellationToken cancellationToken)
+    public async Task<IActionResult> OnPostAsync()
     {
+        // Read JSON body manually — [FromBody] is unreliable in Razor Pages handler methods.
+        AnalyzeRequest? request;
+        using (var reader = new StreamReader(Request.Body))
+        {
+            var body = await reader.ReadToEndAsync();
+            try
+            {
+                var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                request = JsonSerializer.Deserialize<AnalyzeRequest>(body, jsonOptions);
+            }
+            catch
+            {
+                request = null;
+            }
+        }
+
         if (request is null)
         {
             return new JsonResult(new CardInsightResponse
@@ -45,7 +62,7 @@ public class CardInsightAnalyzeModel : PageModel
         }
 
         // 1. Load card
-        var card = await _db.DashboardCards.FindAsync(new object[] { request.CardId }, cancellationToken);
+        var card = await _db.DashboardCards.FindAsync(new object[] { request.CardId });
         if (card is null)
         {
             return new JsonResult(new CardInsightResponse
@@ -64,12 +81,24 @@ public class CardInsightAnalyzeModel : PageModel
             });
         }
 
-        // 2. Build summary for depth metadata
+        // 2b. Load drill levels for side panel display
+        var drillLevels = await _db.Set<CardDrillDownLevel>()
+            .Where(d => d.ParentCardId == card.Id)
+            .OrderBy(d => d.Level)
+            .Select(d => new DrillLevelInfo
+            {
+                Level = d.Level,
+                DisplayName = d.DisplayName,
+                TargetChartType = d.TargetChartType
+            })
+            .ToListAsync();
+
+        // 3. Build summary for depth metadata
         CardSummary? summary = null;
         try
         {
             var builder = _builderFactory.GetBuilder(card.ChartType);
-            summary = await builder.BuildSummaryAsync(card, request.DepthLevel, cancellationToken);
+            summary = await builder.BuildSummaryAsync(card, request.DepthLevel);
         }
         catch (Exception ex)
         {
@@ -84,7 +113,7 @@ public class CardInsightAnalyzeModel : PageModel
         bool hasDeeperData = summary?.HasDeeperData ?? false;
         string depthLabel = summary?.DepthLabel ?? GetDepthLabel(request.DepthLevel);
 
-        // 3. Call AI with caching
+        // 4. Call AI with caching (pass summary for rich data analysis)
         var result = await _cardInsightService.AnalyzeCardWithCacheAsync(
             cardId: card.Id,
             mode: request.Mode,
@@ -92,7 +121,10 @@ public class CardInsightAnalyzeModel : PageModel
             dataScopeLabel: depthLabel,
             isFullDataReached: isFullDataReached,
             hasDeeperData: hasDeeperData,
-            ct: cancellationToken);
+            summary: summary);
+
+        result.AvailableDrillLevels = drillLevels;
+        result.HasDateColumn = !string.IsNullOrEmpty(card.DateColumn);
 
         return new JsonResult(result);
     }
@@ -112,10 +144,4 @@ public class CardInsightAnalyzeModel : PageModel
         _ => "النطاق الافتراضي"
     };
 
-    public class AnalyzeRequest
-    {
-        public int CardId { get; set; }
-        public string Mode { get; set; } = "explain";
-        public int DepthLevel { get; set; } = 1;
-    }
 }

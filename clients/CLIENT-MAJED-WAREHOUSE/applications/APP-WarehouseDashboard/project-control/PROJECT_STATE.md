@@ -158,12 +158,17 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 |---|---|---|---|
 | TASK-UI-SYNC-REDESIGN-001 | إعادة تصميم كاملة لصفحة /admin-secure-panel/Sync (2,036 سطر، 9/9 Vitality) | ✅ Accepted | UI Designer |
 
+### QueryTester Fix ✅
+| TASK-ID | Description | Status | Agent |
+|---|---|---|---|
+| TASK-QT-FIX-001 | إصلاح SELECT Builder + JOIN Builder (querySelector + this context) | ✅ Accepted (build PASS) | engineering-agent-dotnet |
+
 ### Sync Page UX Fixes ✅
 | TASK-ID | Description | Status | Agent |
 |---|---|---|---|
 | TASK-UI-SYNC-FIXES-001 | إصلاح 6 مشاكل UX: Query truncation + Modal، Sticky progress bar، Per-mapping sync info، Toggle enable/disable، Filter dropdowns، Disable auto-refresh | ✅ Accepted | UI Designer |
 
-**ALL Tasks + 14 Enhancements + 1 Professional Redesign + 1 UX Fixes = COMPLETE ✅**
+**ALL Tasks + 14 Enhancements + 1 Professional Redesign + 1 UX Fixes + 1 QT Fix = COMPLETE ✅**
 
 **R1 Resolved:** Oracle 19c reachable at 10.10.1.1, ODP.NET works, SYSDATE query successful (2026-07-13)
 

@@ -406,6 +406,169 @@ public class QueryTesterModel : PageModel
         }
     }
 
+    /// <summary>Schema browser: lists views for the given source.</summary>
+    public async Task<IActionResult> OnGetViewsAsync([FromQuery] string source)
+    {
+        var resolved = string.IsNullOrWhiteSpace(source) ? "SqlServer" : source;
+
+        if (resolved == "SqlServer")
+        {
+            var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة البيانات غير متوفرة حالياً." });
+
+            try
+            {
+                await using var connection = new SqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                const string sql = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS ORDER BY TABLE_SCHEMA, TABLE_NAME";
+                await using var command = new SqlCommand(sql, connection);
+                command.CommandTimeout = 15;
+
+                await using var reader = await command.ExecuteReaderAsync();
+                var views = new List<object>();
+                while (await reader.ReadAsync())
+                {
+                    views.Add(new { schema = reader.GetString(0), viewName = reader.GetString(1) });
+                }
+
+                return Json(new { success = true, views });
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Schema view list failed (SQL Server).");
+                return Json(new { success = false, errorMessage = "تعذر تحميل قائمة الفيوز." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Schema view list failed.");
+                return Json(new { success = false, errorMessage = "حدث خطأ أثناء تحميل قائمة الفيوز." });
+            }
+        }
+        else if (resolved == "Oracle")
+        {
+            var connectionString = ConnectionStringHelper.ResolveOracle(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة بيانات Oracle غير متوفرة حالياً." });
+
+            try
+            {
+                await using var connection = new OracleConnection(connectionString);
+                await connection.OpenAsync();
+
+                const string sql = "SELECT OWNER, VIEW_NAME FROM ALL_VIEWS ORDER BY OWNER, VIEW_NAME";
+                await using var command = new OracleCommand(sql, connection);
+                command.CommandTimeout = 15;
+
+                await using var reader = await command.ExecuteReaderAsync();
+                var views = new List<object>();
+                while (await reader.ReadAsync())
+                {
+                    views.Add(new { schema = reader.GetString(0), viewName = reader.GetString(1) });
+                }
+
+                return Json(new { success = true, views });
+            }
+            catch (OracleException ex)
+            {
+                _logger.LogError(ex, "Schema view list failed (Oracle).");
+                return Json(new { success = false, errorMessage = "تعذر تحميل قائمة الفيوز." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Schema view list failed.");
+                return Json(new { success = false, errorMessage = "حدث خطأ أثناء تحميل قائمة الفيوز." });
+            }
+        }
+        else
+        {
+            return Json(new { success = false, errorMessage = $"مصدر البيانات غير معروف: '{resolved}'." });
+        }
+    }
+
+    /// <summary>Creates a VIEW in the database from the current query.</summary>
+    public async Task<IActionResult> OnPostCreateViewAsync([FromBody] CreateViewRequest request)
+    {
+        if (request is null || string.IsNullOrWhiteSpace(request.ViewName))
+            return Json(new { success = false, errorMessage = "الرجاء إدخال اسم الـ View." });
+        if (string.IsNullOrWhiteSpace(request.Sql))
+            return Json(new { success = false, errorMessage = "الرجاء إدخال استعلام SQL." });
+
+        // Validate view name (alphanumeric + underscore only, must start with letter or underscore)
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.ViewName, @"^[a-zA-Z_][a-zA-Z0-9_]*$"))
+            return Json(new { success = false, errorMessage = "اسم الـ View غير صالح. استخدم أحرف إنجليزية وأرقام و _ فقط، وابدأ بحرف أو _." });
+
+        var source = string.IsNullOrWhiteSpace(request.Source) ? "SqlServer" : request.Source;
+
+        if (source == "SqlServer")
+        {
+            var connectionString = ConnectionStringHelper.ResolveSql(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة البيانات غير متوفرة حالياً." });
+
+            try
+            {
+                await using var connection = new SqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                var createSql = $"CREATE VIEW [{request.ViewName}] AS{Environment.NewLine}{request.Sql}";
+                _logger.LogInformation("Creating view: {ViewName}", request.ViewName);
+
+                await using var command = new SqlCommand(createSql, connection);
+                command.CommandTimeout = 30;
+                await command.ExecuteNonQueryAsync();
+
+                return Json(new { success = true, message = $"تم إنشاء VIEW [{request.ViewName}] بنجاح." });
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Create view failed (SQL Server).");
+                return Json(new { success = false, errorMessage = $"خطأ SQL: {ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Create view failed.");
+                return Json(new { success = false, errorMessage = $"حدث خطأ: {ex.Message}" });
+            }
+        }
+        else if (source == "Oracle")
+        {
+            var connectionString = ConnectionStringHelper.ResolveOracle(_configuration);
+            if (string.IsNullOrEmpty(connectionString))
+                return Json(new { success = false, errorMessage = "إعدادات الاتصال بقاعدة بيانات Oracle غير متوفرة حالياً." });
+
+            try
+            {
+                await using var connection = new OracleConnection(connectionString);
+                await connection.OpenAsync();
+
+                var createSql = $"CREATE VIEW {request.ViewName} AS{Environment.NewLine}{request.Sql}";
+                _logger.LogInformation("Creating Oracle view: {ViewName}", request.ViewName);
+
+                await using var command = new OracleCommand(createSql, connection);
+                command.CommandTimeout = 30;
+                await command.ExecuteNonQueryAsync();
+
+                return Json(new { success = true, message = $"تم إنشاء VIEW {request.ViewName} بنجاح." });
+            }
+            catch (OracleException ex)
+            {
+                _logger.LogError(ex, "Create view failed (Oracle).");
+                return Json(new { success = false, errorMessage = $"خطأ Oracle ({ex.Number}): {ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Create view failed.");
+                return Json(new { success = false, errorMessage = $"حدث خطأ: {ex.Message}" });
+            }
+        }
+        else
+        {
+            return Json(new { success = false, errorMessage = $"مصدر البيانات غير معروف: '{source}'." });
+        }
+    }
+
     private static object? NormalizeValue(object value)
     {
         if (value is DBNull or null)
@@ -458,6 +621,14 @@ public class QueryTesterModel : PageModel
 /// <summary>Request body for the Run handler.</summary>
 public class QueryRunRequest
 {
+    public string? Sql { get; set; }
+    public string Source { get; set; } = "SqlServer";
+}
+
+/// <summary>Request body for the CreateView handler.</summary>
+public class CreateViewRequest
+{
+    public string? ViewName { get; set; }
     public string? Sql { get; set; }
     public string Source { get; set; } = "SqlServer";
 }

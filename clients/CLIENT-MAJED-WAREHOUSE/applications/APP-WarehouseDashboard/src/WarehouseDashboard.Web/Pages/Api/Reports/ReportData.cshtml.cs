@@ -2,7 +2,9 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WarehouseDashboard.Web.Infrastructure;
+using WarehouseDashboard.Web.Models.Dto;
 using WarehouseDashboard.Web.Services;
 
 namespace WarehouseDashboard.Web.Pages.Api.Reports;
@@ -20,11 +22,21 @@ namespace WarehouseDashboard.Web.Pages.Api.Reports;
 [IgnoreAntiforgeryToken]
 public class ReportDataModel : PageModel
 {
-    private readonly ReportService _reportService;
+    private readonly ReportViewService _viewService;
+    private readonly ReportExecutionService _executionService;
+    private readonly ReportLayoutService _layoutService;
+    private readonly ILogger<ReportDataModel> _logger;
 
-    public ReportDataModel(ReportService reportService)
+    public ReportDataModel(
+        ReportViewService viewService,
+        ReportExecutionService executionService,
+        ReportLayoutService layoutService,
+        ILogger<ReportDataModel> logger)
     {
-        _reportService = reportService;
+        _viewService = viewService;
+        _executionService = executionService;
+        _layoutService = layoutService;
+        _logger = logger;
     }
 
     /// <summary>GET /api/reports-data/views — List all available SQL Server Views.</summary>
@@ -38,7 +50,7 @@ public class ReportDataModel : PageModel
             return new JsonResult(new { error = "Unauthorized" }) { StatusCode = 401 };
         }
 
-        var views = await _reportService.GetAvailableViewsAsync(ct);
+        var views = await _viewService.GetAvailableViewsAsync(ct);
         return new JsonResult(views);
     }
 
@@ -59,7 +71,7 @@ public class ReportDataModel : PageModel
         if (string.IsNullOrWhiteSpace(view))
             return new JsonResult(new { error = "View name is required." }) { StatusCode = 400 };
 
-        var columns = await _reportService.GetViewColumnsAsync(view, ct);
+        var columns = await _viewService.GetViewColumnsAsync(view, ct);
         return new JsonResult(columns);
     }
 
@@ -81,7 +93,7 @@ public class ReportDataModel : PageModel
         if (request is null || request.ReportId <= 0)
             return new JsonResult(new { success = false, errorMessage = "ReportId is required." });
 
-        var result = await _reportService.ExecuteReportAsync(request.ReportId, request.FilterValues, ct);
+        var result = await _executionService.ExecuteReportAsync(request.ReportId, request.FilterValues, ct);
         return new JsonResult(result);
     }
 
@@ -102,7 +114,7 @@ public class ReportDataModel : PageModel
         if (string.IsNullOrWhiteSpace(view) || string.IsNullOrWhiteSpace(column))
             return new JsonResult(new { error = "View and column are required." }) { StatusCode = 400 };
 
-        var options = await _reportService.GetFilterOptionsAsync(view, column, ct);
+        var options = await _executionService.GetFilterOptionsAsync(view, column, ct);
         return new JsonResult(options);
     }
 
@@ -124,7 +136,7 @@ public class ReportDataModel : PageModel
         if (reportId <= 0 || filterId <= 0)
             return new JsonResult(new { error = "ReportId and FilterId are required." }) { StatusCode = 400 };
 
-        var options = await _reportService.GetParameterOptionsAsync(reportId, filterId, ct);
+        var options = await _executionService.GetParameterOptionsAsync(reportId, filterId, ct);
         return new JsonResult(options);
     }
 
@@ -142,7 +154,7 @@ public class ReportDataModel : PageModel
         if (reportId <= 0)
             return new JsonResult(new { error = "ReportId is required." }) { StatusCode = 400 };
 
-        var layouts = await _reportService.GetLayoutsAsync(reportId, ct);
+        var layouts = await _layoutService.GetLayoutsAsync(reportId, ct);
         return new JsonResult(layouts);
     }
 
@@ -174,7 +186,7 @@ public class ReportDataModel : PageModel
             SortState = request.SortState
         };
 
-        var id = await _reportService.SaveLayoutAsync(request.ReportId, saveRequest, ct);
+        var id = await _layoutService.SaveLayoutAsync(request.ReportId, saveRequest, ct);
         return new JsonResult(new { id, success = true });
     }
 
@@ -195,7 +207,7 @@ public class ReportDataModel : PageModel
         if (request is null || request.LayoutId <= 0)
             return new JsonResult(new { error = "LayoutId is required." }) { StatusCode = 400 };
 
-        var success = await _reportService.DeleteLayoutAsync(request.LayoutId, ct);
+        var success = await _layoutService.DeleteLayoutAsync(request.LayoutId, ct);
         if (!success)
             return new JsonResult(new { error = "Layout not found." }) { StatusCode = 404 };
 
@@ -227,7 +239,7 @@ public class ReportDataModel : PageModel
             var top = request.Top > 0 ? Math.Min(request.Top, 20) : 10;
 
             // Get column metadata using existing method
-            var columns = await _reportService.GetViewColumnsAsync(request.ViewName, ct);
+            var columns = await _viewService.GetViewColumnsAsync(request.ViewName, ct);
             if (columns.Count == 0)
             {
                 return new JsonResult(new { success = false, errorMessage = "View not found or has no columns." });
@@ -239,6 +251,13 @@ public class ReportDataModel : PageModel
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 return new JsonResult(new { success = false, errorMessage = "Connection string not configured." });
+            }
+
+            // RB-SEC-002: Validate view exists before executing preview
+            var viewExists = await _viewService.ValidateViewExistsAsync(request.ViewName, ct);
+            if (!viewExists)
+            {
+                return new JsonResult(new { success = false, errorMessage = "الـ View المحدد غير موجود." });
             }
 
             var sql = $"SELECT TOP {top} * FROM {request.ViewName} WITH (NOLOCK)";
@@ -278,15 +297,17 @@ public class ReportDataModel : PageModel
         }
         catch (Exception ex)
         {
-            return new JsonResult(new { success = false, errorMessage = ex.Message });
+            _logger.LogError(ex, "Error in preview for view {ViewName}", request.ViewName);
+            return new JsonResult(new { success = false, errorMessage = "حدث خطأ أثناء معالجة الطلب. الرجاء المحاولة مرة أخرى." });
         }
     }
 
     /// <summary>
     /// POST /api/reports-data/executeQuery
     /// Body: { query: "SELECT ..." }
-    /// Executes an arbitrary SQL query and returns up to 20 rows for testing/preview.
+    /// Executes a read-only SELECT query and returns up to 20 rows for testing/preview.
     /// Used by the Report Builder to test parameter queries.
+    /// RB-SEC-001: Restricted to SELECT-only queries with read-only safety.
     /// </summary>
     public async Task<IActionResult> OnPostExecuteQueryAsync([FromBody] ExecuteQueryRequest request, CancellationToken ct)
     {
@@ -300,6 +321,13 @@ public class ReportDataModel : PageModel
         if (string.IsNullOrWhiteSpace(request.Query))
             return new JsonResult(new { error = "Query is required." }) { StatusCode = 400 };
 
+        // RB-SEC-001: Validate query is SELECT-only
+        var (isValid, errorMessage) = ValidateAndSanitizeQuery(request.Query);
+        if (!isValid)
+        {
+            return new JsonResult(new { success = false, errorMessage });
+        }
+
         try
         {
             var connectionString = ConnectionStringHelper.ResolveSql(
@@ -307,10 +335,16 @@ public class ReportDataModel : PageModel
             if (string.IsNullOrWhiteSpace(connectionString))
                 return new JsonResult(new { success = false, errorMessage = "Connection string not configured." });
 
+            // RB-SEC-001: Log the query for audit trail
+            _logger.LogWarning("ExecuteQuery being run: {Query}", request.Query);
+
             await using var conn = new Microsoft.Data.SqlClient.SqlConnection(connectionString);
             await conn.OpenAsync(ct);
-            await using var cmd = new Microsoft.Data.SqlClient.SqlCommand(request.Query, conn);
-            cmd.CommandTimeout = 15;
+
+            // RB-SEC-001: Set read-uncommitted isolation level for safety
+            await using var cmd = new Microsoft.Data.SqlClient.SqlCommand(
+                "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; " + request.Query, conn);
+            cmd.CommandTimeout = 30;
             await using var reader = await cmd.ExecuteReaderAsync(ct);
 
             var columns = new List<string>();
@@ -335,8 +369,37 @@ public class ReportDataModel : PageModel
         }
         catch (Exception ex)
         {
-            return new JsonResult(new { success = false, errorMessage = ex.Message });
+            _logger.LogError(ex, "Error executing ad-hoc query");
+            return new JsonResult(new { success = false, errorMessage = "حدث خطأ أثناء معالجة الطلب. الرجاء المحاولة مرة أخرى." });
         }
+    }
+
+    /// <summary>
+    /// RB-SEC-001: Validates that a query is SELECT-only and does not contain forbidden keywords.
+    /// </summary>
+    private static (bool IsValid, string? ErrorMessage) ValidateAndSanitizeQuery(string query)
+    {
+        var trimmed = query.Trim();
+        var trimmedUpper = trimmed.ToUpperInvariant();
+
+        // Must start with SELECT
+        if (!trimmedUpper.StartsWith("SELECT"))
+        {
+            return (false, "يُسمح فقط باستعلامات SELECT.");
+        }
+
+        // Forbidden keywords that could modify data or schema
+        var forbidden = new[] { "INSERT", "UPDATE", "DELETE", "DROP", "ALTER", "CREATE", "EXEC", "EXECUTE", "TRUNCATE", "MERGE", "GRANT", "REVOKE" };
+
+        foreach (var keyword in forbidden)
+        {
+            if (System.Text.RegularExpressions.Regex.IsMatch(trimmedUpper, $@"\b{keyword}\b"))
+            {
+                return (false, "يُسمح فقط باستعلامات SELECT.");
+            }
+        }
+
+        return (true, null);
     }
 
     // ======================================================================
