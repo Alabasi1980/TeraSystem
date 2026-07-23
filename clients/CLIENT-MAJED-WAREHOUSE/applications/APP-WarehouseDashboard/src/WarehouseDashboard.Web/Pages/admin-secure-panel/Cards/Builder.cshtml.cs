@@ -351,7 +351,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         public List<TemplateCategory> TemplateCategories { get; set; } = new()
         {
             new() { Id = "Template", Name = "قوالب جاهزة", Icon = "file-text", Description = "بطاقات معدة مسبقاً لسيناريوهات المخزن الشائعة" },
-            new() { Id = "SavedQuery", Name = "استعلامات محفوظة", Icon = "database", Description = "استعلامات SQL محفوظة مسبقاً" },
+            new() { Id = "SqlView", Name = "عروض SQL", Icon = "layout", Description = "عروض SQL Server (Views)" },
             new() { Id = "SqlTable", Name = "جداول SQL Server", Icon = "server", Description = "جداول وعروض قاعدة البيانات المتاحة" },
             new() { Id = "CustomSQL", Name = "SQL مخصص (متقدم)", Icon = "code", Description = "كتابة استعلام SQL يدوي", IsAdvanced = true }
         };
@@ -360,9 +360,9 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
         {
             NormalizeGetAliases();
             await LoadOracleTablesAsync();
-            await LoadDashboardsAsync();
             await LoadCloneDataAsync();
-            await LoadEditDataAsync();
+            await LoadEditDataAsync();          // Must be BEFORE LoadDashboardsAsync so DashboardId is set
+            await LoadDashboardsAsync();        // Uses DashboardId for Selected
             await LoadTemplateDataAsync();
         }
 
@@ -556,16 +556,18 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
 
         private async Task LoadDashboardsAsync()
         {
-            AvailableDashboards = await _db.Dashboards
+            var dashboards = await _db.Dashboards
                 .Where(d => d.IsActive)
                 .OrderBy(d => d.SortOrder)
                 .ThenBy(d => d.Name)
-                .Select(d => new SelectListItem
-                {
-                    Value = d.Id.ToString(),
-                    Text = string.IsNullOrEmpty(d.Icon) ? d.Name : $"{d.Icon} {d.Name}"
-                })
                 .ToListAsync();
+
+            AvailableDashboards = dashboards.Select(d => new SelectListItem
+            {
+                Value = d.Id.ToString(),
+                Text = string.IsNullOrEmpty(d.Icon) ? d.Name : $"{d.Icon} {d.Name}",
+                Selected = DashboardId.HasValue && d.Id == DashboardId.Value
+            }).ToList();
         }
 
         private List<SelectListItem> GetFallbackTables()
@@ -696,7 +698,7 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                         SourceId = string.Empty;
                         CustomSql = card.SqlQuery;
                     }
-                    else // Template / SavedQuery
+                    else // Template / SqlView
                     {
                         SourceId = card.OriginalSourceId;
                         CustomSql = card.SqlQuery;
@@ -848,9 +850,20 @@ namespace WarehouseDashboard.Web.Pages.admin_secure_panel.Cards
                     ModelState.Remove(nameof(ShowChange));
                     ModelState.Remove(nameof(ShowSparkline));
                     ModelState.Remove(nameof(ShowGrandTotal));
-                    ModelState.Remove(nameof(ValueColumn));
+                            ModelState.Remove(nameof(ValueColumn));
                     ModelState.Remove(nameof(DateColumn));
                 }
+
+                // ValueFormatType conditional: ValueUnit only required when format is "Custom"
+                if (!string.Equals(ValueFormatType, "Custom", StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.Remove(nameof(ValueUnit));
+                }
+                else if (string.IsNullOrWhiteSpace(ValueUnit))
+                {
+                    ModelState.AddModelError(nameof(ValueUnit), "الوحدة (النص المخصص) مطلوبة عند اختيار نوع التنسيق 'نص مخصص'.");
+                }
+
                 // withChange: require ChangeSource and DateFilterMode
                 else if (string.Equals(KpiMode, "withChange", StringComparison.OrdinalIgnoreCase))
                 {

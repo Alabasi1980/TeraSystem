@@ -383,23 +383,74 @@ public class SyncController : ControllerBase
                 """;
 
             var results = new List<object>();
-            await using var reader = await cmd.ExecuteReaderAsync(ct);
-            while (await reader.ReadAsync(ct))
+
+            // Step 1: Read all mapping data first (reader must be closed before additional queries).
+            var rawMappings = new List<(int Id, string Name, string OracleSource, string SourceType,
+                string SqlTargetTable, bool IsActive, DateTime? LastSyncAt, int SyncRecordCount)>();
+
+            await using (var reader = await cmd.ExecuteReaderAsync(ct))
             {
+                while (await reader.ReadAsync(ct))
+                {
+                    rawMappings.Add((
+                        reader.GetInt32(reader.GetOrdinal("Id")),
+                        reader.IsDBNull(reader.GetOrdinal("Name"))
+                            ? string.Empty
+                            : reader.GetString(reader.GetOrdinal("Name")),
+                        reader.GetString(reader.GetOrdinal("OracleSource")),
+                        reader.GetString(reader.GetOrdinal("SourceType")),
+                        reader.GetString(reader.GetOrdinal("SqlTargetTable")),
+                        reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                        reader.IsDBNull(reader.GetOrdinal("LastSyncAt"))
+                            ? (DateTime?)null
+                            : reader.GetDateTime(reader.GetOrdinal("LastSyncAt")),
+                        reader.GetInt32(reader.GetOrdinal("SyncRecordCount"))
+                    ));
+                }
+            }
+
+            // Step 2: Query actual row count for each target table and build results.
+            foreach (var (id, name, oracleSource, sourceType, sqlTargetTable, isActive, lastSyncTime, lastRecordCount) in rawMappings)
+            {
+                int? storedRecordCount = null;
+                if (!string.IsNullOrWhiteSpace(sqlTargetTable))
+                {
+                    try
+                    {
+                        string countQuery;
+                        if (sqlTargetTable.Contains('.'))
+                        {
+                            var parts = sqlTargetTable.Split('.');
+                            countQuery = $"SELECT COUNT(1) FROM [{parts[0].Replace("]", "]]")}].[{parts[1].Replace("]", "]]")}]";
+                        }
+                        else
+                        {
+                            countQuery = $"SELECT COUNT(1) FROM [{sqlTargetTable.Replace("]", "]]")}]";
+                        }
+
+                        await using var countCmd = conn.CreateCommand();
+                        countCmd.CommandText = countQuery;
+                        var countVal = await countCmd.ExecuteScalarAsync(ct);
+                        if (countVal is not null && countVal != DBNull.Value)
+                            storedRecordCount = Convert.ToInt32(countVal);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to count rows for table {Table}.", sqlTargetTable);
+                    }
+                }
+
                 results.Add(new
                 {
-                    id = reader.GetInt32(reader.GetOrdinal("Id")),
-                    name = reader.IsDBNull(reader.GetOrdinal("Name"))
-                        ? string.Empty
-                        : reader.GetString(reader.GetOrdinal("Name")),
-                    oracleSource = reader.GetString(reader.GetOrdinal("OracleSource")),
-                    sourceType = reader.GetString(reader.GetOrdinal("SourceType")),
-                    sqlTargetTable = reader.GetString(reader.GetOrdinal("SqlTargetTable")),
-                    isActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                    lastSyncTime = reader.IsDBNull(reader.GetOrdinal("LastSyncAt"))
-                        ? (DateTime?)null
-                        : reader.GetDateTime(reader.GetOrdinal("LastSyncAt")),
-                    lastRecordCount = reader.GetInt32(reader.GetOrdinal("SyncRecordCount"))
+                    id,
+                    name,
+                    oracleSource,
+                    sourceType,
+                    sqlTargetTable,
+                    isActive,
+                    lastSyncTime,
+                    lastRecordCount,
+                    storedRecordCount
                 });
             }
 

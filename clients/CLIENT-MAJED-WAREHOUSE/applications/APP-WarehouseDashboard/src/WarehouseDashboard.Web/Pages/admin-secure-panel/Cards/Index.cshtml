@@ -523,6 +523,13 @@ else
     // Initial stats update on page load
     applyFilter();
 })();
+
+// Global delete confirmation function (accessible from inline onclick)
+function wdConfirmDelete(cardId) {
+    if (!confirm('هل أنت متأكد من حذف هذه البطاقة؟\nلا يمكن التراجع عن هذا الإجراء.')) return;
+    document.getElementById('wdDeleteId').value = cardId;
+    document.getElementById('wdDeleteForm').submit();
+}
 </script>
 }
 
@@ -535,3 +542,5 @@ else
         </div>
     }
 }
+
+

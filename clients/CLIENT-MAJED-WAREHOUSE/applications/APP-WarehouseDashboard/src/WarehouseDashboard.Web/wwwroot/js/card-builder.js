@@ -11,7 +11,7 @@
  *  Reads/owns the existing DOM in Builder.cshtml and wires the wizard:
  *   - Step navigation + validation
  *   - Type picker (Step 1)
- *   - Source panels: Template / SqlTable / CustomSQL / SavedQuery (Step 2)
+ *   - Source panels: Template / SqlTable / CustomSQL / SqlView (Step 2)
  *   - Template rendering + {TableName} substitution
  *   - Oracle tables fetch + dropdown
  *   - Live preview POST -> Chart render (chart AND table)
@@ -58,7 +58,7 @@
     this.opts = opts || {};
     this.opts.previewApiUrl = this.opts.previewApiUrl || '/api/dashboard/cardbuilder?handler=Preview';
     this.opts.tablesApiUrl = this.opts.tablesApiUrl || '/api/tablemappings/active';
-    this.opts.savedQueriesApiUrl = this.opts.savedQueriesApiUrl || '/api/savedqueries';
+    this.opts.sqlViewsApiUrl = this.opts.sqlViewsApiUrl || '/api/sqlviews';
     this.opts.editId = this.opts.editId || '';
     this.opts.initialData = this.opts.initialData || null;
     this.editMode = !!this.opts.editId;
@@ -96,16 +96,18 @@
       fixedEndDate: '',
       relativeDays: 30,
       valueFormatType: 'Currency',
-      valueUnit: ''
+      valueUnit: '',
+      dashboardId: ''
     };
 
     this.tables = [];
+    this.sqlViews = [];
+    this.selectedSqlView = null;
     this._previewChart = null;
     this._lastResult = null;
     this._lastChartType = null;
     this._previewTimer = null;
     this._lastRequest = null;
-    this._savedNoteShown = false;
 
     this.init();
   }
@@ -137,6 +139,7 @@
     this.cleanupDuplicateNames();
 
     this.loadTables();
+    this.loadSqlViews();
     this.applyInitialUi();
 
     // Best-effort clone enrichment (falls back to DOM values already applied).
@@ -181,6 +184,7 @@
     s.relativeDays = parseInt(id.relativeDays != null ? id.relativeDays : $('wb-h-relativeDays').value, 10) || 30;
     s.valueFormatType = id.valueFormatType || ($('wb-h-valueFormatType') ? $('wb-h-valueFormatType').value : 'Currency');
     s.valueUnit = id.valueUnit || ($('wb-h-valueUnit') ? $('wb-h-valueUnit').value : '');
+    s.dashboardId = id.dashboardId != null ? id.dashboardId : ($('wb-h-dashboardId') ? $('wb-h-dashboardId').value : '');
     s.previewSql = id.sqlQuery != null ? id.sqlQuery : ($('wb-h-sqlQuery').value || '');
 
     // Edit-mode safety: older/server-rendered cards may carry the SQL in sqlQuery
@@ -293,6 +297,12 @@
     if (fixedEnd && this.state.fixedEndDate) fixedEnd.value = this.state.fixedEndDate;
     if (relativeDays) relativeDays.value = String(this.state.relativeDays);
 
+    // Restore ValueFormatType and ValueUnit (edit mode fix)
+    var vftSelect = $('wb-value-format-type');
+    if (vftSelect && this.state.valueFormatType) vftSelect.value = this.state.valueFormatType;
+    var vuInput = $('wb-value-unit');
+    if (vuInput && this.state.valueUnit) vuInput.value = this.state.valueUnit;
+
     this.syncKpiHiddenFields();
   };
 
@@ -385,7 +395,7 @@
     var msg = '';
     if (step === 2) {
       if (!this.hasSource()) {
-        if (this.state.sourceType === 'SavedQuery') msg = 'مصدر الاستعلامات المحفوظة غير متاح حالياً. اختر مصدراً آخر.';
+        if (this.state.sourceType === 'SqlView') msg = 'اختر عرضاً من قائمة عروض SQL.';
         else if (this.state.sourceType === 'Template') msg = 'اختر قالباً من القائمة لإكمال هذه الخطوة.';
         else if (this.state.sourceType === 'SqlTable') msg = 'اختر جدولاً أو عرضاً من القائمة.';
         else if (this.state.sourceType === 'CustomSQL') msg = 'أدخل استعلام SQL في الخانة المخصصة.';
@@ -556,9 +566,9 @@
       this.state.previewSql = this.state.selectedTable ? ('SELECT TOP 10 * FROM [' + this.state.selectedTable.sqlTargetTable + ']') : '';
     } else if (type === 'CustomSQL') {
       this.state.previewSql = this.state.customSql.trim();
-    } else if (type === 'SavedQuery') {
+    } else if (type === 'SqlView') {
       this.state.previewSql = '';
-      this.showSavedQueryNote();
+      this.loadSqlViews();
     }
     this.schedulePreview();
     this.updateSqlDisplay();
@@ -572,17 +582,72 @@
     });
   };
 
-  CardBuilderWizard.prototype.showSavedQueryNote = function () {
-    if (this._savedNoteShown) return;
-    var panel = $('wb-panel-savedquery');
-    if (!panel) return;
-    var note = document.createElement('p');
-    note.style.cssText = 'color:var(--c-warning);font-size:12px;margin-top:var(--sp-2);';
-    note.textContent = 'مصدر الاستعلامات المحفوظة غير متاح حالياً في هذه النسخة. اختر «قالب جاهز» أو «جدول Oracle» أو «SQL مخصص».';
-    panel.appendChild(note);
-    var hint = $('wb-saved-query-hint'); if (hint) hint.textContent = 'غير متاح حالياً';
-    var sq = $('wb-saved-query'); if (sq) sq.disabled = true;
-    this._savedNoteShown = true;
+  /* ----------------------- SQL VIEWS (Step 2) ----------------------- */
+  CardBuilderWizard.prototype.loadSqlViews = function () {
+    var self = this;
+    var hint = $('wb-sql-view-hint');
+    fetch(this.opts.sqlViewsApiUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (data) {
+        self.sqlViews = Array.isArray(data) ? data : [];
+        self.populateSqlViewSelect();
+      })
+      .catch(function () {
+        self.sqlViews = [];
+        self.populateSqlViewSelect();
+        if (hint) hint.textContent = 'تعذر تحميل عروض SQL';
+      });
+  };
+
+  CardBuilderWizard.prototype.populateSqlViewSelect = function () {
+    var sel = $('wb-sql-view');
+    if (!sel) return;
+    var self = this;
+    sel.innerHTML = '<option value="">اختر عرضاً من قاعدة البيانات...</option>';
+    this.sqlViews.forEach(function (v) {
+      var o = document.createElement('option');
+      o.value = v.name || v.tableName || '';
+      o.textContent = (v.schema ? v.schema + '.' : '') + (v.name || '');
+      sel.appendChild(o);
+    });
+    if (!sel._wbWired) {
+      sel.addEventListener('change', function () { self.applySqlView(sel.value); });
+      sel._wbWired = true;
+    }
+    // preselect for clone/edit (SqlView)
+    if (this.state.sourceType === 'SqlView' && this.state.sourceId) {
+      sel.value = this.state.sourceId;
+      this.applySqlView(this.state.sourceId);
+    }
+    var hint = $('wb-sql-view-hint'); if (hint) hint.textContent = 'اختر عرضاً لقراءة البيانات منه';
+  };
+
+  CardBuilderWizard.prototype.applySqlView = function (val) {
+    if (!val) {
+      this.selectedSqlView = null;
+      this.state.sourceId = '';
+      this.state.previewSql = '';
+      if ($('wb-h-sourceId')) $('wb-h-sourceId').value = '';
+      this.updateSqlDisplay();
+      this.schedulePreview();
+      this.updateFooter();
+      return;
+    }
+    // Find the view in our list
+    var v = null;
+    for (var i = 0; i < this.sqlViews.length; i++) {
+      var viewName = this.sqlViews[i].name || '';
+      if (viewName === val) { v = this.sqlViews[i]; break; }
+    }
+    this.selectedSqlView = v || { name: val };
+    this.state.sourceId = val;
+    if ($('wb-h-sourceId')) $('wb-h-sourceId').value = val;
+    // Build preview SQL: SELECT TOP 10 * FROM [schema].[ViewName]
+    var schema = (v && v.schema) || 'dbo';
+    this.state.previewSql = 'SELECT TOP 10 * FROM [' + schema + '].[' + val + ']';
+    this.updateSqlDisplay();
+    this.schedulePreview();
+    this.updateFooter();
   };
 
   /* ----------------------- ORACLE TABLES (Step 2) ----------------------- */
@@ -670,6 +735,16 @@
     if (gx) gx.addEventListener('input', function () { self.state.gridX = gx.value; if ($('wb-h-gridX')) $('wb-h-gridX').value = gx.value; });
     if (gy) gy.addEventListener('input', function () { self.state.gridY = gy.value; if ($('wb-h-gridY')) $('wb-h-gridY').value = gy.value; });
     if (ri) ri.addEventListener('change', function () { self.state.refreshInterval = parseInt(ri.value, 10) || 0; if ($('wb-h-refreshInterval')) $('wb-h-refreshInterval').value = self.state.refreshInterval; });
+    // Dashboard select: sync changes to state + hidden input
+    var dbId = $('wb-dashboard-id');
+    if (dbId) {
+      dbId.addEventListener('change', function () {
+        self.state.dashboardId = dbId.value;
+        if ($('wb-h-dashboardId')) $('wb-h-dashboardId').value = dbId.value;
+      });
+      // Apply initial value from state on page load
+      if (self.state.dashboardId) dbId.value = self.state.dashboardId;
+    }
     this.setChartTypeName(this.state.cardType);
   };
 
@@ -741,7 +816,7 @@
       case 'CustomSQL': return (this.state.customSql || '').trim();
       case 'SqlTable': return this.state.selectedTable ? ('SELECT TOP 10 * FROM [' + this.state.selectedTable.sqlTargetTable + ']') : '';
       case 'Template': return (this.state.previewSql || '').trim();
-      case 'SavedQuery': return '';
+      case 'SqlView': return (this.state.previewSql || '').trim();
       default: return '';
     }
   };
@@ -1136,7 +1211,7 @@
       case 'Template': return !!this.state.currentTemplate;
       case 'SqlTable': return !!this.state.selectedTable;
       case 'CustomSQL': return (this.state.customSql || '').trim().length > 0;
-      case 'SavedQuery': return false;
+      case 'SqlView': return !!this.selectedSqlView;
       default: return false;
     }
   };
@@ -1273,9 +1348,10 @@
 
   CardBuilderWizard.prototype.cleanupDuplicateNames = function () {
     // hidden inputs are the canonical posted values; strip conflicting names
-    ['wb-source-type', 'wb-saved-query', 'wb-sql-table', 'wb-grid-width', 'wb-grid-height', 'wb-grid-x', 'wb-grid-y', 'wb-refresh-interval', 'wb-custom-sql',
+    ['wb-source-type', 'wb-sql-view', 'wb-sql-table', 'wb-grid-width', 'wb-grid-height', 'wb-grid-x', 'wb-grid-y', 'wb-refresh-interval', 'wb-custom-sql',
      'wb-kpi-value-column', 'wb-kpi-date-column', 'wb-kpi-category-column', 'wb-kpi-change-source', 'wb-kpi-sparkline-months',
-     'wb-kpi-grand-total-source', 'wb-kpi-date-filter-mode', 'wb-kpi-fixed-start', 'wb-kpi-fixed-end', 'wb-kpi-relative-days'
+     'wb-kpi-grand-total-source', 'wb-kpi-date-filter-mode', 'wb-kpi-fixed-start', 'wb-kpi-fixed-end', 'wb-kpi-relative-days',
+     'wb-dashboard-id'
     ].forEach(function (id) {
       var el = $(id); if (el) el.removeAttribute('name');
     });
@@ -1301,8 +1377,10 @@
 
     // Sync SqlQuery — build proper SQL based on source type
     var sqlQuery = '';
-    if (s.sourceType === 'Template' || s.sourceType === 'SavedQuery') {
+    if (s.sourceType === 'Template') {
       sqlQuery = s.previewSql || '';
+    } else if (s.sourceType === 'SqlView') {
+      sqlQuery = this.buildSqlViewQueryForSave();
     } else if (s.sourceType === 'SqlTable') {
       sqlQuery = this.buildSqlTableQueryForSave();
     } else if (s.sourceType === 'CustomSQL') {
@@ -1313,6 +1391,9 @@
     // Value format type (TASK-BUILDER-BEH-002)
     if ($('wb-h-valueFormatType')) $('wb-h-valueFormatType').value = s.valueFormatType;
     if ($('wb-h-valueUnit')) $('wb-h-valueUnit').value = s.valueUnit;
+
+    // Dashboard assignment
+    if ($('wb-h-dashboardId')) $('wb-h-dashboardId').value = s.dashboardId;
 
     // Sync KPI hidden fields (TASK-KPI-006)
     this.syncKpiHiddenFields();
@@ -1327,6 +1408,18 @@
     }
     // Other card types: SELECT * is fine
     return 'SELECT * FROM [' + table.sqlTargetTable + ']';
+  };
+
+  CardBuilderWizard.prototype.buildSqlViewQueryForSave = function () {
+    var v = this.selectedSqlView;
+    if (!v || !v.name) return '';
+    var schema = (v && v.schema) || 'dbo';
+    // KPI cards: store view reference only — BuildSql handles aggregation + date filter
+    if (this.state.cardType === 'KPI') {
+      return '[' + schema + '].[' + v.name + ']';
+    }
+    // Other card types: SELECT * is fine
+    return 'SELECT * FROM [' + schema + '].[' + v.name + ']';
   };
 
   CardBuilderWizard.prototype.buildNumericExpression = function (table, columnName) {

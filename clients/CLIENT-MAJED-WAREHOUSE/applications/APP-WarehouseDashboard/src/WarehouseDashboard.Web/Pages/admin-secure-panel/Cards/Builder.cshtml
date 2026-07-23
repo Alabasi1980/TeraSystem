@@ -111,7 +111,7 @@
                         <label class="wd-field__label" for="wb-source-type">نوع المصدر</label>
                         <select id="wb-source-type" class="wd-select wb-source-type-select" name="sourceType" aria-describedby="wb-source-type-hint">
                             <option value="Template">قالب جاهز (Template)</option>
-                            <option value="SavedQuery">استعلام محفوظ</option>
+                            <option value="SqlView">عرض SQL (View)</option>
                             <option value="SqlTable">جدول SQL Server (المزامن)</option>
                             <option value="CustomSQL">استعلام SQL مخصص (متقدم)</option>
                         </select>
@@ -129,14 +129,14 @@
                         </div>
                     </div>
 
-                    <!-- Saved Queries -->
-                    <div class="wb-source-panel wd-hidden" data-source="SavedQuery" id="wb-panel-savedquery">
+                    <!-- SQL Views -->
+                    <div class="wb-source-panel wd-hidden" data-source="SqlView" id="wb-panel-sqlview">
                         <div class="wb-field">
-                            <label class="wd-field__label" for="wb-saved-query">استعلام محفوظ</label>
-                            <select id="wb-saved-query" class="wd-select wb-searchable-select" name="sourceId" aria-describedby="wb-saved-query-hint">
-                                <option value="">ابحث أو اختر استعلاماً محفوظاً...</option>
+                            <label class="wd-field__label" for="wb-sql-view">عرض SQL (View)</label>
+                            <select id="wb-sql-view" class="wd-select wb-searchable-select" name="sourceId" aria-describedby="wb-sql-view-hint">
+                                <option value="">اختر عرضاً من قاعدة البيانات...</option>
                             </select>
-                            <span id="wb-saved-query-hint" class="wd-field__hint">جاري التحميل...</span>
+                            <span id="wb-sql-view-hint" class="wd-field__hint">جاري تحميل العروض...</span>
                         </div>
                     </div>
 
@@ -604,7 +604,7 @@
             window.wbBuilder = new CardBuilderWizard({
                 previewApiUrl: '/api/dashboard/cardbuilder?handler=Preview',
                 tablesApiUrl: '/api/tablemappings/active',
-                savedQueriesApiUrl: '/api/savedqueries',
+                sqlViewsApiUrl: '/api/sqlviews',
                 cloneId: '@Model.Request.Query["clone"]',
                 editId: '@Model.EditId',
                 initialData: {

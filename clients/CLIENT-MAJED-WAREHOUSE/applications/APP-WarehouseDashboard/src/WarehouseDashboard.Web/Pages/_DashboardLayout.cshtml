@@ -17,6 +17,9 @@
     @* Shared design system — single source of truth for the Blue Identity palette *@
     <link rel="stylesheet" href="~/css/blue-theme.css" />
 
+    @* Dashboard viewer styles (extracted from Index.cshtml inline <style>) *@
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+
     @* AI Assistant Side Panel styles (TASK-AI-D02) *@
     <link rel="stylesheet" href="~/css/assistant-panel.css" />
 
@@ -140,6 +143,21 @@
                 });
             });
         })();
+    </script>
+
+    <script>
+        // Global dashboard refresh button handler — safe on any dashboard page
+        window.wdRefreshAll = function () {
+            if (typeof showToast === 'function') showToast('info', 'جاري التحديث...');
+            if (typeof wdLoadAllCards === 'function') {
+                wdLoadAllCards();
+            } else {
+                (window.WD_CARDS || []).forEach(function (c) {
+                    if (typeof wdLoadCard === 'function') wdLoadCard(c.id, true);
+                });
+            }
+            if (typeof updateTimestamp === 'function') updateTimestamp();
+        };
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

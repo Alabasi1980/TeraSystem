@@ -30,6 +30,8 @@ public class WarehouseDashboardDbContext : DbContext
     public DbSet<ReportLayout> ReportLayouts => Set<ReportLayout>();
     public DbSet<AssistantInsightLog> AssistantInsightLogs => Set<AssistantInsightLog>();
     public DbSet<AssistantUsageStat> AssistantUsageStats => Set<AssistantUsageStat>();
+    public DbSet<SavedQuery> SavedQueries => Set<SavedQuery>();
+    public DbSet<AiConversation> AiConversations => Set<AiConversation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -909,6 +911,96 @@ public class WarehouseDashboardDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasIndex(e => e.CardId).IsUnique();
+        });
+
+        // -------------------------------------------------------------------
+        // SavedQueries (TASK-AIQ-001) — saved SQL queries for AI Assistant
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<SavedQuery>(entity =>
+        {
+            entity.ToTable("SavedQueries", t =>
+            {
+                t.HasCheckConstraint("CK_SavedQueries_DataSourceType", "DataSourceType IN ('SqlServer', 'Oracle')");
+            });
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasColumnType("nvarchar(200)");
+
+            entity.Property(e => e.Description)
+                .HasColumnType("nvarchar(500)")
+                .IsRequired(false);
+
+            entity.Property(e => e.SqlQuery)
+                .IsRequired()
+                .HasColumnType("nvarchar(max)");
+
+            entity.Property(e => e.DataSourceType)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)")
+                .HasDefaultValue("SqlServer");
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            entity.Property(e => e.UpdatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            entity.HasIndex(e => e.Name)
+                .HasDatabaseName("IX_SavedQueries_Name");
+
+            entity.HasIndex(e => e.UpdatedAt)
+                .IsDescending()
+                .HasDatabaseName("IX_SavedQueries_UpdatedAt");
+        });
+
+        // -------------------------------------------------------------------
+        // AiConversations (TASK-AIQ-001) — AI Assistant conversation messages
+        // -------------------------------------------------------------------
+        modelBuilder.Entity<AiConversation>(entity =>
+        {
+            entity.ToTable("AiConversations", t =>
+            {
+                t.HasCheckConstraint("CK_AiConversations_Role", "Role IN ('user', 'assistant', 'system')");
+            });
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.SavedQueryId)
+                .IsRequired(false);
+
+            entity.Property(e => e.Role)
+                .IsRequired()
+                .HasColumnType("nvarchar(20)");
+
+            entity.Property(e => e.Message)
+                .IsRequired()
+                .HasColumnType("nvarchar(max)");
+
+            entity.Property(e => e.SqlSnapshot)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            // FK → SavedQueries (ON DELETE CASCADE)
+            entity.HasOne(e => e.SavedQuery)
+                .WithMany(s => s.Conversations)
+                .HasForeignKey(e => e.SavedQueryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Index on (SavedQueryId, CreatedAt) for efficient conversation lookups
+            entity.HasIndex(e => new { e.SavedQueryId, e.CreatedAt })
+                .HasDatabaseName("IX_AiConversations_SavedQueryId_CreatedAt");
         });
     }
 }

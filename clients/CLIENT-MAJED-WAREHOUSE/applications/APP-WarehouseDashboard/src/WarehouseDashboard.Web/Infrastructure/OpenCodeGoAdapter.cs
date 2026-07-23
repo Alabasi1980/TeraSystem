@@ -36,14 +36,21 @@ public class OpenCodeGoAdapter : IAIProvider
                 systemPrompt = $"{systemPrompt}\n\nتعليمات خاصة لهذه البطاقة:\n{request.CardAssistantPrompt}";
             }
 
+            var messagesList = new List<object>
+            {
+                new { role = "system", content = systemPrompt }
+            };
+            if (request.Messages?.Count > 0)
+            {
+                foreach (var msg in request.Messages)
+                    messagesList.Add(msg);
+            }
+            messagesList.Add(new { role = "user", content = request.UserMessage });
+
             var payload = new
             {
                 model = _options.ModelId,
-                messages = new[]
-                {
-                    new { role = "system", content = systemPrompt },
-                    new { role = "user", content = request.UserMessage }
-                },
+                messages = messagesList,
                 max_tokens = request.MaxOutputTokens > 0 ? request.MaxOutputTokens : _options.MaxOutputTokens,
                 thinking = new { type = "disabled" }
             };

@@ -7,6 +7,8 @@ using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 using System.Text.Json;
 using WarehouseDashboard.Web.Infrastructure;
+using WarehouseDashboard.Web.Services;
+using WarehouseDashboard.Web.Models.Dto;
 
 namespace WarehouseDashboard.Web.Pages.AdminSecurePanel;
 
@@ -28,14 +30,20 @@ public class QueryTesterModel : PageModel
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<QueryTesterModel> _logger;
+    private readonly AiQueryService _aiQueryService;
+    private readonly SavedQueryService _savedQueryService;
+    private readonly AiQueryContext _aiQueryContext;
 
     /// <summary>Maximum rows returned by the query executor.</summary>
     private const int MaxRows = 1000;
 
-    public QueryTesterModel(IConfiguration configuration, ILogger<QueryTesterModel> logger)
+    public QueryTesterModel(IConfiguration configuration, ILogger<QueryTesterModel> logger, AiQueryService aiQueryService, SavedQueryService savedQueryService, AiQueryContext aiQueryContext)
     {
         _configuration = configuration;
         _logger = logger;
+        _aiQueryService = aiQueryService;
+        _savedQueryService = savedQueryService;
+        _aiQueryContext = aiQueryContext;
     }
 
     public void OnGet()
@@ -616,6 +624,64 @@ public class QueryTesterModel : PageModel
             ContentType = "application/json; charset=utf-8"
         };
     }
+
+    public async Task<IActionResult> OnPostChatAsync([FromBody] AiChatRequest request)
+    {
+        var result = await _aiQueryService.ChatAsync(request, HttpContext.RequestAborted);
+        return Json(result);
+    }
+
+    public async Task<IActionResult> OnPostAiExecuteAsync([FromBody] AiExecuteRequest request)
+    {
+        var result = await _aiQueryContext.ExecuteExplorerQueryAsync(request.Sql, request.Source, HttpContext.RequestAborted);
+        return Json(new { success = result.Success, reply = result.Content, errorMessage = result.ErrorMessage });
+    }
+
+    public async Task<IActionResult> OnGetListQueriesAsync([FromQuery] string? search)
+    {
+        var queries = await _savedQueryService.ListAsync(search, HttpContext.RequestAborted);
+        return Json(new { success = true, queries });
+    }
+
+    public async Task<IActionResult> OnPostSaveQueryAsync([FromBody] SavedQueryCreate request)
+    {
+        var result = await _savedQueryService.CreateAsync(request, HttpContext.RequestAborted);
+        return Json(new { success = true, query = result });
+    }
+
+    public async Task<IActionResult> OnGetLoadQueryAsync([FromQuery] int id)
+    {
+        var query = await _savedQueryService.GetByIdAsync(id, HttpContext.RequestAborted);
+        if (query is null)
+            return Json(new { success = false, errorMessage = "الكويري غير موجود." });
+        return Json(new { success = true, query });
+    }
+
+    public async Task<IActionResult> OnPostUpdateQueryAsync([FromBody] SavedQueryUpdateRequest request)
+    {
+        var result = await _savedQueryService.UpdateAsync(request.Id, request.Data, HttpContext.RequestAborted);
+        if (result is null)
+            return Json(new { success = false, errorMessage = "الكويري غير موجود." });
+        return Json(new { success = true, query = result });
+    }
+
+    public async Task<IActionResult> OnPostDeleteQueryAsync([FromBody] DeleteRequest request)
+    {
+        var deleted = await _savedQueryService.DeleteAsync(request.Id, HttpContext.RequestAborted);
+        return Json(new { success = deleted });
+    }
+
+    public async Task<IActionResult> OnPostClearConversationAsync([FromBody] DeleteRequest request)
+    {
+        var cleared = await _savedQueryService.ClearConversationAsync(request.Id, HttpContext.RequestAborted);
+        return Json(new { success = cleared });
+    }
+
+    public async Task<IActionResult> OnGetSchemaInfoAsync([FromQuery] string? source)
+    {
+        var schema = await _aiQueryContext.GetSchemaSummaryAsync(source, HttpContext.RequestAborted);
+        return Json(new { success = true, schema });
+    }
 }
 
 /// <summary>Request body for the Run handler.</summary>
@@ -638,4 +704,21 @@ public class ColumnInfo
 {
     public string Name { get; set; } = string.Empty;
     public string DataType { get; set; } = string.Empty;
+}
+
+public class AiExecuteRequest
+{
+    public string Sql { get; set; } = string.Empty;
+    public string Source { get; set; } = "SqlServer";
+}
+
+public class SavedQueryUpdateRequest
+{
+    public int Id { get; set; }
+    public SavedQueryUpdate Data { get; set; } = new();
+}
+
+public class DeleteRequest
+{
+    public int Id { get; set; }
 }

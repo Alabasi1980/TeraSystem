@@ -2341,8 +2341,8 @@
                     var tableName = extractTableName(m.oracleSource || m.name || '');
                     var lastSync = m.lastSyncTime ? formatDateTime(m.lastSyncTime) : '—';
                     var recordCount = (m.lastRecordCount != null) ? Number(m.lastRecordCount).toLocaleString('ar-SA') : '—';
-                    var storedRecordCount = (m.lastRecordCount != null && m.lastRecordCount > 0)
-                        ? Number(m.lastRecordCount).toLocaleString('ar-SA')
+                    var storedRecordCount = (m.storedRecordCount != null)
+                        ? Number(m.storedRecordCount).toLocaleString('ar-SA')
                         : '—';
 
                     html += '<tr data-id="' + m.id + '" data-active="' + isActive + '">' +
@@ -2544,8 +2544,8 @@
                             valB = b.isActive !== false ? 'active' : 'inactive';
                             break;
                         case 5: // Stored Record Count
-                            valA = a.lastRecordCount || 0;
-                            valB = b.lastRecordCount || 0;
+                            valA = a.storedRecordCount || 0;
+                            valB = b.storedRecordCount || 0;
                             break;
                         default:
                             return 0;

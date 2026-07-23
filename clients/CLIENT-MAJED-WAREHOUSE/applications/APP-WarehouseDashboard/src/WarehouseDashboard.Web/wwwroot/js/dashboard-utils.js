@@ -70,18 +70,27 @@
         if (isSmall) {
             numericPart = formatNum ? formatNum(n) : n.toString();
         } else {
-            var parts = n.toFixed(3).split('.');
-            var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            numericPart = intPart + '.' + parts[1];
+            // Integer portion with commas
+            var intPart = Math.floor(Math.abs(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            if (formatType === 'Currency') {
+                var dec = n.toFixed(3).split('.')[1];
+                numericPart = intPart + '.' + dec;
+            } else if (formatType === 'Percentage') {
+                var dec = n.toFixed(1).split('.')[1];
+                numericPart = intPart + '.' + dec;
+            } else {
+                // Number / Custom: integer only, no decimals
+                numericPart = intPart;
+            }
         }
 
         switch (formatType) {
-            case 'Number': return numericPart;
-            case 'Percentage': return numericPart + '%';
-            case 'Custom': return numericPart + ' ' + (unit || '');
+            case 'Number': return (isSmall ? '' : (n < 0 ? '-' : '')) + numericPart;
+            case 'Percentage': return (isSmall ? '' : (n < 0 ? '-' : '')) + numericPart + '%';
+            case 'Custom': return (isSmall ? '' : (n < 0 ? '-' : '')) + numericPart + ' ' + (unit || '');
             case 'Currency':
             default:
-                return numericPart + ' د.أ';
+                return (isSmall ? '' : (n < 0 ? '-' : '')) + numericPart + ' د.أ';
         }
     }
 

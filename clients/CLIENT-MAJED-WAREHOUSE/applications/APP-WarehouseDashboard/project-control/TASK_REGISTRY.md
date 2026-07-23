@@ -1,7 +1,7 @@
 # TASK_REGISTRY.md — WarehouseDashboard
 
 > **Purpose:** Central registry of all TASK-IDs created during the project lifecycle.
-> **Last Updated:** 2026-07-21 (Sync Page Professional Redesign — TASK-UI-SYNC-REDESIGN-001 ✅)
+> **Last Updated:** 2026-07-22 (AI Query Assistant — TASK-AIQ-001 🚀)
 
 ---
 
@@ -188,6 +188,26 @@
 |---|---|---|---|---|
 | TASK-UI-SYNC-REDESIGN-001 | إعادة تصميم كاملة لصفحة /admin-secure-panel/Sync — glassmorphism، search، sorting، keyboard shortcuts، stagger animations، connection bar، shimmer محسّن، responsive | UI Designer | ✅ Accepted (All Vitality 9/9 PASS) | 2026-07-21 |
 | TASK-UI-SYNC-FIXES-001 | إصلاح 6 مشاكل UX: Query truncation + Modal، Sticky progress bar، Per-mapping sync info، Toggle enable/disable، Filter dropdowns، Disable auto-refresh | UI Designer | ✅ Accepted (All Vitality 8/8 PASS) | 2026-07-21 |
+
+---
+
+## Phase 6 — AI Query Assistant Enhancement & Fixes
+
+| TASK-ID | Description | Assigned Agent | Status | Created |
+|---|---|---|---|---|
+| TASK-AIQ-001 | جداول SavedQueries + AiConversations + EF Entities + Migration | engineering-agent-dotnet | ✅ Accepted (Model Drift fix) | 2026-07-22 |
+| TASK-AIQ-002 | SavedQueryService — CRUD للكويريز المحفوظة | engineering-agent-dotnet | ✅ Accepted | 2026-07-22 |
+| TASK-AIQ-003 | AiQueryContext — إدارة سياق المحادثة + Schema | engineering-agent-dotnet | ✅ Accepted | 2026-07-22 |
+| TASK-AIQ-004 | AiQueryService — منطق AI للاستعلامات | engineering-agent-dotnet | ✅ Accepted | 2026-07-22 |
+| TASK-AIQ-005 | API Endpoints: Chat, AiExecute, SavedQueries CRUD | engineering-agent-dotnet | ✅ Accepted | 2026-07-22 |
+| TASK-AIQ-FIX-001 | إصلاح F-001 (History) + F-002 (CancellationToken) + F-004 (Required) + F-007 (MaxTokens) | engineering-agent-dotnet | ✅ Accepted | 2026-07-22 |
+| TASK-AIQ-006 | Bottom Drawer Chat Panel UI | ui-designer | ✅ Accepted | 2026-07-22 |
+| TASK-AIQ-007 | ربط Chat مع CodeMirror Editor | ui-designer | 📋 Pending | — |
+| TASK-AIQ-008 | قائمة الكويريز المحفوظة Modal + حفظ/تحميل | ui-designer | ✅ Accepted | 2026-07-22 |
+| TASK-AIQ-009 | Vitality & Polish | ui-designer | ✅ Accepted | 2026-07-22 |
+| TASK-AIQ-010 | اختبار Chat Flow كامل | qa-agent | 📋 Pending | — |
+| TASK-AIQ-011 | اختبار الأمان | qa-agent | 📋 Pending | — |
+| TASK-AIQ-012 | ضبط System Prompt | TeraAgent | 📋 Pending | — |
 
 ---
 

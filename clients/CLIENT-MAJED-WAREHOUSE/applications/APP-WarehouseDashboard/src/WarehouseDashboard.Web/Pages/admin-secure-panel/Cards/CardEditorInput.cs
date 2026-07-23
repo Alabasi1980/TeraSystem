@@ -87,18 +87,18 @@ public class CardEditorInput : IValidatableObject
     // === Builder Original Source Type ===
 
     /// <summary>
-    /// Original SourceType from Step 2 of the Card Builder: "Template", "SavedQuery", "SqlTable", "CustomSQL".
+    /// Original SourceType from Step 2 of the Card Builder: "Template", "SqlView", "SqlTable", "CustomSQL".
     /// Default: "SqlTable". This is the value of the source dropdown at card creation.
     /// </summary>
     public string OriginalSourceType { get; set; } = "SqlTable";
 
     /// <summary>
-    /// Source-specific identifier: table name for SqlTable, template ID for Template, query ID for SavedQuery.
+    /// Source-specific identifier: table name for SqlTable, view name for SqlView, template ID for Template.
     /// Empty for CustomSQL. Used to reconstruct the Step 2 selection when editing.
     /// </summary>
     public string OriginalSourceId { get; set; } = "";
 
-    public static readonly string[] AllowedOriginalSourceTypes = { "Template", "SavedQuery", "SqlTable", "CustomSQL" };
+    public static readonly string[] AllowedOriginalSourceTypes = { "Template", "SqlView", "SqlTable", "CustomSQL" };
 
     public static List<SelectOption> AggregationTypeOptions =>
         AllowedAggregationTypes.Select(x => new SelectOption(x, x)).ToList();

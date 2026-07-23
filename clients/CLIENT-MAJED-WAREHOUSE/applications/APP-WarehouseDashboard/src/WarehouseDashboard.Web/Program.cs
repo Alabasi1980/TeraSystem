@@ -68,6 +68,11 @@ builder.Services.AddScoped<ReadOnlyQueryHelper>();
 // AI Assistant request logging (TASK-AI-E02)
 builder.Services.AddScoped<AssistantLogService>();
 
+// AI Query services (TASK-AIQ-005)
+builder.Services.AddScoped<SavedQueryService>();
+builder.Services.AddScoped<AiQueryContext>();
+builder.Services.AddScoped<AiQueryService>();
+
 // In-memory cache for AI assistant responses (TASK-AI-E03)
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<AssistantCacheService>();

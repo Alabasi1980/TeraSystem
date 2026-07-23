@@ -58,9 +58,16 @@ public class TableMapping
     /// <summary>
     /// Optional start date for the first incremental sync. When set, the initial
     /// sync will only fetch rows where the incremental column >= this date.
-    /// After the first sync, LastSyncAt takes over as the watermark.
+    /// After the first sync, IncrementalWatermarkAt takes over as the watermark.
     /// </summary>
     public DateTime? InitialSyncStartDate { get; set; }
+
+    /// <summary>
+    /// Watermark timestamp for incremental sync boundary. Updated ONLY by incremental syncs.
+    /// Full syncs update <see cref="LastSyncAt"/> but NOT this value.
+    /// Used by <c>BuildOracleQuery</c> as the primary boundary for incremental extraction.
+    /// </summary>
+    public DateTime? IncrementalWatermarkAt { get; set; }
 
     /// <summary>
     /// Source/target column names that must be extracted as text even when Oracle reports NUMBER.

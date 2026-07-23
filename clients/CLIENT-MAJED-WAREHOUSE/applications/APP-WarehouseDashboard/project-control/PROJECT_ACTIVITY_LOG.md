@@ -16,6 +16,85 @@
 
 ## Activity Log
 
+## [2026-07-22 10:00] - PHASE_STARTED — AI Query Assistant Enhancement
+
+- Related Task: TASK-AIQ-001 ← 012
+- Actor: TeraAgent → Majed ✅ Approved
+- Summary: بدء مرحلة تطوير AI Query Assistant — دمج مساعد ذكي في QueryTester مع Bottom Drawer Chat، حفظ الكويريز، ومحادثات مستقلة لكل كويري
+- Decision / Result: خطة AI_QUERY_ASSISTANT_EXECUTION_PLAN.md معتمدة ✅ — 12 مهمة
+- Next Action: TASK-AIQ-001 — إنشاء جداول SavedQueries + AiConversations + EF Entities + Migration
+
+## [2026-07-22 10:05] - TASK_DELEGATED — TASK-AIQ-001
+
+- Related Task: TASK-AIQ-001
+- Actor: TeraAgent → engineering-agent-dotnet
+- Summary: تفويض إنشاء جداول SavedQueries و AiConversations مع EF Entities و Migration
+- Decision / Result: Pre-Execution Gate ✅ PASS → Approved → Delegated
+- Next Action: انتظار Handback من engineering-agent-dotnet
+
+## [2026-07-22 10:10] - TASK_FIXED — Migration (Model Drift)
+
+- Related Task: TASK-AIQ-001
+- Actor: TeraAgent
+- Summary: تم اكتشاف مشكلة EF Core Model Drift — أعمدة `ValueFormatType`/`ValueUnit` موجودة في `DashboardCards` من جلسة سابقة. تم التحقق من وجودها في DB (sqlcmd). تم إعادة إنشاء الـ Migration ليكون CreateTable فقط للجداول الجديدة، مع No-op للأعمدة الموجودة والتوثيق الكامل للسبب.
+- Decision / Result: ✅ Migration معدّل — Build: 0 errors, 0 warnings
+
+## [2026-07-22 10:15] - TASK_ACCEPTED — TASK-AIQ-001
+
+- Related Task: TASK-AIQ-001
+- Actor: TeraAgent (Post-Execution Review)
+- Summary: ✅ **Accepted** — تم إنشاء ملفين Entities + تعديل DbContext مع Fluent API كاملة + Migration. Build: 0 errors, 0 warnings. AC 10/10 ✅
+- Decision / Result: Post-Execution Gate ✅ PASS → Accepted
+- Next Action: TASK-AIQ-003 — AiQueryContext (إدارة سياق المحادثة + Schema)
+
+## [2026-07-22 10:20] - TASK_ACCEPTED — TASK-AIQ-002
+
+- Related Task: TASK-AIQ-002
+- Actor: TeraAgent (Post-Execution Review)
+- Summary: ✅ **Accepted** — SavedQueryService.cs (7 دوال CRUD) + SavedQueryDtos.cs (5 DTOs). Build: 0 errors, 0 warnings. AC 12/12 ✅
+- Decision / Result: Post-Execution Gate ✅ PASS → Accepted
+- Next Action: TASK-AIQ-004 — AiQueryService (منطق AI للاستعلامات)
+
+## [2026-07-22 10:30] - TASK_ACCEPTED — TASK-AIQ-003
+
+- Related Task: TASK-AIQ-003
+- Actor: TeraAgent (Post-Execution Review)
+- Summary: ✅ **Accepted** — AiQueryContext.cs (5 دوال: Schema Summary، Table Details، System Prompt، Format History، Explorer Query). Build: 0 errors, 0 warnings. AC 11/11 ✅
+- Decision / Result: Post-Execution Gate ✅ PASS → Accepted
+- Next Action: TASK-AIQ-005 — API Endpoints (Chat, AiExecute, SavedQueries CRUD)
+
+## [2026-07-22 10:45] - TASK_ACCEPTED — TASK-AIQ-004
+
+- Related Task: TASK-AIQ-004
+- Actor: TeraAgent (Post-Execution Review)
+- Summary: ✅ **Accepted** — AiQueryService.cs (ChatAsync، ExtractSqlFromResponse، SuggestSqlAsync). Build: 0 errors, 0 warnings. AC 9/9 ✅
+- Decision / Result: Post-Execution Gate ✅ PASS → Accepted
+- Next Action: TASK-AIQ-006 — Bottom Drawer Chat Panel UI (Phase 2)
+
+## [2026-07-22 11:00] - TASK_ACCEPTED — TASK-AIQ-005
+
+- Related Task: TASK-AIQ-005
+- Actor: TeraAgent (Post-Execution Review)
+- Summary: ✅ **Accepted** — 9 handlers في Index.cshtml.cs + 3 خدمات مسجلة في DI. Build: 0 errors, 0 warnings. AC 8/8 ✅
+- Decision / Result: **Phase 1 Backend Complete 🎉**
+- Next Action: TASK-AIQ-006 — Bottom Drawer Chat Panel UI (Phase 2)
+
+## [2026-07-22 11:30] - TASK_ACCEPTED — TASK-AIQ-FIX-001
+
+- Related Task: TASK-AIQ-FIX-001
+- Actor: TeraAgent (Post-Execution Review)
+- Summary: ✅ **Accepted** — إصلاح 4 ثغرات: F-001 (History → AI), F-002 (CancellationToken), F-004 ([Required]), F-007 (MaxTokens من Config). 5 ملفات معدّلة. Build: 0 errors, 0 warnings
+- Decision / Result: ✅ Phase 1 كاملة ونظيفة — جاهزون لـ Phase 2
+- Next Action: TASK-AIQ-008 — قائمة الكويريز المحفوظة Modal (مدمج AIQ-007 مع AIQ-006)
+
+## [2026-07-22 12:00] - TASK_ACCEPTED — TASK-AIQ-006
+
+- Related Task: TASK-AIQ-006
+- Actor: TeraAgent (Post-Execution Review)
+- Summary: ✅ **Accepted** — Bottom Drawer Chat Panel UI كامل (CSS + HTML + JS). ربط مع CodeMirror (قراءة SQL، تطبيق SQL). Build: 0 errors, 0 warnings ✅
+- Decision / Result: AIQ-007 مدمج مع AIQ-006 — اكتمل
+- Next Action: TASK-AIQ-008 — قائمة الكويريز المحفوظة Modal
+
 ## [2026-07-20 06:40] - TASK_DELEGATED_AND_REVIEWED
 
 - Related Task: TASK-CARD-POLISH-001

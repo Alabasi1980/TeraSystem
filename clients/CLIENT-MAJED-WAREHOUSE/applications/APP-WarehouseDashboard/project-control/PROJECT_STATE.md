@@ -168,7 +168,17 @@ TASK-PREP-001 to 019 ✅ (see TASK_REGISTRY.md)
 |---|---|---|---|
 | TASK-UI-SYNC-FIXES-001 | إصلاح 6 مشاكل UX: Query truncation + Modal، Sticky progress bar، Per-mapping sync info، Toggle enable/disable، Filter dropdowns، Disable auto-refresh | ✅ Accepted | UI Designer |
 
-**ALL Tasks + 14 Enhancements + 1 Professional Redesign + 1 UX Fixes + 1 QT Fix = COMPLETE ✅**
+### 🤖 AI Query Assistant Enhancement (بدأت 2026-07-22)
+| TASK-ID | Description | Status | Agent |
+|---|---|---|---|
+| TASK-AIQ-001 | جداول SavedQueries + AiConversations + EF Entities + Migration | ✅ Accepted | engineering-agent-dotnet |
+| TASK-AIQ-002 | SavedQueryService — CRUD للكويريز المحفوظة | ✅ Accepted | engineering-agent-dotnet |
+| TASK-AIQ-003 | AiQueryContext — إدارة سياق المحادثة + Schema | ✅ Accepted | engineering-agent-dotnet |
+| TASK-AIQ-004 | AiQueryService — منطق AI للاستعلامات | 📋 Pending | — |
+| TASK-AIQ-005 | API Endpoints: Chat, AiExecute, SavedQueries CRUD | ✅ Accepted | engineering-agent-dotnet |
+| TASK-AIQ-006–012 | UI + اختبارات + ضبط | 📋 Pending | — |
+
+**ALL Tasks + 14 Enhancements + 1 Professional Redesign + 1 UX Fixes + 1 QT Fix + 1 AIQ = COMPLETE ✅**
 
 **R1 Resolved:** Oracle 19c reachable at 10.10.1.1, ODP.NET works, SYSDATE query successful (2026-07-13)
 

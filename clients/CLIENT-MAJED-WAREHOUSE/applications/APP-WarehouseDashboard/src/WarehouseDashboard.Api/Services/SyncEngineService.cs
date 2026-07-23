@@ -134,8 +134,9 @@ public class SyncEngineService
                         mappingRows = data.Rows.Count;
                         succeeded = true;
 
-                        // Update watermark for incremental syncs.
-                        await UpdateLastSyncAtAsync(mapping.Id, data.Rows.Count, ct);
+                        // Update LastSyncAt (always) and IncrementalWatermarkAt (only for incremental).
+                        await UpdateLastSyncAtAsync(mapping.Id, data.Rows.Count,
+                            mapping.SyncMode.Equals("Incremental", StringComparison.OrdinalIgnoreCase), ct);
 
                         break;
                     }
@@ -355,8 +356,11 @@ public class SyncEngineService
                     // Signal progress: mapping completed successfully.
                     _progressStore.UpdateMapping(runId, mapping.Id, "completed", data.Rows.Count);
 
-                    // Update watermark for incremental syncs.
-                    await UpdateLastSyncAtAsync(mapping.Id, data.Rows.Count, ct);
+                    // Update LastSyncAt (always) and IncrementalWatermarkAt (only for incremental).
+                    // Full syncs must NOT overwrite IncrementalWatermarkAt — otherwise the
+                    // user's InitialSyncStartDate would be bypassed on the next incremental run.
+                    await UpdateLastSyncAtAsync(mapping.Id, data.Rows.Count,
+                        mapping.SyncMode.Equals("Incremental", StringComparison.OrdinalIgnoreCase), ct);
 
                     break;
                 }
@@ -557,7 +561,7 @@ public class SyncEngineService
 
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = """
-                SELECT Id, OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, LastSyncAt, InitialSyncStartDate,
+                SELECT Id, OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, LastSyncAt, InitialSyncStartDate, IncrementalWatermarkAt,
                        IsActive, SyncRecordCount
                 FROM TableMappings
                 WHERE IsActive = 1
@@ -584,6 +588,9 @@ public class SyncEngineService
                     InitialSyncStartDate = reader.IsDBNull(reader.GetOrdinal("InitialSyncStartDate"))
                         ? (DateTime?)null
                         : reader.GetDateTime(reader.GetOrdinal("InitialSyncStartDate")),
+                    IncrementalWatermarkAt = reader.IsDBNull(reader.GetOrdinal("IncrementalWatermarkAt"))
+                        ? (DateTime?)null
+                        : reader.GetDateTime(reader.GetOrdinal("IncrementalWatermarkAt")),
                     IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
                     SyncRecordCount = reader.GetInt32(reader.GetOrdinal("SyncRecordCount"))
                 });
@@ -643,7 +650,7 @@ public class SyncEngineService
 
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = $"""
-                SELECT Id, OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, LastSyncAt, InitialSyncStartDate,
+                SELECT Id, OracleSource, SourceType, SqlTargetTable, SyncMode, IncrementalColumn, LastSyncAt, InitialSyncStartDate, IncrementalWatermarkAt,
                        IsActive, SyncRecordCount
                 FROM TableMappings
                 WHERE IsActive = 1
@@ -673,6 +680,9 @@ public class SyncEngineService
                     InitialSyncStartDate = reader.IsDBNull(reader.GetOrdinal("InitialSyncStartDate"))
                         ? (DateTime?)null
                         : reader.GetDateTime(reader.GetOrdinal("InitialSyncStartDate")),
+                    IncrementalWatermarkAt = reader.IsDBNull(reader.GetOrdinal("IncrementalWatermarkAt"))
+                        ? (DateTime?)null
+                        : reader.GetDateTime(reader.GetOrdinal("IncrementalWatermarkAt")),
                     IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
                     SyncRecordCount = reader.GetInt32(reader.GetOrdinal("SyncRecordCount"))
                 });
@@ -741,12 +751,13 @@ public class SyncEngineService
     // ---- Status helpers (all mutations go through _statusLock for visibility) ----------
 
     /// <summary>
-    /// Updates the <c>LastSyncAt</c> watermark and <c>SyncRecordCount</c> for a successfully
-    /// synced mapping. Called after each successful extraction+load so that subsequent incremental
-    /// syncs use the correct boundary. Failures here are logged but never propagate — a failed
+    /// Updates <c>LastSyncAt</c> (always) and <c>IncrementalWatermarkAt</c> (only for incremental syncs)
+    /// for a successfully synced mapping. <c>LastSyncAt</c> serves the dashboard "last synced" display
+    /// and is updated on every sync. <c>IncrementalWatermarkAt</c> is the incremental boundary and
+    /// must NOT be overwritten by full syncs. Failures here are logged but never propagate — a failed
     /// watermark update must not invalidate a successful data load.
     /// </summary>
-    private async Task UpdateLastSyncAtAsync(int mappingId, int recordCount, CancellationToken ct)
+    private async Task UpdateLastSyncAtAsync(int mappingId, int recordCount, bool isIncremental, CancellationToken ct)
     {
         try
         {
@@ -757,20 +768,38 @@ public class SyncEngineService
             await conn.OpenAsync(ct);
 
             await using var cmd = conn.CreateCommand();
-            cmd.CommandText = """
-                UPDATE TableMappings
-                SET LastSyncAt = GETUTCDATE(),
-                    SyncRecordCount = @RecordCount,
-                    UpdatedAt = GETUTCDATE()
-                WHERE Id = @Id
-                """;
+
+            // LastSyncAt is always updated (for display).
+            // IncrementalWatermarkAt is updated ONLY for incremental syncs (watermark).
+            if (isIncremental)
+            {
+                cmd.CommandText = """
+                    UPDATE TableMappings
+                    SET LastSyncAt = GETUTCDATE(),
+                        IncrementalWatermarkAt = GETUTCDATE(),
+                        SyncRecordCount = @RecordCount,
+                        UpdatedAt = GETUTCDATE()
+                    WHERE Id = @Id
+                    """;
+            }
+            else
+            {
+                cmd.CommandText = """
+                    UPDATE TableMappings
+                    SET LastSyncAt = GETUTCDATE(),
+                        SyncRecordCount = @RecordCount,
+                        UpdatedAt = GETUTCDATE()
+                    WHERE Id = @Id
+                    """;
+            }
+
             cmd.Parameters.AddWithValue("@Id", mappingId);
             cmd.Parameters.AddWithValue("@RecordCount", recordCount);
             await cmd.ExecuteNonQueryAsync(ct);
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Failed to update LastSyncAt for mapping {Id}. Incremental watermark may be stale.", mappingId);
+            _logger.LogWarning(ex, "Failed to update LastSyncAt for mapping {Id}.", mappingId);
         }
     }
 
@@ -809,8 +838,11 @@ public class SyncEngineService
     /// with the source validated as a safe identifier to avoid injection.
     ///
     /// When <paramref name="mapping"/> uses <c>SyncMode = "Incremental"</c> with a valid
-    /// <c>IncrementalColumn</c> and a non-null <paramref name="lastSyncAt"/>, a
-    /// <c>WHERE</c> clause is appended to fetch only rows newer than the watermark.
+    /// <c>IncrementalColumn</c>, a <c>WHERE</c> clause is appended to fetch only rows
+    /// newer than the watermark. The effective start date is determined by:
+    /// 1. <c>IncrementalWatermarkAt</c> (set by previous incremental syncs)
+    /// 2. <c>InitialSyncStartDate</c> (first-run configuration)
+    /// 3. <paramref name="lastSyncAt"/> (fallback — should not normally be reached)
     /// </summary>
     private static string BuildOracleQuery(TableMapping mapping, DateTime? lastSyncAt)
     {
@@ -838,14 +870,33 @@ public class SyncEngineService
             !string.IsNullOrWhiteSpace(mapping.IncrementalColumn) &&
             IsSafeOracleIdentifier(mapping.IncrementalColumn))
         {
-            // Determine effective start: LastSyncAt (watermark) takes priority,
-            // then InitialSyncStartDate (for the very first sync).
-            DateTime? effectiveStartDate = lastSyncAt ?? mapping.InitialSyncStartDate;
+            // Determine effective start date:
+            // 1. Use IncrementalWatermarkAt (from the last incremental sync) as primary.
+            // 2. Fall back to InitialSyncStartDate for the very first incremental run.
+            // 3. Fall back to lastSyncAt as a safety net (should not normally be reached).
+            // LastSyncAt is deliberately NOT used as the primary watermark because it is
+            // updated on EVERY sync (including full syncs) and would incorrectly narrow
+            // the incremental boundary if a full sync ran after an incremental one.
+            DateTime? effectiveStartDate;
+            if (mapping.IncrementalWatermarkAt.HasValue)
+            {
+                effectiveStartDate = mapping.IncrementalWatermarkAt;
+            }
+            else if (mapping.InitialSyncStartDate.HasValue)
+            {
+                effectiveStartDate = mapping.InitialSyncStartDate;
+            }
+            else
+            {
+                effectiveStartDate = lastSyncAt; // fallback — shouldn't happen
+            }
             
             if (effectiveStartDate.HasValue)
             {
                 var ts = effectiveStartDate.Value.ToString("yyyy-MM-dd HH:mm:ss");
-                var whereClause = $" WHERE {mapping.IncrementalColumn} > TIMESTAMP '{ts}'";
+                // Use >= (not >) to include rows _on_ the start date, and TO_DATE
+                // instead of TIMESTAMP literal for reliable Oracle DATE column comparison.
+                var whereClause = $" WHERE {mapping.IncrementalColumn} >= TO_DATE('{ts}', 'YYYY-MM-DD HH24:MI:SS')";
                 
                 // For Query sources: append WHERE only if the query doesn't already have one.
                 if (mapping.SourceType.Equals("Query", StringComparison.OrdinalIgnoreCase))

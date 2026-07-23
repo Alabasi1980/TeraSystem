@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace WarehouseDashboard.Web.Infrastructure;
 
 public class AIAssistantRequest
@@ -6,6 +8,9 @@ public class AIAssistantRequest
     public string UserMessage { get; set; } = string.Empty;
     public string? CardAssistantPrompt { get; set; }
     public int MaxOutputTokens { get; set; } = 300;
+
+    /// <summary>Optional conversation history to inject between system prompt and user message.</summary>
+    public List<object>? Messages { get; set; }
 }
 
 public class AIAssistantResponse

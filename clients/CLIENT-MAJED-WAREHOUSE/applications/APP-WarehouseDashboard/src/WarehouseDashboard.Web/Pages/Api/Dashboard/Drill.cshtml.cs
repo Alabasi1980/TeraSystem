@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using ClosedXML.Excel;
 using WarehouseDashboard.Web.Data;
 using WarehouseDashboard.Web.Infrastructure;
 
@@ -46,40 +47,166 @@ public class DrillModel : PageModel
             });
         }
 
-        var card = await _db.DashboardCards.FindAsync(new object[] { cardId }, cancellationToken);
+        var result = await ExecuteDrillQueryAsync(cardId, level, parentValue, cancellationToken);
+        return Json(result);
+    }
+
+    /// <summary>
+    /// GET /api/dashboard/drill/{cardId}/{level}/export?parentValue=...
+    /// Returns a formatted .xlsx file for the drill-down data.
+    /// </summary>
+    public async Task<IActionResult> OnGetExcelAsync(int cardId, int level, string? parentValue, CancellationToken cancellationToken)
+    {
+        DrillDataResult data;
+        try
+        {
+            data = await ExecuteDrillQueryAsync(cardId, level, parentValue, cancellationToken);
+        }
+        catch (Exception)
+        {
+            return new ContentResult
+            {
+                Content = "{\"success\":false,\"errorMessage\":\"حدث خطأ أثناء تصدير البيانات.\"}",
+                ContentType = "application/json"
+            };
+        }
+
+        if (data.Status != "success")
+        {
+            return new ContentResult
+            {
+                Content = "{\"success\":false,\"errorMessage\":\"" + (data.ErrorMessage ?? "لا توجد بيانات للتصدير.") + "\"}",
+                ContentType = "application/json"
+            };
+        }
+
+        // Build Excel using ClosedXML
+        using var workbook = new XLWorkbook();
+        var ws = workbook.Worksheets.Add("Drill Data");
+        ws.RightToLeft = true;
+
+        var colCount = data.Columns.Count;
+        var rowCount = data.Rows.Count;
+
+        // Header
+        for (int i = 0; i < colCount; i++)
+        {
+            var cell = ws.Cell(1, i + 1);
+            cell.Value = data.Columns[i];
+            cell.Style.Font.Bold = true;
+            cell.Style.Font.FontColor = XLColor.White;
+            cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#1F4E79");
+            cell.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            cell.Style.Border.SetOutsideBorderColor(XLColor.FromHtml("#D4E2F0"));
+            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        }
+
+        // Data rows
+        for (int r = 0; r < rowCount; r++)
+        {
+            var row = data.Rows[r];
+            for (int c = 0; c < colCount; c++)
+            {
+                var colName = data.Columns[c];
+                row.TryGetValue(colName, out var val);
+                var cell = ws.Cell(r + 2, c + 1);
+
+                if (val == null)
+                {
+                    cell.Value = "";
+                }
+                else if (val is int || val is long || val is short || val is byte)
+                {
+                    cell.Value = Convert.ToInt64(val);
+                    cell.Style.NumberFormat.Format = "#,##0";
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                }
+                else if (val is decimal || val is double || val is float)
+                {
+                    cell.Value = Convert.ToDouble(val);
+                    cell.Style.NumberFormat.Format = "#,##0.00";
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                }
+                else if (val is DateTime dt)
+                {
+                    cell.Value = dt;
+                    cell.Style.DateFormat.Format = "yyyy-MM-dd HH:mm";
+                }
+                else
+                {
+                    cell.Value = val.ToString() ?? "";
+                }
+
+                cell.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                cell.Style.Border.SetOutsideBorderColor(XLColor.FromHtml("#E0E0E0"));
+            }
+        }
+
+        // AutoFilter
+        if (rowCount > 0 && colCount > 0)
+        {
+            ws.Range(1, 1, 1 + rowCount, colCount).SetAutoFilter();
+        }
+
+        // Column widths
+        ws.Columns().AdjustToContents(1, 100);
+        ws.Columns().Width = 12; // uniform width
+        ws.Column(1).Width = 5; // row number column won't exist, use default
+
+        // Freeze header
+        ws.SheetView.FreezeRows(1);
+
+        // Return file
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        var fileName = $"Drill_{cardId}_Level_{level}_{DateTime.Now:yyyyMMdd-HHmm}.xlsx";
+        return File(stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            fileName);
+    }
+
+    /// <summary>
+    /// Executes the drill-down query for the given card/level/parentValue and returns a
+    /// <see cref="DrillDataResult"/> with the raw data. Shared by both JSON and Excel handlers.
+    /// </summary>
+    private async Task<DrillDataResult> ExecuteDrillQueryAsync(int cardId, int level, string? parentValue, CancellationToken ct)
+    {
+        var card = await _db.DashboardCards.FindAsync(new object[] { cardId }, ct);
         if (card is null)
         {
-            return Json(new DrillDataResult
+            return new DrillDataResult
             {
                 CardId = cardId,
                 Level = level,
                 Status = "error",
                 ErrorMessage = "البطاقة غير موجودة أو غير نشطة."
-            });
+            };
         }
 
         var config = await _db.CardDrillDownLevels
             .Where(l => l.ParentCardId == cardId && l.Level == level)
             .OrderBy(l => l.Level)
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(ct);
 
-            if (config is null)
+        if (config is null)
+        {
+            // Level not configured — not an error per se, just nothing to show here.
+            return new DrillDataResult
             {
-                // Level not configured — not an error per se, just nothing to show here.
-                return Json(new DrillDataResult
-                {
-                    CardId = cardId,
-                    CardTitle = card.Title,
-                    Level = level,
-                    Status = "none",
-                    ErrorMessage = "لا يوجد مستوى تعمّق بهذا الترتيب."
-                });
-            }
+                CardId = cardId,
+                CardTitle = card.Title,
+                Level = level,
+                Status = "none",
+                ErrorMessage = "لا يوجد مستوى تعمّق بهذا الترتيب."
+            };
+        }
 
         var nextLevel = await _db.CardDrillDownLevels
             .Where(l => l.ParentCardId == cardId && l.Level == level + 1)
             .Select(l => new { l.RequiresParentValue })
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(ct);
 
         var hasNext = nextLevel != null;
 
@@ -104,7 +231,7 @@ public class DrillModel : PageModel
         {
             result.Status = "error";
             result.ErrorMessage = "هذا المستوى يتطلب قيمة من المستوى السابق. يرجى اختيار عنصر من المستوى السابق.";
-            return Json(result);
+            return result;
         }
 
         try
@@ -115,13 +242,13 @@ public class DrillModel : PageModel
             if (string.IsNullOrWhiteSpace(connString))
             {
                 result.ErrorMessage = "لم يتم ضبط سلسلة الاتصال بقاعدة البيانات (SQL_PASSWORD).";
-                return Json(result);
+                return result;
             }
 
             var sql = config.DrillDownQuery;
 
             await using var conn = new SqlConnection(connString);
-            await conn.OpenAsync(cancellationToken);
+            await conn.OpenAsync(ct);
 
             await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 60 };
 
@@ -131,7 +258,7 @@ public class DrillModel : PageModel
                 cmd.Parameters.Add(new SqlParameter("@p0", SqlParamValue(parentValue)));
             }
 
-            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
 
             var colCount = reader.FieldCount;
             var columns = new List<string>(colCount);
@@ -150,7 +277,7 @@ public class DrillModel : PageModel
                 {
                     result.Status = "error";
                     result.ErrorMessage = $"عمود الباراميتر المحدد '{config.ParameterColumn}' غير موجود في نتيجة الاستعلام. الأعمدة المتاحة: {string.Join(", ", columns)}";
-                    return Json(result);
+                    return result;
                 }
             }
 
@@ -163,7 +290,7 @@ public class DrillModel : PageModel
                 {
                     result.Status = "error";
                     result.ErrorMessage = $"عمود التسمية المحدد '{config.LabelColumn}' غير موجود في نتيجة الاستعلام. الأعمدة المتاحة: {string.Join(", ", columns)}";
-                    return Json(result);
+                    return result;
                 }
             }
 
@@ -198,7 +325,7 @@ public class DrillModel : PageModel
             var rowLimit = config.TargetChartType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? 500 : 200;
             var rows = new List<Dictionary<string, object?>>(rowLimit);
             var count = 0;
-            while (count < rowLimit && await reader.ReadAsync(cancellationToken))
+            while (count < rowLimit && await reader.ReadAsync(ct))
             {
                 var row = new Dictionary<string, object?>(colCount, StringComparer.OrdinalIgnoreCase);
                 for (var i = 0; i < colCount; i++)
@@ -213,7 +340,7 @@ public class DrillModel : PageModel
             if (rows.Count == 0)
             {
                 result.Status = "empty";
-                return Json(result);
+                return result;
             }
 
             result.KpiValue = rows[0].Values.FirstOrDefault();
@@ -225,7 +352,7 @@ public class DrillModel : PageModel
             result.ErrorMessage = Sanitize(ex.Message);
         }
 
-        return Json(result);
+        return result;
     }
 
     /// <summary>

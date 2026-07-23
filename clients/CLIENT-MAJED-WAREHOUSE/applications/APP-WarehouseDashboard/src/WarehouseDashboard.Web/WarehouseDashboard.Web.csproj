@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <!-- EF Core (Config + Logs) -->
+    <PackageReference Include="ClosedXML" Version="0.104.*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.*">
       <PrivateAssets>all</PrivateAssets>
