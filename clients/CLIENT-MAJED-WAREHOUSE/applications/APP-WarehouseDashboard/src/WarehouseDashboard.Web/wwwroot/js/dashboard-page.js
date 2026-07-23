@@ -853,12 +853,41 @@
                 html += '</div>'; // .wd-table-scroll
 
                 html += '</div>'; // .wd-table-wrap
-
                 viz.innerHTML = html;
 
                 // ── Update pagination ──
                 renderPagination(currentPage, totalPages);
+
+                // ── Attach row click handlers for drill-down selection ──
+                wdAttachDrillRowHandlers(viz, data);
             }
+
+            /**
+             * wdAttachDrillRowHandlers — Attaches click handlers to table rows
+             * for drill-down parameter selection. Must be called after every
+             * renderSmartGrid call (sort, pagination, search, initial render).
+             */
+            function wdAttachDrillRowHandlers(viz, data) {
+                var st = window.__drillState;
+                if (!st || !st.parameterColumn) return;
+                var table = viz.querySelector('.wd-table');
+                if (!table) return;
+                var rows = table.querySelectorAll('tbody tr');
+                rows.forEach(function (tr) {
+                    tr.style.cursor = 'pointer';
+                    tr.addEventListener('click', function () {
+                        rows.forEach(function(r) { r.classList.remove('wd-drill-row--selected'); });
+                        tr.classList.add('wd-drill-row--selected');
+                        var rowIdx = parseInt(tr.getAttribute('data-row-index'), 10);
+                        var rowData = (data.rows || [])[rowIdx];
+                        if (!rowData) return;
+                        var selVal = rowData[st.parameterColumn] != null ? rowData[st.parameterColumn] : rowData[Object.keys(rowData)[0]];
+                        var selLabel = st.labelColumn && rowData[st.labelColumn] != null ? rowData[st.labelColumn] : selVal;
+                        wdSelectRow(selVal, selLabel);
+                    });
+                });
+            }
+
 
             /**
              * renderPagination — Updates the pagination controls at the bottom of the modal.
@@ -1195,26 +1224,6 @@
                         bodyEl.innerHTML = '';
                         bodyEl.appendChild(div);
                         wdRenderGrid(div, data);
-                        // Add click selection to rows (uses data-row-index for pagination compatibility)
-                        var table = div.querySelector('.wd-table');
-                        if (table && st.parameterColumn) {
-                            var rows = table.querySelectorAll('tbody tr');
-                            rows.forEach(function (tr) {
-                                tr.style.cursor = 'pointer';
-                                tr.addEventListener('click', function () {
-                                    // Remove previous selection
-                                    rows.forEach(function(r) { r.classList.remove('wd-drill-row--selected'); });
-                                    // Add selection to clicked row
-                                    tr.classList.add('wd-drill-row--selected');
-                                    var rowIdx = parseInt(tr.getAttribute('data-row-index'), 10);
-                                    var rowData = (data.rows || [])[rowIdx];
-                                    if (!rowData) return;
-                                    var selVal = rowData[st.parameterColumn] != null ? rowData[st.parameterColumn] : rowData[Object.keys(rowData)[0]];
-                                    var selLabel = st.labelColumn && rowData[st.labelColumn] != null ? rowData[st.labelColumn] : selVal;
-                                    wdSelectRow(selVal, selLabel);
-                                });
-                            });
-                        }
                     } else if (data.chartType === 'Gauge') {
                         div.style.height = '400px';
                         bodyEl.innerHTML = '';
