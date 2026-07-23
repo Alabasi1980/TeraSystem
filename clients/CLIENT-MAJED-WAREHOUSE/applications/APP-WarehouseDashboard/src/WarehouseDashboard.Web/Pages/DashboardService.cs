@@ -477,9 +477,11 @@ public class DashboardService
     {
         var dateCol = SanitizeIdentifier(dateColumn);
         var from = range.From.ToString("yyyy-MM-dd");
-        var to = range.To.ToString("yyyy-MM-dd");
+        // Use < next_day for exclusive end boundary — handles datetime with time components correctly.
+        // This matches the pattern used by KpiQueryBuilder for consistency.
+        var nextDay = range.To.AddDays(1).ToString("yyyy-MM-dd");
         return $"SELECT * FROM ({baseSql.TrimEnd(';')}) AS _datefiltered " +
-               $"WHERE {dateCol} >= '{from}' AND {dateCol} <= '{to}'";
+               $"WHERE {dateCol} >= '{from}' AND {dateCol} < '{nextDay}'";
     }
 
     /// <summary>
