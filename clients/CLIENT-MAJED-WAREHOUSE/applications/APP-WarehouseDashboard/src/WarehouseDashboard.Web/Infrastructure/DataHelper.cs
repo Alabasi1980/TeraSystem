@@ -48,18 +48,32 @@ public static class DataHelper
     }
 
     /// <summary>
-    /// Wraps a base SQL query with a date range filter on the specified date column.
-    /// Uses &lt; next_day for exclusive end boundary (handles datetime with time components correctly).
+    /// Applies a date range filter to a SQL query by injecting into the WHERE clause.
+    /// Strips ORDER BY first, then adds the date condition to the existing WHERE clause
+    /// (or appends a new WHERE clause if none exists). Preserves @p0 parameters.
     /// </summary>
     public static string ApplyDateFilter(string baseSql, string dateColumn, DateTime from, DateTime to)
     {
-        // ORDER BY is invalid in derived tables — strip it before wrapping
         baseSql = StripOrderBy(baseSql);
         var dateCol = SanitizeIdentifier(dateColumn);
         var fromStr = from.ToString("yyyy-MM-dd");
         var nextDay = to.AddDays(1).ToString("yyyy-MM-dd");
-        return $"SELECT * FROM ({baseSql.TrimEnd(';')}) AS _datefiltered " +
-               $"WHERE {dateCol} >= '{fromStr}' AND {dateCol} < '{nextDay}'";
+        var dateCondition = $"{dateCol} >= '{fromStr}' AND {dateCol} < '{nextDay}'";
+
+        var trimmed = baseSql.TrimEnd(';', ' ', '\t', '\r', '\n');
+        var whereIdx = trimmed.LastIndexOf(" WHERE ", StringComparison.OrdinalIgnoreCase);
+
+        if (whereIdx < 0)
+        {
+            // No WHERE clause — append one
+            // Ensure there's a space before WHERE
+            return $"{trimmed} WHERE {dateCondition}";
+        }
+
+        // Has WHERE clause — append date condition with AND
+        var beforeWhere = trimmed[..(whereIdx + 7)]; // include " WHERE "
+        var afterWhere = trimmed[(whereIdx + 7)..];
+        return $"{beforeWhere}{dateCondition} AND {afterWhere}";
     }
 
     /// <summary>
