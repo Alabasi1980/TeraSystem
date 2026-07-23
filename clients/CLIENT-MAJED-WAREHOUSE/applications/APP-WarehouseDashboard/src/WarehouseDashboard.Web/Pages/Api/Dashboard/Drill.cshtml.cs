@@ -255,8 +255,10 @@ public class DrillModel : PageModel
 
             var sql = config.DrillDownQuery;
 
-            // Apply card's date filter to the drill query for consistency with the card
-            if (!string.IsNullOrEmpty(card.DateColumn))
+            // Apply card's date filter only on the first drill level (entry from the card).
+            // Deeper levels receive context via @p0 from the clicked row, which inherently
+            // scopes the data — adding the date filter there would be redundant or conflicting.
+            if (level == 1 && !string.IsNullOrEmpty(card.DateColumn))
             {
                 var effectiveDateRange = dateRange;
                 if (string.Equals(card.DateFilterMode, "fixed", StringComparison.OrdinalIgnoreCase)
