@@ -505,10 +505,11 @@
                 hintEl.innerHTML = 'تنبيه: البطاقة تستخدم فلترة تاريخية على عمود <strong>' +
                     escapeHtml(data.dateColumn) + '</strong> بطريقة <strong>' + modeText + '</strong>. ' +
                     'المستوى الأول سيرث تلقائياً فلتر التاريخ هذا.<br><br>' +
-                    'للمستويات الأعمق، استخدم الباراميترات التالية في كويريك:<br>' +
-                    '<code style="display:inline-block;direction:ltr;background:#f4f6f8;padding:8px 12px;border-radius:6px;margin-top:6px;font-size:13px;">' +
-                    'WHERE ' + escapeHtml(data.dateColumn) + ' &gt;= @@DateFrom AND ' + escapeHtml(data.dateColumn) + ' &lt; @@DateTo' +
-                    '</code>';
+                    'الباراميترات المتوفرة في أي مستوى:<br>' +
+                    '<code style="display:inline-block;direction:ltr;background:#f4f6f8;padding:8px 12px;border-radius:6px;margin-top:6px;font-size:13px;line-height:1.8;">' +
+                    '@@p0 = القيمة المحددة من المستوى السابق<br>' +
+                    '@@Ctx0, @@Ctx1, ... = قيم مراكمة من مستويات أعلى<br>' +
+                    '@@DateFrom / @@DateTo = نطاق التاريخ من فلتر الداشبورد</code>';
                 hintEl.hidden = false;
             } else {
                 hintEl.hidden = true;

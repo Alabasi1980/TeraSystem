@@ -36,7 +36,8 @@ public class DrillModel : PageModel
     }
 
     public async Task<IActionResult> OnGetAsync(int cardId, int level, string? parentValue,
-        string? preset, string? dateFrom, string? dateTo, CancellationToken cancellationToken)
+        string? preset, string? dateFrom, string? dateTo, string? ctx,
+        CancellationToken cancellationToken)
     {
         if (level < 1)
         {
@@ -50,7 +51,9 @@ public class DrillModel : PageModel
         }
 
         var dateRange = ResolvePresetDates(preset, dateFrom, dateTo);
-        var result = await ExecuteDrillQueryAsync(cardId, level, parentValue, dateRange, cancellationToken);
+        var ctxValues = ctx?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                       ?? Array.Empty<string>();
+        var result = await ExecuteDrillQueryAsync(cardId, level, parentValue, dateRange, ctxValues, cancellationToken);
         return Json(result);
     }
 
@@ -59,13 +62,16 @@ public class DrillModel : PageModel
     /// Returns a formatted .xlsx file for the drill-down data.
     /// </summary>
     public async Task<IActionResult> OnGetExcelAsync(int cardId, int level, string? parentValue,
-        string? preset, string? dateFrom, string? dateTo, CancellationToken cancellationToken)
+        string? preset, string? dateFrom, string? dateTo, string? ctx,
+        CancellationToken cancellationToken)
     {
         var dateRange = ResolvePresetDates(preset, dateFrom, dateTo);
+        var ctxValues = ctx?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                       ?? Array.Empty<string>();
         DrillDataResult data;
         try
         {
-            data = await ExecuteDrillQueryAsync(cardId, level, parentValue, dateRange, cancellationToken);
+            data = await ExecuteDrillQueryAsync(cardId, level, parentValue, dateRange, ctxValues, cancellationToken);
         }
         catch (Exception)
         {
@@ -179,7 +185,7 @@ public class DrillModel : PageModel
     /// the same date filter used by the dashboard card for consistent data.
     /// </summary>
     private async Task<DrillDataResult> ExecuteDrillQueryAsync(int cardId, int level, string? parentValue,
-        DashboardService.DateRange? dateRange = null, CancellationToken ct = default)
+        DashboardService.DateRange? dateRange = null, string[]? ctxValues = null, CancellationToken ct = default)
     {
         var card = await _db.DashboardCards.FindAsync(new object[] { cardId }, ct);
         if (card is null)
@@ -292,6 +298,20 @@ public class DrillModel : PageModel
             if (sql.Contains("@p0", StringComparison.OrdinalIgnoreCase))
             {
                 cmd.Parameters.Add(new SqlParameter("@p0", SqlParamValue(parentValue)));
+            }
+
+            // Bind accumulated context values from higher levels as @Ctx0, @Ctx1, ...
+            // Example: level 3 can use @Ctx0 for WAREHOUSE_CODE (from level 1 selection)
+            if (ctxValues is not null)
+            {
+                for (int ci = 0; ci < ctxValues.Length; ci++)
+                {
+                    var paramName = $"@Ctx{ci}";
+                    if (sql.Contains(paramName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        cmd.Parameters.Add(new SqlParameter(paramName, SqlParamValue(ctxValues[ci])));
+                    }
+                }
             }
 
             // Pass @DateFrom and @DateTo as optional parameters for any level.

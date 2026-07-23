@@ -1175,6 +1175,18 @@
                 var url = '/api/dashboard/drill/' + st.cardId + '/' + st.currentLevel
                     + '?parentValue=' + encodeURIComponent(st.parentValueForCurrentLevel || '')
                     + '&preset=' + encodeURIComponent(window.WD_DATE_PRESET || 'today');
+                // Accumulate context values from higher levels (e.g., @Ctx0 from level 1)
+                var ctxValues = [];
+                if (st.trail) {
+                    for (var ci = 0; ci < st.trail.length - 1; ci++) {
+                        if (st.trail[ci].parentValueForCurrentLevel != null) {
+                            ctxValues.push(st.trail[ci].parentValueForCurrentLevel);
+                        }
+                    }
+                }
+                if (ctxValues.length > 0) {
+                    url += '&ctx=' + encodeURIComponent(ctxValues.join(','));
+                }
                 if (window.WD_DATE_PRESET === 'custom') {
                     var dateFrom = document.getElementById('wd-date-from');
                     var dateTo = document.getElementById('wd-date-to');
@@ -1536,6 +1548,17 @@
               var parentVal = st.parentValueForCurrentLevel || '';
               var url = '/api/dashboard/drill/' + st.cardId + '/' + st.currentLevel + '?handler=excel&parentValue=' + encodeURIComponent(parentVal)
                     + '&preset=' + encodeURIComponent(window.WD_DATE_PRESET || 'today');
+                var ctxValues = [];
+                if (st.trail) {
+                    for (var ci = 0; ci < st.trail.length - 1; ci++) {
+                        if (st.trail[ci].parentValueForCurrentLevel != null) {
+                            ctxValues.push(st.trail[ci].parentValueForCurrentLevel);
+                        }
+                    }
+                }
+                if (ctxValues.length > 0) {
+                    url += '&ctx=' + encodeURIComponent(ctxValues.join(','));
+                }
                 if (window.WD_DATE_PRESET === 'custom') {
                     var dateFrom = document.getElementById('wd-date-from');
                     var dateTo = document.getElementById('wd-date-to');
