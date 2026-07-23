@@ -430,6 +430,18 @@
     </div>
 </div>
 
+<!-- Tab Bar -->
+<div class="wd-tab-bar" style="margin-top:var(--sp-4);margin-bottom:var(--sp-2);" role="tablist">
+    <button class="wd-tab wd-tab--active" data-tab="sync" role="tab" aria-selected="true">
+        <span class="wd-tab__icon">🔄</span>
+        <span class="wd-tab__label">الجداول المزامنة</span>
+    </button>
+    <button class="wd-tab" data-tab="views" role="tab" aria-selected="false">
+        <span class="wd-tab__icon">👁️</span>
+        <span class="wd-tab__label">عروض SQL</span>
+    </button>
+</div>
+
 <!-- ===== Skeleton Loading ===== -->
 <div id="wd-exports-skeleton" class="wd-exports-skeleton">
     @for (var skelIdx = 0; skelIdx < 4; skelIdx++)
@@ -470,6 +482,16 @@
     <button type="button" class="wd-btn wd-btn--primary" onclick="location.reload()">
         ⟳ إعادة المحاولة
     </button>
+</div>
+
+<!-- ===== Views Grid (hidden initially, filled by JS) ===== -->
+<div id="wd-views-grid" class="wd-exports-grid wd-hidden"></div>
+
+<!-- ===== Views Empty State (hidden initially, shown by JS) ===== -->
+<div id="wd-views-empty" class="wd-exports-empty wd-hidden">
+    <div class="wd-exports-empty__icon" aria-hidden="true">👁️</div>
+    <h3>لا توجد عروض SQL</h3>
+    <p>لم يتم العثور على أي views في قاعدة البيانات.</p>
 </div>
 
 @section Scripts {
@@ -640,6 +662,200 @@
                     }
                 }
             };
+
+            /* ===== SQL Views Tab ===== */
+
+            /**
+             * Load SQL views from the API.
+             */
+            async function loadViews() {
+                try {
+                    var resp = await fetch('/api/sqlviews');
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    var views = await resp.json();
+                    renderViews(views);
+                } catch (err) {
+                    console.error('Failed to load SQL views:', err);
+                    var grid = document.getElementById('wd-views-grid');
+                    if (grid) {
+                        grid.classList.add('wd-hidden');
+                        grid.innerHTML = '';
+                    }
+                    showToast('error', 'فشل تحميل عروض SQL');
+                }
+            }
+
+            /**
+             * Render SQL views cards.
+             */
+            function renderViews(views) {
+                var grid = document.getElementById('wd-views-grid');
+                var empty = document.getElementById('wd-views-empty');
+                if (!grid) return;
+
+                if (!views || views.length === 0) {
+                    grid.classList.add('wd-hidden');
+                    if (empty) empty.classList.remove('wd-hidden');
+                    return;
+                }
+
+                grid.innerHTML = '';
+                grid.classList.remove('wd-hidden');
+                if (empty) empty.classList.add('wd-hidden');
+
+                for (var i = 0; i < views.length; i++) {
+                    var v = views[i];
+                    var card = buildViewCard(v, i);
+                    grid.appendChild(card);
+                }
+            }
+
+            /**
+             * Build a single view card DOM element.
+             */
+            function buildViewCard(v, index) {
+                var delay = index * 70;
+                var schema = v.schema || 'dbo';
+                var viewName = v.name || 'غير معروف';
+                var fullName = '[' + schema + '].[' + viewName + ']';
+
+                var created = v.created ? formatDate(v.created) : '—';
+                var updated = v.updated ? formatDate(v.updated) : '—';
+
+                // Estimate row count from card styling (optional — can show '—' for simplicity)
+                var rowCount = '—';
+
+                var div = document.createElement('div');
+                div.className = 'wd-export-card';
+                div.style.animationDelay = delay + 'ms';
+                div.innerHTML =
+                    '<div class="wd-export-card__header">' +
+                        '<div class="wd-export-card__icon" aria-hidden="true">👁️</div>' +
+                        '<div class="wd-export-card__info">' +
+                            '<h3 class="wd-export-card__table-name"><code>' + escapeHtml(fullName) + '</code></h3>' +
+                            '<p class="wd-export-card__description">' +
+                                '<span>' + escapeHtml(schema) + '</span>' +
+                                '<span class="wd-badge wd-badge--view">View</span>' +
+                            '</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="wd-export-card__meta">' +
+                        '<div class="wd-export-card__meta-row">' +
+                            '<span class="wd-label">📅</span>' +
+                            '<span>تاريخ الإنشاء:</span>' +
+                            '<span class="wd-value">' + escapeHtml(created) + '</span>' +
+                        '</div>' +
+                        '<div class="wd-export-card__meta-row">' +
+                            '<span class="wd-label">🔄</span>' +
+                            '<span>آخر تحديث:</span>' +
+                            '<span class="wd-value">' + escapeHtml(updated) + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="wd-export-card__action">' +
+                        '<button type="button" class="wd-btn--download" onclick="downloadViewAsExcel(\'' + escapeHtml(viewName) + '\', \'' + escapeHtml(schema) + '\', this)" title="تنزيل ملف Excel">' +
+                            '<span class="wd-btn--download__icon" aria-hidden="true">📥</span> تنزيل Excel' +
+                        '</button>' +
+                    '</div>';
+                return div;
+            }
+
+            /**
+             * Download an Excel file for a given SQL view.
+             */
+            window.downloadViewAsExcel = async function (viewName, schema, btn) {
+                if (btn) {
+                    btn.disabled = true;
+                    var originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<span class="wd-spinner--sm"></span> جاري التحميل…';
+
+                    try {
+                        var url = '/api/sqlviews?handler=ExportExcel&schema=' + encodeURIComponent(schema) + '&name=' + encodeURIComponent(viewName);
+                        var resp = await fetch(url);
+                        if (!resp.ok) {
+                            var errText = await resp.text();
+                            throw new Error(errText || 'HTTP ' + resp.status);
+                        }
+
+                        // Check if response is JSON (error) or blob (file)
+                        var contentType = resp.headers.get('Content-Type') || '';
+                        if (contentType.indexOf('application/json') !== -1) {
+                            var errJson = await resp.json();
+                            throw new Error(errJson.errorMessage || 'فشل التصدير');
+                        }
+
+                        var disposition = resp.headers.get('Content-Disposition');
+                        var filename = (viewName || 'export') + '.xlsx';
+                        if (disposition) {
+                            var match = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                            if (match && match[1]) {
+                                filename = match[1].replace(/['"]/g, '');
+                            }
+                        }
+
+                        var blob = await resp.blob();
+                        var blobUrl = URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(blobUrl);
+
+                        showToast('success', '✅ تم تحميل ' + (viewName || '') + ' بنجاح');
+                    } catch (err) {
+                        showToast('error', '❌ فشل التحميل: ' + (err.message || 'خطأ غير متوقع'));
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+                    }
+                }
+            };
+
+            // Tab switching
+            (function initTabs() {
+                var tabBar = document.querySelector('.wd-tab-bar');
+                var tabButtons = tabBar ? tabBar.querySelectorAll('[data-tab]') : [];
+                var syncGrid = document.getElementById('wd-exports-grid');
+                var syncEmpty = document.getElementById('wd-exports-empty');
+                var syncError = document.getElementById('wd-exports-error');
+                var syncSkeleton = document.getElementById('wd-exports-skeleton');
+                var viewsGrid = document.getElementById('wd-views-grid');
+                var viewsEmpty = document.getElementById('wd-views-empty');
+
+                tabButtons.forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var tab = this.getAttribute('data-tab');
+
+                        // Update active state
+                        tabButtons.forEach(function(b) {
+                            b.classList.remove('wd-tab--active');
+                            b.setAttribute('aria-selected', 'false');
+                        });
+                        this.classList.add('wd-tab--active');
+                        this.setAttribute('aria-selected', 'true');
+
+                        // Show/hide content
+                        var isSync = tab === 'sync';
+
+                        // Sync section
+                        if (syncGrid) syncGrid.style.display = isSync ? '' : 'none';
+                        if (syncEmpty) syncEmpty.style.display = isSync ? '' : 'none';
+                        if (syncError) syncError.style.display = isSync ? '' : 'none';
+                        // Don't hide skeleton — it's hidden once data loads
+
+                        // Views section
+                        if (viewsGrid) viewsGrid.style.display = isSync ? 'none' : '';
+                        if (viewsEmpty) viewsEmpty.style.display = isSync ? 'none' : '';
+
+                        // Load views on first click
+                        if (!isSync && !window._viewsLoaded) {
+                            window._viewsLoaded = true;
+                            loadViews();
+                        }
+                    });
+                });
+            })();
 
             // Start loading on DOM ready
             if (document.readyState === 'loading') {

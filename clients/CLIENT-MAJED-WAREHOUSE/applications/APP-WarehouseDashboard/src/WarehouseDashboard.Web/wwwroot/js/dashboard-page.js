@@ -783,6 +783,16 @@
                 // Store filtered rows on state
                 if (st) st.filteredRows = filteredRows;
 
+                // Annotate rows with original index (before sort)
+                filteredRows.forEach(function(r, i) {
+                    if (r.__origIdx === undefined) {
+                        r.__origIdx = allRows.indexOf(r) >= 0 ? allRows.indexOf(r) : i;
+                    }
+                });
+
+                // Store original rows reference
+                if (st) st._allOrigRows = allRows;
+
                 // Step 2: Sort
                 if (sortCol) {
                     filteredRows = sortRows(filteredRows, sortCol, sortAsc, cols);
@@ -797,13 +807,6 @@
 
                 var startIdx = (currentPage - 1) * pageSize;
                 var pageRows = filteredRows.slice(startIdx, startIdx + pageSize);
-
-                // Determine numeric columns for summaries
-                var numericCols = [];
-                cols.forEach(function(c) { if (isNumericColumn(allRows, c)) numericCols.push(c); });
-
-                // Compute summaries from ALL filtered rows (not just page)
-                var summaries = calcSummaries(cols, filteredRows, numericCols);
 
                 // Update toolbar info
                 var infoEl = document.getElementById('wd-drill-info');
@@ -839,10 +842,10 @@
                 // â”€â”€ Body â”€â”€
                 html += '<tbody>';
                 pageRows.forEach(function(r, idx) {
-                    var globalIdx = startIdx + idx;
-                    html += '<tr style="animation-delay:' + (idx * 20) + 'ms;" data-row-index="' + globalIdx + '">';
+                    var origIdx = r.__origIdx != null ? r.__origIdx : idx;
+                    html += '<tr style="animation-delay:' + (idx * 20) + 'ms;" data-row-index="' + origIdx + '">';
                     // Row number
-                    html += '<td class="wd-col--rownum">' + (globalIdx + 1) + '</td>';
+                    html += '<td class="wd-col--rownum">' + (origIdx + 1) + '</td>';
                     cols.forEach(function(c) {
                         var val = r[c];
                         var formatted = formatDrillCell(val);
@@ -853,17 +856,6 @@
                 html += '</tbody></table>';
                 html += '</div>'; // .wd-table-scroll
 
-                // â”€â”€ Summaries row â”€â”€
-                if (summaries.length > 0) {
-                    html += '<div class="wd-table__summaries">';
-                    summaries.forEach(function(s) {
-                        html += '<span class="wd-table__summaries-item">'
-                            + '<span class="wd-table__summaries-label">' + escapeHtml(s.label) + ':</span>'
-                            + ' <span class="wd-table__summaries-value">' + s.value + '</span>'
-                            + '</span>';
-                    });
-                    html += '</div>';
-                }
 
                 html += '</div>'; // .wd-table-wrap
 
@@ -976,100 +968,22 @@
                 return sorted;
             }
 
-            /**
-             * isNumericColumn â€” Heuristic: checks if >60% of non-null values are numeric.
-             */
-            function isNumericColumn(rows, colName) {
-                var count = 0;
-                var numeric = 0;
-                for (var i = 0; i < rows.length; i++) {
-                    var v = rows[i][colName];
-                    if (v == null || v === '') continue;
-                    count++;
-                    if (!isNaN(parseFloat(v)) && isFinite(v)) numeric++;
-                }
-                if (count === 0) return false;
-                return (numeric / count) > 0.6;
-            }
+
 
             /**
-             * calcSummaries â€” Computes SUM/AVG/COUNT for each numeric column.
-             */
-            function calcSummaries(cols, rows, numericCols) {
-                var items = [];
-                if (numericCols.length === 0) return items;
-                numericCols.forEach(function(col) {
-                    var sum = 0;
-                    var count = 0;
-                    for (var i = 0; i < rows.length; i++) {
-                        var v = parseFloat(rows[i][col]);
-                        if (!isNaN(v) && isFinite(v)) {
-                            sum += v;
-                            count++;
-                        }
-                    }
-                    if (count > 0) {
-                        items.push({ label: 'âˆ‘ ' + col, value: formatDrillNumber(sum) });
-                        items.push({ label: 'âˆ… ' + col, value: formatDrillNumber(sum / count) });
-                        items.push({ label: '#' + col, value: count.toLocaleString('ar-SA') });
-                    }
-                });
-                return items;
-            }
-
-            /**
-             * formatDrillCell â€” Formats cell values with type-aware display.
-             * Numbers â†’ locale-formatted with LTR direction
-             * Dates   â†’ formatted as YYYY-MM-DD
-             * Null    â†’ â€” (em dash)
-             * Strings â†’ truncated with ellipsis
+             * formatDrillCell - Renders raw cell value (no number formatting).
              */
             function formatDrillCell(val) {
                 if (val == null || val === '') {
-                    return '<span class="wd-table__null">â€”</span>';
+                    return '<span class="wd-table__null">-</span>';
                 }
-                // Check if it's a number
-                if (typeof val === 'number' || (typeof val === 'string' && !isNaN(parseFloat(val)) && isFinite(val) && val.trim() !== '')) {
-                    var num = typeof val === 'number' ? val : parseFloat(val);
-                    // Heuristic: if it looks like a date (e.g. "2024-01-15" or "2024/01/15"), format as date
-                    var s = String(val).trim();
-                    if (/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(s)) {
-                        return '<span class="wd-table__date">' + escapeHtml(s) + '</span>';
-                    }
-                    // Check for time component (e.g. "2024-01-15T10:30:00" or "2024-01-15 10:30")
-                    if (/^\d{4}[-/]\d{1,2}[-/]\d{1,2}[T ]\d{1,2}:\d{2}/.test(s)) {
-                        return '<span class="wd-table__date">' + escapeHtml(s) + '</span>';
-                    }
-                    return '<span class="wd-table__number">' + formatDrillNumber(num) + '</span>';
-                }
-                // Date objects
-                if (val instanceof Date) {
-                    var y = val.getFullYear();
-                    var m = String(val.getMonth() + 1).padStart(2, '0');
-                    var d = String(val.getDate()).padStart(2, '0');
-                    return '<span class="wd-table__date">' + y + '-' + m + '-' + d + '</span>';
-                }
-                // String: escape and truncate
                 var text = String(val);
-                if (text.length > 120) {
-                    text = text.substring(0, 120) + 'â€¦';
+                if (text.length > 200) {
+                    text = text.substring(0, 200) + '...';
                 }
-                return '<span class="wd-table__text">' + escapeHtml(text) + '</span>';
+                return '<span class="wd-table__text" dir="auto">' + escapeHtml(text) + '</span>';
             }
 
-            /**
-             * formatDrillNumber â€” Formats a number using Arabic locale with 0-2 decimal places.
-             */
-            function formatDrillNumber(val) {
-                if (val == null || isNaN(val)) return 'â€”';
-                // For very large numbers, show with 0 decimals; for small numbers with up to 2
-                var decimals = (Math.abs(val) >= 1000) ? 0 : ((Math.abs(val) < 1) ? 2 : 1);
-                try {
-                    return val.toLocaleString('ar-SA', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-                } catch (e) {
-                    return val.toLocaleString('ar-SA');
-                }
-            }
 
             /**
              * wdDrillSort â€” Toggles sort on a column (called from header onClick).
@@ -1607,7 +1521,7 @@
               var st = window.__drillState;
               if (!st) return;
               var parentVal = st.parentValueForCurrentLevel || '';
-              var url = '/api/dashboard/drill/' + st.cardId + '/' + st.currentLevel + '/export?parentValue=' + encodeURIComponent(parentVal);
+              var url = '/api/dashboard/drill/' + st.cardId + '/' + st.currentLevel + '?handler=excel&parentValue=' + encodeURIComponent(parentVal);
               window.open(url, '_blank');
             }
             window.wdExportExcel = wdExportExcel;
@@ -2175,4 +2089,34 @@
                     else if (size === 'large' && w > 7) b.classList.add('active');
                 });
             });
+
+        // Make drill modal draggable
+        (function() {
+            var modal = document.getElementById('wd-drill-modal');
+            var header = modal ? modal.querySelector('.wd-modal__header') : null;
+            if (!modal || !header) return;
+            var isDragging = false, startX, startY, origX, origY;
+            header.style.cursor = 'grab';
+            header.addEventListener('mousedown', function(e) {
+                if (e.target.closest('.wd-modal__close')) return;
+                isDragging = true;
+                var rect = modal.getBoundingClientRect();
+                startX = e.clientX; startY = e.clientY;
+                origX = rect.left; origY = rect.top;
+                modal.style.position = 'fixed';
+                modal.style.left = origX + 'px'; modal.style.top = origY + 'px';
+                modal.style.margin = '0';
+                header.style.cursor = 'grabbing';
+                e.preventDefault();
+            });
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                modal.style.left = (origX + e.clientX - startX) + 'px';
+                modal.style.top = (origY + e.clientY - startY) + 'px';
+            });
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                if (header) header.style.cursor = 'grab';
+            });
+        })();
         })();
