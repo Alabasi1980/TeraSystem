@@ -277,6 +277,8 @@ public class DrillModel : PageModel
 
                 if (effectiveDateRange is not null)
                 {
+                    // Strip ORDER BY before wrapping in subquery (SQL Server restriction)
+                    sql = DataHelper.StripOrderBy(sql);
                     sql = DataHelper.ApplyDateFilter(sql, card.DateColumn, effectiveDateRange.From, effectiveDateRange.To);
                 }
             }
