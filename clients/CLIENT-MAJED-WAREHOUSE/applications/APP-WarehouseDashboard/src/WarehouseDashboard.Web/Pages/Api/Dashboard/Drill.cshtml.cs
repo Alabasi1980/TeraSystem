@@ -255,12 +255,10 @@ public class DrillModel : PageModel
 
             var sql = config.DrillDownQuery;
 
-            // Apply card's date filter only on the first drill level (entry from the card).
-            // Deeper levels receive context via @p0 from the clicked row, which inherently
-            // scopes the data — adding the date filter there would be redundant or conflicting.
-            if (level == 1 && !string.IsNullOrEmpty(card.DateColumn))
+            // Resolve effective date range from card's DateFilterMode + filter bar preset
+            DashboardService.DateRange? effectiveDateRange = dateRange;
+            if (!string.IsNullOrEmpty(card.DateColumn))
             {
-                var effectiveDateRange = dateRange;
                 if (string.Equals(card.DateFilterMode, "fixed", StringComparison.OrdinalIgnoreCase)
                     && !string.IsNullOrWhiteSpace(card.FixedStartDate)
                     && !string.IsNullOrWhiteSpace(card.FixedEndDate))
@@ -277,9 +275,9 @@ public class DrillModel : PageModel
                     effectiveDateRange = new DashboardService.DateRange(DateTime.UtcNow.AddDays(-days), DateTime.UtcNow);
                 }
 
-                if (effectiveDateRange is not null)
+                // Level 1: automatically inject date filter into SQL
+                if (level == 1 && effectiveDateRange is not null)
                 {
-                    // Strip ORDER BY before wrapping in subquery (SQL Server restriction)
                     sql = DataHelper.StripOrderBy(sql);
                     sql = DataHelper.ApplyDateFilter(sql, card.DateColumn, effectiveDateRange.From, effectiveDateRange.To);
                 }
@@ -290,10 +288,21 @@ public class DrillModel : PageModel
 
             await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 60 };
 
-            // SAFE parameter binding: only @p0 is ever bound, via SqlParameter.
+            // SAFE parameter binding: @p0 for drill-down context
             if (sql.Contains("@p0", StringComparison.OrdinalIgnoreCase))
             {
                 cmd.Parameters.Add(new SqlParameter("@p0", SqlParamValue(parentValue)));
+            }
+
+            // Pass @DateFrom and @DateTo as optional parameters for any level.
+            // Usage: WHERE ST_JOR_DATE >= @DateFrom AND ST_JOR_DATE < @DateTo
+            // @DateTo is the next day (exclusive) to match ApplyDateFilter pattern.
+            if (effectiveDateRange is not null)
+            {
+                cmd.Parameters.Add(new SqlParameter("@DateFrom", System.Data.SqlDbType.Date)
+                { Value = effectiveDateRange.From.Date });
+                cmd.Parameters.Add(new SqlParameter("@DateTo", System.Data.SqlDbType.Date)
+                { Value = effectiveDateRange.To.Date.AddDays(1) });
             }
 
             await using var reader = await cmd.ExecuteReaderAsync(ct);
