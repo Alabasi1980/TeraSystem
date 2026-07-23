@@ -61,7 +61,15 @@ public class DrillDownModel : PageModel
                     l.ParameterColumn, l.LabelColumn, l.ColumnAliases, l.RequiresParentValue))
                 .ToListAsync();
 
-            return Json(new { success = true, levels });
+            // Include card's date filter info so the drill UI can show a hint
+            var card = await _db.DashboardCards.FindAsync(cardId);
+            return Json(new
+            {
+                success = true,
+                levels,
+                dateColumn = card?.DateColumn,
+                dateFilterMode = card?.DateFilterMode
+            });
         }
         catch (Exception ex)
         {

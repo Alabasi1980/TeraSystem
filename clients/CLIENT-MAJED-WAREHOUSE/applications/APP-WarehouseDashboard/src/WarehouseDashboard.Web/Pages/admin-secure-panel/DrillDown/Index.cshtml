@@ -262,6 +262,9 @@
             <span class="wd-card__title">مستويات التنقّل العميق</span>
         </div>
         <div class="wd-card__body">
+            <div id="dateFilterHint" class="wd-alert wd-alert--info" hidden
+                 style="margin-bottom:16px;padding:12px 16px;border-radius:8px;background:rgba(31,78,121,0.08);border:1px solid rgba(31,78,121,0.18);font-size:13px;line-height:1.6;">
+            </div>
             <div id="levelsSkeleton" class="wd-skeleton" hidden>
                 @for (int i = 0; i < 5; i++) { <div class="wd-skeleton__row"></div> }
             </div>
@@ -492,6 +495,19 @@
                 showToast(data.errorMessage || 'تعذر تحميل المستويات.', 'error');
                 showLevelsEmpty(true);
                 return;
+            }
+
+            // Show date filter hint if card has date filtering
+            var hintEl = document.getElementById('dateFilterHint');
+            if (data.dateColumn) {
+                var modeText = data.dateFilterMode === 'fixed' ? 'ثابت' :
+                    data.dateFilterMode === 'relative' ? 'نسبي (آخر N يوم)' : 'حسب فلتر لوحة المعلومات';
+                hintEl.innerHTML = 'تنبيه: البطاقة تستخدم فلترة تاريخية على عمود <strong>' +
+                    escapeHtml(data.dateColumn) + '</strong> بطريقة <strong>' + modeText + '</strong>. ' +
+                    'المستوى الأول سيرث تلقائياً فلتر التاريخ هذا. المستويات الأعمق لا ترثه.';
+                hintEl.hidden = false;
+            } else {
+                hintEl.hidden = true;
             }
 
             currentLevels = data.levels || [];
