@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using ClosedXML.Excel;
 using WarehouseDashboard.Web.Data;
 using WarehouseDashboard.Web.Infrastructure;
+using WarehouseDashboard.Web.Pages;
 
 namespace WarehouseDashboard.Web.Pages.Api.Dashboard;
 
@@ -34,7 +35,8 @@ public class DrillModel : PageModel
         _config = config;
     }
 
-    public async Task<IActionResult> OnGetAsync(int cardId, int level, string? parentValue, CancellationToken cancellationToken)
+    public async Task<IActionResult> OnGetAsync(int cardId, int level, string? parentValue,
+        string? preset, string? dateFrom, string? dateTo, CancellationToken cancellationToken)
     {
         if (level < 1)
         {
@@ -47,7 +49,8 @@ public class DrillModel : PageModel
             });
         }
 
-        var result = await ExecuteDrillQueryAsync(cardId, level, parentValue, cancellationToken);
+        var dateRange = ResolvePresetDates(preset, dateFrom, dateTo);
+        var result = await ExecuteDrillQueryAsync(cardId, level, parentValue, dateRange, cancellationToken);
         return Json(result);
     }
 
@@ -55,12 +58,14 @@ public class DrillModel : PageModel
     /// GET /api/dashboard/drill/{cardId}/{level}/export?parentValue=...
     /// Returns a formatted .xlsx file for the drill-down data.
     /// </summary>
-    public async Task<IActionResult> OnGetExcelAsync(int cardId, int level, string? parentValue, CancellationToken cancellationToken)
+    public async Task<IActionResult> OnGetExcelAsync(int cardId, int level, string? parentValue,
+        string? preset, string? dateFrom, string? dateTo, CancellationToken cancellationToken)
     {
+        var dateRange = ResolvePresetDates(preset, dateFrom, dateTo);
         DrillDataResult data;
         try
         {
-            data = await ExecuteDrillQueryAsync(cardId, level, parentValue, cancellationToken);
+            data = await ExecuteDrillQueryAsync(cardId, level, parentValue, dateRange, cancellationToken);
         }
         catch (Exception)
         {
@@ -170,8 +175,11 @@ public class DrillModel : PageModel
     /// <summary>
     /// Executes the drill-down query for the given card/level/parentValue and returns a
     /// <see cref="DrillDataResult"/> with the raw data. Shared by both JSON and Excel handlers.
+    /// The drill query respects the card's DateColumn and DateFilterMode settings, applying
+    /// the same date filter used by the dashboard card for consistent data.
     /// </summary>
-    private async Task<DrillDataResult> ExecuteDrillQueryAsync(int cardId, int level, string? parentValue, CancellationToken ct)
+    private async Task<DrillDataResult> ExecuteDrillQueryAsync(int cardId, int level, string? parentValue,
+        DashboardService.DateRange? dateRange = null, CancellationToken ct = default)
     {
         var card = await _db.DashboardCards.FindAsync(new object[] { cardId }, ct);
         if (card is null)
@@ -246,6 +254,32 @@ public class DrillModel : PageModel
             }
 
             var sql = config.DrillDownQuery;
+
+            // Apply card's date filter to the drill query for consistency with the card
+            if (!string.IsNullOrEmpty(card.DateColumn))
+            {
+                var effectiveDateRange = dateRange;
+                if (string.Equals(card.DateFilterMode, "fixed", StringComparison.OrdinalIgnoreCase)
+                    && !string.IsNullOrWhiteSpace(card.FixedStartDate)
+                    && !string.IsNullOrWhiteSpace(card.FixedEndDate))
+                {
+                    if (DateTime.TryParse(card.FixedStartDate, out var from)
+                        && DateTime.TryParse(card.FixedEndDate, out var to))
+                    {
+                        effectiveDateRange = new DashboardService.DateRange(from, to.AddDays(1).AddTicks(-1));
+                    }
+                }
+                else if (string.Equals(card.DateFilterMode, "relative", StringComparison.OrdinalIgnoreCase))
+                {
+                    var days = card.RelativeDays > 0 ? card.RelativeDays : 30;
+                    effectiveDateRange = new DashboardService.DateRange(DateTime.UtcNow.AddDays(-days), DateTime.UtcNow);
+                }
+
+                if (effectiveDateRange is not null)
+                {
+                    sql = DataHelper.ApplyDateFilter(sql, card.DateColumn, effectiveDateRange.From, effectiveDateRange.To);
+                }
+            }
 
             await using var conn = new SqlConnection(connString);
             await conn.OpenAsync(ct);
@@ -435,5 +469,41 @@ public class DrillModel : PageModel
             cleaned = cleaned.Replace(password, "***", StringComparison.Ordinal);
         }
         return cleaned;
+    }
+
+    /// <summary>
+    /// Converts a dashboard filter preset string into a DateRange.
+    /// Mirrors CardModel.ResolvePresetDates for consistent date filtering.
+    /// </summary>
+    private static DashboardService.DateRange? ResolvePresetDates(string? preset, string? dateFrom = null, string? dateTo = null)
+    {
+        if (string.IsNullOrWhiteSpace(preset))
+            return null;
+
+        if (string.Equals(preset, "custom", StringComparison.OrdinalIgnoreCase))
+        {
+            if (!string.IsNullOrWhiteSpace(dateFrom) && !string.IsNullOrWhiteSpace(dateTo)
+                && DateTime.TryParse(dateFrom, out var from) && DateTime.TryParse(dateTo, out var to))
+            {
+                return new DashboardService.DateRange(from, to.AddDays(1).AddTicks(-1));
+            }
+            return null;
+        }
+
+        var today = DateTime.Today;
+
+        return preset.ToLowerInvariant() switch
+        {
+            "today" => new DashboardService.DateRange(today, today.AddDays(1).AddTicks(-1)),
+            "yesterday" => new DashboardService.DateRange(today.AddDays(-1), today.AddTicks(-1)),
+            "7days" => new DashboardService.DateRange(today.AddDays(-6), today.AddDays(1).AddTicks(-1)),
+            "30days" => new DashboardService.DateRange(today.AddDays(-29), today.AddDays(1).AddTicks(-1)),
+            "month" => new DashboardService.DateRange(new DateTime(today.Year, today.Month, 1), today.AddDays(1).AddTicks(-1)),
+            "lastmonth" => new DashboardService.DateRange(
+                new DateTime(today.Year, today.Month, 1).AddMonths(-1),
+                new DateTime(today.Year, today.Month, 1).AddTicks(-1)
+            ),
+            _ => null
+        };
     }
 }

@@ -46,4 +46,26 @@ public static class DataHelper
 
         return cleaned;
     }
+
+    /// <summary>
+    /// Wraps a base SQL query with a date range filter on the specified date column.
+    /// Uses &lt; next_day for exclusive end boundary (handles datetime with time components correctly).
+    /// </summary>
+    public static string ApplyDateFilter(string baseSql, string dateColumn, DateTime from, DateTime to)
+    {
+        var dateCol = SanitizeIdentifier(dateColumn);
+        var fromStr = from.ToString("yyyy-MM-dd");
+        var nextDay = to.AddDays(1).ToString("yyyy-MM-dd");
+        return $"SELECT * FROM ({baseSql.TrimEnd(';')}) AS _datefiltered " +
+               $"WHERE {dateCol} >= '{fromStr}' AND {dateCol} < '{nextDay}'";
+    }
+
+    /// <summary>
+    /// Sanitizes a column name to prevent SQL injection.
+    /// </summary>
+    public static string SanitizeIdentifier(string name)
+    {
+        var cleaned = name.Replace("[", "").Replace("]", "").Replace(";", "").Trim();
+        return $"[{cleaned}]";
+    }
 }

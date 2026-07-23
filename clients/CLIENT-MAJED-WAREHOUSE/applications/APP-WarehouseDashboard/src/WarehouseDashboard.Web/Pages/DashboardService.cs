@@ -475,23 +475,7 @@ public class DashboardService
     /// </summary>
     private static string ApplyDateFilter(string baseSql, string dateColumn, DateRange range)
     {
-        var dateCol = SanitizeIdentifier(dateColumn);
-        var from = range.From.ToString("yyyy-MM-dd");
-        // Use < next_day for exclusive end boundary — handles datetime with time components correctly.
-        // This matches the pattern used by KpiQueryBuilder for consistency.
-        var nextDay = range.To.AddDays(1).ToString("yyyy-MM-dd");
-        return $"SELECT * FROM ({baseSql.TrimEnd(';')}) AS _datefiltered " +
-               $"WHERE {dateCol} >= '{from}' AND {dateCol} < '{nextDay}'";
-    }
-
-    /// <summary>
-    /// Sanitizes a column name to prevent SQL injection.
-    /// Wraps in square brackets and removes dangerous characters.
-    /// </summary>
-    private static string SanitizeIdentifier(string name)
-    {
-        var cleaned = name.Replace("[", "").Replace("]", "").Replace(";", "").Trim();
-        return $"[{cleaned}]";
+        return DataHelper.ApplyDateFilter(baseSql, dateColumn, range.From, range.To);
     }
 
     /// <summary>

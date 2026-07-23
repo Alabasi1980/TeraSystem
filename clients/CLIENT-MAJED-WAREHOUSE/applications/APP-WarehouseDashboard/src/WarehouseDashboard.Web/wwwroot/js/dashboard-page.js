@@ -1173,7 +1173,16 @@
                 wdShowDrillSkeleton();
                 st.currentData = null;
                 var url = '/api/dashboard/drill/' + st.cardId + '/' + st.currentLevel
-                    + '?parentValue=' + encodeURIComponent(st.parentValueForCurrentLevel || '');
+                    + '?parentValue=' + encodeURIComponent(st.parentValueForCurrentLevel || '')
+                    + '&preset=' + encodeURIComponent(window.WD_DATE_PRESET || 'today');
+                if (window.WD_DATE_PRESET === 'custom') {
+                    var dateFrom = document.getElementById('wd-date-from');
+                    var dateTo = document.getElementById('wd-date-to');
+                    if (dateFrom && dateTo && dateFrom.value && dateTo.value) {
+                        url += '&dateFrom=' + encodeURIComponent(dateFrom.value)
+                             + '&dateTo=' + encodeURIComponent(dateTo.value);
+                    }
+                }
                 fetch(url, { headers: { 'Accept': 'application/json' } })
                     .then(function (r) { return r.json(); })
                     .then(function (data) {
@@ -1525,7 +1534,16 @@
               var st = window.__drillState;
               if (!st) return;
               var parentVal = st.parentValueForCurrentLevel || '';
-              var url = '/api/dashboard/drill/' + st.cardId + '/' + st.currentLevel + '?handler=excel&parentValue=' + encodeURIComponent(parentVal);
+              var url = '/api/dashboard/drill/' + st.cardId + '/' + st.currentLevel + '?handler=excel&parentValue=' + encodeURIComponent(parentVal)
+                    + '&preset=' + encodeURIComponent(window.WD_DATE_PRESET || 'today');
+                if (window.WD_DATE_PRESET === 'custom') {
+                    var dateFrom = document.getElementById('wd-date-from');
+                    var dateTo = document.getElementById('wd-date-to');
+                    if (dateFrom && dateTo && dateFrom.value && dateTo.value) {
+                        url += '&dateFrom=' + encodeURIComponent(dateFrom.value)
+                             + '&dateTo=' + encodeURIComponent(dateTo.value);
+                    }
+                }
               window.open(url, '_blank');
             }
             window.wdExportExcel = wdExportExcel;
