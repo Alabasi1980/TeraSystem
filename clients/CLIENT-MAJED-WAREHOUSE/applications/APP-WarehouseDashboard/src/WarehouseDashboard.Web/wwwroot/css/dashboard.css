@@ -549,7 +549,7 @@
 
     /* ===== Container queries â€” real density driver ===== */
     /* compact width/height: categories off; keep value + change + totals + spark */
-    @@container kpi (max-width: 280px) or (max-height: 160px) {
+    @container kpi (max-width: 280px) or (max-height: 160px) {
         .wd-kpi__categories { display: none !important; }
         .wd-kpi__row { grid-template-columns: 1fr; gap: 4px; }
         .wd-kpi__value { font-size: clamp(13px, 6cqi, 18px); line-height: 1; }
@@ -569,7 +569,7 @@
     }
 
     /* very short: thinner spark; still keep change; hide totals only at extreme height below */
-    @@container kpi (max-height: 130px) {
+    @container kpi (max-height: 130px) {
         .wd-kpi__sparkline { height: 32px; max-height: 34px; }
         .wd-kpi__cluster { gap: 4px; }
         .wd-kpi__hero { gap: 3px; }
@@ -578,7 +578,7 @@
     }
 
     /* M width: medium spark + 3 category rows */
-    @@container kpi (min-width: 281px) and (max-width: 420px) {
+    @container kpi (min-width: 281px) and (max-width: 420px) {
         .wd-kpi__sparkline { height: 52px; max-height: 56px; }
         .wd-kpi-breakdown__table tr:nth-child(n+4) { display: none; }
         .wd-kpi-breakdown__table tr:nth-child(-n+3) { display: table-row; }
@@ -586,20 +586,20 @@
     }
 
     /* narrow: hide categories */
-    @@container kpi (max-width: 360px) {
+    @container kpi (max-width: 360px) {
         .wd-kpi__categories { display: none !important; }
         .wd-kpi__row { grid-template-columns: 1fr; }
     }
 
     /* comfortable M/L: 3â€“4 rows + medium-tall spark */
-    @@container kpi (min-width: 421px) and (min-height: 200px) {
+    @container kpi (min-width: 421px) and (min-height: 200px) {
         .wd-kpi__sparkline { height: 56px; max-height: 64px; }
         .wd-kpi-breakdown__table tr:nth-child(n+5) { display: none; }
         .wd-kpi-breakdown__table tr:nth-child(-n+4) { display: table-row; }
     }
 
     /* Large roomy: 5 rows + taller spark */
-    @@container kpi (min-width: 520px) and (min-height: 240px) {
+    @container kpi (min-width: 520px) and (min-height: 240px) {
         .wd-kpi__sparkline { height: 68px; max-height: 72px; }
         .wd-kpi-breakdown__table tr:nth-child(-n+5) { display: table-row; }
         .wd-kpi-breakdown__table tr:nth-child(n+6) { display: none; }
@@ -608,17 +608,17 @@
     }
 
     /* short but wide: categories off if height tight */
-    @@container kpi (max-height: 180px) {
+    @container kpi (max-height: 180px) {
         .wd-kpi__categories { display: none !important; }
         .wd-kpi__row { grid-template-columns: 1fr; }
     }
 
-    @@container kpi (max-height: 200px) {
+    @container kpi (max-height: 200px) {
         .wd-kpi-grandtotal__row:nth-child(n+3) { display: none; }
     }
 
     /* extreme short only â€” hide totals when card is too tiny for them */
-    @@container kpi (max-height: 110px) {
+    @container kpi (max-height: 110px) {
         .wd-kpi__details,
         .wd-kpi__grandtotal { display: none !important; }
     }
@@ -697,15 +697,15 @@
     }
 
     /* ===== KPI Animations ===== */
-    @@keyframes wdKpiHeroIn {
+    @keyframes wdKpiHeroIn {
         from { opacity: 0; transform: translateY(6px) scale(0.985); }
         to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    @@keyframes wdKpiBadgeIn {
+    @keyframes wdKpiBadgeIn {
         from { opacity: 0; transform: translateY(4px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    @@keyframes wdSparklineIn {
+    @keyframes wdSparklineIn {
         from { opacity: 0; transform: translateY(4px); }
         to { opacity: 1; transform: translateY(0); }
     }
@@ -989,7 +989,7 @@
         animation: wdTableRowIn var(--dur-norm) var(--ease) both;
     }
 
-    @@keyframes wdTableRowIn {
+    @keyframes wdTableRowIn {
         from { opacity: 0; transform: translateY(4px); }
         to   { opacity: 1; transform: translateY(0); }
     }
@@ -1081,7 +1081,7 @@
     }
 
     /* ===== Filter bar mobile responsive (TASK-UI-POLISH-003) ===== */
-    @@media (max-width: 768px) {
+    @media (max-width: 768px) {
         .wd-filterbar {
             padding: 12px;
             gap: 8px;
@@ -1101,7 +1101,7 @@
         }
     }
 
-    @@media (max-width: 480px) {
+    @media (max-width: 480px) {
         .wd-filterbar {
             padding: 10px;
             gap: 6px;
