@@ -504,7 +504,11 @@
                     data.dateFilterMode === 'relative' ? 'نسبي (آخر N يوم)' : 'حسب فلتر لوحة المعلومات';
                 hintEl.innerHTML = 'تنبيه: البطاقة تستخدم فلترة تاريخية على عمود <strong>' +
                     escapeHtml(data.dateColumn) + '</strong> بطريقة <strong>' + modeText + '</strong>. ' +
-                    'المستوى الأول سيرث تلقائياً فلتر التاريخ هذا. للمستويات الأعمق، استخدم <code>@@DateFrom</code> و <code>@@DateTo</code> في كويريك للوصول لنطاق التاريخ نفسه.';
+                    'المستوى الأول سيرث تلقائياً فلتر التاريخ هذا.<br><br>' +
+                    'للمستويات الأعمق، استخدم الباراميترات التالية في كويريك:<br>' +
+                    '<code style="display:inline-block;direction:ltr;background:#f4f6f8;padding:8px 12px;border-radius:6px;margin-top:6px;font-size:13px;">' +
+                    'WHERE ' + escapeHtml(data.dateColumn) + ' &gt;= @@DateFrom AND ' + escapeHtml(data.dateColumn) + ' &lt; @@DateTo' +
+                    '</code>';
                 hintEl.hidden = false;
             } else {
                 hintEl.hidden = true;
