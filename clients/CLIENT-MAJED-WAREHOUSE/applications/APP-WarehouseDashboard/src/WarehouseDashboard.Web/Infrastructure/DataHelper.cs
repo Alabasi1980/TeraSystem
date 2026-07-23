@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace WarehouseDashboard.Web.Infrastructure;
 
@@ -50,7 +51,7 @@ public static class DataHelper
     /// <summary>
     /// Applies a date range filter to a SQL query by injecting into the WHERE clause.
     /// Strips ORDER BY first, then adds the date condition to the existing WHERE clause
-    /// (or appends a new WHERE clause if none exists). Preserves @p0 parameters.
+    /// (or inserts before GROUP BY/HAVING if no WHERE exists). Preserves @p0 parameters.
     /// </summary>
     public static string ApplyDateFilter(string baseSql, string dateColumn, DateTime from, DateTime to)
     {
@@ -61,19 +62,36 @@ public static class DataHelper
         var dateCondition = $"{dateCol} >= '{fromStr}' AND {dateCol} < '{nextDay}'";
 
         var trimmed = baseSql.TrimEnd(';', ' ', '\t', '\r', '\n');
-        var whereIdx = trimmed.LastIndexOf(" WHERE ", StringComparison.OrdinalIgnoreCase);
+        var whereMatch = Regex.Match(trimmed, @"\bWHERE\b", RegexOptions.IgnoreCase);
 
-        if (whereIdx < 0)
+        if (whereMatch.Success)
         {
-            // No WHERE clause — append one
-            // Ensure there's a space before WHERE
-            return $"{trimmed} WHERE {dateCondition}";
+            // Has WHERE clause — append date condition with AND
+            var beforeWhere = trimmed[..whereMatch.Index];
+            var afterWhere = trimmed[(whereMatch.Index + 6)..];
+            return $"{beforeWhere}WHERE {dateCondition} AND {afterWhere}";
         }
 
-        // Has WHERE clause — append date condition with AND
-        var beforeWhere = trimmed[..(whereIdx + 7)]; // include " WHERE "
-        var afterWhere = trimmed[(whereIdx + 7)..];
-        return $"{beforeWhere}{dateCondition} AND {afterWhere}";
+        // No WHERE clause — insert before GROUP BY, HAVING, or at end
+        var groupByMatch = Regex.Match(trimmed, @"\bGROUP\s+BY\b", RegexOptions.IgnoreCase);
+        var havingMatch = Regex.Match(trimmed, @"\bHAVING\b", RegexOptions.IgnoreCase);
+
+        if (groupByMatch.Success)
+        {
+            var before = trimmed[..groupByMatch.Index];
+            var after = trimmed[groupByMatch.Index..];
+            return $"{before} WHERE {dateCondition} {after}";
+        }
+
+        if (havingMatch.Success)
+        {
+            var before = trimmed[..havingMatch.Index];
+            var after = trimmed[havingMatch.Index..];
+            return $"{before} WHERE {dateCondition} {after}";
+        }
+
+        // No WHERE, GROUP BY, or HAVING — append at end
+        return $"{trimmed} WHERE {dateCondition}";
     }
 
     /// <summary>
