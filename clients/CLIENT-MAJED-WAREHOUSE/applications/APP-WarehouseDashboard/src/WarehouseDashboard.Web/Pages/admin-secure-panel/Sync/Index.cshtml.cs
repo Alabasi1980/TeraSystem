@@ -20,7 +20,7 @@ public class SyncDashboardModel : PageModel
     }
 
     /// <summary>Base URL of the Sync API, from config or default.</summary>
-    public string ApiBaseUrl { get; set; } = "http://localhost:5001";
+    public string ApiBaseUrl { get; set; } = string.Empty;
 
     /// <summary>Active table mappings loaded from the API.</summary>
     public List<MappingItem> Mappings { get; set; } = new();
@@ -36,7 +36,7 @@ public class SyncDashboardModel : PageModel
 
     public async Task OnGetAsync()
     {
-        ApiBaseUrl = _configuration.GetValue<string>("SyncApiBaseUrl") ?? "http://localhost:5001";
+        ApiBaseUrl = _configuration["SyncApi:BaseUrl"] ?? _configuration.GetValue<string>("SyncApiBaseUrl") ?? string.Empty;
 
         var client = _httpClient;
 

@@ -3,7 +3,9 @@
     "WarehouseDashboard.Api": {
       "commandName": "Project",
       "applicationUrl": "http://localhost:5001",
-      "environmentVariables": {}
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }

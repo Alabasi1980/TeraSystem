@@ -1808,6 +1808,10 @@
                                 start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
                                 end = new Date(now.getFullYear(), now.getMonth(), 0);
                                 break;
+                            case 'all':
+                                start = new Date(1900, 0, 1); // January 1, 1900
+                                end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                                break;
                             case 'custom':
                                 if (dateFrom && dateTo && dateFrom.value && dateTo.value) {
                                     start = new Date(dateFrom.value);

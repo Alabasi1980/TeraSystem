@@ -499,7 +499,7 @@
         (function () {
             'use strict';
 
-            var API_BASE = '@Model.SyncApiBaseUrl' || 'http://localhost:5001';
+            var API_BASE = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SyncApiBaseUrl));
             var skeletonEl = document.getElementById('wd-exports-skeleton');
             var gridEl = document.getElementById('wd-exports-grid');
             var emptyEl = document.getElementById('wd-exports-empty');

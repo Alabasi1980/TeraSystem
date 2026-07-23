@@ -63,7 +63,7 @@ public class SyncSettingsModel : PageModel
         LastSyncTimestamp = setting.LastSyncTimestamp;
 
         // 2. Fetch from Sync API in parallel
-        var apiBase = _configuration.GetValue<string>("SyncApiBaseUrl") ?? "http://localhost:5001";
+        var apiBase = _configuration["SyncApi:BaseUrl"] ?? _configuration.GetValue<string>("SyncApiBaseUrl") ?? string.Empty;
         var client = _httpClient;
 
         var statusTask = FetchAsync<SyncInfo>(client, $"{apiBase}/api/sync/status");

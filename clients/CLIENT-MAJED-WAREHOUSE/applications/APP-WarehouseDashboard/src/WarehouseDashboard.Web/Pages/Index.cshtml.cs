@@ -58,7 +58,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
-        SyncApiBaseUrl = _configuration["SyncApi:BaseUrl"] ?? "https://localhost:5001";
+        SyncApiBaseUrl = _configuration["SyncApi:BaseUrl"] ?? _configuration["SyncApiBaseUrl"] ?? string.Empty;
 
         try
         {

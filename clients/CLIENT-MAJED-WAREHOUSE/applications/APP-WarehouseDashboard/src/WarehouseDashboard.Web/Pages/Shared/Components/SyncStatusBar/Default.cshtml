@@ -1,7 +1,11 @@
 @* Sync Status Bar — TASK-COD-013 *@
 @* Compact pill/badge at the top of the public Dashboard. *@
 @* Stable element ids/classes so the Dashboard (TASK-COD-011) can rely on them. *@
-<div id="sync-status-bar" class="sync-bar" data-api-base="https://localhost:5001"
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    var syncApiBaseUrl = Configuration["SyncApi:BaseUrl"] ?? Configuration["SyncApiBaseUrl"] ?? string.Empty;
+}
+<div id="sync-status-bar" class="sync-bar" data-api-base="@syncApiBaseUrl"
      role="status" aria-live="polite">
 
     <span id="sync-dot" class="sync-dot sync-dot--idle" aria-hidden="true"></span>
@@ -28,8 +32,8 @@
     // Single configurable base URL. Override order:
     //   1. data-api-base attribute on the root element
     //   2. window.SYNC_API_BASE global (set once in a layout/script)
-    //   3. default https://localhost:5001
-    var API_BASE = (root.getAttribute('data-api-base') || window.SYNC_API_BASE || 'https://localhost:5001').replace(/\/+$/, '');
+    //   3. relative API path when no base URL is configured
+    var API_BASE = (root.getAttribute('data-api-base') || window.SYNC_API_BASE || '').replace(/\/+$/, '');
     var STATUS_URL = API_BASE + '/api/sync/status';
     var TRIGGER_URL = API_BASE + '/api/sync/trigger';
 

@@ -13,11 +13,11 @@ public class IndexModel : PageModel
     }
 
     /// <summary>Base URL for the Sync API, passed to client-side JS.</summary>
-    public string SyncApiBaseUrl { get; set; } = "http://localhost:5001";
+    public string SyncApiBaseUrl { get; set; } = string.Empty;
 
     public IActionResult OnGet()
     {
-        SyncApiBaseUrl = _configuration["SyncApi:BaseUrl"] ?? "http://localhost:5001";
+        SyncApiBaseUrl = _configuration["SyncApi:BaseUrl"] ?? _configuration["SyncApiBaseUrl"] ?? string.Empty;
         return Page();
     }
 }

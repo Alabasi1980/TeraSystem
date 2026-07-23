@@ -1,7 +1,9 @@
 @page
 @model WarehouseDashboard.Web.Pages.AdminSecurePanel.SyncLogsModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     ViewData["Title"] = "سجلات المزامنة";
+    var syncApiBaseUrl = Configuration["SyncApi:BaseUrl"] ?? Configuration["SyncApiBaseUrl"] ?? string.Empty;
 }
 
 <style>
@@ -473,7 +475,7 @@
             'use strict';
 
             var REFRESH_INTERVAL = 30; // seconds
-            var apiBase = 'http://localhost:5001';
+            var apiBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(syncApiBaseUrl));
             var countdown = REFRESH_INTERVAL;
             var autoRefreshEnabled = true;
             var countdownTimer = null;
