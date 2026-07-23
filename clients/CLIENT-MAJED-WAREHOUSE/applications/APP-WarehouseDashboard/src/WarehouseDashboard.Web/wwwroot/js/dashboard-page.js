@@ -1,4 +1,4 @@
-﻿        (function () {
+        (function () {
             var PALETTE = window.WD_PALETTE || ['#1F4E79', '#163A5A', '#2E6DA4', '#0A2540', '#8FBCDE', '#5B7A99'];
 
             // Per-card color palette definitions (TASK-CARD-UX-002)
@@ -73,9 +73,9 @@
 
             function wdKpiMoneyHtml(value) {
                 var text = value === null || value === undefined ? '' : String(value);
-                var currencyMatch = text.match(/\s*ط¯\.ط£\s*$/);
+                var currencyMatch = text.match(/\s*د\.أ\s*$/);
                 if (!currencyMatch) {
-                    /* Non-currency: split number from trailing unit (e.g. "23 ط¨ط¬ظ‡ط©", "14.7%", "14,700") */
+                    /* Non-currency: split number from trailing unit (e.g. "23 بجهة", "14.7%", "14,700") */
                     var parts = text.match(/^([\d,.\-+]+)\s*(.*)$/);
                     var numPart  = parts ? parts[1] : text;
                     var unitPart = parts ? parts[2] : '';
@@ -87,19 +87,19 @@
                 var numberText = text.slice(0, text.length - currencyMatch[0].length);
                 return '<span class="wd-kpi-money" dir="rtl">'
                     + '<span class="wd-kpi-money__number" dir="ltr">' + escapeHtml(numberText) + '</span>'
-                    + '<span class="wd-kpi-money__currency" dir="rtl">ط¯.ط£</span>'
+                    + '<span class="wd-kpi-money__currency" dir="rtl">د.أ</span>'
                     + '</span>';
             }
 
             function wdKpiComparisonText(changeSource) {
                 switch (changeSource) {
-                    case 'previousMonth': return 'ظ…ظ‚ط§ط±ظ†ط© ط¨ط§ظ„ط´ظ‡ط± ط§ظ„ط³ط§ط¨ظ‚';
-                    case 'previousYear': return 'ظ…ظ‚ط§ط±ظ†ط© ط¨ط§ظ„ط³ظ†ط© ط§ظ„ط³ط§ط¨ظ‚ط©';
-                    case 'lastMonth': return 'ظ…ظ‚ط§ط±ظ†ط© ط¨ط§ظ„ط´ظ‡ط± ط§ظ„ظ…ط§ط¶ظٹ';
-                    case 'customQuery': return 'ظ…ظ‚ط§ط±ظ†ط© ظ…ط®طµطµط©';
+                    case 'previousMonth': return 'مقارنة بالشهر السابق';
+                    case 'previousYear': return 'مقارنة بالسنة السابقة';
+                    case 'lastMonth': return 'مقارنة بالشهر الماضي';
+                    case 'customQuery': return 'مقارنة مخصصة';
                     case 'previousPeriod':
                     default:
-                        return 'ظ…ظ‚ط§ط±ظ†ط© ط¨ط§ظ„ظپطھط±ط© ط§ظ„ط³ط§ط¨ظ‚ط©';
+                        return 'مقارنة بالفترة السابقة';
                 }
             }
 
@@ -116,7 +116,7 @@
                 return direction === 'up' || direction === 'down' || direction === 'flat' ? direction : 'flat';
             }
 
-            /** Map grid width â†’ KPI size class hint (container queries still drive density). */
+            /** Map grid width → KPI size class hint (container queries still drive density). */
             function wdKpiSizeClassFromWidth(w) {
                 w = parseInt(w, 10) || 4;
                 if (w <= 3) return 'wd-kpi--size-small';
@@ -198,7 +198,7 @@
                         ? (sizeClass === 'wd-kpi--size-small'
                             ? (window.formatKpiValue ? window.formatKpiValue(rawValue, card.valueFormatType || 'Currency', card.valueUnit || '', true) : rawValue)
                             : (window.formatKpiValue ? window.formatKpiValue(rawValue, card.valueFormatType || 'Currency', card.valueUnit || '', false) : rawValue))
-                        : 'â€”');
+                        : '—');
                 html += '<div class="wd-kpi__hero">';
                 html += '<div class="wd-kpi__value" data-kpi-target="' + target + '">' + wdKpiMoneyHtml(display) + '</div>';
                 if (hasChangeContext && card.kpiChangePercent !== null && card.kpiChangePercent !== undefined) {
@@ -229,7 +229,7 @@
                 html += '</div>';
 
                 if (!hasChangeContext) {
-                    html += '<div class="wd-kpi__label">ظ‚ظٹظ…ط© ط§ظ„ظ…ط¤ط´ط±</div>';
+                    html += '<div class="wd-kpi__label">قيمة المؤشر</div>';
                 }
 
                 html += '</div>'; // cluster
@@ -261,7 +261,7 @@
                     if (rawValue === null || rawValue === undefined) rawValue = r.value;
                     if (rawValue === null || rawValue === undefined) rawValue = 0;
                     var value = toNum(rawValue);
-                    var month = r.Month || r.month || r.MonthLabel || r.monthLabel || r.Label || r.label || ('ط§ظ„ط´ظ‡ط± ' + (index + 1));
+                    var month = r.Month || r.month || r.MonthLabel || r.monthLabel || r.Label || r.label || ('الشهر ' + (index + 1));
                     return { month: String(month), value: value };
                 }).filter(function(point) {
                     return isFinite(point.value);
@@ -270,13 +270,13 @@
                 if (points.length < 2) {
                     container.classList.add('wd-kpi__sparkline-empty');
                     container.setAttribute('role', 'status');
-                    container.textContent = 'ظ„ط§ طھظˆط¬ط¯ ط¨ظٹط§ظ†ط§طھ ط§طھط¬ط§ظ‡ ظƒط§ظپظٹط©';
+                    container.textContent = 'لا توجد بيانات اتجاه كافية';
                     return;
                 }
 
                 container.classList.remove('wd-kpi__sparkline-empty');
                 container.innerHTML = '';
-                container.setAttribute('aria-label', 'ط§طھط¬ط§ظ‡ ط§ظ„ظ…ط¤ط´ط± ط­ط³ط¨ ط§ظ„ط´ظ‡ط±');
+                container.setAttribute('aria-label', 'اتجاه المؤشر حسب الشهر');
 
                 var values = points.map(function(point) { return point.value; });
                 var months = points.map(function(point) { return point.month; });
@@ -288,7 +288,7 @@
                     var p0 = pal[0].trim().toLowerCase();
                     /* Keep gold unless card has an explicit custom accent distinct from primary blues */
                     if (p0 && p0 !== 'var(--c-primary)' && p0.indexOf('1f4e79') === -1 && p0.indexOf('#1f4e79') === -1) {
-                        /* still prefer gold for KPI mockup fidelity â€” palette only if it's already gold/orange family */
+                        /* still prefer gold for KPI mockup fidelity — palette only if it's already gold/orange family */
                         if (/#e[0-9a-f]{2}a1|#e0a106|#f5a|#e8a|#ffa|#ff8|#f59e0b|#d97706|orange|gold|warning/i.test(p0)) {
                             sparkColor = pal[0];
                         }
@@ -306,19 +306,19 @@
 
                 function deltaHtml(index) {
                     if (index < 1) {
-                        return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--flat">ط£ظˆظ„ ط´ظ‡ط± ظپظٹ ط§ظ„ط§طھط¬ط§ظ‡</div>';
+                        return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--flat">أول شهر في الاتجاه</div>';
                     }
                     var delta = values[index] - values[index - 1];
                     var direction = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
                     if (direction === 'flat') {
-                        return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--flat">ط¨ط¯ظˆظ† طھط؛ظٹط± ط¹ظ† ط§ظ„ط´ظ‡ط± ط§ظ„ط³ط§ط¨ظ‚</div>';
+                        return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--flat">بدون تغير عن الشهر السابق</div>';
                     }
-                    /* Keep number LTR-isolated from Arabic label to avoid bi-di garble (e.g. 6.8+â€¦K) */
-                    var sign = delta > 0 ? '+' : 'âˆ’';
+                    /* Keep number LTR-isolated from Arabic label to avoid bi-di garble (e.g. 6.8+…K) */
+                    var sign = delta > 0 ? '+' : '−';
                     var num = sign + formatSparkValue(Math.abs(delta));
                     return '<div class="wd-spark-tooltip__delta wd-spark-tooltip__delta--' + direction + '">'
                         + '<span class="wd-spark-tooltip__delta-num">' + escapeHtml(num) + '</span>'
-                        + '<span class="wd-spark-tooltip__delta-label">ط¹ظ† ط§ظ„ط´ظ‡ط± ط§ظ„ط³ط§ط¨ظ‚</span>'
+                        + '<span class="wd-spark-tooltip__delta-label">عن الشهر السابق</span>'
                         + '</div>';
                 }
 
@@ -341,7 +341,7 @@
                         height: '100%',
                         sparkline: { enabled: true },
                         background: 'transparent',
-                        /* LTR time series â€” rtl:true garbles mixed Arabic/number tooltips */
+                        /* LTR time series — rtl:true garbles mixed Arabic/number tooltips */
                         rtl: false,
                         toolbar: { show: false },
                         zoom: { enabled: false },
@@ -384,7 +384,7 @@
                             var i = opts && opts.dataPointIndex != null ? opts.dataPointIndex : 0;
                             var value = opts.series[opts.seriesIndex][i];
                             return '<div class="wd-spark-tooltip">'
-                                + '<div class="wd-spark-tooltip__month">' + escapeHtml(months[i] || ('ط§ظ„ط´ظ‡ط± ' + (i + 1))) + '</div>'
+                                + '<div class="wd-spark-tooltip__month">' + escapeHtml(months[i] || ('الشهر ' + (i + 1))) + '</div>'
                                 + '<div class="wd-spark-tooltip__value" dir="ltr">' + escapeHtml(formatSparkValue(value)) + '</div>'
                                 + deltaHtml(i)
                                 + '</div>';
@@ -424,7 +424,7 @@
                 /* Max 5 rows; CSS density hides extras for M/S */
                 var visibleRows = rows.slice(0, 5);
                 var html = '<div class="wd-kpi-breakdown">';
-                html += '<div class="wd-kpi-breakdown__title">ط£ط¹ظ„ظ‰ ط§ظ„طھطµظ†ظٹظپط§طھ</div>';
+                html += '<div class="wd-kpi-breakdown__title">أعلى التصنيفات</div>';
                 html += '<table class="wd-kpi-breakdown__table">';
                 visibleRows.forEach(function(row) {
                     row = row || {};
@@ -436,7 +436,7 @@
                     var pctLabel = (Math.round(pctNum * 10) / 10) + '%';
                     var code = row.Code || row.CategoryCode || row.ItemCode || row.Id
                         || row.code || row.categoryCode || row.itemCode || row.id
-                        || row.Category || row.category || row.CategoryName || 'â€”';
+                        || row.Category || row.category || row.CategoryName || '—';
                     html += '<tr>';
                     /* Visual LTR (table direction:ltr): % | value | code(gold) */
                     html += '<td class="wd-kpi-breakdown__pct">' + escapeHtml(String(pctLabel)) + '</td>';
@@ -463,7 +463,7 @@
                     if (card.kpiGrandTotal !== null && card.kpiGrandTotal !== undefined) {
                         var val = window.formatKpiValue ? window.formatKpiValue(toNum(card.kpiGrandTotal), fmtType, fmtUnit, false) : formatMoney(toNum(card.kpiGrandTotal));
                         html += '<div class="wd-kpi-grandtotal__row">';
-                        html += '<span class="wd-kpi-grandtotal__label">ط§ظ„ط¥ط¬ظ…ط§ظ„ظٹ ط§ظ„ظƒظ„ظٹ:</span>';
+                        html += '<span class="wd-kpi-grandtotal__label">الإجمالي الكلي:</span>';
                         html += '<span class="wd-kpi-grandtotal__value">' + wdKpiMoneyHtml(val) + '</span>';
                         html += '</div>';
                     }
@@ -474,14 +474,14 @@
                         var valYtd = window.formatKpiValue ? window.formatKpiValue(toNum(card.kpiYearToDateTotal), fmtType, fmtUnit, false) : formatMoney(toNum(card.kpiYearToDateTotal));
                         var year = new Date().getFullYear();
                         html += '<div class="wd-kpi-grandtotal__row">';
-                        html += '<span class="wd-kpi-grandtotal__label">ط¥ط¬ظ…ط§ظ„ظٹ ' + year + ':</span>';
+                        html += '<span class="wd-kpi-grandtotal__label">إجمالي ' + year + ':</span>';
                         html += '<span class="wd-kpi-grandtotal__value">' + wdKpiMoneyHtml(valYtd) + '</span>';
                         html += '</div>';
                     }
                 }
 
                 if (!html) {
-                    container.innerHTML = '<div class="wd-kpi-grandtotal"><div class="wd-kpi-grandtotal__row"><span class="wd-kpi-grandtotal__label">ط§ظ„ظ…ط¬ط§ظ…ظٹط¹:</span><span class="wd-kpi-grandtotal__value">' + wdKpiMoneyHtml('â€”') + '</span></div></div>';
+                    container.innerHTML = '<div class="wd-kpi-grandtotal"><div class="wd-kpi-grandtotal__row"><span class="wd-kpi-grandtotal__label">المجاميع:</span><span class="wd-kpi-grandtotal__value">' + wdKpiMoneyHtml('—') + '</span></div></div>';
                     container.style.display = '';
                     return;
                 }
@@ -527,7 +527,7 @@
                             wdRenderSparkline(sparkContainer, card.kpiSparklineData, card.cardId, card.valueFormatType || 'Currency', card.valueUnit || '');
                         }
 
-                        // Category breakdown â€” hide parent column when empty
+                        // Category breakdown — hide parent column when empty
                         var breakdownContainer = body.querySelector('.wd-kpi-breakdown');
                         if (breakdownContainer) {
                             if (card.kpiCategoryBreakdown && card.kpiCategoryBreakdown.length > 0) {
@@ -560,7 +560,7 @@
                     if (card.chartType === 'Gauge') { wdRenderGauge(viz, card); return; }
                     wdRenderChart(viz, card);
                 } catch (e) {
-                    body.innerHTML = wdErrorHtml('طھط¹ط°ط± ط¹ط±ط¶ ط§ظ„ط¹ظ†طµط±: ' + (e && e.message ? e.message : e), card.cardId);
+                    body.innerHTML = wdErrorHtml('تعذر عرض العنصر: ' + (e && e.message ? e.message : e), card.cardId);
                 }
             }
 
@@ -736,25 +736,25 @@
                 CHARTS[card.cardId] = { control: chart, kind: 'gauge' };
             }
 
-            // â”€â”€ Smart Table (TASK-DRILL-SMARTTABLE-001) â”€â”€
+            // ── Smart Table (TASK-DRILL-SMARTTABLE-001) ──
 
             function wdRenderGrid(viz, card) {
                 renderSmartGrid(viz, card);
             }
 
             /**
-             * renderSmartGrid â€” Renders a full smart table with sort, search, pagination,
+             * renderSmartGrid — Renders a full smart table with sort, search, pagination,
              * column summaries, and type-aware cell formatting.
              *
-             * viz  â€” The container element (HTMLElement)
-             * data â€” API response with .columns[], .rows[], .cardId
+             * viz  — The container element (HTMLElement)
+             * data — API response with .columns[], .rows[], .cardId
              */
             function renderSmartGrid(viz, data) {
                 var cols = data.columns || [];
                 var allRows = data.rows || [];
                 var st = window.__drillState;
 
-                // Empty state â€” no columns or no rows
+                // Empty state — no columns or no rows
                 if (cols.length === 0 || allRows.length === 0) {
                     viz.innerHTML = '<div class="wd-table__empty" style="padding:60px 20px;text-align:center;">'
                         + '<div class="wd-table__empty-icon" aria-hidden="true" style="margin-bottom:12px;">'
@@ -762,8 +762,8 @@
                         + '<rect x="3" y="3" width="18" height="18" rx="2"></rect>'
                         + '<path d="M3 9h18"></path><path d="M9 21V9"></path>'
                         + '</svg></div>'
-                        + '<h4 style="margin:0 0 6px;font-size:16px;">ظ„ط§ طھظˆط¬ط¯ ط¨ظٹط§ظ†ط§طھ</h4>'
-                        + '<p style="margin:0;color:var(--c-text-muted);font-size:13px;">ظ„ظ… ظٹطھظ… ط§ظ„ط¹ط«ظˆط± ط¹ظ„ظ‰ ط³ط¬ظ„ط§طھ ظ„ط¹ط±ط¶ظ‡ط§ ظپظٹ ظ‡ط°ط§ ط§ظ„ط¬ط¯ظˆظ„.</p>'
+                        + '<h4 style="margin:0 0 6px;font-size:16px;">لا توجد بيانات</h4>'
+                        + '<p style="margin:0;color:var(--c-text-muted);font-size:13px;">لم يتم العثور على سجلات لعرضها في هذا الجدول.</p>'
                         + '</div>';
                     return;
                 }
@@ -782,16 +782,12 @@
 
                 // Store filtered rows on state
                 if (st) st.filteredRows = filteredRows;
-
                 // Annotate rows with original index (before sort)
-                filteredRows.forEach(function(r, i) {
+                filteredRows.forEach(function(r) {
                     if (r.__origIdx === undefined) {
-                        r.__origIdx = allRows.indexOf(r) >= 0 ? allRows.indexOf(r) : i;
+                        r.__origIdx = allRows.indexOf(r) >= 0 ? allRows.indexOf(r) : 0;
                     }
                 });
-
-                // Store original rows reference
-                if (st) st._allOrigRows = allRows;
 
                 // Step 2: Sort
                 if (sortCol) {
@@ -811,16 +807,16 @@
                 // Update toolbar info
                 var infoEl = document.getElementById('wd-drill-info');
                 if (infoEl) {
-                    infoEl.textContent = totalRows + ' طµظپ'
-                        + (searchQuery ? ' (ظ…ظ† ط£طµظ„ ' + allRows.length + ')' : '');
+                    infoEl.textContent = totalRows + ' صف'
+                        + (searchQuery ? ' (من أصل ' + allRows.length + ')' : '');
                 }
 
-                // â”€â”€ Build HTML â”€â”€
+                // ── Build HTML ──
                 var html = '<div class="wd-table-wrap">';
                 html += '<div class="wd-table-scroll" style="max-height:55vh;overflow-y:auto;">';
                 html += '<table class="wd-table wd-table--smart">';
 
-                // â”€â”€ Header with sort â”€â”€
+                // ── Header with sort ──
                 html += '<thead><tr>';
                 // Row number column
                 html += '<th class="wd-col--rownum" scope="col">#</th>';
@@ -828,9 +824,9 @@
                     var isSorted = (sortCol === c);
                     var sortIcon = '';
                     if (isSorted) {
-                        sortIcon = sortAsc ? 'â–²' : 'â–¼';
+                        sortIcon = sortAsc ? '▲' : '▼';
                     } else {
-                        sortIcon = 'â‡…';
+                        sortIcon = '⇅';
                     }
                     html += '<th scope="col" onclick="wdDrillSort(\'' + escapeHtml(c).replace(/'/g, "\\'") + '\')">'
                         + escapeHtml(c)
@@ -839,7 +835,7 @@
                 });
                 html += '</tr></thead>';
 
-                // â”€â”€ Body â”€â”€
+                // ── Body ──
                 html += '<tbody>';
                 pageRows.forEach(function(r, idx) {
                     var origIdx = r.__origIdx != null ? r.__origIdx : idx;
@@ -856,17 +852,16 @@
                 html += '</tbody></table>';
                 html += '</div>'; // .wd-table-scroll
 
-
                 html += '</div>'; // .wd-table-wrap
 
                 viz.innerHTML = html;
 
-                // â”€â”€ Update pagination â”€â”€
+                // ── Update pagination ──
                 renderPagination(currentPage, totalPages);
             }
 
             /**
-             * renderPagination â€” Updates the pagination controls at the bottom of the modal.
+             * renderPagination — Updates the pagination controls at the bottom of the modal.
              */
             function renderPagination(currentPage, totalPages) {
                 var infoEl = document.getElementById('wd-page-info');
@@ -875,12 +870,12 @@
                 var btnsContainer = document.getElementById('wd-page-btns');
                 if (!infoEl || !prevBtn || !nextBtn || !btnsContainer) return;
 
-                infoEl.textContent = 'طµظپط­ط© ' + currentPage + ' ظ…ظ† ' + totalPages;
+                infoEl.textContent = 'صفحة ' + currentPage + ' من ' + totalPages;
 
                 prevBtn.disabled = (currentPage <= 1);
                 nextBtn.disabled = (currentPage >= totalPages);
 
-                // Build page number buttons â€” show max 5 pages around current
+                // Build page number buttons — show max 5 pages around current
                 btnsContainer.innerHTML = '';
                 var startPage = Math.max(1, currentPage - 2);
                 var endPage = Math.min(totalPages, startPage + 4);
@@ -894,7 +889,7 @@
                     btn.className = 'wd-drill-pagination__btn wd-drill-pagination__btn--page'
                         + (p === currentPage ? ' wd-drill-pagination__btn--active' : '');
                     btn.textContent = p;
-                    btn.setAttribute('aria-label', 'ط§ظ„طµظپط­ط© ' + p);
+                    btn.setAttribute('aria-label', 'الصفحة ' + p);
                     (function(page) {
                         btn.addEventListener('click', function() {
                             goToPage(page);
@@ -905,7 +900,7 @@
             }
 
             /**
-             * goToPage â€” Navigate to a specific page and re-render.
+             * goToPage — Navigate to a specific page and re-render.
              */
             function goToPage(page) {
                 var st = window.__drillState;
@@ -924,7 +919,7 @@
             }
 
             /**
-             * applySearch â€” Filters rows where any column contains the query (case-insensitive).
+             * applySearch — Filters rows where any column contains the query (case-insensitive).
              */
             function applySearch(rows, cols, query) {
                 if (!query || !query.trim()) return rows.slice();
@@ -941,7 +936,7 @@
             }
 
             /**
-             * sortRows â€” Sorts rows by a given column using natural comparison.
+             * sortRows — Sorts rows by a given column using natural comparison.
              */
             function sortRows(rows, colName, asc, cols) {
                 var sorted = rows.slice();
@@ -986,7 +981,7 @@
 
 
             /**
-             * wdDrillSort â€” Toggles sort on a column (called from header onClick).
+             * wdDrillSort — Toggles sort on a column (called from header onClick).
              */
             function wdDrillSort(colName) {
                 var st = window.__drillState;
@@ -1027,8 +1022,8 @@
                     .then(function (data) { wdRenderCard(data); })
                     .catch(function (err) {
                         var b = el.querySelector('.wd-card__body');
-                        if (b) b.innerHTML = wdErrorHtml('طھط¹ط°ط± ط§ظ„ط§طھطµط§ظ„ ط¨ط§ظ„ط®ط§ط¯ظ…: ' + (err && err.message ? err.message : ''), id);
-                        showToast('error', 'طھط¹ط°ط± طھط­ظ…ظٹظ„ ط¨ط·ط§ظ‚ط© #' + id);
+                        if (b) b.innerHTML = wdErrorHtml('تعذر الاتصال بالخادم: ' + (err && err.message ? err.message : ''), id);
+                        showToast('error', 'تعذر تحميل بطاقة #' + id);
                     });
             }
 
@@ -1036,16 +1031,16 @@
 
             function updateTimestamp() {
                 var el = document.getElementById('wd-last-updated');
-                if (el) el.textContent = 'ط¢ط®ط± طھط­ط¯ظٹط«: ' + new Date().toLocaleTimeString('ar-SA');
+                if (el) el.textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-SA');
             }
 
             window.wdRefreshAll = function () {
-                showToast('success', 'ط¬ط§ط±ظچ طھط­ط¯ظٹط« ط§ظ„ط¨ط·ط§ظ‚ط§طھâ€¦');
+                showToast('success', 'جارٍ تحديث البطاقات…');
                 updateTimestamp();
                 (window.WD_CARDS || []).forEach(function (c) { wdLoadCard(c.id, true); });
             };
 
-            // â”€â”€ Drill-down State Machine â”€â”€
+            // ── Drill-down State Machine ──
             window.__drillState = null;
 
             function wdDestroyDrillCharts() {
@@ -1061,7 +1056,7 @@
                 bodyEl.innerHTML = '<div class="wd-drill-skeleton">'
                     + '<div class="wd-drill-skeleton__text-center">'
                     + '<div class="wd-drill-skeleton__spinner"></div>'
-                    + '<div class="wd-drill-skeleton__loading-text">ط¬ط§ط±ظچ طھط­ظ…ظٹظ„ ط§ظ„ط¨ظٹط§ظ†ط§طھ...</div>'
+                    + '<div class="wd-drill-skeleton__loading-text">جارٍ تحميل البيانات...</div>'
                     + '</div>'
                     + '<div class="wd-drill-skeleton__table">'
                     + '<div class="wd-drill-skeleton__table-row">'
@@ -1099,7 +1094,7 @@
 
                 var titleTextEl = document.getElementById('wd-drill-modal-title-text');
                 var cardEl = document.getElementById('card-' + cardId);
-                var title = cardTitle || (cardEl ? (cardEl.getAttribute('data-title') || 'طھظپط§طµظٹظ„') : 'طھظپط§طµظٹظ„');
+                var title = cardTitle || (cardEl ? (cardEl.getAttribute('data-title') || 'تفاصيل') : 'تفاصيل');
                 if (titleTextEl) titleTextEl.textContent = title;
 
                 window.__drillState = {
@@ -1166,7 +1161,7 @@
                     .catch(function (err) {
                         if (!window.__drillState) return;
                         if (bodyEl) {
-                            bodyEl.innerHTML = wdErrorHtml('طھط¹ط°ط± طھط­ظ…ظٹظ„ ط¨ظٹط§ظ†ط§طھ ط§ظ„طھط¹ظ…ظ‘ظ‚: ' + (err && err.message ? err.message : ''), st.cardId);
+                            bodyEl.innerHTML = wdErrorHtml('تعذر تحميل بيانات التعمّق: ' + (err && err.message ? err.message : ''), st.cardId);
                             wdAppendDrillRetry(bodyEl);
                         }
                         wdRenderFooter();
@@ -1180,7 +1175,7 @@
                 var retryBtn = document.createElement('button');
                 retryBtn.type = 'button';
                 retryBtn.className = 'wd-btn wd-btn--primary';
-                retryBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg> ط¥ط¹ط§ط¯ط© ط§ظ„ظ…ط­ط§ظˆظ„ط©';
+                retryBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg> إعادة المحاولة';
                 retryBtn.addEventListener('click', wdLoadLevel);
                 retryWrap.appendChild(retryBtn);
                 container.appendChild(retryWrap);
@@ -1227,7 +1222,7 @@
                         wdRenderGauge(div, data);
                     } else if (data.chartType === 'KPI') {
                         var val = data.kpiValue != null ? data.kpiValue : (data.rows && data.rows[0] ? data.rows[0][data.columns && data.columns[0] || 'value'] : null);
-                        var displayVal = val != null ? (typeof formatMoney === 'function' ? formatMoney(val) : val) : 'â€”';
+                        var displayVal = val != null ? (typeof formatMoney === 'function' ? formatMoney(val) : val) : '—';
                         bodyEl.innerHTML = '';
                         var kpiWrap = document.createElement('div');
                         kpiWrap.className = 'wd-drill-kpi';
@@ -1248,7 +1243,7 @@
                             var nextBtn = document.createElement('button');
                             nextBtn.type = 'button';
                             nextBtn.className = 'wd-btn wd-btn--primary';
-                            nextBtn.innerHTML = 'ط§ظ„ظ…ط³طھظˆظ‰ ط§ظ„طھط§ظ„ظٹ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+                            nextBtn.innerHTML = 'المستوى التالي <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
                             nextBtn.addEventListener('click', wdNextLevel);
                             nextWrap.appendChild(nextBtn);
                             kpiWrap.appendChild(nextWrap);
@@ -1264,7 +1259,7 @@
                             selTableDiv.className = 'wd-drill-selection-table';
                             var selLabel = document.createElement('div');
                             selLabel.className = 'wd-drill-selection-table__header';
-                            selLabel.textContent = 'ط§ط®طھط± ط¹ظ†طµط±ط§ظ‹ ظ„ظ„ط§ظ†طھظ‚ط§ظ„ ظ„ظ„ظ…ط³طھظˆظ‰ ط§ظ„طھط§ظ„ظٹ';
+                            selLabel.textContent = 'اختر عنصراً للانتقال للمستوى التالي';
                             selTableDiv.appendChild(selLabel);
                             var selTable = document.createElement('table');
                             var cols = data.columns || [];
@@ -1274,7 +1269,7 @@
                                 var displayVal = r[st.labelColumn || st.parameterColumn || cols[0]] != null ? r[st.labelColumn || st.parameterColumn || cols[0]] : r[cols[0]];
                                 var paramVal = r[st.parameterColumn || cols[0]] != null ? r[st.parameterColumn || cols[0]] : r[cols[0]];
                                 var td = document.createElement('td');
-                                td.textContent = displayVal != null ? String(displayVal) : 'â€”';
+                                td.textContent = displayVal != null ? String(displayVal) : '—';
                                 tr.appendChild(td);
                                 tr.addEventListener('click', function () {
                                     // Remove previous selection
@@ -1297,8 +1292,8 @@
                         + '<rect x="3" y="3" width="18" height="18" rx="2"></rect>'
                         + '<path d="M3 9h18"></path><path d="M9 21V9"></path>'
                         + '</svg></div>'
-                        + '<h3>ظ„ط§ طھظˆط¬ط¯ ط¨ظٹط§ظ†ط§طھ ظ„ظ‡ط°ط§ ط§ظ„ظ…ط³طھظˆظ‰</h3>'
-                        + '<p>ظ„ظ… ظٹطھظ… ط§ظ„ط¹ط«ظˆط± ط¹ظ„ظ‰ ط³ط¬ظ„ط§طھ ظپظٹ ظ‡ط°ط§ ط§ظ„ظ…ط³طھظˆظ‰. ط¬ط±ظ‘ط¨ ط§ظ„ط¹ظˆط¯ط© ظ„ظ„ظ…ط³طھظˆظ‰ ط§ظ„ط³ط§ط¨ظ‚ ط£ظˆ ط§ط®طھط± ط¹ظ†طµط±ط§ظ‹ ظ…ط®طھظ„ظپط§ظ‹.</p>'
+                        + '<h3>لا توجد بيانات لهذا المستوى</h3>'
+                        + '<p>لم يتم العثور على سجلات في هذا المستوى. جرّب العودة للمستوى السابق أو اختر عنصراً مختلفاً.</p>'
                         + '</div>';
                 } else if (data.status === 'error') {
                     bodyEl.innerHTML = '<div class="wd-drill-error">'
@@ -1307,8 +1302,8 @@
                         + '<circle cx="12" cy="12" r="10"></circle>'
                         + '<path d="M12 8v4"></path><path d="M12 16h.01"></path>'
                         + '</svg></div>'
-                        + '<h3>طھط¹ط°ط± طھط­ظ…ظٹظ„ ط§ظ„ط¨ظٹط§ظ†ط§طھ</h3>'
-                        + '<p>' + escapeHtml(data.errorMessage || 'ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…طھظˆظ‚ط¹ ط£ط«ظ†ط§ط، طھط­ظ…ظٹظ„ ط¨ظٹط§ظ†ط§طھ ط§ظ„طھط¹ظ…ظ‘ظ‚.') + '</p>'
+                        + '<h3>تعذر تحميل البيانات</h3>'
+                        + '<p>' + escapeHtml(data.errorMessage || 'حدث خطأ غير متوقع أثناء تحميل بيانات التعمّق.') + '</p>'
                         + '</div>';
                     wdAppendDrillRetry(bodyEl);
                 } else if (data.status === 'none') {
@@ -1318,8 +1313,8 @@
                         + '<circle cx="12" cy="12" r="10"></circle>'
                         + '<path d="M12 16v-4"></path><path d="M12 8h.01"></path>'
                         + '</svg></div>'
-                        + '<h3>ظ…ط¹ظ„ظˆظ…ط§طھ</h3>'
-                        + '<p>' + escapeHtml(data.errorMessage || 'ظ„ط§ طھظˆط¬ط¯ ظ…ط¹ظ„ظˆظ…ط§طھ ط¥ط¶ط§ظپظٹط©.') + '</p>'
+                        + '<h3>معلومات</h3>'
+                        + '<p>' + escapeHtml(data.errorMessage || 'لا توجد معلومات إضافية.') + '</p>'
                         + '</div>';
                 } else {
                     bodyEl.innerHTML = '<div class="wd-drill-empty">'
@@ -1328,8 +1323,8 @@
                         + '<rect x="3" y="3" width="18" height="18" rx="2"></rect>'
                         + '<path d="M3 9h18"></path><path d="M9 21V9"></path>'
                         + '</svg></div>'
-                        + '<h3>ظ„ط§ طھظˆط¬ط¯ ط¨ظٹط§ظ†ط§طھ</h3>'
-                        + '<p>ظ„ظ… ظٹطھظ… ط§ظ„ط¹ط«ظˆط± ط¹ظ„ظ‰ ط¨ظٹط§ظ†ط§طھ ظ„ط¹ط±ط¶ظ‡ط§.</p>'
+                        + '<h3>لا توجد بيانات</h3>'
+                        + '<p>لم يتم العثور على بيانات لعرضها.</p>'
                         + '</div>';
                 }
             }
@@ -1345,7 +1340,7 @@
                 wdRenderFooter();
                 // Show toast feedback
                 if (typeof showToast === 'function') {
-                    showToast('success', 'طھظ… ط§ط®طھظٹط§ط±: ' + (label || value));
+                    showToast('success', 'تم اختيار: ' + (label || value));
                 }
             }
 
@@ -1416,7 +1411,7 @@
                     var previousBtn = document.createElement('button');
                     previousBtn.type = 'button';
                     previousBtn.className = 'wd-btn wd-btn--ghost';
-                    previousBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> ط§ظ„ظ…ط³طھظˆظ‰ ط§ظ„ط³ط§ط¨ظ‚';
+                    previousBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> المستوى السابق';
                     previousBtn.addEventListener('click', function () { wdNavigateToLevel(st.currentLevel - 1); });
                     footerEl.appendChild(previousBtn);
                 }
@@ -1425,23 +1420,23 @@
                     var nextBtn = document.createElement('button');
                     nextBtn.type = 'button';
                     nextBtn.className = 'wd-btn wd-btn--primary';
-                    nextBtn.innerHTML = 'ط§ظ„ظ…ط³طھظˆظ‰ ط§ظ„طھط§ظ„ظٹ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+                    nextBtn.innerHTML = 'المستوى التالي <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
                     nextBtn.disabled = disabled;
                     nextBtn.addEventListener('click', wdNextLevel);
                     footerEl.appendChild(nextBtn);
                     if (st.nextRequiresParentValue) {
                         var hint = document.createElement('span');
                         hint.className = 'wd-modal__footer-hint';
-                        hint.textContent = 'ط§ط®طھط± ط¹ظ†طµط±ط§ظ‹ ظ…ظ† ط§ظ„ط¬ط¯ظˆظ„ ط£ط¹ظ„ط§ظ‡ ظ„ظ„ط§ظ†طھظ‚ط§ظ„';
+                        hint.textContent = 'اختر عنصراً من الجدول أعلاه للانتقال';
                         footerEl.appendChild(hint);
                     }
                 } else {
                     var badge = document.createElement('span');
                     badge.className = 'wd-modal__footer-badge';
-                    badge.textContent = 'ط¢ط®ط± ظ…ط³طھظˆظ‰';
+                    badge.textContent = 'آخر مستوى';
                     footerEl.appendChild(badge);
                 }
-                // Export CSV button â€” visible for Table/Chart levels with data
+                // Export CSV button — visible for Table/Chart levels with data
                 if (st.currentData && st.currentData.rows && st.currentData.rows.length > 0) {
                     var chartType = st.currentData.chartType || '';
                     var exportableTypes = ['Table', 'Bar', 'Line', 'Pie'];
@@ -1457,7 +1452,7 @@
                         var exportBtn = document.createElement('button');
                         exportBtn.type = 'button';
                         exportBtn.className = 'wd-btn wd-btn--ghost';
-                        exportBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> طھطµط¯ظٹط± CSV';
+                        exportBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> تصدير CSV';
                         exportBtn.addEventListener('click', function () { wdExportCsv(); });
                         footerEl.appendChild(exportBtn);
                     }
@@ -1558,23 +1553,23 @@
                         if (!badge || !txt) return;
                         if (d && d.connected) {
                             badge.className = 'wd-conn wd-conn--online';
-                            txt.textContent = 'ظ…طھطµظ„';
+                            txt.textContent = 'متصل';
                         } else {
                             badge.className = 'wd-conn wd-conn--offline';
-                            txt.textContent = 'ط؛ظٹط± ظ…طھطµظ„';
+                            txt.textContent = 'غير متصل';
                         }
                     })
                     .catch(function () {
                         if (!badge || !txt) return;
                         badge.className = 'wd-conn wd-conn--offline';
-                        txt.textContent = 'ط؛ظٹط± ظ…طھطµظ„';
+                        txt.textContent = 'غير متصل';
                     });
             }
 
             document.addEventListener('DOMContentLoaded', function () {
                 (window.WD_CARDS || []).forEach(function (c) { wdLoadCard(c.id, false); });
 
-                // â”€â”€ Per-card auto-refresh with visual indicator (TASK-CARD-BEH-002) â”€â”€
+                // ── Per-card auto-refresh with visual indicator (TASK-CARD-BEH-002) ──
                 window._autoRefreshTimers = {};
                 (window.WD_CARDS || []).forEach(function (c) {
                     if (c.refreshInterval > 0) {
@@ -1649,7 +1644,7 @@
                         syncResizeVisibility(isActive);
 
                         if (typeof showToast === 'function') {
-                            showToast(isActive ? 'success' : 'info', isActive ? 'طھظ… طھظپط¹ظٹظ„ ظˆط¶ط¹ طھط¹ط¯ظٹظ„ ط§ظ„طھط®ط·ظٹط·' : 'طھظ… ط¥ظٹظ‚ط§ظپ ظˆط¶ط¹ طھط¹ط¯ظٹظ„ ط§ظ„طھط®ط·ظٹط·');
+                            showToast(isActive ? 'success' : 'info', isActive ? 'تم تفعيل وضع تعديل التخطيط' : 'تم إيقاف وضع تعديل التخطيط');
                         }
                     });
                 })();
@@ -1876,13 +1871,13 @@
                 if (emptyState) emptyState.classList.toggle('wd-hidden', visible !== 0);
                 if (countLabel) {
                     countLabel.textContent = (visible === cards.length)
-                        ? (cards.length + ' ط¨ط·ط§ظ‚ط©')
-                        : (' ط¸ط§ظ‡ط± ' + visible + ' ظ…ظ† ' + cards.length);
+                        ? (cards.length + ' بطاقة')
+                        : (' ظاهر ' + visible + ' من ' + cards.length);
                 }
 
                 var isEmpty = visible === 0;
                 if (isEmpty && !wasEmpty && window.wdShowToast) {
-                    window.wdShowToast('info', 'ظ„ط§ طھظˆط¬ط¯ ط¨ط·ط§ظ‚ط§طھ ظ…ط·ط§ط¨ظ‚ط© ظ„ط¨ط­ط«ظƒ');
+                    window.wdShowToast('info', 'لا توجد بطاقات مطابقة لبحثك');
                 }
                 wasEmpty = isEmpty;
             }
@@ -1903,14 +1898,14 @@
             var grid = document.getElementById('wd-dashboard-grid');
             if (!grid || typeof Sortable === 'undefined') return;
 
-            // â”€â”€ Size presets: CSS class â†’ { w, h, heightPx } â”€â”€
+            // ── Size presets: CSS class → { w, h, heightPx } ──
             var SIZE_PRESETS = {
                 small:  { w: 3, h: 2, heightPx: 200 },
                 medium: { w: 6, h: 3, heightPx: 360 },
                 large:  { w: 9, h: 4, heightPx: 450 }
             };
 
-            // â”€â”€ 1. SortableJS initialization â”€â”€
+            // ── 1. SortableJS initialization ──
             var sortable = new Sortable(grid, {
                 animation: 200,
                 ghostClass: 'sortable-ghost',
@@ -1928,7 +1923,7 @@
                 }
             });
 
-            // â”€â”€ 2. Resize button handling â”€â”€
+            // ── 2. Resize button handling ──
             grid.addEventListener('click', function (e) {
                 var btn = e.target.closest('.wd-resize-btn');
                 if (!btn) return;
@@ -1985,7 +1980,7 @@
                 recalcAndSave();
             });
 
-            // â”€â”€ 3. Per-card refresh button â”€â”€
+            // ── 3. Per-card refresh button ──
             grid.addEventListener('click', function (e) {
                 var btn = e.target.closest('.wd-card__refresh');
                 if (!btn) return;
@@ -2013,7 +2008,7 @@
                 }, 2000);
             });
 
-            // â”€â”€ 4. Layout persistence â”€â”€
+            // ── 4. Layout persistence ──
             var saveTimer = null;
             function recalcAndSave() {
                 clearTimeout(saveTimer);
@@ -2052,11 +2047,11 @@
                         if (data && data.success) {
                             showLayoutSavedToast();
                         } else {
-                            showToast('error', 'طھط¹ط°ط± ط­ظپط¸ ط§ظ„طھط®ط·ظٹط·');
+                            showToast('error', 'تعذر حفظ التخطيط');
                         }
                     })
                     .catch(function () {
-                        showToast('error', 'طھط¹ط°ط± ط§ظ„ط§طھطµط§ظ„ ط¨ط§ظ„ط®ط§ط¯ظ… ظ„ط­ظپط¸ ط§ظ„طھط®ط·ظٹط·');
+                        showToast('error', 'تعذر الاتصال بالخادم لحفظ التخطيط');
                     });
                 }, 400);
             }
@@ -2067,7 +2062,7 @@
 
                 var toast = document.createElement('div');
                 toast.className = 'wd-layout-saved';
-                toast.textContent = 'âœ“ طھظ… ط­ظپط¸ ط§ظ„طھط®ط·ظٹط·';
+                toast.textContent = '✓ تم حفظ التخطيط';
                 toast.setAttribute('role', 'status');
                 document.body.appendChild(toast);
                 setTimeout(function () {
@@ -2077,7 +2072,7 @@
                 }, 2000);
             }
 
-            // â”€â”€ 5. Mark correct resize active state on load â”€â”€
+            // ── 5. Mark correct resize active state on load ──
             grid.querySelectorAll('.wd-card').forEach(function (card) {
                 var w = parseInt(card.getAttribute('data-grid-w'), 10) || 4;
                 var btns = card.querySelectorAll('.wd-resize-btn');
